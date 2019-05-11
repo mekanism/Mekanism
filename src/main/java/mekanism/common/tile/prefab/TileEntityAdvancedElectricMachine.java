@@ -41,7 +41,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
       ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive",
-          "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+                                                         "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final int BASE_GAS_PER_TICK = 1;
     public static int MAX_GAS = 210;
@@ -58,15 +58,14 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     public Gas prevGas;
 
     /**
-     * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output
-     * slot (2), energy slot (3), and the upgrade slot (4). The machine will not run if it does not have enough
-     * electricity, or if it doesn't have enough fuel ticks.
+     * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), energy slot (3), and the upgrade slot (4).
+     * The machine will not run if it does not have enough electricity, or if it doesn't have enough fuel ticks.
      *
-     * @param soundPath - location of the sound effect
-     * @param name - full name of this machine
-     * @param baseMaxEnergy - maximum amount of energy this machine can hold.
-     * @param baseEnergyUsage - how much energy this machine uses per tick.
-     * @param ticksRequired - how many ticks it takes to smelt an item.
+     * @param soundPath        - location of the sound effect
+     * @param name             - full name of this machine
+     * @param baseMaxEnergy    - maximum amount of energy this machine can hold.
+     * @param baseEnergyUsage  - how much energy this machine uses per tick.
+     * @param ticksRequired    - how many ticks it takes to smelt an item.
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
     public TileEntityAdvancedElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
@@ -116,6 +115,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * Gets the amount of ticks the declared itemstack can fuel this machine.
      *
      * @param itemstack - itemstack to check with
+     *
      * @return fuel ticks
      */
     public GasStack getItemGas(ItemStack itemstack) {
@@ -145,10 +145,10 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             RECIPE recipe = getRecipe();
 
             secondaryEnergyThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick)
-                  : (int) Math.ceil(secondaryEnergyPerTick);
+                                                                : (int) Math.ceil(secondaryEnergyPerTick);
 
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick
-                  && gasTank.getStored() >= secondaryEnergyThisTick) {
+                && gasTank.getStored() >= secondaryEnergyThisTick) {
                 setActive(true);
 
                 operatingTicks++;
@@ -205,7 +205,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             return false;
         } else if (slotID == 4) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                  || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             for (AdvancedMachineInput input : getRecipes().keySet()) {
                 if (input.itemStack.isItemEqual(itemstack)) {
@@ -288,6 +288,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * Gets the scaled secondary energy level for the GUI.
      *
      * @param i - multiplier
+     *
      * @return scaled secondary energy
      */
     public int getScaledGasLevel(int i) {

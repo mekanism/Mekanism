@@ -19,11 +19,11 @@ public class IMCHandler {
                 String message = msg.key;
 
                 if (message.equals("ShapedMekanismRecipe") ||
-                      message.equals("ShapelessMekanismRecipe") ||
-                      message.equals("DeleteMekanismRecipes") ||
-                      message.equals("RemoveMekanismRecipes")) {
+                    message.equals("ShapelessMekanismRecipe") ||
+                    message.equals("DeleteMekanismRecipes") ||
+                    message.equals("RemoveMekanismRecipes")) {
                     Mekanism.logger.warn(msg.getSender() + " tried to send IMC " + message
-                          + " which has been deleted. Please notify the mod developer to use JSON recipes.");
+                                         + " which has been deleted. Please notify the mod developer to use JSON recipes.");
                     found = true;
                 }
 
@@ -34,7 +34,7 @@ public class IMCHandler {
 
                 for (Recipe type : Recipe.values()) {
                     if (message.equalsIgnoreCase(type.getRecipeName() + "Recipe") ||
-                          message.equalsIgnoreCase(type.getOldRecipeName() + "Recipe")) {
+                        message.equalsIgnoreCase(type.getOldRecipeName() + "Recipe")) {
                         MachineInput input = type.createInput(msg.getNBTValue());
 
                         if (input != null && input.isValid()) {
@@ -54,12 +54,12 @@ public class IMCHandler {
                                 }
                             } else {
                                 Mekanism.logger.error(msg.getSender() + " attempted to " + (delete ? "remove" : "add")
-                                      + " recipe of type " + type.getRecipeName() + " with an invalid output.");
+                                                      + " recipe of type " + type.getRecipeName() + " with an invalid output.");
                             }
                         } else {
                             Mekanism.logger.error(
                                   msg.getSender() + " attempted to " + (delete ? "remove" : "add") + " recipe of type "
-                                        + type.getRecipeName() + " with an invalid input.");
+                                  + type.getRecipeName() + " with an invalid input.");
                         }
 
                         found = true;

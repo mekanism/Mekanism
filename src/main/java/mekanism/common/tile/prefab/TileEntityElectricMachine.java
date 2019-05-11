@@ -24,17 +24,17 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
       TileEntityUpgradeableMachine<ItemStackInput, ItemStackOutput, RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
-          "getMaxEnergy", "getEnergyNeeded"};
+                                                         "getMaxEnergy", "getEnergyNeeded"};
 
     /**
-     * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), output slot (2), and the
-     * upgrade slot (3). It will not run if it does not have enough energy.
+     * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), output slot (2), and the upgrade slot (3). It will not run if it does not
+     * have enough energy.
      *
-     * @param soundPath - location of the sound effect
-     * @param name - full name of this machine
-     * @param perTick - energy used per tick.
+     * @param soundPath     - location of the sound effect
+     * @param name          - full name of this machine
+     * @param perTick       - energy used per tick.
      * @param ticksRequired - ticks required to operate -- or smelt an item.
-     * @param maxEnergy - maximum energy this machine can hold.
+     * @param maxEnergy     - maximum energy this machine can hold.
      */
     public TileEntityElectricMachine(String soundPath, String name, double maxEnergy, double perTick,
           int ticksRequired) {
@@ -105,7 +105,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
             return false;
         } else if (slotID == 3) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                  || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             return RecipeHandler.isInRecipe(itemstack, getRecipes());
         } else if (slotID == 1) {

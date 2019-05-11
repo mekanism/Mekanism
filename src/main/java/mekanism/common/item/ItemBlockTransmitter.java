@@ -11,12 +11,12 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.PipeTier;
@@ -103,19 +103,19 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (
                       TransporterTier.get(tier).getSpeed() / (100 / 20)) + " m/s");
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY
-                      + TransporterTier.get(tier).getPullAmount() * 2 + "/s");
+                         + TransporterTier.get(tier).getPullAmount() * 2 + "/s");
             } else if (transmission == TransmissionType.HEAT) {
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.conduction") + ": " + EnumColor.GREY
-                      + ConductorTier.get(tier).getInverseConduction());
+                         + ConductorTier.get(tier).getInverseConduction());
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.insulation") + ": " + EnumColor.GREY
-                      + ConductorTier.get(tier).getBaseConductionInsulation());
+                         + ConductorTier.get(tier).getBaseConductionInsulation());
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.heatCapacity") + ": " + EnumColor.GREY
-                      + ConductorTier.get(tier).getInverseHeatCapacity());
+                         + ConductorTier.get(tier).getInverseHeatCapacity());
             }
 
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings
                   .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.forDetails"));
+                           .localize("tooltip.forDetails"));
         } else {
             TransmitterType type = TransmitterType.values()[itemstack.getItemDamage()];
 
@@ -130,7 +130,7 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
                 case MECHANICAL_PIPE: {
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.fluids") + " " + EnumColor.GREY
-                          + "(MinecraftForge)");
+                             + "(MinecraftForge)");
                     break;
                 }
                 case PRESSURIZED_TUBE: {

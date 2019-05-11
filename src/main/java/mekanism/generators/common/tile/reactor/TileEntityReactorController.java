@@ -68,13 +68,13 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     public void radiateNeutrons(int neutrons) {
-    } //future impl
+        //future impl
+    }
 
     public void formMultiblock(boolean keepBurning) {
         if (getReactor() == null) {
             setReactor(new FusionReactor(this));
         }
-
         getReactor().formMultiblock(keepBurning);
     }
 
@@ -82,7 +82,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (getReactor() == null || !getReactor().isFormed()) {
             return 0;
         }
-
         return getReactor().getPlasmaTemp();
     }
 
@@ -90,26 +89,19 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (getReactor() == null || !getReactor().isFormed()) {
             return 0;
         }
-
         return getReactor().getCaseTemp();
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (world.isRemote) {
             updateSound();
         }
-
         if (isFormed()) {
             getReactor().simulate();
-
-            if (!world.isRemote && (getReactor().isBurning() != clientBurning
-                  || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000)) {
-                Mekanism.packetHandler.sendToAllAround(
-                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                      Coord4D.get(this).getTargetPoint(50D));
+            if (!world.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000)) {
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50D));
                 clientBurning = getReactor().isBurning();
                 clientTemp = getReactor().getPlasmaTemp();
             }
@@ -122,7 +114,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (!MekanismConfig.current().client.enableMachineSounds.val()) {
             return;
         }
-
         if (isBurning() && !isInvalid()) {
             // If sounds are being muted, we can attempt to start them on every tick, only to have them
             // denied by the event bus, so use a cooldown period that ensures we're only trying once every
@@ -130,24 +121,20 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             if (--playSoundCooldown > 0) {
                 return;
             }
-
             if (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound)) {
                 activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), 1.0f, getPos());
                 playSoundCooldown = 20;
             }
-        } else {
-            if (activeSound != null) {
-                SoundHandler.stopTileSound(getPos());
-                activeSound = null;
-                playSoundCooldown = 0;
-            }
+        } else if (activeSound != null) {
+            SoundHandler.stopTileSound(getPos());
+            activeSound = null;
+            playSoundCooldown = 0;
         }
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-
         if (world.isRemote) {
             updateSound();
         }
@@ -156,14 +143,12 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     public void onChunkUnload() {
         super.onChunkUnload();
-
         formMultiblock(true);
     }
 
     @Override
     public void onAdded() {
         super.onAdded();
-
         formMultiblock(false);
     }
 
@@ -171,9 +156,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-
         tag.setBoolean("formed", isFormed());
-
         if (isFormed()) {
             tag.setDouble("plasmaTemp", getReactor().getPlasmaTemp());
             tag.setDouble("caseTemp", getReactor().getCaseTemp());
@@ -185,22 +168,18 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             tag.setInteger("injectionRate", 0);
             tag.setBoolean("burning", false);
         }
-
         tag.setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
         tag.setTag("deuteriumTank", deuteriumTank.write(new NBTTagCompound()));
         tag.setTag("tritiumTank", tritiumTank.write(new NBTTagCompound()));
         tag.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
         tag.setTag("steamTank", steamTank.writeToNBT(new NBTTagCompound()));
-
         return tag;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-
         boolean formed = tag.getBoolean("formed");
-
         if (formed) {
             setReactor(new FusionReactor(this));
             getReactor().setPlasmaTemp(tag.getDouble("plasmaTemp"));
@@ -209,7 +188,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             getReactor().setBurning(tag.getBoolean("burning"));
             getReactor().updateTemperatures();
         }
-
         fuelTank.read(tag.getCompoundTag("fuelTank"));
         deuteriumTank.read(tag.getCompoundTag("deuteriumTank"));
         tritiumTank.read(tag.getCompoundTag("tritiumTank"));
@@ -220,9 +198,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(getReactor() != null && getReactor().isFormed());
-
         if (getReactor() != null) {
             data.add(getReactor().getPlasmaTemp());
             data.add(getReactor().getCaseTemp());
@@ -234,7 +210,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             TileUtils.addTankData(data, waterTank);
             TileUtils.addTankData(data, steamTank);
         }
-
         return data;
     }
 
@@ -242,13 +217,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
-
             if (type == 0) {
                 if (getReactor() != null) {
                     getReactor().setInjectionRate(dataStream.readInt());
                 }
             }
-
             return;
         }
 
@@ -256,14 +229,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             boolean formed = dataStream.readBoolean();
-
             if (formed) {
                 if (getReactor() == null || !getReactor().formed) {
                     BlockPos corner = getPos().subtract(new Vec3i(2, 4, 2));
-                    Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6,
-                          tile -> tile instanceof TileEntityReactorBlock);
+                    Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6, tile -> tile instanceof TileEntityReactorBlock);
                 }
-
                 if (getReactor() == null) {
                     setReactor(new FusionReactor(this));
                     MekanismUtils.updateBlock(world, getPos());
@@ -321,10 +291,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         if (box == null) {
-            box = new AxisAlignedBB(getPos().getX() - 1, getPos().getY() - 3, getPos().getZ() - 1, getPos().getX() + 2,
-                  getPos().getY(), getPos().getZ() + 2);
+            box = new AxisAlignedBB(getPos().getX() - 1, getPos().getY() - 3, getPos().getZ() - 1, getPos().getX() + 2, getPos().getY(), getPos().getZ() + 2);
         }
-
         return box;
     }
 

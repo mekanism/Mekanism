@@ -16,8 +16,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
@@ -31,6 +29,8 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -80,14 +80,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
           @Nonnull ITooltipFlag flag) {
         list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
-              + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+                 + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
         list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils
               .getEnergyDisplay(EnergyCubeTier.values()[getBaseTier(itemstack).ordinal()].getMaxEnergy()));
 
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings
                   .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.forDetails") + ".");
+                           .localize("tooltip.forDetails") + ".");
         } else {
             if (hasSecurity(itemstack)) {
                 list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player,

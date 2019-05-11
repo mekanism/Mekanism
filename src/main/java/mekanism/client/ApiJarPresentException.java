@@ -13,8 +13,8 @@ public class ApiJarPresentException extends CustomModLoadingErrorDisplayExceptio
 
     private static final long serialVersionUID = 1L;
 
-    private final @Nonnull
-    String[] msgs;
+    @Nonnull
+    private final String[] msgs;
 
     public ApiJarPresentException(@Nonnull String[] msgs) {
         super(msgs[0], new RuntimeException());
@@ -26,8 +26,7 @@ public class ApiJarPresentException extends CustomModLoadingErrorDisplayExceptio
     }
 
     @Override
-    public void drawScreen(@Nullable GuiErrorScreen errorScreen, @Nullable FontRenderer fontRenderer, int mouseRelX,
-          int mouseRelY, float tickTime) {
+    public void drawScreen(@Nullable GuiErrorScreen errorScreen, @Nullable FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime) {
         if (errorScreen == null || fontRenderer == null) {
             return;
         }

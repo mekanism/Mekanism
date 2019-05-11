@@ -25,6 +25,6 @@ public class TeslaCableIntegration implements ITeslaConsumer {
     public long givePower(long power, boolean simulated) {
         return Math.round(
               tileEntity.acceptEnergy(side, power * MekanismConfig.current().general.FROM_TESLA.val(), simulated)
-                    * MekanismConfig.current().general.TO_TESLA.val());
+              * MekanismConfig.current().general.TO_TESLA.val());
     }
 }

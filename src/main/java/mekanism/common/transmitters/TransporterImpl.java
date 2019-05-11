@@ -185,7 +185,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 } else if (stack.progress == 50) {
                     if (stack.isFinal(this)) {
                         if (checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true)
-                              || stack.pathType == Path.NONE) {
+                            || stack.pathType == Path.NONE) {
                             if (!recalculate(stackId, stack, null)) {
                                 deletes.add(stackId);
                             }
@@ -228,7 +228,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         EnumFacing side = stack.getSide(this);
 
         return getTileEntity().getConnectionType(side) == ConnectionType.NORMAL
-              || getTileEntity().getConnectionType(side) == ConnectionType.PUSH;
+               || getTileEntity().getConnectionType(side) == ConnectionType.PUSH;
     }
 
     private boolean recalculate(int stackId, TransporterStack stack, Coord4D from) {
@@ -356,7 +356,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         }
 
         return getTileEntity().getConnectionType(side) == ConnectionType.NORMAL
-              || getTileEntity().getConnectionType(side) == ConnectionType.PUSH;
+               || getTileEntity().getConnectionType(side) == ConnectionType.PUSH;
     }
 
     @Override

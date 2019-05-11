@@ -2,4 +2,3 @@
 package mekanism.api.util;
 
 import net.minecraftforge.fml.common.API;
-

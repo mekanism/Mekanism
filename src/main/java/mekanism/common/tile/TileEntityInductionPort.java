@@ -362,7 +362,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         }
 
         return amount - acceptEnergy(direction, amount * MekanismConfig.current().general.FROM_IC2.val(), false)
-              * MekanismConfig.current().general.TO_IC2.val();
+                        * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
@@ -453,28 +453,28 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-              || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-              || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
-              || capability == Capabilities.TESLA_HOLDER_CAPABILITY
-              || capability == Capabilities.CONFIGURABLE_CAPABILITY
-              || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
-              || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))
-              || capability == CapabilityEnergy.ENERGY
-              || super.hasCapability(capability, facing);
+               || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
+               || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
+               || capability == Capabilities.TESLA_HOLDER_CAPABILITY
+               || capability == Capabilities.CONFIGURABLE_CAPABILITY
+               || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
+               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))
+               || capability == CapabilityEnergy.ENERGY
+               || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-              || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
-              capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
-              || capability == Capabilities.CONFIGURABLE_CAPABILITY) {
+            || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
+            capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
+            || capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return (T) this;
         }
 
         if (capability == Capabilities.TESLA_HOLDER_CAPABILITY
-              || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
-              || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
+            || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
+            || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
             return (T) teslaManager.getWrapper(this, facing);
         }
 
@@ -490,7 +490,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         //Inserting into input make it draw power from the item inserted
         return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? mode ? CHARGE_SLOT
-              : DISCHARGE_SLOT : InventoryUtils.EMPTY;
+                                                                                                       : DISCHARGE_SLOT : InventoryUtils.EMPTY;
     }
 
     @Override

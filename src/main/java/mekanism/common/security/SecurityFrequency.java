@@ -2,9 +2,9 @@ package mekanism.common.security;
 
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
+import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.PacketHandler;
-import mekanism.api.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.NBTTagCompound;

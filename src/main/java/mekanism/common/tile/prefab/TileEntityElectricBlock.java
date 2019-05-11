@@ -50,10 +50,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
           IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
     /**
-     * The base of all blocks that deal with electricity. It has a facing state, initialized state, and a current amount
-     * of stored energy.
+     * The base of all blocks that deal with electricity. It has a facing state, initialized state, and a current amount of stored energy.
      *
-     * @param name - full name of this block
+     * @param name          - full name of this block
      * @param baseMaxEnergy - how much energy this block can store
      */
     public TileEntityElectricBlock(String name, double baseMaxEnergy) {
@@ -191,6 +190,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
      * Gets the scaled energy level for the GUI.
      *
      * @param i - multiplier
+     *
      * @return scaled energy
      */
     public int getScaledEnergyLevel(int i) {
@@ -201,16 +201,16 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         return MekanismUtils.clampToInt(
-                    acceptEnergy(from, maxReceive * MekanismConfig.current().general.FROM_RF.val(), simulate)
-                          * MekanismConfig.current().general.TO_RF.val());
+              acceptEnergy(from, maxReceive * MekanismConfig.current().general.FROM_RF.val(), simulate)
+              * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         return MekanismUtils.clampToInt(
-                    pullEnergy(from, maxExtract * MekanismConfig.current().general.FROM_RF.val(), simulate)
-                          * MekanismConfig.current().general.TO_RF.val());
+              pullEnergy(from, maxExtract * MekanismConfig.current().general.FROM_RF.val(), simulate)
+              * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
@@ -274,7 +274,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction) {
         return !MekanismConfig.current().general.blacklistIC2.val() && sideIsOutput(direction)
-              && receiver instanceof IEnergyConductor;
+               && receiver instanceof IEnergyConductor;
     }
 
     @Override
@@ -314,7 +314,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOfferedEnergy() {
         return !MekanismConfig.current().general.blacklistIC2.val() ? Math.min(getEnergy(), getMaxOutput())
-              * MekanismConfig.current().general.TO_IC2.val() : 0;
+                                                                      * MekanismConfig.current().general.TO_IC2.val() : 0;
     }
 
     @Override
@@ -341,8 +341,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         }
 
         return amount -
-              acceptEnergy(pushDirection.getOpposite(), amount * MekanismConfig.current().general.FROM_IC2.val(), false)
-                    * MekanismConfig.current().general.TO_IC2.val();
+               acceptEnergy(pushDirection.getOpposite(), amount * MekanismConfig.current().general.FROM_IC2.val(), false)
+               * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
@@ -406,14 +406,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
     protected boolean isStrictEnergy(@Nonnull Capability capability) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-              || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
-              capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY;
+               || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
+               capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY;
     }
 
     protected boolean isTesla(@Nonnull Capability capability, EnumFacing side) {
         return capability == Capabilities.TESLA_HOLDER_CAPABILITY
-              || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(side))
-              || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(side));
+               || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(side))
+               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(side));
     }
 
     protected ForgeEnergyIntegration getForgeEnergyWrapper(EnumFacing side) {

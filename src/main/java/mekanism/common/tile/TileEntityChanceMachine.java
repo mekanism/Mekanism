@@ -25,7 +25,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
       TileEntityUpgradeableMachine<ItemStackInput, ChanceOutput, RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
-          "getMaxEnergy", "getEnergyNeeded"};
+                                                         "getMaxEnergy", "getEnergyNeeded"};
 
     public TileEntityChanceMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
           int ticksRequired, ResourceLocation location) {
@@ -97,7 +97,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 3) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                  || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             return RecipeHandler.isInRecipe(itemstack, getRecipes());
         } else if (slotID == 1) {

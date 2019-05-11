@@ -85,8 +85,8 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             } else if (tileEntity.getRecipeType()
-                  .getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(),
-                        tileEntity.infuseStored) != null) {
+                             .getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(),
+                                   tileEntity.infuseStored) != null) {
                 if (isInputSlot(slotID)) {
                     if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
@@ -107,7 +107,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             } else if (tileEntity.getRecipeType() == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null
-                  && (tileEntity.infuseStored.getType() == null || tileEntity.infuseStored.getType() == InfuseRegistry
+                       && (tileEntity.infuseStored.getType() == null || tileEntity.infuseStored.getType() == InfuseRegistry
                   .getObject(slotStack).type)) {
                 if (transferExtraSlot(slotID, slotStack)) {
                     return ItemStack.EMPTY;
@@ -179,8 +179,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
     private class FactoryInputSlot extends Slot {
 
         /**
-         * The index of the processes slot. 0 <= processNumber < tileEntity.tier.processes For matching the input to
-         * output slot
+         * The index of the processes slot. 0 <= processNumber < tileEntity.tier.processes For matching the input to output slot
          */
         private final int processNumber;
 
@@ -193,7 +192,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
         public boolean isItemValid(ItemStack stack) {
             ItemStack outputSlotStack = tileEntity.inventory.get(getOutputSlotIndex(this.processNumber));
             return tileEntity.inputProducesOutput(getInputSlotIndex(this.processNumber), stack, outputSlotStack, false)
-                  && super.isItemValid(stack);
+                   && super.isItemValid(stack);
         }
     }
 }

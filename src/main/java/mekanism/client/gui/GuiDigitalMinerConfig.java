@@ -81,7 +81,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
             final int scrollSize = tileEntity.filters.size() - 4;
             return (int) ((scrollSize + 0.5) * scroll);
         }
-
         return 0;
     }
 
@@ -100,26 +99,22 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         if (stackSwitch == 0) {
             for (Map.Entry<MOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
                 if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0) {
-                    if (entry.getValue().stackIndex == -1
-                          || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
+                    if (entry.getValue().stackIndex == -1 || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
                         entry.getValue().stackIndex = 0;
                     } else if (entry.getValue().stackIndex < entry.getValue().iterStacks.size() - 1) {
                         entry.getValue().stackIndex++;
                     }
-
                     entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
                 }
             }
 
             for (Map.Entry<MModIDFilter, StackData> entry : modIDStacks.entrySet()) {
                 if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0) {
-                    if (entry.getValue().stackIndex == -1
-                          || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
+                    if (entry.getValue().stackIndex == -1 || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
                         entry.getValue().stackIndex = 0;
                     } else if (entry.getValue().stackIndex < entry.getValue().iterStacks.size() - 1) {
                         entry.getValue().stackIndex++;
                     }
-
                     entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
                 }
             }
@@ -131,7 +126,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                     entry.getValue().renderStack = ItemStack.EMPTY;
                 }
             }
-
             for (Map.Entry<MModIDFilter, StackData> entry : modIDStacks.entrySet()) {
                 if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0) {
                     entry.getValue().renderStack = ItemStack.EMPTY;
@@ -191,10 +185,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                         if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20) {
                             // Process up button click
                             final TileNetworkList data = TileNetworkList.withContents(11, getFilterIndex() + i);
-
                             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                             return;
                         }
                     }
@@ -203,10 +195,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                         if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
                             // Process down button click
                             final TileNetworkList data = TileNetworkList.withContents(12, getFilterIndex() + i);
-
                             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                             return;
                         }
                     }
@@ -216,24 +206,16 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
                         if (filter instanceof MItemStackFilter) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                            Mekanism.packetHandler.sendToServer(
-                                  new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1,
-                                        getFilterIndex() + i, 0));
+                            Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
                         } else if (filter instanceof MOreDictFilter) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                            Mekanism.packetHandler.sendToServer(
-                                  new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2,
-                                        getFilterIndex() + i, 0));
+                            Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex() + i, 0));
                         } else if (filter instanceof MMaterialFilter) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                            Mekanism.packetHandler.sendToServer(
-                                  new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3,
-                                        getFilterIndex() + i, 0));
+                            Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex() + i, 0));
                         } else if (filter instanceof MModIDFilter) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                            Mekanism.packetHandler.sendToServer(
-                                  new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 6,
-                                        getFilterIndex() + i, 0));
+                            Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 6, getFilterIndex() + i, 0));
                         }
                     }
                 }
@@ -241,8 +223,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(
-                      new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
+                Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
             }
 
             if (xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78) {
@@ -262,7 +243,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
             if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
                 TileNetworkList data = TileNetworkList.withContents(10);
-
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
@@ -281,7 +261,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     @Override
     protected void mouseReleased(int x, int y, int type) {
         super.mouseReleased(x, y, type);
-
         if (type == 0 && isDragging) {
             dragOffset = 0;
             isDragging = false;
@@ -294,27 +273,18 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-
         int i = Mouse.getEventDWheel();
-
         if (i != 0 && needsScrollBars()) {
             final int j = tileEntity.filters.size() - 4;
-
             if (i > 0) {
                 i = 1;
-            }
-
-            if (i < 0) {
+            } else {
                 i = -1;
             }
-
             scroll = (float) (scroll - (double) i / (double) j);
-
             if (scroll < 0.0F) {
                 scroll = 0.0F;
-            }
-
-            if (scroll > 1.0F) {
+            } else if (scroll > 1.0F) {
                 scroll = 1.0F;
             }
         }
@@ -328,7 +298,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     @Override
     public void initGui() {
         super.initGui();
-
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
 
@@ -340,8 +309,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         String prevMax = maxField != null ? maxField.getText() : "";
 
         radiusField = new GuiTextField(1, fontRenderer, guiWidth + 12, guiHeight + 67, 26, 11);
-        radiusField.setMaxStringLength(
-              Integer.toString(MekanismConfig.current().general.digitalMinerMaxRadius.val()).length());
+        radiusField.setMaxStringLength(Integer.toString(MekanismConfig.current().general.digitalMinerMaxRadius.val()).length());
         radiusField.setText(prevRad);
 
         minField = new GuiTextField(2, fontRenderer, guiWidth + 12, guiHeight + 92, 26, 11);
@@ -358,8 +326,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         super.actionPerformed(guibutton);
 
         if (guibutton.id == 0) {
-            Mekanism.packetHandler
-                  .sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 5, 0, 0));
+            Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 5, 0, 0));
         }
     }
 
@@ -369,18 +336,11 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         int yAxis = (mouseY - (height - ySize) / 2);
 
         fontRenderer.drawString(LangUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
-
         fontRenderer.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
         fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
-
-        fontRenderer
-              .drawString("I: " + (tileEntity.inverse ? LangUtils.localize("gui.on") : LangUtils.localize("gui.off")),
-                    11, 131, 0x00CD00);
-
+        fontRenderer.drawString("I: " + (tileEntity.inverse ? LangUtils.localize("gui.on") : LangUtils.localize("gui.off")), 11, 131, 0x00CD00);
         fontRenderer.drawString("Radi: " + tileEntity.getRadius(), 11, 58, 0x00CD00);
-
         fontRenderer.drawString("Min: " + tileEntity.minY, 11, 83, 0x00CD00);
-
         fontRenderer.drawString("Max: " + tileEntity.maxY, 11, 108, 0x00CD00);
 
         for (int i = 0; i < 4; i++) {
@@ -390,7 +350,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
                 if (filter instanceof MItemStackFilter) {
                     MItemStackFilter itemFilter = (MItemStackFilter) filter;
-
                     if (!itemFilter.itemType.isEmpty()) {
                         GlStateManager.pushMatrix();
                         RenderHelper.enableGUIStandardItemLighting();
@@ -402,13 +361,10 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                     fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof MOreDictFilter) {
                     MOreDictFilter oreFilter = (MOreDictFilter) filter;
-
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
-
                     ItemStack renderStack = oreDictStacks.get(filter).renderStack;
-
                     if (!renderStack.isEmpty()) {
                         try {
                             GlStateManager.pushMatrix();
@@ -419,11 +375,9 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                         } catch (Exception ignored) {
                         }
                     }
-
                     fontRenderer.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof MMaterialFilter) {
                     MMaterialFilter itemFilter = (MMaterialFilter) filter;
-
                     if (!itemFilter.getMaterialItem().isEmpty()) {
                         GlStateManager.pushMatrix();
                         RenderHelper.enableGUIStandardItemLighting();
@@ -431,17 +385,13 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                         RenderHelper.disableStandardItemLighting();
                         GlStateManager.popMatrix();
                     }
-
                     fontRenderer.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof MModIDFilter) {
                     MModIDFilter modFilter = (MModIDFilter) filter;
-
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }
-
                     ItemStack renderStack = modIDStacks.get(filter).renderStack;
-
                     if (!renderStack.isEmpty()) {
                         try {
                             GlStateManager.pushMatrix();
@@ -452,16 +402,13 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                         } catch (Exception ignored) {
                         }
                     }
-
                     fontRenderer.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
                 }
             }
         }
-
         if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
         }
-
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -474,9 +421,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-        drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0,
-              12, 15);
+        drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
         int xAxis = (mouseX - (width - xSize) / 2);
         int yAxis = (mouseY - (height - ySize) / 2);
@@ -554,7 +499,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         if ((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-
         if (i == Keyboard.KEY_RETURN) {
             if (radiusField.isFocused()) {
                 setRadius();
@@ -564,7 +508,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                 setMaxY();
             }
         }
-
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
             radiusField.textboxKeyTyped(c, i);
             minField.textboxKeyTyped(c, i);
@@ -574,13 +517,9 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
     private void setRadius() {
         if (!radiusField.getText().isEmpty()) {
-            int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()),
-                  MekanismConfig.current().general.digitalMinerMaxRadius.val()));
-
+            int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
             TileNetworkList data = TileNetworkList.withContents(6, toUse);
-
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-
             radiusField.setText("");
         }
     }
@@ -588,11 +527,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     private void setMinY() {
         if (!minField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
-
             TileNetworkList data = TileNetworkList.withContents(7, toUse);
-
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-
             minField.setText("");
         }
     }
@@ -600,11 +536,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     private void setMaxY() {
         if (!maxField.getText().isEmpty()) {
             int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
-
             TileNetworkList data = TileNetworkList.withContents(8, toUse);
-
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-
             maxField.setText("");
         }
     }
@@ -613,9 +546,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         if (!oreDictStacks.containsKey(filter)) {
             oreDictStacks.put(filter, new StackData());
         }
-
         oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.getOreDictName(), true);
-
         stackSwitch = 0;
         updateScreen();
         oreDictStacks.get(filter).stackIndex = -1;
@@ -625,9 +556,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         if (!modIDStacks.containsKey(filter)) {
             modIDStacks.put(filter, new StackData());
         }
-
         modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.getModID(), true);
-
         stackSwitch = 0;
         updateScreen();
         modIDStacks.get(filter).stackIndex = -1;

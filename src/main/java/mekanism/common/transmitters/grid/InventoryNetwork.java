@@ -89,7 +89,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     @Override
     public String toString() {
         return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size()
-              + " acceptors.";
+               + " acceptors.";
     }
 
     @Override

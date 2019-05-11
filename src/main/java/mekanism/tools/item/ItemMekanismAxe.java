@@ -28,7 +28,6 @@ public class ItemMekanismAxe extends ItemAxe {
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, @Nonnull ItemStack repair) {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), repair) || super
-              .getIsRepairable(toRepair, repair);
+        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), repair) || super.getIsRepairable(toRepair, repair);
     }
 }

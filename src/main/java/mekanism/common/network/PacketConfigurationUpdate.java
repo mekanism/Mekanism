@@ -91,7 +91,11 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
     }
 
     public enum ConfigurationPacket {
-        EJECT, SIDE_DATA, EJECT_COLOR, INPUT_COLOR, STRICT_INPUT
+        EJECT,
+        SIDE_DATA,
+        EJECT_COLOR,
+        INPUT_COLOR,
+        STRICT_INPUT
     }
 
     public static class ConfigurationUpdateMessage implements IMessage {

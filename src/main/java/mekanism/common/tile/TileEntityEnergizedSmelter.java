@@ -13,8 +13,8 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<Smelti
 
     public TileEntityEnergizedSmelter() {
         super("smelter", "EnergizedSmelter",
-                MachineType.ENERGIZED_SMELTER.getStorage(),
-                MachineType.ENERGIZED_SMELTER.getUsage(), 200);
+              MachineType.ENERGIZED_SMELTER.getStorage(),
+              MachineType.ENERGIZED_SMELTER.getUsage(), 200);
     }
 
     @Override

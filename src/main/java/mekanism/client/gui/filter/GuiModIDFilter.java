@@ -49,8 +49,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
             setModID();
             return;
         }
-        if (Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c)
-              || isTextboxKey(c, i)) {
+        if (Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || isTextboxKey(c, i)) {
             modIDText.textboxKeyTyped(c, i);
         }
     }
@@ -91,8 +90,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
                 } else {
-                    Mekanism.packetHandler
-                          .sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
+                    Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
                 sendPacketToServer(0);
             } else {

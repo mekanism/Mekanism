@@ -33,14 +33,12 @@ public class GuiGasGauge extends GuiGauge<Gas> {
     public static GuiGasGauge getDummy(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         GuiGasGauge gauge = new GuiGasGauge(null, type, gui, def, x, y);
         gauge.dummy = true;
-
         return gauge;
     }
 
     @Override
     protected boolean inBounds(int xAxis, int yAxis) {
-        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
-              && yAxis <= yLocation + height - 1;
+        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1;
     }
 
     @Override
@@ -52,18 +50,14 @@ public class GuiGasGauge extends GuiGauge<Gas> {
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (inBounds(xAxis, yAxis)) {
             ItemStack stack = mc.player.inventory.getItemStack();
-
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
-
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {
                     int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(infoHandler.getTank());
-
                     if (index != -1) {
                         if (button == 0 && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                             button = 2;
                         }
-
                         Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
                     }
                 }
@@ -76,11 +70,9 @@ public class GuiGasGauge extends GuiGauge<Gas> {
         if (dummy) {
             return height - 2;
         }
-
         if (infoHandler.getTank().getGas() == null || infoHandler.getTank().getMaxGas() == 0) {
             return 0;
         }
-
         return infoHandler.getTank().getStored() * (height - 2) / infoHandler.getTank().getMaxGas();
     }
 
@@ -89,10 +81,8 @@ public class GuiGasGauge extends GuiGauge<Gas> {
         if (dummy) {
             return dummyType.getSprite();
         }
-
-        return (infoHandler.getTank() != null && infoHandler.getTank().getGas() != null
-              && infoHandler.getTank().getGas().getGas() != null) ? infoHandler.getTank().getGas().getGas().getSprite()
-              : null;
+        return (infoHandler.getTank() != null && infoHandler.getTank().getGas() != null && infoHandler.getTank().getGas().getGas() != null) ?
+               infoHandler.getTank().getGas().getGas().getSprite() : null;
     }
 
     @Override
@@ -100,9 +90,8 @@ public class GuiGasGauge extends GuiGauge<Gas> {
         if (dummy) {
             return dummyType.getLocalizedName();
         }
-
-        return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName()
-              + ": " + infoHandler.getTank().getStored() : LangUtils.localize("gui.empty");
+        return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored()
+                                                        : LangUtils.localize("gui.empty");
     }
 
     @Override
@@ -110,9 +99,8 @@ public class GuiGasGauge extends GuiGauge<Gas> {
         if (dummy) {
             return dummyType.getTint();
         }
-
         return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getTint()
-              : super.getRenderColor();
+                                                        : super.getRenderColor();
     }
 
     public interface IGasInfoHandler {

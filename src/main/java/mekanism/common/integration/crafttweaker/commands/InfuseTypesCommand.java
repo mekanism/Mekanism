@@ -19,7 +19,7 @@ public class InfuseTypesCommand extends CraftTweakerCommand {
     protected void init() {
         setDescription(SpecialMessagesChat.getClickableCommandText(TextFormatting.DARK_GREEN + "/ct " + subCommandName,
               "/ct " + subCommandName, true), SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA +
-              "Outputs a list of all registered metallurgic infuser infusion types to the crafttweaker.log"));
+                                                                                   "Outputs a list of all registered metallurgic infuser infusion types to the crafttweaker.log"));
     }
 
     @Override
@@ -28,6 +28,6 @@ public class InfuseTypesCommand extends CraftTweakerCommand {
         Set<String> names = InfuseRegistry.getInfuseMap().keySet();
         names.forEach(CraftTweakerAPI::logCommand);
         sender.sendMessage(SpecialMessagesChat.getLinkToCraftTweakerLog("List of " + names.size() +
-              " metallurgic infuser infusion types generated;", sender));
+                                                                        " metallurgic infuser infusion types generated;", sender));
     }
 }

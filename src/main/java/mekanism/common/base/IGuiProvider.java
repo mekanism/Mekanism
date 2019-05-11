@@ -10,10 +10,11 @@ public interface IGuiProvider {
     /**
      * Get the container for a GUI. Common.
      *
-     * @param ID - gui ID
+     * @param ID     - gui ID
      * @param player - player that opened the GUI
-     * @param world - world the GUI was opened in
-     * @param pos - gui's position
+     * @param world  - world the GUI was opened in
+     * @param pos    - gui's position
+     *
      * @return the Container of the GUI
      */
     Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos);
@@ -21,10 +22,11 @@ public interface IGuiProvider {
     /**
      * Get the actual interface for a GUI. Client-only.
      *
-     * @param ID - gui ID
+     * @param ID     - gui ID
      * @param player - player that opened the GUI
-     * @param world - world the GUI was opened in
-     * @param pos - gui's position
+     * @param world  - world the GUI was opened in
+     * @param pos    - gui's position
+     *
      * @return the GuiScreen of the GUI
      */
     Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos);

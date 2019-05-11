@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
 import mekanism.client.gui.filter.GuiMFilterSelect;
@@ -11,7 +12,6 @@ import mekanism.client.gui.filter.GuiMModIDFilter;
 import mekanism.client.gui.filter.GuiMOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
@@ -74,7 +74,10 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
     }
 
     public enum MinerGuiPacket {
-        SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
+        SERVER,
+        CLIENT,
+        SERVER_INDEX,
+        CLIENT_INDEX
     }
 
     public static class DigitalMinerGuiMessage implements IMessage {

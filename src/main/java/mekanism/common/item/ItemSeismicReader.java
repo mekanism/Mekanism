@@ -37,12 +37,12 @@ public class ItemSeismicReader extends ItemEnergized {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings
                   .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.forDetails") + ".");
+                           .localize("tooltip.forDetails") + ".");
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings
                   .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings
-                  .getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.forDesc") + ".");
+                           .localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings
+                           .getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
+                           .localize("tooltip.forDesc") + ".");
         } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
             super.addInformation(itemstack, world, list, flag);
         } else {

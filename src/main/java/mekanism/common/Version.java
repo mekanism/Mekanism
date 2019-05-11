@@ -39,6 +39,7 @@ public class Version {
      * Gets a version object from a string.
      *
      * @param s - string object
+     *
      * @return version if applicable, otherwise null
      */
     public static Version get(String s) {
@@ -76,6 +77,7 @@ public class Version {
 
     /**
      * @param version Version to check against
+     *
      * @return 1: greater than, 0: equal to, -1: less than
      */
     public byte comparedState(Version version) {

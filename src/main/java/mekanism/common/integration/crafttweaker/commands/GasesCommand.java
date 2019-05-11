@@ -20,7 +20,7 @@ public class GasesCommand extends CraftTweakerCommand {
     protected void init() {
         setDescription(SpecialMessagesChat.getClickableCommandText(TextFormatting.DARK_GREEN + "/ct " + subCommandName,
               "/ct " + subCommandName, true), SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA +
-              "Outputs a list of all registered gases to the crafttweaker.log"));
+                                                                                   "Outputs a list of all registered gases to the crafttweaker.log"));
     }
 
     @Override

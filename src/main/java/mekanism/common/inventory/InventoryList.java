@@ -33,7 +33,7 @@ public class InventoryList implements IInventory {
     @Override
     public ItemStack getStackInSlot(int index) {
         return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index)
-              : ItemStack.EMPTY;
+                                                                   : ItemStack.EMPTY;
     }
 
     /**
@@ -127,7 +127,7 @@ public class InventoryList implements IInventory {
     @Override
     public ITextComponent getDisplayName() {
         return (this.hasCustomName() ? new TextComponentString(this.getName())
-              : new TextComponentTranslation(this.getName()));
+                                     : new TextComponentTranslation(this.getName()));
     }
 
     /**
@@ -138,8 +138,7 @@ public class InventoryList implements IInventory {
     }
 
     /**
-     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
-     * hasn't changed and skip it.
+     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it hasn't changed and skip it.
      */
     public void markDirty() {
         this.te.markDirty();
@@ -159,8 +158,7 @@ public class InventoryList implements IInventory {
     }
 
     /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot. For
-     * guis use Slot.isItemValid
+     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot. For guis use Slot.isItemValid
      */
     public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
         return true;

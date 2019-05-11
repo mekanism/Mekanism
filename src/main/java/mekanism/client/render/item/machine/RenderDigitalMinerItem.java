@@ -29,8 +29,7 @@ public class RenderDigitalMinerItem {
         }
         GL11.glTranslatef(0.35F, 0.1F, 0.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
-        digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0,
-              Minecraft.getMinecraft().renderEngine, true);
+        digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine, true);
         GlStateManager.popMatrix();
     }
 }

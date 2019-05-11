@@ -41,7 +41,7 @@ public class FuelHandler {
     public static boolean BCPresent() {
         return ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels") && MekanismUtils
               .classExists("buildcraft.api.fuels.BuildcraftFuelRegistry") && MekanismUtils
-              .classExists("buildcraft.api.fuels.IFuel");
+                     .classExists("buildcraft.api.fuels.IFuel");
     }
 
     public static class FuelGas {

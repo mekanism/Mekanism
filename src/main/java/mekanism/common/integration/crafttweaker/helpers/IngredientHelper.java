@@ -106,7 +106,7 @@ public class IngredientHelper {
         } else if (in instanceof PressurizedInput) {
             PressurizedInput input = (PressurizedInput) in;
             return matches(input.getSolid(), toMatch.getLeft()) && matches(input.getFluid(), toMatch.getMiddle())
-                  && matches(input.getGas(), toMatch.getRight());
+                   && matches(input.getGas(), toMatch.getRight());
         } else if (in instanceof InfusionInput) {
             InfusionInput input = (InfusionInput) in;
             return matches(input.inputStack, toMatch.getIngredient()) && (toMatch.getInfuseType().isEmpty() || toMatch

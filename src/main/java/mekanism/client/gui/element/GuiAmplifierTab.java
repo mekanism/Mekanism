@@ -1,10 +1,10 @@
 package mekanism.client.gui.element;
 
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.LangUtils;
@@ -37,8 +37,7 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
         mc.renderEngine.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
         int outputOrdinal = tileEntity.outputMode.ordinal();
-        guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18 * outputOrdinal,
-              inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
+        guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18 * outputOrdinal, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -59,8 +58,7 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            Mekanism.packetHandler
-                  .sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), TileNetworkList.withContents(3)));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), TileNetworkList.withContents(3)));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }

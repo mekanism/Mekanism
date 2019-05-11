@@ -62,8 +62,7 @@ public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityContain
             ContainerEditMode current = manager.getContainerEditMode();
             int ordinalToSet = current.ordinal() < (ContainerEditMode.values().length - 1) ? current.ordinal() + 1 : 0;
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            Mekanism.packetHandler.sendToServer(
-                  new ContainerEditModeMessage(Coord4D.get(tileEntity), ContainerEditMode.values()[ordinalToSet]));
+            Mekanism.packetHandler.sendToServer(new ContainerEditModeMessage(Coord4D.get(tileEntity), ContainerEditMode.values()[ordinalToSet]));
         }
     }
 }

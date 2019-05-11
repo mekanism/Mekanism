@@ -30,7 +30,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
             return convertReadOnly(wrapper.getAllTanks());
         }
         return wrapper.getTankInfo(side) != null ? FluidTankProperties.convert(wrapper.getTankInfo(side))
-              : new IFluidTankProperties[]{};
+                                                 : new IFluidTankProperties[]{};
     }
 
     @Override

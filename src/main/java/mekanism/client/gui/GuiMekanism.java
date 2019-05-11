@@ -27,9 +27,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     }
 
     public static boolean isTextboxKey(char c, int i) {
-        return i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT
-              || i == Keyboard.KEY_END || i == Keyboard.KEY_HOME || isKeyComboCtrlA(i) || isKeyComboCtrlC(i)
-              || isKeyComboCtrlV(i) || isKeyComboCtrlX(i);
+        return i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_END ||
+               i == Keyboard.KEY_HOME || isKeyComboCtrlA(i) || isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i);
     }
 
     public Set<GuiElement> getGuiElements() {
@@ -50,14 +49,12 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
      */
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
         int length = fontRenderer.getStringWidth(text);
-
         if (length <= maxX) {
             fontRenderer.drawString(text, x, y, color);
         } else {
             float scale = (float) maxX / length;
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
-
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale, scale, scale);
             fontRenderer.drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
@@ -172,7 +169,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
 
     protected void renderCenteredText(int leftMargin, int areaWidth, int y, int color, String text) {
         int textWidth = fontRenderer.getStringWidth(text);
-        int centerX = leftMargin + (areaWidth/2) - (textWidth/2);
+        int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
         fontRenderer.drawString(text, centerX, y, color);
     }
 

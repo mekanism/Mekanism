@@ -70,8 +70,9 @@ public final class GasUtils {
      * Removes a specified amount of gas from an IGasItem.
      *
      * @param itemStack - ItemStack of the IGasItem
-     * @param type - type of gas to remove from the IGasItem, null if it doesn't matter
-     * @param amount - amount of gas to remove from the ItemStack
+     * @param type      - type of gas to remove from the IGasItem, null if it doesn't matter
+     * @param amount    - amount of gas to remove from the ItemStack
+     *
      * @return the GasStack removed by the IGasItem
      */
     public static GasStack removeGas(ItemStack itemStack, Gas type, int amount) {
@@ -93,7 +94,8 @@ public final class GasUtils {
      * Adds a specified amount of gas to an IGasItem.
      *
      * @param itemStack - ItemStack of the IGasItem
-     * @param stack - stack to add to the IGasItem
+     * @param stack     - stack to add to the IGasItem
+     *
      * @return amount of gas accepted by the IGasItem
      */
     public static int addGas(ItemStack itemStack, GasStack stack) {
@@ -109,8 +111,9 @@ public final class GasUtils {
      * Emits gas from a central block by splitting the received stack among the sides given.
      *
      * @param stack - the stack to output
-     * @param from - the TileEntity to output from
+     * @param from  - the TileEntity to output from
      * @param sides - the list of sides to output from
+     *
      * @return the amount of gas emitted
      */
     public static int emit(GasStack stack, TileEntity from, Set<EnumFacing> sides) {
@@ -162,6 +165,7 @@ public final class GasUtils {
      * Gets the amount of ticks the declared itemstack can fuel this machine.
      *
      * @param itemStack - itemstack to check with
+     *
      * @return fuel ticks
      */
     public static GasStack getItemGas(ItemStack itemStack, BiFunction<Gas, Integer, GasStack> getIfValid) {

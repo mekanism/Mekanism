@@ -2,8 +2,8 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
-import mekanism.common.tier.InductionProviderTier;
 import mekanism.api.TileNetworkList;
+import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;

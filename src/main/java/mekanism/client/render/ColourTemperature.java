@@ -105,23 +105,18 @@ public class ColourTemperature extends ColourRGBA {
         }
 
         ColourTemperature colourTemperature = new ColourTemperature(red, green, blue, alpha, temperature);
-
         cache.put((int) (absTemp), colourTemperature);
-
         return colourTemperature.blendOnto(baseColour);
     }
 
     public ColourTemperature blendOnto(ColourRGBA baseColour) {
-        double sR = (valR & 0xFF) / 255D, sG = (valG & 0xFF) / 255D, sB = (valB & 0xFF) / 255D, sA =
-              (valA & 0xFF) / 255D;
-        double dR = (baseColour.valR & 0xFF) / 255D, dG = (baseColour.valG & 0xFF) / 255D, dB =
-              (baseColour.valB & 0xFF) / 255D, dA = (baseColour.valA & 0xFF) / 255D;
+        double sR = (valR & 0xFF) / 255D, sG = (valG & 0xFF) / 255D, sB = (valB & 0xFF) / 255D, sA = (valA & 0xFF) / 255D;
+        double dR = (baseColour.valR & 0xFF) / 255D, dG = (baseColour.valG & 0xFF) / 255D, dB = (baseColour.valB & 0xFF) / 255D, dA = (baseColour.valA & 0xFF) / 255D;
 
         double rR = sR * sA + dR * (1 - sA);
         double rG = sG * sA + dG * (1 - sA);
         double rB = sB * sA + dB * (1 - sA);
         double rA = dA * 1D + sA * (1 - dA);
-
         return new ColourTemperature(rR, rG, rB, rA, temp);
     }
 }

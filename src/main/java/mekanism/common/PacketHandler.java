@@ -94,7 +94,7 @@ public class PacketHandler {
      * Encodes an Object[] of data into a DataOutputStream.
      *
      * @param dataValues - an Object[] of data to encode
-     * @param output - the output stream to write to
+     * @param output     - the output stream to write to
      */
     public static void encode(Object[] dataValues, ByteBuf output) {
         try {
@@ -237,7 +237,7 @@ public class PacketHandler {
      * Send this message to the specified player.
      *
      * @param message - the message to send
-     * @param player - the player to send it to
+     * @param player  - the player to send it to
      */
     public void sendTo(IMessage message, EntityPlayerMP player) {
         netHandler.sendTo(message, player);
@@ -260,7 +260,7 @@ public class PacketHandler {
      * Send this message to everyone within a certain range of a point.
      *
      * @param message - the message to send
-     * @param point - the TargetPoint around which to send
+     * @param point   - the TargetPoint around which to send
      */
     public void sendToAllAround(IMessage message, NetworkRegistry.TargetPoint point) {
         netHandler.sendToAllAround(message, point);
@@ -269,7 +269,7 @@ public class PacketHandler {
     /**
      * Send this message to everyone within the supplied dimension.
      *
-     * @param message - the message to send
+     * @param message     - the message to send
      * @param dimensionId - the dimension id to target
      */
     public void sendToDimension(IMessage message, int dimensionId) {
@@ -289,8 +289,8 @@ public class PacketHandler {
      * Send this message to all players within a defined AABB cuboid.
      *
      * @param message - the message to send
-     * @param cuboid - the AABB cuboid to send the packet in
-     * @param dimId - the dimension the cuboid is in
+     * @param cuboid  - the AABB cuboid to send the packet in
+     * @param dimId   - the dimension the cuboid is in
      */
     public void sendToCuboid(IMessage message, AxisAlignedBB cuboid, int dimId) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();

@@ -23,8 +23,8 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
     @Override
     public boolean canProcess(Capability<?> capability) {
         return capability == Capabilities.TESLA_HOLDER_CAPABILITY ||
-              capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getItem().canReceive(getStack()) ||
-              capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getItem().canSend(getStack());
+               capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getItem().canReceive(getStack()) ||
+               capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getItem().canSend(getStack());
     }
 
     public IEnergizedItem getItem() {

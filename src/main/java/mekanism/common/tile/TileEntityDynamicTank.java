@@ -32,11 +32,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements
       IFluidContainerManager {
 
-    protected static final int[] SLOTS = {0,1};
+    protected static final int[] SLOTS = {0, 1};
 
     /**
-     * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering
-     * fluids.
+     * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
      */
     public Set<ValveData> valveViewing = new HashSet<>();
 
@@ -119,7 +118,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     public void manageInventory() {
         int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - (structure.fluidStored != null
-              ? structure.fluidStored.amount : 0);
+                                                                               ? structure.fluidStored.amount : 0);
 
         if (FluidContainerUtils.isFluidContainer(structure.inventory.get(0))) {
             structure.fluidStored = FluidContainerUtils

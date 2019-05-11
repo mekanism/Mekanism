@@ -53,7 +53,7 @@ public class ItemNetworkReader extends ItemEnergized {
 
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY
-                                + " -------------"));
+                          + " -------------"));
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter
                                 .getTransmitterNetworkSize()));
@@ -79,12 +79,12 @@ public class ItemNetworkReader extends ItemEnergized {
                               .getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
                         player.sendMessage(new TextComponentString(
                               EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp()
-                                    + "K above ambient"));
+                              + "K above ambient"));
                     }
 
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                                + " -------------"));
+                          + " -------------"));
 
                     return EnumActionResult.SUCCESS;
                 } else if (CapabilityUtils
@@ -97,13 +97,13 @@ public class ItemNetworkReader extends ItemEnergized {
                           .getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY
-                                + " -------------"));
+                          + " -------------"));
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp()
-                                + "K above ambient"));
+                          + "K above ambient"));
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                                + " -------------"));
+                          + " -------------"));
 
                     return EnumActionResult.SUCCESS;
                 } else {
@@ -125,19 +125,19 @@ public class ItemNetworkReader extends ItemEnergized {
                                         iterSide.getOpposite());
 
                             if (transmitter.getTransmitterNetwork().getPossibleAcceptors()
-                                  .contains(coord.offset(iterSide.getOpposite())) && !iteratedNetworks
+                                      .contains(coord.offset(iterSide.getOpposite())) && !iteratedNetworks
                                   .contains(transmitter.getTransmitterNetwork())) {
                                 player.sendMessage(new TextComponentString(
                                       EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" + transmitter
                                             .getTransmissionType().getName() + "]" + EnumColor.GREY
-                                            + " -------------"));
+                                      + " -------------"));
                                 player.sendMessage(new TextComponentString(
                                       EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY + transmitter
                                             .getTransmitterNetwork().getAcceptorDirections()
                                             .get(coord.offset(iterSide.getOpposite()))));
                                 player.sendMessage(new TextComponentString(
                                       EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]"
-                                            + EnumColor.GREY + " -------------"));
+                                      + EnumColor.GREY + " -------------"));
 
                                 iteratedNetworks.add(transmitter.getTransmitterNetwork());
                             }
@@ -152,7 +152,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
                 player.sendMessage(new TextComponentString(
                       EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY
-                            + " ----------"));
+                      + " ----------"));
 
                 for (String s : strings) {
                     player.sendMessage(new TextComponentString(EnumColor.DARK_GREY + s));
@@ -160,7 +160,7 @@ public class ItemNetworkReader extends ItemEnergized {
 
                 player.sendMessage(new TextComponentString(
                       EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                            + " -------------"));
+                      + " -------------"));
             }
         }
 

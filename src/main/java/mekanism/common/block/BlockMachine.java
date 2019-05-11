@@ -87,15 +87,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Block class for handling multiple machine block IDs. 0:0: Enrichment Chamber 0:1: Osmium Compressor 0:2: Combiner
- * 0:3: Crusher 0:4: Digital Miner 0:5: Basic Factory 0:6: Advanced Factory 0:7: Elite Factory 0:8: Metallurgic Infuser
- * 0:9: Purification Chamber 0:10: Energized Smelter 0:11: Teleporter 0:12: Electric Pump 0:13: Electric Chest 0:14:
- * Chargepad 0:15: Logistical Sorter 1:0: Rotary Condensentrator 1:1: Chemical Oxidizer 1:2: Chemical Infuser 1:3:
- * Chemical Injection Chamber 1:4: Electrolytic Separator 1:5: Precision Sawmill 1:6: Chemical Dissolution Chamber 1:7:
- * Chemical Washer 1:8: Chemical Crystallizer 1:9: Seismic Vibrator 1:10: Pressurized Reaction Chamber 1:11: Fluid Tank
- * 1:12: Fluidic Plenisher 1:13: Laser 1:14: Laser Amplifier 1:15: Laser Tractor Beam 2:0: Quantum Entangloporter 2:1:
- * Solar Neutron Activator 2:2: Ambient Accumulator 2:3: Oredictionificator 2:4: Resistive Heater 2:5: Formulaic
- * Assemblicator 2:6: Fuelwood Heater
+ * Block class for handling multiple machine block IDs. 0:0: Enrichment Chamber 0:1: Osmium Compressor 0:2: Combiner 0:3: Crusher 0:4: Digital Miner 0:5: Basic Factory
+ * 0:6: Advanced Factory 0:7: Elite Factory 0:8: Metallurgic Infuser 0:9: Purification Chamber 0:10: Energized Smelter 0:11: Teleporter 0:12: Electric Pump 0:13: Electric
+ * Chest 0:14: Chargepad 0:15: Logistical Sorter 1:0: Rotary Condensentrator 1:1: Chemical Oxidizer 1:2: Chemical Infuser 1:3: Chemical Injection Chamber 1:4:
+ * Electrolytic Separator 1:5: Precision Sawmill 1:6: Chemical Dissolution Chamber 1:7: Chemical Washer 1:8: Chemical Crystallizer 1:9: Seismic Vibrator 1:10: Pressurized
+ * Reaction Chamber 1:11: Fluid Tank 1:12: Fluidic Plenisher 1:13: Laser 1:14: Laser Amplifier 1:15: Laser Tractor Beam 2:0: Quantum Entangloporter 2:1: Solar Neutron
+ * Activator 2:2: Ambient Accumulator 2:3: Oredictionificator 2:4: Resistive Heater 2:5: Formulaic Assemblicator 2:6: Fuelwood Heater
  *
  * @author AidanBrady
  */
@@ -301,8 +298,8 @@ public abstract class BlockMachine extends BlockMekanismContainer {
         if (MekanismConfig.current().client.enableAmbientLighting.val()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
             if (tileEntity instanceof IActiveState &&
-                  ((IActiveState) tileEntity).lightUpdate() &&
-                  ((IActiveState) tileEntity).wasActiveRecently()) {
+                ((IActiveState) tileEntity).lightUpdate() &&
+                ((IActiveState) tileEntity).wasActiveRecently()) {
                 return MekanismConfig.current().client.ambientLightingLevel.val();
             }
         }
@@ -515,14 +512,14 @@ public abstract class BlockMachine extends BlockMekanismContainer {
         TileEntity tile = world.getTileEntity(pos);
 
         return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos)
-              : 0.0F;
+                                                     : 0.0F;
     }
 
     @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         IBlockState state = world.getBlockState(pos);
         if (MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state))
-              != MachineType.PERSONAL_CHEST) {
+            != MachineType.PERSONAL_CHEST) {
             return blockResistance;
         } else {
             return -1;
@@ -724,7 +721,7 @@ public abstract class BlockMachine extends BlockMekanismContainer {
         }
 
         if (tileEntity instanceof TileEntityContainerBlock
-              && ((TileEntityContainerBlock) tileEntity).inventory.size() > 0) {
+            && ((TileEntityContainerBlock) tileEntity).inventory.size() > 0) {
             ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
             inventory.setInventory(((ISustainedInventory) tileEntity).getInventory(), itemStack);
         }

@@ -52,9 +52,9 @@ public class PathfinderCache {
         @Override
         public boolean equals(Object obj) {
             return obj instanceof PathData &&
-                  ((PathData) obj).startTransporter.equals(startTransporter) &&
-                  ((PathData) obj).end.equals(end) &&
-                  ((PathData) obj).endSide.equals(endSide);
+                   ((PathData) obj).startTransporter.equals(startTransporter) &&
+                   ((PathData) obj).end.equals(end) &&
+                   ((PathData) obj).endSide.equals(endSide);
         }
 
         @Override

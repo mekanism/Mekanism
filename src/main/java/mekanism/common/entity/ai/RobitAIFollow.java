@@ -93,7 +93,7 @@ public class RobitAIFollow extends EntityAIBase {
     public boolean shouldContinueExecuting() {
         return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit
               .getFollowing() && theRobit.getEnergy() > 0
-              && theOwner.world.provider.getDimension() == theRobit.world.provider.getDimension();
+               && theOwner.world.provider.getDimension() == theRobit.world.provider.getDimension();
     }
 
     @Override

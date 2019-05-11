@@ -1,8 +1,5 @@
 package mekanism.generators.common;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,14 +75,11 @@ public class FusionReactor {
     public boolean hasHohlraum() {
         if (controller != null) {
             ItemStack hohlraum = controller.inventory.get(0);
-
             if (!hohlraum.isEmpty() && hohlraum.getItem() instanceof ItemHohlraum) {
                 GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
-                return gasStack != null && gasStack.getGas() == MekanismFluids.FusionFuel
-                      && gasStack.amount == ItemHohlraum.MAX_GAS;
+                return gasStack != null && gasStack.getGas() == MekanismFluids.FusionFuel && gasStack.amount == ItemHohlraum.MAX_GAS;
             }
         }
-
         return false;
     }
 
@@ -93,7 +87,6 @@ public class FusionReactor {
         if (controller.getWorld().isRemote) {
             lastPlasmaTemperature = plasmaTemperature;
             lastCaseTemperature = caseTemperature;
-
             return;
         }
 
@@ -110,7 +103,6 @@ public class FusionReactor {
             if (burning) {
                 injectFuel();
                 int fuelBurned = burnFuel();
-
                 if (fuelBurned == 0) {
                     burning = false;
                 }
@@ -125,7 +117,6 @@ public class FusionReactor {
         if (burning) {
             kill();
         }
-
         updateTemperatures();
     }
 
@@ -135,36 +126,26 @@ public class FusionReactor {
     }
 
     public void vaporiseHohlraum() {
-        getFuelTank()
-              .receive(((ItemHohlraum) controller.inventory.get(0).getItem()).getGas(controller.inventory.get(0)),
-                    true);
+        getFuelTank().receive(((ItemHohlraum) controller.inventory.get(0).getItem()).getGas(controller.inventory.get(0)), true);
         lastPlasmaTemperature = plasmaTemperature;
-
         controller.inventory.set(0, ItemStack.EMPTY);
-
         burning = true;
     }
 
     public void injectFuel() {
         int amountNeeded = getFuelTank().getNeeded();
-        int amountAvailable = 2 * min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
-        int amountToInject = min(amountNeeded, min(amountAvailable, injectionRate));
-
+        int amountAvailable = 2 * Math.min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
+        int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
-
         getDeuteriumTank().draw(amountToInject / 2, true);
         getTritiumTank().draw(amountToInject / 2, true);
         getFuelTank().receive(new GasStack(MekanismFluids.FusionFuel, amountToInject), true);
     }
 
     public int burnFuel() {
-        int fuelBurned = (int) min(getFuelTank().getStored(),
-              max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
-
+        int fuelBurned = (int) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
         getFuelTank().draw(fuelBurned, true);
-        plasmaTemperature +=
-              MekanismConfig.current().generators.energyPerFusionFuel.val() * fuelBurned / plasmaHeatCapacity;
-
+        plasmaTemperature += MekanismConfig.current().generators.energyPerFusionFuel.val() * fuelBurned / plasmaHeatCapacity;
         return fuelBurned;
     }
 
@@ -178,9 +159,7 @@ public class FusionReactor {
         if (activelyCooled) {
             double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
             int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
-            waterToVaporize = min(waterToVaporize,
-                  min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
-
+            waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
             if (waterToVaporize > 0) {
                 getWaterTank().drain(waterToVaporize, true);
                 getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
@@ -188,17 +167,14 @@ public class FusionReactor {
 
             caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
             caseTemperature -= caseWaterHeat / caseHeatCapacity;
-
             for (IHeatTransfer source : heatTransfers) {
                 source.simulateHeat();
             }
-
             applyTemperatureChange();
         }
 
         //Transfer from casing to environment
         double caseAirHeat = caseAirConductivity * lastCaseTemperature;
-
         caseTemperature -= caseAirHeat / caseHeatCapacity;
         setBufferedEnergy(getBufferedEnergy() + caseAirHeat * thermocoupleEfficiency);
     }
@@ -253,8 +229,7 @@ public class FusionReactor {
 
     public void kill() {
         AxisAlignedBB death_zone = new AxisAlignedBB(controller.getPos().getX() - 1, controller.getPos().getY() - 3,
-              controller.getPos().getZ() - 1, controller.getPos().getX() + 2, controller.getPos().getY(),
-              controller.getPos().getZ() + 2);
+              controller.getPos().getZ() - 1, controller.getPos().getX() + 2, controller.getPos().getY(), controller.getPos().getZ() + 2);
         List<Entity> entitiesToDie = controller.getWorld().getEntitiesWithinAABB(Entity.class, death_zone);
 
         for (Entity entity : entitiesToDie) {
@@ -274,33 +249,19 @@ public class FusionReactor {
         burning = burning && keepBurning;
 
         if (!controller.getWorld().isRemote) {
-            Mekanism.packetHandler.sendToDimension(
-                  new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new TileNetworkList())),
+            Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new TileNetworkList())),
                   controller.getWorld().provider.getDimension());
         }
     }
 
     public void formMultiblock(boolean keepBurning) {
         updatedThisTick = true;
-
         Coord4D controllerPosition = Coord4D.get(controller);
         Coord4D centreOfReactor = controllerPosition.offset(EnumFacing.DOWN, 2);
-
         unformMultiblock(true);
-
         reactorBlocks.add(controller);
 
-        if (!createFrame(centreOfReactor)) {
-            unformMultiblock(keepBurning);
-            return;
-        }
-
-        if (!addSides(centreOfReactor)) {
-            unformMultiblock(keepBurning);
-            return;
-        }
-
-        if (!centreIsClear(centreOfReactor)) {
+        if (!createFrame(centreOfReactor) || !addSides(centreOfReactor) || !centreIsClear(centreOfReactor)) {
             unformMultiblock(keepBurning);
             return;
         }
@@ -308,28 +269,20 @@ public class FusionReactor {
         formed = true;
 
         if (!controller.getWorld().isRemote) {
-            Mekanism.packetHandler.sendToDimension(
-                  new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new TileNetworkList())),
+            Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new TileNetworkList())),
                   controller.getWorld().provider.getDimension());
         }
     }
 
     public boolean createFrame(Coord4D centre) {
         int[][] positions = new int[][]{
-              {+2, +2, +0}, {+2, +1, +1}, {+2, +0, +2}, {+2, -1, +1}, {+2, -2, +0}, {+2, -1, -1}, {+2, +0, -2},
-              {+2, +1, -1},
-              {+1, +2, +1}, {+1, +1, +2}, {+1, -1, +2}, {+1, -2, +1}, {+1, -2, -1}, {+1, -1, -2}, {+1, +1, -2},
-              {+1, +2, -1},
-              {+0, +2, +2}, {+0, -2, +2}, {+0, -2, -2}, {+0, +2, -2},
-              {-1, +2, +1}, {-1, +1, +2}, {-1, -1, +2}, {-1, -2, +1}, {-1, -2, -1}, {-1, -1, -2}, {-1, +1, -2},
-              {-1, +2, -1},
-              {-2, +2, +0}, {-2, +1, +1}, {-2, +0, +2}, {-2, -1, +1}, {-2, -2, +0}, {-2, -1, -1}, {-2, +0, -2},
-              {-2, +1, -1},
-        };
+              {+2, +2, +0}, {+2, +1, +1}, {+2, +0, +2}, {+2, -1, +1}, {+2, -2, +0}, {+2, -1, -1}, {+2, +0, -2}, {+2, +1, -1}, {+1, +2, +1}, {+1, +1, +2}, {+1, -1, +2},
+              {+1, -2, +1}, {+1, -2, -1}, {+1, -1, -2}, {+1, +1, -2}, {+1, +2, -1}, {+0, +2, +2}, {+0, -2, +2}, {+0, -2, -2}, {+0, +2, -2}, {-1, +2, +1}, {-1, +1, +2},
+              {-1, -1, +2}, {-1, -2, +1}, {-1, -2, -1}, {-1, -1, -2}, {-1, +1, -2}, {-1, +2, -1}, {-2, +2, +0}, {-2, +1, +1}, {-2, +0, +2}, {-2, -1, +1}, {-2, -2, +0},
+              {-2, -1, -1}, {-2, +0, -2}, {-2, +1, -1},};
 
         for (int[] coords : positions) {
-            TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2])
-                  .getTileEntity(controller.getWorld());
+            TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
 
             if (tile instanceof TileEntityReactorBlock && ((TileEntityReactorBlock) tile).isFrame()) {
                 reactorBlocks.add((TileEntityReactorBlock) tile);
@@ -338,7 +291,6 @@ public class FusionReactor {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -353,17 +305,14 @@ public class FusionReactor {
         };
 
         for (int[] coords : positions) {
-            TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2])
-                  .getTileEntity(controller.getWorld());
+            TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
 
             if (LaserManager.isReceptor(tile, null) && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0))) {
                 return false;
             }
-
             if (tile instanceof TileEntityReactorBlock) {
                 reactorBlocks.add((TileEntityReactorBlock) tile);
                 ((TileEntityReactorBlock) tile).setReactor(this);
-
                 if (tile instanceof IHeatTransfer) {
                     heatTransfers.add((IHeatTransfer) tile);
                 }
@@ -371,7 +320,6 @@ public class FusionReactor {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -382,14 +330,12 @@ public class FusionReactor {
                     Coord4D trans = centre.translate(x, y, z);
                     IBlockState state = trans.getBlockState(controller.getWorld());
                     Block tile = state.getBlock();
-
                     if (!tile.isAir(state, controller.getWorld(), trans.getPos())) {
                         return false;
                     }
                 }
             }
         }
-
         return true;
     }
 
@@ -403,22 +349,17 @@ public class FusionReactor {
 
     public void setInjectionRate(int rate) {
         injectionRate = rate;
-
         int capRate = Math.min(Math.max(1, rate), MAX_INJECTION);
-
         capRate -= capRate % 2;
 
         controller.waterTank.setCapacity(TileEntityReactorController.MAX_WATER * capRate);
         controller.steamTank.setCapacity(TileEntityReactorController.MAX_STEAM * capRate);
 
         if (controller.waterTank.getFluid() != null) {
-            controller.waterTank.getFluid().amount = Math
-                  .min(controller.waterTank.getFluid().amount, controller.waterTank.getCapacity());
+            controller.waterTank.getFluid().amount = Math.min(controller.waterTank.getFluid().amount, controller.waterTank.getCapacity());
         }
-
         if (controller.steamTank.getFluid() != null) {
-            controller.steamTank.getFluid().amount = Math
-                  .min(controller.steamTank.getFluid().amount, controller.steamTank.getCapacity());
+            controller.steamTank.getFluid().amount = Math.min(controller.steamTank.getFluid().amount, controller.steamTank.getCapacity());
         }
     }
 
@@ -432,46 +373,37 @@ public class FusionReactor {
 
     public int getMinInjectionRate(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) / (
-              MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (plasmaCaseConductivity + k
-                    + caseAirConductivity)
-                    - plasmaCaseConductivity * (k + caseAirConductivity));
+        double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
+                      (MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
+                       plasmaCaseConductivity * (k + caseAirConductivity));
         return (int) (2 * Math.ceil(aMin / 2D));
     }
 
     public double getMaxPlasmaTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return
-              injectionRate * MekanismConfig.current().generators.energyPerFusionFuel.val() / plasmaCaseConductivity * (
-                    plasmaCaseConductivity + k
-              + caseAirConductivity) / (k + caseAirConductivity);
+        return injectionRate * MekanismConfig.current().generators.energyPerFusionFuel.val() / plasmaCaseConductivity *
+               (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
     }
 
     public double getMaxCasingTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return injectionRate * MekanismConfig.current().generators.energyPerFusionFuel.val() / (k
-              + caseAirConductivity);
+        return injectionRate * MekanismConfig.current().generators.energyPerFusionFuel.val() / (k + caseAirConductivity);
     }
 
     public double getIgnitionTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
-        return burnTemperature * MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (
-              plasmaCaseConductivity + k
-              + caseAirConductivity) / (
-              MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (plasmaCaseConductivity + k
-                    + caseAirConductivity)
-                    - plasmaCaseConductivity * (k + caseAirConductivity));
+        return burnTemperature * MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
+               (MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
+                plasmaCaseConductivity * (k + caseAirConductivity));
     }
 
     public double getPassiveGeneration(boolean active, boolean current) {
         double temperature = current ? caseTemperature : getMaxCasingTemperature(active);
-
         return thermocoupleEfficiency * caseAirConductivity * temperature;
     }
 
     public int getSteamPerTick(boolean current) {
         double temperature = current ? caseTemperature : getMaxCasingTemperature(true);
-
         return (int) (steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization);
     }
 
@@ -498,7 +430,6 @@ public class FusionReactor {
     public double applyTemperatureChange() {
         caseTemperature += heatToAbsorb / caseHeatCapacity;
         heatToAbsorb = 0;
-
         return caseTemperature;
     }
 

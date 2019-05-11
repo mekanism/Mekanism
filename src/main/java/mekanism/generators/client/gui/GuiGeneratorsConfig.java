@@ -27,12 +27,9 @@ public class GuiGeneratorsConfig extends GuiConfig {
 
     private static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.general"),
-              "mekanism.configgui.ctgy.generators.general", GeneralEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.generators"),
-              "mekanism.configgui.ctgy.generators.generators", GeneratorsEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.generation"),
-              "mekanism.configgui.ctgy.generators.generation", GenerationEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.general"), "mekanism.configgui.ctgy.generators.general", GeneralEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.generators"), "mekanism.configgui.ctgy.generators.generators", GeneratorsEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.generation"), "mekanism.configgui.ctgy.generators.generation", GenerationEntry.class));
         return list;
     }
 
@@ -44,11 +41,8 @@ public class GuiGeneratorsConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory(Configuration.CATEGORY_GENERAL))
-                        .getChildElements(),
-                  owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 
@@ -60,10 +54,8 @@ public class GuiGeneratorsConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory("generators")).getChildElements(),
-                  owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("generators")).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 
@@ -75,10 +67,8 @@ public class GuiGeneratorsConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory("generation")).getChildElements(),
-                  owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("generation")).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 }

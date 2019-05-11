@@ -14,14 +14,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraft.util.math.BlockPos;
 
 public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock implements IComputerIntegration {
 
     private static final String[] methods = new String[]{"getTemperature", "getHeight", "isFormed", "getInput",
-          "getOutput"};
+                                                         "getOutput"};
     public Coord4D master;
     public boolean attempted;
 
@@ -84,11 +84,11 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 
     public void updateController() {
         if (!(this instanceof TileEntityThermalEvaporationController)) {
-            for (EnumFacing side : EnumFacing.values()){
+            for (EnumFacing side : EnumFacing.values()) {
                 BlockPos checkPos = pos.offset(side);
                 TileEntity check;
                 if (world.isBlockLoaded(checkPos) && (check = world.getTileEntity(checkPos)) instanceof TileEntityThermalEvaporationBlock) {
-                    if (check instanceof TileEntityThermalEvaporationController){
+                    if (check instanceof TileEntityThermalEvaporationController) {
                         ((TileEntityThermalEvaporationController) check).refresh();
                         return;
                     }

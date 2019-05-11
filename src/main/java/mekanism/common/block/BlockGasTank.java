@@ -135,7 +135,7 @@ public class BlockGasTank extends BlockMekanismContainer {
         TileEntity tile = world.getTileEntity(pos);
 
         return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos)
-              : 0.0F;
+                                                     : 0.0F;
     }
 
     @Override

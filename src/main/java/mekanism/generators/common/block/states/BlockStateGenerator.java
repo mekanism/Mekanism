@@ -47,8 +47,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
     public static final PropertyBool activeProperty = PropertyBool.create("active");
 
     public BlockStateGenerator(BlockGenerator block, PropertyEnum<?> typeProperty) {
-        super(block, new IProperty[]{BlockStateFacing.facingProperty, typeProperty, activeProperty},
-              new IUnlistedProperty[]{});
+        super(block, new IProperty[]{BlockStateFacing.facingProperty, typeProperty, activeProperty}, new IUnlistedProperty[]{});
     }
 
     public enum GeneratorBlock {
@@ -58,10 +57,8 @@ public class BlockStateGenerator extends ExtendedBlockState {
 
         public PropertyEnum<GeneratorType> getProperty() {
             if (generatorTypeProperty == null) {
-                generatorTypeProperty = PropertyEnum
-                      .create("type", GeneratorType.class, new GeneratorBlockPredicate(this));
+                generatorTypeProperty = PropertyEnum.create("type", GeneratorType.class, new GeneratorBlockPredicate(this));
             }
-
             return generatorTypeProperty;
         }
 
@@ -74,33 +71,19 @@ public class BlockStateGenerator extends ExtendedBlockState {
     }
 
     public enum GeneratorType implements IStringSerializable, IBlockType {
-        HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class,
-              true, Plane.HORIZONTAL, false),
-        SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class,
-              true, Plane.HORIZONTAL, false),
-        GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3,
-              -1/*uses config, set after generators config loaded*/,
-              TileEntityGasGenerator.class, true, Plane.HORIZONTAL, false),
-        BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class,
-              true, Plane.HORIZONTAL, false),
-        ADVANCED_SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 5, "AdvancedSolarGenerator", 1, 200000,
-              TileEntityAdvancedSolarGenerator.class, true, Plane.HORIZONTAL, false),
-        WIND_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class,
-              true, Plane.HORIZONTAL, false),
-        TURBINE_ROTOR(GeneratorBlock.GENERATOR_BLOCK_1, 7, "TurbineRotor", -1, -1, TileEntityTurbineRotor.class, false,
-              Predicates.alwaysFalse(), false),
-        ROTATIONAL_COMPLEX(GeneratorBlock.GENERATOR_BLOCK_1, 8, "RotationalComplex", -1, -1,
-              TileEntityRotationalComplex.class, false, Predicates.alwaysFalse(), false),
-        ELECTROMAGNETIC_COIL(GeneratorBlock.GENERATOR_BLOCK_1, 9, "ElectromagneticCoil", -1, -1,
-              TileEntityElectromagneticCoil.class, false, Predicates.alwaysFalse(), false),
-        TURBINE_CASING(GeneratorBlock.GENERATOR_BLOCK_1, 10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class,
-              false, Predicates.alwaysFalse(), false),
-        TURBINE_VALVE(GeneratorBlock.GENERATOR_BLOCK_1, 11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false,
-              Predicates.alwaysFalse(), false),
-        TURBINE_VENT(GeneratorBlock.GENERATOR_BLOCK_1, 12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false,
-              Predicates.alwaysFalse(), false),
-        SATURATING_CONDENSER(GeneratorBlock.GENERATOR_BLOCK_1, 13, "SaturatingCondenser", -1, -1,
-              TileEntitySaturatingCondenser.class, false, Predicates.alwaysFalse(), false);
+        HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true, Plane.HORIZONTAL, false),
+        SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true, Plane.HORIZONTAL, false),
+        GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3, -1/*uses config, set after generators config loaded*/, TileEntityGasGenerator.class, true, Plane.HORIZONTAL, false),
+        BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true, Plane.HORIZONTAL, false),
+        ADVANCED_SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true, Plane.HORIZONTAL, false),
+        WIND_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class, true, Plane.HORIZONTAL, false),
+        TURBINE_ROTOR(GeneratorBlock.GENERATOR_BLOCK_1, 7, "TurbineRotor", -1, -1, TileEntityTurbineRotor.class, false, Predicates.alwaysFalse(), false),
+        ROTATIONAL_COMPLEX(GeneratorBlock.GENERATOR_BLOCK_1, 8, "RotationalComplex", -1, -1, TileEntityRotationalComplex.class, false, Predicates.alwaysFalse(), false),
+        ELECTROMAGNETIC_COIL(GeneratorBlock.GENERATOR_BLOCK_1, 9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false, Predicates.alwaysFalse(), false),
+        TURBINE_CASING(GeneratorBlock.GENERATOR_BLOCK_1, 10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false, Predicates.alwaysFalse(), false),
+        TURBINE_VALVE(GeneratorBlock.GENERATOR_BLOCK_1, 11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false, Predicates.alwaysFalse(), false),
+        TURBINE_VENT(GeneratorBlock.GENERATOR_BLOCK_1, 12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false, Predicates.alwaysFalse(), false),
+        SATURATING_CONDENSER(GeneratorBlock.GENERATOR_BLOCK_1, 13, "SaturatingCondenser", -1, -1, TileEntitySaturatingCondenser.class, false, Predicates.alwaysFalse(), false);
 
         private static final List<GeneratorType> GENERATORS_FOR_CONFIG;
 
@@ -124,8 +107,8 @@ public class BlockStateGenerator extends ExtendedBlockState {
         public Predicate<EnumFacing> facingPredicate;
         public boolean activable;
 
-        GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Class<? extends TileEntity> tileClass,
-              boolean model, Predicate<EnumFacing> predicate, boolean hasActiveTexture) {
+        GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
+              boolean hasActiveTexture) {
             blockType = block;
             meta = i;
             blockName = s;
@@ -145,7 +128,6 @@ public class BlockStateGenerator extends ExtendedBlockState {
             if (state.getBlock() instanceof BlockGenerator) {
                 return state.getValue(((BlockGenerator) state.getBlock()).getTypeProperty());
             }
-
             return null;
         }
 
@@ -153,7 +135,6 @@ public class BlockStateGenerator extends ExtendedBlockState {
             if (block instanceof BlockGenerator) {
                 return get(((BlockGenerator) block).getGeneratorBlock(), meta);
             }
-
             return null;
         }
 
@@ -163,7 +144,6 @@ public class BlockStateGenerator extends ExtendedBlockState {
                     return type;
                 }
             }
-
             return null;
         }
 
@@ -181,7 +161,6 @@ public class BlockStateGenerator extends ExtendedBlockState {
             if (meta > WIND_GENERATOR.meta) {
                 return true;
             }
-
             return MekanismConfig.current().generators.generatorsManager.isEnabled(this);
         }
 
@@ -189,8 +168,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
             try {
                 return tileEntityClass.newInstance();
             } catch (Exception e) {
-                Mekanism.logger.error("Unable to indirectly create tile entity.");
-                e.printStackTrace();
+                Mekanism.logger.error("Unable to indirectly create tile entity.", e);
                 return null;
             }
         }
@@ -253,15 +231,12 @@ public class BlockStateGenerator extends ExtendedBlockState {
 
             if (type.hasRotations()) {
                 EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
-
                 if (!type.canRotateTo(facing)) {
                     facing = EnumFacing.NORTH;
                 }
-
                 if (builder.length() > 0) {
                     builder.append(",");
                 }
-
                 builder.append(BlockStateFacing.facingProperty.getName());
                 builder.append("=");
                 builder.append(facing.getName());
@@ -270,9 +245,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
             if (builder.length() == 0) {
                 builder.append("normal");
             }
-
-            ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators",
-                  nameOverride != null ? nameOverride : type.getName());
+            ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators", nameOverride != null ? nameOverride : type.getName());
 
             return new ModelResourceLocation(baseLocation, builder.toString());
         }

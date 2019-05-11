@@ -41,7 +41,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemstack, world, list, flag);
 
-        list.add(EnumColor.PINK + LangUtils.localizeWithFormat("mekanism.tooltip.fireMode",  LangUtils
+        list.add(EnumColor.PINK + LangUtils.localizeWithFormat("mekanism.tooltip.fireMode", LangUtils
               .transOnOff(getFireState(itemstack))));
     }
 
@@ -51,7 +51,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
         if (entityLiving instanceof EntityPlayer && getEnergy(itemstack) > 0) {
             EntityPlayer player = (EntityPlayer) entityLiving;
             boolean flag = player.capabilities.isCreativeMode
-                  || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
+                           || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
             ItemStack ammo = findAmmo(player);
 
             int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
@@ -81,7 +81,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
                 if (!world.isRemote) {
                     ItemArrow itemarrow = (ItemArrow) (ammo.getItem() instanceof ItemArrow ? ammo.getItem()
-                          : Items.ARROW);
+                                                                                           : Items.ARROW);
                     EntityArrow entityarrow = itemarrow.createArrow(world, itemstack, player);
                     entityarrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
 

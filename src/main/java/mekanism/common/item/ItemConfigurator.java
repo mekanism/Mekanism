@@ -105,7 +105,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                             player.sendMessage(new TextComponentString(
                                   EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + getViewModeText(
                                         transmissionType) + ": " + initial.color + initial.localize()
-                                        + " (" + initial.color.getColoredName() + ")"));
+                                  + " (" + initial.color.getColoredName() + ")"));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
                                 if (SecurityUtils.canAccess(player, tile)) {
@@ -116,9 +116,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                           .getOutput(transmissionType, side, config.getOrientation());
                                     player.sendMessage(new TextComponentString(
                                           EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
-                                                + getToggleModeText(transmissionType) + ": "
-                                                + data.color + data.localize() + " (" + data.color.getColoredName()
-                                                + ")"));
+                                          + getToggleModeText(transmissionType) + ": "
+                                          + data.color + data.localize() + " (" + data.color.getColoredName()
+                                          + ")"));
 
                                     if (config instanceof TileEntityBasicBlock) {
                                         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) config;

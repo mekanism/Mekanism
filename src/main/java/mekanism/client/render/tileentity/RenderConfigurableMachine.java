@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
@@ -32,7 +33,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
     private Minecraft mc = FMLClientHandler.instance().getClient();
 
-    private HashMap<EnumFacing, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<>();
+    private Map<EnumFacing, Map<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<>();
 
     public RenderConfigurableMachine() {
         rendererDispatcher = TileEntityRendererDispatcher.instance;
@@ -47,16 +48,14 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 
         Item item = itemStack.getItem();
-        if (pos != null && !itemStack.isEmpty() && item instanceof ItemConfigurator
-              && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
+        if (pos != null && !itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
             BlockPos bp = pos.getBlockPos();
 
             TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
 
             if (configurable.getConfig().supports(type)) {
                 if (bp.equals(configurable.getPos())) {
-                    SideData data = configurable.getConfig()
-                          .getOutput(type, pos.sideHit, configurable.getOrientation());
+                    SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
 
                     if (data != TileComponentConfig.EMPTY) {
                         push();
@@ -110,7 +109,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         if (cachedOverlays.containsKey(side)) {
             cachedOverlays.get(side).put(type, display);
         } else {
-            HashMap<TransmissionType, DisplayInteger> map = new HashMap<>();
+            Map<TransmissionType, DisplayInteger> map = new HashMap<>();
             map.put(type, display);
             cachedOverlays.put(side, map);
         }

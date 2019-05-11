@@ -39,7 +39,7 @@ public class ContainerElectricPump extends ContainerMekanism<TileEntityElectricP
                     }
                 }
             } else if (FluidContainerUtils.isFluidContainer(slotStack)
-                  && FluidUtil.getFluidContained(slotStack) == null) {
+                       && FluidUtil.getFluidContained(slotStack) == null) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

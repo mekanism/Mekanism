@@ -98,7 +98,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
             }
 
             if (MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid() != null
-                  && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
+                && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
                 if (!finishedCalc) {
                     setEnergy(getEnergy() - energyPerTick);
                 }
@@ -367,7 +367,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     @Override
     public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()
-              && from == EnumFacing.UP) {
+            && from == EnumFacing.UP) {
             return drain(from, resource.amount, doDrain);
         }
 
@@ -419,8 +419,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-              || super.hasCapability(capability, side);
+               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+               || super.hasCapability(capability, side);
     }
 
     @Override

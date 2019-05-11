@@ -10,8 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RenderGasTank extends TileEntitySpecialRenderer<TileEntityGasTank> {
 
     @Override
-    public void render(TileEntityGasTank tileEntity, double x, double y, double z, float partialTick, int destroyStage,
-          float alpha) {
+    public void render(TileEntityGasTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         MekanismRenderer.machineRenderer.render(tileEntity, x, y, z, partialTick, destroyStage, alpha);
     }
 }

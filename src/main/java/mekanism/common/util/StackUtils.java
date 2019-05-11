@@ -24,7 +24,7 @@ public final class StackUtils {
         }
 
         return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE
-              || check.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check
+                                                     || check.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check
               .getItemDamage());
     }
 
@@ -37,8 +37,8 @@ public final class StackUtils {
         }
 
         return wildcard && (!wild.hasTagCompound() ? !check.hasTagCompound()
-              : (wild.getTagCompound() == check.getTagCompound() || wild.getTagCompound()
-                    .equals(check.getTagCompound())));
+                                                   : (wild.getTagCompound() == check.getTagCompound() || wild.getTagCompound()
+                                                         .equals(check.getTagCompound())));
     }
 
     //assumes stacks same
@@ -138,15 +138,17 @@ public final class StackUtils {
     /**
      * Get state for placement for a generic item, with our fake player
      *
-     * @param stack the item to place
-     * @param world which universe
-     * @param pos where
+     * @param stack  the item to place
+     * @param world  which universe
+     * @param pos    where
      * @param player our fake player, usually
-     * @return the result of {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing, float, float, float, int, net.minecraft.entity.EntityLivingBase, net.minecraft.util.EnumHand)}
+     *
+     * @return the result of {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing, float, float,
+     * float, int, net.minecraft.entity.EntityLivingBase, net.minecraft.util.EnumHand)}
      */
     @Nonnull
     public static IBlockState getStateForPlacement(ItemStack stack, World world, BlockPos pos, EntityPlayer player) {
         Block blockFromItem = Block.getBlockFromItem(stack.getItem());
-        return blockFromItem.getStateForPlacement(world, pos, EnumFacing.UP, 0,0,0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
+        return blockFromItem.getStateForPlacement(world, pos, EnumFacing.UP, 0, 0, 0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
     }
 }

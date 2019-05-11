@@ -33,8 +33,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return GeneratorType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z)))
-              == GeneratorType.TURBINE_CASING;
+        return GeneratorType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z))) == GeneratorType.TURBINE_CASING;
     }
 
     @Override
@@ -45,16 +44,14 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
         TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
 
-        return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex ||
-              tile instanceof TileEntityPressureDisperser || tile instanceof TileEntityElectromagneticCoil ||
-              tile instanceof TileEntitySaturatingCondenser;
+        return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex || tile instanceof TileEntityPressureDisperser ||
+               tile instanceof TileEntityElectromagneticCoil || tile instanceof TileEntitySaturatingCondenser;
     }
 
     @Override
     protected boolean canForm(SynchronizedTurbineData structure) {
         if (structure.volLength % 2 == 1 && structure.volWidth % 2 == 1) {
             int innerRadius = (Math.min(structure.volLength, structure.volWidth) - 3) / 2;
-
             if (innerRadius >= Math.ceil((structure.volHeight - 2) / 4)) {
                 int centerX = structure.minLocation.x + (structure.volLength - 1) / 2;
                 int centerZ = structure.minLocation.z + (structure.volWidth - 1) / 2;
@@ -104,11 +101,9 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                     for (int z = complex.z - innerRadius; z <= complex.z + innerRadius; z++) {
                         if (!(x == centerX && z == centerZ)) {
                             TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, complex.y, z));
-
                             if (!(tile instanceof TileEntityPressureDisperser)) {
                                 return false;
                             }
-
                             dispersers.remove(new Coord4D(x, complex.y, z, pointer.getWorld().provider.getDimension()));
                         }
                     }
@@ -135,7 +130,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                 for (int y = complex.y - 1; y > structure.minLocation.y; y--) {
                     TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(centerX, y, centerZ));
                     if (tile instanceof TileEntityTurbineRotor) {
-                        TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)tile;
+                        TileEntityTurbineRotor rotor = (TileEntityTurbineRotor) tile;
                         turbineHeight++;
                         blades += rotor.getHousedBlades();
                         structure.internalLocations.add(Coord4D.get(tile));
@@ -169,8 +164,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                     return false;
                 }
 
-
-
                 for (Coord4D coord : structure.locations) {
                     if (coord.getTileEntity(pointer.getWorld()) instanceof TileEntityTurbineVent) {
                         if (coord.y >= complex.y) {
@@ -180,14 +173,11 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                         }
                     }
                 }
-
                 structure.lowerVolume = structure.volLength * structure.volWidth * turbineHeight;
                 structure.complex = complex;
-
                 return true;
             }
         }
-
         return false;
     }
 
@@ -215,7 +205,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
               .isFluidEqual(((TurbineCache) merge).fluid)) {
             ((TurbineCache) cache).fluid.amount += ((TurbineCache) merge).fluid.amount;
         }
-
         ((TurbineCache) cache).electricity += ((TurbineCache) merge).electricity;
         ((TurbineCache) cache).dumpMode = ((TurbineCache) merge).dumpMode;
     }
@@ -223,13 +212,9 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     @Override
     protected void onFormed() {
         super.onFormed();
-
         if (structureFound.fluidStored != null) {
-            structureFound.fluidStored.amount = Math
-                  .min(structureFound.fluidStored.amount, structureFound.getFluidCapacity());
+            structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.getFluidCapacity());
         }
-
-        structureFound.electricityStored = Math
-              .min(structureFound.electricityStored, structureFound.getEnergyCapacity());
+        structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
     }
 }

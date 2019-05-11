@@ -38,7 +38,7 @@ public class ItemBlockOre extends ItemBlock {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             list.add(
                   "Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode())
-                        + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
+                  + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
         } else {
             list.addAll(MekanismUtils.splitTooltip(
                   LangUtils.localize("tooltip." + getTranslationKey(itemstack).replace("tile.OreBlock.", "")),

@@ -42,8 +42,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
- * Block class for handling multiple energy cube block IDs. 0: Basic Energy Cube 1: Advanced Energy Cube 2: Elite Energy
- * Cube 3: Ultimate Energy Cube 4: Creative Energy Cube
+ * Block class for handling multiple energy cube block IDs. 0: Basic Energy Cube 1: Advanced Energy Cube 2: Elite Energy Cube 3: Ultimate Energy Cube 4: Creative Energy
+ * Cube
  *
  * @author AidanBrady
  */
@@ -161,7 +161,7 @@ public class BlockEnergyCube extends BlockMekanismContainer {
         TileEntity tile = world.getTileEntity(pos);
 
         return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos)
-              : 0.0F;
+                                                     : 0.0F;
     }
 
     @Override

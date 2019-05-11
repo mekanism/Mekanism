@@ -69,7 +69,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
             list.add(LangUtils.localize("tooltip.noGas") + ".");
         } else {
             list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
-                  + gasStack.amount);
+                     + gasStack.amount);
         }
 
         list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack)

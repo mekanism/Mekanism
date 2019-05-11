@@ -17,8 +17,8 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class ParticleLaser extends Particle {
 
-    double length;
-    EnumFacing direction;
+    private double length;
+    private EnumFacing direction;
 
     public ParticleLaser(World world, Pos3D start, Pos3D end, EnumFacing dir, double energy) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
@@ -34,8 +34,7 @@ public class ParticleLaser extends Particle {
     }
 
     @Override
-    public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_,
-          float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_) {
+    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         Tessellator tessellator = Tessellator.getInstance();
 
         tessellator.draw();
@@ -72,26 +71,26 @@ public class ParticleLaser extends Particle {
         float vMax = particleTexture.getInterpolatedV(16);
 
         GlStateManager.rotate(45, 0, 1, 0);
-        worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        worldRendererIn.pos(-particleScale, -length / 2, 0).tex(uMin, vMin)
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        worldRendererIn.pos(-particleScale, length / 2, 0).tex(uMin, vMax)
+        buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        worldRendererIn.pos(particleScale, length / 2, 0).tex(uMax, vMax)
+        buffer.pos(particleScale, length / 2, 0).tex(uMax, vMax)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        worldRendererIn.pos(particleScale, -length / 2, 0).tex(uMax, vMin)
+        buffer.pos(particleScale, -length / 2, 0).tex(uMax, vMin)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
         tessellator.draw();
 
         GlStateManager.rotate(90, 0, 1, 0);
-        worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        worldRendererIn.pos(-particleScale, -length / 2, 0).tex(uMin, vMin)
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        worldRendererIn.pos(-particleScale, length / 2, 0).tex(uMin, vMax)
+        buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        worldRendererIn.pos(particleScale, length / 2, 0).tex(uMax, vMax)
+        buffer.pos(particleScale, length / 2, 0).tex(uMax, vMax)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        worldRendererIn.pos(particleScale, -length / 2, 0).tex(uMax, vMin)
+        buffer.pos(particleScale, -length / 2, 0).tex(uMax, vMin)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
         tessellator.draw();
 
@@ -99,7 +98,7 @@ public class ParticleLaser extends Particle {
         GL11.glPopAttrib();
         GlStateManager.popMatrix();
 
-        worldRendererIn.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        buffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
     }
 
     @Override

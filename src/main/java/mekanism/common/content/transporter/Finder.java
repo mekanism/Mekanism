@@ -70,7 +70,7 @@ public abstract class Finder {
         @Override
         public boolean modifies(ItemStack stack) {
             return itemType.getHasSubtypes() ? StackUtils.equalsWildcard(itemType, stack)
-                  : itemType.getItem() == stack.getItem();
+                                             : itemType.getItem() == stack.getItem();
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class Finder {
             }
 
             return Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()).getMaterial()
-                  == materialType;
+                   == materialType;
         }
     }
 

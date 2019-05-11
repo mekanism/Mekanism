@@ -30,8 +30,7 @@ public class GuiRateBar extends GuiElement {
 
     @Override
     protected boolean inBounds(int xAxis, int yAxis) {
-        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
-              && yAxis <= yLocation + height - 1;
+        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1;
     }
 
     @Override
@@ -40,8 +39,7 @@ public class GuiRateBar extends GuiElement {
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
         if (handler.getLevel() > 0) {
             int displayInt = (int) (handler.getLevel() * 58);
-            guiObj.drawTexturedRect(guiWidth + xLocation + 1, guiHeight + yLocation + height - 1 - displayInt, 8,
-                  height - 2 - displayInt, width - 2, displayInt);
+            guiObj.drawTexturedRect(guiWidth + xLocation + 1, guiHeight + yLocation + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt);
         }
         mc.renderEngine.bindTexture(defaultLocation);
     }

@@ -11,8 +11,8 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<Enric
 
     public TileEntityEnrichmentChamber() {
         super("enrichment", "EnrichmentChamber",
-                MachineType.ENRICHMENT_CHAMBER.getStorage(),
-                MachineType.ENRICHMENT_CHAMBER.getUsage(), 200);
+              MachineType.ENRICHMENT_CHAMBER.getStorage(),
+              MachineType.ENRICHMENT_CHAMBER.getUsage(), 200);
     }
 
     @Override

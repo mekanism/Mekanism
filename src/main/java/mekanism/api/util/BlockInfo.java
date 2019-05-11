@@ -20,9 +20,7 @@ public class BlockInfo {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof BlockInfo &&
-              ((BlockInfo) obj).block == block &&
-              ((BlockInfo) obj).meta == meta;
+        return obj instanceof BlockInfo && ((BlockInfo) obj).block == block && ((BlockInfo) obj).meta == meta;
     }
 
     @Override

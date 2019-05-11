@@ -22,9 +22,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
- * A DynamicNetwork extension created specifically for the transfer of Gasses. By default this is server-only, but if
- * ticked on the client side and if it's posted events are handled properly, it has the capability to visually display
- * gasses network-wide.
+ * A DynamicNetwork extension created specifically for the transfer of Gasses. By default this is server-only, but if ticked on the client side and if it's posted events
+ * are handled properly, it has the capability to visually display gasses network-wide.
  *
  * @author aidancbrady
  */

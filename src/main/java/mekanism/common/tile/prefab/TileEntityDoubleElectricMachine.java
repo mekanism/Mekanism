@@ -24,18 +24,17 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
       TileEntityUpgradeableMachine<DoubleMachineInput, ItemStackOutput, RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
-          "getMaxEnergy", "getEnergyNeeded"};
+                                                         "getMaxEnergy", "getEnergyNeeded"};
 
     /**
-     * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output
-     * slot (2), energy slot (3), and the upgrade slot (4). The machine will not run if it does not have enough
-     * electricity.
+     * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
+     * (4). The machine will not run if it does not have enough electricity.
      *
-     * @param soundPath - location of the sound effect
-     * @param name - full name of this machine
-     * @param baseMaxEnergy - maximum amount of energy this machine can hold.
+     * @param soundPath       - location of the sound effect
+     * @param name            - full name of this machine
+     * @param baseMaxEnergy   - maximum amount of energy this machine can hold.
      * @param baseEnergyUsage - how much energy this machine uses per tick.
-     * @param ticksRequired - how many ticks it takes to smelt an item.
+     * @param ticksRequired   - how many ticks it takes to smelt an item.
      */
     public TileEntityDoubleElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
           int ticksRequired) {
@@ -110,7 +109,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             return false;
         } else if (slotID == 4) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                  || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             for (DoubleMachineInput input : getRecipes().keySet()) {
                 if (input.itemStack.isItemEqual(itemstack)) {

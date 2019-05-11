@@ -16,6 +16,7 @@ public interface IGasHandler {
      * Transfer a certain amount of gas to this block.
      *
      * @param stack - gas to add
+     *
      * @return gas added
      */
     int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer);
@@ -24,6 +25,7 @@ public interface IGasHandler {
      * Draws a certain amount of gas from this block.
      *
      * @param amount - amount to draw
+     *
      * @return gas drawn
      */
     GasStack drawGas(EnumFacing side, int amount, boolean doTransfer);
@@ -33,6 +35,7 @@ public interface IGasHandler {
      *
      * @param side - side to check
      * @param type - type of gas to check
+     *
      * @return if block accepts gas
      */
     boolean canReceiveGas(EnumFacing side, Gas type);
@@ -42,6 +45,7 @@ public interface IGasHandler {
      *
      * @param side - side to check
      * @param type - type of gas to check
+     *
      * @return if block can be drawn of gas
      */
     boolean canDrawGas(EnumFacing side, Gas type);

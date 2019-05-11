@@ -15,10 +15,9 @@ import org.lwjgl.opengl.GL11;
 public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank> {
 
     @Override
-    public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null
-              && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0) {
+    public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null &&
+            tileEntity.structure.fluidStored.amount != 0) {
             RenderData data = new RenderData();
 
             data.location = tileEntity.structure.renderLocation;
@@ -38,9 +37,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
 
                 if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1,
-                          ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity)
-                                + MekanismRenderer.GAS_RENDER_BASE));
+                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity)
+                                                           + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();
                 } else {
                     FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();

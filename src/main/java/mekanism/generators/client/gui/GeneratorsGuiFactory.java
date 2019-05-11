@@ -12,7 +12,6 @@ public class GeneratorsGuiFactory implements IModGuiFactory {
 
     @Override
     public void initialize(Minecraft minecraftInstance) {
-
     }
 
     @Override

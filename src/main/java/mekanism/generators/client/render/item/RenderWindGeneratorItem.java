@@ -20,8 +20,7 @@ public class RenderWindGeneratorItem {
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
-        if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND
-              || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
+        if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
             GlStateManager.translate(0.0F, 0.4F, 0.0F);
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {

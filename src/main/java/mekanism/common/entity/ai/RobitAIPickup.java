@@ -65,7 +65,7 @@ public class RobitAIPickup extends EntityAIBase {
         }
 
         if (closest != null && closest.getDistanceSq(closest) > 100
-              && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ) != null) {
+            && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ) != null) {
             return true;
         }
 
@@ -100,7 +100,7 @@ public class RobitAIPickup extends EntityAIBase {
     public boolean shouldContinueExecuting() {
         return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSq(closest) > 100 && theRobit
               .getDropPickup() && theRobit.getEnergy() > 0
-              && closest.world.provider.getDimension() == theRobit.world.provider.getDimension();
+               && closest.world.provider.getDimension() == theRobit.world.provider.getDimension();
     }
 
     @Override

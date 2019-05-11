@@ -35,7 +35,7 @@ public class ContainerChemicalWasher extends ContainerMekanism<TileEntityChemica
                     return ItemStack.EMPTY;
                 }
             } else if (FluidUtil.getFluidContained(slotStack) != null
-                  && FluidUtil.getFluidContained(slotStack).getFluid() == FluidRegistry.WATER) {
+                       && FluidUtil.getFluidContained(slotStack).getFluid() == FluidRegistry.WATER) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

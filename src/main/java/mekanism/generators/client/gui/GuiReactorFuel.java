@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
@@ -13,7 +14,6 @@ import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -41,11 +41,9 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
-              LangUtils.localize("gui.storing") + ": " + MekanismUtils
-                    .getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-              LangUtils.localize("gui.producing") + ": " + MekanismUtils
-                    .getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t")
-              : new ArrayList<>(), this, resource));
+              LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+              LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t")
+                                                                    : new ArrayList<>(), this, resource));
         addGuiElement(new GuiGasGauge(() -> tileEntity.deuteriumTank, Type.SMALL, this, resource, 25, 64));
         addGuiElement(new GuiGasGauge(() -> tileEntity.fuelTank, Type.STANDARD, this, resource, 79, 50));
         addGuiElement(new GuiGasGauge(() -> tileEntity.tritiumTank, Type.SMALL, this, resource, 133, 64));
@@ -69,8 +67,7 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         fontRenderer.drawString(tileEntity.getName(), 46, 6, 0x404040);
-        String str = LangUtils.localize("gui.reactor.injectionRate") + ": " + (tileEntity.getReactor() == null ? "None"
-              : tileEntity.getReactor().getInjectionRate());
+        String str = LangUtils.localize("gui.reactor.injectionRate") + ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate());
         fontRenderer.drawString(str, (xSize / 2) - (fontRenderer.getStringWidth(str) / 2), 35, 0x404040);
         fontRenderer.drawString("Edit Rate" + ":", 50, 117, 0x404040);
     }
@@ -90,7 +87,6 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
             drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 14, 14, 14);
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
         injectionRateField.drawTextBox();
     }
 

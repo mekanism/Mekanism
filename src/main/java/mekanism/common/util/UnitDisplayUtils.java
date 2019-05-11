@@ -6,8 +6,8 @@ package mekanism.common.util;
 public class UnitDisplayUtils {
 
     /**
-     * Displays the unit as text. Does handle negative numbers, and will place a negative sign in front of the output
-     * string showing this. Use string.replace to remove the negative sign if unwanted
+     * Displays the unit as text. Does handle negative numbers, and will place a negative sign in front of the output string showing this. Use string.replace to remove
+     * the negative sign if unwanted
      */
     public static String getDisplay(double value, ElectricUnit unit, int decimalPlaces, boolean isShort) {
         String unitName = unit.name;
@@ -99,19 +99,19 @@ public class UnitDisplayUtils {
 
                 if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
                     return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ")
-                          + lowerMeasure.getName(isShort) + unitName;
+                           + lowerMeasure.getName(isShort) + unitName;
                 }
 
                 if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
                     return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ")
-                          + lowerMeasure.getName(isShort) + unitName;
+                           + lowerMeasure.getName(isShort) + unitName;
                 }
 
                 MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
 
                 if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
                     return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ")
-                          + lowerMeasure.getName(isShort) + unitName;
+                           + lowerMeasure.getName(isShort) + unitName;
                 }
             }
         }

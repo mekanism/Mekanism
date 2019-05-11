@@ -21,8 +21,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
     private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
 
     @Override
-    public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.shouldRender) {
             push();
 
@@ -31,12 +30,9 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate((float) x, (float) y, (float) z);
-
             Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
             int type = 0;
-
             IBlockState s = obj.getBlockState(tileEntity.getWorld());
-
             if (s.getBlock() == MekanismBlocks.BasicBlock && s.getBlock().getMetaFromState(s) == 7) {
                 type = 1;
             }

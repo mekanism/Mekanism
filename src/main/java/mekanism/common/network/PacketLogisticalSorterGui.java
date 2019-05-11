@@ -70,7 +70,10 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
     }
 
     public enum SorterGuiPacket {
-        SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
+        SERVER,
+        CLIENT,
+        SERVER_INDEX,
+        CLIENT_INDEX
     }
 
     public static class LogisticalSorterGuiMessage implements IMessage {

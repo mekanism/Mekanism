@@ -56,7 +56,8 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
      * Grabs an inventory from the world's caches, and removes all the world's references to it.
      *
      * @param world - world the cache is stored in
-     * @param id - inventory ID to pull
+     * @param id    - inventory ID to pull
+     *
      * @return correct multiblock inventory cache
      */
     public MultiblockCache<T> pullInventory(World world, String id) {
@@ -97,9 +98,9 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
                     TileEntity tileEntity = obj.getTileEntity(world);
 
                     if (!(tileEntity instanceof TileEntityMultiblock)
-                          || ((TileEntityMultiblock) tileEntity).getManager() != this || (
-                          getStructureId(((TileEntityMultiblock<?>) tileEntity)) != null && !Objects
-                                .equals(getStructureId(((TileEntityMultiblock) tileEntity)), inventoryID))) {
+                        || ((TileEntityMultiblock) tileEntity).getManager() != this || (
+                              getStructureId(((TileEntityMultiblock<?>) tileEntity)) != null && !Objects
+                                    .equals(getStructureId(((TileEntityMultiblock) tileEntity)), inventoryID))) {
                         if (!tilesToKill.containsKey(inventoryID)) {
                             tilesToKill.put(inventoryID, new HashSet<>());
                         }

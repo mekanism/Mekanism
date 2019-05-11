@@ -48,7 +48,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
     public TileEntitySeismicVibrator() {
         super("SeismicVibrator", MachineType.SEISMIC_VIBRATOR.getStorage());
 
-        inventory = NonNullList.withSize(SLOTS .length, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
     @Override

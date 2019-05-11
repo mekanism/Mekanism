@@ -16,8 +16,7 @@ public class RenderQuantumEntangloporter extends TileEntitySpecialRenderer<TileE
     private ModelQuantumEntangloporter model = new ModelQuantumEntangloporter();
 
     @Override
-    public void render(TileEntityQuantumEntangloporter tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityQuantumEntangloporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
 

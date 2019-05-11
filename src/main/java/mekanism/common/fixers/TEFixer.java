@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.datafix.IFixableData;
 
 public class TEFixer extends BaseMekanismFixer {
 

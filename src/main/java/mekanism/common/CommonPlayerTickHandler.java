@@ -163,7 +163,7 @@ public class CommonPlayerTickHandler {
                     } else if (jetpack.getMode(stack) == JetpackMode.HOVER) {
                         if ((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap
                               .has(player, KeySync.DESCEND)) || (Mekanism.keyMap.has(player, KeySync.ASCEND)
-                              && Mekanism.keyMap.has(player, KeySync.DESCEND))) {
+                                                                 && Mekanism.keyMap.has(player, KeySync.DESCEND))) {
                             return !isOnGround(player);
                         } else if (Mekanism.keyMap.has(player, KeySync.DESCEND)) {
                             return !isOnGround(player);

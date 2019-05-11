@@ -17,8 +17,8 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 
     public TileEntityPurificationChamber() {
         super("purification", "PurificationChamber",
-                MachineType.PURIFICATION_CHAMBER.getStorage(),
-                MachineType.PURIFICATION_CHAMBER.getUsage(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+              MachineType.PURIFICATION_CHAMBER.getStorage(),
+              MachineType.PURIFICATION_CHAMBER.getUsage(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

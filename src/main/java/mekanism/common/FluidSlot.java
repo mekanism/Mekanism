@@ -26,7 +26,7 @@ public class FluidSlot {
      * Creates a FluidSlot with a defined fluid ID and max fluid. The fluid stored starts at 0.
      *
      * @param max - max fluid
-     * @param id - fluid id
+     * @param id  - fluid id
      */
     public FluidSlot(int max, int id) {
         MAX_FLUID = max;

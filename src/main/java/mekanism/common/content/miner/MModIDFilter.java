@@ -1,8 +1,8 @@
 package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.common.PacketHandler;
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.ItemBlock;

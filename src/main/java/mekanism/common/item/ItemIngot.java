@@ -10,8 +10,8 @@ import net.minecraft.util.NonNullList;
 public class ItemIngot extends ItemMekanism implements IMetaItem {
 
     public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze",
-          "Glowstone", "Steel", "Copper",
-          "Tin"};
+                                         "Glowstone", "Steel", "Copper",
+                                         "Tin"};
 
     public ItemIngot() {
         super();

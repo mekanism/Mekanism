@@ -208,7 +208,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public void takeShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null
-              && lastWrite != null) {
+            && lastWrite != null) {
             getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
             buffer.setFluid(lastWrite);
         }

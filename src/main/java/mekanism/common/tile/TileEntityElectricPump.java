@@ -176,7 +176,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
             FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
 
             if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null
-                  || fluidTank.getFluid().isFluidEqual(fluid))) {
+                                                                                            || fluidTank.getFluid().isFluidEqual(fluid))) {
                 if (take) {
                     activeType = fluid.getFluid();
                     recurringNodes.add(wrapper);
@@ -197,7 +197,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
             FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
 
             if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null
-                  || fluidTank.getFluid().isFluidEqual(fluid))) {
+                                                                                            || fluidTank.getFluid().isFluidEqual(fluid))) {
                 if (take) {
                     activeType = fluid.getFluid();
                     fluidTank.fill(fluid, true);
@@ -411,7 +411,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     @Override
     public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()
-              && from == EnumFacing.byIndex(1)) {
+            && from == EnumFacing.byIndex(1)) {
             return drain(from, resource.amount, doDrain);
         }
 
@@ -461,8 +461,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-              || super.hasCapability(capability, side);
+               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+               || super.hasCapability(capability, side);
     }
 
     @Override

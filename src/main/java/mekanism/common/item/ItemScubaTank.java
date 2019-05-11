@@ -49,11 +49,11 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
             list.add(LangUtils.localize("tooltip.noGas") + ".");
         } else {
             list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
-                  + gasStack.amount);
+                     + gasStack.amount);
         }
 
         list.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(itemstack)
-              ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
+                                                                                  ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
     }
 
     @Override

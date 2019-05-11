@@ -224,9 +224,8 @@ public final class FluidRenderer {
 
         @Override
         public boolean equals(Object data) {
-            return data instanceof RenderData && ((RenderData) data).height == height &&
-                  ((RenderData) data).length == length && ((RenderData) data).width == width
-                  && ((RenderData) data).fluidType.isFluidEqual(fluidType);
+            return data instanceof RenderData && ((RenderData) data).height == height && ((RenderData) data).length == length && ((RenderData) data).width == width
+                   && ((RenderData) data).fluidType.isFluidEqual(fluidType);
         }
     }
 

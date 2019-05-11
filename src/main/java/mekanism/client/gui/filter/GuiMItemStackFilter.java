@@ -58,27 +58,23 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
                 } else {
-                    Mekanism.packetHandler
-                          .sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
+                    Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
-                Mekanism.packetHandler.sendToServer(
-                      new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+                Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
             } else {
                 status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
                 ticker = 20;
             }
         } else if (guibutton.id == 1) {
             Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-            Mekanism.packetHandler
-                  .sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+            Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
         }
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(
-              (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils
-                    .localize("gui.itemFilter"), 43, 6, 0x404040);
+        fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
+                                LangUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
         if (!filter.itemType.isEmpty()) {
@@ -99,13 +95,10 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         int xAxis = (mouseX - (width - xSize) / 2);
         int yAxis = (mouseY - (height - ySize) / 2);
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils
-                  .transYesNo(filter.requireStack), xAxis, yAxis);
+            drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
         }
         if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
-            drawHoveringText(
-                  LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis,
-                  yAxis);
+            drawHoveringText(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -171,8 +164,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             int yAxis = (mouseY - (height - ySize) / 2);
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(
-                      new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
+                Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
             }
             if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -184,7 +176,6 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             }
             if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
                 ItemStack stack = mc.player.inventory.getItemStack();
-
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     if (stack.getItem() instanceof ItemBlock) {
                         if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {

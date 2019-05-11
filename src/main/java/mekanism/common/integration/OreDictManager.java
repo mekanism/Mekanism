@@ -154,9 +154,9 @@ public final class OreDictManager {
             for (ItemStack gem : OreDictionary.getOres("gemQuartz")) {
                 RecipeHandler.addCrusherRecipe(StackUtils.size(gem, 1), dustNeterQuartz);
             }
-            
+
         }
-        
+
         oreDict = OreDictionary.getOres("oreQuartz");
         if (oreDict.size() > 0) {
             ItemStack oreQuartz = StackUtils.size(oreDict.get(0), 1);
@@ -166,14 +166,13 @@ public final class OreDictManager {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 8), new ItemStack(Blocks.COBBLESTONE),
                           oreQuartz);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : OreDictionary.getOres("gemQuartz")) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 8), new ItemStack(Blocks.COBBLESTONE),
                           oreQuartz);
                 }
             }
-            
+
         }
 
         oreDict = OreDictionary.getOres("gemQuartz");
@@ -206,8 +205,7 @@ public final class OreDictManager {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 16), new ItemStack(Blocks.COBBLESTONE),
                           oreLapis);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : OreDictionary.getOres("gemLapis")) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 16), new ItemStack(Blocks.COBBLESTONE),
                           oreLapis);
@@ -259,8 +257,7 @@ public final class OreDictManager {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 3), new ItemStack(Blocks.END_STONE),
                           oreAmethyst);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : OreDictionary.getOres("gemAmethyst")) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 3), new ItemStack(Blocks.END_STONE),
                           oreAmethyst);
@@ -285,8 +282,7 @@ public final class OreDictManager {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 6), new ItemStack(Blocks.COBBLESTONE),
                           oreApatite);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : OreDictionary.getOres("gemApatite")) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 6), new ItemStack(Blocks.COBBLESTONE),
                           oreApatite);
@@ -425,8 +421,7 @@ public final class OreDictManager {
 
 
     /**
-     * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them.
-     * Credit to CofhCore.
+     * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Credit to CofhCore.
      */
     private static void addLogRecipes() {
         Container tempContainer = new Container() {
@@ -481,11 +476,11 @@ public final class OreDictManager {
         if (ores.size() > 0) {
             for (ItemStack dust : dusts) {
                 RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 8), new ItemStack(Blocks.COBBLESTONE),
-                      StackUtils.size(ores.get(0), 1));    
+                      StackUtils.size(ores.get(0), 1));
             }
         }
     }
-    
+
     public static void addStandardOredictGem(String suffix) {
         NonNullList<ItemStack> gems = OreDictionary.getOres("gem" + suffix);
         NonNullList<ItemStack> dusts = OreDictionary.getOres("dust" + suffix);
@@ -510,8 +505,7 @@ public final class OreDictManager {
                 for (ItemStack dust : dusts) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 3), base, ore);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : gems) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 3), base, ore);
                 }

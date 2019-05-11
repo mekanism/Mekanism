@@ -51,7 +51,7 @@ public class RecipeUtils {
                 RecipeType recipeTypeInput = ((IFactory) input.getItem()).getRecipeTypeOrNull(input);
                 //If either factory has invalid NBT don't crash it
                 return recipeTypeInput != null
-                      && ((IFactory) target.getItem()).getRecipeTypeOrNull(target) == recipeTypeInput;
+                       && ((IFactory) target.getItem()).getRecipeTypeOrNull(target) == recipeTypeInput;
             }
         }
 
@@ -60,8 +60,8 @@ public class RecipeUtils {
 
     private static boolean isFactory(ItemStack stack) {
         return MachineType.get(stack) == MachineType.BASIC_FACTORY
-              || MachineType.get(stack) == MachineType.ADVANCED_FACTORY
-              || MachineType.get(stack) == MachineType.ELITE_FACTORY;
+               || MachineType.get(stack) == MachineType.ADVANCED_FACTORY
+               || MachineType.get(stack) == MachineType.ELITE_FACTORY;
     }
 
     public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn) {

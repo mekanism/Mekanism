@@ -92,7 +92,7 @@ public final class RecipeHandler {
     /**
      * Add an Enrichment Chamber recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addEnrichmentChamberRecipe(ItemStack input, ItemStack output) {
@@ -102,7 +102,7 @@ public final class RecipeHandler {
     /**
      * Add an Osmium Compressor recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addOsmiumCompressorRecipe(ItemStack input, ItemStack output) {
@@ -112,10 +112,10 @@ public final class RecipeHandler {
     /**
      * Add a Combiner recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
-     * @deprecated Replaced by {@link #addCombinerRecipe(ItemStack, ItemStack, ItemStack)}. May be removed with
-     * Minecraft 1.13.
+     *
+     * @deprecated Replaced by {@link #addCombinerRecipe(ItemStack, ItemStack, ItemStack)}. May be removed with Minecraft 1.13.
      */
     @Deprecated
     public static void addCombinerRecipe(ItemStack input, ItemStack output) {
@@ -125,8 +125,8 @@ public final class RecipeHandler {
     /**
      * Add a Combiner recipe.
      *
-     * @param input - input ItemStack
-     * @param extra - extra ItemStack
+     * @param input  - input ItemStack
+     * @param extra  - extra ItemStack
      * @param output - output ItemStack
      */
     public static void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output) {
@@ -136,7 +136,7 @@ public final class RecipeHandler {
     /**
      * Add a Crusher recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addCrusherRecipe(ItemStack input, ItemStack output) {
@@ -146,7 +146,7 @@ public final class RecipeHandler {
     /**
      * Add a Purification Chamber recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addPurificationChamberRecipe(ItemStack input, ItemStack output) {
@@ -158,7 +158,7 @@ public final class RecipeHandler {
      *
      * @param infuse - which Infuse to use
      * @param amount - how much of the Infuse to use
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addMetallurgicInfuserRecipe(InfuseType infuse, int amount, ItemStack input, ItemStack output) {
@@ -169,9 +169,9 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Infuser recipe.
      *
-     * @param leftInput - left GasStack to input
+     * @param leftInput  - left GasStack to input
      * @param rightInput - right GasStack to input
-     * @param output - output GasStack
+     * @param output     - output GasStack
      */
     public static void addChemicalInfuserRecipe(GasStack leftInput, GasStack rightInput, GasStack output) {
         addRecipe(Recipe.CHEMICAL_INFUSER, new ChemicalInfuserRecipe(leftInput, rightInput, output));
@@ -180,7 +180,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Oxidizer recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output GasStack
      */
     public static void addChemicalOxidizerRecipe(ItemStack input, GasStack output) {
@@ -190,7 +190,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Injection Chamber recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addChemicalInjectionChamberRecipe(ItemStack input, Gas gas, ItemStack output) {
@@ -200,8 +200,8 @@ public final class RecipeHandler {
     /**
      * Add an Electrolytic Separator recipe.
      *
-     * @param fluid - FluidStack to electrolyze
-     * @param leftOutput - left gas to produce when the fluid is electrolyzed
+     * @param fluid       - FluidStack to electrolyze
+     * @param leftOutput  - left gas to produce when the fluid is electrolyzed
      * @param rightOutput - right gas to produce when the fluid is electrolyzed
      */
     public static void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput,
@@ -212,10 +212,10 @@ public final class RecipeHandler {
     /**
      * Add a Precision Sawmill recipe.
      *
-     * @param input - input ItemStack
-     * @param primaryOutput - guaranteed output
+     * @param input           - input ItemStack
+     * @param primaryOutput   - guaranteed output
      * @param secondaryOutput - possible extra output
-     * @param chance - probability of obtaining extra output
+     * @param chance          - probability of obtaining extra output
      */
     public static void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput,
           double chance) {
@@ -225,7 +225,7 @@ public final class RecipeHandler {
     /**
      * Add a Precision Sawmill recipe with no chance output
      *
-     * @param input - input ItemStack
+     * @param input         - input ItemStack
      * @param primaryOutput - guaranteed output
      */
     public static void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput) {
@@ -235,7 +235,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Dissolution Chamber recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output GasStack
      */
     public static void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output) {
@@ -245,7 +245,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Washer recipe.
      *
-     * @param input - input GasStack
+     * @param input  - input GasStack
      * @param output - output GasStack
      */
     public static void addChemicalWasherRecipe(GasStack input, GasStack output) {
@@ -255,7 +255,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Crystallizer recipe.
      *
-     * @param input - input GasStack
+     * @param input  - input GasStack
      * @param output - output ItemStack
      */
     public static void addChemicalCrystallizerRecipe(GasStack input, ItemStack output) {
@@ -265,13 +265,13 @@ public final class RecipeHandler {
     /**
      * Add a Pressurized Reaction Chamber recipe.
      *
-     * @param inputSolid - input ItemStack
-     * @param inputFluid - input FluidStack
-     * @param inputGas - input GasStack
+     * @param inputSolid  - input ItemStack
+     * @param inputFluid  - input FluidStack
+     * @param inputGas    - input GasStack
      * @param outputSolid - output ItemStack
-     * @param outputGas - output GasStack
+     * @param outputGas   - output GasStack
      * @param extraEnergy - extra energy needed by the recipe
-     * @param ticks - amount of ticks it takes for this recipe to complete
+     * @param ticks       - amount of ticks it takes for this recipe to complete
      */
     public static void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas,
           ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
@@ -295,6 +295,7 @@ public final class RecipeHandler {
      * Gets the Metallurgic Infuser Recipe for the InfusionInput in the parameters.
      *
      * @param input - input Infusion
+     *
      * @return MetallurgicInfuserRecipe
      */
     @Nullable
@@ -318,6 +319,7 @@ public final class RecipeHandler {
      * Gets the Chemical Infuser Recipe of the ChemicalPairInput in the parameters.
      *
      * @param input - the pair of gases to infuse
+     *
      * @return ChemicalInfuserRecipe
      */
     @Nullable
@@ -336,6 +338,7 @@ public final class RecipeHandler {
      * Gets the Chemical Crystallizer Recipe for the defined Gas input.
      *
      * @param input - GasInput
+     *
      * @return CrystallizerRecipe
      */
     @Nullable
@@ -354,6 +357,7 @@ public final class RecipeHandler {
      * Gets the Chemical Washer Recipe for the defined Gas input.
      *
      * @param input - GasInput
+     *
      * @return WasherRecipe
      */
     @Nullable
@@ -372,6 +376,7 @@ public final class RecipeHandler {
      * Gets the Chemical Dissolution Chamber of the ItemStackInput in the parameters
      *
      * @param input - ItemStackInput
+     *
      * @return DissolutionRecipe
      */
     @Nullable
@@ -390,6 +395,7 @@ public final class RecipeHandler {
      * Gets the Chemical Oxidizer Recipe for the ItemStackInput in the parameters.
      *
      * @param input - ItemStackInput
+     *
      * @return OxidationRecipe
      */
     @Nullable
@@ -407,8 +413,9 @@ public final class RecipeHandler {
     /**
      * Gets the ChanceMachineRecipe of the ItemStackInput in the parameters, using the map in the parameters.
      *
-     * @param input - ItemStackInput
+     * @param input   - ItemStackInput
      * @param recipes - Map of recipes
+     *
      * @return ChanceRecipe
      */
     @Nullable
@@ -425,8 +432,9 @@ public final class RecipeHandler {
     /**
      * Gets the BasicMachineRecipe of the ItemStackInput in the parameters, using the map in the parameters.
      *
-     * @param input - ItemStackInput
+     * @param input   - ItemStackInput
      * @param recipes - Map of recipes
+     *
      * @return BasicMachineRecipe
      */
     @Nullable
@@ -443,8 +451,9 @@ public final class RecipeHandler {
     /**
      * Gets the AdvancedMachineRecipe of the AdvancedInput in the parameters, using the map in the paramaters.
      *
-     * @param input - AdvancedInput
+     * @param input   - AdvancedInput
      * @param recipes - Map of recipes
+     *
      * @return AdvancedMachineRecipe
      */
     @Nullable
@@ -467,8 +476,9 @@ public final class RecipeHandler {
     /**
      * Gets the DoubleMachineRecipe of the DoubleInput in the parameters, using the map in the paramaters.
      *
-     * @param input - DoubleInput
+     * @param input   - DoubleInput
      * @param recipes - Map of recipes
+     *
      * @return DoubleMachineRecipe
      */
     @Nullable
@@ -491,6 +501,7 @@ public final class RecipeHandler {
      * Get the Electrolytic Separator Recipe corresponding to electrolysing a given fluid.
      *
      * @param input - the FluidInput to electrolyse fluid from
+     *
      * @return SeparatorRecipe
      */
     @Nullable
@@ -558,7 +569,8 @@ public final class RecipeHandler {
      * Gets the whether the input ItemStack is in a recipe
      *
      * @param itemstack - input ItemStack
-     * @param recipes - Map of recipes
+     * @param recipes   - Map of recipes
+     *
      * @return whether the item can be used in a recipe
      */
     public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> boolean isInRecipe(@Nonnull ItemStack itemstack,

@@ -36,17 +36,14 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
-public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper,
-      IComputerIntegration {
+public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration {
 
     private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow",
-          "getSteamInput"};
+                                                         "getSteamInput"};
     public boolean ic2Registered = false;
     public TurbineFluidTank fluidTank;
-    private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(
-          IEnergyWrapper.class, TeslaIntegration.class);
-    private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(
-          IEnergyWrapper.class, ForgeEnergyIntegration.class);
+    private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
+    private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
     public TileEntityTurbineValve() {
         super("TurbineValve");
@@ -74,7 +71,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if (structure != null) {
             return !structure.locations.contains(Coord4D.get(this).offset(side));
         }
-
         return false;
     }
 
@@ -87,7 +83,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     public void register() {
         if (!world.isRemote) {
             IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
-
             if (registered != this) {
                 if (registered != null && ic2Registered) {
                     MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
@@ -104,7 +99,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     public void deregister() {
         if (!world.isRemote) {
             IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
-
             if (registered != null && ic2Registered) {
                 MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
                 ic2Registered = false;
@@ -120,7 +114,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     public void onAdded() {
         super.onAdded();
-
         if (MekanismUtils.useIC2()) {
             register();
         }
@@ -131,14 +124,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if (MekanismUtils.useIC2()) {
             deregister();
         }
-
         super.onChunkUnload();
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-
         if (MekanismUtils.useIC2()) {
             deregister();
         }
@@ -154,16 +145,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         if (sideIsOutput(from)) {
-            double toSend = Math.min(getEnergy(),
-                  Math.min(getMaxOutput(), maxExtract * MekanismConfig.current().general.FROM_RF.val()));
-
+            double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract * MekanismConfig.current().general.FROM_RF.val()));
             if (!simulate) {
                 setEnergy(getEnergy() - toSend);
             }
-
             return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
         }
-
         return 0;
     }
 
@@ -296,22 +283,18 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
         double toGive = Math.min(getEnergy(), amount);
-
         if (toGive < 0.0001 || (side != null && !sideIsOutput(side))) {
             return 0;
         }
-
         if (!simulate) {
             setEnergy(getEnergy() - toGive);
         }
-
         return toGive;
     }
 
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{
-              fluidTank.getInfo()} : PipeUtils.EMPTY;
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{fluidTank.getInfo()} : PipeUtils.EMPTY;
     }
 
     @Override
@@ -324,17 +307,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if (resource == null || !canFill(from, resource)) {
             return 0;
         }
-
         int filled = fluidTank.fill(resource, doFill);
-
         if (doFill) {
             structure.newSteamInput += filled;
         }
-
         if (filled < structure.getFluidCapacity() && structure.dumpMode != GasMode.IDLE) {
             filled = Math.min(structure.getFluidCapacity(), resource.amount);
         }
-
         return filled;
     }
 
@@ -353,7 +332,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if (fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("steam"))) {
             return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
         }
-
         return false;
     }
 
@@ -381,65 +359,50 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             if (structure == null) {
                 return new Object[]{"Unformed"};
             }
-
             switch (method) {
                 case 1:
                     return new Object[]{structure.fluidStored != null ? structure.fluidStored.amount : 0};
                 case 2:
                     return new Object[]{structure.clientFlow};
                 case 3:
-                    double rate =
-                          structure.lowerVolume * (structure.clientDispersers * MekanismConfig
-                                .current().generators.turbineDisperserGasFlow.val());
-                    rate = Math
-                          .min(rate, structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
+                    double rate = structure.lowerVolume * (structure.clientDispersers * MekanismConfig.current().generators.turbineDisperserGasFlow.val());
+                    rate = Math.min(rate, structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
                     return new Object[]{rate};
                 case 4:
                     return new Object[]{structure.lastSteamInput};
             }
         }
-
         throw new NoSuchMethodException();
     }
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                  || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-                  || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
-                  || capability == Capabilities.TESLA_HOLDER_CAPABILITY
-                  || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))
-                  || capability == CapabilityEnergy.ENERGY) {
+            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
+                || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.TESLA_HOLDER_CAPABILITY
+                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing)) || capability == CapabilityEnergy.ENERGY) {
                 return true;
             }
         }
-
         return super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
-            if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-                  || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
+            if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
                 return (T) this;
             }
-
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
             }
-
-            if (capability == Capabilities.TESLA_HOLDER_CAPABILITY
-                  || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
+            if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
                 return (T) teslaManager.getWrapper(this, facing);
             }
-
             if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
             }
         }
-
         return super.getCapability(capability, side);
     }
 }

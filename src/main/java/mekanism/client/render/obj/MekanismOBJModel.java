@@ -20,23 +20,18 @@ public class MekanismOBJModel extends OBJModel {
 
     public MekanismOBJModel(OBJModelType type, MaterialLibrary matLib, ResourceLocation modelLocation) {
         super(matLib, modelLocation);
-
         modelType = type;
         location = modelLocation;
     }
 
     @Nonnull
     @Override
-    public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format,
-          Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+    public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
         IBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
-
         if (modelType == OBJModelType.GLOW_PANEL) {
-            return new GlowPanelModel(preBaked, this, state, format, GlowPanelModel.getTexturesForOBJModel(preBaked),
-                  null);
+            return new GlowPanelModel(preBaked, this, state, format, GlowPanelModel.getTexturesForOBJModel(preBaked), null);
         } else if (modelType == OBJModelType.TRANSMITTER) {
-            return new TransmitterModel(preBaked, this, state, format,
-                  TransmitterModel.getTexturesForOBJModel(preBaked), null);
+            return new TransmitterModel(preBaked, this, state, format, TransmitterModel.getTexturesForOBJModel(preBaked), null);
         }
 
         return preBaked;

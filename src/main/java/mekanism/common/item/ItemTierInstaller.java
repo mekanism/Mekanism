@@ -2,9 +2,9 @@ package mekanism.common.item;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -82,6 +82,6 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
     @Override
     public String getTranslationKey(ItemStack item) {
         return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName().toLowerCase(Locale.ROOT)
-              + "TierInstaller";
+               + "TierInstaller";
     }
 }

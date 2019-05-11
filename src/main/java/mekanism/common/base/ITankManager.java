@@ -86,7 +86,7 @@ public interface ITankManager {
                     } else if (button == 1) //Extract fluid from dropper
                     {
                         if (dropper.getGas(stack) != null
-                              || fluidTank.getCapacity() - fluidTank.getFluidAmount() == 0) {
+                            || fluidTank.getCapacity() - fluidTank.getFluidAmount() == 0) {
                             return;
                         }
 

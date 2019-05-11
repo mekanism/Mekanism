@@ -61,12 +61,6 @@ public class ItemLayerWrapper implements IBakedModel {
         return internal.getParticleTexture();
     }
 
-    //TODO: Is this needed
-    /*@Nonnull
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return internal.getItemCameraTransforms();
-    }*/
-
     @Nonnull
     @Override
     public ItemOverrideList getOverrides() {
@@ -105,5 +99,4 @@ public class ItemLayerWrapper implements IBakedModel {
         return new TRSRTransformation(new Vector3f(tx / 16, ty / 16, tz / 16),
               TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)), new Vector3f(s, s, s), null);
     }
-
 }

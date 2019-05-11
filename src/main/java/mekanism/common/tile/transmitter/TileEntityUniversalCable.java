@@ -70,7 +70,7 @@ public class TileEntityUniversalCable extends
         if (getWorld().isRemote) {
             double targetPower =
                   getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale
-                        : 0;
+                                                           : 0;
 
             if (Math.abs(currentPower - targetPower) > 0.01) {
                 currentPower = (9 * currentPower + targetPower) / 10;
@@ -89,9 +89,9 @@ public class TileEntityUniversalCable extends
                         TileEntity outputter = connectedOutputters[side.ordinal()];
 
                         if (CapabilityUtils
-                              .hasCapability(outputter, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite())
-                              && CapabilityUtils
-                              .hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite())) {
+                                  .hasCapability(outputter, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite())
+                            && CapabilityUtils
+                                  .hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite())) {
                             IStrictEnergyStorage storage = CapabilityUtils
                                   .getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
                             double received = Math.min(storage.getEnergy(), canDraw);
@@ -107,9 +107,9 @@ public class TileEntityUniversalCable extends
                             ITeslaProducer producer = CapabilityUtils
                                   .getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
                             double toDraw = producer
-                                  .takePower(MekanismUtils
-                                        .clampToInt(canDraw * MekanismConfig.current().general.TO_TESLA.val()), true)
-                                  * MekanismConfig.current().general.FROM_TESLA.val();
+                                                  .takePower(MekanismUtils
+                                                        .clampToInt(canDraw * MekanismConfig.current().general.TO_TESLA.val()), true)
+                                            * MekanismConfig.current().general.FROM_TESLA.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
@@ -124,7 +124,7 @@ public class TileEntityUniversalCable extends
                             double toDraw = storage.extractEnergy(
                                   MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_FORGE.val()),
                                   true)
-                                  * MekanismConfig.current().general.FROM_FORGE.val();
+                                            * MekanismConfig.current().general.FROM_FORGE.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
@@ -137,7 +137,7 @@ public class TileEntityUniversalCable extends
                             double toDraw = ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(),
                                   MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_RF.val()),
                                   true)
-                                  * MekanismConfig.current().general.FROM_RF.val();
+                                            * MekanismConfig.current().general.FROM_RF.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
@@ -389,16 +389,16 @@ public class TileEntityUniversalCable extends
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-              || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-              || capability == Capabilities.TESLA_CONSUMER_CAPABILITY
-              || capability == CapabilityEnergy.ENERGY
-              || super.hasCapability(capability, facing);
+               || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
+               || capability == Capabilities.TESLA_CONSUMER_CAPABILITY
+               || capability == CapabilityEnergy.ENERGY
+               || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-              || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
+            || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
             return (T) this;
         }
 

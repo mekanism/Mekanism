@@ -26,8 +26,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements
-      IClientTicker, INetworkDataHandler {
+public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IClientTicker, INetworkDataHandler {
 
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = Sets.newLinkedHashSet();
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = Sets.newLinkedHashSet();
@@ -35,8 +34,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     protected Set<Coord4D> possibleAcceptors = new HashSet<>();
     protected Map<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<>();
-    protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = Maps
-          .newHashMap();
+    protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = Maps.newHashMap();
     protected Range4D packetRange = null;
     protected int capacity = 0;
     protected double meanCapacity = 0;
@@ -75,8 +73,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
 
         if (!changedAcceptors.isEmpty()) {
-            for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> entry : changedAcceptors
-                  .entrySet()) {
+            for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> entry : changedAcceptors.entrySet()) {
                 IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = entry.getKey();
 
                 if (transmitter.isValid()) {
@@ -87,7 +84,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     }
                 }
             }
-
             changedAcceptors.clear();
         }
     }
@@ -99,26 +95,22 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
         if (acceptor != null) {
             possibleAcceptors.add(acceptorCoord);
-
             if (directions != null) {
                 directions.add(side.getOpposite());
             } else {
                 acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
             }
-        } else {
-            if (directions != null) {
-                directions.remove(side.getOpposite());
+        } else if (directions != null) {
+            directions.remove(side.getOpposite());
 
-                if (directions.isEmpty()) {
-                    possibleAcceptors.remove(acceptorCoord);
-                    acceptorDirections.remove(acceptorCoord);
-                }
-            } else {
+            if (directions.isEmpty()) {
                 possibleAcceptors.remove(acceptorCoord);
                 acceptorDirections.remove(acceptorCoord);
             }
+        } else {
+            possibleAcceptors.remove(acceptorCoord);
+            acceptorDirections.remove(acceptorCoord);
         }
-
     }
 
     @Nullable
@@ -161,7 +153,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void acceptorChanged(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, EnumFacing side) {
         EnumSet<EnumFacing> directions = changedAcceptors.get(transmitter);
-
         if (directions != null) {
             directions.add(side);
         } else {
@@ -179,26 +170,22 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
 
         transmittersToAdd.addAll(net.transmittersToAdd);
-
         possibleAcceptors.addAll(net.possibleAcceptors);
 
         for (Entry<Coord4D, EnumSet<EnumFacing>> entry : net.acceptorDirections.entrySet()) {
             Coord4D coord = entry.getKey();
-
             if (acceptorDirections.containsKey(coord)) {
                 acceptorDirections.get(coord).addAll(entry.getValue());
             } else {
                 acceptorDirections.put(coord, entry.getValue());
             }
         }
-
     }
 
     public Range4D getPacketRange() {
         if (packetRange == null) {
             return genPacketRange();
         }
-
         return packetRange;
     }
 
@@ -240,7 +227,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 maxZ = coord.z;
             }
         }
-
         return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, initTransmitter.world().provider.getDimension());
     }
 
@@ -278,8 +264,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     /**
-     * Override this if things can have variable capacity along the network. An 'average' value of capacity. Calculate
-     * it how you will.
+     * Override this if things can have variable capacity along the network. An 'average' value of capacity. Calculate it how you will.
      */
     protected synchronized void updateMeanCapacity() {
         if (transmitters.size() > 0) {
@@ -316,7 +301,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             try {
                 while (i.hasNext()) {
                     DelayQueue q = i.next();
-
                     if (q.delay > 0) {
                         q.delay--;
                     } else {
@@ -330,10 +314,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
             if (updateDelay > 0) {
                 updateDelay--;
-
                 if (updateDelay == 0) {
-                    MinecraftForge.EVENT_BUS
-                          .post(new TransmittersAddedEvent(this, firstUpdate, (Collection) transmittersAdded));
+                    MinecraftForge.EVENT_BUS.post(new TransmittersAddedEvent(this, firstUpdate, (Collection) transmittersAdded));
                     firstUpdate = false;
                     transmittersAdded.clear();
                     needsUpdate = true;

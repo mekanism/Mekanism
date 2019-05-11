@@ -22,8 +22,8 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
         return super.canFilter(itemStack, strict) &&
-                !(strict && sizeMode && (max == 0 || itemStack.getCount() < min)) &&
-                ItemHandlerHelper.canItemStacksStackRelaxed(itemType, itemStack);
+               !(strict && sizeMode && (max == 0 || itemStack.getCount() < min)) &&
+               ItemHandlerHelper.canItemStacksStackRelaxed(itemType, itemStack);
     }
 
     @Override
@@ -104,8 +104,8 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     public boolean equals(Object filter) {
         return super.equals(filter) && filter instanceof TItemStackFilter && ((TItemStackFilter) filter).itemType
               .isItemEqual(itemType)
-              && ((TItemStackFilter) filter).sizeMode == sizeMode && ((TItemStackFilter) filter).min == min
-              && ((TItemStackFilter) filter).max == max;
+               && ((TItemStackFilter) filter).sizeMode == sizeMode && ((TItemStackFilter) filter).min == min
+               && ((TItemStackFilter) filter).max == max;
     }
 
     @Override

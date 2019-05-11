@@ -10,15 +10,15 @@ import mekanism.common.base.target.Target;
 public class EmitUtils {
 
     /**
-     * @param <HANDLER> The handler of our target.
-     * @param <TYPE> The type of the number
-     * @param <EXTRA> Any extra information we may need.
-     * @param <TARGET> The emitter target.
+     * @param <HANDLER>        The handler of our target.
+     * @param <TYPE>           The type of the number
+     * @param <EXTRA>          Any extra information we may need.
+     * @param <TARGET>         The emitter target.
      * @param availableTargets The targets to distribute toSend fairly among.
-     * @param totalTargets The total number of targets. Note: this number is bigger than availableTargets.size if any
-     * targets have more than one acceptor.
-     * @param splitInfo Information containing the split.
-     * @param toSend Any extra information such as gas stack or fluid stack.
+     * @param totalTargets     The total number of targets. Note: this number is bigger than availableTargets.size if any targets have more than one acceptor.
+     * @param splitInfo        Information containing the split.
+     * @param toSend           Any extra information such as gas stack or fluid stack.
+     *
      * @return The amount that actually got sent.
      */
     private static <HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA, TARGET extends Target<HANDLER, TYPE, EXTRA>>
@@ -46,14 +46,14 @@ public class EmitUtils {
     }
 
     /**
-     * @param <HANDLER> The handler of our target.
-     * @param <EXTRA> Any extra information we may need
-     * @param <TARGET> The emitter target
+     * @param <HANDLER>        The handler of our target.
+     * @param <EXTRA>          Any extra information we may need
+     * @param <TARGET>         The emitter target
      * @param availableTargets The targets to distribute toSend fairly among.
-     * @param totalTargets The total number of targets. Note: this number is bigger than availableTargets.size if any
-     * targets have more than one acceptor.
-     * @param amountToSplit The amount to split between all the targets
-     * @param toSend Any extra information such as gas stack or fluid stack.
+     * @param totalTargets     The total number of targets. Note: this number is bigger than availableTargets.size if any targets have more than one acceptor.
+     * @param amountToSplit    The amount to split between all the targets
+     * @param toSend           Any extra information such as gas stack or fluid stack.
+     *
      * @return The amount that actually got sent.
      */
     public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(
@@ -64,9 +64,9 @@ public class EmitUtils {
 
     /**
      * @param availableTargets The EnergyAcceptorWrapper targets to send energy fairly to.
-     * @param totalTargets The total number of targets. Note: this number is bigger than availableTargets.size if any
-     * targets have more than one acceptor.
-     * @param amountToSplit The amount of energy to attempt to send
+     * @param totalTargets     The total number of targets. Note: this number is bigger than availableTargets.size if any targets have more than one acceptor.
+     * @param amountToSplit    The amount of energy to attempt to send
+     *
      * @return The amount that actually got sent
      */
     public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets,

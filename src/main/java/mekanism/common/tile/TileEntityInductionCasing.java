@@ -34,7 +34,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     protected static final int[] DISCHARGE_SLOT = {1};
 
     public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput",
-          "getTransferCap"};
+                                                        "getTransferCap"};
     public int clientCells;
     public int clientProviders;
 

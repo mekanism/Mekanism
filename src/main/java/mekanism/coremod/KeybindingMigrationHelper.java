@@ -14,14 +14,14 @@ import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
 
 /**
- * Allows us to run a mini datafixer on the GameSettings to migrate the old keybind options
- * (before we correctly used the translation key).
+ * Allows us to run a mini datafixer on the GameSettings to migrate the old keybind options (before we correctly used the translation key).
  *
- * Hooks into {@link net.minecraft.client.settings.GameSettings#dataFix(net.minecraft.nbt.NBTTagCompound)} and always
- * calls our static method datafixer {@link mekanism.common.fixers.KeybindingFixer#runFix(net.minecraft.nbt.NBTTagCompound)}
+ * Hooks into {@link net.minecraft.client.settings.GameSettings#dataFix(net.minecraft.nbt.NBTTagCompound)} and always calls our static method datafixer {@link
+ * mekanism.common.fixers.KeybindingFixer#runFix(net.minecraft.nbt.NBTTagCompound)}
  */
 @SuppressWarnings("unused")//coremod land
 public class KeybindingMigrationHelper implements IClassTransformer {
+
     private static final Logger LOGGER = LogManager.getLogger("Mekanism KeybindingMigrationHelper");
 
     @Override
@@ -35,20 +35,21 @@ public class KeybindingMigrationHelper implements IClassTransformer {
     }
 
     private static class Visitor extends ClassVisitor {
+
         private static final String DATAFIX_SIG = "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;";
 
         //net.minecraft.client.settings.GameSettings func_189988_a(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound; #dataFix
         private String datafixMethodName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName("net/minecraft/client/settings/GameSettings", "func_189988_a", DATAFIX_SIG);
 
-        Visitor(ClassVisitor parent){
+        Visitor(ClassVisitor parent) {
             super(Opcodes.ASM5, parent);
-            LOGGER.debug("Looking for "+datafixMethodName+DATAFIX_SIG);
+            LOGGER.debug("Looking for " + datafixMethodName + DATAFIX_SIG);
         }
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
             MethodVisitor visitor = super.visitMethod(access, name, desc, signature, exceptions);
-            if (name.equals(datafixMethodName) && desc.equals(DATAFIX_SIG)){
+            if (name.equals(datafixMethodName) && desc.equals(DATAFIX_SIG)) {
                 LOGGER.info("Patching GameSettings.datafix");
                 return new GeneratorAdapter(Opcodes.ASM5, visitor, access, name, desc) {
                     @Override

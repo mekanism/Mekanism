@@ -18,8 +18,7 @@ public class GasMaskSound extends PlayerSound {
 
     @Override
     public boolean shouldPlaySound() {
-        boolean hasGasMask = !player.inventory.armorInventory.get(3).isEmpty() &&
-              player.inventory.armorInventory.get(3).getItem() instanceof ItemGasMask;
+        boolean hasGasMask = !player.inventory.armorInventory.get(3).isEmpty() && player.inventory.armorInventory.get(3).getItem() instanceof ItemGasMask;
         return hasGasMask && ClientTickHandler.isGasMaskOn(player);
     }
 }

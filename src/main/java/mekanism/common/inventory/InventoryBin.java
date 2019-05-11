@@ -1,8 +1,8 @@
 package mekanism.common.inventory;
 
-import mekanism.common.tier.BinTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;

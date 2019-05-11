@@ -22,6 +22,6 @@ public class BoilerWaterTank extends BoilerTank {
     @Override
     public int getCapacity() {
         return steamBoiler.structure != null ? steamBoiler.structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK
-              : 0;
+                                             : 0;
     }
 }

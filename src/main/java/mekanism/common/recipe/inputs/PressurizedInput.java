@@ -59,10 +59,10 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
     }
 
     /**
-     * Whether or not this PressurizedReactants's ItemStack entry's item type is equal to the item type of the given
-     * item.
+     * Whether or not this PressurizedReactants's ItemStack entry's item type is equal to the item type of the given item.
      *
      * @param stack - stack to check
+     *
      * @return if the stack's item type is contained in this PressurizedReactants
      */
     public boolean containsType(ItemStack stack) {
@@ -74,10 +74,10 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
     }
 
     /**
-     * Whether or not this PressurizedReactants's FluidStack entry's fluid type is equal to the fluid type of the given
-     * fluid.
+     * Whether or not this PressurizedReactants's FluidStack entry's fluid type is equal to the fluid type of the given fluid.
      *
      * @param stack - stack to check
+     *
      * @return if the stack's fluid type is contained in this PressurizedReactants
      */
     public boolean containsType(FluidStack stack) {
@@ -92,6 +92,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
      * Whether or not this PressurizedReactants's GasStack entry's gas type is equal to the gas type of the given gas.
      *
      * @param stack - stack to check
+     *
      * @return if the stack's gas type is contained in this PressurizedReactants
      */
     public boolean containsType(GasStack stack) {
@@ -106,6 +107,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
      * Actual implementation of meetsInput(), performs the checks.
      *
      * @param input - input to check
+     *
      * @return if the input meets this input's requirements
      */
     public boolean meets(PressurizedInput input) {
@@ -119,7 +121,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         }
 
         return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount
-              && input.theGas.amount >= theGas.amount;
+               && input.theGas.amount >= theGas.amount;
     }
 
     @Override
@@ -142,7 +144,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
     @Override
     public int hashIngredients() {
         return StackUtils.hashItemStack(theSolid) << 16
-              | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
+               | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
     }
 
     @Override

@@ -138,7 +138,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
             }
 
             if (autoMode && formula != null && ((controlType == RedstoneControl.PULSE && pulseOperations > 0)
-                  || MekanismUtils.canFunction(this))) {
+                                                || MekanismUtils.canFunction(this))) {
                 boolean canOperate = true;
 
                 if (!isRecipe) {
@@ -236,7 +236,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
                         ItemStack container = stack.getItem().getContainerItem(stack);
 
                         if (!container.isEmpty() && container.isItemStackDamageable()
-                              && container.getItemDamage() > container.getMaxDamage()) {
+                            && container.getItemDamage() > container.getMaxDamage()) {
                             container = ItemStack.EMPTY;
                         }
 
@@ -392,7 +392,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
                 return ItemStack.EMPTY;
             } else if (InventoryUtils.areItemsStackable(stack, inventory.get(i))
-                  && inventory.get(i).getCount() < inventory.get(i).getMaxStackSize()) {
+                       && inventory.get(i).getCount() < inventory.get(i).getMaxStackSize()) {
                 int toUse = Math
                       .min(stack.getCount(), inventory.get(i).getMaxStackSize() - inventory.get(i).getCount());
 
@@ -419,7 +419,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
                 return true;
             } else if (InventoryUtils.areItemsStackable(stack, inventory.get(i))
-                  && inventory.get(i).getCount() < inventory.get(i).getMaxStackSize()) {
+                       && inventory.get(i).getCount() < inventory.get(i).getMaxStackSize()) {
                 int toUse = Math
                       .min(stack.getCount(), inventory.get(i).getMaxStackSize() - inventory.get(i).getCount());
 

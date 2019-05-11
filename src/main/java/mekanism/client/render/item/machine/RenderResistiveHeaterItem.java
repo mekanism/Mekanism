@@ -22,7 +22,6 @@ public class RenderResistiveHeaterItem {
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         GlStateManager.translate(0.05F, -0.96F, 0.05F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
-        resistiveHeater.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0,
-              Minecraft.getMinecraft().renderEngine, true);
+        resistiveHeater.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine, true);
     }
 }

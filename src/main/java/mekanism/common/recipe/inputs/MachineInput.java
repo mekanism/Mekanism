@@ -34,10 +34,10 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
     public abstract void load(NBTTagCompound nbtTags);
 
     /**
-     * Test equality to another input. This should return true if the input matches this one, IGNORING AMOUNTS. Allows
-     * usage of HashMap optimisation to get recipes.
+     * Test equality to another input. This should return true if the input matches this one, IGNORING AMOUNTS. Allows usage of HashMap optimisation to get recipes.
      *
      * @param other The other input to check
+     *
      * @return True if input matches this one, IGNORING AMOUNTS!
      */
     public abstract boolean testEquality(INPUT other);
@@ -78,7 +78,8 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
          * Test equality to another input. This should return true if the input matches this one, IGNORING AMOUNTS.
          *
          * @param definition The ingredient stored in the ItemStackInput
-         * @param test The other input to check
+         * @param test       The other input to check
+         *
          * @return True if input matches this one, IGNORING AMOUNTS!
          */
         boolean test(ItemStack definition, ItemStack test);

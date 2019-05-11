@@ -6,8 +6,8 @@ import mekanism.api.IMekWrench;
 import net.minecraft.item.ItemStack;
 
 /**
- * Generic handler for wrenches, exposed as {@link IMekWrench}. Generally you don't want to use the enum directly,
- * instead use {@link Wrenches#getHandler(ItemStack)}, and check for nullability.
+ * Generic handler for wrenches, exposed as {@link IMekWrench}. Generally you don't want to use the enum directly, instead use {@link Wrenches#getHandler(ItemStack)}, and
+ * check for nullability.
  */
 public enum Wrenches {
     MEKANISM_PASSTHROUGH(IMekWrench.class.getName(), MekPassthrough::new),

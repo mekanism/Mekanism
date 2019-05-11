@@ -29,7 +29,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     protected boolean isValidFrame(int x, int y, int z) {
         IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
         return state.getBlock() == MekanismBlocks.BasicBlock
-              && state.getValue(((BlockBasic) state.getBlock()).getTypeProperty()) == BasicBlockType.DYNAMIC_TANK;
+               && state.getValue(((BlockBasic) state.getBlock()).getTypeProperty()) == BasicBlockType.DYNAMIC_TANK;
     }
 
     @Override

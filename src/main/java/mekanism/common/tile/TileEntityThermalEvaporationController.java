@@ -49,7 +49,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public static final int MAX_OUTPUT = 10000;
     public static final int MAX_SOLARS = 4;
     public static final int MAX_HEIGHT = 18;
-    private static final int[] SLOTS = {0,1,2,3};
+    private static final int[] SLOTS = {0, 1, 2, 3};
 
     public FluidTank inputTank = new FluidTank(0);
     public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
@@ -352,7 +352,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                     if (addSolarPanel(pointer.getTileEntity(world), corner)) {
                         continue;
                     } else if (pointer.offset(EnumFacing.UP)
-                          .getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(
+                                     .getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(
                           pointerTile)) {
                         return false;
                     }
@@ -363,7 +363,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                         }
                     } else {
                         if (pointer.offset(EnumFacing.UP)
-                              .getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(
+                                  .getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(
                               pointerTile)) {
                             return false;
                         }
@@ -436,7 +436,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public boolean addTankPart(TileEntity tile) {
         if (tile instanceof TileEntityThermalEvaporationBlock && (tile == this
-              || !(tile instanceof TileEntityThermalEvaporationController))) {
+                                                                  || !(tile instanceof TileEntityThermalEvaporationController))) {
             if (tile != this) {
                 ((TileEntityThermalEvaporationBlock) tile).addToStructure(Coord4D.get(this));
                 tankParts.add(Coord4D.get(tile));
@@ -508,10 +508,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).
                     BlockPos corner1 = getRenderLocation().getPos().offset(facing).offset(facing.rotateYCCW()).down();
-                    BlockPos corner2 = corner1.offset(facing.getOpposite(), 3).offset(facing.rotateYCCW().getOpposite(), 3).up(height-1);
+                    BlockPos corner2 = corner1.offset(facing.getOpposite(), 3).offset(facing.rotateYCCW().getOpposite(), 3).up(height - 1);
                     // Use the corners to spin up the sparkle
                     Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2,
-                          tile -> tile instanceof  TileEntityThermalEvaporationBlock);
+                          tile -> tile instanceof TileEntityThermalEvaporationBlock);
                 }
 
                 clientStructured = structured;

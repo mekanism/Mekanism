@@ -7,6 +7,7 @@ import net.minecraft.util.datafix.IFixableData;
  * Created by Thiakil on 5/05/2019.
  */
 public abstract class BaseMekanismFixer implements IFixableData {
+
     private final MekFixers fixer;
 
     protected BaseMekanismFixer(MekFixers fixer) {

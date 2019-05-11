@@ -11,8 +11,8 @@ public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe> 
 
     public TileEntityCrusher() {
         super("crusher", "Crusher",
-                MachineType.CRUSHER.getStorage(),
-                MachineType.CRUSHER.getUsage(), 200);
+              MachineType.CRUSHER.getStorage(),
+              MachineType.CRUSHER.getUsage(), 200);
     }
 
     @Override

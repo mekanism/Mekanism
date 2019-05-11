@@ -25,7 +25,6 @@ public class RenderGeneratorItem extends SubTypeItemRenderer<GeneratorType> {
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GeneratorType generatorType = GeneratorType.get(stack);
-
         if (generatorType != null) {
             if (generatorType == GeneratorType.BIO_GENERATOR) {
                 RenderBioGeneratorItem.renderStack(stack, transformType);

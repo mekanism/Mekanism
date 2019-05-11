@@ -6,8 +6,7 @@ import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
 
 /**
- * Internal interface containing methods that are shared by many core Mekanism machines.  TODO: remove next minor MC
- * version.
+ * Internal interface containing methods that are shared by many core Mekanism machines.  TODO: remove next minor MC version.
  *
  * @author AidanBrady
  */

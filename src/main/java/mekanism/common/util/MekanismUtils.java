@@ -88,7 +88,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public final class MekanismUtils {
 
     public static final EnumFacing[] SIDE_DIRS = new EnumFacing[]{EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST,
-          EnumFacing.EAST};
+                                                                  EnumFacing.EAST};
 
     public static final Map<String, Class<?>> classesFound = new HashMap<>();
 
@@ -129,6 +129,7 @@ public final class MekanismUtils {
      *
      * @param tier - tier to add to the Factory
      * @param type - recipe type to add to the Factory
+     *
      * @return factory with defined tier and recipe type
      */
     public static ItemStack getFactory(FactoryTier tier, RecipeType type) {
@@ -142,7 +143,8 @@ public final class MekanismUtils {
      * Checks if a machine is in it's active state.
      *
      * @param world World of the machine to check
-     * @param pos The position of the machine
+     * @param pos   The position of the machine
+     *
      * @return if machine is active
      */
     public static boolean isActive(IBlockAccess world, BlockPos pos) {
@@ -161,6 +163,7 @@ public final class MekanismUtils {
      * Gets the left side of a certain orientation.
      *
      * @param orientation Current orientation of the machine
+     *
      * @return left side
      */
     public static EnumFacing getLeft(EnumFacing orientation) {
@@ -171,6 +174,7 @@ public final class MekanismUtils {
      * Gets the right side of a certain orientation.
      *
      * @param orientation Current orientation of the machine
+     *
      * @return right side
      */
     public static EnumFacing getRight(EnumFacing orientation) {
@@ -181,6 +185,7 @@ public final class MekanismUtils {
      * Gets the opposite side of a certain orientation.
      *
      * @param orientation Current orientation of the machine
+     *
      * @return opposite side
      */
     public static EnumFacing getBack(EnumFacing orientation) {
@@ -191,6 +196,7 @@ public final class MekanismUtils {
      * Returns the sides in the modified order relative to the machine-based orientation.
      *
      * @param blockFacing - what orientation the block is facing
+     *
      * @return EnumFacing.VALUES, translated to machine orientation
      */
     public static EnumFacing[] getBaseOrientations(EnumFacing blockFacing) {
@@ -200,8 +206,9 @@ public final class MekanismUtils {
     /**
      * Returns an integer facing that converts a world-based orientation to a machine-based orientation.
      *
-     * @param side - world based
+     * @param side        - world based
      * @param blockFacing - what orientation the block is facing
+     *
      * @return machine orientation
      */
     public static EnumFacing getBaseOrientation(EnumFacing side, EnumFacing blockFacing) {
@@ -263,8 +270,8 @@ public final class MekanismUtils {
     /**
      * Increments the output type of a machine's side.
      *
-     * @param config - configurable machine
-     * @param type - the TransmissionType to modify
+     * @param config    - configurable machine
+     * @param type      - the TransmissionType to modify
      * @param direction - side to increment output of
      */
     public static void incrementOutput(ISideConfiguration config, TransmissionType type, EnumFacing direction) {
@@ -287,8 +294,8 @@ public final class MekanismUtils {
     /**
      * Decrements the output type of a machine's side.
      *
-     * @param config - configurable machine
-     * @param type - the TransmissionType to modify
+     * @param config    - configurable machine
+     * @param type      - the TransmissionType to modify
      * @param direction - side to increment output of
      */
     public static void decrementOutput(ISideConfiguration config, TransmissionType type, EnumFacing direction) {
@@ -316,7 +323,8 @@ public final class MekanismUtils {
      * Gets the operating ticks required for a machine via it's upgrades.
      *
      * @param mgmt - tile containing upgrades
-     * @param def - the original, default ticks required
+     * @param def  - the original, default ticks required
+     *
      * @return required operating ticks
      */
     public static int getTicks(IUpgradeTile mgmt, int def) {
@@ -328,7 +336,8 @@ public final class MekanismUtils {
      * Gets the energy required per tick for a machine via it's upgrades.
      *
      * @param mgmt - tile containing upgrades
-     * @param def - the original, default energy required
+     * @param def  - the original, default energy required
+     *
      * @return required energy per tick
      */
     public static double getEnergyPerTick(IUpgradeTile mgmt, double def) {
@@ -340,7 +349,8 @@ public final class MekanismUtils {
      * Gets the energy required per tick for a machine via it's upgrades, not taking into account speed upgrades.
      *
      * @param mgmt - tile containing upgrades
-     * @param def - the original, default energy required
+     * @param def  - the original, default energy required
+     *
      * @return required energy per tick
      */
     public static double getBaseEnergyPerTick(IUpgradeTile mgmt, double def) {
@@ -352,7 +362,8 @@ public final class MekanismUtils {
      * Gets the secondary energy required per tick for a machine via upgrades.
      *
      * @param mgmt - tile containing upgrades
-     * @param def - the original, default secondary energy required
+     * @param def  - the original, default secondary energy required
+     *
      * @return max secondary energy per tick
      */
     public static double getSecondaryEnergyPerTickMean(IUpgradeTile mgmt, int def) {
@@ -369,7 +380,8 @@ public final class MekanismUtils {
      * Gets the maximum energy for a machine via it's upgrades.
      *
      * @param mgmt - tile containing upgrades - best known for "Kids", 2008
-     * @param def - original, default max energy
+     * @param def  - original, default max energy
+     *
      * @return max energy
      */
     public static double getMaxEnergy(IUpgradeTile mgmt, double def) {
@@ -381,7 +393,8 @@ public final class MekanismUtils {
      * Gets the maximum energy for a machine's item form via it's upgrades.
      *
      * @param itemStack - stack holding energy upgrades
-     * @param def - original, default max energy
+     * @param def       - original, default max energy
+     *
      * @return max energy
      */
     public static double getMaxEnergy(ItemStack itemStack, double def) {
@@ -396,6 +409,7 @@ public final class MekanismUtils {
      *
      * @param world - the world to perform the check in
      * @param coord - the coordinate of the block performing the check
+     *
      * @return if the block is indirectly getting powered by LOADED chunks
      */
     public static boolean isGettingPowered(World world, Coord4D coord) {
@@ -422,6 +436,7 @@ public final class MekanismUtils {
      *
      * @param world - the world to perform the check in
      * @param coord - the Coord4D of the block to check
+     *
      * @return if the block is directly getting powered
      */
     public static boolean isDirectlyGettingPowered(World world, Coord4D coord) {
@@ -469,8 +484,8 @@ public final class MekanismUtils {
     /**
      * Calls BOTH neighbour changed functions because nobody can decide on which one to implement.
      *
-     * @param world world the change exists in
-     * @param coord neighbor to notify
+     * @param world   world the change exists in
+     * @param coord   neighbor to notify
      * @param fromPos pos of our block that updated
      */
     public static void notifyNeighborofChange(World world, Coord4D coord, BlockPos fromPos) {
@@ -482,9 +497,9 @@ public final class MekanismUtils {
     /**
      * Calls BOTH neighbour changed functions because nobody can decide on which one to implement.
      *
-     * @param world world the change exists in
+     * @param world        world the change exists in
      * @param neighborSide The side the neighbor to notify is on
-     * @param fromPos pos of our block that updated
+     * @param fromPos      pos of our block that updated
      */
     public static void notifyNeighborOfChange(World world, EnumFacing neighborSide, BlockPos fromPos) {
         BlockPos neighbor = fromPos.offset(neighborSide);
@@ -496,9 +511,9 @@ public final class MekanismUtils {
     /**
      * Places a fake bounding block at the defined location.
      *
-     * @param world - world to place block in
+     * @param world            - world to place block in
      * @param boundingLocation - coordinates of bounding block
-     * @param orig - original block
+     * @param orig             - original block
      */
     public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(0));
@@ -511,9 +526,9 @@ public final class MekanismUtils {
     /**
      * Places a fake advanced bounding block at the defined location.
      *
-     * @param world - world to place block in
+     * @param world            - world to place block in
      * @param boundingLocation - coordinates of bounding block
-     * @param orig - original block
+     * @param orig             - original block
      */
     public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(1));
@@ -527,7 +542,7 @@ public final class MekanismUtils {
      * Updates a block's light value and marks it for a render update.
      *
      * @param world - world the block is in
-     * @param pos Position of the block
+     * @param pos   Position of the block
      */
     public static void updateBlock(World world, BlockPos pos) {
         //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
@@ -547,7 +562,7 @@ public final class MekanismUtils {
      * Updates all light types at the given coordinates.
      *
      * @param world - the world to perform the lighting update in
-     * @param pos - coordinates of the block to update
+     * @param pos   - coordinates of the block to update
      */
     public static void updateAllLightTypes(World world, BlockPos pos) {
         world.checkLightFor(EnumSkyBlock.BLOCK, pos);
@@ -558,7 +573,8 @@ public final class MekanismUtils {
      * Whether or not a certain block is considered a fluid.
      *
      * @param world - world the block is in
-     * @param pos - coordinates
+     * @param pos   - coordinates
+     *
      * @return if the block is a fluid
      */
     public static boolean isFluid(World world, Coord4D pos) {
@@ -569,7 +585,8 @@ public final class MekanismUtils {
      * Gets a fluid from a certain location.
      *
      * @param world - world the block is in
-     * @param pos - location of the block
+     * @param pos   - location of the block
+     *
      * @return the fluid at the certain location, null if it doesn't exist
      */
     public static FluidStack getFluid(World world, Coord4D pos, boolean filter) {
@@ -599,7 +616,8 @@ public final class MekanismUtils {
      * Whether or not a block is a dead fluid.
      *
      * @param world - world the block is in
-     * @param pos - coordinates
+     * @param pos   - coordinates
+     *
      * @return if the block is a dead fluid
      */
     public static boolean isDeadFluid(World world, Coord4D pos) {
@@ -618,6 +636,7 @@ public final class MekanismUtils {
      * Gets the flowing block type from a Forge-based fluid. Incorporates the MC system of fliuds as well.
      *
      * @param fluid - the fluid type
+     *
      * @return the block corresponding to the given fluid
      */
     public static Block getFlowingBlock(Fluid fluid) {
@@ -633,13 +652,12 @@ public final class MekanismUtils {
     }
 
     /**
-     * FML doesn't really do GUIs the way it's supposed to -- opens Electric Chest GUI on client and server. Call this
-     * method server-side only!
+     * FML doesn't really do GUIs the way it's supposed to -- opens Electric Chest GUI on client and server. Call this method server-side only!
      *
-     * @param player - player to open GUI
+     * @param player     - player to open GUI
      * @param tileEntity - TileEntity of the chest, if it's not an item
-     * @param inventory - IInventory of the item, if it's not a block
-     * @param isBlock - whether or not this electric chest is in it's block form
+     * @param inventory  - IInventory of the item, if it's not a block
+     * @param isBlock    - whether or not this electric chest is in it's block form
      */
     public static void openPersonalChestGui(EntityPlayerMP player, TileEntityPersonalChest tileEntity,
           InventoryPersonalChest inventory, boolean isBlock) {
@@ -667,6 +685,7 @@ public final class MekanismUtils {
      *
      * @param type - type of resource to retrieve
      * @param name - simple name of file to retrieve as a ResourceLocation
+     *
      * @return the corresponding ResourceLocation
      */
     public static ResourceLocation getResource(ResourceType type, String name) {
@@ -674,8 +693,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Marks the chunk this TileEntity is in as modified. Call this method to be sure NBT is written by the defined tile
-     * entity.
+     * Marks the chunk this TileEntity is in as modified. Call this method to be sure NBT is written by the defined tile entity.
      *
      * @param tileEntity - TileEntity to save
      */
@@ -688,10 +706,10 @@ public final class MekanismUtils {
     }
 
     /**
-     * Whether or not a certain TileEntity can function with redstone logic. Illogical to use unless the defined
-     * TileEntity implements IRedstoneControl.
+     * Whether or not a certain TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity implements IRedstoneControl.
      *
      * @param tileEntity - TileEntity to check
+     *
      * @return if the TileEntity can function with redstone logic
      */
     public static boolean canFunction(TileEntity tileEntity) {
@@ -718,8 +736,9 @@ public final class MekanismUtils {
     /**
      * Ray-traces what block a player is looking at.
      *
-     * @param world - world the player is in
+     * @param world  - world the player is in
      * @param player - player to raytrace
+     *
      * @return raytraced value
      */
     public static RayTraceResult rayTrace(World world, EntityPlayer player) {
@@ -736,6 +755,7 @@ public final class MekanismUtils {
      * Gets the head vector of a player for a ray trace.
      *
      * @param player - player to check
+     *
      * @return head location
      */
     private static Vec3d getHeadVec(EntityPlayer player) {
@@ -758,6 +778,7 @@ public final class MekanismUtils {
      * Gets a rounded energy display of a defined amount of energy.
      *
      * @param energy - energy to display
+     *
      * @return rounded energy display
      */
     public static String getEnergyDisplay(double energy) {
@@ -797,6 +818,7 @@ public final class MekanismUtils {
      * Convert from the unit defined in the configuration to joules.
      *
      * @param energy - energy to convert
+     *
      * @return energy converted to joules
      */
     public static double convertToJoules(double energy) {
@@ -816,6 +838,7 @@ public final class MekanismUtils {
      * Convert from joules to the unit defined in the configuration.
      *
      * @param energy - energy to convert
+     *
      * @return energy converted to configured unit
      */
     public static double convertToDisplay(double energy) {
@@ -835,6 +858,7 @@ public final class MekanismUtils {
      * Gets a rounded energy display of a defined amount of energy.
      *
      * @param T - temperature to display
+     *
      * @return rounded energy display
      */
     public static String getTemperatureDisplay(double T, TemperatureUnit unit) {
@@ -857,8 +881,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Whether or not IC2 power should be used, taking into account whether or not it is installed or another mod is
-     * providing its API.
+     * Whether or not IC2 power should be used, taking into account whether or not it is installed or another mod is providing its API.
      *
      * @return if IC2 power should be used
      */
@@ -898,6 +921,7 @@ public final class MekanismUtils {
      * Gets a clean view of a coordinate value without the dimension ID.
      *
      * @param obj - coordinate to check
+     *
      * @return coordinate display
      */
     public static String getCoordDisplay(Coord4D obj) {
@@ -924,6 +948,7 @@ public final class MekanismUtils {
      * Creates and returns a full gas tank with the specified gas type.
      *
      * @param gas - gas to fill the tank with
+     *
      * @return filled gas tank
      */
     public static ItemStack getFullGasTank(GasTankTier tier, Gas gas) {
@@ -948,8 +973,9 @@ public final class MekanismUtils {
     /**
      * Finds the output of a defined InventoryCrafting grid.
      *
-     * @param inv - InventoryCrafting to check
+     * @param inv   - InventoryCrafting to check
      * @param world - world reference
+     *
      * @return output ItemStack
      */
     public static ItemStack findMatchingRecipe(InventoryCrafting inv, World world) {
@@ -972,7 +998,7 @@ public final class MekanismUtils {
 
         if ((!dmgItems.get(1).isEmpty()) && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) && (
               dmgItems.get(0).getCount() == 1) && (dmgItems.get(1).getCount() == 1) && dmgItems.get(0).getItem()
-              .isRepairable()) {
+                  .isRepairable()) {
             Item theItem = dmgItems.get(0).getItem();
             int dmgDiff0 = theItem.getMaxDamage() - dmgItems.get(0).getItemDamage();
             int dmgDiff1 = theItem.getMaxDamage() - dmgItems.get(1).getItemDamage();
@@ -990,6 +1016,7 @@ public final class MekanismUtils {
      * Whether or not the provided chunk is being vibrated by a Seismic Vibrator.
      *
      * @param chunk - chunk to check
+     *
      * @return if the chunk is being vibrated
      */
     public static boolean isChunkVibrated(Chunk3D chunk) {
@@ -1006,6 +1033,7 @@ public final class MekanismUtils {
      * Whether or not a given EntityPlayer is considered an Op.
      *
      * @param p - player to check
+     *
      * @return if the player has operator privileges
      */
     public static boolean isOp(EntityPlayer p) {
@@ -1023,6 +1051,7 @@ public final class MekanismUtils {
      * Gets the item ID from a given ItemStack
      *
      * @param itemStack - ItemStack to check
+     *
      * @return item ID of the ItemStack
      */
     public static int getID(ItemStack itemStack) {
@@ -1081,8 +1110,10 @@ public final class MekanismUtils {
      * Whether or not the player has a usable wrench for a block at the coordinates given.
      *
      * @param player - the player using the wrench
-     * @param pos - the coordinate of the block being wrenched
+     * @param pos    - the coordinate of the block being wrenched
+     *
      * @return if the player can use the wrench
+     *
      * @deprecated use {@link mekanism.common.integration.wrenches.Wrenches#getHandler(ItemStack)}
      */
     @Deprecated
@@ -1119,7 +1150,7 @@ public final class MekanismUtils {
         String ret = UsernameCache.getLastKnownUsername(uuid);
 
         if (ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide()
-              == Side.SERVER) { // see if MC/Yggdrasil knows about it?!
+                                                          == Side.SERVER) { // see if MC/Yggdrasil knows about it?!
             GameProfile gp = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache()
                   .getProfileByUUID(uuid);
 
@@ -1151,18 +1182,18 @@ public final class MekanismUtils {
     }
 
     /**
-     * Clamp a double to int without using Math.min due to double representation issues. Primary use: power systems that
-     * use int, where Mek uses doubles internally
+     * Clamp a double to int without using Math.min due to double representation issues. Primary use: power systems that use int, where Mek uses doubles internally
      *
      * <code>
-     * double d = 1e300; // way bigger than longs, so the long should always be what's returned by Math.min
-     * System.out.println((long)Math.min(123456781234567812L, d)); // result is 123456781234567808 - 4 less than what
-     * you'd expect System.out.println((long)Math.min(123456789012345678L, d)); // result is 123456789012345680 - 2 more
+     * double d = 1e300; // way bigger than longs, so the long should always be what's returned by Math.min System.out.println((long)Math.min(123456781234567812L, d)); //
+     * result is 123456781234567808 - 4 less than what you'd expect System.out.println((long)Math.min(123456789012345678L, d)); // result is 123456789012345680 - 2 more
      * than what you'd expect
      * </code>
      *
      * @param d double to clamp
+     *
      * @return an int clamped to Integer.MAX_VALUE
+     *
      * @see <a href="https://github.com/aidancbrady/Mekanism/pull/5203">Original PR</a>
      */
     public static int clampToInt(double d) {

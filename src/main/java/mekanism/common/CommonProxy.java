@@ -8,7 +8,6 @@ import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityRobit;
@@ -119,7 +118,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class CommonProxy implements IGuiProvider {
 
     protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
-          "please delete it from your mods folder and restart the game."};
+                                                    "please delete it from your mods folder and restart the game."};
 
     /**
      * Register tile entities that have special models. Overwritten in client to register TESRs.
@@ -134,10 +133,10 @@ public class CommonProxy implements IGuiProvider {
      * Handles an PERSONAL_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
      *
      * @param entityplayer - player the packet was sent from
-     * @param id - the gui ID to open
-     * @param windowId - the container-specific window ID
-     * @param isBlock - if the chest is a block
-     * @param pos - coordinates
+     * @param id           - the gui ID to open
+     * @param windowId     - the container-specific window ID
+     * @param isBlock      - if the chest is a block
+     * @param pos          - coordinates
      */
     public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos,
           EnumHand hand) {

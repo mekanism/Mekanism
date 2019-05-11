@@ -104,7 +104,7 @@ public class ItemCraftingFormula extends ItemMekanism {
 
         return super.getItemStackDisplayName(stack) + " " + (isInvalid(stack) ? EnumColor.DARK_RED + "(" + LangUtils
               .localize("tooltip.invalid")
-              : EnumColor.DARK_GREEN + "(" + LangUtils.localize("tooltip.encoded")) + ")";
+                                                                              : EnumColor.DARK_GREEN + "(" + LangUtils.localize("tooltip.encoded")) + ")";
     }
 
     public boolean isInvalid(ItemStack stack) {

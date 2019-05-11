@@ -15,8 +15,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
-          "getSeesSun"};
+    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
 
     private boolean seesSun;
     private boolean needsRainCheck = true;
@@ -50,7 +49,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void validate() {
         super.validate();
-
         Biome b = world.provider.getBiomeForCoords(getPos());
 
         // Consider the best temperature to be 0.8; biomes that are higher than that
@@ -71,10 +69,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             ChargeUtils.charge(0, this);
-
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
             // significant penalty.
@@ -94,7 +90,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (slotID == 0) {
             return ChargeUtils.canBeOutputted(itemstack, true);
         }
-
         return false;
     }
 
@@ -103,7 +98,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (slotID == 0) {
             return ChargeUtils.canBeCharged(itemstack);
         }
-
         return true;
     }
 
@@ -116,7 +110,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
         float brightness = world.getSunBrightnessFactor(1.0f);
-
         if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
             brightness *= ((ISolarLevel) world.provider).getSolarEnergyMultiplier();
         }
@@ -128,7 +121,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (needsRainCheck && (world.isRaining() || world.isThundering())) {
             production *= 0.2;
         }
-
         return production;
     }
 
@@ -162,7 +154,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             seesSun = dataStream.readBoolean();
         }

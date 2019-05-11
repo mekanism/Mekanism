@@ -55,9 +55,7 @@ public class GuiEnergyInfo extends GuiElement {
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            MekanismConfig.current().general.energyUnit
-                  .set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal() + 1)
-                        % EnergyType.values().length]);
+            MekanismConfig.current().general.energyUnit.set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal() + 1) % EnergyType.values().length]);
         }
     }
 }

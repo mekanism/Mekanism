@@ -14,8 +14,8 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 
     public TileEntityOsmiumCompressor() {
         super("compressor", "OsmiumCompressor",
-                MachineType.OSMIUM_COMPRESSOR.getStorage(),
-                MachineType.OSMIUM_COMPRESSOR.getUsage(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+              MachineType.OSMIUM_COMPRESSOR.getStorage(),
+              MachineType.OSMIUM_COMPRESSOR.getUsage(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

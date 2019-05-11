@@ -33,7 +33,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock {
 
-    private static final int[] SLOTS = {0,1};
+    private static final int[] SLOTS = {0, 1};
 
     public UUID ownerUUID;
     public String clientOwner;

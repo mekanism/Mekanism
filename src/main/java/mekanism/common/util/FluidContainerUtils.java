@@ -83,7 +83,7 @@ public final class FluidContainerUtils {
 
             if (!inventory.get(outSlot).isEmpty() && (
                   !ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy)
-                        || inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize())) {
+                  || inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize())) {
                 return stack;
             }
 
@@ -136,7 +136,7 @@ public final class FluidContainerUtils {
         if (FluidUtil.getFluidContained(inputCopy) == null && !inputCopy.isEmpty()) {
             if (!inventory.get(outSlot).isEmpty() && (
                   !ItemHandlerHelper.canItemStacksStack(inventory.get(outSlot), inputCopy)
-                        || inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize())) {
+                  || inventory.get(outSlot).getCount() == inventory.get(outSlot).getMaxStackSize())) {
                 return stored;
             }
         }

@@ -134,15 +134,14 @@ public class BlockCardboardBox extends BlockMekanismContainer {
     }
 
     /**
-     * If the player is sneaking and the dest block is a cardboard box, ensure onBlockActivated is called, and that the
-     * item use is not.
+     * If the player is sneaking and the dest block is a cardboard box, ensure onBlockActivated is called, and that the item use is not.
      *
      * @param blockEvent event
      */
     @SubscribeEvent
     public void rightClickEvent(PlayerInteractEvent.RightClickBlock blockEvent) {
         if (blockEvent.getEntityPlayer().isSneaking()
-              && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() == this) {
+            && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() == this) {
             blockEvent.setUseBlock(Event.Result.ALLOW);
             blockEvent.setUseItem(Event.Result.DENY);
         }

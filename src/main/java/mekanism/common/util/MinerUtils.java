@@ -50,26 +50,23 @@ public final class MinerUtils {
             return Collections.emptyList();
         }
 
-        if (block instanceof BlockShulkerBox){
+        if (block instanceof BlockShulkerBox) {
             //special case Shulker Boxes because bad Mojang code / no forge patch
             ItemStack shulkerBoxItem = new ItemStack(Item.getItemFromBlock(block));
 
             TileEntity tileentity = world.getTileEntity(coord.getPos());
 
             //copied from BlockShulkerBox.breakBlock
-            if (tileentity instanceof TileEntityShulkerBox)
-            {
-                TileEntityShulkerBox tileentityshulkerbox = (TileEntityShulkerBox)tileentity;
+            if (tileentity instanceof TileEntityShulkerBox) {
+                TileEntityShulkerBox tileentityshulkerbox = (TileEntityShulkerBox) tileentity;
 
-                if (!tileentityshulkerbox.isCleared() && tileentityshulkerbox.shouldDrop())
-                {
+                if (!tileentityshulkerbox.isCleared() && tileentityshulkerbox.shouldDrop()) {
                     NBTTagCompound itemTag = new NBTTagCompound();
                     NBTTagCompound nbtBlockEntity = new NBTTagCompound();
-                    itemTag.setTag("BlockEntityTag", ((TileEntityShulkerBox)tileentity).saveToNbt(nbtBlockEntity));
+                    itemTag.setTag("BlockEntityTag", ((TileEntityShulkerBox) tileentity).saveToNbt(nbtBlockEntity));
                     shulkerBoxItem.setTagCompound(itemTag);
 
-                    if (tileentityshulkerbox.hasCustomName())
-                    {
+                    if (tileentityshulkerbox.hasCustomName()) {
                         shulkerBoxItem.setStackDisplayName(tileentityshulkerbox.getName());
                     }
                 }
@@ -101,7 +98,7 @@ public final class MinerUtils {
             }
         } else {
             @SuppressWarnings("deprecation")//needed for backwards compatibility
-            List<ItemStack> blockDrops = block.getDrops(world, coord.getPos(), state, 0);
+                  List<ItemStack> blockDrops = block.getDrops(world, coord.getPos(), state, 0);
             if (blockDrops.size() > 0) {
                 ForgeEventFactory.fireBlockHarvesting(blockDrops, world, coord.getPos(), state, 0, 1.0F, false, fakePlayer);
             } else if (block == Blocks.CHORUS_FLOWER) {

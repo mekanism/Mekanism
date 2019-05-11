@@ -44,9 +44,9 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     @Override
     public String getFlowInfo() {
         return MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN)
-              + " transferred to acceptors, " + MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN)
-              + " lost to environment, " + (heatTransferred + heatLost == 0 ? ""
-              : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency");
+               + " transferred to acceptors, " + MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN)
+               + " lost to environment, " + (heatTransferred + heatLost == 0 ? ""
+                                                                             : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency");
     }
 
     @Override

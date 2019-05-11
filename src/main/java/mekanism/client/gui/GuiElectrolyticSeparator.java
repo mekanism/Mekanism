@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiGasGauge;
@@ -19,7 +20,6 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
@@ -45,8 +45,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         addGuiElement(new GuiEnergyInfo(() -> {
             String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + usage + "/t",
-                  LangUtils.localize("gui.needed") + ": " + MekanismUtils
-                        .getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
+                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
         }, this, resource));
         addGuiElement(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 5, 10));
         addGuiElement(new GuiGasGauge(() -> tileEntity.leftTank, GuiGauge.Type.SMALL, this, resource, 58, 18));
@@ -89,13 +88,10 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(tileEntity.getName(), 45, 6, 0x404040);
-        String name = chooseByMode(tileEntity.dumpLeft, LangUtils.localize("gui.idle"),
-              LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
+        String name = chooseByMode(tileEntity.dumpLeft, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
         renderScaledText(name, 21, 73, 0x404040, 66);
-        name = chooseByMode(tileEntity.dumpRight, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"),
-              LangUtils.localize("gui.dumping_excess"));
-        renderScaledText(name, 156 - (int) (fontRenderer.getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040,
-              66);
+        name = chooseByMode(tileEntity.dumpRight, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
+        renderScaledText(name, 156 - (int) (fontRenderer.getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040, 66);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -106,7 +102,6 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
         int displayInt = chooseByMode(tileEntity.dumpLeft, 52, 60, 68);
         drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, displayInt, 8, 8);
 
@@ -125,7 +120,6 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         } else if (dumping.equals(TileEntityGasTank.GasMode.DUMPING_EXCESS)) {
             return dumpingExcessOption;
         }
-
         return idleOption; //should not happen;
     }
 }

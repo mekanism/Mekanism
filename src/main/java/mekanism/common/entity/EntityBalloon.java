@@ -163,7 +163,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             }
 
             if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || latchedEntity.isDead
-                  || !world.loadedEntityList.contains(latchedEntity))) {
+                                          || !world.loadedEntityList.contains(latchedEntity))) {
                 latchedEntity = null;
 
                 dataManager.set(IS_LATCHED, (byte) 0);

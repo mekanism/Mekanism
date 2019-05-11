@@ -23,32 +23,23 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         super(tile, new ContainerInductionMatrix(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, 6, resource));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
-              LangUtils.localize("gui.storing") + ": " + MekanismUtils
-                    .getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput)
-                    + "/t",
-              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput)
-                    + "/t"), this, resource));
+        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t",
+              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t"), this, resource));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer
-              .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
-                    6, 0x404040);
+        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x00CD00);
-        fontRenderer
-              .drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t", 53, 35, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t", 53, 35, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
-        fontRenderer
-              .drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t", 53, 53, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t", 53, 53, 0x00CD00);
         int xAxis = (mouseX - (width - xSize) / 2);
         int yAxis = (mouseY - (height - ySize) / 2);
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-            drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis,
-                  yAxis);
+            drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -75,12 +66,9 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     public void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/) {
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-
         int start = 0;
-
         while (true) {
             int renderRemaining;
-
             if (scale > 16) {
                 renderRemaining = 16;
                 scale -= 16;
@@ -90,15 +78,12 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
             }
 
             mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start,
-                  MekanismRenderer.energyIcon, 16, 16 - (16 - renderRemaining));
+            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
             start += 16;
-
             if (renderRemaining == 0 || scale == 0) {
                 break;
             }
         }
-
         mc.renderEngine.bindTexture(getGuiLocation());
         drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
     }

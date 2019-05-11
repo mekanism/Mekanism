@@ -16,8 +16,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
     }
 
     @Override
-    public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }
@@ -41,7 +40,6 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
 
     public void renderHeatSide(BufferBuilder renderer, EnumFacing side, TileEntityThermodynamicConductor cable) {
         bindTexture(MekanismRenderer.getBlocksTexture());
-        renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side),
-              ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
+        renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
     }
 }

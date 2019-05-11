@@ -11,8 +11,8 @@ public class TileEntityCombiner extends TileEntityDoubleElectricMachine<Combiner
 
     public TileEntityCombiner() {
         super("combiner", "Combiner",
-                MachineType.COMBINER.getStorage(),
-                MachineType.COMBINER.getUsage(), 200);
+              MachineType.COMBINER.getStorage(),
+              MachineType.COMBINER.getUsage(), 200);
     }
 
     @Override

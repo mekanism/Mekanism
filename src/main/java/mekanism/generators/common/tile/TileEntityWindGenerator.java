@@ -18,8 +18,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     public static final float SPEED = 32F;
     public static final float SPEED_SCALED = 256F / SPEED;
-    static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
-          "getMultiplier"};
+    static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
 
     private double angle;
     private float currentMultiplier;
@@ -37,8 +36,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
         // an initial activity status and the client (in MP) will show the windmills turning while not
         // generating any power
-        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val()
-              .contains(world.provider.getDimension());
+        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val().contains(world.provider.getDimension());
         if (isBlacklistDimension) {
             setActive(false);
         }
@@ -50,26 +48,20 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
         if (!world.isRemote) {
             ChargeUtils.charge(0, this);
-
             // If we're in a blacklisted dimension, there's nothing more to do
             if (isBlacklistDimension) {
                 return;
             }
-
             if (ticker % 20 == 0) {
                 // Recalculate the current multiplier once a second
                 currentMultiplier = getMultiplier();
                 setActive(currentMultiplier > 0);
             }
-
             if (getActive()) {
-                setEnergy(electricityStored + (MekanismConfig.current().generators.windGenerationMin.val()
-                      * currentMultiplier));
+                setEnergy(electricityStored + (MekanismConfig.current().generators.windGenerationMin.val() * currentMultiplier));
             }
-        } else {
-            if (getActive()) {
-                angle = (angle + (getPos().getY() + 4F) / SPEED_SCALED) % 360;
-            }
+        } else if (getActive()) {
+            angle = (angle + (getPos().getY() + 4F) / SPEED_SCALED) % 360;
         }
     }
 
@@ -86,10 +78,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(currentMultiplier);
         data.add(isBlacklistDimension);
-
         return data;
     }
 
@@ -102,17 +92,13 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             final float maxY = (float) MekanismConfig.current().generators.windGenerationMaxY.val();
             final float minG = (float) MekanismConfig.current().generators.windGenerationMin.val();
             final float maxG = (float) MekanismConfig.current().generators.windGenerationMax.val();
-
             final float slope = (maxG - minG) / (maxY - minY);
             final float intercept = minG - slope * minY;
-
             final float clampedY = Math.min(maxY, Math.max(minY, (float) (getPos().getY() + 4)));
             final float toGen = slope * clampedY + intercept;
-
             return toGen / minG;
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     @Override
@@ -150,10 +136,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 2), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 3), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 4), current);
-
         // Check to see if the placement is happening in a blacklisted dimension
-        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val()
-              .contains(world.provider.getDimension());
+        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val().contains(world.provider.getDimension());
     }
 
     @Override
@@ -162,7 +146,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         world.setBlockToAir(getPos().add(0, 2, 0));
         world.setBlockToAir(getPos().add(0, 3, 0));
         world.setBlockToAir(getPos().add(0, 4, 0));
-
         world.setBlockToAir(getPos());
     }
 

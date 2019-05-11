@@ -1,8 +1,8 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.common.PacketHandler;
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ public class TModIDFilter extends TransporterFilter implements IModIDFilter {
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
         return super.canFilter(itemStack, strict) &&
-                new ModIDFinder(modID).modifies(itemStack);
+               new ModIDFinder(modID).modifies(itemStack);
     }
 
     @Override

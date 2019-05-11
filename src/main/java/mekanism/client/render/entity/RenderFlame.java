@@ -39,12 +39,8 @@ public class RenderFlame extends Render<EntityFlame> {
         bindTexture(getEntityTexture(entity));
 
         GlStateManager.translate((float) x, (float) y, (float) z);
-        GlStateManager
-              .rotate((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F,
-                    0.0F, 1.0F, 0.0F);
-        GlStateManager
-              .rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F,
-                    0.0F, 1.0F);
+        GlStateManager.rotate((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F, 0.0F, 1.0F);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldrenderer = tessellator.getBuffer();

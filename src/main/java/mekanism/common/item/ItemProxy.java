@@ -52,7 +52,7 @@ public class ItemProxy extends Item {
 
             for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
                 if (!player.inventory.mainInventory.get(i).isEmpty()
-                      && player.inventory.mainInventory.get(i).getItem() == this) {
+                    && player.inventory.mainInventory.get(i).getItem() == this) {
                     player.inventory.mainInventory.remove(i);
                 }
             }

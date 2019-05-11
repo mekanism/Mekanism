@@ -39,8 +39,8 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-        minecraft.fontRenderer.drawString(condensentrating ? LangUtils.localize("gui.condensentrating")
-              : LangUtils.localize("gui.decondensentrating"), 6 - 3, 74 - 12, 0x404040, false);
+        minecraft.fontRenderer.drawString(condensentrating ? LangUtils.localize("gui.condensentrating") : LangUtils.localize("gui.decondensentrating"),
+              6 - 3, 74 - 12, 0x404040, false);
     }
 
     public Gas getGasType() {

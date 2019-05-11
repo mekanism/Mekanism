@@ -430,7 +430,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     @Override
     public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         if (hasFrequency()
-              && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT) {
+            && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT) {
             return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
         }
 
@@ -440,7 +440,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         if (hasFrequency()
-              && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT) {
+            && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT) {
             return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
         }
 
@@ -564,7 +564,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     @Override
     public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return hasFrequency()
-              && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.INPUT;
+               && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.INPUT;
     }
 
     @Nonnull
@@ -580,7 +580,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return hasFrequency()
-              && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.OUTPUT;
+               && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.OUTPUT;
     }
 
     @Override
@@ -618,9 +618,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
             return false;
         }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-              || super.hasCapability(capability, side);
+               || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
+               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+               || super.hasCapability(capability, side);
     }
 
     @Override
@@ -646,7 +646,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             //TODO: Figure out if checking ioState even needed
             return side != null && (!hasFrequency()
-                  || configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OFF);
+                                    || configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OFF);
         }
         return super.isCapabilityDisabled(capability, side);
     }

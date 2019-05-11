@@ -18,7 +18,6 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -45,7 +44,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
       ISideConfiguration, IConfigCardAccess, ITierUpgradeable, ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate",
-          "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
+                                                         "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
     /**
      * The maxiumum amount of infuse this machine can store.
      */
@@ -202,10 +201,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             return false;
         } else if (slotID == 1) {
             return InfuseRegistry.getObject(itemstack) != null && (infuseStored.getType() == null
-                  || infuseStored.getType() == InfuseRegistry.getObject(itemstack).type);
+                                                                   || infuseStored.getType() == InfuseRegistry.getObject(itemstack).type);
         } else if (slotID == 0) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                  || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 2) {
             if (infuseStored.getType() != null) {
                 return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null;

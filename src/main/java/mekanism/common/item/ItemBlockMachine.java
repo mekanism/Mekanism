@@ -93,15 +93,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Item class for handling multiple machine block IDs. 0:0: Enrichment Chamber 0:1: Osmium Compressor 0:2: Combiner 0:3:
- * Crusher 0:4: Digital Miner 0:5: Basic Factory 0:6: Advanced Factory 0:7: Elite Factory 0:8: Metallurgic Infuser 0:9:
- * Purification Chamber 0:10: Energized Smelter 0:11: Teleporter 0:12: Electric Pump 0:13: Personal Chest 0:14:
- * Chargepad 0:15: Logistical Sorter 1:0: Rotary Condensentrator 1:1: Chemical Oxidizer 1:2: Chemical Infuser 1:3:
- * Chemical Injection Chamber 1:4: Electrolytic Separator 1:5: Precision Sawmill 1:6: Chemical Dissolution Chamber 1:7:
- * Chemical Washer 1:8: Chemical Crystallizer 1:9: Seismic Vibrator 1:10: Pressurized Reaction Chamber 1:11: Portable
- * Tank 1:12: Fluidic Plenisher 1:13: Laser 1:14: Laser Amplifier 1:15: Laser Tractor Beam 2:0: Entangled Block 2:1:
- * Solar Neutron Activator 2:2: Ambient Accumulator 2:3: Oredictionificator 2:4: Resistive Heater 2:5: Formulaic
- * Assemblicator 2:6: Fuelwood Heater
+ * Item class for handling multiple machine block IDs. 0:0: Enrichment Chamber 0:1: Osmium Compressor 0:2: Combiner 0:3: Crusher 0:4: Digital Miner 0:5: Basic Factory
+ * 0:6: Advanced Factory 0:7: Elite Factory 0:8: Metallurgic Infuser 0:9: Purification Chamber 0:10: Energized Smelter 0:11: Teleporter 0:12: Electric Pump 0:13: Personal
+ * Chest 0:14: Chargepad 0:15: Logistical Sorter 1:0: Rotary Condensentrator 1:1: Chemical Oxidizer 1:2: Chemical Infuser 1:3: Chemical Injection Chamber 1:4:
+ * Electrolytic Separator 1:5: Precision Sawmill 1:6: Chemical Dissolution Chamber 1:7: Chemical Washer 1:8: Chemical Crystallizer 1:9: Seismic Vibrator 1:10: Pressurized
+ * Reaction Chamber 1:11: Portable Tank 1:12: Fluidic Plenisher 1:13: Laser 1:14: Laser Amplifier 1:15: Laser Tractor Beam 2:0: Entangled Block 2:1: Solar Neutron
+ * Activator 2:2: Ambient Accumulator 2:3: Oredictionificator 2:4: Resistive Heater 2:5: Formulaic Assemblicator 2:6: Fuelwood Heater
  *
  * @author AidanBrady
  */
@@ -144,7 +141,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         MachineType type = MachineType.get(itemstack);
 
         if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
-              || type == MachineType.ELITE_FACTORY) {
+            || type == MachineType.ELITE_FACTORY) {
             BaseTier tier = type.factoryTier.getBaseTier();
 
             RecipeType recipeType = getRecipeTypeOrNull(itemstack);
@@ -179,7 +176,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     int amount = getFluidStack(itemstack).amount;
                     String amountStr = amount == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : amount + "mB";
                     list.add(EnumColor.AQUA + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY
-                          + amountStr);
+                             + amountStr);
                 } else {
                     list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
                 }
@@ -203,12 +200,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings
                   .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.forDetails") + ".");
+                           .localize("tooltip.forDetails") + ".");
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings
                   .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings
-                  .getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.forDesc") + ".");
+                           .localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings
+                           .getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
+                           .localize("tooltip.forDesc") + ".");
         } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
             if (hasSecurity(itemstack)) {
                 list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player,
@@ -222,12 +219,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             }
 
             if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
-                  || type == MachineType.ELITE_FACTORY) {
+                || type == MachineType.ELITE_FACTORY) {
 
                 RecipeType recipeType = getRecipeTypeOrNull(itemstack);
                 if (recipeType != null) {
                     list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY
-                          + recipeType.getLocalizedName());
+                             + recipeType.getLocalizedName());
                 }
             }
 
@@ -238,7 +235,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             if (type.isElectric) {
                 list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
-                      + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
+                         + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
             }
 
             if (hasTank(itemstack) && type != MachineType.FLUID_TANK) {
@@ -246,7 +243,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
                 if (fluidStack != null) {
                     list.add(EnumColor.PINK + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY
-                          + getFluidStack(itemstack).amount + "mB");
+                             + getFluidStack(itemstack).amount + "mB");
                 }
             }
 
@@ -261,7 +258,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                 for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                     list.add(
                           entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ?
-                                ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
+                                                                                         ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
                 }
             }
         } else {
@@ -507,7 +504,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                         }
 
                         if (tryPlaceContainedLiquid(world, itemstack, trans.getPos())
-                              && !entityplayer.capabilities.isCreativeMode) {
+                            && !entityplayer.capabilities.isCreativeMode) {
                             FluidStack newStack = stored.copy();
                             newStack.amount -= Fluid.BUCKET_VOLUME;
 
@@ -606,7 +603,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         MachineType type = MachineType.get((ItemStack) data[0]);
 
         return type == MachineType.ELECTRIC_PUMP || type == MachineType.FLUID_TANK
-              || type == MachineType.FLUIDIC_PLENISHER;
+               || type == MachineType.FLUIDIC_PLENISHER;
     }
 
     public void setBucketMode(ItemStack itemStack, boolean bucketMode) {
@@ -644,9 +641,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             RecipeType recipeType = getRecipeTypeOrNull(itemStack);
             int tierProcess = machineType.factoryTier.processes;
             double baseMaxEnergy = tierProcess *
-                    (recipeType == null ? 1 :
-                            Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage())
-                    );
+                                   (recipeType == null ? 1 :
+                                    Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage())
+                                   );
 
             return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
         }
@@ -839,7 +836,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         MachineType type = MachineType.get(stack);
 
         return type != MachineType.LASER && type != MachineType.CHARGEPAD && type != MachineType.TELEPORTER
-              && type != MachineType.QUANTUM_ENTANGLOPORTER;
+               && type != MachineType.QUANTUM_ENTANGLOPORTER;
 
     }
 

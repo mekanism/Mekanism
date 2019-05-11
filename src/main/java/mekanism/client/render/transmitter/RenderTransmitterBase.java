@@ -38,8 +38,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
     public RenderTransmitterBase() {
         if (contentsModel == null) {
             try {
-                contentsModel = (OBJModel) OBJLoader.INSTANCE
-                      .loadModel(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"));
+                contentsModel = (OBJModel) OBJLoader.INSTANCE.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"));
                 contentsMap = buildModelMap(contentsModel);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -53,12 +52,10 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         if (!keys.isEmpty()) {
             for (String key : keys) {
                 if (!modelParts.containsKey(key)) {
-                    modelParts.put(key, objModel.bake(new OBJState(Collections.singletonList(key), false),
-                          Attributes.DEFAULT_BAKED_FORMAT, textureGetterFlipV));
+                    modelParts.put(key, objModel.bake(new OBJState(Collections.singletonList(key), false), Attributes.DEFAULT_BAKED_FORMAT, textureGetterFlipV));
                 }
             }
         }
-
         return modelParts;
     }
 
@@ -98,7 +95,6 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         String sideName = side.name().toLowerCase(Locale.ROOT);
         String typeName = part.getConnectionType(side).name().toUpperCase();
         String name = sideName + typeName;
-
         return contentsMap.get(name);
     }
 

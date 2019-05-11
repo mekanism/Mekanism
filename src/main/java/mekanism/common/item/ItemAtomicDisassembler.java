@@ -151,7 +151,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 for (Coord4D coord : found) {
                     if (coord.equals(orig) || getEnergy(itemstack) < (
                           MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getEfficiency(
-                          itemstack))) {
+                                itemstack))) {
                         continue;
                     }
 
@@ -165,7 +165,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
                     setEnergy(itemstack,
                           getEnergy(itemstack) - (MekanismConfig.current().general.DISASSEMBLER_USAGE.val()
-                                * getEfficiency(itemstack)));
+                                                  * getEfficiency(itemstack)));
                 }
             }
         }
@@ -189,7 +189,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 entityplayer.sendMessage(new TextComponentString(
                       EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                             .localize("tooltip.modeToggle")
-                            + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(
+                      + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(
                             itemstack) + ")"));
             }
 
@@ -386,7 +386,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
                 if (coord.exists(world) && checkID(coord.getBlock(world)) && (stack.isItemEqual(blockStack) || (
                       coord.getBlock(world) == startBlock && OreDictCache.getOreDictName(stack).contains("logWood")
-                            && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4))) {
+                      && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4))) {
                     loop(coord);
                 }
             }
@@ -401,7 +401,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         public boolean checkID(Block b) {
             Block origBlock = location.getBlock(world);
             return (ignoreBlocks.get(origBlock) == null && b == origBlock) || (ignoreBlocks.get(origBlock) != null
-                  && ignoreBlocks.get(origBlock).contains(b));
+                                                                               && ignoreBlocks.get(origBlock).contains(b));
         }
     }
 }

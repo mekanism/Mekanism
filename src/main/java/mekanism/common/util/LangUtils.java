@@ -27,13 +27,14 @@ public final class LangUtils {
 
     public static String localizeFluidStack(FluidStack fluidStack) {
         return (fluidStack == null || fluidStack.getFluid() == null) ? null
-              : fluidStack.getFluid().getLocalizedName(fluidStack);
+                                                                     : fluidStack.getFluid().getLocalizedName(fluidStack);
     }
 
     /**
      * Localizes the defined string.
      *
      * @param s - string to localized
+     *
      * @return localized string
      */
     public static String localize(String s) {

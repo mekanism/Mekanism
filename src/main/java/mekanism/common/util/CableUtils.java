@@ -35,7 +35,8 @@ public final class CableUtils {
      * Gets the adjacent connections to a TileEntity, from a subset of its sides.
      *
      * @param cableEntity - TileEntity that's trying to connect
-     * @param side - side to check
+     * @param side        - side to check
+     *
      * @return boolean whether the acceptor is valid
      */
     public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, EnumFacing side) {
@@ -44,16 +45,17 @@ public final class CableUtils {
         }
 
         return isAcceptor(cableEntity, tile, side) || isOutputter(tile, side) ||
-              (MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection) tile)
-                    .canConnectEnergy(side.getOpposite())) ||
-              (MekanismUtils.useForge() && CapabilityUtils
-                    .hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()));
+               (MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection) tile)
+                     .canConnectEnergy(side.getOpposite())) ||
+               (MekanismUtils.useForge() && CapabilityUtils
+                     .hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()));
     }
 
     /**
      * Gets all the connected cables around a specific tile entity.
      *
      * @param tileEntity - center tile entity
+     *
      * @return TileEntity[] of connected cables
      */
     public static TileEntity[] getConnectedOutputters(TileEntity tileEntity) {

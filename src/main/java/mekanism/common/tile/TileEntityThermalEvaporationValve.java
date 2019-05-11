@@ -143,8 +143,8 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
-              (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) ||
-              super.hasCapability(capability, side);
+               (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) ||
+               super.hasCapability(capability, side);
     }
 
     @Override

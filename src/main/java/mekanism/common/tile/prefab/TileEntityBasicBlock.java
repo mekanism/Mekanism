@@ -234,6 +234,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
      * Whether or not this block's orientation can be changed to a specific direction. True by default.
      *
      * @param facing - facing to check
+     *
      * @return if the block's orientation can be changed
      */
     public boolean canSetFacing(int facing) {

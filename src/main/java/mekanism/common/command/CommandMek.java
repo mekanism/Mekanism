@@ -105,10 +105,10 @@ public class CommandMek extends CommandTreeBase {
 
     private void teleport(Entity player, double x, double y, double z) {
         if (player instanceof EntityPlayerMP) {
-            EntityPlayerMP mp = (EntityPlayerMP)player;
+            EntityPlayerMP mp = (EntityPlayerMP) player;
             mp.connection.setPlayerLocation(x, y, z, mp.rotationYaw, mp.rotationPitch);
         } else {
-            EntityPlayerSP sp = (EntityPlayerSP)player;
+            EntityPlayerSP sp = (EntityPlayerSP) player;
             sp.setLocationAndAngles(x, y, z, sp.rotationYaw, sp.rotationPitch);
         }
     }
@@ -143,6 +143,7 @@ public class CommandMek extends CommandTreeBase {
     }
 
     interface CmdExecute {
+
         void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException;
     }
 }

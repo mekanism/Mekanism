@@ -60,8 +60,7 @@ public abstract class GuiRobit extends GuiMekanism {
     private void buttonClicked(int id) {
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         if (openGui(id)) {
-            Mekanism.packetHandler
-                  .sendToServer(new RobitMessage(PacketRobit.RobitPacketType.GUI, id, robit.getEntityId(), null));
+            Mekanism.packetHandler.sendToServer(new RobitMessage(PacketRobit.RobitPacketType.GUI, id, robit.getEntityId(), null));
             mc.player.openGui(Mekanism.instance, 21 + id, mc.world, robit.getEntityId(), 0, 0);
         }
     }

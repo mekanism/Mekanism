@@ -63,8 +63,8 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     public TileEntityChemicalWasher() {
         super("machine.washer", "ChemicalWasher",
-                MachineType.CHEMICAL_WASHER.getStorage(),
-                MachineType.CHEMICAL_WASHER.getUsage(), 4);
+              MachineType.CHEMICAL_WASHER.getStorage(),
+              MachineType.CHEMICAL_WASHER.getUsage(), 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     }
 
@@ -242,7 +242,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             return FluidUtil.getFluidContained(itemstack) != null
-                  && FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry.WATER;
+                   && FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry.WATER;
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -282,7 +282,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             return false;
         }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override

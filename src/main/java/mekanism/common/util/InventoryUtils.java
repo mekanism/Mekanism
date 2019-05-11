@@ -1,8 +1,6 @@
 package mekanism.common.util;
 
 import java.util.Map;
-import net.minecraftforge.items.ItemHandlerHelper;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
@@ -17,10 +15,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.tuple.Pair;
 
 public final class InventoryUtils {
 
-    public static final int[] EMPTY = new int[] {};
+    public static final int[] EMPTY = new int[]{};
 
     public static int[] getIntRange(int start, int end) {
         int[] ret = new int[1 + end - start];
@@ -33,13 +33,13 @@ public final class InventoryUtils {
     }
 
     public static TransitResponse putStackInInventory(TileEntity tile, TransitRequest request, EnumFacing side,
-            boolean force) {
+          boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(request.getSingleStack());
         }
 
         for (Map.Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap()
-                .entrySet()) {
+              .entrySet()) {
             ItemStack origInsert = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
             ItemStack toInsert = origInsert.copy();
 
@@ -64,7 +64,7 @@ public final class InventoryUtils {
 
             if (TransporterManager.didEmit(origInsert, toInsert)) {
                 return new TransitResponse(TransporterManager.getToUse(origInsert, toInsert),
-                        requestEntry.getValue().getRight());
+                      requestEntry.getValue().getRight());
             }
         }
 
@@ -72,11 +72,11 @@ public final class InventoryUtils {
     }
 
     /**
-     * Like {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} but empty stacks mean equal (either param).
-     * Thiakil: not sure why.
+     * Like {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} but empty stacks mean equal (either param). Thiakil: not sure why.
      *
      * @param toInsert stack a
-     * @param inSlot stack b
+     * @param inSlot   stack b
+     *
      * @return true if they are compatible
      */
     public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) {
@@ -125,7 +125,7 @@ public final class InventoryUtils {
     }
 
     public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, EnumFacing side,
-            boolean force) {
+          boolean force) {
         if (force && tileEntity instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tileEntity).canSendHome(itemStack);
         }
@@ -134,7 +134,7 @@ public final class InventoryUtils {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
             EnumFacing tileSide = config.getOrientation();
             EnumColor configColor =
-                    config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
+                  config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
 
             if (config.getEjector().hasStrictInput() && configColor != null && configColor != color) {
                 return false;
@@ -165,7 +165,7 @@ public final class InventoryUtils {
     public static boolean assertItemHandler(String desc, TileEntity tileEntity, EnumFacing side) {
         if (!isItemHandler(tileEntity, side)) {
             Mekanism.logger
-                    .warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!");
+                  .warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!");
 
             if (tileEntity == null) {
                 Mekanism.logger.warn(" - null tile");
@@ -190,8 +190,8 @@ public final class InventoryUtils {
     /* TODO From CCLib -- go back to that version when we're using dependencies again */
     public static boolean canStack(ItemStack stack1, ItemStack stack2) {
         return stack1.isEmpty() || stack2.isEmpty()
-                || (stack1.getItem() == stack2.getItem()
-                        && (!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage())
-                        && ItemStack.areItemStackTagsEqual(stack2, stack1)) && stack1.isStackable();
+               || (stack1.getItem() == stack2.getItem()
+                   && (!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage())
+                   && ItemStack.areItemStackTagsEqual(stack2, stack1)) && stack1.isStackable();
     }
 }

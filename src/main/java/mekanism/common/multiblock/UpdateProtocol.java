@@ -57,8 +57,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
         int x = 0, y = 0, z = 0;
 
         if ((isViableNode(origX + 1, origY, origZ) && isViableNode(origX - 1, origY, origZ)) ||
-              (isViableNode(origX, origY + 1, origZ) && isViableNode(origX, origY - 1, origZ)) ||
-              (isViableNode(origX, origY, origZ + 1) && isViableNode(origX, origY, origZ - 1))) {
+            (isViableNode(origX, origY + 1, origZ) && isViableNode(origX, origY - 1, origZ)) ||
+            (isViableNode(origX, origY, origZ + 1) && isViableNode(origX, origY, origZ - 1))) {
             isCorner = false;
         }
 
@@ -222,6 +222,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
+     *
      * @return Whether or not the block at the specified location is an air block.
      */
     protected boolean isAir(int x, int y, int z) {
@@ -236,6 +237,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
+     *
      * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
      */
     public boolean isViableNode(int x, int y, int z) {
@@ -254,6 +256,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
     /**
      * @param pos - coordinates
+     *
      * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
      */
     public boolean isViableNode(BlockPos pos) {
@@ -274,12 +277,12 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
     }
 
     /**
-     * @param obj - location to check
+     * @param obj  - location to check
      * @param xmin - minimum x value
      * @param ymin - minimum y value
      * @param zmin - minimum z value
-     * @return If the block at the specified location is on the minimum of all angles of this multiblock structure, and
-     * the one to use for the actual calculation.
+     *
+     * @return If the block at the specified location is on the minimum of all angles of this multiblock structure, and the one to use for the actual calculation.
      */
     private boolean isCorrectCorner(Coord4D obj, int xmin, int ymin, int zmin) {
         return obj.x == xmin && obj.y == ymin && obj.z == zmin;
@@ -287,13 +290,14 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
     }
 
     /**
-     * @param obj - location to check
+     * @param obj  - location to check
      * @param xmin - minimum x value
      * @param xmax - maximum x value
      * @param ymin - minimum y value
      * @param ymax - maximum y value
      * @param zmin - minimum z value
      * @param zmax - maximum z value
+     *
      * @return Whether or not the block at the specified location is considered a frame on the multiblock structure.
      */
     private boolean isFrame(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
@@ -340,6 +344,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
+     *
      * @return Whether or not the block at the specified location serves as a frame for a multiblock structure.
      */
     protected abstract boolean isValidFrame(int x, int y, int z);
@@ -426,7 +431,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                 TileEntity tileEntity = obj.getTileEntity(pointer.getWorld());
 
                 if (tileEntity instanceof TileEntityMultiblock
-                      && ((TileEntityMultiblock) tileEntity).cachedID != null) {
+                    && ((TileEntityMultiblock) tileEntity).cachedID != null) {
                     idsFound.add(((TileEntityMultiblock) tileEntity).cachedID);
                 }
             }

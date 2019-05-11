@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.api.TileNetworkList;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
@@ -88,7 +88,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         }
 
         if (playersUsing.size() > 0 && ((world.isRemote && !clientHasStructure) || (!world.isRemote
-              && structure == null))) {
+                                                                                    && structure == null))) {
             for (EntityPlayer player : playersUsing) {
                 player.closeScreen();
             }

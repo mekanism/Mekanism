@@ -20,7 +20,6 @@ public class GuiPowerBar extends GuiElement {
 
     public GuiPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
-
         tileEntity = tile;
 
         handler = new IPowerInfoHandler() {
@@ -61,15 +60,11 @@ public class GuiPowerBar extends GuiElement {
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
-
         if (handler.getLevel() > 0) {
             int displayInt = (int) (handler.getLevel() * 52) + 2;
-            guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation + height - displayInt, 6,
-                  height - displayInt, width, displayInt);
+            guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation + height - displayInt, 6, height - displayInt, width, displayInt);
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 

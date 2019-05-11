@@ -15,8 +15,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.GasTankTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
@@ -24,6 +22,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -99,12 +99,12 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
             TileUtils.drawGas(inventory.get(0), gasTank, tier != GasTankTier.CREATIVE);
 
             if (TileUtils.receiveGas(inventory.get(1), gasTank) && tier == GasTankTier.CREATIVE
-                  && gasTank.getGas() != null) {
+                && gasTank.getGas() != null) {
                 gasTank.getGas().amount = Integer.MAX_VALUE;
             }
 
             if (gasTank.getGas() != null && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE
-                  || dumping != GasMode.DUMPING)) {
+                                                                                || dumping != GasMode.DUMPING)) {
                 if (configComponent.isEjecting(TransmissionType.GAS)) {
                     GasStack toSend = new GasStack(gasTank.getGas().getGas(),
                           Math.min(gasTank.getStored(), tier.getOutput()));
@@ -168,12 +168,12 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return (itemstack.getItem() instanceof IGasItem
-                  && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null);
+                    && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null);
         } else if (slotID == 0) {
             return (itemstack.getItem() instanceof IGasItem
-                  && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
-                  ((IGasItem) itemstack.getItem()).getGas(itemstack).amount == ((IGasItem) itemstack.getItem())
-                        .getMaxGas(itemstack));
+                    && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
+                    ((IGasItem) itemstack.getItem()).getGas(itemstack).amount == ((IGasItem) itemstack.getItem())
+                          .getMaxGas(itemstack));
         }
 
         return false;

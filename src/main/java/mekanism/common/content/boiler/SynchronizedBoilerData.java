@@ -118,7 +118,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     @Override
     public double[] simulateHeat() {
         double invConduction = IHeatTransfer.AIR_INVERSE_COEFFICIENT
-              + (CASING_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();
+                               + (CASING_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();
         double heatToTransfer = temperature / invConduction;
         transferHeatTo(-heatToTransfer);
 

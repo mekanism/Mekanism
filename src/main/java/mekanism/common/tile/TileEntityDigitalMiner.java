@@ -53,7 +53,6 @@ import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
-import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -64,7 +63,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -144,7 +142,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter",
-          "removeOreFilter", "reset", "start", "stop", "getToMine"};
+                               "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     public TileEntityDigitalMiner() {
         super("DigitalMiner", MachineType.DIGITAL_MINER.getStorage());
@@ -183,7 +181,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             ChargeUtils.discharge(27, this);
 
             if (MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick()
-                  && searcher.state == State.FINISHED && oresToMine.size() > 0) {
+                && searcher.state == State.FINISHED && oresToMine.size() > 0) {
                 setActive(true);
 
                 if (delay > 0) {
@@ -502,7 +500,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
                     continue stacks;
                 } else if (ItemHandlerHelper.canItemStacksStack(existingStack, stack)
-                      && existingStack.getCount() + stack.getCount() <= stack
+                           && existingStack.getCount() + stack.getCount() <= stack
                       .getMaxStackSize()) {
                     existingStack.grow(stack.getCount());
                     added++;
@@ -539,7 +537,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
                     continue stacks;
                 } else if (inventory.get(i).isItemEqual(stack)
-                      && inventory.get(i).getCount() + stack.getCount() <= stack.getMaxStackSize()) {
+                           && inventory.get(i).getCount() + stack.getCount() <= stack.getMaxStackSize()) {
                     inventory.get(i).grow(stack.getCount());
 
                     continue stacks;
@@ -1284,7 +1282,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Override
     public boolean sideIsConsumer(EnumFacing side) {
         return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing)
-              || side == EnumFacing.DOWN;
+               || side == EnumFacing.DOWN;
     }
 
     @Override
@@ -1295,15 +1293,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.CONFIG_CARD_CAPABILITY
-              || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
-              || super.hasCapability(capability, side);
+               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
+               || super.hasCapability(capability, side);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY
-              || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
+            || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
         }
 

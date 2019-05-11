@@ -14,10 +14,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelHeatGenerator extends ModelBase {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils
-          .getResource(ResourceType.RENDER, "HeatGenerator_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils
-          .getResource(ResourceType.RENDER, "HeatGenerator_OverlayOff.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator_OverlayOn.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator_OverlayOff.png");
 
     ModelRenderer drum;
     ModelRenderer ring1;

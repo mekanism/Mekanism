@@ -62,7 +62,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         double gasRatio = ((getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY);
         double fluidRatio = (
               (FluidUtil.getFluidContained(stack) != null ? (double) FluidUtil.getFluidContained(stack).amount : 0D)
-                    / (double) CAPACITY);
+              / (double) CAPACITY);
 
         return 1D - Math.max(gasRatio, fluidRatio);
     }
@@ -94,11 +94,11 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
             list.add(LangUtils.localize("gui.empty") + ".");
         } else if (gasStack != null) {
             list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
-                  + gasStack.amount);
+                     + gasStack.amount);
         } else {
             list.add(
                   LangUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": "
-                        + fluidStack.amount);
+                  + fluidStack.amount);
         }
     }
 

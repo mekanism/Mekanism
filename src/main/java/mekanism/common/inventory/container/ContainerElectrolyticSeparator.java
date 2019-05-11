@@ -41,7 +41,7 @@ public class ContainerElectrolyticSeparator extends ContainerMekanism<TileEntity
                                 return ItemStack.EMPTY;
                             }
                         } else if (((IGasItem) slotStack.getItem()).getGas(slotStack).getGas()
-                              == MekanismFluids.Oxygen) {
+                                   == MekanismFluids.Oxygen) {
                             if (!mergeItemStack(slotStack, 2, 3, false)) {
                                 return ItemStack.EMPTY;
                             }

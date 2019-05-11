@@ -34,7 +34,7 @@ public class ItemAlloy extends ItemMekanism {
                 IAlloyInteraction interaction = CapabilityUtils
                       .getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side);
                 int ordinal = stack.getItem() == MekanismItems.EnrichedAlloy ? 1
-                      : (stack.getItem() == MekanismItems.ReinforcedAlloy ? 2 : 3);
+                                                                             : (stack.getItem() == MekanismItems.ReinforcedAlloy ? 2 : 3);
                 interaction.onAlloyInteraction(player, hand, stack, ordinal);
             }
 

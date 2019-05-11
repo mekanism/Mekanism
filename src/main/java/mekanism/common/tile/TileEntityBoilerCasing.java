@@ -33,11 +33,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer {
 
-    protected static final int[] INV_SLOTS = {0,1};
+    protected static final int[] INV_SLOTS = {0, 1};
 
     /**
-     * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering
-     * fluids.
+     * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
      */
     public Set<ValveData> valveViewing = new HashSet<>();
 
@@ -125,7 +124,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     structure.lastEnvironmentLoss = d[1];
 
                     if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP
-                          && structure.waterStored != null) {
+                        && structure.waterStored != null) {
                         int steamAmount = structure.steamStored != null ? structure.steamStored.amount : 0;
                         double heatAvailable = structure.getHeatAvailable();
 

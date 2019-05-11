@@ -427,8 +427,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
             return false;
         }
         return capability == Capabilities.CONFIGURABLE_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-              || super.hasCapability(capability, side);
+               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+               || super.hasCapability(capability, side);
     }
 
     @Override
@@ -514,7 +514,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (isActive && tile instanceof TileEntityFluidTank) // Only fill if tanks underneath have same fluid.
         {
             return (fluidTank.getFluid() == null && ((TileEntityFluidTank) tile).canFill(EnumFacing.UP, fluid)) ||
-                  (fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid));
+                   (fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid));
         }
 
         return fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid);

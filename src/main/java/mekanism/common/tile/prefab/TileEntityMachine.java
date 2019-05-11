@@ -2,10 +2,10 @@ package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;

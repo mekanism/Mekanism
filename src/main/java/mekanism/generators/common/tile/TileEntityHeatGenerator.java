@@ -37,11 +37,9 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData,
-      IHeatTransfer {
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
-          "getFuel", "getFuelNeeded"};
+    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
     /**
      * The FluidTank for this generator.
      */
@@ -65,21 +63,15 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
         if (!world.isRemote) {
             ChargeUtils.charge(1, this);
-
             if (!inventory.get(0).isEmpty()) {
                 if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
-                    lavaTank.fill(FluidContainerUtils
-                          .extractFluid(lavaTank, this, 0, FluidChecker.check(FluidRegistry.LAVA)), true);
+                    lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(FluidRegistry.LAVA)), true);
                 } else {
                     int fuel = getFuel(inventory.get(0));
-
                     if (fuel > 0) {
-                        int fuelNeeded =
-                              lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0);
-
+                        int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0);
                         if (fuel <= fuelNeeded) {
                             lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
-
                             if (!inventory.get(0).getItem().getContainerItem(inventory.get(0)).isEmpty()) {
                                 inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
                             } else {
@@ -91,12 +83,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             }
 
             double prev = getEnergy();
-
             transferHeatTo(getBoost());
-
             if (canOperate()) {
                 setActive(true);
-
                 lavaTank.drain(10, true);
                 transferHeatTo(MekanismConfig.current().generators.heatGeneration.val());
             } else {
@@ -105,10 +94,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
             double[] loss = simulateHeat();
             applyTemperatureChange();
-
             lastTransferLoss = loss[0];
             lastEnvironmentLoss = loss[1];
-
             producingEnergy = getEnergy() - prev;
         }
     }
@@ -124,20 +111,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         } else if (slotID == 1) {
             return ChargeUtils.canBeCharged(itemstack);
         }
-
         return true;
     }
 
     @Override
     public boolean canOperate() {
-        return electricityStored < BASE_MAX_ENERGY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10
-              && MekanismUtils.canFunction(this);
+        return electricityStored < BASE_MAX_ENERGY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         if (nbtTags.hasKey("lavaTank")) {
             lavaTank.readFromNBT(nbtTags.getCompoundTag("lavaTank"));
         }
@@ -147,11 +131,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         if (lavaTank.getFluid() != null) {
             nbtTags.setTag("lavaTank", lavaTank.writeToNBT(new NBTTagCompound()));
         }
-
         return nbtTags;
     }
 
@@ -162,26 +144,21 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         } else if (slotID == 0) {
             return FluidUtil.getFluidContained(itemstack) == null;
         }
-
         return false;
     }
 
     public double getBoost() {
         int lavaBoost = 0;
         double netherBoost = 0D;
-
         for (EnumFacing side : EnumFacing.VALUES) {
             Coord4D coord = Coord4D.get(this).offset(side);
-
             if (isLava(coord.getPos())) {
                 lavaBoost++;
             }
         }
-
         if (world.provider.getDimension() == -1) {
             netherBoost = MekanismConfig.current().generators.heatGenerationNether.val();
         }
-
         return (MekanismConfig.current().generators.heatGenerationLava.val() * lavaBoost) + netherBoost;
     }
 
@@ -203,6 +180,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
      * Gets the scaled fuel level for the GUI.
      *
      * @param i - multiplier
+     *
      * @return Scaled fuel level
      */
     public int getScaledFuelLevel(int i) {
@@ -226,14 +204,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(producingEnergy);
-
         data.add(lastTransferLoss);
         data.add(lastEnvironmentLoss);
-
         TileUtils.addTankData(data, lavaTank);
-
         return data;
     }
 
@@ -256,8 +230,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             case 4:
                 return new Object[]{lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0};
             case 5:
-                return new Object[]{
-                      lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0)};
+                return new Object[]{lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0)};
             default:
                 throw new NoSuchMethodException();
         }
@@ -268,7 +241,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         if (resource != null && resource.getFluid() == FluidRegistry.LAVA && from != facing) {
             return lavaTank.fill(resource, doFill);
         }
-
         return 0;
     }
 
@@ -297,7 +269,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         if (from == facing) {
             return PipeUtils.EMPTY;
         }
-
         return new FluidTankInfo[]{lavaTank.getInfo()};
     }
 
@@ -347,7 +318,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             transferHeatTo(-heatLost);
             setEnergy(getEnergy() + workDone);
         }
-
         return HeatUtils.simulate(this);
     }
 
@@ -368,20 +338,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public IHeatTransfer getAdjacent(EnumFacing side) {
         if (canConnectHeat(side)) {
             TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-
             if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
                 return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
             }
         }
-
         return null;
     }
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
-              (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super
-              .hasCapability(capability, side);
+        return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) ||
+               super.hasCapability(capability, side);
     }
 
     @Override
@@ -389,11 +356,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
-
         if (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
-
         return super.getCapability(capability, side);
     }
 }

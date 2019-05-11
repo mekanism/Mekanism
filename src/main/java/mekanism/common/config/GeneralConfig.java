@@ -221,8 +221,8 @@ public class GeneralConfig extends BaseConfig {
 
     public final IntOption digitalMinerMaxRadius = new IntOption(this, "general", "digitalMinerMaxRadius", 32,
           "Maximum radius in blocks that the Digital Miner can reach. "
-                + "(Increasing this may have negative effects on stability and/or performance. "
-                + "We strongly recommend you leave it at the default value.)", 1, Integer.MAX_VALUE);
+          + "(Increasing this may have negative effects on stability and/or performance. "
+          + "We strongly recommend you leave it at the default value.)", 1, Integer.MAX_VALUE);
 
     public final DoubleOption sawdustChancePlank = new DoubleOption(this, "general", "SawdustChancePlank", 0.25D,
           "Chance of producing sawdust per operation in the precision sawmill when turning planks into sticks.")

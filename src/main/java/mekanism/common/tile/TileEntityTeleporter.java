@@ -54,7 +54,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
       IFrequencyHandler, IRedstoneControl, ISecurityTile, IUpgradeTile {
 
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport",
-          "setFrequency"};
+                                                         "setFrequency"};
     public AxisAlignedBB teleportBounds = null;
 
     public Set<UUID> didTeleport = new HashSet<>();
@@ -413,25 +413,25 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     public boolean hasFrame() {
         if (isFrame(getPos().getX() - 1, getPos().getY(), getPos().getZ()) && isFrame(getPos().getX() + 1,
               getPos().getY(), getPos().getZ())
-              && isFrame(getPos().getX() - 1, getPos().getY() + 1, getPos().getZ()) && isFrame(getPos().getX() + 1,
+            && isFrame(getPos().getX() - 1, getPos().getY() + 1, getPos().getZ()) && isFrame(getPos().getX() + 1,
               getPos().getY() + 1, getPos().getZ())
-              && isFrame(getPos().getX() - 1, getPos().getY() + 2, getPos().getZ()) && isFrame(getPos().getX() + 1,
+            && isFrame(getPos().getX() - 1, getPos().getY() + 2, getPos().getZ()) && isFrame(getPos().getX() + 1,
               getPos().getY() + 2, getPos().getZ())
-              && isFrame(getPos().getX() - 1, getPos().getY() + 3, getPos().getZ()) && isFrame(getPos().getX() + 1,
+            && isFrame(getPos().getX() - 1, getPos().getY() + 3, getPos().getZ()) && isFrame(getPos().getX() + 1,
               getPos().getY() + 3, getPos().getZ())
-              && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ())) {
+            && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ())) {
             return true;
         }
         return isFrame(getPos().getX(), getPos().getY(), getPos().getZ() - 1) && isFrame(getPos().getX(),
               getPos().getY(),
               getPos().getZ() + 1)
-              && isFrame(getPos().getX(), getPos().getY() + 1, getPos().getZ() - 1) && isFrame(getPos().getX(),
+               && isFrame(getPos().getX(), getPos().getY() + 1, getPos().getZ() - 1) && isFrame(getPos().getX(),
               getPos().getY() + 1, getPos().getZ() + 1)
-              && isFrame(getPos().getX(), getPos().getY() + 2, getPos().getZ() - 1) && isFrame(getPos().getX(),
+               && isFrame(getPos().getX(), getPos().getY() + 2, getPos().getZ() - 1) && isFrame(getPos().getX(),
               getPos().getY() + 2, getPos().getZ() + 1)
-              && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ() - 1) && isFrame(getPos().getX(),
+               && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ() - 1) && isFrame(getPos().getX(),
               getPos().getY() + 3, getPos().getZ() + 1)
-              && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ());
+               && isFrame(getPos().getX(), getPos().getY() + 3, getPos().getZ());
     }
 
     public boolean isFrame(int x, int y, int z) {

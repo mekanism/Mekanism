@@ -6,8 +6,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 
 /**
- * Map which uses FluidStacks as keys, ignoring amount. Primary use: caching FluidStack aware fluid rendering (NBT,
- * yay)
+ * Map which uses FluidStacks as keys, ignoring amount. Primary use: caching FluidStack aware fluid rendering (NBT, yay)
  */
 public class FluidRenderMap<V> extends Object2ObjectOpenCustomHashMap<FluidStack, V> {
 
@@ -37,10 +36,7 @@ public class FluidRenderMap<V> extends Object2ObjectOpenCustomHashMap<FluidStack
 
         @Override
         public boolean equals(FluidStack a, FluidStack b) {
-            if (a == null) {
-                return b == null;
-            }
-            return a.isFluidEqual(b);
+            return a == null ? b == null : a.isFluidEqual(b);
         }
     }
 }

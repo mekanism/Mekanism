@@ -35,7 +35,6 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
     public static GuiFluidGauge getDummy(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         GuiFluidGauge gauge = new GuiFluidGauge(null, type, gui, def, x, y);
         gauge.dummy = true;
-
         return gauge;
     }
 
@@ -44,15 +43,13 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
         if (dummy) {
             return dummyType.getFluid().getColor();
         }
-
         FluidStack fluid = infoHandler.getTank().getFluid();
         return fluid == null ? dummyType.getFluid().getColor() : fluid.getFluid().getColor(fluid);
     }
 
     @Override
     protected boolean inBounds(int xAxis, int yAxis) {
-        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
-              && yAxis <= yLocation + height - 1;
+        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1;
     }
 
     @Override
@@ -64,18 +61,14 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (inBounds(xAxis, yAxis)) {
             ItemStack stack = mc.player.inventory.getItemStack();
-
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
-
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {
                     int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(infoHandler.getTank());
-
                     if (index != -1) {
                         if (button == 0 && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                             button = 2;
                         }
-
                         Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
                     }
                 }
@@ -111,12 +104,9 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
         if (dummy) {
             return dummyType.getLocalizedName();
         }
-
-        String amountStr = (infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE ? LangUtils
-              .localize("gui.infinite") : infoHandler.getTank().getFluidAmount() + " mB");
-
-        return infoHandler.getTank().getFluid() != null ? LangUtils.localizeFluidStack(infoHandler.getTank().getFluid())
-              + ": " + amountStr : LangUtils.localize("gui.empty");
+        FluidTank tank = infoHandler.getTank();
+        String amountStr = (tank.getFluidAmount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tank.getFluidAmount() + " mB");
+        return tank.getFluid() != null ? LangUtils.localizeFluidStack(tank.getFluid()) + ": " + amountStr : LangUtils.localize("gui.empty");
     }
 
     public interface IFluidInfoHandler {

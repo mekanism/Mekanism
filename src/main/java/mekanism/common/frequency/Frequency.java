@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -121,7 +121,7 @@ public class Frequency {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Frequency && ((Frequency) obj).name.equals(name)
-              && ((Frequency) obj).ownerUUID.equals(ownerUUID) && ((Frequency) obj).publicFreq == publicFreq;
+               && ((Frequency) obj).ownerUUID.equals(ownerUUID) && ((Frequency) obj).publicFreq == publicFreq;
     }
 
     public Identity getIdentity() {

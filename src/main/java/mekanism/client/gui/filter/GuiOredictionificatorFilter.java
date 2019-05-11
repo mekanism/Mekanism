@@ -93,8 +93,7 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String text = (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils
-              .localize("gui.filter");
+        String text = (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.filter");
         fontRenderer.drawString(text, (xSize / 2) - (fontRenderer.getStringWidth(text) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
         if (filter.filter != null) {
@@ -189,8 +188,7 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
                 } else {
-                    Mekanism.packetHandler
-                          .sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
+                    Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
                 Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
             }

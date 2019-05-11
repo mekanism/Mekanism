@@ -106,7 +106,7 @@ public final class SecurityUtils {
         }
 
         return EnumColor.GREY + LangUtils.localize("gui.owner") + ": " + (player.getName().equals(ownerName)
-              ? EnumColor.BRIGHT_GREEN : EnumColor.RED) + ownerName;
+                                                                          ? EnumColor.BRIGHT_GREEN : EnumColor.RED) + ownerName;
     }
 
     public static void displayNoAccess(EntityPlayer player) {

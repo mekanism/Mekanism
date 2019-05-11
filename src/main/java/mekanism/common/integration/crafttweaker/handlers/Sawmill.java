@@ -33,8 +33,8 @@ public class Sawmill {
           @Optional IItemStack optionalItemOutput, @Optional double optionalChance) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             ChanceOutput output = optionalItemOutput == null ? new ChanceOutput(CraftTweakerMC.getItemStack(itemOutput))
-                  : new ChanceOutput(CraftTweakerMC.getItemStack(itemOutput),
-                        CraftTweakerMC.getItemStack(optionalItemOutput), optionalChance);
+                                                             : new ChanceOutput(CraftTweakerMC.getItemStack(itemOutput),
+                                                                   CraftTweakerMC.getItemStack(optionalItemOutput), optionalChance);
             List<SawmillRecipe> recipes = new ArrayList<>();
             for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
                 recipes.add(new SawmillRecipe(new ItemStackInput(stack), output));

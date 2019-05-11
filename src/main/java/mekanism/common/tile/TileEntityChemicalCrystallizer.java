@@ -50,8 +50,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     public TileEntityChemicalCrystallizer() {
         super("machine.crystallizer", "ChemicalCrystallizer",
-                MachineType.CHEMICAL_CRYSTALLIZER.getStorage(),
-                MachineType.CHEMICAL_CRYSTALLIZER.getUsage(), 3, 200);
+              MachineType.CHEMICAL_CRYSTALLIZER.getStorage(),
+              MachineType.CHEMICAL_CRYSTALLIZER.getUsage(), 3, 200);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY,
               TransmissionType.GAS);
@@ -177,7 +177,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && inputTank.canReceive(type) &&
-              RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.containsRecipe(type);
+               RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.containsRecipe(type);
     }
 
     @Override
@@ -211,7 +211,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
             return false;
         }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
+               || capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
@@ -236,9 +236,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem
-                  && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
-                  RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER
-                        .containsRecipe(((IGasItem) itemstack.getItem()).getGas(itemstack).getGas());
+                   && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
+                   RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER
+                         .containsRecipe(((IGasItem) itemstack.getItem()).getGas(itemstack).getGas());
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -250,7 +250,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 0) {
             return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem
-                  && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null;
+                   && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null;
         } else if (slotID == 1) {
             return true;
         } else if (slotID == 2) {

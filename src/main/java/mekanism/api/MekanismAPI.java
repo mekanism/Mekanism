@@ -34,9 +34,7 @@ public class MekanismAPI {
         if (cardboardBoxModIgnore.contains(Objects.requireNonNull(block.getRegistryName()).getNamespace())) {
             return false;
         }
-
-        return cardboardBoxIgnore.stream()
-              .noneMatch(i -> i.block == block && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta));
+        return cardboardBoxIgnore.stream().noneMatch(i -> i.block == block && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta));
     }
 
     public static void addBoxBlacklist(@Nullable Block block, int meta) {

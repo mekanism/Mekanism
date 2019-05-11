@@ -30,7 +30,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
         return BasicBlockType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z)))
-              == BasicBlockType.BOILER_CASING;
+               == BasicBlockType.BOILER_CASING;
     }
 
     @Override
@@ -135,9 +135,9 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                 @Override
                 public final boolean isValid(Coord4D coord) {
                     return coord.y >= renderLocation.y - 1 && coord.y < initDisperser.y &&
-                          coord.x >= renderLocation.x && coord.x < renderLocation.x + volLength &&
-                          coord.z >= renderLocation.z && coord.z < renderLocation.z + volWidth &&
-                          (coord.isAirBlock(pointer.getWorld()) || isViableNode(coord.getPos()));
+                           coord.x >= renderLocation.x && coord.x < renderLocation.x + volLength &&
+                           coord.z >= renderLocation.z && coord.z < renderLocation.z + volWidth &&
+                           (coord.isAirBlock(pointer.getWorld()) || isViableNode(coord.getPos()));
                 }
             }).calculate(initAir);
 

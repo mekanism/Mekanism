@@ -9,11 +9,11 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -79,7 +79,7 @@ public class BlockStateMachine extends ExtendedBlockState {
 
     public BlockStateMachine(BlockMachine block, PropertyEnum<?> typeProperty) {
         super(block, new IProperty[]{BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty,
-              recipeProperty}, new IUnlistedProperty[]{});
+                                     recipeProperty}, new IUnlistedProperty[]{});
     }
 
     public enum MachineBlock {
@@ -355,7 +355,7 @@ public class BlockStateMachine extends ExtendedBlockState {
                     return 0;
             }
         }
-        
+
         private double getConfigStorage() {
             switch (this) {
                 case ENRICHMENT_CHAMBER:
@@ -499,7 +499,7 @@ public class BlockStateMachine extends ExtendedBlockState {
             }
 
             if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
-                  || type == MachineType.ELITE_FACTORY) {
+                || type == MachineType.ELITE_FACTORY) {
                 RecipeType recipe = state.getValue(recipeProperty);
 
                 nameOverride = type.getName() + "_" + recipe.getName();

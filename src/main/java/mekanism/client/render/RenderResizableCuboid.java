@@ -67,11 +67,8 @@ public class RenderResizableCuboid {
             return new Vec3d(vector.x, value, vector.z);
         } else if (axis == Axis.Z) {
             return new Vec3d(vector.x, vector.y, value);
-        } else {
-            throw new RuntimeException(
-                  "Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector
-                        + ")");
         }
+        throw new RuntimeException("Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector + ")");
     }
 
     public static BlockPos convertFloor(Vec3d vec) {
@@ -87,7 +84,6 @@ public class RenderResizableCuboid {
             return VEC_ZERO;
         }
         return new Vec3d(face.getXOffset(), face.getYOffset(), face.getZOffset());
-
     }
 
     public static EnumFacing[] getNeighbours(EnumFacing face) {
@@ -125,11 +121,8 @@ public class RenderResizableCuboid {
             return vector.y;
         } else if (axis == Axis.Z) {
             return vector.z;
-        } else {
-            throw new RuntimeException(
-                  "Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector
-                        + ")");
         }
+        throw new RuntimeException("Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector + ")");
     }
 
     /**
@@ -146,8 +139,7 @@ public class RenderResizableCuboid {
         renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
     }
 
-    public void renderCube(Model3D cube, EnumShadeArgument shadeTypes, IBlockLocation formula,
-          IFacingLocation faceFormula, IBlockAccess world) {
+    public void renderCube(Model3D cube, EnumShadeArgument shadeTypes, IBlockLocation formula, IFacingLocation faceFormula, IBlockAccess world) {
         if (faceFormula == null) {
             faceFormula = DefaultFacingLocation.INSTANCE;
         }
@@ -161,8 +153,7 @@ public class RenderResizableCuboid {
 
         Vec3d textureStart = new Vec3d(cube.textureStartX / 16D, cube.textureStartY / 16D, cube.textureStartZ / 16D);
         Vec3d textureSize = new Vec3d(cube.textureSizeX / 16D, cube.textureSizeY / 16D, cube.textureSizeZ / 16D);
-        Vec3d textureOffset = new Vec3d(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D,
-              cube.textureOffsetZ / 16D);
+        Vec3d textureOffset = new Vec3d(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D, cube.textureOffsetZ / 16D);
         Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
 
         manager.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -178,8 +169,7 @@ public class RenderResizableCuboid {
 
         for (EnumFacing face : EnumFacing.values()) {
             if (cube.shouldSideRender(face)) {
-                renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes,
-                      formula, faceFormula, world);
+                renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
             }
         }
 
@@ -190,11 +180,8 @@ public class RenderResizableCuboid {
         GlStateManager.enableFog();
     }
 
-    private void renderCuboidFace(BufferBuilder wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips,
-          Vec3d textureStart, Vec3d textureSize,
-          Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula,
-          IFacingLocation faceFormula,
-          IBlockAccess access) {
+    private void renderCuboidFace(BufferBuilder wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
+          Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula, IBlockAccess access) {
         int ordinal = face.ordinal();
         if (sprites[ordinal] == null) {
             return;
@@ -227,10 +214,8 @@ public class RenderResizableCuboid {
         }
     }
 
-    private void renderPoint(BufferBuilder wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri,
-          boolean minU, boolean minV,
-          IBlockLocation locationFormula, IFacingLocation faceFormula, IBlockAccess access,
-          EnumShadeArgument shadeTypes) {
+    private void renderPoint(BufferBuilder wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV, IBlockLocation locationFormula,
+          IFacingLocation faceFormula, IBlockAccess access, EnumShadeArgument shadeTypes) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
 
@@ -258,9 +243,7 @@ public class RenderResizableCuboid {
         wr.endVertex();
     }
 
-    private void applyLocalAO(BufferBuilder wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access,
-          EnumShadeArgument shadeTypes,
-          Vec3d vertex) {
+    private void applyLocalAO(BufferBuilder wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes, Vec3d vertex) {
         // This doesn't work. At all.
         boolean allAround = false;
 
@@ -326,8 +309,8 @@ public class RenderResizableCuboid {
     }
 
     /**
-     * Note that this method DOES take into account its position. But not its rotation. (Open an issue on github if you
-     * need rotation, and a second method will be made that does all the trig required)
+     * Note that this method DOES take into account its position. But not its rotation. (Open an issue on github if you need rotation, and a second method will be made
+     * that does all the trig required)
      */
     public void renderCubeStatic(List<BakedQuad> quads, Model3D cuboid) {
         TextureAtlasSprite[] sprites = cuboid.textures;
@@ -360,8 +343,7 @@ public class RenderResizableCuboid {
         if (sprites[0] != null) {
             // Down
             float[] uv = getUVArray(sprites[0], flips[0], textureStartX, textureEndX, textureStartZ, textureEndZ);
-            for (RenderInfo ri : getRenderInfos(uv, sizeX, sizeZ, textureSizeX, textureSizeZ, textureOffsetX,
-                  textureOffsetZ)) {
+            for (RenderInfo ri : getRenderInfos(uv, sizeX, sizeZ, textureSizeX, textureSizeZ, textureOffsetX, textureOffsetZ)) {
                 ri = ri.offset(cuboid, Axis.Y);
                 double[][] arr = new double[4][];
                 arr[0] = new double[]{ri.xyz[U_MAX], cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MAX], ri.uv[V_MIN], 0};
@@ -376,18 +358,13 @@ public class RenderResizableCuboid {
             // Up
             float[] uv = getUVArray(sprites[1], flips[1], textureStartX, textureEndX, textureStartZ, textureEndZ);
 
-            for (RenderInfo ri : getRenderInfos(uv, sizeX, sizeZ, textureSizeX, textureSizeZ, textureOffsetX,
-                  textureOffsetZ)) {
+            for (RenderInfo ri : getRenderInfos(uv, sizeX, sizeZ, textureSizeX, textureSizeZ, textureOffsetX, textureOffsetZ)) {
                 ri = ri.offset(cuboid, Axis.Y);
                 double[][] arr = new double[4][];
-                arr[0] = new double[]{ri.xyz[U_MAX], sizeY + cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MAX], ri.uv[V_MIN],
-                      0};
-                arr[1] = new double[]{ri.xyz[U_MAX], sizeY + cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX],
-                      0};
-                arr[2] = new double[]{ri.xyz[U_MIN], sizeY + cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MIN], ri.uv[V_MAX],
-                      0};
-                arr[3] = new double[]{ri.xyz[U_MIN], sizeY + cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN],
-                      0};
+                arr[0] = new double[]{ri.xyz[U_MAX], sizeY + cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MAX], ri.uv[V_MIN], 0};
+                arr[1] = new double[]{ri.xyz[U_MAX], sizeY + cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
+                arr[2] = new double[]{ri.xyz[U_MIN], sizeY + cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
+                arr[3] = new double[]{ri.xyz[U_MIN], sizeY + cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
                 convertToDoubleQuads(quads, arr, EnumFacing.UP, sprites[1]);
             }
         }
@@ -396,8 +373,7 @@ public class RenderResizableCuboid {
             // North (-Z)
             float[] uv = getUVArray(sprites[2], flips[2], textureStartX, textureEndX, textureStartY, textureEndY);
 
-            for (RenderInfo ri : getRenderInfos(uv, sizeX, sizeY, textureSizeX, textureSizeY, textureOffsetX,
-                  textureOffsetY)) {
+            for (RenderInfo ri : getRenderInfos(uv, sizeX, sizeY, textureSizeX, textureSizeY, textureOffsetX, textureOffsetY)) {
                 ri = ri.offset(cuboid, Axis.Z);
                 double[][] arr = new double[4][];
                 arr[0] = new double[]{ri.xyz[U_MAX], ri.xyz[V_MIN], cuboid.posZ, -1, ri.uv[U_MAX], ri.uv[V_MIN], 0};
@@ -412,18 +388,13 @@ public class RenderResizableCuboid {
             // South (+Z)
             float[] uv = getUVArray(sprites[3], flips[3], textureStartX, textureEndX, textureStartY, textureEndY);
 
-            for (RenderInfo ri : getRenderInfos(uv, sizeX, sizeY, textureSizeX, textureSizeY, textureOffsetX,
-                  textureOffsetY)) {
+            for (RenderInfo ri : getRenderInfos(uv, sizeX, sizeY, textureSizeX, textureSizeY, textureOffsetX, textureOffsetY)) {
                 ri = ri.offset(cuboid, Axis.Z);
                 double[][] arr = new double[4][];
-                arr[0] = new double[]{ri.xyz[U_MAX], ri.xyz[V_MIN], cuboid.posZ + sizeZ, -1, ri.uv[U_MAX], ri.uv[V_MIN],
-                      0};
-                arr[1] = new double[]{ri.xyz[U_MAX], ri.xyz[V_MAX], cuboid.posZ + sizeZ, -1, ri.uv[U_MAX], ri.uv[V_MAX],
-                      0};
-                arr[2] = new double[]{ri.xyz[U_MIN], ri.xyz[V_MAX], cuboid.posZ + sizeZ, -1, ri.uv[U_MIN], ri.uv[V_MAX],
-                      0};
-                arr[3] = new double[]{ri.xyz[U_MIN], ri.xyz[V_MIN], cuboid.posZ + sizeZ, -1, ri.uv[U_MIN], ri.uv[V_MIN],
-                      0};
+                arr[0] = new double[]{ri.xyz[U_MAX], ri.xyz[V_MIN], cuboid.posZ + sizeZ, -1, ri.uv[U_MAX], ri.uv[V_MIN], 0};
+                arr[1] = new double[]{ri.xyz[U_MAX], ri.xyz[V_MAX], cuboid.posZ + sizeZ, -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
+                arr[2] = new double[]{ri.xyz[U_MIN], ri.xyz[V_MAX], cuboid.posZ + sizeZ, -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
+                arr[3] = new double[]{ri.xyz[U_MIN], ri.xyz[V_MIN], cuboid.posZ + sizeZ, -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
                 convertToDoubleQuads(quads, arr, EnumFacing.SOUTH, sprites[3]);
             }
         }
@@ -432,8 +403,7 @@ public class RenderResizableCuboid {
             // West (-X)
             float[] uv = getUVArray(sprites[4], flips[4], textureStartZ, textureEndZ, textureStartY, textureEndY);
 
-            for (RenderInfo ri : getRenderInfos(uv, sizeZ, sizeY, textureSizeZ, textureSizeY, textureOffsetZ,
-                  textureOffsetY)) {
+            for (RenderInfo ri : getRenderInfos(uv, sizeZ, sizeY, textureSizeZ, textureSizeY, textureOffsetZ, textureOffsetY)) {
                 ri = ri.offset(cuboid, Axis.X);
                 double[][] arr = new double[4][];
                 arr[0] = new double[]{cuboid.posX, ri.xyz[V_MIN], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MIN], 0};
@@ -448,25 +418,19 @@ public class RenderResizableCuboid {
             // East (+X)
             float[] uv = getUVArray(sprites[5], flips[5], textureStartZ, textureEndZ, textureStartY, textureEndY);
 
-            for (RenderInfo ri : getRenderInfos(uv, sizeZ, sizeY, textureSizeZ, textureSizeY, textureOffsetZ,
-                  textureOffsetY)) {
+            for (RenderInfo ri : getRenderInfos(uv, sizeZ, sizeY, textureSizeZ, textureSizeY, textureOffsetZ, textureOffsetY)) {
                 ri = ri.offset(cuboid, Axis.X);
                 double[][] arr = new double[4][];
-                arr[0] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MIN], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MIN],
-                      0};
-                arr[1] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MAX], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX],
-                      0};
-                arr[2] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MAX], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MAX],
-                      0};
-                arr[3] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MIN], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN],
-                      0};
+                arr[0] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MIN], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MIN], 0};
+                arr[1] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MAX], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
+                arr[2] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MAX], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
+                arr[3] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MIN], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
                 convertToDoubleQuads(quads, arr, EnumFacing.EAST, sprites[5]);
             }
         }
     }
 
-    private void convertToDoubleQuads(List<BakedQuad> quads, double[][] points, EnumFacing face,
-          TextureAtlasSprite sprite) {
+    private void convertToDoubleQuads(List<BakedQuad> quads, double[][] points, EnumFacing face, TextureAtlasSprite sprite) {
         BakedQuad quad = convertToQuad(points, face, sprite);
         quads.add(quad);
 
@@ -496,8 +460,7 @@ public class RenderResizableCuboid {
     /**
      * Returns an array containing [uMin, uMax, vMin, vMax]. start* and end* must be doubles between 0 and 1
      */
-    private float[] getUVArray(TextureAtlasSprite sprite, int flips, double startU, double endU, double startV,
-          double endV) {
+    private float[] getUVArray(TextureAtlasSprite sprite, int flips, double startU, double endU, double startV, double endV) {
         float minU = sprite.getInterpolatedU(startU * 16);
         float maxU = sprite.getInterpolatedU(endU * 16);
         float minV = sprite.getInterpolatedV(startV * 16);
@@ -558,8 +521,7 @@ public class RenderResizableCuboid {
      *
      * @param rotation TODO
      */
-    private List<RenderInfo> getRenderInfos(float[] uv, double sizeU, double sizeV, double textureSizeU,
-          double textureSizeV, double textureOffsetU, double textureOffsetV) {
+    private List<RenderInfo> getRenderInfos(float[] uv, double sizeU, double sizeV, double textureSizeU, double textureSizeV, double textureOffsetU, double textureOffsetV) {
         List<RenderInfo> infos = Lists.newArrayList();
         boolean firstU = true;
         for (double u = 0; u < sizeU; u += textureSizeU) {
@@ -580,8 +542,7 @@ public class RenderResizableCuboid {
             if (u + addU > sizeU) {
                 addU = sizeU - u;
                 if (firstU && textureOffsetU != 0) {
-                    uvCu[U_MAX] =
-                          uvCu[U_MIN] + (uvCu[U_MAX] - uvCu[U_MIN]) * (float) (addU / (textureSizeU - textureOffsetU));
+                    uvCu[U_MAX] = uvCu[U_MIN] + (uvCu[U_MAX] - uvCu[U_MIN]) * (float) (addU / (textureSizeU - textureOffsetU));
                 } else {
                     uvCu[U_MAX] = uvCu[U_MIN] + (uvCu[U_MAX] - uvCu[U_MIN]) * (float) (addU / textureSizeU);
                 }
@@ -603,8 +564,7 @@ public class RenderResizableCuboid {
                 if (v + addV > sizeV) {
                     addV = sizeV - v;
                     if (firstV && textureOffsetV != 0) {
-                        uvCv[V_MAX] = uvCv[V_MIN] + (uvCv[V_MAX] - uvCv[V_MIN]) * (float) (addV / (textureSizeV
-                              - textureOffsetV));
+                        uvCv[V_MAX] = uvCv[V_MIN] + (uvCv[V_MAX] - uvCv[V_MIN]) * (float) (addV / (textureSizeV - textureOffsetV));
                     } else {
                         uvCv[V_MAX] = uvCv[V_MIN] + (uvCv[V_MAX] - uvCv[V_MIN]) * (float) (addV / textureSizeV);
                     }
@@ -704,18 +664,12 @@ public class RenderResizableCuboid {
 
         public RenderInfo offset(Model3D ent, Axis axis) {
             switch (axis) {
-                case X: {
-                    return new RenderInfo(uv,
-                          new double[]{xyz[0] + ent.posZ, xyz[1] + ent.posZ, xyz[2] + ent.posY, xyz[3] + ent.posY});
-                }
-                case Y: {
-                    return new RenderInfo(uv,
-                          new double[]{xyz[0] + ent.posX, xyz[1] + ent.posX, xyz[2] + ent.posZ, xyz[3] + ent.posZ});
-                }
-                case Z: {
-                    return new RenderInfo(uv,
-                          new double[]{xyz[0] + ent.posX, xyz[1] + ent.posX, xyz[2] + ent.posY, xyz[3] + ent.posY});
-                }
+                case X:
+                    return new RenderInfo(uv, new double[]{xyz[0] + ent.posZ, xyz[1] + ent.posZ, xyz[2] + ent.posY, xyz[3] + ent.posY});
+                case Y:
+                    return new RenderInfo(uv, new double[]{xyz[0] + ent.posX, xyz[1] + ent.posX, xyz[2] + ent.posZ, xyz[3] + ent.posZ});
+                case Z:
+                    return new RenderInfo(uv, new double[]{xyz[0] + ent.posX, xyz[1] + ent.posX, xyz[2] + ent.posY, xyz[3] + ent.posY});
             }
             return new RenderInfo(uv, xyz);
         }

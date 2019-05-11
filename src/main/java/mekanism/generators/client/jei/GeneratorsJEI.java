@@ -12,7 +12,6 @@ public class GeneratorsJEI implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistry registry) {
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(GeneratorsBlocks.Generator),
-              MekanismJEI.NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(Item.getItemFromBlock(GeneratorsBlocks.Generator), MekanismJEI.NBT_INTERPRETER);
     }
 }

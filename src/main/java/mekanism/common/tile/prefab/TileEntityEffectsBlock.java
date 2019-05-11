@@ -41,8 +41,8 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     /**
      * The base of all blocks that deal with electricity, make noise and potential generate ambient lighting
      *
-     * @param sound - the sound path of this block
-     * @param name - full name of this block
+     * @param sound         - the sound path of this block
+     * @param name          - full name of this block
      * @param baseMaxEnergy - how much energy this block can store
      */
     public TileEntityEffectsBlock(String sound, String name, double baseMaxEnergy) {

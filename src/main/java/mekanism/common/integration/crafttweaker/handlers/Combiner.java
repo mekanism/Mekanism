@@ -44,8 +44,7 @@ public class Combiner {
     }
 
     /**
-     * @deprecated Replaced by {@link #addRecipe(IIngredient, IIngredient, IItemStack)}. May be removed with Minecraft
-     * 1.13.
+     * @deprecated Replaced by {@link #addRecipe(IIngredient, IIngredient, IItemStack)}. May be removed with Minecraft 1.13.
      */
     @ZenMethod
     @Deprecated

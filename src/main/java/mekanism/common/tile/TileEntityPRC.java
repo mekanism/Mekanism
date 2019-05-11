@@ -51,16 +51,16 @@ public class TileEntityPRC extends
       IGasHandler, ISustainedData, ITankManager {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
-          "getMaxEnergy", "getEnergyNeeded", "getFluidStored", "getGasStored"};
+                                                         "getMaxEnergy", "getEnergyNeeded", "getFluidStored", "getGasStored"};
     public FluidTank inputFluidTank = new FluidTank(10000);
     public GasTank inputGasTank = new GasTank(10000);
     public GasTank outputGasTank = new GasTank(10000);
 
     public TileEntityPRC() {
         super("prc", MachineType.PRESSURIZED_REACTION_CHAMBER.blockName,
-                MachineType.PRESSURIZED_REACTION_CHAMBER.getStorage(),
-                MachineType.PRESSURIZED_REACTION_CHAMBER.getUsage(), 3, 100,
-                new ResourceLocation("mekanism", "gui/GuiPRC.png"));
+              MachineType.PRESSURIZED_REACTION_CHAMBER.getStorage(),
+              MachineType.PRESSURIZED_REACTION_CHAMBER.getUsage(), 3, 100,
+              new ResourceLocation("mekanism", "gui/GuiPRC.png"));
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY,
               TransmissionType.FLUID, TransmissionType.GAS);
@@ -362,7 +362,7 @@ public class TileEntityPRC extends
             return false;
         }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override

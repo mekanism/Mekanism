@@ -50,8 +50,7 @@ public final class MinerVisualRenderer {
             for (int x = -data.radius; x <= data.radius; x++) {
                 for (int y = data.minY - data.yCoord; y <= data.maxY - data.yCoord; y++) {
                     for (int z = -data.radius; z <= data.radius; z++) {
-                        if (x == -data.radius || x == data.radius || y == data.minY - data.yCoord
-                              || y == data.maxY - data.yCoord || z == -data.radius || z == data.radius) {
+                        if (x == -data.radius || x == data.radius || y == data.minY - data.yCoord || y == data.maxY - data.yCoord || z == -data.radius || z == data.radius) {
                             models.add(createModel(new Coord4D(x, y, z, mc.world.provider.getDimension())));
                         }
                     }
@@ -110,9 +109,8 @@ public final class MinerVisualRenderer {
 
         @Override
         public boolean equals(Object data) {
-            return data instanceof MinerRenderData && ((MinerRenderData) data).minY == minY &&
-                  ((MinerRenderData) data).maxY == maxY && ((MinerRenderData) data).radius == radius &&
-                  ((MinerRenderData) data).yCoord == yCoord;
+            return data instanceof MinerRenderData && ((MinerRenderData) data).minY == minY && ((MinerRenderData) data).maxY == maxY &&
+                   ((MinerRenderData) data).radius == radius && ((MinerRenderData) data).yCoord == yCoord;
         }
 
         @Override

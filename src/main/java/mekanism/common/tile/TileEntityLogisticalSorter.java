@@ -65,11 +65,11 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter",
-          "addOreFilter", "removeOreFilter", "setSingleItem"};
+                               "addOreFilter", "removeOreFilter", "setSingleItem"};
 
     public TileEntityLogisticalSorter() {
         super("machine.logisticalsorter", "LogisticalSorter",
-                MachineType.LOGISTICAL_SORTER.getStorage(), 3);
+              MachineType.LOGISTICAL_SORTER.getStorage(), 3);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;
 
@@ -611,8 +611,8 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                 return new Object[]{"Auto-eject mode set to " + autoEject};
             } else if (method == 3) {
                 if (arguments.length != 6 || !(arguments[0] instanceof String) || !(arguments[1] instanceof Double) ||
-                      !(arguments[2] instanceof String) || !(arguments[3] instanceof Boolean) ||
-                      !(arguments[4] instanceof Double) || !(arguments[5] instanceof Double)) {
+                    !(arguments[2] instanceof String) || !(arguments[3] instanceof Boolean) ||
+                    !(arguments[4] instanceof Double) || !(arguments[5] instanceof Double)) {
                     return new Object[]{"Invalid parameters."};
                 }
 
@@ -705,8 +705,8 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             return false;
         }
         return capability == Capabilities.CONFIG_CARD_CAPABILITY
-              || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
-              || super.hasCapability(capability, side);
+               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
+               || super.hasCapability(capability, side);
     }
 
     @Override
@@ -715,7 +715,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             return null;
         }
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY
-              || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
+            || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
         }
 

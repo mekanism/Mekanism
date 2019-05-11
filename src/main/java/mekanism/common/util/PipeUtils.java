@@ -21,8 +21,8 @@ public final class PipeUtils {
     public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side) {
         if (tile == null || CapabilityUtils
               .hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) ||
-              !CapabilityUtils
-                    .hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
+            !CapabilityUtils
+                  .hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
             return false;
         }
 
@@ -74,7 +74,8 @@ public final class PipeUtils {
      *
      * @param sides - the list of sides to output from
      * @param stack - the stack to output
-     * @param from - the TileEntity to output from
+     * @param from  - the TileEntity to output from
+     *
      * @return the amount of gas emitted
      */
     public static int emit(Set<EnumFacing> sides, FluidStack stack, TileEntity from) {

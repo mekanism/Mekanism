@@ -73,7 +73,7 @@ public class ItemConfigurationCard extends ItemMekanism {
                                   EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                                         .localize("tooltip.configurationCard.got").replaceAll("%s",
                                               EnumColor.INDIGO + LangUtils.localize(data.getString("dataType"))
-                                                    + EnumColor.GREY)));
+                                              + EnumColor.GREY)));
                         }
 
                         return EnumActionResult.SUCCESS;
@@ -92,7 +92,7 @@ public class ItemConfigurationCard extends ItemMekanism {
                                   EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.DARK_GREEN + LangUtils
                                         .localize("tooltip.configurationCard.set").replaceAll("%s",
                                               EnumColor.INDIGO + LangUtils.localize(getDataType(stack))
-                                                    + EnumColor.DARK_GREEN)));
+                                              + EnumColor.DARK_GREEN)));
                             setData(stack, null);
                         } else {
                             player.sendMessage(new TextComponentString(

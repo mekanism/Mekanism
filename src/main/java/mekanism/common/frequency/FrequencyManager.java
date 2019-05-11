@@ -235,7 +235,7 @@ public class FrequencyManager {
 
     public String getName() {
         return ownerUUID != null ? (ownerUUID.toString() + "_" + name + "FrequencyHandler")
-              : (name + "FrequencyHandler");
+                                 : (name + "FrequencyHandler");
     }
 
     public static class FrequencyDataHandler extends WorldSavedData {

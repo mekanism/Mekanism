@@ -12,8 +12,6 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -24,6 +22,8 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
@@ -96,7 +96,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
               .getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
 
         if (getTransmitter().getColor() == null || transporter.getColor() == null
-              || getTransmitter().getColor() == transporter.getColor()) {
+            || getTransmitter().getColor() == transporter.getColor()) {
             return super.isValidTransmitter(tileEntity);
         }
 

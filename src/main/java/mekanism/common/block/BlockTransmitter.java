@@ -177,8 +177,8 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
             return tile.getExtendedState(state);
         } else {
             ConnectionType[] typeArray = new ConnectionType[]{ConnectionType.NORMAL, ConnectionType.NORMAL,
-                  ConnectionType.NORMAL,
-                  ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
+                                                              ConnectionType.NORMAL,
+                                                              ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
             PropertyConnection connectionProp = new PropertyConnection((byte) 0, (byte) 0, typeArray, true);
 
             return ((IExtendedBlockState) state)
@@ -293,7 +293,7 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
             return super.addHitEffects(state, world, target, manager);
         }
         return MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager) ||
-              super.addHitEffects(state, world, target, manager);
+               super.addHitEffects(state, world, target, manager);
     }
 
     @Override
@@ -346,7 +346,7 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
         TransmitterType type = state.getValue(BlockStateTransmitter.typeProperty);
 
         if (layer == BlockRenderLayer.TRANSLUCENT && (type == TransmitterType.LOGISTICAL_TRANSPORTER
-              || type == TransmitterType.DIVERSION_TRANSPORTER)) {
+                                                      || type == TransmitterType.DIVERSION_TRANSPORTER)) {
             return true;
         }
 

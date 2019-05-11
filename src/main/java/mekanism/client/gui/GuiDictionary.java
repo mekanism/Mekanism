@@ -87,7 +87,6 @@ public class GuiDictionary extends GuiMekanism {
 
                 for (int i = 0; i < inventorySlots.inventorySlots.size(); i++) {
                     Slot slot = inventorySlots.inventorySlots.get(i);
-
                     if (isMouseOverSlot(slot, mouseX, mouseY)) {
                         hovering = slot;
                         break;
@@ -96,14 +95,11 @@ public class GuiDictionary extends GuiMekanism {
 
                 if (hovering != null) {
                     ItemStack stack = hovering.getStack();
-
                     if (!stack.isEmpty()) {
                         itemType = stack.copy();
                         itemType.setCount(1);
-
                         scrollList.setText(OreDictCache.getOreDictName(itemType));
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                         return;
                     }
                 }
@@ -115,18 +111,15 @@ public class GuiDictionary extends GuiMekanism {
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     itemType = stack.copy();
                     itemType.setCount(1);
-
                     scrollList.setText(OreDictCache.getOreDictName(itemType));
                 } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     itemType = ItemStack.EMPTY;
-
                     scrollList.setText(null);
                 }
 
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }
-
         super.mouseClicked(mouseX, mouseY, button);
     }
 

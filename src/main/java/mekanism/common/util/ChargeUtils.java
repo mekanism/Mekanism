@@ -45,14 +45,14 @@ public final class ChargeUtils {
                 IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
                 if (storage.canExtract()) {
                     int needed = MekanismUtils.clampToInt((storer.getMaxEnergy() - storer.getEnergy()) *
-                          MekanismConfig.current().general.TO_FORGE.val());
+                                                          MekanismConfig.current().general.TO_FORGE.val());
                     storer.setEnergy(storer.getEnergy() + storage.extractEnergy(needed, false) * MekanismConfig
                           .current().general.FROM_FORGE.val());
                 }
             } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                 IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
                 int needed = MekanismUtils.clampToInt((storer.getMaxEnergy() - storer.getEnergy()) *
-                      MekanismConfig.current().general.TO_RF.val());
+                                                      MekanismConfig.current().general.TO_RF.val());
                 storer.setEnergy(storer.getEnergy() + (item.extractEnergy(stack, needed, false) * MekanismConfig
                       .current().general.FROM_RF.val()));
             } else if (MekanismUtils.useTesla() && stack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)) {
@@ -64,13 +64,13 @@ public final class ChargeUtils {
                       .current().general.FROM_TESLA.val());
             } else if (MekanismUtils.useIC2() && isIC2Dischargeable(stack)) {
                 double gain = ElectricItem.manager
-                      .discharge(stack,
-                            (storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_IC2
-                                  .val(), 4, true, true,
-                            false) * MekanismConfig.current().general.FROM_IC2.val();
+                                    .discharge(stack,
+                                          (storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_IC2
+                                                .val(), 4, true, true,
+                                          false) * MekanismConfig.current().general.FROM_IC2.val();
                 storer.setEnergy(storer.getEnergy() + gain);
             } else if (stack.getItem() == Items.REDSTONE
-                  && storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= storer
+                       && storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= storer
                   .getMaxEnergy()) {
                 storer.setEnergy(storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val());
                 stack.shrink(1);
@@ -92,7 +92,7 @@ public final class ChargeUtils {
     /**
      * Universally charges an item, and updates the TileEntity's energy level.
      *
-     * @param stack - ItemStack to charge
+     * @param stack  - ItemStack to charge
      * @param storer - TileEntity the item is being discharged in
      */
     public static void charge(ItemStack stack, IStrictEnergyStorage storer) {
@@ -120,18 +120,18 @@ public final class ChargeUtils {
                       .current().general.FROM_TESLA.val());
             } else if (MekanismUtils.useIC2() && isIC2Chargeable(stack)) {
                 double sent = ElectricItem.manager
-                      .charge(stack, storer.getEnergy() * MekanismConfig.current().general.TO_IC2.val(), 4, true, false)
-                      * MekanismConfig.current().general.FROM_IC2.val();
+                                    .charge(stack, storer.getEnergy() * MekanismConfig.current().general.TO_IC2.val(), 4, true, false)
+                              * MekanismConfig.current().general.FROM_IC2.val();
                 storer.setEnergy(storer.getEnergy() - sent);
             }
         }
     }
 
     /**
-     * Whether or not a defined ItemStack can be discharged for energy in some way. Note: The ItemStack must also have
-     * energy to discharge.
+     * Whether or not a defined ItemStack can be discharged for energy in some way. Note: The ItemStack must also have energy to discharge.
      *
      * @param itemstack - ItemStack to check
+     *
      * @return if the ItemStack can be discharged
      */
     public static boolean canBeDischarged(ItemStack itemstack) {
@@ -172,10 +172,10 @@ public final class ChargeUtils {
     }
 
     /**
-     * Whether or not a defined ItemStack can be charged with energy in some way. Note: The ItemStack must also have
-     * room for more energy.
+     * Whether or not a defined ItemStack can be charged with energy in some way. Note: The ItemStack must also have room for more energy.
      *
      * @param itemstack - ItemStack to check
+     *
      * @return if the ItemStack can be discharged
      */
     public static boolean canBeCharged(ItemStack itemstack) {
@@ -217,11 +217,12 @@ public final class ChargeUtils {
     }
 
     /**
-     * Whether or not a defined deemed-electrical ItemStack can be outputted out of a slot. This puts into account
-     * whether or not that slot is used for charging or discharging.
+     * Whether or not a defined deemed-electrical ItemStack can be outputted out of a slot. This puts into account whether or not that slot is used for charging or
+     * discharging.
      *
-     * @param itemstack - ItemStack to perform the check on
+     * @param itemstack  - ItemStack to perform the check on
      * @param chargeSlot - whether or not the outputting slot is for charging or discharging
+     *
      * @return if the ItemStack can be outputted
      */
     public static boolean canBeOutputted(ItemStack itemstack, boolean chargeSlot) {

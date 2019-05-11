@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
@@ -287,6 +287,8 @@ public class TransporterStack {
     }
 
     public enum Path {
-        DEST, HOME, NONE
+        DEST,
+        HOME,
+        NONE
     }
 }

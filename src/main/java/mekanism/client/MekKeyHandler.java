@@ -71,13 +71,14 @@ public abstract class MekKeyHandler {
     public abstract void keyUp(KeyBinding kb);
 
     protected static class Builder {
+
         private List<KeyBinding> bindings = new ArrayList<>(4);
         private BitSet repeatFlags = new BitSet();
 
         /**
          * Add a keybinding to the list
          *
-         * @param k the KeyBinding to add
+         * @param k          the KeyBinding to add
          * @param repeatFlag true if keyDown pseudo-events continue to be sent while key is held
          */
         protected Builder addBinding(KeyBinding k, boolean repeatFlag) {

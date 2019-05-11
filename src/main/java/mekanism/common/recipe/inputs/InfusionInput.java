@@ -10,8 +10,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
- * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input
- * ItemStack.
+ * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input ItemStack.
  *
  * @author AidanBrady
  */

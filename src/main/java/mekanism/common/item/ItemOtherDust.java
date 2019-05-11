@@ -10,7 +10,7 @@ import net.minecraft.util.NonNullList;
 public class ItemOtherDust extends ItemMekanism implements IMetaItem {
 
     public static String[] subtypes = {"Diamond", "Steel", "null", "Sulfur",
-          "Lithium", "RefinedObsidian", "Obsidian"};
+                                       "Lithium", "RefinedObsidian", "Obsidian"};
 
     public ItemOtherDust() {
         super();

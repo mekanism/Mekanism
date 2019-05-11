@@ -84,7 +84,7 @@ public class CommandChunk extends CommandTreeBase {
             return;
         }
 
-        ChunkProviderServer sp = (ChunkProviderServer)sender.getEntityWorld().getChunkProvider();
+        ChunkProviderServer sp = (ChunkProviderServer) sender.getEntityWorld().getChunkProvider();
         int startCount = sp.getLoadedChunkCount();
         sp.queueUnloadAll();
         sp.tick();

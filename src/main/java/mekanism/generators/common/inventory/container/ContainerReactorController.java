@@ -17,7 +17,6 @@ public class ContainerReactorController extends ContainerMekanism<TileEntityReac
 
     public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController tile) {
         super(tile, inventory);
-
     }
 
     @Override
@@ -30,11 +29,9 @@ public class ContainerReactorController extends ContainerMekanism<TileEntityReac
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
-
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-
             if (slotStack.getItem() instanceof ItemHohlraum) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
@@ -54,20 +51,16 @@ public class ContainerReactorController extends ContainerMekanism<TileEntityReac
             } else if (!mergeItemStack(slotStack, 1, inventorySlots.size(), true)) {
                 return ItemStack.EMPTY;
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 

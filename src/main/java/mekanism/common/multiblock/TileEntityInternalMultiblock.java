@@ -1,8 +1,8 @@
 package mekanism.common.multiblock;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.common.PacketHandler;
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -45,5 +45,7 @@ public class TileEntityInternalMultiblock extends TileEntityBasicBlock {
         multiblockUUID = id;
     }
 
-    public String getMultiblock() { return multiblockUUID; }
+    public String getMultiblock() {
+        return multiblockUUID;
+    }
 }

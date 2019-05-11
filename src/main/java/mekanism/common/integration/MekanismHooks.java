@@ -415,12 +415,12 @@ public final class MekanismHooks {
     }
 
     private void registerMysticalAgricultureRecipes() {
-    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.OVERWORLD);
-    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.NETHER);
-    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.END);
-    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.OVERWORLD);
-    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.NETHER);
-    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.END);
+        registerMARecipeSet(MAOre.INFERIUM, MAOreType.OVERWORLD);
+        registerMARecipeSet(MAOre.INFERIUM, MAOreType.NETHER);
+        registerMARecipeSet(MAOre.INFERIUM, MAOreType.END);
+        registerMARecipeSet(MAOre.PROSPERITY, MAOreType.OVERWORLD);
+        registerMARecipeSet(MAOre.PROSPERITY, MAOreType.NETHER);
+        registerMARecipeSet(MAOre.PROSPERITY, MAOreType.END);
     }
 
     private enum MAOre {
@@ -451,5 +451,5 @@ public final class MekanismHooks {
             this.quantity = quantity;
         }
     }
-    
+
 }

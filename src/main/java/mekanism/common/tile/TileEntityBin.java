@@ -8,8 +8,6 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.BinTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
@@ -18,6 +16,8 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.BinTier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -398,7 +398,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
                 topStack = ItemStack.EMPTY;
             } else {
                 if (isValid(itemstack) && itemstack.getCount() > topStack.getCount()
-                      && tier != BinTier.CREATIVE) {
+                    && tier != BinTier.CREATIVE) {
                     add(StackUtils.size(itemstack, itemstack.getCount() - topStack.getCount()));
                 }
             }
@@ -616,7 +616,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY
-              || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+               || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override

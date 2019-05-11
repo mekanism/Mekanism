@@ -58,7 +58,7 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput> {
     public boolean matches(DoubleMachineInput input) {
         return StackUtils.equalsWildcard(itemStack, input.itemStack) && input.itemStack.getCount() >= itemStack
               .getCount()
-              && StackUtils.equalsWildcard(extraStack, input.extraStack) && input.extraStack.getCount() >= extraStack
+               && StackUtils.equalsWildcard(extraStack, input.extraStack) && input.extraStack.getCount() >= extraStack
               .getCount();
     }
 

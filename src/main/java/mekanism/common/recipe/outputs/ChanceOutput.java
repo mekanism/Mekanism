@@ -55,7 +55,7 @@ public class ChanceOutput extends MachineOutput<ChanceOutput> {
                     inventory.set(primaryIndex, primaryOutput.copy());
                 }
             } else if (inventory.get(primaryIndex).isItemEqual(primaryOutput)
-                  && inventory.get(primaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(primaryIndex)
+                       && inventory.get(primaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(primaryIndex)
                   .getMaxStackSize()) {
                 if (doEmit) {
                     inventory.get(primaryIndex).grow(primaryOutput.getCount());
@@ -73,7 +73,7 @@ public class ChanceOutput extends MachineOutput<ChanceOutput> {
 
                 return true;
             } else if (inventory.get(secondaryIndex).isItemEqual(secondaryOutput)
-                  && inventory.get(secondaryIndex).getCount() + primaryOutput.getCount() <= inventory
+                       && inventory.get(secondaryIndex).getCount() + primaryOutput.getCount() <= inventory
                   .get(secondaryIndex).getMaxStackSize()) {
                 if (doEmit) {
                     inventory.get(secondaryIndex).grow(secondaryOutput.getCount());

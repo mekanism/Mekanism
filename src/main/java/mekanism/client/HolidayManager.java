@@ -24,7 +24,6 @@ public final class HolidayManager {
             holidays.add(new Christmas());
             holidays.add(new NewYear());
         }
-
         Mekanism.logger.info("Initialized HolidayManager.");
     }
 
@@ -48,10 +47,8 @@ public final class HolidayManager {
         if (!MekanismConfig.current().client.holidays.val()) {
             return sound;
         }
-
         try {
             YearlyDate date = getDate();
-
             for (Holiday holiday : holidays) {
                 if (holiday.getDate().equals(date)) {
                     return holiday.filterSound(sound);
@@ -59,7 +56,6 @@ public final class HolidayManager {
             }
         } catch (Exception ignored) {
         }
-
         return sound;
     }
 
@@ -69,11 +65,9 @@ public final class HolidayManager {
 
     private static String getThemedLines(EnumColor[] colors, int amount) {
         StringBuilder builder = new StringBuilder();
-
         for (int i = 0; i < amount; i++) {
             builder.append(colors[i % colors.length]).append("-");
         }
-
         return builder.toString();
     }
 
@@ -119,8 +113,7 @@ public final class HolidayManager {
 
     private static class Christmas extends Holiday {
 
-        private String[] nutcracker = new String[]{"christmas.1", "christmas.2", "christmas.3", "christmas.4",
-              "christmas.5"};
+        private String[] nutcracker = new String[]{"christmas.1", "christmas.2", "christmas.3", "christmas.4", "christmas.5"};
 
         @Override
         public YearlyDate getDate() {
@@ -130,10 +123,8 @@ public final class HolidayManager {
         @Override
         public void onEvent(EntityPlayer player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
-            player.sendMessage(
-                  new TextComponentString(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
-            player.sendMessage(new TextComponentString(
-                  EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
+            player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
+            player.sendMessage(new TextComponentString(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
             player.sendMessage(new TextComponentString(EnumColor.RED + "May you have plenty of Christmas cheer"));
             player.sendMessage(new TextComponentString(EnumColor.RED + "and have a relaxing holiday with your"));
             player.sendMessage(new TextComponentString(EnumColor.RED + "family :)"));
@@ -143,20 +134,18 @@ public final class HolidayManager {
 
         @Override
         public ResourceLocation filterSound(ResourceLocation sound) {
-            String soundResourceLocationString = sound.toString();
-
-            if (soundResourceLocationString.contains("machine.enrichment")) {
-                return new ResourceLocation(sound.toString().replace("machine.enrichment", nutcracker[0]));
-            } else if (soundResourceLocationString.contains("machine.metalinfuser")) {
-                return new ResourceLocation(sound.toString().replace("machine.metalinfuser", nutcracker[1]));
-            } else if (soundResourceLocationString.contains("machine.purification")) {
-                return new ResourceLocation(sound.toString().replace("machine.purification", nutcracker[2]));
-            } else if (soundResourceLocationString.contains("machine.smelter")) {
-                return new ResourceLocation(sound.toString().replace("machine.smelter", nutcracker[3]));
-            } else if (soundResourceLocationString.contains("machine.dissolution")) {
-                return new ResourceLocation(sound.toString().replace("machine.dissolution", nutcracker[4]));
+            String soundLocation = sound.toString();
+            if (soundLocation.contains("machine.enrichment")) {
+                return new ResourceLocation(soundLocation.replace("machine.enrichment", nutcracker[0]));
+            } else if (soundLocation.contains("machine.metalinfuser")) {
+                return new ResourceLocation(soundLocation.replace("machine.metalinfuser", nutcracker[1]));
+            } else if (soundLocation.contains("machine.purification")) {
+                return new ResourceLocation(soundLocation.replace("machine.purification", nutcracker[2]));
+            } else if (soundLocation.contains("machine.smelter")) {
+                return new ResourceLocation(soundLocation.replace("machine.smelter", nutcracker[3]));
+            } else if (soundLocation.contains("machine.dissolution")) {
+                return new ResourceLocation(soundLocation.replace("machine.dissolution", nutcracker[4]));
             }
-
             return sound;
         }
     }
@@ -171,13 +160,10 @@ public final class HolidayManager {
         @Override
         public void onEvent(EntityPlayer player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.WHITE, EnumColor.YELLOW}, 13);
-            player.sendMessage(
-                  new TextComponentString(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
-            player.sendMessage(new TextComponentString(
-                  EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
+            player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
+            player.sendMessage(new TextComponentString(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
             player.sendMessage(new TextComponentString(EnumColor.AQUA + "Best wishes to you as we enter this"));
-            player.sendMessage(new TextComponentString(
-                  EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
+            player.sendMessage(new TextComponentString(EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
             player.sendMessage(new TextComponentString(EnumColor.DARK_GREY + "-aidancbrady"));
             player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
         }

@@ -98,7 +98,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         } else {
             float targetScale =
                   getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().gasScale
-                        : (float) buffer.getStored() / (float) buffer.getMaxGas();
+                                                           : (float) buffer.getStored() / (float) buffer.getMaxGas();
 
             if (Math.abs(currentScale - targetScale) > 0.01) {
                 currentScale = (9 * currentScale + targetScale) / 10;
@@ -246,7 +246,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public void takeShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null
-              && lastWrite != null) {
+            && lastWrite != null) {
             getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
             buffer.setGas(lastWrite);
         }

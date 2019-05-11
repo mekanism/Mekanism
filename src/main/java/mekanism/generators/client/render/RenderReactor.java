@@ -19,8 +19,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
     private ModelEnergyCore core = new ModelEnergyCore();
 
     @Override
-    public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.isBurning()) {
             GlStateManager.pushMatrix();
             GL11.glTranslated(x + 0.5, y - 1.5, z + 0.5);
@@ -36,8 +35,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             c = EnumColor.AQUA;
 
             GlStateManager.pushMatrix();
-            scale = 1 + 0.7 * Math
-                  .sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3.14 * scaledTemp + 135F));
+            scale = 1 + 0.7 * Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3.14 * scaledTemp + 135F));
             GL11.glScaled(scale, scale, scale);
             GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), 1);
             GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * -6 * scaledTemp, 0, 1, 0);
@@ -59,8 +57,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             c = EnumColor.ORANGE;
 
             GlStateManager.pushMatrix();
-            scale =
-                  1 - 0.9 * Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 4 * scaledTemp + 90F));
+            scale = 1 - 0.9 * Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 4 * scaledTemp + 90F));
             GL11.glScaled(scale, scale, scale);
             GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), 1);
             GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 5 * scaledTemp - 35F, 0, 1, 0);

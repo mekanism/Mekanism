@@ -12,7 +12,6 @@ public class ToolsGuiFactory implements IModGuiFactory {
 
     @Override
     public void initialize(Minecraft minecraftInstance) {
-
     }
 
     @Override
@@ -30,4 +29,3 @@ public class ToolsGuiFactory implements IModGuiFactory {
         return new GuiToolsConfig(parentScreen);
     }
 }
-

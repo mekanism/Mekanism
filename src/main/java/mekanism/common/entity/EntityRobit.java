@@ -146,7 +146,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     public void onEntityUpdate() {
         if (!world.isRemote) {
             if (getFollowing() && getOwner() != null && getDistanceSq(getOwner()) > 4 && !getNavigator().noPath()
-                  && getEnergy() > 0) {
+                && getEnergy() > 0) {
                 setEnergy(getEnergy() - getRoundedTravelEnergy());
             }
         }
@@ -215,14 +215,14 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
                     if (item.canProvideEnergy(stack)) {
                         double gain = ElectricItem.manager
-                              .discharge(stack,
-                                    (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_IC2.val(), 4,
-                                    true, true, false)
-                              * MekanismConfig.current().general.FROM_IC2.val();
+                                            .discharge(stack,
+                                                  (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_IC2.val(), 4,
+                                                  true, true, false)
+                                      * MekanismConfig.current().general.FROM_IC2.val();
                         setEnergy(getEnergy() + gain);
                     }
                 } else if (stack.getItem() == Items.REDSTONE
-                      && getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= MAX_ELECTRICITY) {
+                           && getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= MAX_ELECTRICITY) {
                     setEnergy(getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val());
                     stack.shrink(1);
                 }
@@ -284,7 +284,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
                         break;
                     } else if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem())
-                          && itemStack.getCount() < itemStack.getMaxStackSize()) {
+                               && itemStack.getCount() < itemStack.getMaxStackSize()) {
                         int needed = itemStack.getMaxStackSize() - itemStack.getCount();
                         int toAdd = Math.min(needed, item.getItem().getCount());
 

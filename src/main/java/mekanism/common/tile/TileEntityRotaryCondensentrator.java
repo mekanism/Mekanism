@@ -109,7 +109,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
                 if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidFluid(
                       fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID
-                      && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
+                                                                             && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
 
@@ -260,7 +260,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
             return false;
         }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
@@ -323,7 +323,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         return fluid != null && mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null
-              ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
+                                                                                        ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override

@@ -17,9 +17,7 @@ public class FlamethrowerSound extends PlayerSound {
 
     public FlamethrowerSound(EntityPlayer player) {
         super(player, IDLE_SOUND);
-
         inUse = ClientTickHandler.isFlamethrowerOn(player);
-
         this.positionedSoundLocation = inUse ? ON_SOUND : OFF_SOUND;
     }
 
@@ -38,11 +36,4 @@ public class FlamethrowerSound extends PlayerSound {
         }
         return true;
     }
-
-//	@Override
-//	public float getVolume()
-//	{
-//		return super.getVolume() * (inUse ? 2 : 1);
-//	}
-
 }

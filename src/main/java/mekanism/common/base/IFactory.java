@@ -41,6 +41,7 @@ public interface IFactory {
      * Gets the recipe type this Smelting Factory currently has.
      *
      * @param itemStack - stack to check
+     *
      * @return RecipeType ordinal
      */
     int getRecipeType(ItemStack itemStack);
@@ -49,6 +50,7 @@ public interface IFactory {
      * Gets the recipe type this Factory currently has.
      *
      * @param itemStack - stack to check
+     *
      * @return RecipeType or null if it has invalid NBT
      */
     @Nullable
@@ -57,7 +59,7 @@ public interface IFactory {
     /**
      * Sets the recipe type of this Smelting Factory to a new value.
      *
-     * @param type - RecipeType ordinal
+     * @param type      - RecipeType ordinal
      * @param itemStack - stack to set
      */
     void setRecipeType(int type, ItemStack itemStack);

@@ -48,7 +48,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SoundHandler {
 
-    private static IdentityHashMap<EntityPlayer, Boolean> jetpackSounds = new IdentityHashMap();
+    private static IdentityHashMap<EntityPlayer, Boolean> jetpackSounds = new IdentityHashMap<>();
     private static IdentityHashMap<EntityPlayer, Boolean> gasmaskSounds = new IdentityHashMap<>();
 
     private static Map<Long, ISound> soundMap = new HashMap<>();
@@ -72,8 +72,7 @@ public class SoundHandler {
     }
 
     public static void playSound(SoundEvent sound) {
-        playSound(PositionedSoundRecord
-              .getRecord(sound, 1.0F, (float) MekanismConfig.current().client.baseSoundVolume.val()));
+        playSound(PositionedSoundRecord.getRecord(sound, 1.0F, (float) MekanismConfig.current().client.baseSoundVolume.val()));
     }
 
     public static void playSound(ISound sound) {
@@ -85,10 +84,8 @@ public class SoundHandler {
         ISound s = soundMap.get(pos.toLong());
         if (s == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
-            s = new PositionedSoundRecord(soundLoc, SoundCategory.BLOCKS,
-                  (float) (volume * MekanismConfig.current().client.baseSoundVolume.val()), 1.0f,
-                  true, 0, ISound.AttenuationType.LINEAR,
-                  pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+            s = new PositionedSoundRecord(soundLoc, SoundCategory.BLOCKS, (float) (volume * MekanismConfig.current().client.baseSoundVolume.val()), 1.0f,
+                  true, 0, ISound.AttenuationType.LINEAR, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
 
             // Force the underlying sound to get initialized
             // TODO: Understand what this is doing exactly
@@ -152,8 +149,7 @@ public class SoundHandler {
         // Finally, update our soundMap so that we can actually have a shot at stopping this sound; note that we also
         // need to "unoffset" the sound position so that we build the correct key for the sound map
         // Aside: I really, really, wish Forge returned the final result sound as part of playSound :/
-        BlockPos pos = new BlockPos(resultSound.getXPosF() - 0.5f, resultSound.getYPosF() - 0.5f,
-              resultSound.getZPosF() - 0.5);
+        BlockPos pos = new BlockPos(resultSound.getXPosF() - 0.5f, resultSound.getYPosF() - 0.5f, resultSound.getZPosF() - 0.5);
         soundMap.put(pos.toLong(), resultSound);
     }
 
@@ -203,8 +199,7 @@ public class SoundHandler {
         private float getMufflingFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            TileEntity te = mc.world
-                  .getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
+            TileEntity te = mc.world.getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
             if (te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
                 int mufflerCount = ((IUpgradeTile) te).getComponent().getUpgrades(Upgrade.MUFFLING);
                 return 1.0f - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
@@ -281,7 +276,5 @@ public class SoundHandler {
         public AttenuationType getAttenuationType() {
             return original.getAttenuationType();
         }
-
-
     }
 }

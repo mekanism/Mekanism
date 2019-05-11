@@ -5,8 +5,7 @@ import mekanism.common.Version;
 import mekanism.common.config.MekanismConfig;
 
 /**
- * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, is a
- * Mekanism module.
+ * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, is a Mekanism module.
  *
  * @author aidancbrady
  */
@@ -20,8 +19,8 @@ public interface IModule {
     Version getVersion();
 
     /**
-     * Gets the name of the module.  Note that this doesn't include "Mekanism" like the actual module's name does, just
-     * the unique name.  For example, MekanismGenerators returns "Generators" here.
+     * Gets the name of the module.  Note that this doesn't include "Mekanism" like the actual module's name does, just the unique name.  For example, MekanismGenerators
+     * returns "Generators" here.
      *
      * @return unique name of the module
      */
@@ -31,7 +30,7 @@ public interface IModule {
      * Writes this module's configuration to a ConfigSync packet.
      *
      * @param dataStream - the ByteBuf of the sync packet
-     * @param config - the configuration to write
+     * @param config     - the configuration to write
      */
     void writeConfig(ByteBuf dataStream, MekanismConfig config);
 

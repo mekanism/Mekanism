@@ -259,8 +259,7 @@ public class Mekanism {
      */
     public static GenHandler genHandler = new GenHandler();
     /**
-     * The version of ore generation in this version of Mekanism. Increment this every time the default ore generation
-     * changes.
+     * The version of ore generation in this version of Mekanism. Increment this every time the default ore generation changes.
      */
     public static int baseWorldGenVersion = 0;
     /**
@@ -977,7 +976,7 @@ public class Mekanism {
         if (MekanismConfig.current().general.spawnBabySkeletons.val()) {
             for (Biome biome : BiomeProvider.allowedBiomes) {
                 if (biome.getSpawnableList(EnumCreatureType.MONSTER) != null
-                      && biome.getSpawnableList(EnumCreatureType.MONSTER).size() > 0) {
+                    && biome.getSpawnableList(EnumCreatureType.MONSTER).size() > 0) {
                     EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EnumCreatureType.MONSTER, biome);
                 }
             }
@@ -1145,7 +1144,7 @@ public class Mekanism {
                 NBTTagCompound loadData = event.getData();
 
                 if (loadData.getInteger("MekanismWorldGen") == baseWorldGenVersion
-                      && loadData.getInteger("MekanismUserWorldGen") == MekanismConfig
+                    && loadData.getInteger("MekanismUserWorldGen") == MekanismConfig
                       .current().general.userWorldGenVersion.val()) {
                     return;
                 }

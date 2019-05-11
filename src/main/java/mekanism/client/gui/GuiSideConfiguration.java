@@ -127,9 +127,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         String title = currentType.localize() + " " + LangUtils.localize("gui.config");
         fontRenderer.drawString(title, (xSize / 2) - (fontRenderer.getStringWidth(title) / 2), 5, 0x404040);
         if (configurable.getConfig().canEject(currentType)) {
-            fontRenderer.drawString(
-                  LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On"
-                        : "Off"), 53, 17, 0x00CD00);
+            fontRenderer.drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
         } else {
             fontRenderer.drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
         }
@@ -142,8 +140,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
             if (data != TileComponentConfig.EMPTY) {
                 if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
-                    drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis,
-                          yAxis);
+                    drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
                 }
             }
         }
@@ -176,8 +173,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             }
             if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(
-                      new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
+                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
@@ -188,9 +184,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             int y = slotPosMap.get(i).yPos;
             if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(
-                      new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i,
-                            currentType));
+                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, currentType));
             }
         }
     }

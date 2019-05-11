@@ -34,7 +34,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     private static final int[] SLOTS = {0};
 
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature",
-          "setEnergyUsage"};
+                                                         "setEnergyUsage"};
     public double energyUsage = 100;
     public double temperature;
     public double heatToAbsorb = 0;

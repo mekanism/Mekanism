@@ -71,7 +71,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
             didProcess = false;
 
             if (MekanismUtils.canFunction(this) && !inventory.get(0).isEmpty()
-                  && getValidName(inventory.get(0)) != null) {
+                && getValidName(inventory.get(0)) != null) {
                 ItemStack result = getResult(inventory.get(0));
 
                 if (!result.isEmpty()) {
@@ -375,8 +375,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
             return false;
         }
         return capability == Capabilities.CONFIG_CARD_CAPABILITY
-              || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
-              || super.hasCapability(capability, side);
+               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
+               || super.hasCapability(capability, side);
     }
 
     @Override
@@ -384,7 +384,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.CONFIG_CARD_CAPABILITY
-              || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
+                   || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
         }
 

@@ -84,17 +84,13 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
-            Mekanism.packetHandler.sendToServer(
-                  new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0,
-                        0));
+            Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0));
         }
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer
-              .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
-                    6, 0x404040);
+        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
@@ -162,11 +158,9 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                     int yStart = i * 22 + 18;
                     if (xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22) {
-                        OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex() + i);
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         Mekanism.packetHandler.sendToServer(
-                              new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX,
-                                    Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
+                              new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
                     }
                 }
             }

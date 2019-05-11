@@ -72,7 +72,6 @@ public class MekanismRenderer {
         if (item instanceof IMetaItem) {
             IMetaItem metaItem = (IMetaItem) item;
             List<ModelResourceLocation> variants = new ArrayList<>();
-
             for (int i = 0; i < metaItem.getVariants(); i++) {
                 if (metaItem.getTexture(i) == null) {
                     continue;
@@ -88,13 +87,11 @@ public class MekanismRenderer {
             return;
         }
 
-        ModelLoader
-              .setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     public static void initFluidTextures(TextureMap map) {
         missingIcon = map.getMissingSprite();
-
         texMap = map;
     }
 
@@ -102,7 +99,8 @@ public class MekanismRenderer {
      * Get a fluid texture when a stack does not exist.
      *
      * @param fluid the fluid to get
-     * @param type Still or Flowing
+     * @param type  Still or Flowing
+     *
      * @return the sprite, or missing sprite if not found
      */
     public static TextureAtlasSprite getBaseFluidTexture(Fluid fluid, FluidType type) {
@@ -126,7 +124,6 @@ public class MekanismRenderer {
         }
 
         Fluid fluid = fluidStack.getFluid();
-
         ResourceLocation spriteLocation;
         if (type == FluidType.STILL) {
             spriteLocation = fluid.getStill(fluidStack);
@@ -172,15 +169,12 @@ public class MekanismRenderer {
             int j = quad.getFormat().getIntegerSize() * i;
             int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
             if (j + uvIndex + 1 < vertices.length) {
-                vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(
-                      quad.getSprite().getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
-                vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(
-                      quad.getSprite().getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
+                vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(quad.getSprite().getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
+                vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(quad.getSprite().getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
             }
         }
 
-        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(),
-              quad.getFormat());
+        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), quad.getFormat());
     }
 
     public static BakedQuad rotate(BakedQuad quad, int amount) {
@@ -197,14 +191,12 @@ public class MekanismRenderer {
             }
         }
 
-        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(),
-              quad.shouldApplyDiffuseLighting(), quad.getFormat());
+        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
     }
 
     public static void prepFlowing(Model3D model, FluidStack fluid) {
         TextureAtlasSprite still = getFluidTexture(fluid, FluidType.STILL);
         TextureAtlasSprite flowing = getFluidTexture(fluid, FluidType.FLOWING);
-
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
     }
 
@@ -232,8 +224,7 @@ public class MekanismRenderer {
     }
 
     public static void color(EnumColor color, float alpha, float multiplier) {
-        GL11.glColor4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier,
-              alpha);
+        GL11.glColor4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
     }
 
     public static void resetColor() {
@@ -337,13 +328,11 @@ public class MekanismRenderer {
     @SubscribeEvent
     public void onStitch(TextureStitchEvent.Pre event) {
         for (EnumColor color : EnumColor.values()) {
-            colors[color.ordinal()] = event.getMap()
-                  .registerSprite(new ResourceLocation("mekanism:blocks/overlay/overlay_" + color.unlocalizedName));
+            colors[color.ordinal()] = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/overlay/overlay_" + color.unlocalizedName));
         }
 
         for (TransmissionType type : TransmissionType.values()) {
-            overlays.put(type, event.getMap().registerSprite(
-                  new ResourceLocation("mekanism:blocks/overlay/" + type.getTransmission() + "Overlay")));
+            overlays.put(type, event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/overlay/" + type.getTransmission() + "Overlay")));
         }
 
         energyIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidEnergy"));

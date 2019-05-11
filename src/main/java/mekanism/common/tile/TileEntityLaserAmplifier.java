@@ -246,7 +246,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
                     break;
                 case 3:
                     outputMode = RedstoneOutput.values()[outputMode.ordinal() == RedstoneOutput.values().length - 1 ? 0
-                          : outputMode.ordinal() + 1];
+                                                                                                                    : outputMode.ordinal() + 1];
                     break;
             }
 
@@ -349,9 +349,9 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-              || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
-              || capability == Capabilities.LASER_RECEPTOR_CAPABILITY
-              || super.hasCapability(capability, facing);
+               || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
+               || capability == Capabilities.LASER_RECEPTOR_CAPABILITY
+               || super.hasCapability(capability, facing);
     }
 
     @Override
