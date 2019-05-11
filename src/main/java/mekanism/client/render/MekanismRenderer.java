@@ -1,9 +1,7 @@
 package mekanism.client.render;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
@@ -79,16 +77,13 @@ public class MekanismRenderer {
     public static void registerItemRender(String domain, Item item) {
         if (item instanceof IMetaItem) {
             IMetaItem metaItem = (IMetaItem) item;
-            List<ModelResourceLocation> variants = new ArrayList<>();
             for (int i = 0; i < metaItem.getVariants(); i++) {
                 if (metaItem.getTexture(i) == null) {
                     continue;
                 }
 
-                ModelResourceLocation loc = new ModelResourceLocation(domain + ":" + metaItem.getTexture(i),
-                      "inventory");
+                ModelResourceLocation loc = new ModelResourceLocation(domain + ":" + metaItem.getTexture(i), "inventory");
                 ModelLoader.setCustomModelResourceLocation(item, i, loc);
-                variants.add(loc);
                 ModelBakery.registerItemVariants(item, new ResourceLocation(domain + ":" + metaItem.getTexture(i)));
             }
 
