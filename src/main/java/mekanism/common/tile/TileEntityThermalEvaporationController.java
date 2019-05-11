@@ -349,25 +349,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 int corner = getCorner(x, z);
 
                 if (corner != -1) {
-                    if (addSolarPanel(pointer.getTileEntity(world), corner)) {
-                        continue;
-                    } else if (pointer.offset(EnumFacing.UP)
-                                     .getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(
-                          pointerTile)) {
+                    if (!addSolarPanel(pointer.getTileEntity(world), corner)) {
+                        if (pointer.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
+                            return false;
+                        }
+                    }
+                } else if ((x == 1 || x == 2) && (z == 1 || z == 2)) {
+                    if (!pointer.isAirBlock(world)) {
                         return false;
                     }
-                } else {
-                    if ((x == 1 || x == 2) && (z == 1 || z == 2)) {
-                        if (!pointer.isAirBlock(world)) {
-                            return false;
-                        }
-                    } else {
-                        if (pointer.offset(EnumFacing.UP)
-                                  .getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(
-                              pointerTile)) {
-                            return false;
-                        }
-                    }
+                } else if (pointer.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
+                    return false;
                 }
             }
         }

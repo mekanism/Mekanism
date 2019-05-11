@@ -97,7 +97,7 @@ public class InventoryFrequency extends Frequency {
             NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
 
-            if (slotID >= 0 && slotID < 1) {
+            if (slotID == 0) {
                 inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
