@@ -24,8 +24,7 @@ public class BlockStateTransmitter extends ExtendedBlockState {
     public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 
     public BlockStateTransmitter(BlockTransmitter block) {
-        super(block, new IProperty[]{typeProperty, tierProperty},
-              new IUnlistedProperty[]{OBJProperty.INSTANCE, PropertyColor.INSTANCE, PropertyConnection.INSTANCE});
+        super(block, new IProperty[]{typeProperty, tierProperty}, new IUnlistedProperty[]{OBJProperty.INSTANCE, PropertyColor.INSTANCE, PropertyConnection.INSTANCE});
     }
 
     public enum TransmitterType implements IStringSerializable {
@@ -104,21 +103,15 @@ public class BlockStateTransmitter extends ExtendedBlockState {
 
             if (type.tiers) {
                 BaseTier tier = state.getValue(tierProperty);
-
                 if (tier == BaseTier.CREATIVE) {
                     tier = BaseTier.ULTIMATE;
                 }
-
                 nameOverride = type.getName() + "_" + tier.getName();
             }
-
             if (builder.length() == 0) {
                 builder.append("normal");
             }
-
-            ResourceLocation baseLocation = new ResourceLocation("mekanism",
-                  nameOverride != null ? nameOverride : type.getName());
-
+            ResourceLocation baseLocation = new ResourceLocation("mekanism", nameOverride != null ? nameOverride : type.getName());
             return new ModelResourceLocation(baseLocation, builder.toString());
         }
     }

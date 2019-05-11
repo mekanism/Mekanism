@@ -20,8 +20,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
     }
 
     private static IFluidTankProperties[] convertReadOnly(FluidTankInfo[] fluidTankInfos) {
-        return Arrays.stream(fluidTankInfos).map(t -> new FluidTankProperties(t.fluid, t.capacity, false, false))
-              .toArray(IFluidTankProperties[]::new);
+        return Arrays.stream(fluidTankInfos).map(t -> new FluidTankProperties(t.fluid, t.capacity, false, false)).toArray(IFluidTankProperties[]::new);
     }
 
     @Override
@@ -29,8 +28,7 @@ public class FluidHandlerWrapper implements IFluidHandler {
         if (side == null) {
             return convertReadOnly(wrapper.getAllTanks());
         }
-        return wrapper.getTankInfo(side) != null ? FluidTankProperties.convert(wrapper.getTankInfo(side))
-                                                 : new IFluidTankProperties[]{};
+        return wrapper.getTankInfo(side) != null ? FluidTankProperties.convert(wrapper.getTankInfo(side)) : new IFluidTankProperties[]{};
     }
 
     @Override
@@ -41,7 +39,6 @@ public class FluidHandlerWrapper implements IFluidHandler {
         if (wrapper.canFill(side, resource)) {
             return wrapper.fill(side, resource, doFill);
         }
-
         return 0;
     }
 
@@ -53,7 +50,6 @@ public class FluidHandlerWrapper implements IFluidHandler {
         if (wrapper.canDrain(side, resource)) {
             return wrapper.drain(side, resource, doDrain);
         }
-
         return null;
     }
 
@@ -65,7 +61,6 @@ public class FluidHandlerWrapper implements IFluidHandler {
         if (wrapper.canDrain(side, null)) {
             return wrapper.drain(side, maxDrain, doDrain);
         }
-
         return null;
     }
 }

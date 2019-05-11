@@ -16,8 +16,7 @@ public class BooleanOption extends Option<BooleanOption> {
     private boolean value;
     private final boolean defaultValue;
 
-    public BooleanOption(BaseConfig owner, String category, String key, boolean defaultValue,
-          @Nullable String comment) {
+    public BooleanOption(BaseConfig owner, String category, String key, boolean defaultValue, @Nullable String comment) {
         super(owner, category, key, comment);
         this.defaultValue = defaultValue;
         this.value = defaultValue;
@@ -42,10 +41,8 @@ public class BooleanOption extends Option<BooleanOption> {
     @Override
     public void load(Configuration config) {
         Property prop = config.get(this.category, this.key, this.defaultValue, this.comment);
-
         prop.setRequiresMcRestart(this.requiresGameRestart);
         prop.setRequiresWorldRestart(this.requiresWorldRestart);
-
         this.value = prop.getBoolean();
     }
 

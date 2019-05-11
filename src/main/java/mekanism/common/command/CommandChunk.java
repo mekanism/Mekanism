@@ -24,7 +24,6 @@ public class CommandChunk extends CommandTreeBase {
         addSubcommand(new Cmd("unwatch", "cmd.mek.chunk.unwatch", this::removeWatcher));
         addSubcommand(new Cmd("clear", "cmd.mek.chunk.clear", this::clearWatchers));
         addSubcommand(new Cmd("flush", "cmd.mek.chunk.flush", this::flushChunks));
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -54,12 +53,14 @@ public class CommandChunk extends CommandTreeBase {
         if (event.getWorld().isRemote) {
             return;
         }
-
         ChunkPos pos = event.getChunk().getPos();
         long key = ChunkPos.asLong(pos.x, pos.z);
         if (chunkWatchers.contains(key)) {
             String msg = String.format("%s chunk %d, %d", direction, pos.x, pos.z);
-            event.getWorld().getMinecraftServer().getPlayerList().sendMessage(new TextComponentString(msg));
+            MinecraftServer server = event.getWorld().getMinecraftServer();
+            if (server != null) {
+                server.getPlayerList().sendMessage(new TextComponentString(msg));
+            }
         }
     }
 
@@ -75,7 +76,7 @@ public class CommandChunk extends CommandTreeBase {
         CommandBase.notifyCommandListener(sender, this, "cmd.mek.chunk.unwatch", cpos.x, cpos.z);
     }
 
-    public void clearWatchers(MinecraftServer server, ICommandSender sender, String[] args)  {
+    public void clearWatchers(MinecraftServer server, ICommandSender sender, String[] args) {
         int count = chunkWatchers.size();
         chunkWatchers.clear();
         CommandBase.notifyCommandListener(sender, this, "cmd.mek.chunk.clear", count);
@@ -85,7 +86,6 @@ public class CommandChunk extends CommandTreeBase {
         if (sender.getEntityWorld().isRemote) {
             return;
         }
-
         ChunkProviderServer sp = (ChunkProviderServer) sender.getEntityWorld().getChunkProvider();
         int startCount = sp.getLoadedChunkCount();
         sp.queueUnloadAll();

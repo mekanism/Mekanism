@@ -24,8 +24,7 @@ public abstract class BlockTileDrops extends Block {
     }
 
     @Nonnull
-    protected abstract ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world,
-          @Nonnull BlockPos pos);
+    protected abstract ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos);
 
     /**
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)}.
@@ -34,8 +33,7 @@ public abstract class BlockTileDrops extends Block {
      * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
      */
     @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
-          @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
+    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos, @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.setBlockToAir(pos);
     }
@@ -54,8 +52,7 @@ public abstract class BlockTileDrops extends Block {
     }
 
     @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos,
-          @Nonnull IBlockState state, int fortune) {
+    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
         drops.add(getDropItem(state, world, pos));
     }
 
@@ -67,15 +64,13 @@ public abstract class BlockTileDrops extends Block {
      * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
      */
     @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest) {
         return willHarvest || super.removedByPlayer(state, world, pos, player, false);
     }
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player) {
         return getDropItem(state, world, pos);
     }
 }

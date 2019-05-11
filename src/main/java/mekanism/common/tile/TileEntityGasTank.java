@@ -172,8 +172,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         } else if (slotID == 0) {
             return itemstack.getItem() instanceof IGasItem
                    && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
-                    ((IGasItem) itemstack.getItem()).getGas(itemstack).amount == ((IGasItem) itemstack.getItem())
-                          .getMaxGas(itemstack);
+                   ((IGasItem) itemstack.getItem()).getGas(itemstack).amount == ((IGasItem) itemstack.getItem())
+                         .getMaxGas(itemstack);
         }
 
         return false;

@@ -28,7 +28,6 @@ public class DefaultHeatTransfer implements IHeatTransfer {
 
     @Override
     public void transferHeatTo(double heat) {
-
     }
 
     @Override

@@ -24,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -64,45 +64,33 @@ public class BlockCardboardBox extends BlockMekanismContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer,
-          EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote && entityplayer.isSneaking()) {
             TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
 
             if (tileEntity.storedData != null) {
                 BlockData data = tileEntity.storedData;
-
                 testingPlace = true;
-
                 if (!data.block.canPlaceBlockAt(world, pos)) {
                     testingPlace = false;
                     return true;
                 }
-
                 testingPlace = false;
-
                 if (data.block != null) {
-                    IBlockState newstate = data.block
-                          .getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, entityplayer, hand);
+                    IBlockState newstate = data.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, entityplayer, hand);
                     data.meta = newstate.getBlock().getMetaFromState(newstate);
                 }
-
                 world.setBlockState(pos, data.block.getStateFromMeta(data.meta), 3);
-
                 if (data.tileTag != null && world.getTileEntity(pos) != null) {
                     data.updateLocation(pos);
                     world.getTileEntity(pos).readFromNBT(data.tileTag);
                 }
-
                 if (data.block != null) {
-                    data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), entityplayer,
-                          new ItemStack(data.block, 1, data.meta));
+                    data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), entityplayer, new ItemStack(data.block, 1, data.meta));
                 }
-
                 spawnAsEntity(world, pos, new ItemStack(MekanismBlocks.CardboardBox));
             }
         }
-
         return entityplayer.isSneaking();
     }
 
@@ -122,14 +110,11 @@ public class BlockCardboardBox extends BlockMekanismContainer {
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
-
         Item item = Item.getItemFromBlock(state.getBlock());
         ItemStack itemStack = new ItemStack(item, 1, state.getBlock().getMetaFromState(state));
-
         if (tileEntity.storedData != null) {
             ((ItemBlockCardboardBox) item).setBlockData(itemStack, tileEntity.storedData);
         }
-
         return itemStack;
     }
 
@@ -139,9 +124,8 @@ public class BlockCardboardBox extends BlockMekanismContainer {
      * @param blockEvent event
      */
     @SubscribeEvent
-    public void rightClickEvent(PlayerInteractEvent.RightClickBlock blockEvent) {
-        if (blockEvent.getEntityPlayer().isSneaking()
-            && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() == this) {
+    public void rightClickEvent(RightClickBlock blockEvent) {
+        if (blockEvent.getEntityPlayer().isSneaking() && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() == this) {
             blockEvent.setUseBlock(Event.Result.ALLOW);
             blockEvent.setUseItem(Event.Result.DENY);
         }
@@ -164,14 +148,11 @@ public class BlockCardboardBox extends BlockMekanismContainer {
 
         public static BlockData read(NBTTagCompound nbtTags) {
             BlockData data = new BlockData();
-
             data.block = Block.getBlockById(nbtTags.getInteger("id"));
             data.meta = nbtTags.getInteger("meta");
-
             if (nbtTags.hasKey("tileTag")) {
                 data.tileTag = nbtTags.getCompoundTag("tileTag");
             }
-
             return data;
         }
 
@@ -186,11 +167,9 @@ public class BlockCardboardBox extends BlockMekanismContainer {
         public NBTTagCompound write(NBTTagCompound nbtTags) {
             nbtTags.setInteger("id", Block.getIdFromBlock(block));
             nbtTags.setInteger("meta", meta);
-
             if (tileTag != null) {
                 nbtTags.setTag("tileTag", tileTag);
             }
-
             return nbtTags;
         }
     }

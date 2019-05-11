@@ -72,8 +72,7 @@ public class BlockBounding extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-          EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return false;
@@ -95,8 +94,7 @@ public class BlockBounding extends Block {
      */
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return ItemStack.EMPTY;
@@ -113,8 +111,7 @@ public class BlockBounding extends Block {
      * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
      */
     @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest) {
         if (willHarvest) {
             return true;
         }
@@ -126,8 +123,7 @@ public class BlockBounding extends Block {
      * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)}.
      */
     @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos,
-          @Nonnull IBlockState state, int fortune) {
+    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return;
@@ -143,8 +139,7 @@ public class BlockBounding extends Block {
      * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
      */
     @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
-          @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
+    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos, @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.setBlockToAir(pos);
     }
@@ -164,8 +159,7 @@ public class BlockBounding extends Block {
 
     @Override
     @Deprecated
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
-          BlockPos neighborPos) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
         if (tileEntity != null) {
             tileEntity.onNeighborChange(state.getBlock());
@@ -179,8 +173,7 @@ public class BlockBounding extends Block {
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
-          @Nonnull BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return super.getPlayerRelativeBlockHardness(state, player, world, pos);

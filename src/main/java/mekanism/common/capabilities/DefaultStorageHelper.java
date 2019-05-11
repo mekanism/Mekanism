@@ -26,7 +26,6 @@ public class DefaultStorageHelper {
         public void readNBT(Capability<T> capability, T instance, EnumFacing side, NBTBase nbt) {
             if (instance instanceof INBTSerializable) {
                 Class<? extends NBTBase> nbtClass = ((INBTSerializable<?>) instance).serializeNBT().getClass();
-
                 if (nbtClass.isInstance(nbt)) {
                     ((INBTSerializable) instance).deserializeNBT(nbtClass.cast(nbt));
                 }

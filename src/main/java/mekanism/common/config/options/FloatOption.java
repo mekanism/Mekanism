@@ -33,8 +33,7 @@ public class FloatOption extends Option<FloatOption> {
         this(owner, category, key, 0, null);
     }
 
-    public FloatOption(BaseConfig owner, String category, String key, float defaultValue, @Nullable String comment,
-          float min, float max) {
+    public FloatOption(BaseConfig owner, String category, String key, float defaultValue, @Nullable String comment, float min, float max) {
         this(owner, category, key, defaultValue, comment);
         this.hasRange = true;
         this.min = min;
@@ -53,16 +52,13 @@ public class FloatOption extends Option<FloatOption> {
     @Override
     public void load(Configuration config) {
         Property prop;
-
         if (hasRange) {
             prop = config.get(this.category, this.key, this.defaultValue, this.comment, this.min, this.max);
         } else {
             prop = config.get(this.category, this.key, this.defaultValue, this.comment);
         }
-
         prop.setRequiresMcRestart(this.requiresGameRestart);
         prop.setRequiresWorldRestart(this.requiresWorldRestart);
-
         this.value = (float) prop.getDouble();
     }
 

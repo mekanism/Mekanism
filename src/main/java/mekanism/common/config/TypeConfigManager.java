@@ -18,8 +18,7 @@ public class TypeConfigManager<T extends Enum<T>> extends Option<TypeConfigManag
     private Supplier<List<T>> validValuesSupplier;
     private Function<T, String> nameSupplier;
 
-    TypeConfigManager(BaseConfig owner, String category, Class<T> enumClazz, Supplier<List<T>> validValuesSupplier,
-          Function<T, String> nameSupplier) {
+    TypeConfigManager(BaseConfig owner, String category, Class<T> enumClazz, Supplier<List<T>> validValuesSupplier, Function<T, String> nameSupplier) {
         super(owner, category, "", null);//key unused
         this.validValuesSupplier = validValuesSupplier;
         this.nameSupplier = nameSupplier;

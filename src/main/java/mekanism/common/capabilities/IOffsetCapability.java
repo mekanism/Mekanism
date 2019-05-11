@@ -56,8 +56,7 @@ public interface IOffsetCapability extends IToggleableCapability {
      * @return True if this given capability is disabled for the given side and offset. If true, then {@link #hasOffsetCapability(Capability, EnumFacing, Vec3i)} should
      * return false.
      */
-    default boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable EnumFacing side,
-          @Nonnull Vec3i offset) {
+    default boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable EnumFacing side, @Nonnull Vec3i offset) {
         return false;
     }
 }

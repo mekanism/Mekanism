@@ -72,22 +72,15 @@ public interface IFactory {
     }
 
     enum RecipeType implements IStringSerializable {
-        SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, MachineFuelType.BASIC, false,
-              Recipe.ENERGIZED_SMELTER),
-        ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false,
-              Recipe.ENRICHMENT_CHAMBER),
+        SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, MachineFuelType.BASIC, false, Recipe.ENERGIZED_SMELTER),
+        ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false, Recipe.ENRICHMENT_CHAMBER),
         CRUSHING("Crushing", "crusher", MachineType.CRUSHER, MachineFuelType.BASIC, false, Recipe.CRUSHER),
-        COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false,
-              Recipe.OSMIUM_COMPRESSOR),
+        COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false, Recipe.OSMIUM_COMPRESSOR),
         COMBINING("Combining", "combiner", MachineType.COMBINER, MachineFuelType.DOUBLE, false, Recipe.COMBINER),
-        PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true,
-              Recipe.PURIFICATION_CHAMBER),
-        INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true,
-              Recipe.CHEMICAL_INJECTION_CHAMBER),
-        INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false,
-              Recipe.METALLURGIC_INFUSER),
-        SAWING("Sawing", "sawmill", MachineType.PRECISION_SAWMILL, MachineFuelType.CHANCE, false,
-              Recipe.PRECISION_SAWMILL);
+        PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.PURIFICATION_CHAMBER),
+        INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
+        INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER),
+        SAWING("Sawing", "sawmill", MachineType.PRECISION_SAWMILL, MachineFuelType.CHANCE, false, Recipe.PRECISION_SAWMILL);
 
         private String name;
         private SoundEvent sound;
@@ -108,16 +101,13 @@ public interface IFactory {
 
         public static RecipeType getFromMachine(Block block, int meta) {
             RecipeType type = null;
-
             for (RecipeType iterType : RecipeType.values()) {
                 ItemStack machineStack = iterType.getStack();
-
                 if (Block.getBlockFromItem(machineStack.getItem()) == block && machineStack.getItemDamage() == meta) {
                     type = iterType;
                     break;
                 }
             }
-
             return type;
         }
 
@@ -162,8 +152,7 @@ public interface IFactory {
         }
 
         @Nullable
-        public MachineRecipe getAnyRecipe(ItemStack slotStack, ItemStack extraStack, Gas gasType,
-              InfuseStorage infuse) {
+        public MachineRecipe getAnyRecipe(ItemStack slotStack, ItemStack extraStack, Gas gasType, InfuseStorage infuse) {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getRecipe(slotStack, gasType);
             } else if (fuelType == MachineFuelType.DOUBLE) {
@@ -174,15 +163,13 @@ public interface IFactory {
                 if (infuse.getType() != null) {
                     return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuse, slotStack));
                 } else {
-                    for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get()
-                          .entrySet()) {
+                    for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get().entrySet()) {
                         if (entry.getKey().inputStack.isItemEqual(slotStack)) {
                             return entry.getValue();
                         }
                     }
                 }
             }
-
             return getRecipe(slotStack);
         }
 
@@ -191,7 +178,6 @@ public interface IFactory {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().getItemGas(itemstack);
             }
-
             return null;
         }
 
@@ -199,7 +185,6 @@ public interface IFactory {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().BASE_SECONDARY_ENERGY_PER_TICK;
             }
-
             return 0;
         }
 
@@ -207,7 +192,6 @@ public interface IFactory {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().canReceiveGas(side, type);
             }
-
             return false;
         }
 
@@ -219,7 +203,6 @@ public interface IFactory {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().isValidGas(gas);
             }
-
             return false;
         }
 
@@ -227,18 +210,15 @@ public interface IFactory {
             if (itemStack.isEmpty()) {
                 return false;
             }
-
             for (Object obj : recipe.get().entrySet()) {
                 if (((Map.Entry) obj).getKey() instanceof AdvancedMachineInput) {
                     Map.Entry entry = (Map.Entry) obj;
                     ItemStack stack = ((AdvancedMachineInput) entry.getKey()).itemStack;
-
                     if (StackUtils.equalsWildcard(stack, itemStack)) {
                         return true;
                     }
                 }
             }
-
             return false;
         }
 
@@ -246,18 +226,15 @@ public interface IFactory {
             if (extraStack.isEmpty()) {
                 return false;
             }
-
             for (Object obj : recipe.get().entrySet()) {
                 if (((Map.Entry) obj).getKey() instanceof DoubleMachineInput) {
                     Map.Entry entry = (Map.Entry) obj;
                     ItemStack stack = ((DoubleMachineInput) entry.getKey()).extraStack;
-
                     if (StackUtils.equalsWildcard(stack, extraStack)) {
                         return true;
                     }
                 }
             }
-
             return false;
         }
 
@@ -266,7 +243,6 @@ public interface IFactory {
                 MachineType type = MachineType.get(getStack());
                 cacheTile = (TileEntityAdvancedElectricMachine) type.create();
             }
-
             return cacheTile;
         }
 

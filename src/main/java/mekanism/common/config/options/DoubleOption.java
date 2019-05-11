@@ -33,8 +33,7 @@ public class DoubleOption extends Option<DoubleOption> {
         this(owner, category, key, 0, null);
     }
 
-    public DoubleOption(BaseConfig owner, String category, String key, double defaultValue, @Nullable String comment,
-          double min, double max) {
+    public DoubleOption(BaseConfig owner, String category, String key, double defaultValue, @Nullable String comment, double min, double max) {
         this(owner, category, key, defaultValue, comment);
         this.hasRange = true;
         this.min = min;
@@ -53,16 +52,13 @@ public class DoubleOption extends Option<DoubleOption> {
     @Override
     public void load(Configuration config) {
         Property prop;
-
         if (hasRange) {
             prop = config.get(this.category, this.key, this.defaultValue, this.comment, this.min, this.max);
         } else {
             prop = config.get(this.category, this.key, this.defaultValue, this.comment);
         }
-
         prop.setRequiresMcRestart(this.requiresGameRestart);
         prop.setRequiresWorldRestart(this.requiresWorldRestart);
-
         this.value = prop.getDouble();
 
     }

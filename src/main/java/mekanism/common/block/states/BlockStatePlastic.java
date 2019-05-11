@@ -40,7 +40,6 @@ public class BlockStatePlastic extends BlockStateContainer {
         protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             PlasticBlockType type = ((BlockPlastic) state.getBlock()).type;
             String property = "type=" + type.getName();
-
             ResourceLocation baseLocation = new ResourceLocation("mekanism", "plastic_block");
             return new ModelResourceLocation(baseLocation, property);
         }

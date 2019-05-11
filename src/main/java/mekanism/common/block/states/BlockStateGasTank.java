@@ -9,8 +9,7 @@ import net.minecraft.block.properties.PropertyEnum;
  */
 public class BlockStateGasTank extends BlockStateFacing {
 
-    public static final PropertyEnum<GasTankTier> typeProperty = PropertyEnum
-          .create("tier", GasTankTier.class);
+    public static final PropertyEnum<GasTankTier> typeProperty = PropertyEnum.create("tier", GasTankTier.class);
 
     public BlockStateGasTank(BlockGasTank block) {
         super(block, typeProperty);

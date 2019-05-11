@@ -9,8 +9,7 @@ import net.minecraft.block.properties.PropertyEnum;
  */
 public class BlockStateEnergyCube extends BlockStateFacing {
 
-    public static final PropertyEnum<EnergyCubeTier> typeProperty = PropertyEnum
-          .create("tier", EnergyCubeTier.class);
+    public static final PropertyEnum<EnergyCubeTier> typeProperty = PropertyEnum.create("tier", EnergyCubeTier.class);
 
     public BlockStateEnergyCube(BlockEnergyCube block) {
         super(block, typeProperty);

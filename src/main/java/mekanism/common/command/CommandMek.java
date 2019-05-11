@@ -99,8 +99,7 @@ public class CommandMek extends CommandTreeBase {
             BlockPos lastPos = playerLocations.pop();
             tpStack.put(player, playerLocations);
             teleport(sender.getCommandSenderEntity(), lastPos.getX(), lastPos.getY(), lastPos.getZ());
-            notifyCommandListener(sender, this, "cmd.mek.tpop",
-                  lastPos.getX(), lastPos.getY(), lastPos.getZ(), playerLocations.size());
+            notifyCommandListener(sender, this, "cmd.mek.tpop", lastPos.getX(), lastPos.getY(), lastPos.getZ(), playerLocations.size());
         } else {
             notifyCommandListener(sender, this, "cmd.mek.tpop.empty.stack");
         }

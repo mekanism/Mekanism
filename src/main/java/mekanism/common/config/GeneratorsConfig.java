@@ -12,8 +12,7 @@ import net.minecraftforge.common.config.Configuration;
  */
 public class GeneratorsConfig extends BaseConfig {
 
-    public final DoubleOption advancedSolarGeneration = new DoubleOption(this, "generation", "AdvancedSolarGeneration",
-          300D,
+    public final DoubleOption advancedSolarGeneration = new DoubleOption(this, "generation", "AdvancedSolarGeneration", 300D,
           "Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.");
 
     public final DoubleOption bioGeneration = new DoubleOption(this, "generation", "BioGeneration", 350D,
@@ -37,8 +36,8 @@ public class GeneratorsConfig extends BaseConfig {
     public final DoubleOption turbineVentGasFlow = new DoubleOption(this, "generation", "TurbineVentGasFlow", 16000D,
           "The rate at which steam is vented into the turbine.");
 
-    public final DoubleOption turbineDisperserGasFlow = new DoubleOption(this, "generation", "TurbineDisperserGasFlow",
-          640D, "The rate at which steam is dispersed into the turbine.");
+    public final DoubleOption turbineDisperserGasFlow = new DoubleOption(this, "generation", "TurbineDisperserGasFlow", 640D,
+          "The rate at which steam is dispersed into the turbine.");
 
     public final IntOption condenserRate = new IntOption(this, "generation", "TurbineCondenserFlowRate", 32000,
           "The rate at which steam is condensed in the turbine.");
@@ -58,12 +57,10 @@ public class GeneratorsConfig extends BaseConfig {
     public final IntOption windGenerationMaxY = new IntOption(this, "generation", "WindGenerationMaxY", 255,
           "The maximum Y value that affects the Wind Generators Power generation.");
 
-    public final IntSetOption windGenerationDimBlacklist = new IntSetOption(this, "generation",
-          "WindGenerationDimBlacklist", new int[0],
+    public final IntSetOption windGenerationDimBlacklist = new IntSetOption(this, "generation", "WindGenerationDimBlacklist", new int[0],
           "The list of dimension ids that the Wind Generator will not generate power in.");
 
-    public TypeConfigManager<BlockStateGenerator.GeneratorType> generatorsManager = new TypeConfigManager<>(this,
-          "generators", BlockStateGenerator.GeneratorType.class,
+    public TypeConfigManager<BlockStateGenerator.GeneratorType> generatorsManager = new TypeConfigManager<>(this, "generators", BlockStateGenerator.GeneratorType.class,
           BlockStateGenerator.GeneratorType::getGeneratorsForConfig, t -> t.blockName);
 
     @Override
