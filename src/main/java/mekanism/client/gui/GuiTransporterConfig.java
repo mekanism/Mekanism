@@ -58,8 +58,8 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
             drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 14, 0, 14, 14);
         } else {
@@ -110,8 +110,8 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
             GL11.glDisable(GL11.GL_LIGHTING);
             GlStateManager.popMatrix();
         }
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
@@ -139,8 +139,8 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         TileEntity tile = (TileEntity) configurable;
         if (button == 0) {
             if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {

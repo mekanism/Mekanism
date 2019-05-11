@@ -39,7 +39,6 @@ public class BooleanOption extends Option<BooleanOption> {
         this.value = value;
     }
 
-    @SuppressWarnings("Duplicates")//types are different
     @Override
     public void load(Configuration config) {
         Property prop = config.get(this.category, this.key, this.defaultValue, this.comment);

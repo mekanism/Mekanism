@@ -307,15 +307,15 @@ public class Pos3D extends Vec3d {
         float ocos = 1.0F - cos;
         float sin = (float) Math.sin(angle);
 
-        matrix[0] = (x * x * ocos + cos);
-        matrix[1] = (y * x * ocos + z * sin);
-        matrix[2] = (x * z * ocos - y * sin);
-        matrix[4] = (x * y * ocos - z * sin);
-        matrix[5] = (y * y * ocos + cos);
-        matrix[6] = (y * z * ocos + x * sin);
-        matrix[8] = (x * z * ocos + y * sin);
-        matrix[9] = (y * z * ocos - x * sin);
-        matrix[10] = (z * z * ocos + cos);
+        matrix[0] = x * x * ocos + cos;
+        matrix[1] = y * x * ocos + z * sin;
+        matrix[2] = x * z * ocos - y * sin;
+        matrix[4] = x * y * ocos - z * sin;
+        matrix[5] = y * y * ocos + cos;
+        matrix[6] = y * z * ocos + x * sin;
+        matrix[8] = x * z * ocos + y * sin;
+        matrix[9] = y * z * ocos - x * sin;
+        matrix[10] = z * z * ocos + cos;
         matrix[15] = 1.0F;
         return matrix;
     }

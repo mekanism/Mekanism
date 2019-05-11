@@ -146,7 +146,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                 return false;
             }
 
-            int steamHeight = (structure.renderLocation.y + structure.volHeight - 2) - initDisperser.y;
+            int steamHeight = structure.renderLocation.y + structure.volHeight - 2 - initDisperser.y;
             structure.steamVolume = structure.volWidth * structure.volLength * steamHeight;
 
             structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y + 1,
@@ -198,14 +198,14 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     protected void onFormed() {
         super.onFormed();
 
-        if ((structureFound).waterStored != null) {
-            (structureFound).waterStored.amount = Math
-                  .min((structureFound).waterStored.amount, structureFound.waterVolume * WATER_PER_TANK);
+        if (structureFound.waterStored != null) {
+            structureFound.waterStored.amount = Math
+                  .min(structureFound.waterStored.amount, structureFound.waterVolume * WATER_PER_TANK);
         }
 
-        if ((structureFound).steamStored != null) {
-            (structureFound).steamStored.amount = Math
-                  .min((structureFound).steamStored.amount, structureFound.steamVolume * STEAM_PER_TANK);
+        if (structureFound.steamStored != null) {
+            structureFound.steamStored.amount = Math
+                  .min(structureFound.steamStored.amount, structureFound.steamVolume * STEAM_PER_TANK);
         }
     }
 

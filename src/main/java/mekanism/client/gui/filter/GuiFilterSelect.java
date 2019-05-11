@@ -53,8 +53,8 @@ public abstract class GuiFilterSelect<TILE extends TileEntityContainerBlock> ext
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, inBounds(xAxis, yAxis) ? 0 : 11, 11, 11);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
@@ -63,8 +63,8 @@ public abstract class GuiFilterSelect<TILE extends TileEntityContainerBlock> ext
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (inBounds(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 sendPacketToServer(0);

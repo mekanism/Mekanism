@@ -77,8 +77,8 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         renderScaledText(LangUtils.localize("gui.maxFlow") + ": " + rate + " mB/t", 53, 53, 0x00CD00, 106);
         String name = chooseByMode(tileEntity.structure.dumpMode, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
         renderScaledText(name, 156 - (int) (fontRenderer.getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040, 66);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
             drawHoveringText(tileEntity.structure.fluidStored != null
                              ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB"
@@ -112,8 +112,8 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     @Override
     protected void mouseClicked(int x, int y, int button) throws IOException {
         super.mouseClicked(x, y, button);
-        int xAxis = (x - (width - xSize) / 2);
-        int yAxis = (y - (height - ySize) / 2);
+        int xAxis = x - (width - xSize) / 2;
+        int yAxis = y - (height - ySize) / 2;
         if (xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82) {
             TileNetworkList data = TileNetworkList.withContents((byte) 0);
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

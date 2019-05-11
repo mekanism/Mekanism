@@ -697,7 +697,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         if (cachedRecipe[process] instanceof BasicMachineRecipe && ((BasicMachineRecipe) cachedRecipe[process])
               .inputMatches(inventory, inputSlot)) {
-            return (((BasicMachineRecipe) cachedRecipe[process]).canOperate(inventory, inputSlot, outputSlot));
+            return ((BasicMachineRecipe) cachedRecipe[process]).canOperate(inventory, inputSlot, outputSlot);
         }
 
         BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot));

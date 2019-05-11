@@ -152,7 +152,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     public double getScaledProgress() {
-        return ((double) operatingTicks) / ((double) ticksRequired);
+        return (double) operatingTicks / (double) ticksRequired;
     }
 
     public DissolutionRecipe getRecipe() {

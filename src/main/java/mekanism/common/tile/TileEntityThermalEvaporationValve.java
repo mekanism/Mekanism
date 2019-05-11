@@ -36,7 +36,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
                 }
             }
 
-            prevMaster = (master != null);
+            prevMaster = master != null;
         }
     }
 

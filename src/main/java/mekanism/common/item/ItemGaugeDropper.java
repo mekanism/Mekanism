@@ -59,10 +59,9 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        double gasRatio = ((getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY);
-        double fluidRatio = (
-              (FluidUtil.getFluidContained(stack) != null ? (double) FluidUtil.getFluidContained(stack).amount : 0D)
-              / (double) CAPACITY);
+        double gasRatio = (getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY;
+        double fluidRatio = (FluidUtil.getFluidContained(stack) != null ? (double) FluidUtil.getFluidContained(stack).amount : 0D)
+                      / (double) CAPACITY;
 
         return 1D - Math.max(gasRatio, fluidRatio);
     }

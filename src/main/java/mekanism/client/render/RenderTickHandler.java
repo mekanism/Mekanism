@@ -110,7 +110,7 @@ public class RenderTickHandler {
                         drawString(scaledresolution, "Hydrogen: " + jetpack.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
                     } else if (stack.getItem() instanceof ItemScubaTank) {
                         ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
-                        String state = (scubaTank.getFlowing(stack) ? EnumColor.DARK_GREEN + "On" : EnumColor.DARK_RED + "Off");
+                        String state = scubaTank.getFlowing(stack) ? EnumColor.DARK_GREEN + "On" : EnumColor.DARK_RED + "Off";
                         drawString(scaledresolution, "Mode: " + state, alignLeft, y - 20, 0xc8c8c8);
                         drawString(scaledresolution, "Oxygen: " + scubaTank.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
                     }

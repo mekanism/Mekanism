@@ -105,7 +105,7 @@ public class ColourTemperature extends ColourRGBA {
         }
 
         ColourTemperature colourTemperature = new ColourTemperature(red, green, blue, alpha, temperature);
-        cache.put((int) (absTemp), colourTemperature);
+        cache.put((int) absTemp, colourTemperature);
         return colourTemperature.blendOnto(baseColour);
     }
 

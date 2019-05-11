@@ -158,7 +158,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min((energy * MekanismConfig.current().general.FROM_RF.val()), energyRemaining);
+            double toSend = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyRemaining);
 
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);

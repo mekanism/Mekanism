@@ -113,7 +113,7 @@ public class TransmitterNetworkRegistry {
             logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
         }
 
-        for (IGridTransmitter orphanTransmitter : (new HashMap<>(orphanTransmitters)).values()) {
+        for (IGridTransmitter orphanTransmitter : new HashMap<>(orphanTransmitters).values()) {
             DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
             if (network != null) {
                 networksToChange.add(network);

@@ -78,8 +78,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
             }
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         for (int i = 0; i < 4; i++) {
             int index = getUpgradeIndex() + i;
             if (index > upgrades.length - 1) {
@@ -121,8 +121,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
             drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 0, 14, 14);
         } else {
@@ -176,14 +176,14 @@ public class GuiUpgradeManagement extends GuiMekanism {
         if (getCurrentUpgrades().size() <= 4) {
             return 0;
         }
-        return (int) ((getCurrentUpgrades().size() * scroll) - ((4F / (float) getCurrentUpgrades().size())) * scroll);
+        return (int) ((getCurrentUpgrades().size() * scroll) - (4F / (float) getCurrentUpgrades().size()) * scroll);
     }
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
         if (isDragging) {
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int yAxis = mouseY - (height - ySize) / 2;
             scroll = Math.min(Math.max((float) (yAxis - 8 - dragOffset) / 42F, 0), 1);
         }
     }
@@ -205,8 +205,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         TileEntity tile = (TileEntity) tileEntity;
         if (button == 0) {
             if (xAxis >= 84 && xAxis <= 88 && yAxis >= getScroll() + 8 && yAxis <= getScroll() + 8 + 4) {

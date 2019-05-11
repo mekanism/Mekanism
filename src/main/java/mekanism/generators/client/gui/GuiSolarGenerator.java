@@ -47,7 +47,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator>
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, (tileEntity.canSeeSun() ? 52 : 64), 12, 12);
+        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, tileEntity.canSeeSun() ? 52 : 64, 12, 12);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 

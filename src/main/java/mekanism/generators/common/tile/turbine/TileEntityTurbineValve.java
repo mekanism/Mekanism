@@ -330,7 +330,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         if (fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("steam"))) {
-            return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
+            return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
         }
         return false;
     }

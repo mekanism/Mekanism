@@ -42,8 +42,8 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
                 MekanismRenderer.colorFluid(tileEntity.inputTank.getFluid());
                 DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid());
 
-                float levels = Math.min(((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity()), 1);
-                levels *= (tileEntity.height - 2);
+                float levels = Math.min((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity(), 1);
+                levels *= tileEntity.height - 2;
                 int partialLevels = (int) ((levels - (int) levels) * 16);
                 switch (tileEntity.facing) {
                     case SOUTH:

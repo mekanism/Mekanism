@@ -258,8 +258,8 @@ public class TransporterStack {
     }
 
     public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from) {
-        if (!(CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite()))) {
+        if (!CapabilityUtils
+              .hasCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite())) {
             return false;
         }
 

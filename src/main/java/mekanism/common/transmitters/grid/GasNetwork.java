@@ -241,7 +241,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     public float getScale() {
-        return Math.min(1, (buffer == null || getCapacity() == 0 ? 0 : (float) buffer.amount / getCapacity()));
+        return Math.min(1, buffer == null || getCapacity() == 0 ? 0 : (float) buffer.amount / getCapacity());
     }
 
     @Override

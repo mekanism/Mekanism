@@ -42,8 +42,8 @@ public abstract class GuiRobit extends GuiMekanism {
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         boolean correctX = xAxis >= 179 && xAxis <= 197;
         drawRect(correctX, yAxis, guiWidth, guiHeight, 10, 0);
         drawRect(correctX, yAxis, guiWidth, guiHeight, 30, 36);
@@ -74,9 +74,9 @@ public abstract class GuiRobit extends GuiMekanism {
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         extraClickListeners(mouseX, mouseY, button);
-        int xAxis = (mouseX - (width - xSize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
         if (button == 0 && xAxis >= 179 && xAxis <= 197) {
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int yAxis = mouseY - (height - ySize) / 2;
             if (yAxis >= 10 && yAxis <= 28) {
                 buttonClicked(0);
             } else if (yAxis >= 30 && yAxis <= 48) {

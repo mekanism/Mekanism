@@ -199,7 +199,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return (getTank(side) != null && getTank(side) != centerTank) && getTank(side).canReceive(type);
+        return getTank(side) != null && getTank(side) != centerTank && getTank(side).canReceive(type);
     }
 
     @Override
@@ -222,7 +222,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        return (getTank(side) != null && getTank(side) == centerTank) && getTank(side).canDraw(type);
+        return getTank(side) != null && getTank(side) == centerTank && getTank(side).canDraw(type);
     }
 
     @Override

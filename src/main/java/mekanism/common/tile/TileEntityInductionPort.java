@@ -81,7 +81,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             if (structure != null && mode) {
                 double prev = getEnergy();
                 CableUtils.emit(this);
-                structure.remainingOutput -= (prev - getEnergy());
+                structure.remainingOutput -= prev - getEnergy();
             }
         }
     }
@@ -97,7 +97,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public boolean sideIsConsumer(EnumFacing side) {
-        return (structure != null && !mode);
+        return structure != null && !mode;
     }
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)

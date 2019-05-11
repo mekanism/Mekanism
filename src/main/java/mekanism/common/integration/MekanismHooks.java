@@ -430,7 +430,7 @@ public final class MekanismHooks {
         private final String itemName;
         private final int itemMeta;
 
-        private MAOre(String name, int meta) {
+        MAOre(String name, int meta) {
             itemName = name;
             itemMeta = meta;
         }
@@ -445,7 +445,7 @@ public final class MekanismHooks {
         private final Block baseBlock;
         private final int quantity;
 
-        private MAOreType(String prefix, Block base, int quantity) {
+        MAOreType(String prefix, Block base, int quantity) {
             orePrefix = prefix;
             baseBlock = base;
             this.quantity = quantity;

@@ -99,8 +99,8 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
 
                     if (!(tileEntity instanceof TileEntityMultiblock)
                         || ((TileEntityMultiblock) tileEntity).getManager() != this || (
-                              getStructureId(((TileEntityMultiblock<?>) tileEntity)) != null && !Objects
-                                    .equals(getStructureId(((TileEntityMultiblock) tileEntity)), inventoryID))) {
+                              getStructureId((TileEntityMultiblock<?>) tileEntity) != null && !Objects
+                                    .equals(getStructureId((TileEntityMultiblock) tileEntity), inventoryID))) {
                         if (!tilesToKill.containsKey(inventoryID)) {
                             tilesToKill.put(inventoryID, new HashSet<>());
                         }

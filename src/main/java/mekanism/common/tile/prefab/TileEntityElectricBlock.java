@@ -335,8 +335,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
           double voltage) {// nb: the facing param contains the side relative to the pushing block
         TileEntity tile = getWorld().getTileEntity(getPos().offset(pushDirection.getOpposite()));
 
-        if (MekanismConfig.current().general.blacklistIC2.val() || (CapabilityUtils
-              .hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection))) {
+        if (MekanismConfig.current().general.blacklistIC2.val() || CapabilityUtils
+              .hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)) {
             return amount;
         }
 

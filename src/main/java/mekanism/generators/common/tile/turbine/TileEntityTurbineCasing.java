@@ -69,7 +69,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                         rate = Math.min(Math.min(stored, rate), (getMaxEnergy() - getEnergy()) / energyMultiplier) * proportion;
 
                         flowRate = rate / origRate;
-                        setEnergy(getEnergy() + ((int) rate) * energyMultiplier);
+                        setEnergy(getEnergy() + (int) rate * energyMultiplier);
 
                         structure.fluidStored.amount -= rate;
                         structure.clientFlow = (int) rate;

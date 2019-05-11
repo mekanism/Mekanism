@@ -133,8 +133,8 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         updateButtons();
         frequencyField.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114) {
                 setFrequency(frequencyField.getText());
                 frequencyField.setText("");
@@ -215,8 +215,8 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114) {
             drawTexturedModalRect(guiWidth + 137, guiHeight + 103, xSize, 0, 11, 11);
         } else {

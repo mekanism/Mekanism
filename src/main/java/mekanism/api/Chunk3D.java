@@ -36,8 +36,8 @@ public class Chunk3D {
      * @param entity - the entity to get the Chunk3D object from
      */
     public Chunk3D(Entity entity) {
-        x = ((int) entity.posX) >> 4;
-        z = ((int) entity.posZ) >> 4;
+        x = (int) entity.posX >> 4;
+        z = (int) entity.posZ >> 4;
         dimensionId = entity.dimension;
     }
 

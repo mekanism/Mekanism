@@ -158,7 +158,7 @@ public class CommonPlayerTickHandler {
                 ItemJetpack jetpack = (ItemJetpack) stack.getItem();
 
                 if (jetpack.getGas(stack) != null) {
-                    if ((Mekanism.keyMap.has(player, KeySync.ASCEND) && jetpack.getMode(stack) == JetpackMode.NORMAL)) {
+                    if (Mekanism.keyMap.has(player, KeySync.ASCEND) && jetpack.getMode(stack) == JetpackMode.NORMAL) {
                         return true;
                     } else if (jetpack.getMode(stack) == JetpackMode.HOVER) {
                         if ((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap

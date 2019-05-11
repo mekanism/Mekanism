@@ -264,27 +264,27 @@ public abstract class BlockMachine extends BlockMekanismContainer {
 
             switch (side) {
                 case WEST:
-                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom - iRandom), yRandom,
-                          (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom - iRandom), yRandom, (zRandom + jRandom),
+                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom - iRandom, yRandom,
+                          zRandom + jRandom, 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle(EnumParticleTypes.REDSTONE, xRandom - iRandom, yRandom, zRandom + jRandom,
                           0.0D, 0.0D, 0.0D);
                     break;
                 case EAST:
-                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom + iRandom), yRandom,
-                          (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom + iRandom), yRandom, (zRandom + jRandom),
+                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom,
+                          zRandom + jRandom, 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle(EnumParticleTypes.REDSTONE, xRandom + iRandom, yRandom, zRandom + jRandom,
                           0.0D, 0.0D, 0.0D);
                     break;
                 case NORTH:
-                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom + jRandom), yRandom,
-                          (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom + jRandom), yRandom, (zRandom - iRandom),
+                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + jRandom, yRandom,
+                          zRandom - iRandom, 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle(EnumParticleTypes.REDSTONE, xRandom + jRandom, yRandom, zRandom - iRandom,
                           0.0D, 0.0D, 0.0D);
                     break;
                 case SOUTH:
-                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom + jRandom), yRandom,
-                          (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom + jRandom), yRandom, (zRandom + iRandom),
+                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + jRandom, yRandom,
+                          zRandom + iRandom, 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle(EnumParticleTypes.REDSTONE, xRandom + jRandom, yRandom, zRandom + iRandom,
                           0.0D, 0.0D, 0.0D);
                     break;
                 default:

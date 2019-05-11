@@ -31,8 +31,8 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
         if (tileEntity.structure.fluidStored != null) {
             fontRenderer.drawString(tileEntity.structure.fluidStored.amount + "mB", 53, 53, 0x00CD00);
         }
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
             drawHoveringText(tileEntity.structure.fluidStored != null
                              ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB"

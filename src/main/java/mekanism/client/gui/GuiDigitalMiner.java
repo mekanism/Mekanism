@@ -151,8 +151,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
             drawTexturedModalRect(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
         }
 
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         }
@@ -221,8 +221,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(0);

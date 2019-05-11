@@ -66,8 +66,8 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
             RenderHelper.disableStandardItemLighting();
             GlStateManager.popMatrix();
         }
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
         }
@@ -81,8 +81,8 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
             drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
         } else {
@@ -120,8 +120,8 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
         super.mouseClicked(mouseX, mouseY, button);
         modIDText.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));

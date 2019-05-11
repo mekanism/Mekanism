@@ -81,7 +81,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
         }
 
         public static ScubaTankDataMessage FULL(Set<UUID> activeNames) {
-            ScubaTankDataMessage m = new ScubaTankDataMessage((ScubaTankPacket.FULL));
+            ScubaTankDataMessage m = new ScubaTankDataMessage(ScubaTankPacket.FULL);
             m.activeGasmasks = activeNames;
             return m;
         }

@@ -162,8 +162,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         maxField.mouseClicked(mouseX, mouseY, button);
 
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
 
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (needsScrollBars()) {
@@ -253,7 +253,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
         if (isDragging) {
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int yAxis = mouseY - (height - ySize) / 2;
             scroll = Math.min(Math.max((float) (yAxis - 18 - dragOffset) / 123F, 0), 1);
         }
     }
@@ -332,8 +332,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
 
         fontRenderer.drawString(LangUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
@@ -423,8 +423,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
 
         for (int i = 0; i < 4; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {

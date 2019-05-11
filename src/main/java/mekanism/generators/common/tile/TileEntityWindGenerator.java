@@ -116,7 +116,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             case 2:
                 return new Object[]{BASE_MAX_ENERGY};
             case 3:
-                return new Object[]{(BASE_MAX_ENERGY - electricityStored)};
+                return new Object[]{BASE_MAX_ENERGY - electricityStored};
             case 4:
                 return new Object[]{getMultiplier()};
             default:

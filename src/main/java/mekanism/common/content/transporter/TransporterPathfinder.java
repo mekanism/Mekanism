@@ -453,7 +453,7 @@ public final class TransporterPathfinder {
                     neighbors[direction.ordinal()] = neighbor;
                     TileEntity neighborEntity = neighbor.getTileEntity(worldObj);
                     neighborEntities[direction.ordinal()] = neighborEntity;
-                    if ((currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction)) ||
+                    if (currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction) ||
                         (neighbor.equals(finalNode) && destChecker
                               .isValid(transportStack, direction, neighborEntities[direction.ordinal()]))) {
                         directionsToCheck.add(direction);

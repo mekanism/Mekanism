@@ -45,7 +45,7 @@ public final class BoxBlacklistParser {
     }
 
     private static void readBlacklist() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader((boxBlacklistFile)))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(boxBlacklistFile))) {
             int entries = 0;
 
             String readingLine;

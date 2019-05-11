@@ -47,8 +47,8 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager
-                          .getReceptor(tileHit, mop.sideHit).canLasersDig())))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !LaserManager
+                          .getReceptor(tileHit, mop.sideHit).canLasersDig()))) {
                         diggingProgress += MekanismConfig.current().usage.laser.val();
 
                         if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
@@ -76,8 +76,8 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager
-                          .getReceptor(tileHit, info.movingPos.sideHit).canLasersDig())))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !LaserManager
+                          .getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))) {
                         diggingProgress += MekanismConfig.current().usage.laser.val();
 
                         if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness

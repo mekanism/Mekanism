@@ -41,7 +41,7 @@ public class IC2Integration {
             double toSend = Math.min(currentSending * MekanismConfig.current().general.TO_IC2.val(),
                   EnergyNet.instance.getPowerFromTier(((IEnergySink) tile).getSinkTier()));
             toSend = Math.min(toSend, ((IEnergySink) tile).getDemandedEnergy());
-            return (toSend - (((IEnergySink) tile).injectEnergy(side.getOpposite(), toSend, 0))) * MekanismConfig
+            return (toSend - ((IEnergySink) tile).injectEnergy(side.getOpposite(), toSend, 0)) * MekanismConfig
                   .current().general.FROM_IC2.val();
         }
 

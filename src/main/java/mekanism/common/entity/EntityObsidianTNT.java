@@ -34,9 +34,9 @@ public class EntityObsidianTNT extends Entity {
 
         float randPi = (float) (Math.random() * Math.PI * 2);
 
-        motionX = -(Math.sin(randPi)) * 0.02F;
+        motionX = -Math.sin(randPi) * 0.02F;
         motionY = 0.2;
-        motionZ = -(Math.cos(randPi)) * 0.02F;
+        motionZ = -Math.cos(randPi) * 0.02F;
 
         fuse = MekanismConfig.current().general.obsidianTNTDelay.val();
 

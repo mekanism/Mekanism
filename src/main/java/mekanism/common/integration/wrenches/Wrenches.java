@@ -59,6 +59,6 @@ public enum Wrenches {
     }
 
     private boolean canHandle(ItemStack it) {
-        return (enabled && provider != null && itemClass != null && itemClass.isInstance(it.getItem()));
+        return enabled && provider != null && itemClass != null && itemClass.isInstance(it.getItem());
     }
 }

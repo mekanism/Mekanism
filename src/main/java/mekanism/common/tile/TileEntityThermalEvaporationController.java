@@ -120,7 +120,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 double tempMult =
                       Math.max(0, getTemperature()) * MekanismConfig.current().general.evaporationTempMultiplier.val();
                 double inputToUse =
-                      (tempMult * recipe.recipeInput.ingredient.amount) * ((float) height / (float) MAX_HEIGHT);
+                      tempMult * recipe.recipeInput.ingredient.amount * ((float) height / (float) MAX_HEIGHT);
                 inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
                 inputToUse = Math.min(inputToUse, outputNeeded / outputRatio);
 
@@ -131,7 +131,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                     int inputInt = (int) Math.floor(partialInput);
                     inputTank.drain(inputInt, true);
                     partialInput %= 1;
-                    partialOutput += ((double) inputInt) / recipe.recipeInput.ingredient.amount;
+                    partialOutput += (double) inputInt / recipe.recipeInput.ingredient.amount;
                 }
 
                 if (partialOutput >= 1) {

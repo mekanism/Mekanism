@@ -175,7 +175,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             case 2:
                 return new Object[]{BASE_MAX_ENERGY};
             case 3:
-                return new Object[]{(BASE_MAX_ENERGY - electricityStored)};
+                return new Object[]{BASE_MAX_ENERGY - electricityStored};
             case 4:
                 return new Object[]{bioFuelSlot.fluidStored};
             case 5:

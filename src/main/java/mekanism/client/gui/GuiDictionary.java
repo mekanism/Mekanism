@@ -78,8 +78,8 @@ public class GuiDictionary extends GuiMekanism {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
 
         if (button == 0) {
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {

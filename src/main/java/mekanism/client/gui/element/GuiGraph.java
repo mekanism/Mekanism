@@ -94,8 +94,8 @@ public class GuiGraph extends GuiElement {
 
         for (int yIter = 0; yIter < yDisplays; yIter++) {
             for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int width = (xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10);
-                int height = (ySize % 10 > 0 && yIter == yDisplays - 1 ? ySize % 10 : 10);
+                int width = xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10;
+                int height = ySize % 10 > 0 && yIter == yDisplays - 1 ? ySize % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (yIter * 10), 0, 0, width, height);
             }
         }
@@ -112,7 +112,7 @@ public class GuiGraph extends GuiElement {
             for (int iter = 0; iter < displays; iter++) {
                 MekanismRenderer.blendOn();
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
-                int height = ((relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10);
+                int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
                 MekanismRenderer.blendOff();
             }

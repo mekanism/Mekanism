@@ -31,7 +31,7 @@ public class VoiceInput extends Thread {
                 Mekanism.logger.info("No audio system available.");
                 return;
             }
-            targetLine = ((TargetDataLine) AudioSystem.getLine(microphone));
+            targetLine = (TargetDataLine) AudioSystem.getLine(microphone);
             targetLine.open(voiceClient.getAudioFormat(), 2200);
             targetLine.start();
             AudioInputStream audioInput = new AudioInputStream(targetLine);

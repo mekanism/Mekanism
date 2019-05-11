@@ -68,7 +68,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         if (tileEntity.filters.size() <= 3) {
             return 0;
         }
-        return (int) ((tileEntity.filters.size() * scroll) - ((3F / (float) tileEntity.filters.size())) * scroll);
+        return (int) ((tileEntity.filters.size() * scroll) - (3F / (float) tileEntity.filters.size()) * scroll);
     }
 
     @Override
@@ -143,8 +143,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (tileEntity.filters.size() > 3) {
                     dragOffset = yAxis - (getScroll() + 18);
@@ -171,7 +171,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
         if (isDragging) {
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int yAxis = mouseY - (height - ySize) / 2;
             scroll = Math.min(Math.max((float) (yAxis - 18 - dragOffset) / 73F, 0), 1);
         }
     }

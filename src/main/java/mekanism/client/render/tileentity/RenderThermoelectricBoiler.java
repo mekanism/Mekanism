@@ -35,7 +35,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                 RenderData data = new RenderData();
 
                 data.location = tileEntity.structure.renderLocation;
-                data.height = (tileEntity.structure.upperRenderLocation.y - 1) - tileEntity.structure.renderLocation.y;
+                data.height = tileEntity.structure.upperRenderLocation.y - 1 - tileEntity.structure.renderLocation.y;
                 data.length = tileEntity.structure.volLength;
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = WATER;

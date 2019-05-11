@@ -331,10 +331,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         }
 
         int baseRad = Math.max(radius - 10, 0);
-        ret *= (1 + ((float) baseRad / 22F));
+        ret *= 1 + ((float) baseRad / 22F);
 
-        int baseHeight = Math.max((maxY - minY) - 60, 0);
-        ret *= (1 + ((float) baseHeight / 195F));
+        int baseHeight = Math.max(maxY - minY - 60, 0);
+        ret *= 1 + ((float) baseHeight / 195F);
 
         return ret;
     }
@@ -348,7 +348,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     public void setRadius(int newRadius) {
-        boolean changed = (radius != newRadius);
+        boolean changed = radius != newRadius;
         radius = newRadius;
 
         // If the radius changed and we're on the server, go ahead and refresh
@@ -389,7 +389,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         } else {
             MinerFilter filter = replaceMap.get(index);
 
-            if (filter == null || (filter.replaceStack.isEmpty() || !filter.requireStack)) {
+            if (filter == null || filter.replaceStack.isEmpty() || !filter.requireStack) {
                 world.setBlockToAir(pos);
 
                 return true;

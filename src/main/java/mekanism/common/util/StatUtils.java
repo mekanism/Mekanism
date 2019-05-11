@@ -22,7 +22,7 @@ public class StatUtils {
 
         while ((p < r) && (m < 3 * ceil(mean))) {
             m++;
-            p += stirlingCoeff / sqrt(m) * pow((stirlingValue / m), m);
+            p += stirlingCoeff / sqrt(m) * pow(stirlingValue / m, m);
         }
 
         return m;

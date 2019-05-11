@@ -116,11 +116,11 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                 int slotEnd = tileEntity.inventory.size() - 1;
 
                 if (slotID >= slotEnd && slotID <= (slotEnd + 26)) {
-                    if (!mergeItemStack(slotStack, (slotEnd + 27), inventorySlots.size(), false)) {
+                    if (!mergeItemStack(slotStack, slotEnd + 27, inventorySlots.size(), false)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (slotID > (slotEnd + 26)) {
-                    if (!mergeItemStack(slotStack, slotEnd, (slotEnd + 26), false)) {
+                    if (!mergeItemStack(slotStack, slotEnd, slotEnd + 26, false)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (!mergeItemStack(slotStack, slotEnd, inventorySlots.size(), true)) {

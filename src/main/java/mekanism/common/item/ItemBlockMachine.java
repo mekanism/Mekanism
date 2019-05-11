@@ -688,7 +688,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min((energy * MekanismConfig.current().general.FROM_RF.val()), energyRemaining);
+            double toSend = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyRemaining);
 
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);

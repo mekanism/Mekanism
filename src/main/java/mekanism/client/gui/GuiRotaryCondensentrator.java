@@ -82,8 +82,8 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         fontRenderer.drawString(tileEntity.mode == 0 ? LangUtils.localize("gui.condensentrating")
                                                      : LangUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         }
@@ -101,8 +101,8 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int displayInt;
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 36, displayInt, 4);
         if (xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22) {
@@ -117,8 +117,8 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22) {
                 TileNetworkList data = TileNetworkList.withContents(0);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

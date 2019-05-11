@@ -66,8 +66,8 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
                          MekanismUtils.getTemperatureDisplay(tileEntity.structure.temperature, TemperatureUnit.AMBIENT), 43, 30, 0x00CD00, 90);
         renderScaledText(LangUtils.localize("gui.boilRate") + ": " + tileEntity.structure.lastBoilRate + " mB/t", 43, 39, 0x00CD00, 90);
         renderScaledText(LangUtils.localize("gui.maxBoil") + ": " + tileEntity.structure.lastMaxBoil + " mB/t", 43, 48, 0x00CD00, 90);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
             drawHoveringText(tileEntity.structure.waterStored != null
                              ? LangUtils.localizeFluidStack(tileEntity.structure.waterStored) + ": " + tileEntity.structure.waterStored.amount + "mB"

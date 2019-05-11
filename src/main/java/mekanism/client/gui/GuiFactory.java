@@ -61,8 +61,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         }
@@ -87,8 +87,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
-        int xOffset = tileEntity.tier == FactoryTier.BASIC ? 59 : (tileEntity.tier == FactoryTier.ADVANCED ? 39 : 33);
-        int xDistance = tileEntity.tier == FactoryTier.BASIC ? 38 : (tileEntity.tier == FactoryTier.ADVANCED ? 26 : 19);
+        int xOffset = tileEntity.tier == FactoryTier.BASIC ? 59 : tileEntity.tier == FactoryTier.ADVANCED ? 39 : 33;
+        int xDistance = tileEntity.tier == FactoryTier.BASIC ? 38 : tileEntity.tier == FactoryTier.ADVANCED ? 26 : 19;
 
         for (int i = 0; i < tileEntity.tier.processes; i++) {
             int xPos = xOffset + (i * xDistance);
@@ -130,8 +130,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     protected void mouseClicked(int x, int y, int button) throws IOException {
         super.mouseClicked(x, y, button);
         if (button == 0 || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            int xAxis = (x - (width - xSize) / 2);
-            int yAxis = (y - (height - ySize) / 2);
+            int xAxis = x - (width - xSize) / 2;
+            int yAxis = y - (height - ySize) / 2;
             if (xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83) {
                 ItemStack stack = mc.player.inventory.getItemStack();
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {

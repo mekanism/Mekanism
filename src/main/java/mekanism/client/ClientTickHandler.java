@@ -75,7 +75,7 @@ public class ClientTickHandler {
                 ItemJetpack jetpack = (ItemJetpack) stack.getItem();
 
                 if (jetpack.getGas(stack) != null) {
-                    if ((mc.gameSettings.keyBindJump.isKeyDown() && jetpack.getMode(stack) == JetpackMode.NORMAL) && mc.currentScreen == null) {
+                    if (mc.gameSettings.keyBindJump.isKeyDown() && jetpack.getMode(stack) == JetpackMode.NORMAL && mc.currentScreen == null) {
                         return true;
                     } else if (jetpack.getMode(stack) == JetpackMode.HOVER) {
                         if ((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) ||

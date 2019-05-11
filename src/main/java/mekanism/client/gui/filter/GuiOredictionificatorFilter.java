@@ -109,8 +109,8 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
             } catch (Exception ignored) {
             }
         }
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
             drawHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
         }
@@ -138,8 +138,8 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
             drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176 + 36, 0, 11, 11);
         } else {
@@ -209,8 +209,8 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
         super.mouseClicked(mouseX, mouseY, button);
         filterText.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));

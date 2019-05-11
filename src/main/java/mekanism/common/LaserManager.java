@@ -43,7 +43,7 @@ public class LaserManager {
             if (isReceptor(tile, mop.sideHit)) {
                 ILaserReceptor receptor = getReceptor(tile, mop.sideHit);
 
-                if (!(receptor.canLasersDig())) {
+                if (!receptor.canLasersDig()) {
                     receptor.receiveLaserEnergy(energy, mop.sideHit);
                 }
             }

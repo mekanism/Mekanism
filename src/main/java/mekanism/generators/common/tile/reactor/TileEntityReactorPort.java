@@ -165,7 +165,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return (type == MekanismFluids.Deuterium || type == MekanismFluids.Tritium || type == MekanismFluids.FusionFuel);
+        return type == MekanismFluids.Deuterium || type == MekanismFluids.Tritium || type == MekanismFluids.FusionFuel;
     }
 
     @Override

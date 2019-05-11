@@ -102,7 +102,7 @@ public class GasTank implements GasTankInfo {
      * @return if this GasTank can accept the defined gas
      */
     public boolean canReceive(Gas gas) {
-        return getNeeded() != 0 && (stored == null || (gas == null || gas == stored.getGas()));
+        return getNeeded() != 0 && (stored == null || gas == null || gas == stored.getGas());
     }
 
     /**
@@ -113,7 +113,7 @@ public class GasTank implements GasTankInfo {
      * @return if this GasTank can accept the defined gas
      */
     public boolean canReceiveType(Gas gas) {
-        return stored == null || (gas == null || gas == stored.getGas());
+        return stored == null || gas == null || gas == stored.getGas();
     }
 
     /**

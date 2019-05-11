@@ -200,7 +200,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             case 2:
                 return new Object[]{getMaxEnergy()};
             case 3:
-                return new Object[]{(getMaxEnergy() - getEnergy())};
+                return new Object[]{getMaxEnergy() - getEnergy()};
             default:
                 throw new NoSuchMethodException();
         }

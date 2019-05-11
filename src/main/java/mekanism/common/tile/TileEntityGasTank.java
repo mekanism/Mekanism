@@ -167,13 +167,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
-            return (itemstack.getItem() instanceof IGasItem
-                    && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null);
+            return itemstack.getItem() instanceof IGasItem
+                   && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null;
         } else if (slotID == 0) {
-            return (itemstack.getItem() instanceof IGasItem
-                    && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
+            return itemstack.getItem() instanceof IGasItem
+                   && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
                     ((IGasItem) itemstack.getItem()).getGas(itemstack).amount == ((IGasItem) itemstack.getItem())
-                          .getMaxGas(itemstack));
+                          .getMaxGas(itemstack);
         }
 
         return false;

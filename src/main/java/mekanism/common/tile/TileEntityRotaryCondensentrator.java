@@ -240,12 +240,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        return (mode == 1 && side == MekanismUtils.getLeft(facing)) && gasTank.canDraw(type);
+        return mode == 1 && side == MekanismUtils.getLeft(facing) && gasTank.canDraw(type);
     }
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return (mode == 0 && side == MekanismUtils.getLeft(facing)) && gasTank.canReceive(type);
+        return mode == 0 && side == MekanismUtils.getLeft(facing) && gasTank.canReceive(type);
     }
 
     @Nonnull

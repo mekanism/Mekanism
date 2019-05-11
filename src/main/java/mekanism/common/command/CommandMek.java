@@ -49,12 +49,12 @@ public class CommandMek extends CommandTreeBase {
     }
 
 
-    public void toggleDebug(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void toggleDebug(MinecraftServer server, ICommandSender sender, String[] args) {
         MekanismAPI.debug = !MekanismAPI.debug;
         CommandBase.notifyCommandListener(sender, this, "cmd.mek.debug", MekanismAPI.debug);
     }
 
-    public void setupTestRules(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void setupTestRules(MinecraftServer server, ICommandSender sender, String[] args) {
         GameRules rules = server.getEntityWorld().getGameRules();
         rules.setOrCreateGameRule("doMobSpawning", "false");
         rules.setOrCreateGameRule("doDaylightCycle", "false");
@@ -77,7 +77,7 @@ public class CommandMek extends CommandTreeBase {
 
         // Save the current location on the stack
         UUID player = sender.getCommandSenderEntity().getUniqueID();
-        Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<BlockPos>());
+        Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
         playerLocations.push(sender.getPosition());
         tpStack.put(player, playerLocations);
 
@@ -86,12 +86,12 @@ public class CommandMek extends CommandTreeBase {
         notifyCommandListener(sender, this, "cmd.mek.tp", args[0], args[1], args[2]);
     }
 
-    public void teleportPop(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void teleportPop(MinecraftServer server, ICommandSender sender, String[] args) {
         UUID player = sender.getCommandSenderEntity().getUniqueID();
 
         // Get stack of locations for the user; if there's at least one entry, pop it off
         // and send the user back there
-        Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<BlockPos>());
+        Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
         if (!playerLocations.isEmpty()) {
             BlockPos lastPos = playerLocations.pop();
             tpStack.put(player, playerLocations);

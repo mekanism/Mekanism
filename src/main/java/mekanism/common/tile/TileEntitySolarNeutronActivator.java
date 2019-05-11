@@ -311,7 +311,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     @Override
     public void setActive(boolean active) {
-        boolean stateChange = (isActive != active);
+        boolean stateChange = isActive != active;
 
         if (stateChange) {
             isActive = active;

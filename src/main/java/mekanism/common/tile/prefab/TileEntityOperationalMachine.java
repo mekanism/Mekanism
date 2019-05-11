@@ -24,7 +24,7 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine {
     }
 
     public double getScaledProgress() {
-        return ((double) operatingTicks) / (double) ticksRequired;
+        return (double) operatingTicks / (double) ticksRequired;
     }
 
     @Override

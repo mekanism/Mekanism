@@ -148,7 +148,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
 
     @Override
     public void setActive(boolean active) {
-        boolean stateChange = (isActive != active);
+        boolean stateChange = isActive != active;
 
         if (stateChange) {
             isActive = active;
@@ -171,7 +171,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             boolean newActive = dataStream.readBoolean();
 
-            boolean stateChange = (newActive != isActive);
+            boolean stateChange = newActive != isActive;
             isActive = newActive;
 
             if (stateChange && !isActive) {

@@ -81,7 +81,7 @@ public class GuiScrollList extends GuiElement {
 
         for (int yIter = 0; yIter < size; yIter++) {
             for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int width = (xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10);
+                int width = xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (yIter * 10), 0, 0, width, 10);
             }
         }
@@ -94,7 +94,7 @@ public class GuiScrollList extends GuiElement {
             int xDisplays = xSize / 10 + (xSize % 10 > 0 ? 1 : 0);
 
             for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int width = (xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10);
+                int width = xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (index - scroll) * 10, 0, 10, width, 10);
             }
         }
@@ -121,14 +121,14 @@ public class GuiScrollList extends GuiElement {
     }
 
     public int getScroll() {
-        return Math.max(Math.min((int) (scroll * (getMaxScroll() - 4)), (getMaxScroll() - 4)), 0);
+        return Math.max(Math.min((int) (scroll * (getMaxScroll() - 4)), getMaxScroll() - 4), 0);
     }
 
     public int getScrollIndex() {
         if (textEntries.size() <= size) {
             return 0;
         }
-        return (int) ((textEntries.size() * scroll) - (((float) size / (float) textEntries.size())) * scroll);
+        return (int) ((textEntries.size() * scroll) - ((float) size / (float) textEntries.size()) * scroll);
     }
 
     @Override

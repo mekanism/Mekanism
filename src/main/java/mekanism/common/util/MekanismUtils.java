@@ -996,7 +996,7 @@ public final class MekanismUtils {
             return ItemStack.EMPTY;
         }
 
-        if ((!dmgItems.get(1).isEmpty()) && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) && (
+        if (!dmgItems.get(1).isEmpty() && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) && (
               dmgItems.get(0).getCount() == 1) && (dmgItems.get(1).getCount() == 1) && dmgItems.get(0).getItem()
                   .isRepairable()) {
             Item theItem = dmgItems.get(0).getItem();

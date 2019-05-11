@@ -36,8 +36,8 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t", 53, 35, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
         fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t", 53, 53, 0x00CD00);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         }

@@ -44,7 +44,7 @@ public class PlayerState {
 
     public void setJetpackState(UUID uuid, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeJetpacks.contains(uuid);
-        boolean changed = (alreadyActive != isActive);
+        boolean changed = alreadyActive != isActive;
 
         if (alreadyActive && !isActive) {
             // On -> off
@@ -90,7 +90,7 @@ public class PlayerState {
 
     public void setGasmaskState(UUID uuid, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeGasmasks.contains(uuid);
-        boolean changed = (alreadyActive != isActive);
+        boolean changed = alreadyActive != isActive;
 
         if (alreadyActive && !isActive) {
             activeGasmasks.remove(uuid); // On -> off
@@ -135,7 +135,7 @@ public class PlayerState {
 
     public void setFlamethrowerState(UUID uuid, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeFlamethrowers.contains(uuid);
-        boolean changed = (alreadyActive != isActive);
+        boolean changed = alreadyActive != isActive;
 
         if (alreadyActive && !isActive) {
             activeFlamethrowers.remove(uuid); // On -> off

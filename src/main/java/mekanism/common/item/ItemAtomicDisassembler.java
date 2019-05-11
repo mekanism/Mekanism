@@ -100,7 +100,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         itemstack)));
         } else {
             setEnergy(itemstack, getEnergy(itemstack) - (
-                  MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * (getEfficiency(itemstack)) / 2F));
+                  MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getEfficiency(itemstack) / 2F));
         }
 
         return true;

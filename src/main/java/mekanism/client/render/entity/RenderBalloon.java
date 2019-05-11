@@ -37,9 +37,9 @@ public class RenderBalloon extends Render<EntityBalloon> {
         double renderPosZ = z - (balloon.lastTickPosZ + (balloon.posZ - balloon.lastTickPosZ) * partialTick);
 
         if (balloon.isLatchedToEntity()) {
-            x = (balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.posX - balloon.latchedEntity.lastTickPosX) * partialTick);
-            y = (balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY) * partialTick);
-            z = (balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ) * partialTick);
+            x = balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.posX - balloon.latchedEntity.lastTickPosX) * partialTick;
+            y = balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY) * partialTick;
+            z = balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ) * partialTick;
 
             x += renderPosX;
             y += renderPosY;

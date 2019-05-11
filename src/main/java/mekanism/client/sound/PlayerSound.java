@@ -56,11 +56,11 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
         if (shouldPlaySound()) {
             if (volume < 1.0f) {
                 // If we weren't max volume, start fading up
-                volume = Math.max(1.0f, (volume + fadeUpStep));
+                volume = Math.max(1.0f, volume + fadeUpStep);
             }
         } else if (volume > 0.0f) {
             // Not yet fully muted, fade down
-            volume = Math.max(0.0f, (volume - fadeDownStep));
+            volume = Math.max(0.0f, volume - fadeDownStep);
         }
     }
 

@@ -212,8 +212,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     public boolean canFill(ChemicalPairOutput gases) {
-        return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
-                && rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
+        return leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
+               && rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount;
     }
 
     @Override
@@ -358,7 +358,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             case 2:
                 return new Object[]{BASE_MAX_ENERGY};
             case 3:
-                return new Object[]{(BASE_MAX_ENERGY - electricityStored)};
+                return new Object[]{BASE_MAX_ENERGY - electricityStored};
             case 4:
                 return new Object[]{fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0};
             case 5:

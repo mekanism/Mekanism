@@ -148,8 +148,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             GL11.glDisable(GL11.GL_LIGHTING);
             GlStateManager.popMatrix();
         }
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {
             String sizeModeTooltip = LangUtils.localize("gui.sizeMode");
             if (tileEntity.singleItem && filter.sizeMode) {
@@ -184,8 +184,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
             drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
         } else {
@@ -224,8 +224,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         super.mouseClicked(mouseX, mouseY, button);
         minField.mouseClicked(mouseX, mouseY, button);
         maxField.mouseClicked(mouseX, mouseY, button);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (button == 0) {
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

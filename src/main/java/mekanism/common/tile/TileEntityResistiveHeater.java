@@ -101,7 +101,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
 
             lastEnvironmentLoss = loss[1];
 
-            float newSoundScale = (float) Math.max(0, (toUse / 1E5));
+            float newSoundScale = (float) Math.max(0, toUse / 1E5);
 
             if (Math.abs(newSoundScale - soundScale) > 0.01) {
                 packet = true;

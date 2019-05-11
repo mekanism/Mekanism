@@ -85,8 +85,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61) {
             drawTexturedModalRect(guiWidth + 116, guiHeight + 51, xSize, 0, 11, 11);
         } else {
@@ -116,8 +116,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         super.mouseClicked(mouseX, mouseY, button);
         energyUsageField.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61) {
                 setEnergyUsage();
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -101,8 +101,8 @@ public class GuiRobitMain extends GuiMekanism {
             fontRenderer.drawString(LangUtils.localize("gui.robit.owner") + ": " + owner, 29, 63 - 4, 0x00CD00);
         }
 
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), xAxis, yAxis);
         } else if (xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72) {
@@ -127,8 +127,8 @@ public class GuiRobitMain extends GuiMekanism {
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
 
         if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
             drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 176 + 25, 0, 18, 18);
@@ -210,8 +210,8 @@ public class GuiRobitMain extends GuiMekanism {
         super.mouseClicked(mouseX, mouseY, button);
         nameChangeField.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
 
             if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
