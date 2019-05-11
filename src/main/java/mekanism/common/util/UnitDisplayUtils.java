@@ -12,43 +12,31 @@ public class UnitDisplayUtils {
     public static String getDisplay(double value, ElectricUnit unit, int decimalPlaces, boolean isShort) {
         String unitName = unit.name;
         String prefix = "";
-
         if (value < 0) {
             value = Math.abs(value);
             prefix = "-";
         }
-
         if (isShort) {
             unitName = unit.symbol;
         } else if (value > 1) {
             unitName = unit.getPlural();
         }
-
         if (value == 0) {
             return value + " " + unitName;
-        } else {
-            for (int i = 0; i < MeasurementUnit.values().length; i++) {
-                MeasurementUnit lowerMeasure = MeasurementUnit.values()[i];
-
-                if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
-                    return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure
-                          .getName(isShort) + unitName;
-                }
-
-                if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
-                    return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure
-                          .getName(isShort) + unitName;
-                }
-
-                MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
-
-                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
-                    return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure
-                          .getName(isShort) + unitName;
-                }
+        }
+        for (int i = 0; i < MeasurementUnit.values().length; i++) {
+            MeasurementUnit lowerMeasure = MeasurementUnit.values()[i];
+            if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
+                return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
+            }
+            if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
+                return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
+            }
+            MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
+            if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
+                return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
             }
         }
-
         return prefix + roundDecimals(value, decimalPlaces) + " " + unitName;
     }
 
@@ -65,57 +53,43 @@ public class UnitDisplayUtils {
             if (decimalPlaces < 1) {
                 return (int) value + " " + unit.getPlural();
             }
-
             return roundDecimals(value, decimalPlaces) + " " + unit.getPlural();
         }
-
         if (decimalPlaces < 1) {
             return (int) value + " " + unit.name;
         }
-
         return roundDecimals(value, decimalPlaces) + " " + unit.name;
     }
 
     public static String getDisplay(double T, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
         String unitName = unit.name;
         String prefix = "";
-
         double value = unit.convertFromK(T, shift);
-
         if (value < 0) {
             value = Math.abs(value);
             prefix = "-";
         }
-
         if (isShort) {
             unitName = unit.symbol;
         }
-
         if (value == 0) {
             return value + (isShort ? "" : " ") + unitName;
-        } else {
-            for (int i = 0; i < MeasurementUnit.values().length; i++) {
-                MeasurementUnit lowerMeasure = MeasurementUnit.values()[i];
+        }
+        for (int i = 0; i < MeasurementUnit.values().length; i++) {
+            MeasurementUnit lowerMeasure = MeasurementUnit.values()[i];
+            if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
+                return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
+            }
 
-                if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
-                    return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ")
-                           + lowerMeasure.getName(isShort) + unitName;
-                }
+            if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
+                return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
+            }
 
-                if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
-                    return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ")
-                           + lowerMeasure.getName(isShort) + unitName;
-                }
-
-                MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
-
-                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
-                    return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ")
-                           + lowerMeasure.getName(isShort) + unitName;
-                }
+            MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
+            if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
+                return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
             }
         }
-
         return prefix + roundDecimals(value, decimalPlaces) + (isShort ? "" : " ") + unitName;
     }
 

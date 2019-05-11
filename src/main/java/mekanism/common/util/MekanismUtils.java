@@ -87,8 +87,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public final class MekanismUtils {
 
-    public static final EnumFacing[] SIDE_DIRS = new EnumFacing[]{EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST,
-                                                                  EnumFacing.EAST};
+    public static final EnumFacing[] SIDE_DIRS = new EnumFacing[]{EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
 
     public static final Map<String, Class<?>> classesFound = new HashMap<>();
 
@@ -101,8 +100,7 @@ public final class MekanismUtils {
     static {
         for (int blockFacing = 0; blockFacing < EnumFacing.VALUES.length; blockFacing++) {
             for (int side = 0; side < EnumFacing.VALUES.length; side++) {
-                baseOrientations[blockFacing][side] = getBaseOrientation(EnumFacing.VALUES[side],
-                      EnumFacing.VALUES[blockFacing]);
+                baseOrientations[blockFacing][side] = getBaseOrientation(EnumFacing.VALUES[side], EnumFacing.VALUES[blockFacing]);
             }
         }
     }
@@ -120,7 +118,6 @@ public final class MekanismUtils {
         ItemStack stack = new ItemStack(MekanismBlocks.Transmitter, amount, type.ordinal());
         ItemBlockTransmitter itemTransmitter = (ItemBlockTransmitter) stack.getItem();
         itemTransmitter.setBaseTier(stack, tier);
-
         return stack;
     }
 
@@ -133,8 +130,7 @@ public final class MekanismUtils {
      * @return factory with defined tier and recipe type
      */
     public static ItemStack getFactory(FactoryTier tier, RecipeType type) {
-        ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1,
-              MachineType.BASIC_FACTORY.ordinal() + tier.ordinal());
+        ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, MachineType.BASIC_FACTORY.ordinal() + tier.ordinal());
         ((IFactory) itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
         return itemstack;
     }
@@ -149,13 +145,11 @@ public final class MekanismUtils {
      */
     public static boolean isActive(IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-
         if (tileEntity != null) {
             if (tileEntity instanceof IActiveState) {
                 return ((IActiveState) tileEntity).getActive();
             }
         }
-
         return false;
     }
 
@@ -242,28 +236,23 @@ public final class MekanismUtils {
             if (side.getAxis() == Axis.Z) {
                 return side.getOpposite();
             }
-
             return side;
         } else if (blockFacing == EnumFacing.NORTH) {
             if (side.getAxis() == Axis.Z) {
                 return side;
             }
-
             return side.getOpposite();
         } else if (blockFacing == EnumFacing.WEST) {
             if (side.getAxis() == Axis.Z) {
                 return getRight(side);
             }
-
             return getLeft(side);
         } else if (blockFacing == EnumFacing.EAST) {
             if (side.getAxis() == Axis.Z) {
                 return getLeft(side);
             }
-
             return getRight(side);
         }
-
         return side;
     }
 
@@ -279,13 +268,11 @@ public final class MekanismUtils {
         SideConfig sideConfig = config.getConfig().getConfig(type);
         int max = outputs.size() - 1;
         int current = outputs.indexOf(outputs.get(sideConfig.get(direction)));
-
         if (current < max) {
             sideConfig.set(direction, (byte) (current + 1));
         } else if (current == max) {
             sideConfig.set(direction, (byte) 0);
         }
-
         assert config instanceof TileEntity;
         TileEntity tile = (TileEntity) config;
         tile.markDirty();
@@ -303,13 +290,11 @@ public final class MekanismUtils {
         SideConfig sideConfig = config.getConfig().getConfig(type);
         int max = outputs.size() - 1;
         int current = outputs.indexOf(outputs.get(sideConfig.get(direction)));
-
         if (current > 0) {
             sideConfig.set(direction, (byte) (current - 1));
         } else if (current == 0) {
             sideConfig.set(direction, (byte) max);
         }
-
         assert config instanceof TileEntity;
         TileEntity tile = (TileEntity) config;
         tile.markDirty();
@@ -328,8 +313,7 @@ public final class MekanismUtils {
      * @return required operating ticks
      */
     public static int getTicks(IUpgradeTile mgmt, int def) {
-        return (int) (def * Math.pow(
-              MekanismConfig.current().general.maxUpgradeMultiplier.val(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
+        return (int) (def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
     }
 
     /**
@@ -341,8 +325,7 @@ public final class MekanismUtils {
      * @return required energy per tick
      */
     public static double getEnergyPerTick(IUpgradeTile mgmt, double def) {
-        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(),
-              2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY));
+        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY));
     }
 
     /**
@@ -354,8 +337,7 @@ public final class MekanismUtils {
      * @return required energy per tick
      */
     public static double getBaseEnergyPerTick(IUpgradeTile mgmt, double def) {
-        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(),
-              -fractionUpgrades(mgmt, Upgrade.ENERGY));
+        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), -fractionUpgrades(mgmt, Upgrade.ENERGY));
     }
 
     /**
@@ -368,12 +350,9 @@ public final class MekanismUtils {
      */
     public static double getSecondaryEnergyPerTickMean(IUpgradeTile mgmt, int def) {
         if (mgmt.getComponent().supports(Upgrade.GAS)) {
-            return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(),
-                  2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
+            return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
         }
-
-        return def * Math
-              .pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), fractionUpgrades(mgmt, Upgrade.SPEED));
+        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), fractionUpgrades(mgmt, Upgrade.SPEED));
     }
 
     /**
@@ -385,8 +364,7 @@ public final class MekanismUtils {
      * @return max energy
      */
     public static double getMaxEnergy(IUpgradeTile mgmt, double def) {
-        return def * Math
-              .pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), fractionUpgrades(mgmt, Upgrade.ENERGY));
+        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), fractionUpgrades(mgmt, Upgrade.ENERGY));
     }
 
     /**
@@ -400,8 +378,7 @@ public final class MekanismUtils {
     public static double getMaxEnergy(ItemStack itemStack, double def) {
         Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
         float numUpgrades = upgrades.get(Upgrade.ENERGY) == null ? 0 : (float) upgrades.get(Upgrade.ENERGY);
-        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(),
-              numUpgrades / (float) Upgrade.ENERGY.getMax());
+        return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), numUpgrades / (float) Upgrade.ENERGY.getMax());
     }
 
     /**
@@ -415,11 +392,9 @@ public final class MekanismUtils {
     public static boolean isGettingPowered(World world, Coord4D coord) {
         for (EnumFacing side : EnumFacing.VALUES) {
             Coord4D sideCoord = coord.offset(side);
-
             if (sideCoord.exists(world) && sideCoord.offset(side).exists(world)) {
                 IBlockState blockState = sideCoord.getBlockState(world);
                 boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, coord.getPos(), side);
-
                 if (weakPower && isDirectlyGettingPowered(world, sideCoord)) {
                     return true;
                 } else if (!weakPower && blockState.getWeakPower(world, sideCoord.getPos(), side) > 0) {
@@ -427,7 +402,6 @@ public final class MekanismUtils {
                 }
             }
         }
-
         return false;
     }
 
@@ -442,14 +416,12 @@ public final class MekanismUtils {
     public static boolean isDirectlyGettingPowered(World world, Coord4D coord) {
         for (EnumFacing side : EnumFacing.VALUES) {
             Coord4D sideCoord = coord.offset(side);
-
             if (sideCoord.exists(world)) {
                 if (world.getRedstonePower(coord.getPos(), side) > 0) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 
@@ -462,16 +434,12 @@ public final class MekanismUtils {
     public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord) {
         for (EnumFacing dir : EnumFacing.VALUES) {
             Coord4D offset = coord.offset(dir);
-
             if (offset.exists(world)) {
                 notifyNeighborofChange(world, offset, coord.getPos());
-
                 if (offset.getBlockState(world).isNormalCube()) {
                     offset = offset.offset(dir);
-
                     if (offset.exists(world)) {
                         Block block1 = offset.getBlock(world);
-
                         if (block1.getWeakChanges(world, offset.getPos())) {
                             block1.onNeighborChange(world, offset.getPos(), coord.getPos());
                         }
@@ -517,7 +485,6 @@ public final class MekanismUtils {
      */
     public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(0));
-
         if (!world.isRemote) {
             ((TileEntityBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
         }
@@ -532,7 +499,6 @@ public final class MekanismUtils {
      */
     public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
         world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(1));
-
         if (!world.isRemote) {
             ((TileEntityAdvancedBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
         }
@@ -550,10 +516,8 @@ public final class MekanismUtils {
         // anyways here in case IActiveState#renderUpdate() is false and we just had the block rotate.
         // For example the laser, or charge pad.
         world.markBlockRangeForRenderUpdate(pos, pos);
-
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig
-              .current().client.machineEffects.val()) {
+        if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig.current().client.machineEffects.val()) {
             updateAllLightTypes(world, pos);
         }
     }
@@ -592,23 +556,19 @@ public final class MekanismUtils {
     public static FluidStack getFluid(World world, Coord4D pos, boolean filter) {
         IBlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
-
         if ((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && state.getValue(BlockLiquid.LEVEL) == 0) {
             if (!filter) {
                 return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
-            } else {
-                return new FluidStack(MekanismFluids.HeavyWater, 10);
             }
+            return new FluidStack(MekanismFluids.HeavyWater, 10);
         } else if ((block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) && state.getValue(BlockLiquid.LEVEL) == 0) {
             return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
         } else if (block instanceof IFluidBlock) {
             IFluidBlock fluid = (IFluidBlock) block;
-
             if (state.getProperties().containsKey(BlockFluidBase.LEVEL) && state.getValue(BlockFluidBase.LEVEL) == 0) {
                 return fluid.drain(world, pos.getPos(), false);
             }
         }
-
         return null;
     }
 
@@ -623,11 +583,9 @@ public final class MekanismUtils {
     public static boolean isDeadFluid(World world, Coord4D pos) {
         IBlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
-
         if (block.getMetaFromState(state) == 0) {
             return false;
         }
-
         return block instanceof BlockLiquid || block instanceof IFluidBlock;
 
     }
@@ -646,9 +604,8 @@ public final class MekanismUtils {
             return Blocks.FLOWING_WATER;
         } else if (fluid == FluidRegistry.LAVA) {
             return Blocks.FLOWING_LAVA;
-        } else {
-            return fluid.getBlock();
         }
+        return fluid.getBlock();
     }
 
     /**
@@ -659,22 +616,16 @@ public final class MekanismUtils {
      * @param inventory  - IInventory of the item, if it's not a block
      * @param isBlock    - whether or not this electric chest is in it's block form
      */
-    public static void openPersonalChestGui(EntityPlayerMP player, TileEntityPersonalChest tileEntity,
-          InventoryPersonalChest inventory, boolean isBlock) {
+    public static void openPersonalChestGui(EntityPlayerMP player, TileEntityPersonalChest tileEntity, InventoryPersonalChest inventory, boolean isBlock) {
         player.getNextWindowId();
         player.closeContainer();
         int id = player.currentWindowId;
 
         if (isBlock) {
-            Mekanism.packetHandler.sendTo(
-                  new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity),
-                        null), player);
+            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity), null), player);
         } else {
-            Mekanism.packetHandler.sendTo(
-                  new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null,
-                        inventory.currentHand), player);
+            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null, inventory.currentHand), player);
         }
-
         player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
         player.openContainer.windowId = id;
         player.openContainer.addListener(player);
@@ -701,7 +652,6 @@ public final class MekanismUtils {
         if (tileEntity == null || tileEntity.isInvalid() || tileEntity.getWorld() == null) {
             return;
         }
-
         tileEntity.getWorld().markChunkDirty(tileEntity.getPos(), tileEntity);
     }
 
@@ -716,9 +666,7 @@ public final class MekanismUtils {
         if (!(tileEntity instanceof IRedstoneControl)) {
             return true;
         }
-
         IRedstoneControl control = (IRedstoneControl) tileEntity;
-
         switch (control.getControlType()) {
             case DISABLED:
                 return true;
@@ -729,7 +677,6 @@ public final class MekanismUtils {
             case PULSE:
                 return control.isPowered() && !control.wasPowered();
         }
-
         return false;
     }
 
@@ -743,11 +690,9 @@ public final class MekanismUtils {
      */
     public static RayTraceResult rayTrace(World world, EntityPlayer player) {
         double reach = Mekanism.proxy.getReach(player);
-
         Vec3d headVec = getHeadVec(player);
         Vec3d lookVec = player.getLook(1);
         Vec3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
-
         return world.rayTraceBlocks(headVec, endVec, true);
     }
 
@@ -762,15 +707,12 @@ public final class MekanismUtils {
         double posX = player.posX;
         double posY = player.posY;
         double posZ = player.posZ;
-
         if (!player.world.isRemote) {
             posY += player.getEyeHeight();
-
             if (player instanceof EntityPlayerMP && player.isSneaking()) {
                 posY -= 0.08;
             }
         }
-
         return new Vec3d(posX, posY, posZ);
     }
 
@@ -785,21 +727,16 @@ public final class MekanismUtils {
         if (energy == Double.MAX_VALUE) {
             return LangUtils.localize("gui.infinite");
         }
-
         switch (MekanismConfig.current().general.energyUnit.val()) {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
             case RF:
-                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_RF.val(),
-                      ElectricUnit.REDSTONE_FLUX);
+                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_RF.val(), ElectricUnit.REDSTONE_FLUX);
             case EU:
-                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_IC2.val(),
-                      ElectricUnit.ELECTRICAL_UNITS);
+                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_IC2.val(), ElectricUnit.ELECTRICAL_UNITS);
             case T:
-                return UnitDisplayUtils
-                      .getDisplayShort(energy * MekanismConfig.current().general.TO_TESLA.val(), ElectricUnit.TESLA);
+                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_TESLA.val(), ElectricUnit.TESLA);
         }
-
         return "error";
     }
 
@@ -807,10 +744,8 @@ public final class MekanismUtils {
         if (energy == Double.MAX_VALUE) {
             return LangUtils.localize("gui.infinite");
         }
-
         String energyString = getEnergyDisplay(energy);
         String maxString = getEnergyDisplay(max);
-
         return energyString + "/" + maxString;
     }
 
@@ -863,7 +798,6 @@ public final class MekanismUtils {
      */
     public static String getTemperatureDisplay(double T, TemperatureUnit unit) {
         double TK = unit.convertToK(T, true);
-
         switch (MekanismConfig.current().general.tempUnit.val()) {
             case K:
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN);
@@ -876,7 +810,6 @@ public final class MekanismUtils {
             case STP:
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
         }
-
         return "error";
     }
 
@@ -886,8 +819,7 @@ public final class MekanismUtils {
      * @return if IC2 power should be used
      */
     public static boolean useIC2() {
-        return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !MekanismConfig.current().general.blacklistIC2
-              .val();
+        return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !MekanismConfig.current().general.blacklistIC2.val();
     }
 
     /**
@@ -931,17 +863,14 @@ public final class MekanismUtils {
     @SideOnly(Side.CLIENT)
     public static List<String> splitTooltip(String s, ItemStack stack) {
         s = s.trim();
-
         FontRenderer renderer = (FontRenderer) Mekanism.proxy.getFontRenderer();
         if (!stack.isEmpty() && stack.getItem().getFontRenderer(stack) != null) {
             renderer = stack.getItem().getFontRenderer(stack);
         }
-
         if (renderer != null) {
             return renderer.listFormattedStringToWidth(s, 200);
-        } else {
-            return Collections.emptyList();
         }
+        return Collections.emptyList();
     }
 
     /**
@@ -955,7 +884,6 @@ public final class MekanismUtils {
         ItemStack tank = getEmptyGasTank(tier);
         ItemBlockGasTank item = (ItemBlockGasTank) tank.getItem();
         item.setGas(tank, new GasStack(gas, item.MAX_GAS));
-
         return tank;
     }
 
@@ -966,7 +894,6 @@ public final class MekanismUtils {
                 return false;
             }
         };
-
         return new InventoryCrafting(tempContainer, 3, 3);
     }
 
@@ -980,7 +907,6 @@ public final class MekanismUtils {
      */
     public static ItemStack findMatchingRecipe(InventoryCrafting inv, World world) {
         NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
-
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             if (!inv.getStackInSlot(i).isEmpty()) {
                 if (dmgItems.get(0).isEmpty()) {
@@ -996,18 +922,15 @@ public final class MekanismUtils {
             return ItemStack.EMPTY;
         }
 
-        if (!dmgItems.get(1).isEmpty() && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) && (
-              dmgItems.get(0).getCount() == 1) && (dmgItems.get(1).getCount() == 1) && dmgItems.get(0).getItem()
-                  .isRepairable()) {
+        if (!dmgItems.get(1).isEmpty() && (dmgItems.get(0).getItem() == dmgItems.get(1).getItem()) &&
+            (dmgItems.get(0).getCount() == 1) && (dmgItems.get(1).getCount() == 1) && dmgItems.get(0).getItem().isRepairable()) {
             Item theItem = dmgItems.get(0).getItem();
             int dmgDiff0 = theItem.getMaxDamage() - dmgItems.get(0).getItemDamage();
             int dmgDiff1 = theItem.getMaxDamage() - dmgItems.get(1).getItemDamage();
             int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
             int solve = Math.max(0, theItem.getMaxDamage() - value);
-
             return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
         }
-
         IRecipe potentialResult = CraftingManager.findMatchingRecipe(inv, world);
         return potentialResult != null ? potentialResult.getRecipeOutput() : ItemStack.EMPTY;
     }
@@ -1025,7 +948,6 @@ public final class MekanismUtils {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -1040,11 +962,8 @@ public final class MekanismUtils {
         if (!(p instanceof EntityPlayerMP)) {
             return false;
         }
-
         EntityPlayerMP player = (EntityPlayerMP) p;
-
-        return MekanismConfig.current().general.opsBypassRestrictions.val() && player.server.getPlayerList()
-              .canSendCommands(player.getGameProfile());
+        return MekanismConfig.current().general.opsBypassRestrictions.val() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
     }
 
     /**
@@ -1058,7 +977,6 @@ public final class MekanismUtils {
         if (itemStack.isEmpty()) {
             return -1;
         }
-
         return Item.getIdFromItem(itemStack.getItem());
     }
 
@@ -1066,23 +984,18 @@ public final class MekanismUtils {
         if (classesFound.containsKey(className)) {
             return classesFound.get(className) != null;
         }
-
         Class<?> found;
-
         try {
             found = Class.forName(className);
         } catch (ClassNotFoundException e) {
             found = null;
         }
-
         classesFound.put(className, found);
-
         return found != null;
     }
 
     public static boolean existsAndInstance(Object obj, String className) {
         Class<?> theClass;
-
         if (classesFound.containsKey(className)) {
             theClass = classesFound.get(className);
         } else {
@@ -1094,7 +1007,6 @@ public final class MekanismUtils {
                 return false;
             }
         }
-
         return theClass != null && theClass.isInstance(obj);
     }
 
@@ -1119,58 +1031,42 @@ public final class MekanismUtils {
     @Deprecated
     public static boolean hasUsableWrench(EntityPlayer player, BlockPos pos) {
         ItemStack tool = player.inventory.getCurrentItem();
-
         if (tool.isEmpty()) {
             return false;
         }
-
         if (tool.getItem() instanceof IMekWrench && ((IMekWrench) tool.getItem()).canUseWrench(tool, player, pos)) {
             return true;
         }
-
         try {
-            if (isBCWrench(tool.getItem())) //TODO too much hassle to check BC wrench-ability
-            {
+            if (isBCWrench(tool.getItem())) { //TODO too much hassle to check BC wrench-ability
                 return true;
             }
-
-            if (isCoFHHammer(
-                  tool.getItem())) // TODO Implement CoFH Hammer && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
-            {
+            if (isCoFHHammer(tool.getItem())) { // TODO Implement CoFH Hammer && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
                 return true;
             }
         } catch (Throwable ignored) {
         }
-
         return false;
     }
 
     @Nonnull
     public static String getLastKnownUsername(UUID uuid) {
         String ret = UsernameCache.getLastKnownUsername(uuid);
-
-        if (ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide()
-                                                          == Side.SERVER) { // see if MC/Yggdrasil knows about it?!
-            GameProfile gp = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache()
-                  .getProfileByUUID(uuid);
-
+        if (ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) { // see if MC/Yggdrasil knows about it?!
+            GameProfile gp = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
             if (gp != null) {
                 ret = gp.getName();
             }
         }
-
         if (ret == null && !warnedFails.contains(uuid)) {
-            Mekanism.logger
-                  .warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
+            Mekanism.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
             warnedFails.add(uuid);
         }
-
         return ret != null ? ret : "<???>";
     }
 
     public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
-        return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn)
-              .getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+        return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
     }
 
     /**
@@ -1199,9 +1095,8 @@ public final class MekanismUtils {
     public static int clampToInt(double d) {
         if (d < Integer.MAX_VALUE) {
             return (int) d;
-        } else {
-            return Integer.MAX_VALUE;
         }
+        return Integer.MAX_VALUE;
     }
 
     public enum ResourceType {

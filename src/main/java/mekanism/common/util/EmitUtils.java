@@ -21,8 +21,8 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent.
      */
-    private static <HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA, TARGET extends Target<HANDLER, TYPE, EXTRA>>
-    TYPE sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, SplitInfo<TYPE> splitInfo, EXTRA toSend) {
+    private static <HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA, TARGET extends Target<HANDLER, TYPE, EXTRA>> TYPE sendToAcceptors(
+          Set<TARGET> availableTargets, int totalTargets, SplitInfo<TYPE> splitInfo, EXTRA toSend) {
         if (availableTargets.isEmpty() || totalTargets == 0) {
             return splitInfo.getTotalSent();
         }
@@ -56,10 +56,8 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(
-          Set<TARGET> availableTargets, int totalTargets, int amountToSplit, EXTRA toSend) {
-        return sendToAcceptors(availableTargets, totalTargets, new IntegerSplitInfo(amountToSplit, totalTargets),
-              toSend);
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, int amountToSplit, EXTRA toSend) {
+        return sendToAcceptors(availableTargets, totalTargets, new IntegerSplitInfo(amountToSplit, totalTargets), toSend);
     }
 
     /**
@@ -69,9 +67,7 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent
      */
-    public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets,
-          double amountToSplit) {
-        return sendToAcceptors(availableTargets, totalTargets, new DoubleSplitInfo(amountToSplit, totalTargets),
-              amountToSplit);
+    public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets, double amountToSplit) {
+        return sendToAcceptors(availableTargets, totalTargets, new DoubleSplitInfo(amountToSplit, totalTargets), amountToSplit);
     }
 }

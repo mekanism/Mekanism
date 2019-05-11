@@ -23,11 +23,8 @@ public final class CableUtils {
 
     public static boolean isCable(TileEntity tileEntity) {
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
-            return TransmissionType.checkTransmissionType(
-                  CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null),
-                  TransmissionType.ENERGY);
+            return TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null), TransmissionType.ENERGY);
         }
-
         return false;
     }
 
@@ -43,12 +40,9 @@ public final class CableUtils {
         if (tile == null || isCable(tile)) {
             return false;
         }
-
         return isAcceptor(cableEntity, tile, side) || isOutputter(tile, side) ||
-               (MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection) tile)
-                     .canConnectEnergy(side.getOpposite())) ||
-               (MekanismUtils.useForge() && CapabilityUtils
-                     .hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()));
+               (MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection) tile).canConnectEnergy(side.getOpposite())) ||
+               (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()));
     }
 
     /**
@@ -64,15 +58,12 @@ public final class CableUtils {
 
     public static TileEntity[] getConnectedOutputters(BlockPos pos, World world) {
         TileEntity[] outputters = new TileEntity[]{null, null, null, null, null, null};
-
         for (EnumFacing orientation : EnumFacing.VALUES) {
             TileEntity outputter = world.getTileEntity(pos.offset(orientation));
-
             if (isOutputter(outputter, orientation)) {
                 outputters[orientation.ordinal()] = outputter;
             }
         }
-
         return outputters;
     }
 
@@ -80,31 +71,21 @@ public final class CableUtils {
         if (tileEntity == null) {
             return false;
         }
-
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite())) {
-            IStrictEnergyOutputter outputter = CapabilityUtils
-                  .getCapability(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite());
-
+            IStrictEnergyOutputter outputter = CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite());
             if (outputter != null && outputter.canOutputEnergy(side.getOpposite())) {
                 return true;
             }
         }
-
-        if (MekanismUtils.useTesla() && CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite())) {
+        if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite())) {
             return true;
         }
-
-        if (MekanismUtils.useForge() && CapabilityUtils
-              .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) {
+        if (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) {
             return CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite()).canExtract();
         }
-
-        if (MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection) tileEntity)
-              .canConnectEnergy(side.getOpposite())) {
+        if (MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection) tileEntity).canConnectEnergy(side.getOpposite())) {
             return true;
         }
-
         return MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side);
 
     }
@@ -113,23 +94,17 @@ public final class CableUtils {
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
             return false;
         }
-
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite())) {
-            return CapabilityUtils
-                  .getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite())
-                  .canReceiveEnergy(side.getOpposite());
-        } else if (MekanismUtils.useTesla() && CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite())) {
+            return CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite()).canReceiveEnergy(side.getOpposite());
+        } else if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite())) {
             return true;
-        } else if (MekanismUtils.useForge() && CapabilityUtils
-              .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) {
+        } else if (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) {
             return CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite()).canReceive();
         } else if (MekanismUtils.useIC2() && IC2Integration.isAcceptor(orig, tileEntity, side)) {
             return true;
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             return ((IEnergyReceiver) tileEntity).canConnectEnergy(side.getOpposite());
         }
-
         return false;
     }
 
@@ -137,7 +112,6 @@ public final class CableUtils {
         TileEntity tileEntity = (TileEntity) emitter;
         if (!tileEntity.getWorld().isRemote && MekanismUtils.canFunction(tileEntity)) {
             double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
-
             if (energyToSend > 0) {
                 Coord4D coord = Coord4D.get(tileEntity);
                 //Fake that we have one target given we know that no sides will overlap
@@ -151,8 +125,7 @@ public final class CableUtils {
                             //Get the opposite side as the current side is relative to us
                             EnumFacing opposite = side.getOpposite();
                             EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
-                            if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor
-                                  .needsEnergy(opposite)) {
+                            if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor.needsEnergy(opposite)) {
                                 target.addHandler(opposite, acceptor);
                             }
                         }

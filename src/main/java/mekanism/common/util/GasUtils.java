@@ -35,17 +35,12 @@ public final class GasUtils {
 
     public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<EnumFacing> sides) {
         IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
-
         for (EnumFacing orientation : sides) {
             TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
-
-            if (CapabilityUtils
-                  .hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite())) {
-                acceptors[orientation.ordinal()] = CapabilityUtils
-                      .getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite());
+            if (CapabilityUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite())) {
+                acceptors[orientation.ordinal()] = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite());
             }
         }
-
         return acceptors;
     }
 
@@ -62,7 +57,6 @@ public final class GasUtils {
         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
             return false;
         }
-
         return CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
     }
 
@@ -78,15 +72,11 @@ public final class GasUtils {
     public static GasStack removeGas(ItemStack itemStack, Gas type, int amount) {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
-
-            if (type != null && item.getGas(itemStack) != null && item.getGas(itemStack).getGas() != type || !item
-                  .canProvideGas(itemStack, type)) {
+            if (type != null && item.getGas(itemStack) != null && item.getGas(itemStack).getGas() != type || !item.canProvideGas(itemStack, type)) {
                 return null;
             }
-
             return item.removeGas(itemStack, amount);
         }
-
         return null;
     }
 
@@ -99,11 +89,9 @@ public final class GasUtils {
      * @return amount of gas accepted by the IGasItem
      */
     public static int addGas(ItemStack itemStack, GasStack stack) {
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem) itemStack.getItem())
-              .canReceiveGas(itemStack, stack.getGas())) {
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem) itemStack.getItem()).canReceiveGas(itemStack, stack.getGas())) {
             return ((IGasItem) itemStack.getItem()).addGas(itemStack, stack.copy());
         }
-
         return 0;
     }
 
@@ -131,8 +119,7 @@ public final class GasUtils {
             }
             EnumFacing opposite = orientation.getOpposite();
             if (CapabilityUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, opposite)) {
-                IGasHandler handler = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY,
-                      opposite);
+                IGasHandler handler = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, opposite);
                 if (handler != null && handler.canReceiveGas(opposite, stack.getGas())) {
                     target.addHandler(opposite, handler);
                 }
@@ -214,7 +201,6 @@ public final class GasUtils {
                 }
             }
         }
-
         return gasStack;
     }
 

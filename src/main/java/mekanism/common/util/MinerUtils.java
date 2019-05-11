@@ -34,8 +34,7 @@ public final class MinerUtils {
 
     static {
         try {
-            getSilkTouchDrop = ReflectionHelper
-                  .findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", IBlockState.class);
+            getSilkTouchDrop = ReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", IBlockState.class);
         } catch (UnableToFindMethodException e) {
             Mekanism.logger.error("Unable to find method Block.getSilkTouchDrop");
         }
@@ -45,7 +44,6 @@ public final class MinerUtils {
         IBlockState state = coord.getBlockState(world);
         Block block = state.getBlock();
         EntityPlayer fakePlayer = Mekanism.proxy.getDummyPlayer((WorldServer) world, minerPosition).get();
-
         if (block.isAir(state, world, coord.getPos())) {
             return Collections.emptyList();
         }
@@ -53,7 +51,6 @@ public final class MinerUtils {
         if (block instanceof BlockShulkerBox) {
             //special case Shulker Boxes because bad Mojang code / no forge patch
             ItemStack shulkerBoxItem = new ItemStack(Item.getItemFromBlock(block));
-
             TileEntity tileentity = world.getTileEntity(coord.getPos());
 
             //copied from BlockShulkerBox.breakBlock
@@ -65,7 +62,6 @@ public final class MinerUtils {
                     NBTTagCompound nbtBlockEntity = new NBTTagCompound();
                     itemTag.setTag("BlockEntityTag", ((TileEntityShulkerBox) tileentity).saveToNbt(nbtBlockEntity));
                     shulkerBoxItem.setTagCompound(itemTag);
-
                     if (tileentityshulkerbox.hasCustomName()) {
                         shulkerBoxItem.setStackDisplayName(tileentityshulkerbox.getName());
                     }
