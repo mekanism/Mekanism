@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -93,22 +94,22 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     /**
      * How much secondary energy each operation consumes per tick
      */
-    public double secondaryEnergyPerTick = 0;
-    public int secondaryEnergyThisTick;
+    private double secondaryEnergyPerTick = 0;
+    private int secondaryEnergyThisTick;
     /**
      * How long it takes this factory to switch recipe types.
      */
-    public int RECIPE_TICKS_REQUIRED = 40;
+    private static int RECIPE_TICKS_REQUIRED = 40;
     /**
      * How many recipe ticks have progressed.
      */
-    public int recipeTicks;
+    private int recipeTicks;
     /**
      * The amount of infuse this machine has stored.
      */
-    public InfuseStorage infuseStored = new InfuseStorage();
+    public final InfuseStorage infuseStored = new InfuseStorage();
 
-    public GasTank gasTank;
+    public final GasTank gasTank;
 
     public boolean sorting;
 
@@ -116,16 +117,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     public double lastUsage;
 
-    /**
-     * This machine's current RedstoneControl type.
-     */
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
-
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
     /**
      * This machine's recipe type.
      */
+    @Nonnull
     private RecipeType recipeType = RecipeType.SMELTING;
 
     public TileEntityFactory() {
@@ -172,7 +169,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         world.setBlockToAir(getPos());
         world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1), 3);
 
-        TileEntityFactory factory = (TileEntityFactory) world.getTileEntity(getPos());
+        TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
 
         //Basic
         factory.facing = facing;
@@ -193,7 +190,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         factory.prevEnergy = prevEnergy;
         factory.gasTank.setGas(gasTank.getGas());
         factory.sorting = sorting;
-        factory.controlType = controlType;
+        factory.setControlType(getControlType());
         factory.upgradeComponent.readFrom(upgradeComponent);
         factory.ejectorComponent.readFrom(ejectorComponent);
         factory.configComponent.readFrom(configComponent);
@@ -201,7 +198,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         factory.setRecipeType(recipeType);
         factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         factory.securityComponent.readFrom(securityComponent);
-        factory.infuseStored = infuseStored;
+        factory.infuseStored.copyFrom(infuseStored);
 
         for (int i = 0; i < tier.processes + 5; i++) {
             factory.inventory.set(i, inventory.get(i));
@@ -316,12 +313,13 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         }
     }
 
+    @Nonnull
     public RecipeType getRecipeType() {
         return recipeType;
     }
 
-    public void setRecipeType(RecipeType type) {
-        recipeType = type;
+    public void setRecipeType(@Nonnull RecipeType type) {
+        recipeType = Objects.requireNonNull(type);
         BASE_MAX_ENERGY = maxEnergy = tier.processes * Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage());
         BASE_ENERGY_PER_TICK = energyPerTick = recipeType.getEnergyUsage();
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());

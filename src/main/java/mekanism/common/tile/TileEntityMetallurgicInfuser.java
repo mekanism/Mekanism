@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
@@ -39,6 +40,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.jetbrains.annotations.Contract;
 
 public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, ITierUpgradeable,
       ISustainedData {
@@ -123,7 +125,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         world.setBlockToAir(getPos());
         world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 
-        TileEntityFactory factory = (TileEntityFactory) world.getTileEntity(getPos());
+        TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
         RecipeType type = RecipeType.INFUSING;
 
         //Basic
@@ -140,7 +142,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         //Machine
         factory.progress[0] = operatingTicks;
         factory.setActive(isActive);
-        factory.controlType = controlType;
+        factory.setControlType(getControlType());
         factory.prevEnergy = prevEnergy;
         factory.upgradeComponent.readFrom(upgradeComponent);
         factory.upgradeComponent.setUpgradeSlot(0);
@@ -156,7 +158,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         }
 
         //Infuser
-        factory.infuseStored = infuseStored;
+        factory.infuseStored.copyFrom(infuseStored);
 
         factory.inventory.set(5, inventory.get(2));
         factory.inventory.set(1, inventory.get(4));
@@ -185,7 +187,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         if (slotID == 3) {
             return false;
         } else if (slotID == 1) {
-            return InfuseRegistry.getObject(itemstack) != null && (infuseStored.getType() == null || infuseStored.getType() == InfuseRegistry.getObject(itemstack).type);
+            InfuseObject infuseObject = InfuseRegistry.getObject(itemstack);
+            return infuseObject != null && (infuseStored.getType() == null || infuseStored.getType() == infuseObject.type);
         } else if (slotID == 0) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 2) {
@@ -209,6 +212,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         ejectorComponent.outputItems();
     }
 
+    @Contract("null -> false")
     public boolean canOperate(MetallurgicInfuserRecipe recipe) {
         return recipe != null && recipe.canOperate(inventory, 2, 3, infuseStored);
     }

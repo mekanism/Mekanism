@@ -1,5 +1,6 @@
 package mekanism.common.tile.prefab;
 
+import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Upgrade;
@@ -35,7 +36,7 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         world.setBlockToAir(getPos());
         world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 
-        TileEntityFactory factory = (TileEntityFactory) world.getTileEntity(getPos());
+        TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
         RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
 
         //Basic
@@ -52,7 +53,7 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         //Machine
         factory.progress[0] = operatingTicks;
         factory.isActive = isActive;
-        factory.controlType = controlType;
+        factory.setControlType(getControlType());
         factory.prevEnergy = prevEnergy;
         factory.upgradeComponent.readFrom(upgradeComponent);
         factory.upgradeComponent.setUpgradeSlot(0);
