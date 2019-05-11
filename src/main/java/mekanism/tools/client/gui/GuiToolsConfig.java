@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
+import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -22,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiToolsConfig extends GuiConfig {
 
     public GuiToolsConfig(GuiScreen parent) {
-        super(parent, getConfigElements(), "MekanismTools", false, false, "MekanismTools");
+        super(parent, getConfigElements(), MekanismTools.MODID, false, false, "MekanismTools");
     }
 
     private static List<IConfigElement> getConfigElements() {

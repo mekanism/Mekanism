@@ -42,7 +42,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
 
         IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         for (String s : OBJ_RENDERS) {
-            ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
+            ModelResourceLocation model = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, s), "inventory");
             IBakedModel bakedModel = modelRegistry.getObject(model);
             modelRegistry.putObject(model, createBakedObjItemModel(bakedModel, "mekanism:models/block/" + s + ".obj.mek",
                   new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM));

@@ -640,7 +640,7 @@ public final class MekanismUtils {
      * @return the corresponding ResourceLocation
      */
     public static ResourceLocation getResource(ResourceType type, String name) {
-        return new ResourceLocation("mekanism", type.getPrefix() + name);
+        return new ResourceLocation(Mekanism.MODID, type.getPrefix() + name);
     }
 
     /**

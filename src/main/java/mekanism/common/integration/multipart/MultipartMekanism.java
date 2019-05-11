@@ -22,6 +22,7 @@ import mcmultipart.api.ref.MCMPCapabilities;
 import mcmultipart.api.slot.EnumCenterSlot;
 import mcmultipart.api.world.IMultipartBlockAccess;
 import mcmultipart.multipart.MultipartRegistry;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -145,7 +146,7 @@ public class MultipartMekanism implements IMCMPAddon {
     }
 
     private void register(AttachCapabilitiesEvent<TileEntity> e, String id) {
-        e.addCapability(new ResourceLocation("mekanism:" + id), new ICapabilityProvider() {
+        e.addCapability(new ResourceLocation(Mekanism.MODID, id), new ICapabilityProvider() {
             private MultipartTile tile;
 
             @Override

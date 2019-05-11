@@ -407,7 +407,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     private ModelResourceLocation getInventoryMRL(String type) {
-        return new ModelResourceLocation("mekanism:" + type, "inventory");
+        return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, type), "inventory");
     }
 
     @Override
@@ -428,8 +428,8 @@ public class ClientProxy extends CommonProxy {
 
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0, getInventoryMRL("ObsidianTNT"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, getInventoryMRL("SaltBlock"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1, new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CardboardBox"), "storage=false"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CardboardBox"), "storage=true"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.EnergyCube), 0, getInventoryMRL("EnergyCube"));
 
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock), 4, getInventoryMRL("digital_miner"));
@@ -567,21 +567,21 @@ public class ClientProxy extends CommonProxy {
         }
 
         for (EnumColor color : EnumColor.DYES) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=plastic"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SlickPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=slick"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=glow"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ReinforcedPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=reinforced"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.RoadPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=road"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticBlock), color.getMetaValue(), new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=plastic"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SlickPlasticBlock), color.getMetaValue(), new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=slick"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPlasticBlock), color.getMetaValue(), new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=glow"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ReinforcedPlasticBlock), color.getMetaValue(), new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=reinforced"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.RoadPlasticBlock), color.getMetaValue(), new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=road"));
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticFence), color.getMetaValue(), getInventoryMRL("PlasticFence"));
         }
 
         for (EnumOreType ore : EnumOreType.values()) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(), new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(), new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "OreBlock"), "type=" + ore.getName()));
         }
 
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), stack -> {
             GasTankTier tier = GasTankTier.values()[((ItemBlockGasTank) stack.getItem()).getBaseTier(stack).ordinal()];
-            ResourceLocation baseLocation = new ResourceLocation("mekanism", "GasTank");
+            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "GasTank");
             return new ModelResourceLocation(baseLocation, "facing=north,tier=" + tier);
         });
 
@@ -659,11 +659,11 @@ public class ClientProxy extends CommonProxy {
             return ItemCraftingFormula.MODEL;
         });
 
-        OBJLoader.INSTANCE.addDomain("mekanism");
+        OBJLoader.INSTANCE.addDomain(Mekanism.MODID);
     }
 
     public void registerItemRender(Item item) {
-        MekanismRenderer.registerItemRender("mekanism", item);
+        MekanismRenderer.registerItemRender(Mekanism.MODID, item);
     }
 
     private String getProperties(List<String> entries) {

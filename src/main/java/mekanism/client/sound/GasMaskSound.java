@@ -1,6 +1,7 @@
 package mekanism.client.sound;
 
 import mekanism.client.ClientTickHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.item.ItemGasMask;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -10,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GasMaskSound extends PlayerSound {
 
-    private static final ResourceLocation SOUND = new ResourceLocation("mekanism", "item.gasMask");
+    private static final ResourceLocation SOUND = new ResourceLocation(Mekanism.MODID, "item.gasMask");
 
     public GasMaskSound(EntityPlayer player) {
         super(player, SOUND);

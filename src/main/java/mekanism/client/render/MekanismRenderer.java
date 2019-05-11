@@ -15,6 +15,7 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -70,7 +71,7 @@ public class MekanismRenderer {
     }
 
     @SuppressWarnings("unchecked")
-    public static <S extends TileEntity&ISideConfiguration> RenderConfigurableMachine<S> machineRenderer(){
+    public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
         return machineRenderer;
     }
 
@@ -348,18 +349,18 @@ public class MekanismRenderer {
     @SubscribeEvent
     public void onStitch(TextureStitchEvent.Pre event) {
         for (EnumColor color : EnumColor.values()) {
-            colors[color.ordinal()] = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/overlay/overlay_" + color.unlocalizedName));
+            colors[color.ordinal()] = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_" + color.unlocalizedName));
         }
 
         for (TransmissionType type : TransmissionType.values()) {
-            overlays.put(type, event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/overlay/" + type.getTransmission() + "Overlay")));
+            overlays.put(type, event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay")));
         }
 
-        energyIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidEnergy"));
-        heatIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeat"));
-        laserIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/Laser"));
+        energyIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
+        heatIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
+        laserIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
 
-        event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
+        event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeavyWater"));
 
         TransmitterModel.registerIcons(event.getMap());
 

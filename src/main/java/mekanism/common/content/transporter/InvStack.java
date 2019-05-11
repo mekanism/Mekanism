@@ -12,7 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
 
 /**
- * An InvStack attaches to an inventory and tracks a specific homogenous item in a variable amount of slots. An InvStack can either track the entirety of these slots or
+ * An InvStack attaches to an inventory and tracks a specific homogeneous item in a variable amount of slots. An InvStack can either track the entirety of these slots or
  * portions of their contents. Utility methods in this class allow for the strategic removal of clustered items from inventories.
  *
  * @author aidancbrady

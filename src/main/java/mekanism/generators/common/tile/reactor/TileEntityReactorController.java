@@ -53,7 +53,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public AxisAlignedBB box;
     public double clientTemp = 0;
     public boolean clientBurning = false;
-    private SoundEvent soundEvent = new SoundEvent(new ResourceLocation("mekanism", "tile.machine.fusionreactor"));
+    private SoundEvent soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.fusionreactor"));
     @SideOnly(Side.CLIENT)
     private ISound activeSound;
     private int playSoundCooldown = 0;

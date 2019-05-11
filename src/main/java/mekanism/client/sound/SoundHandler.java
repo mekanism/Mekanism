@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
@@ -127,7 +128,7 @@ public class SoundHandler {
 
         // Ignore any sound event outside this mod namespace
         ResourceLocation soundLoc = event.getSound().getSoundLocation();
-        if (!soundLoc.getNamespace().equals("mekanism")) {
+        if (!soundLoc.getNamespace().equals(Mekanism.MODID)) {
             return;
         }
 

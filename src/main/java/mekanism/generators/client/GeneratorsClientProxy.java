@@ -27,6 +27,7 @@ import mekanism.generators.client.render.item.RenderGeneratorItem;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.GeneratorsItems;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlockStateMapper;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockStateMapper;
@@ -50,6 +51,7 @@ import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.World;
@@ -99,16 +101,16 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         ModelLoader.setCustomStateMapper(GeneratorsBlocks.ReactorGlass, reactorMapper);
 
         for (GeneratorType type : GeneratorType.values()) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation(new ResourceLocation(MekanismGenerators.MODID, type.getName()), "inventory"));
         }
 
         for (ReactorBlockType type : ReactorBlockType.values()) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation(new ResourceLocation(MekanismGenerators.MODID, type.getName()), "inventory"));
         }
     }
 
     public void registerItemRender(Item item) {
-        MekanismRenderer.registerItemRender("mekanismgenerators", item);
+        MekanismRenderer.registerItemRender(MekanismGenerators.MODID, item);
     }
 
     @SubscribeEvent
@@ -123,7 +125,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
     }
 
     private void generatorModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, GeneratorType type) {
-        ModelResourceLocation modelResourceLocation = new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory");
+        ModelResourceLocation modelResourceLocation = new ModelResourceLocation(new ResourceLocation(MekanismGenerators.MODID, type.getName()), "inventory");
         ItemLayerWrapper itemLayerWrapper = new ItemLayerWrapper(modelRegistry.getObject(modelResourceLocation));
         RenderGeneratorItem.modelMap.put(type, itemLayerWrapper);
         modelRegistry.putObject(modelResourceLocation, itemLayerWrapper);
