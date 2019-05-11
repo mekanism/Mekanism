@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -19,6 +20,15 @@ public class InfuseStorage implements ISustainedData {
     public InfuseStorage(InfuseType infuseType, int infuseAmount) {
         type = infuseType;
         amount = infuseAmount;
+    }
+
+    /**
+     * Replace this instance's properties with that from another
+     * @param other the instance to copy from
+     */
+    public void copyFrom(@Nonnull InfuseStorage other) {
+        this.type = other.getType();
+        this.amount = other.getAmount();
     }
 
     public boolean contains(InfuseStorage storage) {
