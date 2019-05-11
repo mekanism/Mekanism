@@ -13,7 +13,6 @@ public class ContainerRobitRepair extends ContainerRepair {
 
     public ContainerRobitRepair(InventoryPlayer inventory, EntityRobit entity) {
         super(inventory, entity.world, BlockPos.ORIGIN, inventory.player);
-
         robit = entity;
     }
 

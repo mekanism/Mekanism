@@ -33,137 +33,79 @@ public class ItemNetworkReader extends ItemEnergized {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
-          float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             boolean drain = !player.capabilities.isCreativeMode;
-
             if (getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null) {
-                if (CapabilityUtils
-                      .hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
+                if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
                     if (drain) {
                         setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
                     }
+                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
 
-                    IGridTransmitter transmitter = CapabilityUtils
-                          .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkAcceptorSize()));
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkNeeded()));
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkBuffer()));
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkFlow()));
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkCapacity()));
 
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY
-                          + " -------------"));
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter
-                                .getTransmitterNetworkSize()));
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter
-                                .getTransmitterNetworkAcceptorSize()));
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter
-                                .getTransmitterNetworkNeeded()));
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter
-                                .getTransmitterNetworkBuffer()));
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter
-                                .getTransmitterNetworkFlow()));
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter
-                                .getTransmitterNetworkCapacity()));
-
-                    if (CapabilityUtils
-                          .hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
-                        IHeatTransfer transfer = CapabilityUtils
-                              .getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-                        player.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp()
-                              + "K above ambient"));
+                    if (CapabilityUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
+                        IHeatTransfer transfer = CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+                        player.sendMessage(new TextComponentString(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
                     }
 
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                          + " -------------"));
-
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
                     return EnumActionResult.SUCCESS;
-                } else if (CapabilityUtils
-                      .hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
+                } else if (CapabilityUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
                     if (drain) {
                         setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
                     }
 
-                    IHeatTransfer transfer = CapabilityUtils
-                          .getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY
-                          + " -------------"));
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp()
-                          + "K above ambient"));
-                    player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                          + " -------------"));
-
+                    IHeatTransfer transfer = CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
+                    player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
                     return EnumActionResult.SUCCESS;
                 } else {
                     if (drain) {
                         setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
                     }
-
                     Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
 
                     for (EnumFacing iterSide : EnumFacing.VALUES) {
                         Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
-
                         TileEntity tile = coord.getTileEntity(world);
+                        if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite())) {
+                            IGridTransmitter transmitter = CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
 
-                        if (CapabilityUtils
-                              .hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite())) {
-                            IGridTransmitter transmitter = CapabilityUtils
-                                  .getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY,
-                                        iterSide.getOpposite());
-
-                            if (transmitter.getTransmitterNetwork().getPossibleAcceptors()
-                                      .contains(coord.offset(iterSide.getOpposite())) && !iteratedNetworks
-                                  .contains(transmitter.getTransmitterNetwork())) {
-                                player.sendMessage(new TextComponentString(
-                                      EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" + transmitter
-                                            .getTransmissionType().getName() + "]" + EnumColor.GREY
-                                      + " -------------"));
-                                player.sendMessage(new TextComponentString(
-                                      EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY + transmitter
-                                            .getTransmitterNetwork().getAcceptorDirections()
-                                            .get(coord.offset(iterSide.getOpposite()))));
-                                player.sendMessage(new TextComponentString(
-                                      EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]"
-                                      + EnumColor.GREY + " -------------"));
-
+                            if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSide.getOpposite())) &&
+                                !iteratedNetworks.contains(transmitter.getTransmitterNetwork())) {
+                                player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" +
+                                                                           transmitter.getTransmissionType().getName() + "]" + EnumColor.GREY + " -------------"));
+                                player.sendMessage(new TextComponentString(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY +
+                                                                           transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSide.getOpposite()))));
+                                player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
                                 iteratedNetworks.add(transmitter.getTransmitterNetwork());
                             }
                         }
                     }
-
                     return EnumActionResult.SUCCESS;
                 }
             }
 
             if (player.isSneaking() && MekanismAPI.debug) {
                 String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
-                player.sendMessage(new TextComponentString(
-                      EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY
-                      + " ----------"));
-
+                player.sendMessage(new TextComponentString(EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY + " ----------"));
                 for (String s : strings) {
                     player.sendMessage(new TextComponentString(EnumColor.DARK_GREY + s));
                 }
-
-                player.sendMessage(new TextComponentString(
-                      EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                      + " -------------"));
+                player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
             }
         }
-
         return EnumActionResult.PASS;
     }
 

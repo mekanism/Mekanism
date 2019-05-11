@@ -9,8 +9,7 @@ import net.minecraft.util.NonNullList;
 
 public class ItemOtherDust extends ItemMekanism implements IMetaItem {
 
-    public static String[] subtypes = {"Diamond", "Steel", "null", "Sulfur",
-                                       "Lithium", "RefinedObsidian", "Obsidian"};
+    public static String[] subtypes = {"Diamond", "Steel", "null", "Sulfur", "Lithium", "RefinedObsidian", "Obsidian"};
 
     public ItemOtherDust() {
         super();
@@ -22,7 +21,6 @@ public class ItemOtherDust extends ItemMekanism implements IMetaItem {
         if (meta == 2) {
             return null;
         }
-
         return subtypes[meta] + "Dust";
     }
 
@@ -33,12 +31,11 @@ public class ItemOtherDust extends ItemMekanism implements IMetaItem {
 
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
-        if (!isInCreativeTab(tabs)) {
-            return;
-        }
-        for (int counter = 0; counter < subtypes.length; counter++) {
-            if (counter != 2) {
-                itemList.add(new ItemStack(this, 1, counter));
+        if (isInCreativeTab(tabs)) {
+            for (int counter = 0; counter < subtypes.length; counter++) {
+                if (counter != 2) {
+                    itemList.add(new ItemStack(this, 1, counter));
+                }
             }
         }
     }

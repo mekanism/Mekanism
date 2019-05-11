@@ -44,16 +44,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
-
         if (gasStack == null) {
             list.add(LangUtils.localize("tooltip.noGas") + ".");
         } else {
-            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
-                     + gasStack.amount);
+            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
         }
-
-        list.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(itemstack)
-                                                                                  ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
+        list.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
     }
 
     @Override
@@ -83,8 +79,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot,
-          ModelBiped _default) {
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
         model.modelType = ArmorModel.SCUBATANK;
         return model;
@@ -98,12 +93,9 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
         if (getGas(itemstack) == null) {
             return null;
         }
-
         Gas type = getGas(itemstack).getGas();
-
         int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
         setGas(itemstack, new GasStack(type, getStored(itemstack) - gasToUse));
-
         return new GasStack(type, gasToUse);
     }
 
@@ -122,14 +114,11 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-
         if (stack.getGas() != MekanismFluids.Oxygen) {
             return 0;
         }
-
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
         setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
-
         return toUse;
     }
 
@@ -152,7 +141,6 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
 
     public String getFlowingStr(ItemStack stack) {
         boolean flowing = getFlowing(stack);
-
         return LangUtils.localize("tooltip." + (flowing ? "yes" : "no"));
     }
 
@@ -182,7 +170,6 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
         } else {
             int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
             GasStack gasStack = new GasStack(stack.getGas(), amount);
-
             ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
         }
     }
@@ -190,7 +177,6 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
     public ItemStack getEmptyItem() {
         ItemStack empty = new ItemStack(this);
         setGas(empty, null);
-
         return empty;
     }
 
@@ -202,7 +188,6 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
         ItemStack empty = new ItemStack(this);
         setGas(empty, null);
         list.add(empty);
-
         ItemStack filled = new ItemStack(this);
         setGas(filled, new GasStack(MekanismFluids.Oxygen, ((IGasItem) filled.getItem()).getMaxGas(filled)));
         list.add(filled);

@@ -28,12 +28,10 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
         addSlotToContainer(new Slot(tileEntity, 2, 180, 75));
         addSlotToContainer(new Slot(tileEntity, 3, 180, 112));
         addSlotToContainer(new Slot(tileEntity, 4, 7, 57));
-
         if (tileEntity.tier == FactoryTier.BASIC) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
                 addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 55 + (i * 38), 13, i));
             }
-
             for (int i = 0; i < tileEntity.tier.processes; i++) {
                 addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 55 + (i * 38), 57));
             }
@@ -41,7 +39,6 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
                 addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 35 + (i * 26), 13, i));
             }
-
             for (int i = 0; i < tileEntity.tier.processes; i++) {
                 addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 35 + (i * 26), 57));
             }
@@ -49,7 +46,6 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
                 addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 29 + (i * 19), 13, i));
             }
-
             for (int i = 0; i < tileEntity.tier.processes; i++) {
                 addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 29 + (i * 19), 57));
             }
@@ -66,17 +62,14 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
-
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-
             if (isOutputSlot(slotID)) {
                 if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (slotID != 1 && slotID != 2 && isProperMachine(slotStack) && !slotStack
-                  .isItemEqual(tileEntity.getMachineStack())) {
+            } else if (slotID != 1 && slotID != 2 && isProperMachine(slotStack) && !slotStack.isItemEqual(tileEntity.getMachineStack())) {
                 if (!mergeItemStack(slotStack, 1, 2, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -84,9 +77,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                 if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tileEntity.getRecipeType()
-                             .getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(),
-                                   tileEntity.infuseStored) != null) {
+            } else if (tileEntity.getRecipeType().getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null) {
                 if (isInputSlot(slotID)) {
                     if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
@@ -107,14 +98,12 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             } else if (tileEntity.getRecipeType() == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null
-                       && (tileEntity.infuseStored.getType() == null || tileEntity.infuseStored.getType() == InfuseRegistry
-                  .getObject(slotStack).type)) {
+                       && (tileEntity.infuseStored.getType() == null || tileEntity.infuseStored.getType() == InfuseRegistry.getObject(slotStack).type)) {
                 if (transferExtraSlot(slotID, slotStack)) {
                     return ItemStack.EMPTY;
                 }
             } else {
                 int slotEnd = tileEntity.inventory.size() - 1;
-
                 if (slotID >= slotEnd && slotID <= (slotEnd + 26)) {
                     if (!mergeItemStack(slotStack, slotEnd + 27, inventorySlots.size(), false)) {
                         return ItemStack.EMPTY;
@@ -127,20 +116,16 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 
@@ -153,10 +138,8 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
     public boolean isProperMachine(ItemStack itemStack) {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockMachine) {
-            return Arrays.stream(RecipeType.values()).findFirst().filter(type -> itemStack.isItemEqual(type.getStack()))
-                  .isPresent();
+            return Arrays.stream(RecipeType.values()).findFirst().filter(type -> itemStack.isItemEqual(type.getStack())).isPresent();
         }
-
         return false;
     }
 
@@ -191,8 +174,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
         @Override
         public boolean isItemValid(ItemStack stack) {
             ItemStack outputSlotStack = tileEntity.inventory.get(getOutputSlotIndex(this.processNumber));
-            return tileEntity.inputProducesOutput(getInputSlotIndex(this.processNumber), stack, outputSlotStack, false)
-                   && super.isItemValid(stack);
+            return tileEntity.inputProducesOutput(getInputSlotIndex(this.processNumber), stack, outputSlotStack, false) && super.isItemValid(stack);
         }
     }
 }

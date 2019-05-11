@@ -65,21 +65,18 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
         if (BasicBlockType.get(stack) == BasicBlockType.BIN) {
             return 1; // Temporary no stacking due to #
         }
-
         return super.getItemStackLimit(stack);
     }
 
     public ItemStack getUnchargedCell(InductionCellTier tier) {
         ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 3);
         setBaseTier(stack, tier.getBaseTier());
-
         return stack;
     }
 
     public ItemStack getUnchargedProvider(InductionProviderTier tier) {
         ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 4);
         setBaseTier(stack, tier.getBaseTier());
-
         return stack;
     }
 
@@ -88,7 +85,6 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
         if (itemstack.getTagCompound() == null) {
             return BaseTier.BASIC;
         }
-
         return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
     }
 
@@ -97,7 +93,6 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
         if (itemstack.getTagCompound() == null) {
             itemstack.setTagCompound(new NBTTagCompound());
         }
-
         itemstack.getTagCompound().setInteger("tier", tier.ordinal());
     }
 
@@ -108,50 +103,35 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
-          @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         BasicBlockType type = BasicBlockType.get(itemstack);
-
         if (type != null && type.hasDescription) {
             if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
                 if (type == BasicBlockType.BIN) {
                     InventoryBin inv = new InventoryBin(itemstack);
-
                     if (inv.getItemCount() > 0) {
                         list.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
-                        String amountStr = inv.getItemCount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite")
-                                                                                   : "" + inv.getItemCount();
-                        list.add(EnumColor.PURPLE + LangUtils.localize("tooltip.itemAmount") + ": " + EnumColor.GREY
-                                 + amountStr);
+                        String amountStr = inv.getItemCount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : "" + inv.getItemCount();
+                        list.add(EnumColor.PURPLE + LangUtils.localize("tooltip.itemAmount") + ": " + EnumColor.GREY + amountStr);
                     } else {
                         list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty"));
                     }
-
                     int cap = BinTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
-                    list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (
-                          cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap) + " " + LangUtils
-                                   .localize("transmission.Items"));
+                    list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
+                             (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap) + " " + LangUtils.localize("transmission.Items"));
                 } else if (type == BasicBlockType.INDUCTION_CELL) {
                     InductionCellTier tier = InductionCellTier.values()[getBaseTier(itemstack).ordinal()];
-
-                    list.add(
-                          tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY
-                          + MekanismUtils.getEnergyDisplay(tier.getMaxEnergy()));
+                    list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getMaxEnergy()));
                 } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
                     InductionProviderTier tier = InductionProviderTier.values()[getBaseTier(itemstack).ordinal()];
-
-                    list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": "
-                             + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getOutput()));
+                    list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getOutput()));
                 }
 
                 if (getMaxEnergy(itemstack) > 0) {
-                    list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
-                             + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+                    list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
                 }
-
-                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings
-                      .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                               .localize("tooltip.forDetails") + ".");
+                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
+                         EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
             } else {
                 list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
             }
@@ -170,29 +150,23 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
             if (!ItemDataUtils.hasData(stack, "newCount")) {
                 return ItemStack.EMPTY;
             }
-
             int newCount = ItemDataUtils.getInt(stack, "newCount");
             ItemDataUtils.removeData(stack, "newCount");
-
             ItemStack ret = stack.copy();
             ItemDataUtils.setInt(ret, "itemCount", newCount);
-
             return ret;
         }
-
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
-          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
+          float hitZ, @Nonnull IBlockState state) {
         boolean place = true;
 
         BasicBlockType type = BasicBlockType.get(stack);
-
         if (type == BasicBlockType.SECURITY_DESK) {
-            if (world.isOutsideBuildHeight(pos.up()) || !world.getBlockState(pos.up()).getBlock()
-                  .isReplaceable(world, pos.up())) {
+            if (world.isOutsideBuildHeight(pos.up()) || !world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up())) {
                 place = false;
             }
         }
@@ -201,39 +175,31 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
             if (type == BasicBlockType.BIN && stack.getTagCompound() != null) {
                 TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
                 InventoryBin inv = new InventoryBin(stack);
-
                 tileEntity.tier = BinTier.values()[getBaseTier(stack).ordinal()];
-
                 if (!inv.getItemType().isEmpty()) {
                     tileEntity.setItemType(inv.getItemType());
                 }
-
                 tileEntity.setItemCount(inv.getItemCount());
             } else if (type == BasicBlockType.INDUCTION_CELL) {
                 TileEntityInductionCell tileEntity = (TileEntityInductionCell) world.getTileEntity(pos);
                 tileEntity.tier = InductionCellTier.values()[getBaseTier(stack).ordinal()];
-
                 if (!world.isRemote) {
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
-                          tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
+                          new Range4D(Coord4D.get(tileEntity)));
                 }
             } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
                 TileEntityInductionProvider tileEntity = (TileEntityInductionProvider) world.getTileEntity(pos);
                 tileEntity.tier = InductionProviderTier.values()[getBaseTier(stack).ordinal()];
-
                 if (!world.isRemote) {
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
-                          tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
+                          new Range4D(Coord4D.get(tileEntity)));
                 }
             }
-
             TileEntity tileEntity = world.getTileEntity(pos);
-
             if (tileEntity instanceof IStrictEnergyStorage && !(tileEntity instanceof TileEntityMultiblock<?>)) {
                 ((IStrictEnergyStorage) tileEntity).setEnergy(getEnergy(stack));
             }
         }
-
         return place;
     }
 
@@ -241,18 +207,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
     @Override
     public String getTranslationKey(ItemStack itemstack) {
         BasicBlockType type = BasicBlockType.get(itemstack);
-
         if (type != null) {
             String name = getTranslationKey() + "." + type.name;
-
-            if (type == BasicBlockType.BIN || type == BasicBlockType.INDUCTION_CELL
-                || type == BasicBlockType.INDUCTION_PROVIDER) {
+            if (type == BasicBlockType.BIN || type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER) {
                 name += getBaseTier(itemstack).getSimpleName();
             }
-
             return name;
         }
-
         return "Invalid Basic Block";
     }
 
@@ -261,7 +222,6 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
         if (BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL) {
             return ItemDataUtils.getDouble(itemStack, "energyStored");
         }
-
         return 0;
     }
 
@@ -277,7 +237,6 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
         if (BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL) {
             return InductionCellTier.values()[getBaseTier(itemStack).ordinal()].getMaxEnergy();
         }
-
         return 0;
     }
 
@@ -301,8 +260,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
         // If this is a block of charcoal, set burn time to 16000 ticks (per Minecraft standard)
         if (this.metaBlock == MekanismBlocks.BasicBlock && itemStack.getMetadata() == 3) {
             return 16000; // ticks
-        } else {
-            return super.getItemBurnTime(itemStack);
         }
+        return super.getItemBurnTime(itemStack);
     }
 }

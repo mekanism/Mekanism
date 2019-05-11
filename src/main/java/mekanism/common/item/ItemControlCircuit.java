@@ -26,12 +26,11 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem {
 
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
-        if (!isInCreativeTab(tabs)) {
-            return;
-        }
-        for (BaseTier tier : BaseTier.values()) {
-            if (tier.isObtainable()) {
-                itemList.add(new ItemStack(this, 1, tier.ordinal()));
+        if (isInCreativeTab(tabs)) {
+            for (BaseTier tier : BaseTier.values()) {
+                if (tier.isObtainable()) {
+                    itemList.add(new ItemStack(this, 1, tier.ordinal()));
+                }
             }
         }
     }

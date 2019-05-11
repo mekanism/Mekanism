@@ -104,7 +104,7 @@ public final class OreDictManager {
                 RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Dust, 2, resource.ordinal()));
                 RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
                 RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride,
-                            new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
+                      new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
                 RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1),
                       new GasStack(GasRegistry.getGas(resource.getName().toLowerCase(Locale.ROOT)), 1000));
             }

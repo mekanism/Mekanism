@@ -18,21 +18,18 @@ public class InventoryPersonalChest extends InventoryBasic {
         super("PersonalChest", false, 55);
         itemStack = stack;
         currentHand = hand;
-
         read();
     }
 
     public InventoryPersonalChest(ItemStack stack) {
         super("PersonalChest", false, 55);
         itemStack = stack;
-
         read();
     }
 
     @Override
     public void markDirty() {
         super.markDirty();
-
         if (!reading) {
             write();
         }
@@ -50,7 +47,6 @@ public class InventoryPersonalChest extends InventoryBasic {
 
     public void write() {
         NBTTagList tagList = new NBTTagList();
-
         for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
             if (!getStackInSlot(slotCount).isEmpty()) {
                 NBTTagCompound tagCompound = new NBTTagCompound();
@@ -59,7 +55,6 @@ public class InventoryPersonalChest extends InventoryBasic {
                 tagList.appendTag(tagCompound);
             }
         }
-
         if (!getStack().isEmpty()) {
             ((ISustainedInventory) getStack().getItem()).setInventory(tagList, getStack());
         }
@@ -69,22 +64,17 @@ public class InventoryPersonalChest extends InventoryBasic {
         if (reading) {
             return;
         }
-
         reading = true;
-
         NBTTagList tagList = ((ISustainedInventory) getStack().getItem()).getInventory(getStack());
-
         if (tagList != null) {
             for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
                 NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
                 byte slotID = tagCompound.getByte("Slot");
-
                 if (slotID >= 0 && slotID < getSizeInventory()) {
                     setInventorySlotContents(slotID, new ItemStack(tagCompound));
                 }
             }
         }
-
         reading = false;
     }
 

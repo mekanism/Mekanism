@@ -15,17 +15,12 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
     @Override
     public IMessage onMessage(EntityMoveMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             Entity entity = player.world.getEntityByID(message.entityId);
-
             if (entity != null) {
-                entity.setLocationAndAngles(message.pos.x, message.pos.y, message.pos.z, entity.rotationYaw,
-                      entity.rotationPitch);
+                entity.setLocationAndAngles(message.pos.x, message.pos.y, message.pos.z, entity.rotationYaw, entity.rotationPitch);
             }
         }, player);
-
         return null;
     }
 
@@ -46,7 +41,6 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(entityId);
-
             dataStream.writeFloat((float) pos.x);
             dataStream.writeFloat((float) pos.y);
             dataStream.writeFloat((float) pos.z);
@@ -55,7 +49,6 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
         @Override
         public void fromBytes(ByteBuf dataStream) {
             entityId = dataStream.readInt();
-
             pos = new Pos3D(dataStream.readFloat(), dataStream.readFloat(), dataStream.readFloat());
         }
     }

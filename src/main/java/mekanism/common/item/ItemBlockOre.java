@@ -36,13 +36,10 @@ public class ItemBlockOre extends ItemBlock {
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
           @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            list.add(
-                  "Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode())
-                  + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
+            list.add("Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " +
+                     LangUtils.localize("tooltip.forDetails") + ".");
         } else {
-            list.addAll(MekanismUtils.splitTooltip(
-                  LangUtils.localize("tooltip." + getTranslationKey(itemstack).replace("tile.OreBlock.", "")),
-                  itemstack));
+            list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip." + getTranslationKey(itemstack).replace("tile.OreBlock.", "")), itemstack));
         }
     }
 
@@ -55,7 +52,6 @@ public class ItemBlockOre extends ItemBlock {
     @Override
     public String getTranslationKey(ItemStack itemstack) {
         String name;
-
         switch (itemstack.getItemDamage()) {
             case 0:
                 name = "OsmiumOre";
@@ -70,7 +66,6 @@ public class ItemBlockOre extends ItemBlock {
                 name = "Unknown";
                 break;
         }
-
         return getTranslationKey() + "." + name;
     }
 }

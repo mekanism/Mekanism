@@ -25,15 +25,12 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
                 } else {
                     Mekanism.freeRunnerOn.remove(message.uuid);
                 }
-
                 if (!entityPlayer.world.isRemote) {
-                    Mekanism.packetHandler.sendToDimension(
-                          new FreeRunnerDataMessage(FreeRunnerPacket.UPDATE, message.uuid, message.value),
+                    Mekanism.packetHandler.sendToDimension(new FreeRunnerDataMessage(FreeRunnerPacket.UPDATE, message.uuid, message.value),
                           entityPlayer.world.provider.getDimension());
                 }
             } else if (message.packetType == FreeRunnerPacket.MODE) {
                 ItemStack stack = entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.FEET);
-
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
                     if (!message.value) {
                         ((ItemFreeRunners) stack.getItem()).incrementMode(stack);
@@ -43,7 +40,6 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
                 }
             }
         }, entityPlayer);
-
         return null;
     }
 
@@ -66,7 +62,6 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
         public FreeRunnerDataMessage(FreeRunnerPacket packetType, UUID uuid, boolean value) {
             this.packetType = packetType;
             this.value = value;
-
             if (packetType == FreeRunnerPacket.UPDATE) {
                 this.uuid = uuid;
             }
@@ -75,7 +70,6 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
         @Override
         public void toBytes(ByteBuf buf) {
             buf.writeInt(packetType.ordinal());
-
             if (packetType == FreeRunnerPacket.MODE) {
                 buf.writeBoolean(value);
             } else if (packetType == FreeRunnerPacket.UPDATE) {
@@ -83,7 +77,6 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
                 buf.writeBoolean(value);
             } else if (packetType == FreeRunnerPacket.FULL) {
                 buf.writeInt(Mekanism.freeRunnerOn.size());
-
                 synchronized (Mekanism.freeRunnerOn) {
                     for (UUID uuidToSend : Mekanism.freeRunnerOn) {
                         PacketHandler.writeUUID(buf, uuidToSend);
@@ -95,7 +88,6 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
         @Override
         public void fromBytes(ByteBuf buf) {
             packetType = FreeRunnerPacket.values()[buf.readInt()];
-
             if (packetType == FreeRunnerPacket.MODE) {
                 value = buf.readBoolean();
             } else if (packetType == FreeRunnerPacket.UPDATE) {
@@ -103,9 +95,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
                 value = buf.readBoolean();
             } else if (packetType == FreeRunnerPacket.FULL) {
                 Mekanism.freeRunnerOn.clear();
-
                 int amount = buf.readInt();
-
                 for (int i = 0; i < amount; i++) {
                     Mekanism.freeRunnerOn.add(PacketHandler.readUUID(buf));
                 }

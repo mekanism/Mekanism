@@ -531,14 +531,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
         public void loop(Coord4D pos) {
             iterated.add(pos);
-
             if (!checker.shouldContinue(iterated.size())) {
                 return;
             }
-
             for (EnumFacing side : EnumFacing.VALUES) {
                 Coord4D coord = pos.offset(side);
-
                 if (!iterated.contains(coord) && checker.isValid(coord)) {
                     loop(coord);
                 }
@@ -549,9 +546,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             if (!checker.isValid(coord)) {
                 return 0;
             }
-
             loop(coord);
-
             return iterated.size();
         }
     }

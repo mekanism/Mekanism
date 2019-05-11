@@ -42,7 +42,6 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
         if (!(tile1 instanceof TileEntityMultiblock) || !(tile2 instanceof TileEntityMultiblock)) {
             return false;
         }
-
         return ((TileEntityMultiblock) tile1).getManager() == ((TileEntityMultiblock) tile2).getManager();
     }
 
@@ -62,18 +61,14 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
      */
     public MultiblockCache<T> pullInventory(World world, String id) {
         MultiblockCache<T> toReturn = inventories.get(id);
-
         for (Coord4D obj : inventories.get(id).locations) {
             TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(world);
-
             if (tileEntity != null) {
                 tileEntity.cachedData = tileEntity.getNewCache();
                 tileEntity.cachedID = null;
             }
         }
-
         inventories.remove(id);
-
         return toReturn;
     }
 
@@ -89,38 +84,30 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
     public void tickSelf(World world) {
         ArrayList<String> idsToKill = new ArrayList<>();
         HashMap<String, HashSet<Coord4D>> tilesToKill = new HashMap<>();
-
         for (Map.Entry<String, MultiblockCache<T>> entry : inventories.entrySet()) {
             String inventoryID = entry.getKey();
-
             for (Coord4D obj : entry.getValue().locations) {
                 if (obj.dimensionId == world.provider.getDimension() && obj.exists(world)) {
                     TileEntity tileEntity = obj.getTileEntity(world);
 
-                    if (!(tileEntity instanceof TileEntityMultiblock)
-                        || ((TileEntityMultiblock) tileEntity).getManager() != this || (
-                              getStructureId((TileEntityMultiblock<?>) tileEntity) != null && !Objects
-                                    .equals(getStructureId((TileEntityMultiblock) tileEntity), inventoryID))) {
+                    if (!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock) tileEntity).getManager() != this ||
+                        (getStructureId((TileEntityMultiblock<?>) tileEntity) != null && !Objects.equals(getStructureId((TileEntityMultiblock) tileEntity), inventoryID))) {
                         if (!tilesToKill.containsKey(inventoryID)) {
                             tilesToKill.put(inventoryID, new HashSet<>());
                         }
-
                         tilesToKill.get(inventoryID).add(obj);
                     }
                 }
             }
-
             if (entry.getValue().locations.isEmpty()) {
                 idsToKill.add(inventoryID);
             }
         }
-
         for (Map.Entry<String, HashSet<Coord4D>> entry : tilesToKill.entrySet()) {
             for (Coord4D obj : entry.getValue()) {
                 inventories.get(entry.getKey()).locations.remove(obj);
             }
         }
-
         for (String inventoryID : idsToKill) {
             inventories.remove(inventoryID);
         }
@@ -130,10 +117,8 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
         if (!inventories.containsKey(tile.cachedID)) {
             tile.cachedData.locations.add(Coord4D.get(tile));
             inventories.put(tile.cachedID, tile.cachedData);
-
             return;
         }
-
         inventories.get(tile.cachedID).locations.add(Coord4D.get(tile));
     }
 }

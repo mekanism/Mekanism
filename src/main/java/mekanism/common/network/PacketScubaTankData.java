@@ -22,26 +22,24 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
         // Queue up processing on the central thread
         EntityPlayer player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
-                  if (message.packetType == ScubaTankPacket.UPDATE) {
-                      Mekanism.playerState.setGasmaskState(message.uuid, message.value, false);
-
-                      // If we got this on the server, relay out to all players in the same dimension
-                      // TODO: Why is this a dimensional thing?!
-                      if (!player.world.isRemote) {
-                          Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
-                      }
-                  } else if (message.packetType == ScubaTankPacket.MODE) {
-                      // Use has changed the mode of their gasmask; update it
-                      ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-                      if (!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank) {
-                          ((ItemScubaTank) stack.getItem()).toggleFlowing(stack);
-                      }
-                  } else if (message.packetType == ScubaTankPacket.FULL) {
-                      // This is a full sync; merge into our player state
-                      Mekanism.playerState.setActiveGasmasks(message.activeGasmasks);
-                  }
-              },
-              player);
+            if (message.packetType == ScubaTankPacket.UPDATE) {
+                Mekanism.playerState.setGasmaskState(message.uuid, message.value, false);
+                // If we got this on the server, relay out to all players in the same dimension
+                // TODO: Why is this a dimensional thing?!
+                if (!player.world.isRemote) {
+                    Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+                }
+            } else if (message.packetType == ScubaTankPacket.MODE) {
+                // Use has changed the mode of their gasmask; update it
+                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+                if (!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank) {
+                    ((ItemScubaTank) stack.getItem()).toggleFlowing(stack);
+                }
+            } else if (message.packetType == ScubaTankPacket.FULL) {
+                // This is a full sync; merge into our player state
+                Mekanism.playerState.setActiveGasmasks(message.activeGasmasks);
+            }
+        }, player);
         return null;
     }
 
@@ -89,7 +87,6 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
-
             if (packetType == ScubaTankPacket.MODE) {
                 dataStream.writeBoolean(value);
             } else if (packetType == ScubaTankPacket.UPDATE) {
@@ -106,7 +103,6 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = ScubaTankPacket.values()[dataStream.readInt()];
-
             if (packetType == ScubaTankPacket.MODE) {
                 value = dataStream.readBoolean();
             } else if (packetType == ScubaTankPacket.UPDATE) {

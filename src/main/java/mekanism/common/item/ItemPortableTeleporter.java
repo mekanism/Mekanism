@@ -38,32 +38,25 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         if (coords == null) {
             return 0;
         }
-
         int neededEnergy = MekanismConfig.current().usage.teleporterBase.val();
-
         if (entity.world.provider.getDimension() != coords.dimensionId) {
             neededEnergy += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
         } else {
             int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
             neededEnergy += distance * MekanismConfig.current().usage.teleporterDistance.val();
         }
-
         return neededEnergy;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player,
-              MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-
+        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
         if (getFrequency(itemstack) != null) {
-            list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + getFrequency(
-                  itemstack).name);
-            list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils
-                  .localize("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public")));
+            list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + getFrequency(itemstack).name);
+            list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY +
+                     LangUtils.localize("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public")));
         }
-
         super.addInformation(itemstack, world, list, flag);
     }
 
@@ -71,24 +64,17 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
         ItemStack itemstack = entityplayer.getHeldItem(hand);
-
         if (!world.isRemote) {
             if (getOwnerUUID(itemstack) == null) {
                 setOwnerUUID(itemstack, entityplayer.getUniqueID());
-                Mekanism.packetHandler
-                      .sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
-                entityplayer.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
-                            .localize("gui.nowOwn")));
+                Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
+                entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
+            } else if (SecurityUtils.canAccess(entityplayer, itemstack)) {
+                entityplayer.openGui(Mekanism.instance, 14, world, hand.ordinal(), 0, 0);
             } else {
-                if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                    entityplayer.openGui(Mekanism.instance, 14, world, hand.ordinal(), 0, 0);
-                } else {
-                    SecurityUtils.displayNoAccess(entityplayer);
-                }
+                SecurityUtils.displayNoAccess(entityplayer);
             }
         }
-
         return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
     }
 
@@ -102,19 +88,16 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         if (ItemDataUtils.hasData(stack, "ownerUUID")) {
             return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
         }
-
         return null;
     }
 
     @Override
     public void setOwnerUUID(ItemStack stack, UUID owner) {
         setFrequency(stack, null);
-
         if (owner == null) {
             ItemDataUtils.removeData(stack, "ownerUUID");
             return;
         }
-
         ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
     }
 
@@ -127,7 +110,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         if (ItemDataUtils.hasData(stack, "frequency")) {
             return Frequency.Identity.load(ItemDataUtils.getCompound(stack, "frequency"));
         }
-
         return null;
     }
 
@@ -136,7 +118,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             ItemDataUtils.removeData(stack, "frequency");
             return;
         }
-
         ItemDataUtils.setCompound(stack, "frequency", frequency.getIdentity().serialize());
     }
 }

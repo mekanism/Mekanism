@@ -23,17 +23,14 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
     @Override
     public IMessage onMessage(PersonalChestMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
         PacketHandler.handlePacket(() -> {
             if (message.packetType == PersonalChestPacketType.SERVER_OPEN) {
                 try {
                     if (message.isBlock) {
-                        TileEntityPersonalChest tileEntity = (TileEntityPersonalChest) message.coord4D
-                              .getTileEntity(player.world);
+                        TileEntityPersonalChest tileEntity = (TileEntityPersonalChest) message.coord4D.getTileEntity(player.world);
                         MekanismUtils.openPersonalChestGui((EntityPlayerMP) player, tileEntity, null, true);
                     } else {
                         ItemStack stack = player.getHeldItem(message.currentHand);
-
                         if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
                             InventoryPersonalChest inventory = new InventoryPersonalChest(stack, message.currentHand);
                             MekanismUtils.openPersonalChestGui((EntityPlayerMP) player, null, inventory, false);
@@ -51,7 +48,6 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                 }
             }
         }, player);
-
         return null;
     }
 
@@ -86,23 +82,19 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                     guiType = i1;
                     windowId = i2;
                     isBlock = b1;
-
                     if (isBlock) {
                         coord4D = c1;
                     } else {
                         currentHand = hand;
                     }
-
                     break;
                 case SERVER_OPEN:
                     isBlock = b1;
-
                     if (isBlock) {
                         coord4D = c1;
                     } else {
                         currentHand = hand;
                     }
-
                     break;
             }
         }
@@ -110,29 +102,24 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
-
             switch (packetType) {
                 case CLIENT_OPEN:
                     dataStream.writeInt(guiType);
                     dataStream.writeInt(windowId);
                     dataStream.writeBoolean(isBlock);
-
                     if (isBlock) {
                         coord4D.write(dataStream);
                     } else {
                         dataStream.writeInt(currentHand.ordinal());
                     }
-
                     break;
                 case SERVER_OPEN:
                     dataStream.writeBoolean(isBlock);
-
                     if (isBlock) {
                         coord4D.write(dataStream);
                     } else {
                         dataStream.writeInt(currentHand.ordinal());
                     }
-
                     break;
             }
         }
@@ -140,13 +127,10 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = PersonalChestPacketType.values()[dataStream.readInt()];
-
             if (packetType == PersonalChestPacketType.SERVER_OPEN) {
                 isBlock = dataStream.readBoolean();
-
                 if (isBlock) {
-                    coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(),
-                          dataStream.readInt());
+                    coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
                 } else {
                     currentHand = EnumHand.values()[dataStream.readInt()];
                 }
@@ -154,10 +138,8 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                 guiType = dataStream.readInt();
                 windowId = dataStream.readInt();
                 isBlock = dataStream.readBoolean();
-
                 if (isBlock) {
-                    coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(),
-                          dataStream.readInt());
+                    coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
                 } else {
                     currentHand = EnumHand.values()[dataStream.readInt()];
                 }

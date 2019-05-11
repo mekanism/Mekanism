@@ -17,16 +17,12 @@ public class PacketRedstoneControl implements IMessageHandler<RedstoneControlMes
     @Override
     public IMessage onMessage(RedstoneControlMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-
             if (tileEntity instanceof IRedstoneControl) {
                 ((IRedstoneControl) tileEntity).setControlType(message.value);
             }
         }, player);
-
         return null;
     }
 
@@ -46,7 +42,6 @@ public class PacketRedstoneControl implements IMessageHandler<RedstoneControlMes
         @Override
         public void toBytes(ByteBuf dataStream) {
             coord4D.write(dataStream);
-
             dataStream.writeInt(value.ordinal());
         }
 

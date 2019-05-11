@@ -31,35 +31,25 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
     @Override
     public IMessage onMessage(OredictionificatorGuiMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
-                World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance()
-                      .getWorld(message.coord4D.dimensionId);
+                World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
 
                 if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator) {
-                    OredictionificatorGuiMessage
-                          .openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player,
-                                message.coord4D, message.index);
+                    OredictionificatorGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player, message.coord4D, message.index);
                 }
-            } else {
-                if (message.coord4D.getTileEntity(player.world) instanceof TileEntityOredictionificator) {
-                    try {
-                        if (message.packetType == OredictionificatorGuiPacket.CLIENT) {
-                            FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage
-                                  .getGui(message.packetType, message.guiType, player, player.world,
-                                        message.coord4D.getPos(), -1));
-                        } else if (message.packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
-                            FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage
-                                  .getGui(message.packetType, message.guiType, player, player.world,
-                                        message.coord4D.getPos(), message.index));
-                        }
-
-                        player.openContainer.windowId = message.windowId;
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            } else if (message.coord4D.getTileEntity(player.world) instanceof TileEntityOredictionificator) {
+                try {
+                    if (message.packetType == OredictionificatorGuiPacket.CLIENT) {
+                        FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.world,
+                              message.coord4D.getPos(), -1));
+                    } else if (message.packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
+                        FMLCommonHandler.instance().showGuiScreen(OredictionificatorGuiMessage.getGui(message.packetType, message.guiType, player, player.world,
+                              message.coord4D.getPos(), message.index));
                     }
+                    player.openContainer.windowId = message.windowId;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, player);
@@ -89,10 +79,8 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
         public OredictionificatorGuiMessage() {
         }
 
-        public OredictionificatorGuiMessage(OredictionificatorGuiPacket type, Coord4D coord, int guiID, int extra,
-              int extra2) {
+        public OredictionificatorGuiMessage(OredictionificatorGuiPacket type, Coord4D coord, int guiID, int extra, int extra2) {
             packetType = type;
-
             coord4D = coord;
             guiType = guiID;
 
@@ -106,31 +94,21 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
             }
         }
 
-        public static void openServerGui(OredictionificatorGuiPacket t, int guiType, World world,
-              EntityPlayerMP playerMP, Coord4D obj, int i) {
+        public static void openServerGui(OredictionificatorGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i) {
             Container container = null;
-
             playerMP.closeContainer();
-
             if (guiType == 0) {
-                container = new ContainerOredictionificator(playerMP.inventory,
-                      (TileEntityOredictionificator) obj.getTileEntity(world));
+                container = new ContainerOredictionificator(playerMP.inventory, (TileEntityOredictionificator) obj.getTileEntity(world));
             } else if (guiType == 1) {
-                container = new ContainerFilter(playerMP.inventory,
-                      (TileEntityContainerBlock) obj.getTileEntity(world));
+                container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock) obj.getTileEntity(world));
             }
-
             playerMP.getNextWindowId();
             int window = playerMP.currentWindowId;
 
             if (t == OredictionificatorGuiPacket.SERVER) {
-                Mekanism.packetHandler.sendTo(
-                      new OredictionificatorGuiMessage(OredictionificatorGuiPacket.CLIENT, obj, guiType, window, 0),
-                      playerMP);
+                Mekanism.packetHandler.sendTo(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.CLIENT, obj, guiType, window, 0), playerMP);
             } else if (t == OredictionificatorGuiPacket.SERVER_INDEX) {
-                Mekanism.packetHandler.sendTo(
-                      new OredictionificatorGuiMessage(OredictionificatorGuiPacket.CLIENT_INDEX, obj, guiType, window,
-                            i), playerMP);
+                Mekanism.packetHandler.sendTo(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.CLIENT_INDEX, obj, guiType, window, i), playerMP);
             }
 
             playerMP.openContainer = container;
@@ -139,35 +117,25 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 
             if (guiType == 0) {
                 TileEntityOredictionificator tile = (TileEntityOredictionificator) obj.getTileEntity(world);
-
                 for (EntityPlayer player : tile.playersUsing) {
-                    Mekanism.packetHandler
-                          .sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new TileNetworkList())),
-                                (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new TileNetworkList())), (EntityPlayerMP) player);
                 }
             }
         }
 
         @SideOnly(Side.CLIENT)
-        public static GuiScreen getGui(OredictionificatorGuiPacket packetType, int type, EntityPlayer player,
-              World world, BlockPos pos, int index) {
+        public static GuiScreen getGui(OredictionificatorGuiPacket packetType, int type, EntityPlayer player, World world, BlockPos pos, int index) {
             if (type == 0) {
-                return new GuiOredictionificator(player.inventory,
-                      (TileEntityOredictionificator) world.getTileEntity(pos));
-            } else {
-                if (packetType == OredictionificatorGuiPacket.CLIENT) {
-                    if (type == 1) {
-                        return new GuiOredictionificatorFilter(player,
-                              (TileEntityOredictionificator) world.getTileEntity(pos));
-                    }
-                } else if (packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
-                    if (type == 1) {
-                        return new GuiOredictionificatorFilter(player,
-                              (TileEntityOredictionificator) world.getTileEntity(pos), index);
-                    }
+                return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator) world.getTileEntity(pos));
+            } else if (packetType == OredictionificatorGuiPacket.CLIENT) {
+                if (type == 1) {
+                    return new GuiOredictionificatorFilter(player, (TileEntityOredictionificator) world.getTileEntity(pos));
+                }
+            } else if (packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
+                if (type == 1) {
+                    return new GuiOredictionificatorFilter(player, (TileEntityOredictionificator) world.getTileEntity(pos), index);
                 }
             }
-
             return null;
         }
 
@@ -179,13 +147,11 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 
             dataStream.writeInt(guiType);
 
-            if (packetType == OredictionificatorGuiPacket.CLIENT
-                || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
+            if (packetType == OredictionificatorGuiPacket.CLIENT || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
                 dataStream.writeInt(windowId);
             }
 
-            if (packetType == OredictionificatorGuiPacket.SERVER_INDEX
-                || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
+            if (packetType == OredictionificatorGuiPacket.SERVER_INDEX || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
                 dataStream.writeInt(index);
             }
         }
@@ -193,18 +159,13 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = OredictionificatorGuiPacket.values()[dataStream.readInt()];
-
             coord4D = Coord4D.read(dataStream);
-
             guiType = dataStream.readInt();
-
-            if (packetType == OredictionificatorGuiPacket.CLIENT
-                || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
+            if (packetType == OredictionificatorGuiPacket.CLIENT || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
                 windowId = dataStream.readInt();
             }
 
-            if (packetType == OredictionificatorGuiPacket.SERVER_INDEX
-                || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
+            if (packetType == OredictionificatorGuiPacket.SERVER_INDEX || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
                 index = dataStream.readInt();
             }
         }

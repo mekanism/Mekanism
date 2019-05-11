@@ -26,39 +26,26 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
     @Override
     public IMessage onMessage(DataRequestMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             World worldServer = DimensionManager.getWorld(message.coord4D.dimensionId);
-
             if (worldServer != null) {
                 TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
-
                 if (tileEntity instanceof TileEntityMultiblock) {
                     ((TileEntityMultiblock<?>) tileEntity).sendStructure = true;
                 }
-
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
-                    IGridTransmitter transmitter = CapabilityUtils
-                          .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-
+                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
                     transmitter.setRequestsUpdate();
-
                     if (transmitter.hasTransmitterNetwork()) {
                         transmitter.getTransmitterNetwork().addUpdate(player);
                     }
                 }
-
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null)) {
-                    ITileNetwork network = CapabilityUtils
-                          .getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
-
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity),
-                          network.getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+                    ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
                 }
             }
         }, player);
-
         return null;
     }
 

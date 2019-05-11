@@ -183,7 +183,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                 } else if (MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem) {
                     IElectricItem item = (IElectricItem) stack.getItem();
                     if (item.canProvideEnergy(stack)) {
-                        double gain = ElectricItem.manager.discharge(stack,(MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_IC2.val(), 4, true, true, false)
+                        double gain = ElectricItem.manager.discharge(stack, (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_IC2.val(), 4, true, true, false)
                                       * MekanismConfig.current().general.FROM_IC2.val();
                         setEnergy(getEnergy() + gain);
                     }

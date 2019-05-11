@@ -68,8 +68,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils
-              .getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
+        list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
     }
 
     public ItemStack getUnchargedItem() {
@@ -124,14 +123,11 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
         if (canReceive(theItem)) {
             double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
             double toReceive = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyNeeded);
-
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
-
             return MekanismUtils.clampToInt(toReceive * MekanismConfig.current().general.TO_RF.val());
         }
-
         return 0;
     }
 
@@ -140,14 +136,11 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
             double toSend = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyRemaining);
-
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
-
             return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
         }
-
         return 0;
     }
 
