@@ -59,7 +59,6 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
             if (on) {
                 RayTraceResult mop = LaserManager.fireLaserClient(this, facing, lastFired, world);
                 Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
-
                 if (hitCoord == null || !hitCoord.equals(digging)) {
                     digging = hitCoord;
                     diggingProgress = 0;
@@ -69,67 +68,54 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
                     IBlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !LaserManager
-                          .getReceptor(tileHit, mop.sideHit).canLasersDig()))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))) {
                         diggingProgress += lastFired;
-
-                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
-                              .val()) {
+                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
                     }
                 }
 
             }
-        } else {
-            if (collectedEnergy > 0) {
-                double firing = collectedEnergy;
-
-                if (!on || firing != lastFired) {
-                    on = true;
-                    lastFired = firing;
-                    Mekanism.packetHandler.sendToAllAround(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                          Coord4D.get(this).getTargetPoint(50D));
-                }
-
-                LaserInfo info = LaserManager.fireLaser(this, facing, firing, world);
-                Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
-
-                if (hitCoord == null || !hitCoord.equals(digging)) {
-                    digging = hitCoord;
-                    diggingProgress = 0;
-                }
-
-                if (hitCoord != null) {
-                    IBlockState blockHit = hitCoord.getBlockState(world);
-                    TileEntity tileHit = hitCoord.getTileEntity(world);
-                    float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !LaserManager
-                          .getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))) {
-                        diggingProgress += firing;
-
-                        if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
-                              .val()) {
-                            List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, world, pos);
-                            if (drops != null) {
-                                receiveDrops(drops);
-                            }
-                            diggingProgress = 0;
-                        }
-                    }
-                }
-
-                setEnergy(getEnergy() - firing);
-            } else if (on) {
-                on = false;
-                diggingProgress = 0;
-                Mekanism.packetHandler.sendToAllAround(
-                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+        } else if (collectedEnergy > 0) {
+            double firing = collectedEnergy;
+            if (!on || firing != lastFired) {
+                on = true;
+                lastFired = firing;
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                       Coord4D.get(this).getTargetPoint(50D));
             }
+
+            LaserInfo info = LaserManager.fireLaser(this, facing, firing, world);
+            Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
+
+            if (hitCoord == null || !hitCoord.equals(digging)) {
+                digging = hitCoord;
+                diggingProgress = 0;
+            }
+
+            if (hitCoord != null) {
+                IBlockState blockHit = hitCoord.getBlockState(world);
+                TileEntity tileHit = hitCoord.getTileEntity(world);
+                float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
+
+                if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))) {
+                    diggingProgress += firing;
+                    if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
+                        List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, world, pos);
+                        if (drops != null) {
+                            receiveDrops(drops);
+                        }
+                        diggingProgress = 0;
+                    }
+                }
+            }
+            setEnergy(getEnergy() - firing);
+        } else if (on) {
+            on = false;
+            diggingProgress = 0;
+            Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                  Coord4D.get(this).getTargetPoint(50D));
         }
     }
 
@@ -149,9 +135,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
                     inventory.set(i, drop);
                     continue outer;
                 }
-
                 ItemStack slot = inventory.get(i);
-
                 if (StackUtils.equalsWildcardWithNBT(slot, drop)) {
                     int change = Math.min(drop.getCount(), slot.getMaxStackSize() - slot.getCount());
                     slot.grow(change);
@@ -161,7 +145,6 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
                     }
                 }
             }
-
             Block.spawnAsEntity(world, pos, drop);
         }
     }
@@ -180,18 +163,15 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(on);
         data.add(collectedEnergy);
         data.add(lastFired);
-
         return data;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             on = dataStream.readBoolean();
             collectedEnergy = dataStream.readDouble();
@@ -214,7 +194,6 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
         if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
             return Capabilities.LASER_RECEPTOR_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 }

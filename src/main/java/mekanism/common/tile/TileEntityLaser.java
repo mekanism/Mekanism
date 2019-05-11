@@ -30,29 +30,21 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (world.isRemote) {
             if (isActive) {
-                RayTraceResult mop = LaserManager
-                      .fireLaserClient(this, facing, MekanismConfig.current().usage.laser.val(), world);
+                RayTraceResult mop = LaserManager.fireLaserClient(this, facing, MekanismConfig.current().usage.laser.val(), world);
                 Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
-
                 if (hitCoord == null || !hitCoord.equals(digging)) {
                     digging = hitCoord;
                     diggingProgress = 0;
                 }
-
                 if (hitCoord != null) {
                     IBlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !LaserManager
-                          .getReceptor(tileHit, mop.sideHit).canLasersDig()))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))) {
                         diggingProgress += MekanismConfig.current().usage.laser.val();
-
-                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
-                              .val()) {
+                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
                     }
@@ -61,33 +53,25 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
         } else {
             if (getEnergy() >= MekanismConfig.current().usage.laser.val()) {
                 setActive(true);
-
-                LaserInfo info = LaserManager
-                      .fireLaser(this, facing, MekanismConfig.current().usage.laser.val(), world);
+                LaserInfo info = LaserManager.fireLaser(this, facing, MekanismConfig.current().usage.laser.val(), world);
                 Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
 
                 if (hitCoord == null || !hitCoord.equals(digging)) {
                     digging = hitCoord;
                     diggingProgress = 0;
                 }
-
                 if (hitCoord != null) {
                     IBlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !LaserManager
-                          .getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))) {
                         diggingProgress += MekanismConfig.current().usage.laser.val();
-
-                        if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
-                              .val()) {
+                        if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             LaserManager.breakBlock(hitCoord, true, world, pos);
                             diggingProgress = 0;
                         }
                     }
                 }
-
                 setEnergy(getEnergy() - MekanismConfig.current().usage.laser.val());
             } else {
                 setActive(false);

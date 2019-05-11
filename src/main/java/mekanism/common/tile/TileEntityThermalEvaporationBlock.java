@@ -20,20 +20,17 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock implements IComputerIntegration {
 
-    private static final String[] methods = new String[]{"getTemperature", "getHeight", "isFormed", "getInput",
-                                                         "getOutput"};
+    private static final String[] methods = new String[]{"getTemperature", "getHeight", "isFormed", "getInput", "getOutput"};
     public Coord4D master;
     public boolean attempted;
 
     public TileEntityThermalEvaporationBlock() {
         super("ThermalEvaporationBlock");
-
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 
     public TileEntityThermalEvaporationBlock(String fullName) {
         super(fullName);
-
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 
@@ -42,7 +39,6 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
         if (!world.isRemote && ticker == 5 && !attempted && master == null) {
             updateController();
         }
-
         attempted = false;
     }
 
@@ -57,10 +53,8 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
     @Override
     public void onChunkUnload() {
         super.onChunkUnload();
-
         if (master != null) {
             TileEntityThermalEvaporationController tile = getController();
-
             if (tile != null) {
                 tile.refresh();
             }
@@ -70,10 +64,8 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
     @Override
     public void onNeighborChange(Block block) {
         super.onNeighborChange(block);
-
         if (!world.isRemote) {
             TileEntityThermalEvaporationController tile = getController();
-
             if (tile != null) {
                 tile.refresh();
             } else {
@@ -95,7 +87,6 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
                 }
             }
             TileEntityThermalEvaporationController found = new ControllerFinder().find();
-
             if (found != null) {
                 found.refresh();
             }
@@ -105,12 +96,10 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
     public TileEntityThermalEvaporationController getController() {
         if (master != null) {
             TileEntity tile = master.getTileEntity(world);
-
             if (tile instanceof TileEntityThermalEvaporationController) {
                 return (TileEntityThermalEvaporationController) tile;
             }
         }
-
         return null;
     }
 
@@ -122,11 +111,9 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
     @Override
     public Object[] invoke(int method, Object[] args) throws Exception {
         TileEntityThermalEvaporationController controller = getController();
-
         if (controller == null) {
             return new Object[]{"Unformed."};
         }
-
         switch (method) {
             case 0:
                 return new Object[]{controller.temperature};
@@ -195,7 +182,6 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 
         public TileEntityThermalEvaporationController find() {
             loop(TileEntityThermalEvaporationBlock.this.pos);
-
             return found;
         }
     }

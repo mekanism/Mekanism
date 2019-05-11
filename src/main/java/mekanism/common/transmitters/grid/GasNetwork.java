@@ -53,9 +53,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 net.deregister();
             }
         }
-
         gasScale = getScale();
-
         register();
     }
 
@@ -75,13 +73,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             if (net.buffer != null) {
                 if (buffer == null) {
                     buffer = net.buffer.copy();
-                } else {
-                    if (buffer.isGasEqual(net.buffer)) {
-                        buffer.amount += net.buffer.amount;
-                    } else if (net.buffer.amount > buffer.amount) {
-                        buffer = net.buffer.copy();
-                    }
-
+                } else if (buffer.isGasEqual(net.buffer)) {
+                    buffer.amount += net.buffer.amount;
+                } else if (net.buffer.amount > buffer.amount) {
+                    buffer = net.buffer.copy();
                 }
                 net.buffer = null;
             }
@@ -97,11 +92,9 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
         GasStack gas = transmitter.getBuffer();
-
         if (gas == null || gas.getGas() == null || gas.amount == 0) {
             return;
         }
-
         if (buffer == null || buffer.getGas() == null || buffer.amount == 0) {
             buffer = gas.copy();
             gas.amount = 0;
@@ -112,7 +105,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         if (buffer.isGasEqual(gas)) {
             buffer.amount += gas.amount;
         }
-
         gas.amount = 0;
     }
 
@@ -143,9 +135,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             GasHandlerTarget target = new GasHandlerTarget(stack);
             for (EnumFacing side : sides) {
                 if (CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side)) {
-                    IGasHandler acceptor = CapabilityUtils
-                          .getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
-
+                    IGasHandler acceptor = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
                     if (acceptor != null && acceptor.canReceiveGas(side, type)) {
                         target.addHandler(side, acceptor);
                     }
@@ -157,7 +147,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 totalHandlers += curHandlers;
             }
         }
-
         return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack.amount, stack);
     }
 
@@ -165,9 +154,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         if (buffer != null && buffer.getGas() != stack.getGas()) {
             return 0;
         }
-
         int toUse = Math.min(getGasNeeded(), stack.amount);
-
         if (doTransfer) {
             if (buffer == null) {
                 buffer = stack.copy();
@@ -176,17 +163,14 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 buffer.amount += toUse;
             }
         }
-
         return toUse;
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             prevTransferAmount = 0;
-
             if (transferDelay == 0) {
                 didTransfer = false;
             } else {
@@ -194,20 +178,17 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             }
 
             int stored = buffer != null ? buffer.amount : 0;
-
             if (stored != prevStored) {
                 needsUpdate = true;
             }
 
             prevStored = stored;
-
             if (didTransfer != prevTransfer || needsUpdate) {
                 MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, buffer, didTransfer));
                 needsUpdate = false;
             }
 
             prevTransfer = didTransfer;
-
             if (buffer != null) {
                 prevTransferAmount = tickEmit(buffer);
                 if (prevTransferAmount > 0) {
@@ -215,7 +196,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                     transferDelay = 2;
                 }
                 buffer.amount -= prevTransferAmount;
-
                 if (buffer.amount <= 0) {
                     buffer = null;
                 }
@@ -226,14 +206,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void clientTick() {
         super.clientTick();
-
         gasScale = Math.max(gasScale, getScale());
-
         if (didTransfer && gasScale < 1) {
             gasScale = Math.max(getScale(), Math.min(1, gasScale + 0.02F));
         } else if (!didTransfer && gasScale > 0) {
             gasScale = Math.max(getScale(), Math.max(0, gasScale - 0.02F));
-
             if (gasScale == 0) {
                 buffer = null;
             }
@@ -266,14 +243,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public boolean isCompatibleWith(GasNetwork other) {
-        return super.isCompatibleWith(other) && (this.buffer == null || other.buffer == null || this.buffer
-              .isGasEqual(other.buffer));
+        return super.isCompatibleWith(other) && (this.buffer == null || other.buffer == null || this.buffer.isGasEqual(other.buffer));
     }
 
     @Override
     public boolean compatibleWithBuffer(GasStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer
-              .isGasEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer.isGasEqual(buffer));
     }
 
     public static class GasTransferEvent extends Event {

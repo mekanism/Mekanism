@@ -13,9 +13,8 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine<OsmiumCompressorRecipe> {
 
     public TileEntityOsmiumCompressor() {
-        super("compressor", "OsmiumCompressor",
-              MachineType.OSMIUM_COMPRESSOR.getStorage(),
-              MachineType.OSMIUM_COMPRESSOR.getUsage(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super("compressor", "OsmiumCompressor", MachineType.OSMIUM_COMPRESSOR.getStorage(), MachineType.OSMIUM_COMPRESSOR.getUsage(),
+              BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

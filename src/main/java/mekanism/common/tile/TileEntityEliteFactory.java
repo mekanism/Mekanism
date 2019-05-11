@@ -13,15 +13,11 @@ public class TileEntityEliteFactory extends TileEntityFactory {
 
     public TileEntityEliteFactory() {
         super(FactoryTier.ELITE, MachineType.ELITE_FACTORY);
-
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY,
-              TransmissionType.GAS);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.ITEM,
-              new SideData("Input", EnumColor.DARK_RED, new int[]{5, 6, 7, 8, 9, 10, 11}));
-        configComponent.addOutput(TransmissionType.ITEM,
-              new SideData("Output", EnumColor.DARK_BLUE, new int[]{12, 13, 14, 15, 16, 17, 18}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{5, 6, 7, 8, 9, 10, 11}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[]{12, 13, 14, 15, 16, 17, 18}));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{1}));
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Extra", EnumColor.PURPLE, new int[]{4}));
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{4, 0, 0, 3, 1, 2});

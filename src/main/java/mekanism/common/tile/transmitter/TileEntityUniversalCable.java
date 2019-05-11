@@ -40,9 +40,8 @@ import net.minecraftforge.fml.common.Optional;
 @Optional.InterfaceList(
       @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 )
-public class TileEntityUniversalCable extends
-      TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements
-      IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver {
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements IStrictEnergyAcceptor,
+      IStrictEnergyStorage, IEnergyReceiver {
 
     public CableTier tier = CableTier.BASIC;
 
@@ -50,10 +49,8 @@ public class TileEntityUniversalCable extends
     public double lastWrite = 0;
 
     public EnergyStack buffer = new EnergyStack(0);
-    private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager<>(getClass(),
-          TeslaCableIntegration.class);
-    private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(),
-          ForgeEnergyCableIntegration.class);
+    private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager<>(getClass(), TeslaCableIntegration.class);
+    private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(), ForgeEnergyCableIntegration.class);
 
     @Override
     public BaseTier getBaseTier() {
@@ -68,106 +65,67 @@ public class TileEntityUniversalCable extends
     @Override
     public void update() {
         if (getWorld().isRemote) {
-            double targetPower =
-                  getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale
-                                                           : 0;
-
+            double targetPower = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().clientEnergyScale : 0;
             if (Math.abs(currentPower - targetPower) > 0.01) {
                 currentPower = (9 * currentPower + targetPower) / 10;
             }
         } else {
             updateShare();
-
             List<EnumFacing> sides = getConnections(ConnectionType.PULL);
-
             if (!sides.isEmpty()) {
                 TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
                 double canDraw = tier.getCableCapacity();
-
                 for (EnumFacing side : sides) {
                     if (connectedOutputters[side.ordinal()] != null) {
                         TileEntity outputter = connectedOutputters[side.ordinal()];
 
-                        if (CapabilityUtils
-                                  .hasCapability(outputter, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite())
-                            && CapabilityUtils
-                                  .hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite())) {
-                            IStrictEnergyStorage storage = CapabilityUtils
-                                  .getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
+                        if (CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite())
+                            && CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite())) {
+                            IStrictEnergyStorage storage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite());
                             double received = Math.min(storage.getEnergy(), canDraw);
                             double toDraw = received;
-
                             if (received > 0) {
                                 toDraw -= takeEnergy(received, true);
                             }
-
                             storage.setEnergy(storage.getEnergy() - toDraw);
-                        } else if (MekanismUtils.useTesla() && CapabilityUtils
-                              .hasCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite())) {
-                            ITeslaProducer producer = CapabilityUtils
-                                  .getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
-                            double toDraw = producer
-                                                  .takePower(MekanismUtils
-                                                        .clampToInt(canDraw * MekanismConfig.current().general.TO_TESLA.val()), true)
+                        } else if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite())) {
+                            ITeslaProducer producer = CapabilityUtils.getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
+                            double toDraw = producer.takePower(MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_TESLA.val()), true)
                                             * MekanismConfig.current().general.FROM_TESLA.val();
-
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
-
-                            producer.takePower(Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()),
-                                  false);
-                        } else if (MekanismUtils.useForge() && CapabilityUtils
-                              .hasCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite())) {
-                            IEnergyStorage storage = CapabilityUtils
-                                  .getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite());
-                            double toDraw = storage.extractEnergy(
-                                  MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_FORGE.val()),
-                                  true)
+                            producer.takePower(Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()), false);
+                        } else if (MekanismUtils.useForge() && CapabilityUtils.hasCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite())) {
+                            IEnergyStorage storage = CapabilityUtils.getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite());
+                            double toDraw = storage.extractEnergy(MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_FORGE.val()), true)
                                             * MekanismConfig.current().general.FROM_FORGE.val();
-
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
-
-                            storage.extractEnergy(
-                                  MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_TESLA.val()),
-                                  false);
+                            storage.extractEnergy(MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_TESLA.val()), false);
                         } else if (MekanismUtils.useRF() && outputter instanceof IEnergyProvider) {
                             double toDraw = ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(),
-                                  MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_RF.val()),
-                                  true)
-                                            * MekanismConfig.current().general.FROM_RF.val();
-
+                                  MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_RF.val()), true) * MekanismConfig.current().general.FROM_RF.val();
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
-
-                            ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(),
-                                  MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_RF.val()),
-                                  false);
+                            ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(), MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_RF.val()), false);
                         } else if (MekanismUtils.useIC2()) {
                             IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
-
                             if (tile instanceof IEnergySource) {
-                                double received = Math
-                                      .min(((IEnergySource) tile).getOfferedEnergy() * MekanismConfig
-                                            .current().general.FROM_IC2.val(), canDraw);
+                                double received = Math.min(((IEnergySource) tile).getOfferedEnergy() * MekanismConfig.current().general.FROM_IC2.val(), canDraw);
                                 double toDraw = received;
-
                                 if (received > 0) {
                                     toDraw -= takeEnergy(received, true);
                                 }
-
-                                ((IEnergySource) tile)
-                                      .drawEnergy(toDraw * MekanismConfig.current().general.TO_IC2.val());
+                                ((IEnergySource) tile).drawEnergy(toDraw * MekanismConfig.current().general.TO_IC2.val());
                             }
                         }
                     }
                 }
             }
         }
-
         super.update();
     }
 
@@ -175,7 +133,6 @@ public class TileEntityUniversalCable extends
     public void updateShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
             double last = getSaveShare();
-
             if (last != lastWrite) {
                 lastWrite = last;
                 markDirty();
@@ -185,11 +142,9 @@ public class TileEntityUniversalCable extends
 
     private double getSaveShare() {
         if (getTransmitter().hasTransmitterNetwork()) {
-            return EnergyNetwork.round(getTransmitter().getTransmitterNetwork().buffer.amount * (1F / getTransmitter()
-                  .getTransmitterNetwork().transmittersSize()));
-        } else {
-            return buffer.amount;
+            return EnergyNetwork.round(getTransmitter().getTransmitterNetwork().buffer.amount * (1F / getTransmitter().getTransmitterNetwork().transmittersSize()));
         }
+        return buffer.amount;
     }
 
     @Override
@@ -200,12 +155,10 @@ public class TileEntityUniversalCable extends
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         buffer.amount = nbtTags.getDouble("cacheEnergy");
         if (buffer.amount < 0) {
             buffer.amount = 0;
         }
-
         if (nbtTags.hasKey("tier")) {
             tier = CableTier.values()[nbtTags.getInteger("tier")];
         }
@@ -215,10 +168,8 @@ public class TileEntityUniversalCable extends
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setDouble("cacheEnergy", lastWrite);
         nbtTags.setInteger("tier", tier.ordinal());
-
         return nbtTags;
     }
 
@@ -258,9 +209,8 @@ public class TileEntityUniversalCable extends
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return maxReceive - MekanismUtils.clampToInt(
-              takeEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), !simulate) * MekanismConfig
-                    .current().general.TO_RF.val());
+        return maxReceive - MekanismUtils.clampToInt(takeEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), !simulate) *
+                                                     MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
@@ -289,15 +239,12 @@ public class TileEntityUniversalCable extends
     @Override
     public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
         double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
-
         if (toUse < 0.0001 || (side != null && !canReceiveEnergy(side))) {
             return 0;
         }
-
         if (!simulate) {
             setEnergy(getEnergy() + toUse);
         }
-
         return toUse;
     }
 
@@ -306,7 +253,6 @@ public class TileEntityUniversalCable extends
         if (side == null) {
             return true;
         }
-
         return getConnectionType(side) == ConnectionType.NORMAL;
     }
 
@@ -314,18 +260,16 @@ public class TileEntityUniversalCable extends
     public double getMaxEnergy() {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().getCapacity();
-        } else {
-            return getCapacity();
         }
+        return getCapacity();
     }
 
     @Override
     public double getEnergy() {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().buffer.amount;
-        } else {
-            return buffer.amount;
         }
+        return buffer.amount;
     }
 
     @Override
@@ -340,15 +284,12 @@ public class TileEntityUniversalCable extends
     public double takeEnergy(double energy, boolean doEmit) {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().emit(energy, doEmit);
-        } else {
-            double used = Math.min(getCapacity() - buffer.amount, energy);
-
-            if (doEmit) {
-                buffer.amount += used;
-            }
-
-            return energy - used;
         }
+        double used = Math.min(getCapacity() - buffer.amount, energy);
+        if (doEmit) {
+            buffer.amount += used;
+        }
+        return energy - used;
     }
 
     @Override
@@ -360,56 +301,43 @@ public class TileEntityUniversalCable extends
     public boolean upgrade(int tierOrdinal) {
         if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
             tier = CableTier.values()[tier.ordinal() + 1];
-
             markDirtyTransmitters();
             sendDesc = true;
-
             return true;
         }
-
         return false;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) throws Exception {
         tier = CableTier.values()[dataStream.readInt()];
-
         super.handlePacketData(dataStream);
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(tier.ordinal());
-
         super.getNetworkedData(data);
-
         return data;
     }
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-               || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-               || capability == Capabilities.TESLA_CONSUMER_CAPABILITY
-               || capability == CapabilityEnergy.ENERGY
-               || super.hasCapability(capability, facing);
+        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
+               || capability == Capabilities.TESLA_CONSUMER_CAPABILITY || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-        if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-            || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
+        if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
             return (T) this;
         }
-
         if (capability == Capabilities.TESLA_CONSUMER_CAPABILITY) {
             return (T) teslaManager.getWrapper(this, facing);
         }
-
         if (capability == CapabilityEnergy.ENERGY) {
             return (T) forgeEnergyManager.getWrapper(this, facing);
         }
-
         return super.getCapability(capability, facing);
     }
 }

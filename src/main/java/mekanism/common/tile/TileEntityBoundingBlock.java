@@ -28,20 +28,15 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
 
     public void setMainLocation(BlockPos pos) {
         receivedCoords = true;
-
         if (!world.isRemote) {
             mainPos = pos;
-
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         }
     }
 
     @Override
     public void validate() {
         super.validate();
-
         if (world.isRemote) {
             Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
         }
@@ -49,22 +44,17 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
 
     public void onNeighborChange(Block block) {
         TileEntity tile = world.getTileEntity(mainPos);
-
         if (tile instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) tile;
-
             int power = world.getRedstonePowerFromNeighbors(getPos());
-
             if (prevPower != power) {
                 if (power > 0) {
                     onPower();
                 } else {
                     onNoPower();
                 }
-
                 prevPower = power;
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
-                      tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             }
         }
     }
@@ -86,7 +76,6 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         mainPos = new BlockPos(nbtTags.getInteger("mainX"), nbtTags.getInteger("mainY"), nbtTags.getInteger("mainZ"));
         prevPower = nbtTags.getInteger("prevPower");
         receivedCoords = nbtTags.getBoolean("receivedCoords");
@@ -96,13 +85,11 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("mainX", mainPos.getX());
         nbtTags.setInteger("mainY", mainPos.getY());
         nbtTags.setInteger("mainZ", mainPos.getZ());
         nbtTags.setInteger("prevPower", prevPower);
         nbtTags.setBoolean("receivedCoords", receivedCoords);
-
         return nbtTags;
     }
 
@@ -112,7 +99,6 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         data.add(mainPos.getY());
         data.add(mainPos.getZ());
         data.add(prevPower);
-
         return data;
     }
 
@@ -126,7 +112,6 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, facing);
     }
 }

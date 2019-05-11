@@ -32,7 +32,6 @@ public class TileComponentSecurity implements ITileComponent {
 
     public TileComponentSecurity(TileEntityContainerBlock tile) {
         tileEntity = tile;
-
         tile.components.add(this);
     }
 
@@ -53,7 +52,6 @@ public class TileComponentSecurity implements ITileComponent {
             if (freq.ownerUUID.equals(owner)) {
                 frequency = (SecurityFrequency) freq;
                 frequency.activeCoords.add(Coord4D.get(tileEntity));
-
                 return;
             }
         }
@@ -83,9 +81,8 @@ public class TileComponentSecurity implements ITileComponent {
     public SecurityMode getMode() {
         if (MekanismConfig.current().general.allowProtection.val()) {
             return securityMode;
-        } else {
-            return SecurityMode.PUBLIC;
         }
+        return SecurityMode.PUBLIC;
     }
 
     public void setMode(SecurityMode mode) {
@@ -96,7 +93,6 @@ public class TileComponentSecurity implements ITileComponent {
         if (ownerUUID == null || freq == null) {
             return null;
         }
-
         return Mekanism.securityFrequencies;
     }
 
@@ -106,15 +102,12 @@ public class TileComponentSecurity implements ITileComponent {
             if (frequency == null && ownerUUID != null) {
                 setFrequency(ownerUUID);
             }
-
             FrequencyManager manager = getManager(frequency);
 
             if (manager != null) {
                 if (frequency != null && !frequency.valid) {
-                    frequency = (SecurityFrequency) manager
-                          .validateFrequency(ownerUUID, Coord4D.get(tileEntity), frequency);
+                    frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(tileEntity), frequency);
                 }
-
                 if (frequency != null) {
                     frequency = (SecurityFrequency) manager.update(Coord4D.get(tileEntity), frequency);
                 }
@@ -127,11 +120,9 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void read(NBTTagCompound nbtTags) {
         securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
-
         if (nbtTags.hasKey("ownerUUID")) {
             ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
         }
-
         if (nbtTags.hasKey("securityFreq")) {
             frequency = new SecurityFrequency(nbtTags.getCompoundTag("securityFreq"));
             frequency.valid = false;
@@ -160,11 +151,9 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void write(NBTTagCompound nbtTags) {
         nbtTags.setInteger("securityMode", securityMode.ordinal());
-
         if (ownerUUID != null) {
             nbtTags.setString("ownerUUID", ownerUUID.toString());
         }
-
         if (frequency != null) {
             NBTTagCompound frequencyTag = new NBTTagCompound();
             frequency.write(frequencyTag);
@@ -197,7 +186,6 @@ public class TileComponentSecurity implements ITileComponent {
         if (!tileEntity.getWorld().isRemote) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);
-
                 if (manager != null) {
                     manager.deactivate(Coord4D.get(tileEntity));
                 }

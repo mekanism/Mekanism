@@ -51,8 +51,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
       @Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = MekanismHooks.IC2_MOD_ID),
       @Interface(iface = "ic2.api.tile.IEnergyStorage", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable,
-      IActiveState {
+public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState {
 
     public boolean ic2Registered = false;
 
@@ -60,10 +59,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
      * false = input, true = output
      */
     public boolean mode;
-    private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(
-          IEnergyWrapper.class, TeslaIntegration.class);
-    private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(
-          IEnergyWrapper.class, ForgeEnergyIntegration.class);
+    private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
+    private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
     public TileEntityInductionPort() {
         super("InductionPort");
@@ -410,18 +407,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
         if (!world.isRemote) {
             mode = !mode;
-            String modeText =
-                  " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
-            player.sendMessage(
-                  new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
-                        .localize("tooltip.configurator.inductionPortMode") + modeText));
-
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            String modeText = " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
+            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
+                                                       LangUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             markDirty();
         }
-
         return EnumActionResult.SUCCESS;
     }
 

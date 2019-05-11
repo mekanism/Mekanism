@@ -20,11 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 
-public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends
-      TileEntityUpgradeableMachine<ItemStackInput, ItemStackOutput, RECIPE> {
+public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<ItemStackInput, ItemStackOutput, RECIPE> {
 
-    private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
-                                                         "getMaxEnergy", "getEnergyNeeded"};
+    private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
     /**
      * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), output slot (2), and the upgrade slot (3). It will not run if it does not
@@ -36,11 +34,8 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
      * @param ticksRequired - ticks required to operate -- or smelt an item.
      * @param maxEnergy     - maximum energy this machine can hold.
      */
-    public TileEntityElectricMachine(String soundPath, String name, double maxEnergy, double perTick,
-          int ticksRequired) {
-        super(soundPath, name, maxEnergy, perTick, 3, ticksRequired,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
-
+    public TileEntityElectricMachine(String soundPath, String name, double maxEnergy, double perTick, int ticksRequired) {
+        super(soundPath, name, maxEnergy, perTick, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -68,33 +63,24 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
-
             RECIPE recipe = getRecipe();
-
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
                 setActive(true);
                 electricityStored -= energyPerTick;
-
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else if ((operatingTicks + 1) >= ticksRequired) {
                     operate(recipe);
-
                     operatingTicks = 0;
                 }
-            } else {
-                if (prevEnergy >= getEnergy()) {
-                    setActive(false);
-                }
+            } else if (prevEnergy >= getEnergy()) {
+                setActive(false);
             }
-
             if (!canOperate(recipe)) {
                 operatingTicks = 0;
             }
-
             prevEnergy = getEnergy();
         }
     }
@@ -104,14 +90,12 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
         if (slotID == 2) {
             return false;
         } else if (slotID == 3) {
-            return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+            return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             return RecipeHandler.isInRecipe(itemstack, getRecipes());
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
-
         return false;
     }
 
@@ -123,18 +107,15 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
     @Override
     public RECIPE getRecipe() {
         ItemStackInput input = getInput();
-
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
         }
-
         return cachedRecipe;
     }
 
     @Override
     public void operate(RECIPE recipe) {
         recipe.operate(inventory, 0, 2);
-
         markDirty();
         ejectorComponent.outputItems();
     }
@@ -148,10 +129,8 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else {
-            return slotID == 2;
         }
-
+        return slotID == 2;
     }
 
     @Override

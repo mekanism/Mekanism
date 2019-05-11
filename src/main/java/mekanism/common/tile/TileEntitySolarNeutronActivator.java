@@ -43,9 +43,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl,
-      IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager, ISecurityTile, IUpgradeTile,
-      IUpgradeInfoHandler {
+public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, IActiveState, ISustainedData,
+      ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler {
 
     public static final int MAX_GAS = 10000;
     private static final int[] INPUT_SLOT = {0};
@@ -75,7 +74,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public void validate() {
         super.validate();
-
         // Cache the flag to know if rain matters where this block is placed
         needsRainCheck = world.provider.getBiomeForCoords(getPos()).canRain();
     }
@@ -85,7 +83,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         if (!world.isRemote) {
             TileUtils.receiveGas(inventory.get(0), inputTank);
             TileUtils.drawGas(inventory.get(1), outputTank);
-
             SolarNeutronRecipe recipe = getRecipe();
 
             // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
@@ -105,14 +102,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
             }
 
             TileUtils.emitGas(this, outputTank, gasOutput, facing);
-
             // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
             // traffic from previous implementation that send the update every 10 ticks.
             if (world.getTotalWorldTime() % 20 == 0) {
-                Mekanism.packetHandler
-                      .sendToReceivers(
-                            new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                            new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             }
         }
     }
@@ -120,17 +113,14 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     public int getUpgradedUsage() {
         int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
-
         return possibleProcess;
     }
 
     public SolarNeutronRecipe getRecipe() {
         GasInput input = getInput();
-
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getSolarNeutronRecipe(getInput());
         }
-
         return cachedRecipe;
     }
 
@@ -149,7 +139,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             isActive = dataStream.readBoolean();
             controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -161,7 +150,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(isActive);
         data.add(controlType.ordinal());
         TileUtils.addTankData(data, inputTank);
@@ -172,10 +160,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
         inputTank.read(nbtTags.getCompoundTag("inputTank"));
         outputTank.read(nbtTags.getCompoundTag("outputTank"));
     }
@@ -184,13 +170,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
-
         nbtTags.setTag("inputTank", inputTank.write(new NBTTagCompound()));
         nbtTags.setTag("outputTank", outputTank.write(new NBTTagCompound()));
-
         return nbtTags;
     }
 
@@ -215,7 +198,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         if (canReceiveGas(side, stack != null ? stack.getGas() : null)) {
             return inputTank.receive(stack, doTransfer);
         }
-
         return 0;
     }
 
@@ -224,7 +206,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         if (canDrawGas(side, null)) {
             return outputTank.draw(amount, doTransfer);
         }
-
         return null;
     }
 
@@ -259,7 +240,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 
@@ -276,7 +256,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         if (inputTank.getGas() != null) {
             ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new NBTTagCompound()));
         }
-
         if (outputTank.getGas() != null) {
             ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new NBTTagCompound()));
         }
@@ -312,12 +291,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public void setActive(boolean active) {
         boolean stateChange = isActive != active;
-
         if (stateChange) {
             isActive = active;
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         }
     }
 

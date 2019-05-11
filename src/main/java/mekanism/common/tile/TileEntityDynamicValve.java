@@ -28,8 +28,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{
-              fluidTank.getInfo()} : PipeUtils.EMPTY;
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{fluidTank.getInfo()} : PipeUtils.EMPTY;
     }
 
     @Override
@@ -49,7 +48,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
                 return fluidTank.drain(resource.amount, doDrain);
             }
         }
-
         return null;
     }
 
@@ -58,7 +56,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
         if (structure != null) {
             return fluidTank.drain(maxDrain, doDrain);
         }
-
         return null;
     }
 
@@ -85,7 +82,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
                 return true;
             }
         }
-
         return super.hasCapability(capability, side);
     }
 
@@ -96,7 +92,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
             }
         }
-
         return super.getCapability(capability, side);
     }
 
@@ -111,8 +106,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? SLOTS
-                                                                                                : InventoryUtils.EMPTY;
+        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? SLOTS : InventoryUtils.EMPTY;
     }
 
     @Override

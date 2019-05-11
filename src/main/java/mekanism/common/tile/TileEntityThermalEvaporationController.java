@@ -43,8 +43,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState,
-      ITankManager {
+public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager {
 
     public static final int MAX_OUTPUT = 10000;
     public static final int MAX_SOLARS = 4;
@@ -88,21 +87,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public TileEntityThermalEvaporationController() {
         super("ThermalEvaporationController");
-
         inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             updatedThisTick = false;
-
             if (ticker == 5) {
                 refresh();
             }
-
             if (structured) {
                 updateTemperature();
             }
@@ -110,17 +105,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             manageBuckets();
 
             ThermalEvaporationRecipe recipe = getRecipe();
-
             if (canOperate(recipe)) {
                 int outputNeeded = outputTank.getCapacity() - outputTank.getFluidAmount();
                 int inputStored = inputTank.getFluidAmount();
-                double outputRatio =
-                      (double) recipe.recipeOutput.output.amount / (double) recipe.recipeInput.ingredient.amount;
-
-                double tempMult =
-                      Math.max(0, getTemperature()) * MekanismConfig.current().general.evaporationTempMultiplier.val();
-                double inputToUse =
-                      tempMult * recipe.recipeInput.ingredient.amount * ((float) height / (float) MAX_HEIGHT);
+                double outputRatio = (double) recipe.recipeOutput.output.amount / (double) recipe.recipeInput.ingredient.amount;
+                double tempMult = Math.max(0, getTemperature()) * MekanismConfig.current().general.evaporationTempMultiplier.val();
+                double inputToUse = tempMult * recipe.recipeInput.ingredient.amount * ((float) height / (float) MAX_HEIGHT);
                 inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
                 inputToUse = Math.min(inputToUse, outputNeeded / outputRatio);
 
@@ -142,12 +132,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             } else {
                 lastGain = 0;
             }
-
             if (structured) {
                 if (Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
-                    Mekanism.packetHandler.sendToReceivers(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                          new Range4D(Coord4D.get(this)));
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
                     prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
                 }
             }
@@ -161,14 +148,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public void onChunkUnload() {
         super.onChunkUnload();
-
         refresh();
     }
 
     @Override
     public void onNeighborChange(Block block) {
         super.onNeighborChange(block);
-
         refresh();
     }
 
@@ -176,7 +161,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (fluid == null) {
             return false;
         }
-
         return Recipe.THERMAL_EVAPORATION_PLANT.containsRecipe(fluid);
     }
 
@@ -185,11 +169,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (!updatedThisTick) {
                 clearStructure();
                 structured = buildStructure();
-
                 if (structured != clientStructured) {
-                    Mekanism.packetHandler.sendToReceivers(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                          new Range4D(Coord4D.get(this)));
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
                     clientStructured = structured;
                 }
 
@@ -210,7 +191,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (!structured || height < 3 || height > MAX_HEIGHT || inputTank.getFluid() == null) {
             return false;
         }
-
         return recipe != null && recipe.canOperate(inputTank, outputTank);
 
     }
@@ -239,7 +219,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             biomeTemp = world.getBiomeForCoordsBody(getPos()).getTemperature(getPos());
             temperatureSet = true;
         }
-
         heatToAbsorb += getActiveSolars() * MekanismConfig.current().general.evaporationSolarMultiplier.val();
         temperature += heatToAbsorb / (float) height;
 
@@ -249,26 +228,21 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (Math.abs(temperature - base) < 0.001) {
             temperature = base;
         }
-
-        float incr = (float) Math.sqrt(Math.abs(temperature - base)) * (float) MekanismConfig
-              .current().general.evaporationHeatDissipation.val();
+        float incr = (float) Math.sqrt(Math.abs(temperature - base)) * (float) MekanismConfig.current().general.evaporationHeatDissipation.val();
 
         if (temperature > base) {
             incr = -incr;
         }
 
         float prev = temperature;
-        temperature = (float) Math
-              .min(MekanismConfig.current().general.evaporationMaxTemp.val(), temperature + incr / (float) height);
+        temperature = (float) Math.min(MekanismConfig.current().general.evaporationMaxTemp.val(), temperature + incr / (float) height);
 
         if (incr < 0) {
             totalLoss = prev - temperature;
         } else {
             totalLoss = 0;
         }
-
         heatToAbsorb = 0;
-
         MekanismUtils.saveChunk(this);
     }
 
@@ -280,37 +254,30 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (world.isRemote) {
             return clientSolarAmount;
         }
-
         int ret = 0;
-
         for (IEvaporationSolar solar : solars) {
             if (solar != null && solar.canSeeSun()) {
                 ret++;
             }
         }
-
         return ret;
     }
 
     public boolean buildStructure() {
         EnumFacing right = MekanismUtils.getRight(facing);
         EnumFacing left = MekanismUtils.getLeft(facing);
-
         height = 0;
         controllerConflict = false;
         updatedThisTick = true;
 
         Coord4D startPoint = Coord4D.get(this);
-
         while (startPoint.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock) {
             startPoint = startPoint.offset(EnumFacing.UP);
         }
 
         Coord4D test = startPoint.offset(EnumFacing.DOWN).offset(right, 2);
         isLeftOnFace = test.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock;
-
         startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
-
         if (!scanTopLayer(startPoint)) {
             return false;
         }
@@ -318,36 +285,27 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         height = 1;
 
         Coord4D middlePointer = startPoint.offset(EnumFacing.DOWN);
-
         while (scanLowerLayer(middlePointer)) {
             middlePointer = middlePointer.offset(EnumFacing.DOWN);
         }
-
         renderY = middlePointer.y + 1;
-
         if (height < 3 || height > MAX_HEIGHT) {
             height = 0;
             return false;
         }
-
         structured = true;
-
         markDirty();
-
         return true;
     }
 
     public boolean scanTopLayer(Coord4D current) {
         EnumFacing right = MekanismUtils.getRight(facing);
         EnumFacing back = MekanismUtils.getBack(facing);
-
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
                 Coord4D pointer = current.offset(right, x).offset(back, z);
                 TileEntity pointerTile = pointer.getTileEntity(world);
-
                 int corner = getCorner(x, z);
-
                 if (corner != -1) {
                     if (!addSolarPanel(pointer.getTileEntity(world), corner)) {
                         if (pointer.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
@@ -363,7 +321,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 }
             }
         }
-
         return true;
     }
 
@@ -381,21 +338,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         } else if (x == 3 && z == 3) {
             return 3;
         }
-
         return -1;
     }
 
     public boolean scanLowerLayer(Coord4D current) {
         EnumFacing right = MekanismUtils.getRight(facing);
         EnumFacing back = MekanismUtils.getBack(facing);
-
         boolean foundCenter = false;
-
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
                 Coord4D pointer = current.offset(right, x).offset(back, z);
                 TileEntity pointerTile = pointer.getTileEntity(world);
-
                 if ((x == 1 || x == 2) && (z == 1 || z == 2)) {
                     if (pointerTile instanceof TileEntityThermalEvaporationBlock) {
                         if (!foundCenter) {
@@ -406,17 +359,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                                 return false;
                             }
                         }
-                    } else {
-                        if (foundCenter || !pointer.isAirBlock(world)) {
-                            height = -1;
-                            return false;
-                        }
-                    }
-                } else {
-                    if (!addTankPart(pointerTile)) {
+                    } else if (foundCenter || !pointer.isAirBlock(world)) {
                         height = -1;
                         return false;
                     }
+                } else if (!addTankPart(pointerTile)) {
+                    height = -1;
+                    return false;
                 }
             }
         }
@@ -427,31 +376,24 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean addTankPart(TileEntity tile) {
-        if (tile instanceof TileEntityThermalEvaporationBlock && (tile == this
-                                                                  || !(tile instanceof TileEntityThermalEvaporationController))) {
+        if (tile instanceof TileEntityThermalEvaporationBlock && (tile == this || !(tile instanceof TileEntityThermalEvaporationController))) {
             if (tile != this) {
                 ((TileEntityThermalEvaporationBlock) tile).addToStructure(Coord4D.get(this));
                 tankParts.add(Coord4D.get(tile));
             }
-
             return true;
-        } else {
-            if (tile != this && tile instanceof TileEntityThermalEvaporationController) {
-                controllerConflict = true;
-            }
-
-            return false;
+        } else if (tile != this && tile instanceof TileEntityThermalEvaporationController) {
+            controllerConflict = true;
         }
+        return false;
     }
 
     public boolean addSolarPanel(TileEntity tile, int i) {
-        if (tile != null && !tile.isInvalid() && CapabilityUtils
-              .hasCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN)) {
+        if (tile != null && !tile.isInvalid() && CapabilityUtils.hasCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN)) {
             solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public int getScaledTempLevel(int i) {
@@ -462,21 +404,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (!structured) {
             return null;
         }
-
         EnumFacing right = MekanismUtils.getRight(facing);
         Coord4D startPoint = Coord4D.get(this).offset(right);
         startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
-
         startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing));
         startPoint.y = renderY;
-
         return startPoint;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             TileUtils.readTankData(dataStream, inputTank);
             TileUtils.readTankData(dataStream, outputTank);
@@ -495,17 +433,14 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (structured != clientStructured) {
                 inputTank.setCapacity(getMaxFluid());
                 MekanismUtils.updateBlock(world, getPos());
-
                 if (structured) {
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).
                     BlockPos corner1 = getRenderLocation().getPos().offset(facing).offset(facing.rotateYCCW()).down();
                     BlockPos corner2 = corner1.offset(facing.getOpposite(), 3).offset(facing.rotateYCCW().getOpposite(), 3).up(height - 1);
                     // Use the corners to spin up the sparkle
-                    Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2,
-                          tile -> tile instanceof TileEntityThermalEvaporationBlock);
+                    Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);
                 }
-
                 clientStructured = structured;
             }
         }
@@ -526,14 +461,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         data.add(lastGain);
         data.add(totalLoss);
         data.add(renderY);
-
         return data;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         inputTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
         outputTank.readFromNBT(nbtTags.getCompoundTag("brineTank"));
 
@@ -547,7 +480,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setTag("waterTank", inputTank.writeToNBT(new NBTTagCompound()));
         nbtTags.setTag("brineTank", outputTank.writeToNBT(new NBTTagCompound()));
 
@@ -555,7 +487,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
         nbtTags.setDouble("partialWater", partialInput);
         nbtTags.setDouble("partialBrine", partialOutput);
-
         return nbtTags;
     }
 
@@ -572,12 +503,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public void clearStructure() {
         for (Coord4D tankPart : tankParts) {
             TileEntity tile = tankPart.getTileEntity(world);
-
             if (tile instanceof TileEntityThermalEvaporationBlock) {
                 ((TileEntityThermalEvaporationBlock) tile).controllerGone();
             }
         }
-
         tankParts.clear();
         solars = new IEvaporationSolar[]{null, null, null, null};
     }

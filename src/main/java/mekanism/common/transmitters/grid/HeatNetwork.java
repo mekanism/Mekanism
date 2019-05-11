@@ -27,7 +27,6 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
                 net.deregister();
             }
         }
-
         register();
     }
 
@@ -43,10 +42,9 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
 
     @Override
     public String getFlowInfo() {
-        return MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN)
-               + " transferred to acceptors, " + MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN)
-               + " lost to environment, " + (heatTransferred + heatLost == 0 ? ""
-                                                                             : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency");
+        return MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN) + " transferred to acceptors, " +
+               MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN) + " lost to environment, " +
+               (heatTransferred + heatLost == 0 ? "" : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency");
     }
 
     @Override
@@ -67,10 +65,8 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
 
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
-                if (transmitter instanceof TransmitterImpl && ((TransmitterImpl) transmitter).getTileEntity()
-                      .hasCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null)) {
-                    IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity()
-                          .getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null);
+                if (transmitter instanceof TransmitterImpl && ((TransmitterImpl) transmitter).getTileEntity().hasCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null)) {
+                    IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity().getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null);
                     double[] d = heatTransmitter.simulateHeat();
                     newHeatTransferred += d[0];
                     newHeatLost += d[1];
@@ -78,7 +74,6 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
                 }
             }
         }
-
         heatLost = newHeatLost;
         heatTransferred = newHeatTransferred;
         meanTemp = newSumTemp / transmitters.size();

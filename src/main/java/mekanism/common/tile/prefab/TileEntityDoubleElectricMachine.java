@@ -20,11 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 
-public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends
-      TileEntityUpgradeableMachine<DoubleMachineInput, ItemStackOutput, RECIPE> {
+public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<DoubleMachineInput, ItemStackOutput, RECIPE> {
 
-    private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
-                                                         "getMaxEnergy", "getEnergyNeeded"};
+    private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
     /**
      * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
@@ -36,11 +34,8 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
      * @param baseEnergyUsage - how much energy this machine uses per tick.
      * @param ticksRequired   - how many ticks it takes to smelt an item.
      */
-    public TileEntityDoubleElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
-          int ticksRequired) {
-        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 4, ticksRequired,
-              MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
-
+    public TileEntityDoubleElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int ticksRequired) {
+        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -71,34 +66,25 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-
             boolean inactive = false;
-
             RECIPE recipe = getRecipe();
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
                 setActive(true);
-
                 operatingTicks++;
-
                 if (operatingTicks >= ticksRequired) {
                     operate(recipe);
-
                     operatingTicks = 0;
                 }
-
                 electricityStored -= energyPerTick;
             } else {
                 inactive = true;
                 setActive(false);
             }
-
             if (inactive && getRecipe() == null) {
                 operatingTicks = 0;
             }
-
             prevEnergy = getEnergy();
         }
     }
@@ -108,8 +94,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
         if (slotID == 2) {
             return false;
         } else if (slotID == 4) {
-            return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+            return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             for (DoubleMachineInput input : getRecipes().keySet()) {
                 if (input.itemStack.isItemEqual(itemstack)) {
@@ -125,7 +110,6 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
                 }
             }
         }
-
         return false;
     }
 
@@ -137,18 +121,15 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
     @Override
     public RECIPE getRecipe() {
         DoubleMachineInput input = getInput();
-
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
         }
-
         return cachedRecipe;
     }
 
     @Override
     public void operate(RECIPE recipe) {
         recipe.operate(inventory, 0, 1, 2);
-
         markDirty();
         ejectorComponent.outputItems();
     }
@@ -162,10 +143,8 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 3) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else {
-            return slotID == 2;
         }
-
+        return slotID == 2;
     }
 
     @Override

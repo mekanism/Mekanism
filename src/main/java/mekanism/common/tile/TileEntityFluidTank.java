@@ -51,9 +51,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable,
-      IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile, ITierUpgradeable,
-      ITieredTile {
+public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
+      ITankManager, ISecurityTile, ITierUpgradeable, ITieredTile {
 
     public boolean isActive;
 
@@ -82,7 +81,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     public TileEntityFluidTank() {
         super("FluidTank");
-
         fluidTank = new FluidTank(tier.getStorage());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     }
@@ -92,15 +90,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-
         tier = FluidTankTier.values()[upgradeTier.ordinal()];
         fluidTank.setCapacity(tier.getStorage());
-
-        Mekanism.packetHandler
-              .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                    new Range4D(Coord4D.get(this)));
+        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();
-
         return true;
     }
 
@@ -114,23 +107,19 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (world.isRemote) {
             if (updateDelay > 0) {
                 updateDelay--;
-
                 if (updateDelay == 0 && clientActive != isActive) {
                     isActive = clientActive;
                     MekanismUtils.updateBlock(world, getPos());
                 }
             }
 
-            float targetScale =
-                  (float) (fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0) / fluidTank.getCapacity();
-
+            float targetScale = (float) (fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0) / fluidTank.getCapacity();
             if (Math.abs(prevScale - targetScale) > 0.01) {
                 prevScale = (9 * prevScale + targetScale) / 10;
             }
         } else {
             if (updateDelay > 0) {
                 updateDelay--;
-
                 if (updateDelay == 0 && clientActive != isActive) {
                     needsPacket = true;
                 }
@@ -138,7 +127,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
             if (valve > 0) {
                 valve--;
-
                 if (valve == 0) {
                     valveFluid = null;
                     needsPacket = true;
@@ -151,28 +139,22 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
             }
 
             prevAmount = fluidTank.getFluidAmount();
-
             if (!inventory.get(0).isEmpty()) {
                 manageInventory();
             }
-
             if (isActive) {
                 activeEmit();
             }
 
             int newRedstoneLevel = getRedstoneLevel();
-
             if (newRedstoneLevel != currentRedstoneLevel) {
                 markDirty();
                 currentRedstoneLevel = newRedstoneLevel;
             }
-
             if (needsPacket) {
-                Mekanism.packetHandler.sendToAllAround(
-                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                       Coord4D.get(this).getTargetPoint(50));
             }
-
             needsPacket = false;
         }
     }
@@ -186,13 +168,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     private void activeEmit() {
         if (fluidTank.getFluid() != null) {
             TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(world);
-
-            if (CapabilityUtils
-                  .hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP)) {
-                IFluidHandler handler = CapabilityUtils
-                      .getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
-                FluidStack toDrain = new FluidStack(fluidTank.getFluid(),
-                      Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
+            if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP)) {
+                IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
+                FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, true), tier != FluidTankTier.CREATIVE);
             }
         }
@@ -200,12 +178,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     private void manageInventory() {
         if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
-            FluidStack ret = FluidContainerUtils
-                  .handleContainerItem(this, inventory, editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
+            FluidStack ret = FluidContainerUtils.handleContainerItem(this, inventory, editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 
             if (ret != null) {
                 fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
-
                 if (tier == FluidTankTier.CREATIVE) {
                     FluidStack fluid = fluidTank.getFluid();
                     if (fluid != null) {
@@ -213,15 +189,12 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                     }
                 } else {
                     int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
-
                     if (rejects > 0) {
                         pushUp(PipeUtils.copy(ret, rejects), true);
                     }
                 }
-            } else {
-                if (tier != FluidTankTier.CREATIVE) {
-                    fluidTank.setFluid(null);
-                }
+            } else if (tier != FluidTankTier.CREATIVE) {
+                fluidTank.setFluid(null);
             }
         }
     }
@@ -230,14 +203,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         Coord4D up = Coord4D.get(this).offset(EnumFacing.UP);
         TileEntity tileEntity = up.getTileEntity(world);
         if (tileEntity instanceof TileEntityFluidTank) {
-            IFluidHandler handler = CapabilityUtils
-                  .getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
-
+            IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
             if (PipeUtils.canFill(handler, fluid)) {
                 return handler.fill(fluid, doFill);
             }
         }
-
         return 0;
     }
 
@@ -251,7 +221,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (slotID == 0) {
             return FluidContainerUtils.isFluidContainer(itemstack);
         }
-
         return false;
     }
 
@@ -263,7 +232,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         } else if (side == EnumFacing.UP) {
             return new int[]{0};
         }
-
         return InventoryUtils.EMPTY;
     }
 
@@ -271,28 +239,23 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("tier", tier.ordinal());
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("editMode", editMode.ordinal());
-
         if (fluidTank.getFluid() != null) {
             nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
         }
-
         return nbtTags;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         tier = FluidTankTier.values()[nbtTags.getInteger("tier")];
         clientActive = isActive = nbtTags.getBoolean("isActive");
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
         //Needs to be outside the hasKey check because this is just based on the tier which is known information
         fluidTank.setCapacity(tier.getStorage());
-
         if (nbtTags.hasKey("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
         }
@@ -301,17 +264,14 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             FluidTankTier prevTier = tier;
-
             tier = FluidTankTier.values()[dataStream.readInt()];
             fluidTank.setCapacity(tier.getStorage());
 
             clientActive = dataStream.readBoolean();
             valve = dataStream.readInt();
             editMode = ContainerEditMode.values()[dataStream.readInt()];
-
             if (valve > 0) {
                 valveFluid = TileUtils.readFluidStack(dataStream);
             } else {
@@ -319,7 +279,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
             }
 
             TileUtils.readTankData(dataStream, fluidTank);
-
             if (prevTier != tier || (updateDelay == 0 && clientActive != isActive)) {
                 updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
                 isActive = clientActive;
@@ -335,44 +294,34 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     public int getCurrentNeeded() {
         int needed = fluidTank.getCapacity() - fluidTank.getFluidAmount();
-
         if (tier == FluidTankTier.CREATIVE) {
             return Integer.MAX_VALUE;
         }
-
         Coord4D top = Coord4D.get(this).offset(EnumFacing.UP);
         TileEntity topTile = top.getTileEntity(world);
-
         if (topTile instanceof TileEntityFluidTank) {
             TileEntityFluidTank topTank = (TileEntityFluidTank) topTile;
-
             if (fluidTank.getFluid() != null && topTank.fluidTank.getFluid() != null) {
                 if (fluidTank.getFluid().getFluid() != topTank.fluidTank.getFluid().getFluid()) {
                     return needed;
                 }
             }
-
             needed += topTank.getCurrentNeeded();
         }
-
         return needed;
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(tier.ordinal());
         data.add(isActive);
         data.add(valve);
         data.add(editMode.ordinal());
-
         if (valve > 0) {
             TileUtils.addFluidStack(data, valveFluid);
         }
-
         TileUtils.addTankData(data, fluidTank);
-
         return data;
     }
 
@@ -384,12 +333,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     @Override
     public void setActive(boolean active) {
         isActive = active;
-
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             updateDelay = 10;
             clientActive = active;
         }
@@ -409,10 +354,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
         if (!world.isRemote) {
             setActive(!getActive());
-            world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK,
-                  SoundCategory.BLOCKS, 0.3F, 1);
+            world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
         }
-
         return EnumActionResult.SUCCESS;
     }
 
@@ -426,9 +369,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
-        return capability == Capabilities.CONFIGURABLE_CAPABILITY
-               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-               || super.hasCapability(capability, side);
+        return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
@@ -440,7 +381,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
-
         return super.getCapability(capability, side);
     }
 
@@ -457,23 +397,18 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (tier == FluidTankTier.CREATIVE) {
             return resource != null ? resource.amount : 0;
         }
-
         if (resource != null && canFill(from, resource)) {
             int filled = fluidTank.fill(resource, doFill);
-
             if (filled < resource.amount && !isActive) {
                 filled += pushUp(PipeUtils.copy(resource, resource.amount - filled), doFill);
             }
-
             if (filled > 0 && from == EnumFacing.UP) {
                 if (valve == 0) {
                     needsPacket = true;
                 }
-
                 valve = 20;
                 valveFluid = new FluidStack(resource, 1);
             }
-
             return filled;
         }
 
@@ -485,7 +420,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (resource != null && canDrain(from, resource)) {
             return fluidTank.drain(resource.amount, tier != FluidTankTier.CREATIVE && doDrain);
         }
-
         return null;
     }
 
@@ -494,7 +428,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (canDrain(from, null)) {
             return fluidTank.drain(maxDrain, tier != FluidTankTier.CREATIVE && doDrain);
         }
-
         return null;
     }
 
@@ -506,17 +439,14 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 return false;
             }
         }
-
         if (tier == FluidTankTier.CREATIVE) {
             return true;
         }
 
-        if (isActive && tile instanceof TileEntityFluidTank) // Only fill if tanks underneath have same fluid.
-        {
+        if (isActive && tile instanceof TileEntityFluidTank) { // Only fill if tanks underneath have same fluid.
             return (fluidTank.getFluid() == null && ((TileEntityFluidTank) tile).canFill(EnumFacing.UP, fluid)) ||
                    (fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid));
         }
-
         return fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid);
     }
 
@@ -525,10 +455,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (fluidTank != null) {
             if (fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid)) {
                 return !(isActive && from == EnumFacing.DOWN);
-
             }
         }
-
         return false;
     }
 

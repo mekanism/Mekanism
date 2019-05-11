@@ -19,10 +19,8 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe> {
 
     public TileEntityChemicalInjectionChamber() {
-        super("injection", "ChemicalInjectionChamber",
-              MachineType.CHEMICAL_INJECTION_CHAMBER.getStorage(),
+        super("injection", "ChemicalInjectionChamber", MachineType.CHEMICAL_INJECTION_CHAMBER.getStorage(),
               MachineType.CHEMICAL_INJECTION_CHAMBER.getUsage(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
-
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[]{0}));
@@ -40,14 +38,12 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
         if (canReceiveGas(side, stack.getGas())) {
             return gasTank.receive(stack, doTransfer);
         }
-
         return 0;
     }
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && gasTank.canReceive(type)
-               && isValidGas(type);
+        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && gasTank.canReceive(type) && isValidGas(type);
 
     }
 
@@ -55,15 +51,12 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     public void handleSecondaryFuel() {
         if (!inventory.get(1).isEmpty() && gasTank.getNeeded() > 0 && inventory.get(1).getItem() instanceof IGasItem) {
             GasStack gas = ((IGasItem) inventory.get(1).getItem()).getGas(inventory.get(1));
-
             if (gas != null && isValidGas(gas.getGas())) {
                 GasStack removed = GasUtils.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded());
                 gasTank.receive(removed, true);
             }
-
             return;
         }
-
         super.handleSecondaryFuel();
     }
 

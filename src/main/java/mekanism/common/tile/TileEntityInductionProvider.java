@@ -19,18 +19,15 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock {
     }
 
     public String getName() {
-        return LangUtils.localize(
-              getBlockType().getTranslationKey() + ".InductionProvider" + tier.getBaseTier().getSimpleName() + ".name");
+        return LangUtils.localize(getBlockType().getTranslationKey() + ".InductionProvider" + tier.getBaseTier().getSimpleName() + ".name");
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             InductionProviderTier prevTier = tier;
             tier = InductionProviderTier.values()[dataStream.readInt()];
-
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -40,16 +37,13 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock {
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(tier.ordinal());
-
         return data;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         tier = InductionProviderTier.values()[nbtTags.getInteger("tier")];
     }
 
@@ -57,9 +51,7 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("tier", tier.ordinal());
-
         return nbtTags;
     }
 }
