@@ -171,7 +171,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         Block block = world.getBlockState(pos).getBlock();
-        if (!player.isSneaking() && (block == Blocks.DIRT || block == Blocks.GRASS || block == Blocks.GRASS_PATH)) {
+        if (!player.isSneaking() && block == Blocks.DIRT) {
             if (useHoe(stack, player, world, pos, side) == EnumActionResult.FAIL) {
                 return EnumActionResult.FAIL;
             }
@@ -193,10 +193,31 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             }
             return EnumActionResult.SUCCESS;
         }
+        else if (!player.isSneaking() && block == Blocks.GRASS) {
+            if (useShovel(stack, player, world, pos, side) == EnumActionResult.FAIL) {
+                return EnumActionResult.FAIL;
+            }
+            switch (getEfficiency(stack)) {
+                case 20:
+                    for (int x1 = -1; x1 <= +1; x1++) {
+                        for (int z1 = -1; z1 <= +1; z1++) {
+                            useShovel(stack, player, world, pos.add(x1, 0, z1), side);
+                        }
+                    }
+                    break;
+                case 128:
+                    for (int x1 = -2; x1 <= +2; x1++) {
+                        for (int z1 = -2; z1 <= +2; z1++) {
+                            useShovel(stack, player, world, pos.add(x1, 0, z1), side);
+                        }
+                    }
+                    break;
+            }
+            return EnumActionResult.SUCCESS;
+        }
         return EnumActionResult.PASS;
     }
 
-    @SuppressWarnings("incomplete-switch")
     private EnumActionResult useHoe(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing facing) {
         if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return EnumActionResult.FAIL;
@@ -208,7 +229,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         IBlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
         if (facing != EnumFacing.DOWN && worldIn.isAirBlock(pos.up())) {
-            if (block == Blocks.GRASS || block == Blocks.GRASS_PATH) {
+            if (block == Blocks.GRASS) {
                 setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
                 return EnumActionResult.SUCCESS;
             }
@@ -221,7 +242,24 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         setBlock(stack, playerIn, worldIn, pos, Blocks.DIRT.getDefaultState()
                               .withProperty(BlockDirt.VARIANT, BlockDirt.DirtType.DIRT));
                         return EnumActionResult.SUCCESS;
+                    default:
+                        return EnumActionResult.PASS;
                 }
+            }
+        }
+        return EnumActionResult.PASS;
+    }
+    
+    private EnumActionResult useShovel(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing facing) {
+        if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack)) {
+            return EnumActionResult.FAIL;
+        }
+        IBlockState iblockstate = worldIn.getBlockState(pos);
+        Block block = iblockstate.getBlock();
+        if (facing != EnumFacing.DOWN && worldIn.isAirBlock(pos.up())) {
+            if (block == Blocks.GRASS) {
+                setBlock(stack, playerIn, worldIn, pos, Blocks.GRASS_PATH.getDefaultState());
+                return EnumActionResult.SUCCESS;
             }
         }
         return EnumActionResult.PASS;

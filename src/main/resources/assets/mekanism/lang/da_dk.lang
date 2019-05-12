@@ -374,9 +374,9 @@ upgrade.muffling=Dæmpning
 upgrade.muffling.desc=Reducérer støj genereret af maskineri.
 
 # Key description text
-mekanism.key.mode=Ændr Genstandsmodus
-mekanism.key.armorMode=Ændr Armormodus
-mekanism.key.voice=Stemme
+key.mode=Ændr Genstandsmodus
+key.armorMode=Ændr Armormodus
+key.voice=Stemme
 
 # Entities
 entity.Robit.name=Robit
@@ -624,10 +624,9 @@ gui.password.identical=Idenstisk
 gui.password.invalid=Ugyldig
 gui.password=Adgangskode
 
-mekanism.gui.logisticalSorter.default=Standard
-mekanism.gui.logisticalSorter.autoEject=Auto
-mekanism.gui.logisticalSorter.roundRobin=RR
-mekanism.gui.logisticalSorter.roundRobin.tooltip=Round-robin
+gui.logisticalSorter.default=Standard
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round-robin
 
 gui.teleporter.notReady=Ikke klar
 gui.teleporter.ready=Klar
@@ -693,7 +692,7 @@ tooltip.recipeType=Opskriftstype
 tooltip.hold=Hold
 tooltip.forDesc=for en beskrivelse
 tooltip.forDetails=for detaljer
-mekanism.tooltip.fireMode=Enffyringsmodus: %s
+tooltip.fireMode=Enffyringsmodus
 tooltip.capacity=Kapacitet
 tooltip.pumpRate=Pumpningssats
 tooltip.items=Genstande
@@ -721,7 +720,7 @@ tooltip.tile=Tile
 tooltip.keysFound=Tast(er) fundet
 tooltip.noKey=Ingen tast
 tooltip.hp=HP
-mekanism.tooltip.configureState=Konfigurér tilstand: %s
+tooltip.configureState=Konfigurér tilstand
 tooltip.outputRate=Output Sats
 tooltip.insufficientFuel=Utilstrækkelig Brændsel
 tooltip.readyForReaction=Klar til Reaktion
@@ -733,7 +732,7 @@ tooltip.invalid=Invalid
 tooltip.encoded=Enkodet
 tooltip.ingredients=Ingredienser
 
-mekanism.tooltip.portableTank.bucketMode=Spand-modus: %s
+tooltip.portableTank.bucketMode=Spand-modus
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=langsom
@@ -754,7 +753,7 @@ tooltip.jetpack.disabled=Deaktiveret
 tooltip.flamethrower.combat=Kamp
 tooltip.flamethrower.heat=Opvarm
 tooltip.flamethrower.inferno=Inferno
-mekanism.tooltip.flamethrower.modeBump=Flammekastermodus skiftet til %s
+tooltip.flamethrower.modeBump=Flammekastermodus skiftet til
 
 tooltip.seismicReader.needsEnergy=Ikke nok energi til at læse vibration
 tooltip.seismicReader.noVibrations=Ikke i stand til at opdage nogen vibrationer
