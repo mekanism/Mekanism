@@ -217,7 +217,7 @@ public class GasTank implements GasTankInfo {
     public void read(NBTTagCompound nbtTags) {
         if (nbtTags.hasKey("stored")) {
             stored = GasStack.readFromNBT(nbtTags.getCompoundTag("stored"));
-            if (stored.amount <= 0) {
+            if (stored != null && stored.amount <= 0) {
                 //fix any old data that may be broken
                 stored = null;
             }

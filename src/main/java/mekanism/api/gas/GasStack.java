@@ -1,5 +1,6 @@
 package mekanism.api.gas;
 
+import javax.annotation.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -44,6 +45,7 @@ public class GasStack {
      *
      * @return GasStack stored in the tag compound
      */
+    @Nullable
     public static GasStack readFromNBT(NBTTagCompound nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return null;
@@ -70,7 +72,6 @@ public class GasStack {
 
     public GasStack withAmount(int newAmount) {
         amount = newAmount;
-
         return this;
     }
 
