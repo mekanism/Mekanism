@@ -400,10 +400,10 @@ upgrade.anchor=Якорь
 upgrade.anchor.desc=Сохраняет чанк с машиной загруженным.
 
 # Key description text
-key.mode=Переключить режим предмета
-key.armorMode=Переключить режим брони
-key.feetMode=Переключить режим бегунков
-key.voice=Голос
+mekanism.key.mode=Переключить режим предмета
+mekanism.key.armorMode=Переключить режим брони
+mekanism.key.feetMode=Переключить режим бегунков
+mekanism.key.voice=Голос
 
 # Entities
 entity.Robit.name=Робит
@@ -666,9 +666,9 @@ gui.password.identical=Идентичный
 gui.password.invalid=Неверный
 gui.password=Пароль
 
-gui.logisticalSorter.default=По умолчанию
-gui.logisticalSorter.auto=Авто
-gui.logisticalSorter.roundRobin=Цикл
+mekanism.gui.logisticalSorter.default=По умолчанию
+mekanism.gui.logisticalSorter.autoEject=Авто
+mekanism.gui.logisticalSorter.roundRobin=Цикл
 
 gui.teleporter.notReady=Не готов
 gui.teleporter.ready=Готов
@@ -742,7 +742,7 @@ tooltip.recipeType=Тип рецепта
 tooltip.hold=Зажмите
 tooltip.forDesc=для описания
 tooltip.forDetails=для подробностей
-tooltip.fireMode=Режим огня
+mekanism.tooltip.fireMode=Режим огня: %s
 tooltip.capacity=Ёмкость
 tooltip.pumpRate=Скорость откачки
 tooltip.items=Предметы
@@ -770,7 +770,7 @@ tooltip.tile=Плитка
 tooltip.keysFound=Ключ(и) найдены
 tooltip.noKey=Нет ключа
 tooltip.hp=Прочность
-tooltip.configureState=Настраивает состояние
+mekanism.tooltip.configureState=Настраивает состояние: %s
 tooltip.outputRate=Скорость выхода
 tooltip.insufficientFuel=Недостаточно топлива
 tooltip.readyForReaction=Готово к реакции
@@ -785,7 +785,7 @@ tooltip.conduction=Проводимость
 tooltip.insulation=Изоляция
 tooltip.heatCapacity=Теплоемкость
 
-tooltip.portableTank.bucketMode=Режим ведра
+mekanism.tooltip.portableTank.bucketMode=Режим ведра: %s
 
 tooltip.disassembler.normal=нормальный
 tooltip.disassembler.slow=медленный
@@ -809,7 +809,7 @@ tooltip.freerunner.disabled=Отключен
 tooltip.flamethrower.combat=Бой
 tooltip.flamethrower.heat=Нагрев
 tooltip.flamethrower.inferno=Перегрев
-tooltip.flamethrower.modeBump=Режим огнемета изменен на
+mekanism.tooltip.flamethrower.modeBump=Режим огнемета изменен на %s
 
 tooltip.seismicReader.needsEnergy=Недостаточно энергии, чтобы интерпретировать вибрацию
 tooltip.seismicReader.noVibrations=Не удаётся обнаружить вибрации
