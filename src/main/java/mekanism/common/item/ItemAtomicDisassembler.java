@@ -171,7 +171,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         Block block = world.getBlockState(pos).getBlock();
-        if (!player.isSneaking() && block == Blocks.DIRT) {
+        if (!player.isSneaking() && (block == Blocks.DIRT || block == Blocks.GRASS_PATH)) {
             if (useHoe(stack, player, world, pos, side) == EnumActionResult.FAIL) {
                 return EnumActionResult.FAIL;
             }
@@ -229,7 +229,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         IBlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
         if (facing != EnumFacing.DOWN && worldIn.isAirBlock(pos.up())) {
-            if (block == Blocks.GRASS) {
+            if (block == Blocks.GRASS || block == Blocks.GRASS_PATH) {
                 setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
                 return EnumActionResult.SUCCESS;
             }
