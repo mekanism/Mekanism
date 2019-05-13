@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
@@ -36,7 +37,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
-public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration {
+public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration, IComparatorSupport {
 
     private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow",
                                                          "getSteamInput"};
@@ -44,6 +45,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     public TurbineFluidTank fluidTank;
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
+    private int currentRedstoneLevel;
 
     public TileEntityTurbineValve() {
         super("TurbineValve");
@@ -60,8 +62,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
         if (!world.isRemote) {
             if (structure != null) {
-                double prev = getEnergy();
                 CableUtils.emit(this);
+            }
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
             }
         }
     }
@@ -404,5 +410,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 }

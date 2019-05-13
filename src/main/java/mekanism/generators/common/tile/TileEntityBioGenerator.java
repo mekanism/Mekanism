@@ -7,6 +7,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.config.MekanismConfig;
@@ -14,6 +15,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -27,7 +29,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData {
+public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
     private static FluidTankInfo[] ALL_TANKS = new FluidTankInfo[0];
@@ -35,6 +37,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
      * The FluidSlot biofuel instance for this generator.
      */
     public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
+
+    private int currentRedstoneLevel;
 
     public TileEntityBioGenerator() {
         super("bio", "BioGenerator", 160000, MekanismConfig.current().generators.bioGeneration.val() * 2);
@@ -79,6 +83,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             setEnergy(electricityStored + MekanismConfig.current().generators.bioGeneration.val());
         } else if (!world.isRemote) {
             setActive(false);
+        }
+        if (!world.isRemote) {
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
+            }
         }
     }
 
@@ -257,5 +268,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public FluidTankInfo[] getAllTanks() {
         return ALL_TANKS;
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return Container.calcRedstoneFromInventory(this);
     }
 }

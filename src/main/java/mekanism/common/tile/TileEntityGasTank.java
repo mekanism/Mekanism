@@ -15,6 +15,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
@@ -39,12 +40,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
-      IComputerIntegration {
+      IComputerIntegration, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**
@@ -297,9 +297,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         return side != 0 && side != 1;
     }
 
+    @Override
     public int getRedstoneLevel() {
-        double fractionFull = (float) gasTank.getStored() / (float) gasTank.getMaxGas();
-        return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getMaxGas());
     }
 
     @Override

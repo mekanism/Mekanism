@@ -7,6 +7,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
@@ -541,5 +542,23 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
             default:
                 return super.canCreatureSpawn(state, world, pos, type);
         }
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState blockState) {
+        GeneratorType generatorType = GeneratorType.get(blockState);
+        return generatorType != null && generatorType.hasRedstoneOutput;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+        GeneratorType generatorType = GeneratorType.get(blockState);
+        if (generatorType != null && generatorType.hasRedstoneOutput) {
+            TileEntity tile = worldIn.getTileEntity(pos);
+            if (tile instanceof IComparatorSupport) {
+                return ((IComparatorSupport) tile).getRedstoneLevel();
+            }
+        }
+        return 0;
     }
 }

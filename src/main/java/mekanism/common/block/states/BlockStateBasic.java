@@ -89,11 +89,11 @@ public class BlockStateBasic extends ExtendedBlockState {
         STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, true, BlockStateUtils.NO_ROTATION, false, false, false),
         DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", TileEntityDynamicTank::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
         STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", TileEntityStructuralGlass::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
-        DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false, true),
         COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
         TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
         THERMAL_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "ThermalEvaporationController", TileEntityThermalEvaporationController::new, true, Plane.HORIZONTAL, true, false, false),
-        THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false, true),
         THERMAL_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "ThermalEvaporationBlock", TileEntityThermalEvaporationBlock::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
         INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
         INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort::new, true, BlockStateUtils.NO_ROTATION, true, false, false),
@@ -102,7 +102,7 @@ public class BlockStateBasic extends ExtendedBlockState {
         SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", TileEntitySuperheatingElement::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
         PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser", TileEntityPressureDisperser::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
         BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
-        BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false, true),
         SECURITY_DESK(BasicBlock.BASIC_BLOCK_2, 9, "SecurityDesk", TileEntitySecurityDesk::new, true, Plane.HORIZONTAL, false, false, false);
 
         @Nonnull

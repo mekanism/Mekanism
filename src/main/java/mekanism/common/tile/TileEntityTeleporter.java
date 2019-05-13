@@ -15,6 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -51,7 +52,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile,
-      IUpgradeTile {
+      IUpgradeTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
     public AxisAlignedBB teleportBounds = null;
@@ -164,6 +165,8 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
             if (shouldRender != prevShouldRender) {
                 Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                       Coord4D.get(this).getTargetPoint(40D));
+                //This also means the comparator output changed so notify the neighbors we have a change
+                MekanismUtils.notifyLoadedNeighborsOfTileChange(world, Coord4D.get(this));
             }
             prevShouldRender = shouldRender;
             teleDelay = Math.max(0, teleDelay - 1);
@@ -554,5 +557,10 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     @Override
     public TileComponentUpgrade getComponent() {
         return upgradeComponent;
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return shouldRender ? 15 : 0;
     }
 }

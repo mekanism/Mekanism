@@ -74,9 +74,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 }
                 valveViewing.clear();
             }
-        }
-
-        if (!world.isRemote) {
+        } else {
             if (structure != null) {
                 if (structure.fluidStored != null && structure.fluidStored.amount <= 0) {
                     structure.fluidStored = null;

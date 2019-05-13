@@ -116,7 +116,7 @@ public abstract class BoilerTank implements IFluidTank {
 
     @Override
     public int getFluidAmount() {
-        if (steamBoiler.structure != null) {
+        if (steamBoiler.structure != null && getFluid() != null) {
             return getFluid().amount;
         }
         return 0;

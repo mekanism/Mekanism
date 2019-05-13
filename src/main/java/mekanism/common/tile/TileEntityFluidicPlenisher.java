@@ -14,6 +14,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
@@ -52,7 +53,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
-      IUpgradeTile, IRedstoneControl, ISecurityTile {
+      IUpgradeTile, IRedstoneControl, ISecurityTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
@@ -77,6 +78,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     public RedstoneControl controlType = RedstoneControl.DISABLED;
     public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
+
+    private int currentRedstoneLevel;
 
     public TileEntityFluidicPlenisher() {
         super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.getStorage());
@@ -118,6 +121,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
                     }
                     operatingTicks = 0;
                 }
+            }
+
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
             }
         }
     }
@@ -444,5 +453,10 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     @Override
     public TileComponentSecurity getSecurity() {
         return securityComponent;
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 }

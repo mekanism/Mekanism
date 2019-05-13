@@ -125,7 +125,7 @@ public class DynamicFluidTank implements IFluidTank {
 
     @Override
     public int getFluidAmount() {
-        if (dynamicTank.structure != null) {
+        if (dynamicTank.structure != null && dynamicTank.structure.fluidStored != null) {
             return dynamicTank.structure.fluidStored.amount;
         }
         return 0;

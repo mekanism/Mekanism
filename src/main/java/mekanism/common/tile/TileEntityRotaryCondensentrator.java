@@ -17,6 +17,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
@@ -43,7 +44,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, IUpgradeInfoHandler, ITankManager {
+public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, IUpgradeInfoHandler, ITankManager,
+      IComparatorSupport {
 
     private static final int[] GAS_SLOTS = {0, 1};
     private static final int[] LIQUID_SLOTS = {2, 3};
@@ -60,6 +62,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     public int gasOutput = 256;
 
     public double clientEnergyUsed;
+    private int currentRedstoneLevel;
 
     public TileEntityRotaryCondensentrator() {
         super("machine.rotarycondensentrator", "RotaryCondensentrator", MachineType.ROTARY_CONDENSENTRATOR.getStorage(),
@@ -116,6 +119,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 }
             }
             prevEnergy = getEnergy();
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
+            }
         }
     }
 
@@ -353,5 +361,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
             return ChargeUtils.canBeDischarged(stack);
         }
         return false;
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        if (mode == 0) {
+            return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getMaxGas());
+        }
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 }
