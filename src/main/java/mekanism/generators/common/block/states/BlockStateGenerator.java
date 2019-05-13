@@ -72,17 +72,17 @@ public class BlockStateGenerator extends ExtendedBlockState {
     }
 
     public enum GeneratorType implements IStringSerializable, IBlockType {
-        HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator::new, true, Plane.HORIZONTAL, false),
+        HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator::new, true, Plane.HORIZONTAL, false, true),
         SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator::new, true, Plane.HORIZONTAL, false),
-        GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3, -1/*uses config, set after generators config loaded*/, TileEntityGasGenerator::new, true, Plane.HORIZONTAL, false),
-        BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator::new, true, Plane.HORIZONTAL, false),
+        GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3, -1/*uses config, set after generators config loaded*/, TileEntityGasGenerator::new, true, Plane.HORIZONTAL, false, true),
+        BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator::new, true, Plane.HORIZONTAL, false, true),
         ADVANCED_SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator::new, true, Plane.HORIZONTAL, false),
         WIND_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 6, "WindGenerator", 5, 200000, TileEntityWindGenerator::new, true, Plane.HORIZONTAL, false),
         TURBINE_ROTOR(GeneratorBlock.GENERATOR_BLOCK_1, 7, "TurbineRotor", -1, -1, TileEntityTurbineRotor::new, false, BlockStateUtils.NO_ROTATION, false),
         ROTATIONAL_COMPLEX(GeneratorBlock.GENERATOR_BLOCK_1, 8, "RotationalComplex", -1, -1, TileEntityRotationalComplex::new, false, BlockStateUtils.NO_ROTATION, false),
         ELECTROMAGNETIC_COIL(GeneratorBlock.GENERATOR_BLOCK_1, 9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil::new, false, BlockStateUtils.NO_ROTATION, false),
         TURBINE_CASING(GeneratorBlock.GENERATOR_BLOCK_1, 10, "TurbineCasing", -1, -1, TileEntityTurbineCasing::new, false, BlockStateUtils.NO_ROTATION, false),
-        TURBINE_VALVE(GeneratorBlock.GENERATOR_BLOCK_1, 11, "TurbineValve", -1, -1, TileEntityTurbineValve::new, false, BlockStateUtils.NO_ROTATION, false),
+        TURBINE_VALVE(GeneratorBlock.GENERATOR_BLOCK_1, 11, "TurbineValve", -1, -1, TileEntityTurbineValve::new, false, BlockStateUtils.NO_ROTATION, false, true),
         TURBINE_VENT(GeneratorBlock.GENERATOR_BLOCK_1, 12, "TurbineVent", -1, -1, TileEntityTurbineVent::new, false, BlockStateUtils.NO_ROTATION, false),
         SATURATING_CONDENSER(GeneratorBlock.GENERATOR_BLOCK_1, 13, "SaturatingCondenser", -1, -1, TileEntitySaturatingCondenser::new, false, BlockStateUtils.NO_ROTATION, false);
 
@@ -107,9 +107,15 @@ public class BlockStateGenerator extends ExtendedBlockState {
         public boolean hasModel;
         public Predicate<EnumFacing> facingPredicate;
         public boolean activable;
+        public boolean hasRedstoneOutput;
 
         GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Supplier<TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
               boolean hasActiveTexture) {
+            this(block, i, s, j, k, tileClass, model, predicate, hasActiveTexture, false);
+        }
+
+        GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Supplier<TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
+              boolean hasActiveTexture, boolean hasRedstoneOutput) {
             blockType = block;
             meta = i;
             blockName = s;
@@ -119,6 +125,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
             hasModel = model;
             facingPredicate = predicate;
             activable = hasActiveTexture;
+            this.hasRedstoneOutput = hasRedstoneOutput;
         }
 
         public static List<GeneratorType> getGeneratorsForConfig() {
