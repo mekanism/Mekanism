@@ -1,6 +1,7 @@
 package mekanism.tools.client;
 
 import mekanism.client.render.MekanismRenderer;
+import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsCommonProxy;
 import mekanism.tools.common.ToolsItems;
 import net.minecraft.item.Item;
@@ -90,6 +91,6 @@ public class ToolsClientProxy extends ToolsCommonProxy {
     }
 
     public void registerItemRender(Item item) {
-        MekanismRenderer.registerItemRender("mekanismtools", item);
+        MekanismRenderer.registerItemRender(MekanismTools.MODID, item);
     }
 }

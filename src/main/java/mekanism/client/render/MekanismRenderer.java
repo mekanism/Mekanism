@@ -1,9 +1,7 @@
 package mekanism.client.render;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
@@ -17,7 +15,10 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -34,6 +35,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -56,7 +58,7 @@ public class MekanismRenderer {
     public static float GAS_RENDER_BASE = 0.2F;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new HashMap<>();
     public static int[] directionMap = new int[]{3, 0, 1, 2};
-    public static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
+    private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
     public static TextureAtlasSprite missingIcon;
     private static float lightmapLastX;
     private static float lightmapLastY;
@@ -68,20 +70,22 @@ public class MekanismRenderer {
         MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
     }
 
+    @SuppressWarnings("unchecked")
+    public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
+        return machineRenderer;
+    }
+
     public static void registerItemRender(String domain, Item item) {
         if (item instanceof IMetaItem) {
             IMetaItem metaItem = (IMetaItem) item;
-            List<ModelResourceLocation> variants = new ArrayList<>();
             for (int i = 0; i < metaItem.getVariants(); i++) {
                 if (metaItem.getTexture(i) == null) {
                     continue;
                 }
 
-                ModelResourceLocation loc = new ModelResourceLocation(domain + ":" + metaItem.getTexture(i),
-                      "inventory");
+                ModelResourceLocation loc = new ModelResourceLocation(new ResourceLocation(domain, metaItem.getTexture(i)), "inventory");
                 ModelLoader.setCustomModelResourceLocation(item, i, loc);
-                variants.add(loc);
-                ModelBakery.registerItemVariants(item, new ResourceLocation(domain + ":" + metaItem.getTexture(i)));
+                ModelBakery.registerItemVariants(item, new ResourceLocation(domain, metaItem.getTexture(i)));
             }
 
             return;
@@ -325,21 +329,38 @@ public class MekanismRenderer {
         return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 
+    public static void glRotateForFacing(TileEntityBasicBlock tileEntity) {
+        switch (tileEntity.facing) /*TODO: switch the enum*/ {
+            case NORTH:
+                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
+                break;
+            case SOUTH:
+                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+                break;
+            case WEST:
+                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+                break;
+            case EAST:
+                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
+                break;
+        }
+    }
+
     @SubscribeEvent
     public void onStitch(TextureStitchEvent.Pre event) {
         for (EnumColor color : EnumColor.values()) {
-            colors[color.ordinal()] = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/overlay/overlay_" + color.unlocalizedName));
+            colors[color.ordinal()] = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_" + color.unlocalizedName));
         }
 
         for (TransmissionType type : TransmissionType.values()) {
-            overlays.put(type, event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/overlay/" + type.getTransmission() + "Overlay")));
+            overlays.put(type, event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay")));
         }
 
-        energyIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidEnergy"));
-        heatIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeat"));
-        laserIcon = event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/Laser"));
+        energyIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
+        heatIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
+        laserIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
 
-        event.getMap().registerSprite(new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
+        event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeavyWater"));
 
         TransmitterModel.registerIcons(event.getMap());
 

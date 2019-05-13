@@ -15,7 +15,7 @@ public class TieredParticleDigging extends ParticleDigging {
     @Nullable
     private final EnumColor color;
 
-    public TieredParticleDigging(World world, double xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, IBlockState state, EnumColor color) {
+    public TieredParticleDigging(World world, double xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, IBlockState state, @Nullable EnumColor color) {
         super(world, xCoord, yCoord, zCoord, xSpeed, ySpeed, zSpeed, state);
         this.color = color;
     }

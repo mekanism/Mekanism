@@ -630,8 +630,7 @@ public final class RecipeHandler {
             values = ImmutableList.copyOf(values);
         }
 
-        //TODO: Replace this with Recipe being Iterable
-        public static List<Recipe> values() {
+        public static Iterable<Recipe> values() {
             return values;
         }
 

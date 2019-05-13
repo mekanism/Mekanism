@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
@@ -17,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
 
-    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
+    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "WalkieTalkie"), "inventory");
 
     public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 
@@ -34,7 +36,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     }
 
     public static ModelResourceLocation getModel(int channel) {
-        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation("mekanism:WalkieTalkie_ch" + c, "inventory"));
+        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "WalkieTalkie_ch" + c), "inventory"));
         return CHANNEL_MODELS.get(channel);
     }
 

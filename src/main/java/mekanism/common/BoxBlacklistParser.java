@@ -26,6 +26,7 @@ public final class BoxBlacklistParser {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void generateFiles() throws IOException {
         mekanismDir.mkdirs();
         if (!boxBlacklistFile.exists()) {

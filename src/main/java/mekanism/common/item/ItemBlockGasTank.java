@@ -88,20 +88,18 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
             tileEntity.tier = GasTankTier.values()[getBaseTier(stack).ordinal()];
             tileEntity.gasTank.setMaxGas(tileEntity.tier.getStorage());
             tileEntity.gasTank.setGas(getGas(stack));
-            ISecurityTile security = tileEntity;
-            security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+            ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(getOwnerUUID(stack));
 
             if (hasSecurity(stack)) {
-                security.getSecurity().setMode(getSecurity(stack));
+                ((ISecurityTile) tileEntity).getSecurity().setMode(getSecurity(stack));
             }
             if (getOwnerUUID(stack) == null) {
-                security.getSecurity().setOwnerUUID(player.getUniqueID());
+                ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(player.getUniqueID());
             }
 
-            ISideConfiguration config = tileEntity;
             if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                config.getConfig().read(ItemDataUtils.getDataMap(stack));
-                config.getEjector().read(ItemDataUtils.getDataMap(stack));
+                ((ISideConfiguration) tileEntity).getConfig().read(ItemDataUtils.getDataMap(stack));
+                ((ISideConfiguration) tileEntity).getEjector().read(ItemDataUtils.getDataMap(stack));
             }
 
             ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));

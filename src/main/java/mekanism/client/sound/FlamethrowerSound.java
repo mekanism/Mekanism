@@ -1,6 +1,7 @@
 package mekanism.client.sound;
 
 import mekanism.client.ClientTickHandler;
+import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -9,9 +10,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class FlamethrowerSound extends PlayerSound {
 
-    private static ResourceLocation IDLE_SOUND = new ResourceLocation("mekanism", "item.flamethrower.idle");
-    private static ResourceLocation ON_SOUND = new ResourceLocation("mekanism", "item.flamethrower.active");
-    private static ResourceLocation OFF_SOUND = new ResourceLocation("mekanism", "item.flamethrower.active");
+    private static ResourceLocation IDLE_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.idle");
+    private static ResourceLocation ON_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.active");
+    private static ResourceLocation OFF_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.active");
 
     private boolean inUse;
 

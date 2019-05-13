@@ -45,9 +45,6 @@ public class CCPeripheral implements IPeripheral {
             return computerTile.invoke(method, arguments);
         } catch (NoSuchMethodException e) {
             return new Object[]{"Unknown command."};
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Object[]{"Error."};
         }
     }
 

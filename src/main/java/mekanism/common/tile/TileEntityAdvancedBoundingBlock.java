@@ -358,7 +358,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return new Object[]{};

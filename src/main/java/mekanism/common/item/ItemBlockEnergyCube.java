@@ -121,18 +121,16 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
             if (tileEntity.tier == EnergyCubeTier.CREATIVE) {
                 tileEntity.configComponent.fillConfig(TransmissionType.ENERGY, tileEntity.getEnergy() > 0 ? 2 : 1);
             }
-            ISecurityTile security = tileEntity;
-            security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+            ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(getOwnerUUID(stack));
             if (hasSecurity(stack)) {
-                security.getSecurity().setMode(getSecurity(stack));
+                ((ISecurityTile) tileEntity).getSecurity().setMode(getSecurity(stack));
             }
             if (getOwnerUUID(stack) == null) {
-                security.getSecurity().setOwnerUUID(player.getUniqueID());
+                ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(player.getUniqueID());
             }
-            ISideConfiguration config = tileEntity;
             if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                config.getConfig().read(ItemDataUtils.getDataMap(stack));
-                config.getEjector().read(ItemDataUtils.getDataMap(stack));
+                ((ISideConfiguration) tileEntity).getConfig().read(ItemDataUtils.getDataMap(stack));
+                ((ISideConfiguration) tileEntity).getEjector().read(ItemDataUtils.getDataMap(stack));
             }
             ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
             if (!world.isRemote) {

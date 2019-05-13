@@ -1,6 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
@@ -24,7 +25,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     /**
      * This machine's current RedstoneControl type.
      */
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    private RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
@@ -91,8 +92,8 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     }
 
     @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
+    public void setControlType(@Nonnull RedstoneControl type) {
+        controlType = Objects.requireNonNull(type);
         MekanismUtils.saveChunk(this);
     }
 

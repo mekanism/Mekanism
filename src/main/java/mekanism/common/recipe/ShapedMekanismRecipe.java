@@ -79,7 +79,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
                 return null;
             }
         }
-        return new ShapedMekanismRecipe(null, result, ret); //TODO Find out correct value for group
+        return new ShapedMekanismRecipe(null, result, ret);
     }
 
     // Copy of net.minecraftforge.oredict.ShapedOreRecipe

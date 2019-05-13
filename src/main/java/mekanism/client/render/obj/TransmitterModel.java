@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
+import mekanism.common.Mekanism;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.config.MekanismConfig;
@@ -83,15 +84,15 @@ public class TransmitterModel extends OBJBakedModelBase {
     }
 
     public static void registerIcons(TextureMap map) {
-        transporter_center[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlass"));
-        transporter_center_color[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlassColored"));
-        transporter_side[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlass"));
-        transporter_side_color[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlassColored"));
+        transporter_center[0] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterGlass"));
+        transporter_center_color[0] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterGlassColored"));
+        transporter_side[0] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterVerticalGlass"));
+        transporter_side_color[0] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterVerticalGlassColored"));
 
-        transporter_center[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterGlass"));
-        transporter_center_color[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterGlassColored"));
-        transporter_side[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalGlass"));
-        transporter_side_color[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalGlassColored"));
+        transporter_center[1] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterGlass"));
+        transporter_center_color[1] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterGlassColored"));
+        transporter_side[1] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterVerticalGlass"));
+        transporter_side_color[1] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/opaque/LogisticalTransporterVerticalGlassColored"));
     }
 
     public static void clearCache() {

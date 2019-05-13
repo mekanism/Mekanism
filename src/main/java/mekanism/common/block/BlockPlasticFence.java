@@ -63,7 +63,7 @@ public class BlockPlasticFence extends BlockFence {
             properties += "north=" + state.getValue(NORTH) + ",";
             properties += "south=" + state.getValue(SOUTH) + ",";
             properties += "west=" + state.getValue(WEST);
-            ResourceLocation baseLocation = new ResourceLocation("mekanism", "PlasticFence");
+            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "PlasticFence");
             return new ModelResourceLocation(baseLocation, properties);
         }
     }
