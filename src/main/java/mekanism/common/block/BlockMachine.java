@@ -478,7 +478,6 @@ public abstract class BlockMachine extends BlockMekanismContainer {
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof IComparatorSupport) {
-            //majority of things?? based on inventory level
             return ((IComparatorSupport) tileEntity).getRedstoneLevel();
         }
         if (tileEntity instanceof TileEntityLaserAmplifier) {
