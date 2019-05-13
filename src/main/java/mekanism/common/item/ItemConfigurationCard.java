@@ -45,11 +45,11 @@ public class ItemConfigurationCard extends ItemMekanism {
     @Nonnull
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (CapabilityUtils.hasCapability(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side)) {
                 if (SecurityUtils.canAccess(player, tileEntity)) {
+                    ItemStack stack = player.getHeldItem(hand);
                     if (player.isSneaking()) {
                         NBTTagCompound data = getBaseData(tileEntity);
                         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side)) {
@@ -76,7 +76,6 @@ public class ItemConfigurationCard extends ItemMekanism {
                             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.DARK_GREEN +
                                                                        LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s",
                                                                              EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
-                            setData(stack, null);
                         } else {
                             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
                                                                        LangUtils.localize("tooltip.configurationCard.unequal") + "."));
