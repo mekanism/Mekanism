@@ -14,6 +14,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
@@ -46,7 +47,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalWasher extends TileEntityMachine implements IGasHandler, IFluidHandlerWrapper, ISustainedData, IUpgradeInfoHandler, ITankManager {
+public class TileEntityChemicalWasher extends TileEntityMachine implements IGasHandler, IFluidHandlerWrapper, ISustainedData, IUpgradeInfoHandler, ITankManager,
+      IComparatorSupport {
 
     public static final int MAX_GAS = 10000;
     public static final int MAX_FLUID = 10000;
@@ -58,6 +60,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     public WasherRecipe cachedRecipe;
 
+    private int currentRedstoneLevel;
     public double clientEnergyUsed;
 
     public TileEntityChemicalWasher() {
@@ -84,6 +87,11 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             }
             TileUtils.emitGas(this, outputTank, gasOutput, MekanismUtils.getRight(facing));
             prevEnergy = getEnergy();
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
+            }
         }
     }
 
@@ -343,5 +351,10 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public Object[] getTanks() {
         return new Object[]{fluidTank, inputTank, outputTank};
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getMaxGas());
     }
 }

@@ -10,6 +10,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
@@ -683,8 +684,9 @@ public abstract class BlockBasic extends BlockTileDrops {
         BasicBlockType basicBlockType = BasicBlockType.get(blockState);
         if (basicBlockType != null && basicBlockType.hasRedstoneOutput) {
             TileEntity tile = worldIn.getTileEntity(pos);
-            if (tile instanceof TileEntityBin) {
-                return ((TileEntityBin) tile).getRedstoneLevel();
+            if (tile instanceof IComparatorSupport) {
+                //TODO: Add support for induction port (will be done in induction cleanup PR)
+                return ((IComparatorSupport) tile).getRedstoneLevel();
             }
         }
         return 0;

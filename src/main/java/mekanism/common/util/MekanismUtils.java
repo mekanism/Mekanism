@@ -63,6 +63,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ChunkCache;
@@ -1077,6 +1078,17 @@ public final class MekanismUtils {
     public static void dismantleBlock(Block block, IBlockState state, World world, BlockPos pos) {
         block.dropBlockAsItem(world, pos, state, 0);
         world.setBlockToAir(pos);
+    }
+
+    /**
+     * @param amount   Amount currently stored
+     * @param capacity Total amount that can be stored.
+     *
+     * @return A redstone level based on the percentage of the amount stored.
+     */
+    public static int redstoneLevelFromContents(double amount, double capacity) {
+        double fractionFull = capacity == 0 ? 0 : amount / capacity;
+        return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
     }
 
     /**

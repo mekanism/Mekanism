@@ -16,6 +16,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
@@ -58,7 +59,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile,
-      ITankManager, IComputerIntegration, ISecurityTile {
+      ITankManager, IComputerIntegration, ISecurityTile, IComparatorSupport {
 
     private static final int[] UPSLOTS = {0};
     private static final int[] DOWNSLOTS = {1};
@@ -99,6 +100,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
+    private int currentRedstoneLevel;
+
     public TileEntityElectricPump() {
         super("ElectricPump", MachineType.ELECTRIC_PUMP.getStorage());
         inventory = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -114,9 +117,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
                 }
             }
-        }
-
-        if (!world.isRemote) {
             if (MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
                 if (suckedLastOperation) {
                     setEnergy(getEnergy() - energyPerTick);
@@ -143,12 +143,19 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
         super.onUpdate();
 
-        if (!world.isRemote && fluidTank.getFluid() != null) {
-            TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
-            if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN)) {
-                IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
-                FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
-                fluidTank.drain(handler.fill(toDrain, true), true);
+        if (!world.isRemote) {
+            if (fluidTank.getFluid() != null) {
+                TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
+                if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN)) {
+                    IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
+                    FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
+                    fluidTank.drain(handler.fill(toDrain, true), true);
+                }
+            }
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
             }
         }
     }
@@ -481,5 +488,10 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
             default:
                 break;
         }
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 }

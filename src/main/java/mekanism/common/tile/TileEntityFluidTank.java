@@ -10,6 +10,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
@@ -41,7 +42,6 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -52,7 +52,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
-      ITankManager, ISecurityTile, ITierUpgradeable, ITieredTile {
+      ITankManager, ISecurityTile, ITierUpgradeable, ITieredTile, IComparatorSupport {
 
     public boolean isActive;
 
@@ -287,9 +287,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         }
     }
 
+    @Override
     public int getRedstoneLevel() {
-        double fractionFull = (float) fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
-        return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 
     public int getCurrentNeeded() {
