@@ -115,23 +115,15 @@ public class BlockStateBasic extends ExtendedBlockState {
         public boolean activable;
         public boolean tiers;
         public boolean isBeaconBase;
-        public boolean hasRedstoneOutput = false;
+        public boolean hasRedstoneOutput;
 
-        BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc,
-              Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase) {
-            blockType = block;
-            meta = metadata;
-            name = s;
-            tileEntitySupplier = tileClass;
-            hasDescription = hasDesc;
-            facingPredicate = facingAllowed;
-            activable = activeState;
-            tiers = t;
-            isBeaconBase = beaconBase;
+        BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
+              boolean activeState, boolean t, boolean beaconBase) {
+            this(block, metadata, s, tileClass, hasDesc, facingAllowed, activeState, t, beaconBase, false);
         }
 
-        BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc,
-              Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput) {
+        BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
+              boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput) {
             blockType = block;
             meta = metadata;
             name = s;

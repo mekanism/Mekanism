@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateUtils;
@@ -72,19 +72,19 @@ public class BlockStateGenerator extends ExtendedBlockState {
     }
 
     public enum GeneratorType implements IStringSerializable, IBlockType {
-        HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true, Plane.HORIZONTAL, false),
-        SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true, Plane.HORIZONTAL, false),
-        GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3, -1/*uses config, set after generators config loaded*/, TileEntityGasGenerator.class, true, Plane.HORIZONTAL, false),
-        BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true, Plane.HORIZONTAL, false),
-        ADVANCED_SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true, Plane.HORIZONTAL, false),
-        WIND_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class, true, Plane.HORIZONTAL, false),
-        TURBINE_ROTOR(GeneratorBlock.GENERATOR_BLOCK_1, 7, "TurbineRotor", -1, -1, TileEntityTurbineRotor.class, false, BlockStateUtils.NO_ROTATION, false),
-        ROTATIONAL_COMPLEX(GeneratorBlock.GENERATOR_BLOCK_1, 8, "RotationalComplex", -1, -1, TileEntityRotationalComplex.class, false, BlockStateUtils.NO_ROTATION, false),
-        ELECTROMAGNETIC_COIL(GeneratorBlock.GENERATOR_BLOCK_1, 9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false, BlockStateUtils.NO_ROTATION, false),
-        TURBINE_CASING(GeneratorBlock.GENERATOR_BLOCK_1, 10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false, BlockStateUtils.NO_ROTATION, false),
-        TURBINE_VALVE(GeneratorBlock.GENERATOR_BLOCK_1, 11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false, BlockStateUtils.NO_ROTATION, false),
-        TURBINE_VENT(GeneratorBlock.GENERATOR_BLOCK_1, 12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false, BlockStateUtils.NO_ROTATION, false),
-        SATURATING_CONDENSER(GeneratorBlock.GENERATOR_BLOCK_1, 13, "SaturatingCondenser", -1, -1, TileEntitySaturatingCondenser.class, false, BlockStateUtils.NO_ROTATION, false);
+        HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator::new, true, Plane.HORIZONTAL, false),
+        SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator::new, true, Plane.HORIZONTAL, false),
+        GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3, -1/*uses config, set after generators config loaded*/, TileEntityGasGenerator::new, true, Plane.HORIZONTAL, false),
+        BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator::new, true, Plane.HORIZONTAL, false),
+        ADVANCED_SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator::new, true, Plane.HORIZONTAL, false),
+        WIND_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 6, "WindGenerator", 5, 200000, TileEntityWindGenerator::new, true, Plane.HORIZONTAL, false),
+        TURBINE_ROTOR(GeneratorBlock.GENERATOR_BLOCK_1, 7, "TurbineRotor", -1, -1, TileEntityTurbineRotor::new, false, BlockStateUtils.NO_ROTATION, false),
+        ROTATIONAL_COMPLEX(GeneratorBlock.GENERATOR_BLOCK_1, 8, "RotationalComplex", -1, -1, TileEntityRotationalComplex::new, false, BlockStateUtils.NO_ROTATION, false),
+        ELECTROMAGNETIC_COIL(GeneratorBlock.GENERATOR_BLOCK_1, 9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil::new, false, BlockStateUtils.NO_ROTATION, false),
+        TURBINE_CASING(GeneratorBlock.GENERATOR_BLOCK_1, 10, "TurbineCasing", -1, -1, TileEntityTurbineCasing::new, false, BlockStateUtils.NO_ROTATION, false),
+        TURBINE_VALVE(GeneratorBlock.GENERATOR_BLOCK_1, 11, "TurbineValve", -1, -1, TileEntityTurbineValve::new, false, BlockStateUtils.NO_ROTATION, false),
+        TURBINE_VENT(GeneratorBlock.GENERATOR_BLOCK_1, 12, "TurbineVent", -1, -1, TileEntityTurbineVent::new, false, BlockStateUtils.NO_ROTATION, false),
+        SATURATING_CONDENSER(GeneratorBlock.GENERATOR_BLOCK_1, 13, "SaturatingCondenser", -1, -1, TileEntitySaturatingCondenser::new, false, BlockStateUtils.NO_ROTATION, false);
 
         private static final List<GeneratorType> GENERATORS_FOR_CONFIG;
 
@@ -103,19 +103,19 @@ public class BlockStateGenerator extends ExtendedBlockState {
         public String blockName;
         public int guiId;
         public double maxEnergy;
-        public Class<? extends TileEntity> tileEntityClass;
+        public Supplier<TileEntity> tileEntitySupplier;
         public boolean hasModel;
         public Predicate<EnumFacing> facingPredicate;
         public boolean activable;
 
-        GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
+        GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Supplier<TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
               boolean hasActiveTexture) {
             blockType = block;
             meta = i;
             blockName = s;
             guiId = j;
             maxEnergy = k;
-            tileEntityClass = tileClass;
+            tileEntitySupplier = tileClass;
             hasModel = model;
             facingPredicate = predicate;
             activable = hasActiveTexture;
@@ -166,12 +166,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
         }
 
         public TileEntity create() {
-            try {
-                return tileEntityClass.newInstance();
-            } catch (Exception e) {
-                Mekanism.logger.error("Unable to indirectly create tile entity.", e);
-                return null;
-            }
+            return this.tileEntitySupplier != null ? this.tileEntitySupplier.get() : null;
         }
 
         @Override
