@@ -92,8 +92,7 @@ public final class CableUtils {
             return forgeStorage.canExtract();
         }
 
-        if (MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection) tileEntity)
-              .canConnectEnergy(opposite)) {
+        if (MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection) tileEntity).canConnectEnergy(opposite)) {
             return true;
         }
         return MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side);

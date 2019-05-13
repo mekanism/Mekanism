@@ -83,9 +83,9 @@ public class MekanismRenderer {
                     continue;
                 }
 
-                ModelResourceLocation loc = new ModelResourceLocation(domain + ":" + metaItem.getTexture(i), "inventory");
+                ModelResourceLocation loc = new ModelResourceLocation(new ResourceLocation(domain, metaItem.getTexture(i)), "inventory");
                 ModelLoader.setCustomModelResourceLocation(item, i, loc);
-                ModelBakery.registerItemVariants(item, new ResourceLocation(domain + ":" + metaItem.getTexture(i)));
+                ModelBakery.registerItemVariants(item, new ResourceLocation(domain, metaItem.getTexture(i)));
             }
 
             return;

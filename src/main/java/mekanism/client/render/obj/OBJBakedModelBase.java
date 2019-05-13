@@ -105,7 +105,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
                 f_textures.setAccessible(true);
             }
             return (ImmutableMap<String, TextureAtlasSprite>) f_textures.get(model);
-        } catch (ReflectiveOperationException|ClassCastException e) {
+        } catch (ReflectiveOperationException | ClassCastException e) {
             Mekanism.logger.error("Could not get private field textures", e);
         }
         return null;
@@ -207,7 +207,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
                 m_updateStateVisibilityMap.setAccessible(true);
             }
             m_updateStateVisibilityMap.invoke(this, state);
-        } catch (ReflectiveOperationException|ClassCastException e) {
+        } catch (ReflectiveOperationException | ClassCastException e) {
             Mekanism.logger.error("Could not get private field updateStateVisibilityMap", e);
         }
     }
