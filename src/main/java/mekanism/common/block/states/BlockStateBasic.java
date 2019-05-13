@@ -96,7 +96,7 @@ public class BlockStateBasic extends ExtendedBlockState {
         THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false, true),
         THERMAL_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "ThermalEvaporationBlock", TileEntityThermalEvaporationBlock::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
         INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
-        INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort::new, true, BlockStateUtils.NO_ROTATION, true, false, false),
+        INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort::new, true, BlockStateUtils.NO_ROTATION, true, false, false, true),
         INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", TileEntityInductionCell::new, true, BlockStateUtils.NO_ROTATION, false, true, false),
         INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", TileEntityInductionProvider::new, true, BlockStateUtils.NO_ROTATION, false, true, false),
         SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", TileEntitySuperheatingElement::new, true, BlockStateUtils.NO_ROTATION, false, false, false),

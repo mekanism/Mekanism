@@ -685,7 +685,6 @@ public abstract class BlockBasic extends BlockTileDrops {
         if (basicBlockType != null && basicBlockType.hasRedstoneOutput) {
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof IComparatorSupport) {
-                //TODO: Add support for induction port (will be done in induction cleanup PR)
                 return ((IComparatorSupport) tile).getRedstoneLevel();
             }
         }

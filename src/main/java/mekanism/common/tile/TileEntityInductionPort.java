@@ -16,6 +16,7 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
@@ -51,9 +52,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
       @Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = MekanismHooks.IC2_MOD_ID),
       @Interface(iface = "ic2.api.tile.IEnergyStorage", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState {
+public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState, IComparatorSupport {
 
     private boolean ic2Registered = false;
+    private int currentRedstoneLevel;
 
     /**
      * false = input, true = output
@@ -75,6 +77,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         if (!world.isRemote) {
             if (structure != null && mode) {
                 CableUtils.emit(this);
+            }
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
             }
         }
     }
@@ -422,5 +429,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return !world.isRemote ? structure == null : !clientHasStructure;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
     }
 }
