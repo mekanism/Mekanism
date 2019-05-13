@@ -2,6 +2,7 @@ package mekanism.common.block.states;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
 import mekanism.common.block.BlockPlastic;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -40,7 +41,7 @@ public class BlockStatePlastic extends BlockStateContainer {
         protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             PlasticBlockType type = ((BlockPlastic) state.getBlock()).type;
             String property = "type=" + type.getName();
-            ResourceLocation baseLocation = new ResourceLocation("mekanism", "plastic_block");
+            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "plastic_block");
             return new ModelResourceLocation(baseLocation, property);
         }
     }

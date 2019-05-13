@@ -2,11 +2,12 @@ package mekanism.generators.common.block.states;
 
 import com.google.common.base.Predicate;
 import java.util.Locale;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
@@ -62,26 +63,26 @@ public class BlockStateReactor extends ExtendedBlockState {
     }
 
     public enum ReactorBlockType implements IStringSerializable {
-        REACTOR_CONTROLLER(ReactorBlock.REACTOR_BLOCK, 0, "ReactorController", 10, TileEntityReactorController.class, true),
-        REACTOR_FRAME(ReactorBlock.REACTOR_BLOCK, 1, "ReactorFrame", -1, TileEntityReactorFrame.class, false),
-        REACTOR_PORT(ReactorBlock.REACTOR_BLOCK, 2, "ReactorPort", -1, TileEntityReactorPort.class, true),
-        REACTOR_LOGIC_ADAPTER(ReactorBlock.REACTOR_BLOCK, 3, "ReactorLogicAdapter", 15, TileEntityReactorLogicAdapter.class, false),
-        REACTOR_GLASS(ReactorBlock.REACTOR_GLASS, 0, "ReactorGlass", -1, TileEntityReactorGlass.class, false),
-        LASER_FOCUS_MATRIX(ReactorBlock.REACTOR_GLASS, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class, false);
+        REACTOR_CONTROLLER(ReactorBlock.REACTOR_BLOCK, 0, "ReactorController", 10, TileEntityReactorController::new, true),
+        REACTOR_FRAME(ReactorBlock.REACTOR_BLOCK, 1, "ReactorFrame", -1, TileEntityReactorFrame::new, false),
+        REACTOR_PORT(ReactorBlock.REACTOR_BLOCK, 2, "ReactorPort", -1, TileEntityReactorPort::new, true),
+        REACTOR_LOGIC_ADAPTER(ReactorBlock.REACTOR_BLOCK, 3, "ReactorLogicAdapter", 15, TileEntityReactorLogicAdapter::new, false),
+        REACTOR_GLASS(ReactorBlock.REACTOR_GLASS, 0, "ReactorGlass", -1, TileEntityReactorGlass::new, false),
+        LASER_FOCUS_MATRIX(ReactorBlock.REACTOR_GLASS, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix::new, false);
 
         public ReactorBlock blockType;
         public int meta;
         public String name;
         public int guiId;
-        public Class<? extends TileEntity> tileEntityClass;
+        public Supplier<TileEntityElectricBlock> tileEntitySupplier;
         public boolean activable;
 
-        ReactorBlockType(ReactorBlock b, int i, String s, int j, Class<? extends TileEntityElectricBlock> tileClass, boolean activeState) {
+        ReactorBlockType(ReactorBlock b, int i, String s, int j, Supplier<TileEntityElectricBlock> tileClass, boolean activeState) {
             blockType = b;
             meta = i;
             name = s;
             guiId = j;
-            tileEntityClass = tileClass;
+            tileEntitySupplier = tileClass;
             activable = activeState;
         }
 
@@ -106,12 +107,7 @@ public class BlockStateReactor extends ExtendedBlockState {
         }
 
         public TileEntity create() {
-            try {
-                return tileEntityClass.newInstance();
-            } catch (Exception e) {
-                Mekanism.logger.error("Unable to indirectly create tile entity.", e);
-                return null;
-            }
+            return this.tileEntitySupplier != null ? this.tileEntitySupplier.get() : null;
         }
 
         @Override
@@ -164,7 +160,7 @@ public class BlockStateReactor extends ExtendedBlockState {
             if (builder.length() == 0) {
                 builder.append("normal");
             }
-            ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators", nameOverride != null ? nameOverride : type.getName());
+            ResourceLocation baseLocation = new ResourceLocation(MekanismGenerators.MODID, nameOverride != null ? nameOverride : type.getName());
             return new ModelResourceLocation(baseLocation, builder.toString());
         }
     }

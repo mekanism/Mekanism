@@ -36,7 +36,6 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
-
                 if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
                     LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player, message.coord4D, message.index);
                 }
@@ -51,7 +50,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
                     }
                     player.openContainer.windowId = message.windowId;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
             }
         }, player);

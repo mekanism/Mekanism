@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.MekanismUtils;
@@ -15,9 +16,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandlerWrapper, IHeatTransfer {
+public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandlerWrapper, IHeatTransfer, IComparatorSupport {
 
     public boolean prevMaster = false;
+    private int currentRedstoneLevel;
 
     @Override
     public void onUpdate() {
@@ -32,6 +34,11 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
                 }
             }
             prevMaster = master != null;
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
+            }
         }
     }
 
@@ -143,5 +150,14 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        TileEntityThermalEvaporationController controller = getController();
+        if (controller != null) {
+            return MekanismUtils.redstoneLevelFromContents(controller.inputTank.getFluidAmount(), controller.inputTank.getCapacity());
+        }
+        return 0;
     }
 }

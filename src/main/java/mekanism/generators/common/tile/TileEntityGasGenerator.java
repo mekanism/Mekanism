@@ -11,6 +11,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -26,7 +27,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ISustainedData {
+public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ISustainedData, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
     /**
@@ -41,6 +42,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public int maxBurnTicks;
     public double generationRate = 0;
     public int clientUsed;
+    private int currentRedstoneLevel;
 
     public TileEntityGasGenerator() {
         super("gas", "GasGenerator", MekanismConfig.current().general.FROM_H2.val() * 100, MekanismConfig.current().general.FROM_H2.val() * 2);
@@ -100,6 +102,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 }
                 clientUsed = 0;
                 setActive(false);
+            }
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
             }
         }
     }
@@ -170,7 +177,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
                 return new Object[]{getEnergy()};
@@ -308,5 +315,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 output = fuel.energyPerTick * 2;
             }
         }
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getMaxGas());
     }
 }

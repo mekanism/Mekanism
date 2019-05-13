@@ -3,11 +3,13 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -17,13 +19,26 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper {
+public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper, IComparatorSupport {
 
     public DynamicFluidTank fluidTank;
+    private int currentRedstoneLevel;
 
     public TileEntityDynamicValve() {
         super("Dynamic Valve");
         fluidTank = new DynamicFluidTank(this);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        if (!world.isRemote) {
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
+            }
+        }
     }
 
     @Override
@@ -113,5 +128,10 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         //can be filled/emptied
         return slot == 0 && FluidContainerUtils.isFluidContainer(stack);
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 }

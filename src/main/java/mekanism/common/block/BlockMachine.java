@@ -10,6 +10,7 @@ import mekanism.client.render.particle.MekanismParticleHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
@@ -476,10 +477,11 @@ public abstract class BlockMachine extends BlockMekanismContainer {
     @Deprecated
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityFluidTank) {
-            return ((TileEntityFluidTank) tileEntity).getRedstoneLevel();
+        if (tileEntity instanceof IComparatorSupport) {
+            return ((IComparatorSupport) tileEntity).getRedstoneLevel();
         }
         if (tileEntity instanceof TileEntityLaserAmplifier) {
+            //TODO: Move this over to using IComparatorSupport?
             TileEntityLaserAmplifier amplifier = (TileEntityLaserAmplifier) tileEntity;
             if (amplifier.outputMode == TileEntityLaserAmplifier.RedstoneOutput.ENERGY_CONTENTS) {
                 return amplifier.getRedstoneLevel();

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.InfuseStorage;
+import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -92,7 +93,7 @@ public interface IFactory {
 
         RecipeType(String s, String s1, MachineType t, MachineFuelType ft, boolean b1, Recipe r) {
             name = s;
-            sound = new SoundEvent(new ResourceLocation("mekanism", "tile.machine." + s1));
+            sound = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine." + s1));
             type = t;
             fuelType = ft;
             fuelSpeed = b1;

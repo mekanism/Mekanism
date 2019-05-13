@@ -2,7 +2,6 @@ package mekanism.api.transmitters;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IClientTicker, INetworkDataHandler {
 
@@ -278,14 +276,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public World getWorld() {
         return world;
-    }
-
-    /**
-     * @deprecated No longer used or implemented. To be removed
-     */
-    @Deprecated
-    public Set<Pair<Coord4D, ACCEPTOR>> getAcceptors(Object data) {
-        return Collections.emptySet();
     }
 
     public void tick() {

@@ -11,6 +11,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
@@ -52,7 +53,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile,
-      IComputerIntegration, IUpgradeTile {
+      IComputerIntegration, IUpgradeTile, IComparatorSupport {
 
     public HashList<TransporterFilter> filters = new HashList<>();
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -65,6 +66,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "setSingleItem"};
+    private int currentRedstoneLevel;
 
     public TileEntityLogisticalSorter() {
         super("machine.logisticalsorter", "LogisticalSorter", MachineType.LOGISTICAL_SORTER.getStorage(), 3);
@@ -135,6 +137,12 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                 for (EntityPlayer player : playersUsing) {
                     Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
                 }
+            }
+
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
             }
         }
     }
@@ -512,7 +520,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (arguments.length > 0) {
             if (method == 0) {
                 if (!(arguments[0] instanceof String)) {
@@ -635,6 +643,11 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     @Override
     public TileComponentUpgrade getComponent() {
         return upgradeComponent;
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return isActive ? 15 : 0;
     }
 
     private class StrictFilterFinder extends Finder {

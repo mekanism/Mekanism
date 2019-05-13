@@ -67,7 +67,7 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
                 return null;
             }
         }
-        return new ShapelessMekanismRecipe(null, result, ret); //TODO Find out correct value for group
+        return new ShapelessMekanismRecipe(null, result, ret);
     }
 
     // Copy of net.minecraftforge.oredict.ShapelessOreRecipe

@@ -27,7 +27,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -188,8 +187,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
         if (outputMode != RedstoneOutput.ENERGY_CONTENTS) {
             return 0;
         }
-        double fractionFull = getEnergy() / getMaxEnergy();
-        return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
     }
 
     @Override
@@ -301,7 +299,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
                 return new Object[]{getEnergy()};

@@ -51,9 +51,9 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
 
             for (EntityLivingBase entity : entities) {
                 if (entity instanceof EntityPlayer || entity instanceof EntityRobit) {
-                    isActive = true;
+                    isActive = getEnergy() > 0;
                 }
-                if (getEnergy() > 0) {
+                if (isActive) {
                     if (entity instanceof EntityRobit) {
                         EntityRobit robit = (EntityRobit) entity;
                         double canGive = Math.min(getEnergy(), 1000);

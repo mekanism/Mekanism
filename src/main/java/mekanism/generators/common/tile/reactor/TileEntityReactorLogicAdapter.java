@@ -114,7 +114,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (getReactor() == null || !getReactor().isFormed()) {
             return new Object[]{"Unformed."};
         }

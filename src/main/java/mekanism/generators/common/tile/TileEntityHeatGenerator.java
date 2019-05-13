@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
@@ -37,7 +38,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer {
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
     /**
@@ -51,6 +52,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public double producingEnergy;
     public double lastTransferLoss;
     public double lastEnvironmentLoss;
+    private int currentRedstoneLevel;
 
     public TileEntityHeatGenerator() {
         super("heat", "HeatGenerator", 160000, MekanismConfig.current().generators.heatGeneration.val() * 2);
@@ -97,6 +99,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             lastTransferLoss = loss[0];
             lastEnvironmentLoss = loss[1];
             producingEnergy = getEnergy() - prev;
+
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
+            }
         }
     }
 
@@ -217,7 +225,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
                 return new Object[]{electricityStored};
@@ -360,5 +368,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(lavaTank.getFluidAmount(), lavaTank.getCapacity());
     }
 }

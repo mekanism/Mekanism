@@ -232,9 +232,8 @@ public class BlockEnergyCube extends BlockMekanismContainer {
                 securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
                 securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
             }
-            ISideConfiguration config = tileEntity;
-            config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-            config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+            ((ISideConfiguration) tileEntity).getConfig().write(ItemDataUtils.getDataMap(itemStack));
+            ((ISideConfiguration) tileEntity).getEjector().write(ItemDataUtils.getDataMap(itemStack));
         }
 
         ITierItem tierItem = (ITierItem) itemStack.getItem();

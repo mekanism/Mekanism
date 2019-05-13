@@ -12,6 +12,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -57,7 +58,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
     public TileEntityPRC() {
         super("prc", MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, MachineType.PRESSURIZED_REACTION_CHAMBER.getStorage(),
-              MachineType.PRESSURIZED_REACTION_CHAMBER.getUsage(), 3, 100, new ResourceLocation("mekanism", "gui/GuiPRC.png"));
+              MachineType.PRESSURIZED_REACTION_CHAMBER.getUsage(), 3, 100, new ResourceLocation(Mekanism.MODID, "gui/GuiPRC.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -222,7 +223,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
                 return new Object[]{getEnergy()};

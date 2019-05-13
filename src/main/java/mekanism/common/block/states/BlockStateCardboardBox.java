@@ -1,6 +1,7 @@
 package mekanism.common.block.states;
 
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
 import mekanism.common.block.BlockCardboardBox;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -23,7 +24,7 @@ public class BlockStateCardboardBox extends BlockStateContainer {
         @Override
         protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             String property = "storage=" + state.getValue(storageProperty);
-            ResourceLocation baseLocation = new ResourceLocation("mekanism", "CardboardBox");
+            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "CardboardBox");
             return new ModelResourceLocation(baseLocation, property);
         }
     }

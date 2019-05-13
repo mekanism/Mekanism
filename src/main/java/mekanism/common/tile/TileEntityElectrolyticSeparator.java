@@ -16,6 +16,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
@@ -51,7 +52,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
-      IUpgradeInfoHandler, ITankManager {
+      IUpgradeInfoHandler, ITankManager, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen",
                                                          "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
@@ -90,6 +91,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
      * This machine's current RedstoneControl type.
      */
     public RedstoneControl controlType = RedstoneControl.DISABLED;
+
+    private int currentRedstoneLevel;
 
     public TileEntityElectrolyticSeparator() {
         super("machine.electrolyticseparator", "ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.getStorage(), 0, 4);
@@ -137,6 +140,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             handleTank(leftTank, dumpLeft, MekanismUtils.getLeft(facing), dumpAmount);
             handleTank(rightTank, dumpRight, MekanismUtils.getRight(facing), dumpAmount);
             prevEnergy = getEnergy();
+
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
+            }
         }
     }
 
@@ -308,7 +317,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
                 return new Object[]{electricityStored};
@@ -477,5 +486,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             energyPerTick = MachineType.ELECTROLYTIC_SEPARATOR.getUsage();
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.common.block;
 
+import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -9,6 +10,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
@@ -517,7 +519,7 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     public boolean hasTileEntity(IBlockState state) {
         BasicBlockType type = BasicBlockType.get(state);
-        return type != null && type.tileEntityClass != null;
+        return type != null && type.tileEntitySupplier != null;
     }
 
     @Override
@@ -525,13 +527,14 @@ public abstract class BlockBasic extends BlockTileDrops {
         if (BasicBlockType.get(state) == null) {
             return null;
         }
-        return BasicBlockType.get(state).create();
+        return Objects.requireNonNull(BasicBlockType.get(state)).create();
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        if (world.getTileEntity(pos) instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof TileEntityBasicBlock) {
+            TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) te;
             int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
             int height = Math.round(placer.rotationPitch);
             int change = 3;
@@ -573,13 +576,12 @@ public abstract class BlockBasic extends BlockTileDrops {
         world.checkLightFor(EnumSkyBlock.BLOCK, pos);
         world.checkLightFor(EnumSkyBlock.SKY, pos);
 
-        if (!world.isRemote && world.getTileEntity(pos) != null) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof IMultiblock) {
-                ((IMultiblock<?>) tileEntity).doUpdate();
+        if (!world.isRemote && te != null) {
+            if (te instanceof IMultiblock) {
+                ((IMultiblock<?>) te).doUpdate();
             }
-            if (tileEntity instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tileEntity).doUpdate();
+            if (te instanceof IStructuralMultiblock) {
+                ((IStructuralMultiblock) te).doUpdate();
             }
         }
     }
@@ -682,8 +684,9 @@ public abstract class BlockBasic extends BlockTileDrops {
         BasicBlockType basicBlockType = BasicBlockType.get(blockState);
         if (basicBlockType != null && basicBlockType.hasRedstoneOutput) {
             TileEntity tile = worldIn.getTileEntity(pos);
-            if (tile instanceof TileEntityBin) {
-                return ((TileEntityBin) tile).getRedstoneLevel();
+            if (tile instanceof IComparatorSupport) {
+                //TODO: Add support for induction port (will be done in induction cleanup PR)
+                return ((IComparatorSupport) tile).getRedstoneLevel();
             }
         }
         return 0;

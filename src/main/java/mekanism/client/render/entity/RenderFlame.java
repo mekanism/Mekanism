@@ -2,6 +2,7 @@ package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -78,6 +79,6 @@ public class RenderFlame extends Render<EntityFlame> {
 
     @Override
     protected ResourceLocation getEntityTexture(@Nonnull EntityFlame entity) {
-        return new ResourceLocation("mekanism:render/Flame.png");
+        return new ResourceLocation(Mekanism.MODID, "render/Flame.png");
     }
 }

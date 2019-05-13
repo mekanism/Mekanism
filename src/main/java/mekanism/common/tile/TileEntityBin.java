@@ -9,6 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
@@ -34,7 +35,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -42,7 +42,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable {
+public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
 
     private static final int[] UPSLOTS = {1};
     private static final int[] DOWNSLOTS = {0};
@@ -487,9 +487,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         return true;
     }
 
+    @Override
     public int getRedstoneLevel() {
-        double fractionFull = (float) getItemCount() / (float) getMaxStoredCount();
-        return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return MekanismUtils.redstoneLevelFromContents(getItemCount(), getMaxStoredCount());
     }
 
     public int getMaxStoredCount() {
