@@ -1,6 +1,6 @@
 package mekanism.client;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -313,9 +313,9 @@ public class ClientTickHandler {
                 } else if (newVal < 0) {
                     newVal = modes + newVal;
                 }
-                //TODO: There is some error when reading a packet made like this check it out
-                configurator.setState(stack, ConfiguratorMode.get(newVal));
-                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, new ArrayList<>(newVal)));
+                ConfiguratorMode newMode = ConfiguratorMode.get(newVal);
+                configurator.setState(stack, newMode);
+                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(newMode.ordinal())));
                 event.setCanceled(true);
             }
         }
