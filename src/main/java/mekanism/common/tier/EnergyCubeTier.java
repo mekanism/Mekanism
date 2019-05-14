@@ -2,12 +2,11 @@ package mekanism.common.tier;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.IStringSerializable;
 
-public enum EnergyCubeTier implements ITier<EnergyCubeTier>, IStringSerializable {
+public enum EnergyCubeTier implements ITier, IStringSerializable {
     BASIC(2000000, 800),
     ADVANCED(8000000, 3200),
     ELITE(32000000, 12800),
@@ -34,17 +33,6 @@ public enum EnergyCubeTier implements ITier<EnergyCubeTier>, IStringSerializable
 
     public static EnergyCubeTier get(@Nonnull BaseTier tier) {
         return get(tier.ordinal());
-    }
-
-    @Override
-    public boolean hasNext() {
-        return EnumUtils.hasNext(values(), ordinal());
-    }
-
-    @Nullable
-    @Override
-    public EnergyCubeTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

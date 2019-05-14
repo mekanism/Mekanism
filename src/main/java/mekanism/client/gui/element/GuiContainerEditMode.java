@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
@@ -59,7 +60,7 @@ public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityContain
         IFluidContainerManager manager = (IFluidContainerManager) tileEntity;
         if (button == 0 && inBounds(xAxis, yAxis)) {
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            Mekanism.packetHandler.sendToServer(new ContainerEditModeMessage(Coord4D.get(tileEntity), manager.getContainerEditMode().next()));
+            Mekanism.packetHandler.sendToServer(new ContainerEditModeMessage(Coord4D.get(tileEntity), EnumUtils.nextValueWrap(manager.getContainerEditMode())));
         }
     }
 }

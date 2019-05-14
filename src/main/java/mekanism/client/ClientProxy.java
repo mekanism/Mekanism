@@ -521,7 +521,7 @@ public class ClientProxy extends CommonProxy {
                     modelsToAdd.add(model);
 
                     if (type.tiers && tierPointer != null) {
-                        tierPointer = tierPointer.next();
+                        tierPointer = EnumUtils.nextValue(tierPointer);
                         if (tierPointer != null && (type == BasicBlockType.BIN || tierPointer.isObtainable())) {
                             resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
                             continue;
@@ -550,7 +550,7 @@ public class ClientProxy extends CommonProxy {
                     transmitterResources.put(resource, model);
                     modelsToAdd.add(model);
                     if (type.hasTiers() && tierPointer != null) {
-                        tierPointer = tierPointer.next();
+                        tierPointer = EnumUtils.nextValue(tierPointer);
                         if (tierPointer != null && tierPointer.isObtainable()) {
                             resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
                             continue;

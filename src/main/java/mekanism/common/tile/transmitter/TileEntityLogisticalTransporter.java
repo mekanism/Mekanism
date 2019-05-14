@@ -361,7 +361,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
-        tier = tier.next();
+        tier = TransporterTier.get(upgradeTier);
         markDirtyTransmitters();
         sendDesc = true;
         return true;

@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.network.PacketRedstoneControl.RedstoneControlMessage;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
@@ -61,10 +62,10 @@ public class GuiRedstoneControl extends GuiTileEntityElement<TileEntity> {
         IRedstoneControl control = (IRedstoneControl) tileEntity;
 
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            RedstoneControl next = control.getControlType().next();
+            RedstoneControl next = EnumUtils.nextValueWrap(control.getControlType());
             if (next == RedstoneControl.PULSE && !control.canPulse()) {
                 //Skip it because we cannot pulse
-                next = next.next();
+                next = EnumUtils.nextValueWrap(next);
             }
 
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

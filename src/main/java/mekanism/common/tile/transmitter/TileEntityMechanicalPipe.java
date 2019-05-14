@@ -266,7 +266,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
-        tier = tier.next();
+        tier = PipeTier.get(upgradeTier);
         markDirtyTransmitters();
         sendDesc = true;
         return true;

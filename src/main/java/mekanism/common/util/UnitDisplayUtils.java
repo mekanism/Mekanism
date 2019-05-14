@@ -210,7 +210,7 @@ public class UnitDisplayUtils {
 
         @Nullable
         public MeasurementUnit next() {
-            return EnumUtils.nextValue(values(), ordinal());
+            return EnumUtils.nextValue(this);
         }
 
         public boolean isFirst() {
@@ -218,7 +218,7 @@ public class UnitDisplayUtils {
         }
 
         public boolean isLast() {
-            return !EnumUtils.hasNext(values(), ordinal());
+            return ordinal() + 1 == values().length;
         }
 
         public String getName(boolean getShort) {
@@ -254,13 +254,6 @@ public class UnitDisplayUtils {
         public static EnergyType get(int ordinal) {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
-
-        /**
-         * Gets the next energy type, loops back to start when past the end.
-         */
-        public EnergyType next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
-        }
     }
 
     public enum TempType {
@@ -276,13 +269,6 @@ public class UnitDisplayUtils {
 
         public static TempType get(int ordinal) {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
-        }
-
-        /**
-         * Gets the next temp type, loops back to start when past the end.
-         */
-        public TempType next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
         }
     }
 }

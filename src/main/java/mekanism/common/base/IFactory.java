@@ -111,7 +111,7 @@ public interface IFactory {
 
         @Nullable
         public RecipeType next() {
-            return EnumUtils.nextValue(values(), ordinal());
+            return EnumUtils.nextValue(this);
         }
 
         @Nullable

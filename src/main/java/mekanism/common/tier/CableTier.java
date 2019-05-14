@@ -1,11 +1,10 @@
 package mekanism.common.tier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.EnumUtils;
 
-public enum CableTier implements ITier<CableTier> {
+public enum CableTier implements ITier {
     BASIC(3200),
     ADVANCED(12800),
     ELITE(64000),
@@ -29,17 +28,6 @@ public enum CableTier implements ITier<CableTier> {
 
     public static CableTier get(@Nonnull BaseTier tier) {
         return get(tier.ordinal());
-    }
-
-    @Override
-    public boolean hasNext() {
-        return EnumUtils.hasNext(values(), ordinal());
-    }
-
-    @Nullable
-    @Override
-    public CableTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

@@ -1,11 +1,10 @@
 package mekanism.common.tier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.EnumUtils;
 
-public enum BinTier implements ITier<BinTier> {
+public enum BinTier implements ITier {
     BASIC(4096),
     ADVANCED(8192),
     ELITE(32768),
@@ -30,17 +29,6 @@ public enum BinTier implements ITier<BinTier> {
 
     public static BinTier get(@Nonnull BaseTier tier) {
         return get(tier.ordinal());
-    }
-
-    @Override
-    public boolean hasNext() {
-        return EnumUtils.hasNext(values(), ordinal());
-    }
-
-    @Nullable
-    @Override
-    public BinTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

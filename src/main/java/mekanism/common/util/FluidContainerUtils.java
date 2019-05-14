@@ -183,13 +183,6 @@ public final class FluidContainerUtils {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
-        /**
-         * Gets the next container edit mode, loops back to start when past the end.
-         */
-        public ContainerEditMode next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
-        }
-
         public String getDisplay() {
             return LangUtils.localize(display);
         }

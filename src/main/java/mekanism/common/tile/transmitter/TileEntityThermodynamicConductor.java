@@ -210,7 +210,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
-        tier = tier.next();
+        tier = ConductorTier.get(upgradeTier);
         markDirtyTransmitters();
         sendDesc = true;
         return true;

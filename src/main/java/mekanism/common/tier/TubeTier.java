@@ -1,11 +1,10 @@
 package mekanism.common.tier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.EnumUtils;
 
-public enum TubeTier implements ITier<TubeTier> {
+public enum TubeTier implements ITier {
     BASIC(256, 64),
     ADVANCED(1024, 256),
     ELITE(4096, 1024),
@@ -31,17 +30,6 @@ public enum TubeTier implements ITier<TubeTier> {
 
     public static TubeTier get(@Nonnull BaseTier tier) {
         return get(tier.ordinal());
-    }
-
-    @Override
-    public boolean hasNext() {
-        return EnumUtils.hasNext(values(), ordinal());
-    }
-
-    @Nullable
-    @Override
-    public TubeTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

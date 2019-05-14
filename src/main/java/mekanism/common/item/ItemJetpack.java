@@ -96,7 +96,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     public void incrementMode(ItemStack stack) {
-        setMode(stack, getMode(stack).next());
+        setMode(stack, EnumUtils.nextValueWrap(getMode(stack)));
     }
 
     public void useGas(ItemStack stack) {
@@ -234,13 +234,6 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
 
         public static JetpackMode get(int ordinal) {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
-        }
-
-        /**
-         * Gets the jetpack mode, loops back to start when past the end.
-         */
-        public JetpackMode next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getName() {

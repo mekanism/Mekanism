@@ -1,11 +1,10 @@
 package mekanism.common.tier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.EnumUtils;
 
-public enum FluidTankTier implements ITier<FluidTankTier> {
+public enum FluidTankTier implements ITier {
     BASIC(14000, 400),
     ADVANCED(28000, 800),
     ELITE(56000, 1600),
@@ -32,17 +31,6 @@ public enum FluidTankTier implements ITier<FluidTankTier> {
 
     public static FluidTankTier get(@Nonnull BaseTier tier) {
         return get(tier.ordinal());
-    }
-
-    @Override
-    public boolean hasNext() {
-        return EnumUtils.hasNext(values(), ordinal());
-    }
-
-    @Nullable
-    @Override
-    public FluidTankTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

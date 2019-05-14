@@ -56,13 +56,6 @@ public interface IRedstoneControl {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
-        /**
-         * Gets the next control mode, loops back to start when past the end.
-         */
-        public RedstoneControl next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
-        }
-
         public String getDisplay() {
             return LangUtils.localize(display);
         }

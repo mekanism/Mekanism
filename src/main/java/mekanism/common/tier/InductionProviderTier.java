@@ -1,11 +1,10 @@
 package mekanism.common.tier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.EnumUtils;
 
-public enum InductionProviderTier implements ITier<InductionProviderTier> {
+public enum InductionProviderTier implements ITier {
     BASIC(64000),
     ADVANCED(512000),
     ELITE(4096000),
@@ -29,17 +28,6 @@ public enum InductionProviderTier implements ITier<InductionProviderTier> {
 
     public static InductionProviderTier get(@Nonnull BaseTier tier) {
         return get(tier.ordinal());
-    }
-
-    @Override
-    public boolean hasNext() {
-        return EnumUtils.hasNext(values(), ordinal());
-    }
-
-    @Nullable
-    @Override
-    public InductionProviderTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

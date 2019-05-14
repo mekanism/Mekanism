@@ -303,7 +303,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
         if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
-        tier = tier.next();
+        tier = CableTier.get(upgradeTier);
         markDirtyTransmitters();
         sendDesc = true;
         return true;

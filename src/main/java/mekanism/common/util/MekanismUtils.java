@@ -1092,8 +1092,9 @@ public final class MekanismUtils {
         return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
     }
 
-    public static <TYPE extends ITier<TYPE>> boolean canUpgrade(TYPE current, BaseTier upgradeTier) {
-        return current.hasNext() && current.next().getBaseTier() == upgradeTier;
+    public static <TYPE extends Enum<TYPE> & ITier> boolean canUpgrade(TYPE current, BaseTier upgradeTier) {
+        TYPE next = EnumUtils.nextValue(current);
+        return next != null && next.getBaseTier() == upgradeTier;
     }
 
     /**

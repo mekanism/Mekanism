@@ -284,7 +284,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
-        tier = tier.next();
+        tier = TubeTier.get(upgradeTier);
         markDirtyTransmitters();
         sendDesc = true;
         return true;

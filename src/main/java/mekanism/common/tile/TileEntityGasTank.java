@@ -134,7 +134,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
-        tier = tier.next();
+        tier = GasTankTier.get(upgradeTier);
         gasTank.setMaxGas(tier.getStorage());
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();
@@ -240,7 +240,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                dumping = dumping.next();
+                dumping = EnumUtils.nextValueWrap(dumping);
             }
             for (EntityPlayer player : playersUsing) {
                 Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
@@ -367,13 +367,6 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
         public static GasMode get(int ordinal) {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
-        }
-
-        /**
-         * Gets the next gas mode, loops back to start when past the end.
-         */
-        public GasMode next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
         }
     }
 }

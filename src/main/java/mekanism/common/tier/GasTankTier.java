@@ -2,12 +2,11 @@ package mekanism.common.tier;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.IStringSerializable;
 
-public enum GasTankTier implements ITier<GasTankTier>, IStringSerializable {
+public enum GasTankTier implements ITier, IStringSerializable {
     BASIC(64000, 256),
     ADVANCED(128000, 512),
     ELITE(256000, 1028),
@@ -34,17 +33,6 @@ public enum GasTankTier implements ITier<GasTankTier>, IStringSerializable {
 
     public static GasTankTier get(@Nonnull BaseTier tier) {
         return get(tier.ordinal());
-    }
-
-    @Override
-    public boolean hasNext() {
-        return EnumUtils.hasNext(values(), ordinal());
-    }
-
-    @Nullable
-    @Override
-    public GasTankTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

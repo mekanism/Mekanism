@@ -285,13 +285,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
-        /**
-         * Gets the next configurator mode, loops back to start when past the end.
-         */
-        public ConfiguratorMode next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
-        }
-
         public String getName() {
             String name = LangUtils.localize("tooltip.configurator." + this.name);
             if (this.transmissionType != null) {

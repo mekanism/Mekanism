@@ -223,7 +223,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     }
 
     public void incrementMode(ItemStack itemStack) {
-        setMode(itemStack, getMode(itemStack).next());
+        setMode(itemStack, EnumUtils.nextValueWrap(getMode(itemStack)));
     }
 
     public enum FreeRunnerMode {
@@ -244,13 +244,6 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
         public static FreeRunnerMode get(int ordinal) {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
-        }
-
-        /**
-         * Gets the free runner mode, loops back to start when past the end.
-         */
-        public FreeRunnerMode next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getName() {

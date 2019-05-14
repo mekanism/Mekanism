@@ -23,6 +23,7 @@ import mekanism.common.network.PacketFreeRunnerData.FreeRunnerDataMessage;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TextComponentGroup;
 import net.minecraft.client.Minecraft;
@@ -85,7 +86,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
             if (player.isSneaking() && item instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) item;
-                ConfiguratorMode nextMode = configurator.getState(toolStack).next();
+                ConfiguratorMode nextMode = EnumUtils.nextValueWrap(configurator.getState(toolStack));
                 configurator.setState(toolStack, nextMode);
                 Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(nextMode.ordinal())));
                 player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")

@@ -1,12 +1,11 @@
 package mekanism.common.tier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.EnumUtils;
 
-public enum ConductorTier implements ITier<ConductorTier> {
+public enum ConductorTier implements ITier {
     BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
     ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1)),
     ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
@@ -37,17 +36,6 @@ public enum ConductorTier implements ITier<ConductorTier> {
 
     public static ConductorTier get(@Nonnull BaseTier tier) {
         return get(tier.ordinal());
-    }
-
-    @Override
-    public boolean hasNext() {
-        return EnumUtils.hasNext(values(), ordinal());
-    }
-
-    @Nullable
-    @Override
-    public ConductorTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

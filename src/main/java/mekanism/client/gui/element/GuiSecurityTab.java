@@ -15,6 +15,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -151,7 +152,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
         if (button == 0 && MekanismConfig.current().general.allowProtection.val()) {
             if (getOwner() != null && mc.player.getUniqueID().equals(getOwner())) {
                 if (inBounds(xAxis, yAxis)) {
-                    SecurityMode next = getSecurity().next();
+                    SecurityMode next = EnumUtils.nextValueWrap(getSecurity());
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     if (isItem) {
                         Mekanism.packetHandler.sendToServer(new SecurityModeMessage(currentHand, next));

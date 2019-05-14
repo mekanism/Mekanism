@@ -220,7 +220,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
                     time = dataStream.readInt();
                     break;
                 case 3:
-                    outputMode = outputMode.next();
+                    outputMode = EnumUtils.nextValueWrap(outputMode);
                     break;
             }
             return;
@@ -367,13 +367,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
         public static RedstoneOutput get(int ordinal) {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
-        }
-
-        /**
-         * Gets the next redstone output mode, loops back to start when past the end.
-         */
-        public RedstoneOutput next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getName() {

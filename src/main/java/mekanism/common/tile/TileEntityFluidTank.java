@@ -90,7 +90,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
-        tier = tier.next();
+        tier = FluidTankTier.get(upgradeTier);
         fluidTank.setCapacity(tier.getStorage());
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();

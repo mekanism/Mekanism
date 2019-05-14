@@ -529,7 +529,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 }
 
                 if (hitSide != null) {
-                    connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
+                    connectionTypes[hitSide.ordinal()] = EnumUtils.nextValueWrap(connectionTypes[hitSide.ordinal()]);
                     sendDesc = true;
                     onModeChange(EnumFacing.byIndex(hitSide.ordinal()));
 
@@ -634,13 +634,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
         public static ConnectionType get(int ordinal) {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
-        }
-
-        /**
-         * Gets the next connection type, loops back to start when past the end.
-         */
-        public ConnectionType next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         @Override

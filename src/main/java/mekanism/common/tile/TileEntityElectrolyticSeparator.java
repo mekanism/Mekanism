@@ -32,6 +32,7 @@ import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -249,9 +250,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             byte type = dataStream.readByte();
             if (type == 0) {
-                dumpLeft = dumpLeft.next();
+                dumpLeft = EnumUtils.nextValueWrap(dumpLeft);
             } else if (type == 1) {
-                dumpRight = dumpRight.next();
+                dumpRight = EnumUtils.nextValueWrap(dumpRight);
             }
             return;
         }

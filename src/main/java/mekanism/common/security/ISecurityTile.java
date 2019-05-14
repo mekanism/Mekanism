@@ -30,13 +30,6 @@ public interface ISecurityTile {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
-        /**
-         * Gets the next security mode, loops back to start when past the end.
-         */
-        public SecurityMode next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
-        }
-
         public String getDisplay() {
             return color + LangUtils.localize(display);
         }

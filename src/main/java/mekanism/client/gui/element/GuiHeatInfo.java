@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -54,7 +55,7 @@ public class GuiHeatInfo extends GuiElement {
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            MekanismConfig.current().general.tempUnit.set(MekanismConfig.current().general.tempUnit.val().next());
+            MekanismConfig.current().general.tempUnit.set(EnumUtils.nextValueWrap(MekanismConfig.current().general.tempUnit.val()));
         }
     }
 }

@@ -37,7 +37,7 @@ public enum BaseTier implements IStringSerializable {
 
     @Nullable
     public BaseTier next() {
-        return EnumUtils.nextValue(values(), ordinal());
+        return EnumUtils.nextValue(this);
     }
 
     public String getSimpleName() {

@@ -313,6 +313,7 @@ public class ClientTickHandler {
                 } else if (newVal < 0) {
                     newVal = modes + newVal;
                 }
+                //TODO: There is some error when reading a packet made like this check it out
                 configurator.setState(stack, ConfiguratorMode.get(newVal));
                 Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, new ArrayList<>(newVal)));
                 event.setCanceled(true);

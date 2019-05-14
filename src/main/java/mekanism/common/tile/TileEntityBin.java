@@ -78,7 +78,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
-        tier = tier.next();
+        tier = BinTier.get(upgradeTier);
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();
         return true;

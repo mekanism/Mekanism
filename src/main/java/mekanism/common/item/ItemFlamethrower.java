@@ -143,7 +143,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     }
 
     public void incrementMode(ItemStack stack) {
-        setMode(stack, getMode(stack).next());
+        setMode(stack, EnumUtils.nextValueWrap(getMode(stack)));
     }
 
     public FlamethrowerMode getMode(ItemStack stack) {
@@ -173,13 +173,6 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
 
         public static FlamethrowerMode get(int ordinal) {
             return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
-        }
-
-        /**
-         * Gets the flamethrower mode, loops back to start when past the end.
-         */
-        public FlamethrowerMode next() {
-            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getName() {

@@ -14,6 +14,7 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -177,7 +178,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             if (structure != null) {
                 byte type = dataStream.readByte();
                 if (type == 0) {
-                    structure.dumpMode = structure.dumpMode.next();
+                    structure.dumpMode = EnumUtils.nextValueWrap(structure.dumpMode);
                 }
             }
             return;

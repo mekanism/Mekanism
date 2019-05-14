@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import javax.annotation.Nullable;
 import net.minecraft.util.EnumHand;
 
 public class EnumUtils {
@@ -15,23 +16,22 @@ public class EnumUtils {
         return values[ordinal];
     }
 
-    public static <TYPE extends Enum<TYPE>> boolean hasNext(TYPE[] values, int ordinal) {
-        return ordinal + 1 < values.length;
-    }
-
-    public static <TYPE extends Enum<TYPE>> TYPE nextValue(TYPE[] values, int ordinal) {
-        int nextOrdinal = ordinal + 1;
-        if (nextOrdinal < 0 || nextOrdinal >= values.length) {
+    @Nullable
+    public static <TYPE extends Enum<TYPE>> TYPE nextValue(TYPE element) {
+        int nextOrdinal = element.ordinal() + 1;
+        Enum[] enumConstants = element.getClass().getEnumConstants();
+        if (nextOrdinal >= enumConstants.length) {
             return null;
         }
-        return values[nextOrdinal];
+        return (TYPE) enumConstants[nextOrdinal];
     }
 
-    public static <TYPE extends Enum<TYPE>> TYPE nextValueWrap(TYPE[] values, int ordinal) {
-        int nextOrdinal = ordinal + 1;
-        if (nextOrdinal < 0 || nextOrdinal >= values.length) {
-            return values[0];
+    public static <TYPE extends Enum<TYPE>> TYPE nextValueWrap(TYPE element) {
+        int nextOrdinal = element.ordinal() + 1;
+        Enum[] enumConstants = element.getClass().getEnumConstants();
+        if (nextOrdinal >= enumConstants.length) {
+            return (TYPE) enumConstants[0];
         }
-        return values[nextOrdinal];
+        return (TYPE) enumConstants[nextOrdinal];
     }
 }
