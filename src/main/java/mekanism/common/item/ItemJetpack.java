@@ -240,11 +240,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
          * Gets the jetpack mode, loops back to start when past the end.
          */
         public JetpackMode next() {
-            int nextOrdinal = ordinal() + 1;
-            if (nextOrdinal < values().length) {
-                return get(nextOrdinal);
-            }
-            return get(0);
+            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getName() {

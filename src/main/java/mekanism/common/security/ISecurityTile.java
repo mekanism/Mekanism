@@ -34,11 +34,7 @@ public interface ISecurityTile {
          * Gets the next security mode, loops back to start when past the end.
          */
         public SecurityMode next() {
-            int nextOrdinal = ordinal() + 1;
-            if (nextOrdinal < values().length) {
-                return get(nextOrdinal);
-            }
-            return get(0);
+            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getDisplay() {

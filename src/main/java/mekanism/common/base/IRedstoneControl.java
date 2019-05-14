@@ -60,11 +60,7 @@ public interface IRedstoneControl {
          * Gets the next control mode, loops back to start when past the end.
          */
         public RedstoneControl next() {
-            int nextOrdinal = ordinal() + 1;
-            if (nextOrdinal < values().length) {
-                return get(nextOrdinal);
-            }
-            return get(0);
+            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getDisplay() {

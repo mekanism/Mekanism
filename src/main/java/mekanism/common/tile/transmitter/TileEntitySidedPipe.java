@@ -640,11 +640,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
          * Gets the next connection type, loops back to start when past the end.
          */
         public ConnectionType next() {
-            int nextOrdinal = ordinal() + 1;
-            if (nextOrdinal < values().length) {
-                return get(nextOrdinal);
-            }
-            return get(0);
+            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         @Override

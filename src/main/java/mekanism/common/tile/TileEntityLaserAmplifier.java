@@ -373,11 +373,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
          * Gets the next redstone output mode, loops back to start when past the end.
          */
         public RedstoneOutput next() {
-            int nextOrdinal = ordinal() + 1;
-            if (nextOrdinal < values().length) {
-                return get(nextOrdinal);
-            }
-            return get(0);
+            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getName() {

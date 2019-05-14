@@ -373,11 +373,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
          * Gets the next gas mode, loops back to start when past the end.
          */
         public GasMode next() {
-            int nextOrdinal = ordinal() + 1;
-            if (nextOrdinal < values().length) {
-                return get(nextOrdinal);
-            }
-            return get(0);
+            return EnumUtils.nextValueWrap(values(), ordinal());
         }
     }
 }

@@ -14,4 +14,12 @@ public class EnumUtils {
         }
         return values[ordinal];
     }
+
+    public static <TYPE extends Enum<TYPE>> TYPE nextValueWrap(TYPE[] values, int ordinal) {
+        int nextOrdinal = ordinal + 1;
+        if (nextOrdinal < 0 || nextOrdinal >= values.length) {
+            return values[0];
+        }
+        return values[nextOrdinal];
+    }
 }

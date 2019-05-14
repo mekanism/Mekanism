@@ -289,11 +289,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
          * Gets the next configurator mode, loops back to start when past the end.
          */
         public ConfiguratorMode next() {
-            int nextOrdinal = ordinal() + 1;
-            if (nextOrdinal < values().length) {
-                return get(nextOrdinal);
-            }
-            return get(0);
+            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getName() {

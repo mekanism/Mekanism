@@ -250,11 +250,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
          * Gets the free runner mode, loops back to start when past the end.
          */
         public FreeRunnerMode next() {
-            int nextOrdinal = ordinal() + 1;
-            if (nextOrdinal < values().length) {
-                return get(nextOrdinal);
-            }
-            return get(0);
+            return EnumUtils.nextValueWrap(values(), ordinal());
         }
 
         public String getName() {
