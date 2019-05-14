@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -91,12 +92,12 @@ public final class HolidayManager {
             name = n;
         }
 
-        public String getName() {
-            return name;
+        public static Month get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, JANUARY);
         }
 
-        public int month() {
-            return ordinal() + 1;
+        public String getName() {
+            return name;
         }
     }
 
@@ -181,7 +182,7 @@ public final class HolidayManager {
         }
 
         public YearlyDate(int m, int d) {
-            this(Month.values()[m - 1], d);
+            this(Month.get(m - 1), d);
         }
 
         @Override

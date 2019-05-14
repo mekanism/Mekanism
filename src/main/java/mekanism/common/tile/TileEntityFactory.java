@@ -165,7 +165,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1 || tier == FactoryTier.ELITE) {
+        if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
 

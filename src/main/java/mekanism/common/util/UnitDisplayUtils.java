@@ -210,8 +210,7 @@ public class UnitDisplayUtils {
 
         @Nullable
         public MeasurementUnit next() {
-            int nextOrdinal = ordinal() + 1;
-            return nextOrdinal < values().length ? get(nextOrdinal) : null;
+            return EnumUtils.nextValue(values(), ordinal());
         }
 
         public boolean isFirst() {
@@ -219,7 +218,7 @@ public class UnitDisplayUtils {
         }
 
         public boolean isLast() {
-            return ordinal() + 1 == values().length;
+            return !EnumUtils.hasNext(values(), ordinal());
         }
 
         public String getName(boolean getShort) {

@@ -34,13 +34,13 @@ public enum BinTier implements ITier<BinTier> {
 
     @Override
     public boolean hasNext() {
-        return ordinal() + 1 < values().length;
+        return EnumUtils.hasNext(values(), ordinal());
     }
 
     @Nullable
     @Override
     public BinTier next() {
-        return hasNext() ? get(ordinal() + 1) : null;
+        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

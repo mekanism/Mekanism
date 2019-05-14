@@ -38,6 +38,7 @@ import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ITier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -1089,6 +1090,10 @@ public final class MekanismUtils {
     public static int redstoneLevelFromContents(double amount, double capacity) {
         double fractionFull = capacity == 0 ? 0 : amount / capacity;
         return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+    }
+
+    public static <TYPE extends ITier<TYPE>> boolean canUpgrade(TYPE current, BaseTier upgradeTier) {
+        return current.hasNext() && current.next().getBaseTier() == upgradeTier;
     }
 
     /**

@@ -12,6 +12,7 @@ import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.transmitters.TransmitterImpl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -230,10 +231,11 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
                 return 0;
             });
+            BaseTier upgradeTier = BaseTier.get(tierOrdinal);
             for (IGridTransmitter<A, N, BUFFER> iter : list) {
                 if (iter instanceof TransmitterImpl) {
                     TileEntityTransmitter t = ((TransmitterImpl) iter).containingTile;
-                    if (t.upgrade(tierOrdinal)) {
+                    if (t.upgrade(upgradeTier)) {
                         upgraded++;
                         if (upgraded == 8) {
                             break;
@@ -252,7 +254,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         }
     }
 
-    public boolean upgrade(int tierOrdinal) {
+    public boolean upgrade(BaseTier upgradeTier) {
         return false;
     }
 

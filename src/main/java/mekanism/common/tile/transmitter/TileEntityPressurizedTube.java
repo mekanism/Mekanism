@@ -18,6 +18,7 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -279,14 +280,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
-            tier = tier.next();
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
+    public boolean upgrade(BaseTier upgradeTier) {
+        if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
+            return false;
         }
-        return false;
+        tier = tier.next();
+        markDirtyTransmitters();
+        sendDesc = true;
+        return true;
     }
 
     @Override

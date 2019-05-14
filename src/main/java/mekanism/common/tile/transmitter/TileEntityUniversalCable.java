@@ -299,14 +299,14 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
-            tier = tier.next();
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
+    public boolean upgrade(BaseTier upgradeTier) {
+        if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
+            return false;
         }
-        return false;
+        tier = tier.next();
+        markDirtyTransmitters();
+        sendDesc = true;
+        return true;
     }
 
     @Override

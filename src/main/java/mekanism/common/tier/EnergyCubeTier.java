@@ -38,13 +38,13 @@ public enum EnergyCubeTier implements ITier<EnergyCubeTier>, IStringSerializable
 
     @Override
     public boolean hasNext() {
-        return ordinal() + 1 < values().length;
+        return EnumUtils.hasNext(values(), ordinal());
     }
 
     @Nullable
     @Override
     public EnergyCubeTier next() {
-        return hasNext() ? get(ordinal() + 1) : null;
+        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

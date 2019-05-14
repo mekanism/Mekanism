@@ -18,6 +18,7 @@ import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -205,13 +206,13 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
-            tier = tier.next();
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
+    public boolean upgrade(BaseTier upgradeTier) {
+        if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
+            return false;
         }
-        return false;
+        tier = tier.next();
+        markDirtyTransmitters();
+        sendDesc = true;
+        return true;
     }
 }

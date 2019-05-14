@@ -15,6 +15,18 @@ public class EnumUtils {
         return values[ordinal];
     }
 
+    public static <TYPE extends Enum<TYPE>> boolean hasNext(TYPE[] values, int ordinal) {
+        return ordinal + 1 < values.length;
+    }
+
+    public static <TYPE extends Enum<TYPE>> TYPE nextValue(TYPE[] values, int ordinal) {
+        int nextOrdinal = ordinal + 1;
+        if (nextOrdinal < 0 || nextOrdinal >= values.length) {
+            return null;
+        }
+        return values[nextOrdinal];
+    }
+
     public static <TYPE extends Enum<TYPE>> TYPE nextValueWrap(TYPE[] values, int ordinal) {
         int nextOrdinal = ordinal + 1;
         if (nextOrdinal < 0 || nextOrdinal >= values.length) {

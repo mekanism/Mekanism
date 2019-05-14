@@ -111,8 +111,7 @@ public interface IFactory {
 
         @Nullable
         public RecipeType next() {
-            int nextOrdinal = ordinal() + 1;
-            return nextOrdinal < values().length ? get(nextOrdinal) : null;
+            return EnumUtils.nextValue(values(), ordinal());
         }
 
         @Nullable

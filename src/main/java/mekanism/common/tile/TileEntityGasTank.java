@@ -131,7 +131,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (!tier.hasNext() || upgradeTier.ordinal() != tier.ordinal() + 1) {
+        if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
             return false;
         }
         tier = tier.next();

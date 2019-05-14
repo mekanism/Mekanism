@@ -14,6 +14,7 @@ import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -261,14 +262,14 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
-            tier = tier.next();
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
+    public boolean upgrade(BaseTier upgradeTier) {
+        if (!MekanismUtils.canUpgrade(tier, upgradeTier)) {
+            return false;
         }
-        return false;
+        tier = tier.next();
+        markDirtyTransmitters();
+        sendDesc = true;
+        return true;
     }
 
     @Override

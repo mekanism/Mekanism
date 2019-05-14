@@ -35,13 +35,13 @@ public enum PipeTier implements ITier<PipeTier> {
 
     @Override
     public boolean hasNext() {
-        return ordinal() + 1 < values().length;
+        return EnumUtils.hasNext(values(), ordinal());
     }
 
     @Nullable
     @Override
     public PipeTier next() {
-        return hasNext() ? get(ordinal() + 1) : null;
+        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override

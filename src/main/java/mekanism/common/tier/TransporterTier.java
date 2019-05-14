@@ -35,13 +35,13 @@ public enum TransporterTier implements ITier<TransporterTier> {
 
     @Override
     public boolean hasNext() {
-        return ordinal() + 1 < values().length;
+        return EnumUtils.hasNext(values(), ordinal());
     }
 
     @Nullable
     @Override
     public TransporterTier next() {
-        return hasNext() ? get(ordinal() + 1) : null;
+        return EnumUtils.nextValue(values(), ordinal());
     }
 
     @Override
