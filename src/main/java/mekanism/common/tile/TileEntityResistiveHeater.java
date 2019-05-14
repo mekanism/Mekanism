@@ -50,7 +50,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public int updateDelay;
     public float soundScale = 1;
     public double lastEnvironmentLoss;
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityResistiveHeater() {
@@ -118,7 +118,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         energyUsage = nbtTags.getDouble("energyUsage");
         temperature = nbtTags.getDouble("temperature");
         clientActive = isActive = nbtTags.getBoolean("isActive");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         maxEnergy = energyUsage * 400;
     }
 
@@ -148,7 +148,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
             clientActive = dataStream.readBoolean();
             maxEnergy = dataStream.readDouble();
             soundScale = dataStream.readFloat();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
             lastEnvironmentLoss = dataStream.readDouble();
             if (updateDelay == 0 && clientActive != isActive) {
                 updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();

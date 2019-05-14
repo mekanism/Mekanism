@@ -104,7 +104,7 @@ public class ItemConfigurationCard extends ItemMekanism {
 
     private void setBaseData(NBTTagCompound nbtTags, TileEntity tile) {
         if (tile instanceof IRedstoneControl) {
-            ((IRedstoneControl) tile).setControlType(RedstoneControl.values()[nbtTags.getInteger("controlType")]);
+            ((IRedstoneControl) tile).setControlType(RedstoneControl.get(nbtTags.getInteger("controlType")));
         }
         if (tile instanceof ISideConfiguration) {
             ((ISideConfiguration) tile).getConfig().read(nbtTags);

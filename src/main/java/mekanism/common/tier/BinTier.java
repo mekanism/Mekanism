@@ -1,8 +1,10 @@
 package mekanism.common.tier;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 
-public enum BinTier implements ITier {
+public enum BinTier implements ITier<BinTier> {
     BASIC(4096),
     ADVANCED(8192),
     ELITE(32768),
@@ -14,7 +16,33 @@ public enum BinTier implements ITier {
 
     BinTier(int s) {
         baseStorage = s;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = BaseTier.get(ordinal());
+    }
+
+    public static BinTier getDefault() {
+        return BASIC;
+    }
+
+    public static BinTier get(int index) {
+        if (index < 0 || index >= values().length) {
+            return getDefault();
+        }
+        return values()[index];
+    }
+
+    public static BinTier get(@Nonnull BaseTier tier) {
+        return get(tier.ordinal());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return ordinal() + 1 < values().length;
+    }
+
+    @Nullable
+    @Override
+    public BinTier next() {
+        return hasNext() ? get(ordinal() + 1) : null;
     }
 
     @Override

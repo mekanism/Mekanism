@@ -1,11 +1,13 @@
 package mekanism.common.tier;
 
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import net.minecraft.util.ResourceLocation;
 
-public enum FactoryTier implements ITier {
+public enum FactoryTier implements ITier<FactoryTier> {
     BASIC(3, new ResourceLocation(Mekanism.MODID, "gui/factory/GuiBasicFactory.png")),
     ADVANCED(5, new ResourceLocation(Mekanism.MODID, "gui/factory/GuiAdvancedFactory.png")),
     ELITE(7, new ResourceLocation(Mekanism.MODID, "gui/factory/GuiEliteFactory.png"));
@@ -17,7 +19,33 @@ public enum FactoryTier implements ITier {
     FactoryTier(int process, ResourceLocation gui) {
         processes = process;
         guiLocation = gui;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = BaseTier.get(ordinal());
+    }
+
+    public static FactoryTier getDefault() {
+        return BASIC;
+    }
+
+    public static FactoryTier get(int index) {
+        if (index < 0 || index >= values().length) {
+            return getDefault();
+        }
+        return values()[index];
+    }
+
+    public static FactoryTier get(@Nonnull BaseTier tier) {
+        return get(tier.ordinal());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return ordinal() + 1 < values().length;
+    }
+
+    @Nullable
+    @Override
+    public FactoryTier next() {
+        return hasNext() ? get(ordinal() + 1) : null;
     }
 
     @Override

@@ -18,7 +18,8 @@ public class ItemDirtyDust extends ItemMekanism implements IMetaItem {
 
     @Override
     public String getTexture(int meta) {
-        return "Dirty" + Resource.values()[meta].getName() + "Dust";
+        Resource resource = Resource.get(meta);
+        return resource != null ? "Dirty" + resource.getName() + "Dust" : "Invalid";
     }
 
     @Override
@@ -29,7 +30,7 @@ public class ItemDirtyDust extends ItemMekanism implements IMetaItem {
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
         if (isInCreativeTab(tabs)) {
-            for (int counter = 0; counter < Resource.values().length; counter++) {
+            for (int counter = 0; counter < getVariants(); counter++) {
                 itemList.add(new ItemStack(this, 1, counter));
             }
         }
@@ -38,8 +39,9 @@ public class ItemDirtyDust extends ItemMekanism implements IMetaItem {
     @Nonnull
     @Override
     public String getTranslationKey(ItemStack item) {
-        if (item.getItemDamage() <= Resource.values().length - 1) {
-            return "item.dirty" + Resource.values()[item.getItemDamage()].getName() + "Dust";
+        Resource resource = Resource.get(item.getItemDamage());
+        if (resource != null) {
+            return "item.dirty" + resource.getName() + "Dust";
         }
         return "Invalid";
     }

@@ -5,7 +5,7 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 
 public class SecurityData {
 
-    public SecurityMode mode = SecurityMode.PUBLIC;
+    public SecurityMode mode = SecurityMode.getDefault();
     public boolean override;
 
     public SecurityData() {
@@ -18,7 +18,7 @@ public class SecurityData {
 
     public static SecurityData read(ByteBuf dataStream) {
         SecurityData data = new SecurityData();
-        data.mode = SecurityMode.values()[dataStream.readInt()];
+        data.mode = SecurityMode.get(dataStream.readInt());
         data.override = dataStream.readBoolean();
         return data;
     }

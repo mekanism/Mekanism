@@ -43,7 +43,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     private static final int[] SLOTS = {0, 1};
     public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
     public HashList<OredictionificatorFilter> filters = new HashList<>();
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
 
     public boolean didProcess;
 
@@ -158,7 +158,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         if (nbtTags.hasKey("filters")) {
             NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
@@ -178,7 +178,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                controlType = RedstoneControl.values()[dataStream.readInt()];
+                controlType = RedstoneControl.get(dataStream.readInt());
                 didProcess = dataStream.readBoolean();
                 filters.clear();
 
@@ -187,7 +187,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
                     filters.add(OredictionificatorFilter.readFromPacket(dataStream));
                 }
             } else if (type == 1) {
-                controlType = RedstoneControl.values()[dataStream.readInt()];
+                controlType = RedstoneControl.get(dataStream.readInt());
                 didProcess = dataStream.readBoolean();
             } else if (type == 2) {
                 filters.clear();

@@ -25,7 +25,7 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork, Void> implements IHeatTransfer {
 
-    public ConductorTier tier = ConductorTier.BASIC;
+    public ConductorTier tier = ConductorTier.getDefault();
 
     public double temperature = 0;
     public double clientTemperature = 0;
@@ -93,7 +93,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         super.readFromNBT(nbtTags);
         temperature = nbtTags.getDouble("temperature");
         if (nbtTags.hasKey("tier")) {
-            tier = ConductorTier.values()[nbtTags.getInteger("tier")];
+            tier = ConductorTier.get(nbtTags.getInteger("tier"));
         }
     }
 
@@ -122,7 +122,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void handlePacketData(ByteBuf dataStream) throws Exception {
-        tier = ConductorTier.values()[dataStream.readInt()];
+        tier = ConductorTier.get(dataStream.readInt());
         super.handlePacketData(dataStream);
         temperature = dataStream.readDouble();
     }
@@ -206,8 +206,8 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = ConductorTier.values()[tier.ordinal() + 1];
+        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
+            tier = tier.next();
             markDirtyTransmitters();
             sendDesc = true;
             return true;

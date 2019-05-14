@@ -79,7 +79,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
         list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
-                 MekanismUtils.getEnergyDisplay(EnergyCubeTier.values()[getBaseTier(itemstack).ordinal()].getMaxEnergy()));
+                 MekanismUtils.getEnergyDisplay(EnergyCubeTier.get(getBaseTier(itemstack)).getMaxEnergy()));
 
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
@@ -116,7 +116,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 
         if (place) {
             TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
-            tileEntity.tier = EnergyCubeTier.values()[getBaseTier(stack).ordinal()];
+            tileEntity.tier = EnergyCubeTier.get(getBaseTier(stack));
             tileEntity.electricityStored = getEnergy(stack);
             if (tileEntity.tier == EnergyCubeTier.CREATIVE) {
                 tileEntity.configComponent.fillConfig(TransmissionType.ENERGY, tileEntity.getEnergy() > 0 ? 2 : 1);
@@ -144,9 +144,9 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
     @Override
     public BaseTier getBaseTier(ItemStack itemstack) {
         if (!itemstack.hasTagCompound()) {
-            return BaseTier.BASIC;
+            return BaseTier.getDefault();
         }
-        return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
+        return BaseTier.get(itemstack.getTagCompound().getInteger("tier"));
     }
 
     @Override
@@ -190,7 +190,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
-        return EnergyCubeTier.values()[getBaseTier(itemStack).ordinal()].getMaxEnergy();
+        return EnergyCubeTier.get(getBaseTier(itemStack)).getMaxEnergy();
     }
 
     @Override
@@ -289,9 +289,9 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
     @Override
     public SecurityMode getSecurity(ItemStack stack) {
         if (!MekanismConfig.current().general.allowProtection.val()) {
-            return SecurityMode.PUBLIC;
+            return SecurityMode.getDefault();
         }
-        return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
+        return SecurityMode.get(ItemDataUtils.getInt(stack, "security"));
     }
 
     @Override

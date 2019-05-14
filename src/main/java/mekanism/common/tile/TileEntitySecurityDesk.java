@@ -139,7 +139,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
                 }
             } else if (type == 3) {
                 if (frequency != null) {
-                    frequency.securityMode = SecurityMode.values()[dataStream.readInt()];
+                    frequency.securityMode = SecurityMode.get(dataStream.readInt());
                     Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, ownerUUID, new SecurityData(frequency)));
                 }
             }

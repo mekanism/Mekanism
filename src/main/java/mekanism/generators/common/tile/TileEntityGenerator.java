@@ -45,7 +45,7 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
     public TileEntityGenerator(String soundPath, String name, double maxEnergy, double out) {
         super("gen." + soundPath, name, maxEnergy);
         output = out;
-        controlType = RedstoneControl.DISABLED;
+        controlType = RedstoneControl.getDefault();
     }
 
     @Override
@@ -98,7 +98,7 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
         }
     }
 
@@ -112,7 +112,7 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
     }
 
     @Nonnull

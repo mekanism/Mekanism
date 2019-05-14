@@ -499,7 +499,7 @@ public class ClientProxy extends CommonProxy {
             BaseTier tierPointer = null;
 
             if (type.tiers) {
-                tierPointer = BaseTier.values()[0];
+                tierPointer = BaseTier.getDefault();
                 resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
             }
 
@@ -519,13 +519,11 @@ public class ClientProxy extends CommonProxy {
                     basicResources.put(resource, model);
                     modelsToAdd.add(model);
 
-                    if (type.tiers) {
-                        if (tierPointer.ordinal() < BaseTier.values().length - 1) {
-                            tierPointer = BaseTier.values()[tierPointer.ordinal() + 1];
-                            if (type == BasicBlockType.BIN || tierPointer.isObtainable()) {
-                                resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
-                                continue;
-                            }
+                    if (type.tiers && tierPointer != null) {
+                        tierPointer = tierPointer.next();
+                        if (tierPointer != null && (type == BasicBlockType.BIN || tierPointer.isObtainable())) {
+                            resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+                            continue;
                         }
                     }
                 }
@@ -540,7 +538,7 @@ public class ClientProxy extends CommonProxy {
             BaseTier tierPointer = null;
 
             if (type.hasTiers()) {
-                tierPointer = BaseTier.values()[0];
+                tierPointer = BaseTier.getDefault();
                 resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
             }
 
@@ -550,13 +548,11 @@ public class ClientProxy extends CommonProxy {
                     ModelResourceLocation model = new ModelResourceLocation(resource, properties);
                     transmitterResources.put(resource, model);
                     modelsToAdd.add(model);
-                    if (type.hasTiers()) {
-                        if (tierPointer.ordinal() < BaseTier.values().length - 1) {
-                            tierPointer = BaseTier.values()[tierPointer.ordinal() + 1];
-                            if (tierPointer.isObtainable()) {
-                                resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
-                                continue;
-                            }
+                    if (type.hasTiers() && tierPointer != null) {
+                        tierPointer = tierPointer.next();
+                        if (tierPointer != null && tierPointer.isObtainable()) {
+                            resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
+                            continue;
                         }
                     }
                 }
@@ -580,7 +576,7 @@ public class ClientProxy extends CommonProxy {
         }
 
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), stack -> {
-            GasTankTier tier = GasTankTier.values()[((ItemBlockGasTank) stack.getItem()).getBaseTier(stack).ordinal()];
+            GasTankTier tier = GasTankTier.get(((ItemBlockGasTank) stack.getItem()).getBaseTier(stack));
             ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "GasTank");
             return new ModelResourceLocation(baseLocation, "facing=north,tier=" + tier);
         });

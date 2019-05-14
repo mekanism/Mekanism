@@ -135,7 +135,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     /**
      * This machine's current RedstoneControl type.
      */
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
 
     public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, INV_SLOTS.length);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
@@ -532,7 +532,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         delay = nbtTags.getInteger("delay");
         numPowering = nbtTags.getInteger("numPowering");
         searcher.state = State.values()[nbtTags.getInteger("state")];
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         setConfigurationData(nbtTags);
     }
 
@@ -564,7 +564,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         numPowering = dataStream.readInt();
         searcher.state = State.values()[dataStream.readInt()];
         clientToMine = dataStream.readInt();
-        controlType = RedstoneControl.values()[dataStream.readInt()];
+        controlType = RedstoneControl.get(dataStream.readInt());
         inverse = dataStream.readBoolean();
         if (dataStream.readBoolean()) {
             missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());

@@ -9,7 +9,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
 
     public FluidStack fluid;
     public double electricity;
-    public GasMode dumpMode = GasMode.IDLE;
+    public GasMode dumpMode = GasMode.getDefault();
 
     @Override
     public void apply(SynchronizedTurbineData data) {
@@ -31,7 +31,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
             fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
         }
         electricity = nbtTags.getDouble("electricity");
-        dumpMode = GasMode.values()[nbtTags.getInteger("dumpMode")];
+        dumpMode = GasMode.get(nbtTags.getInteger("dumpMode"));
     }
 
     @Override

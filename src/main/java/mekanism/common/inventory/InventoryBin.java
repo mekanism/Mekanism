@@ -74,7 +74,7 @@ public class InventoryBin {
     }
 
     public BinTier getTier() {
-        return BinTier.values()[((ITierItem) bin.getItem()).getBaseTier(bin).ordinal()];
+        return BinTier.get(((ITierItem) bin.getItem()).getBaseTier(bin));
     }
 
     public int getItemCount() {

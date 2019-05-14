@@ -87,7 +87,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
             } else {
                 currentHand = EnumHand.values()[dataStream.readInt()];
             }
-            value = SecurityMode.values()[dataStream.readInt()];
+            value = SecurityMode.get(dataStream.readInt());
         }
     }
 }

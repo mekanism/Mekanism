@@ -1,9 +1,11 @@
 package mekanism.common.tier;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
 
-public enum ConductorTier implements ITier {
+public enum ConductorTier implements ITier<ConductorTier> {
     BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
     ADVANCED(5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1)),
     ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
@@ -21,16 +23,33 @@ public enum ConductorTier implements ITier {
         baseConductionInsulation = insulationInversek;
 
         baseColour = colour;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = BaseTier.get(ordinal());
     }
 
-    public static ConductorTier get(BaseTier tier) {
-        for (ConductorTier transmitter : values()) {
-            if (transmitter.getBaseTier() == tier) {
-                return transmitter;
-            }
-        }
+    public static ConductorTier getDefault() {
         return BASIC;
+    }
+
+    public static ConductorTier get(int index) {
+        if (index < 0 || index >= values().length) {
+            return getDefault();
+        }
+        return values()[index];
+    }
+
+    public static ConductorTier get(@Nonnull BaseTier tier) {
+        return get(tier.ordinal());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return ordinal() + 1 < values().length;
+    }
+
+    @Nullable
+    @Override
+    public ConductorTier next() {
+        return hasNext() ? get(ordinal() + 1) : null;
     }
 
     @Override

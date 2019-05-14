@@ -43,7 +43,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     public double maxThreshold = 5E9;
     public int ticks = 0;
     public int time = 0;
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
     public boolean on = false;
     public Coord4D digging;
     public double diggingProgress;
@@ -234,7 +234,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
             time = dataStream.readInt();
             collectedEnergy = dataStream.readDouble();
             lastFired = dataStream.readDouble();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
             emittingRedstone = dataStream.readBoolean();
             outputMode = RedstoneOutput.values()[dataStream.readInt()];
         }
@@ -249,7 +249,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
         time = nbtTags.getInteger("time");
         collectedEnergy = nbtTags.getDouble("collectedEnergy");
         lastFired = nbtTags.getDouble("lastFired");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         outputMode = RedstoneOutput.values()[nbtTags.getInteger("outputMode")];
     }
 

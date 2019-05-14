@@ -48,7 +48,7 @@ public class PacketRedstoneControl implements IMessageHandler<RedstoneControlMes
         @Override
         public void fromBytes(ByteBuf dataStream) {
             coord4D = Coord4D.read(dataStream);
-            value = RedstoneControl.values()[dataStream.readInt()];
+            value = RedstoneControl.get(dataStream.readInt());
         }
     }
 }

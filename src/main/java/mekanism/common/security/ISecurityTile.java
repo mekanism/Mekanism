@@ -21,6 +21,28 @@ public interface ISecurityTile {
             color = c;
         }
 
+        public static SecurityMode getDefault() {
+            return PUBLIC;
+        }
+
+        public static SecurityMode get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the next security mode, loops back to start when past the end.
+         */
+        public SecurityMode next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return getDefault();
+        }
+
         public String getDisplay() {
             return color + LangUtils.localize(display);
         }

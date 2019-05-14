@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInductionProvider extends TileEntityBasicBlock {
 
-    public InductionProviderTier tier = InductionProviderTier.BASIC;
+    public InductionProviderTier tier = InductionProviderTier.getDefault();
 
     @Override
     public void onUpdate() {
@@ -27,7 +27,7 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             InductionProviderTier prevTier = tier;
-            tier = InductionProviderTier.values()[dataStream.readInt()];
+            tier = InductionProviderTier.get(dataStream.readInt());
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -44,7 +44,7 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock {
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        tier = InductionProviderTier.values()[nbtTags.getInteger("tier")];
+        tier = InductionProviderTier.get(nbtTags.getInteger("tier"));
     }
 
     @Nonnull

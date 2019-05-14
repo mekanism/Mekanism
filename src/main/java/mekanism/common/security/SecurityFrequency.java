@@ -25,7 +25,7 @@ public class SecurityFrequency extends Frequency {
     public SecurityFrequency(UUID uuid) {
         super("Security", uuid);
         trusted = new HashList<>();
-        securityMode = SecurityMode.PUBLIC;
+        securityMode = SecurityMode.getDefault();
     }
 
     public SecurityFrequency(NBTTagCompound nbtTags) {
@@ -56,10 +56,8 @@ public class SecurityFrequency extends Frequency {
         super.read(nbtTags);
 
         trusted = new HashList<>();
-        securityMode = SecurityMode.PUBLIC;
-
         override = nbtTags.getBoolean("override");
-        securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
+        securityMode = SecurityMode.get(nbtTags.getInteger("securityMode"));
 
         if (nbtTags.hasKey("trusted")) {
             NBTTagList trustedList = nbtTags.getTagList("trusted", NBT.TAG_STRING);
@@ -87,10 +85,8 @@ public class SecurityFrequency extends Frequency {
         super.read(dataStream);
 
         trusted = new HashList<>();
-        securityMode = SecurityMode.PUBLIC;
-
         override = dataStream.readBoolean();
-        securityMode = SecurityMode.values()[dataStream.readInt()];
+        securityMode = SecurityMode.get(dataStream.readInt());
 
         int size = dataStream.readInt();
 

@@ -47,7 +47,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private final int SYNC_PACKET = 1;
     private final int BATCH_PACKET = 2;
 
-    public TransporterTier tier = TransporterTier.BASIC;
+    public TransporterTier tier = TransporterTier.getDefault();
 
     private int delay = 0;
     private int delayCount = 0;
@@ -170,7 +170,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             int type = dataStream.readInt();
             if (type == 0) {
                 super.handlePacketData(dataStream);
-                tier = TransporterTier.values()[dataStream.readInt()];
+                tier = TransporterTier.get(dataStream.readInt());
                 int c = dataStream.readInt();
                 EnumColor prev = getTransmitter().getColor();
                 if (c != -1) {
@@ -255,7 +255,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("tier")) {
-            tier = TransporterTier.values()[nbtTags.getInteger("tier")];
+            tier = TransporterTier.get(nbtTags.getInteger("tier"));
         }
         getTransmitter().readFromNBT(nbtTags);
     }
@@ -358,8 +358,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = TransporterTier.values()[tier.ordinal() + 1];
+        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
+            tier = tier.next();
             markDirtyTransmitters();
             sendDesc = true;
             return true;

@@ -79,18 +79,18 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     /**
      * The type of gas this block is outputting.
      */
-    public GasMode dumpLeft = GasMode.IDLE;
+    public GasMode dumpLeft = GasMode.getDefault();
     /**
      * Type type of gas this block is dumping.
      */
-    public GasMode dumpRight = GasMode.IDLE;
+    public GasMode dumpRight = GasMode.getDefault();
     public SeparatorRecipe cachedRecipe;
     public double clientEnergyUsed;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     /**
      * This machine's current RedstoneControl type.
      */
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
 
     private int currentRedstoneLevel;
 
@@ -249,9 +249,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             byte type = dataStream.readByte();
             if (type == 0) {
-                dumpLeft = GasMode.values()[dumpLeft.ordinal() == GasMode.values().length - 1 ? 0 : dumpLeft.ordinal() + 1];
+                dumpLeft = dumpLeft.next();
             } else if (type == 1) {
-                dumpRight = GasMode.values()[dumpRight.ordinal() == GasMode.values().length - 1 ? 0 : dumpRight.ordinal() + 1];
+                dumpRight = dumpRight.next();
             }
             return;
         }
@@ -262,8 +262,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             TileUtils.readTankData(dataStream, fluidTank);
             TileUtils.readTankData(dataStream, leftTank);
             TileUtils.readTankData(dataStream, rightTank);
-            dumpLeft = GasMode.values()[dataStream.readInt()];
-            dumpRight = GasMode.values()[dataStream.readInt()];
+            dumpLeft = GasMode.get(dataStream.readInt());
+            dumpRight = GasMode.get(dataStream.readInt());
             clientEnergyUsed = dataStream.readDouble();
         }
     }
@@ -293,8 +293,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         }
         leftTank.read(nbtTags.getCompoundTag("leftTank"));
         rightTank.read(nbtTags.getCompoundTag("rightTank"));
-        dumpLeft = GasMode.values()[nbtTags.getInteger("dumpLeft")];
-        dumpRight = GasMode.values()[nbtTags.getInteger("dumpRight")];
+        dumpLeft = GasMode.get(nbtTags.getInteger("dumpLeft"));
+        dumpRight = GasMode.get(nbtTags.getInteger("dumpRight"));
     }
 
     @Nonnull

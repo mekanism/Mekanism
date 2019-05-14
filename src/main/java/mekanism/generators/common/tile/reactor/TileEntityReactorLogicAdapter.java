@@ -65,7 +65,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        logicType = ReactorLogic.values()[nbtTags.getInteger("logicType")];
+        logicType = ReactorLogic.get(nbtTags.getInteger("logicType"));
         activeCooled = nbtTags.getBoolean("activeCooled");
     }
 
@@ -85,7 +85,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             if (type == 0) {
                 activeCooled = !activeCooled;
             } else if (type == 1) {
-                logicType = ReactorLogic.values()[dataStream.readInt()];
+                logicType = ReactorLogic.get(dataStream.readInt());
             }
             return;
         }
@@ -93,7 +93,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            logicType = ReactorLogic.values()[dataStream.readInt()];
+            logicType = ReactorLogic.get(dataStream.readInt());
             activeCooled = dataStream.readBoolean();
             prevOutputting = dataStream.readBoolean();
         }
@@ -177,6 +177,13 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         ReactorLogic(String s, ItemStack stack) {
             name = s;
             renderStack = stack;
+        }
+
+        public static ReactorLogic get(int index) {
+            if (index < 0 || index >= values().length) {
+                return DISABLED;
+            }
+            return values()[index];
         }
 
         public ItemStack getRenderStack() {

@@ -52,7 +52,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
             }
         }, resource, 144, 13));
         addGuiElement(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
+            TemperatureUnit unit = TemperatureUnit.getCurrent();
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
         }, this, resource));

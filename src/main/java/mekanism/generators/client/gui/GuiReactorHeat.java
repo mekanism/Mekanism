@@ -64,7 +64,7 @@ public class GuiReactorHeat extends GuiMekanismTile<TileEntityReactorController>
 
             @Override
             public String getText(double level) {
-                return "Plasma: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN);
+                return "Plasma: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.getCurrent());
             }
         }, Type.STANDARD, this, resource, 7, 50));
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
@@ -91,7 +91,7 @@ public class GuiReactorHeat extends GuiMekanismTile<TileEntityReactorController>
 
             @Override
             public String getText(double level) {
-                return "Case: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN);
+                return "Case: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.getCurrent());
             }
         }, Type.STANDARD, this, resource, 61, 50));
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {

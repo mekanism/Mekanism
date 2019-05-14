@@ -5,7 +5,6 @@ import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFuelwoodHeater;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.util.LangUtils;
@@ -28,7 +27,7 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater>
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 14, 28));
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
         addGuiElement(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
+            TemperatureUnit unit = TemperatureUnit.getCurrent();
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
         }, this, resource));

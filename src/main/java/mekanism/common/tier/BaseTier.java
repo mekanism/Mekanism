@@ -1,6 +1,7 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 import net.minecraft.util.IStringSerializable;
@@ -23,6 +24,23 @@ public enum BaseTier implements IStringSerializable {
     BaseTier(String s, EnumColor c) {
         name = s;
         color = c;
+    }
+
+    public static BaseTier getDefault() {
+        return BASIC;
+    }
+
+    public static BaseTier get(int index) {
+        if (index < 0 || index >= values().length) {
+            return getDefault();
+        }
+        return values()[index];
+    }
+
+    @Nullable
+    public BaseTier next() {
+        int nextOrdinal = ordinal() + 1;
+        return nextOrdinal < values().length ? get(nextOrdinal) : null;
     }
 
     public String getSimpleName() {

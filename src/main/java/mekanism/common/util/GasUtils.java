@@ -223,7 +223,7 @@ public final class GasUtils {
         if (type == MekanismFluids.Oxygen) {
             stacks.add(new ItemStack(Items.FLINT));
         }
-        stacks.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, type));
+        stacks.add(MekanismUtils.getFullGasTank(GasTankTier.getDefault(), type));
         return stacks;
     }
 }

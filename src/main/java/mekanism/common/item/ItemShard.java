@@ -17,7 +17,8 @@ public class ItemShard extends ItemMekanism implements IMetaItem {
 
     @Override
     public String getTexture(int meta) {
-        return Resource.values()[meta].getName() + "Shard";
+        Resource resource = Resource.get(meta);
+        return resource != null ? resource.getName() + "Shard" : "Invalid";
     }
 
     @Override
@@ -28,7 +29,7 @@ public class ItemShard extends ItemMekanism implements IMetaItem {
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
         if (isInCreativeTab(tabs)) {
-            for (int counter = 0; counter < Resource.values().length; counter++) {
+            for (int counter = 0; counter < getVariants(); counter++) {
                 itemList.add(new ItemStack(this, 1, counter));
             }
         }
@@ -37,8 +38,9 @@ public class ItemShard extends ItemMekanism implements IMetaItem {
     @Nonnull
     @Override
     public String getTranslationKey(ItemStack item) {
-        if (item.getItemDamage() <= Resource.values().length - 1) {
-            return "item." + Resource.values()[item.getItemDamage()].getName().toLowerCase(Locale.ROOT) + "Shard";
+        Resource resource = Resource.get(item.getItemDamage());
+        if (resource != null) {
+            return "item." + resource.getName().toLowerCase(Locale.ROOT) + "Shard";
         }
         return "Invalid";
     }

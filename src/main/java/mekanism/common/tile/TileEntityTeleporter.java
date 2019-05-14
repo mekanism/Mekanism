@@ -75,7 +75,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
      */
     public byte status = 0;
 
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
 
     public TileComponentSecurity securityComponent;
     public TileComponentChunkLoader chunkLoaderComponent;
@@ -383,7 +383,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         if (nbtTags.hasKey("frequency")) {
             frequency = new Frequency(nbtTags.getCompoundTag("frequency"));
             frequency.valid = false;
@@ -433,7 +433,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
             status = dataStream.readByte();
             shouldRender = dataStream.readBoolean();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
 
             publicCache.clear();
             privateCache.clear();

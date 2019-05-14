@@ -159,9 +159,9 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
     @Override
     public BaseTier getBaseTier(ItemStack itemstack) {
         if (!itemstack.hasTagCompound()) {
-            return BaseTier.BASIC;
+            return BaseTier.getDefault();
         }
-        return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
+        return BaseTier.get(itemstack.getTagCompound().getInteger("tier"));
     }
 
     @Override

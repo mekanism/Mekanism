@@ -4,7 +4,6 @@ import java.util.Collections;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.LangUtils;
@@ -28,7 +27,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         addGuiElement(new GuiFluidGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
         addGuiElement(new GuiFluidGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, resource, 152, 13));
         addGuiElement(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
+            TemperatureUnit unit = TemperatureUnit.getCurrent();
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.totalLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
         }, this, resource));

@@ -43,7 +43,7 @@ import net.minecraftforge.fml.common.Optional;
 public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements IStrictEnergyAcceptor,
       IStrictEnergyStorage, IEnergyReceiver {
 
-    public CableTier tier = CableTier.BASIC;
+    public CableTier tier = CableTier.getDefault();
 
     public double currentPower = 0;
     public double lastWrite = 0;
@@ -161,7 +161,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             buffer.amount = 0;
         }
         if (nbtTags.hasKey("tier")) {
-            tier = CableTier.values()[nbtTags.getInteger("tier")];
+            tier = CableTier.get(nbtTags.getInteger("tier"));
         }
     }
 
@@ -300,8 +300,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = CableTier.values()[tier.ordinal() + 1];
+        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
+            tier = tier.next();
             markDirtyTransmitters();
             sendDesc = true;
             return true;
@@ -311,7 +311,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public void handlePacketData(ByteBuf dataStream) throws Exception {
-        tier = CableTier.values()[dataStream.readInt()];
+        tier = CableTier.get(dataStream.readInt());
         super.handlePacketData(dataStream);
     }
 

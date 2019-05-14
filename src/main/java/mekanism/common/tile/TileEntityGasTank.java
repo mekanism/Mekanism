@@ -52,7 +52,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
      */
     public GasTank gasTank;
 
-    public GasTankTier tier = GasTankTier.BASIC;
+    public GasTankTier tier = GasTankTier.getDefault();
 
     public GasMode dumping;
 
@@ -84,8 +84,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
         gasTank = new GasTank(tier.getStorage());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-        dumping = GasMode.IDLE;
-        controlType = RedstoneControl.DISABLED;
+        dumping = GasMode.getDefault();
+        controlType = RedstoneControl.getDefault();
 
         ejectorComponent = new TileComponentEjector(this);
 
@@ -130,10 +130,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+        if (!tier.hasNext() || upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-        tier = GasTankTier.values()[upgradeTier.ordinal()];
+        tier = tier.next();
         gasTank.setMaxGas(tier.getStorage());
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();
@@ -239,8 +239,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                int index = (dumping.ordinal() + 1) % GasMode.values().length;
-                dumping = GasMode.values()[index];
+                dumping = dumping.next();
             }
             for (EntityPlayer player : playersUsing) {
                 Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
@@ -251,11 +250,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             GasTankTier prevTier = tier;
-            tier = GasTankTier.values()[dataStream.readInt()];
+            tier = GasTankTier.get(dataStream.readInt());
             gasTank.setMaxGas(tier.getStorage());
             TileUtils.readTankData(dataStream, gasTank);
-            dumping = GasMode.values()[dataStream.readInt()];
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            dumping = GasMode.get(dataStream.readInt());
+            controlType = RedstoneControl.get(dataStream.readInt());
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -265,10 +264,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        tier = GasTankTier.values()[nbtTags.getInteger("tier")];
+        tier = GasTankTier.get(nbtTags.getInteger("tier"));
         gasTank.read(nbtTags.getCompoundTag("gasTank"));
-        dumping = GasMode.values()[nbtTags.getInteger("dumping")];
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        dumping = GasMode.get(nbtTags.getInteger("dumping"));
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
     }
 
     @Nonnull
@@ -359,6 +358,28 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     public enum GasMode {
         IDLE,
         DUMPING_EXCESS,
-        DUMPING
+        DUMPING;
+
+        public static GasMode getDefault() {
+            return IDLE;
+        }
+
+        public static GasMode get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the next gas mode, loops back to start when past the end.
+         */
+        public GasMode next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return getDefault();
+        }
     }
 }

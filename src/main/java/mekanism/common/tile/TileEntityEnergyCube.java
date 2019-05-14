@@ -43,7 +43,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     /**
      * This Energy Cube's tier.
      */
-    public EnergyCubeTier tier = EnergyCubeTier.BASIC;
+    public EnergyCubeTier tier = EnergyCubeTier.getDefault();
     /**
      * The redstone level this Energy Cube is outputting at.
      */
@@ -74,7 +74,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         configComponent.setEjecting(TransmissionType.ENERGY, true);
 
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-        controlType = RedstoneControl.DISABLED;
+        controlType = RedstoneControl.getDefault();
 
         ejectorComponent = new TileComponentEjector(this);
 
@@ -101,10 +101,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+        if (!tier.hasNext() || upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-        tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
+        tier = tier.next();
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();
         return true;
@@ -196,8 +196,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             EnergyCubeTier prevTier = tier;
-            tier = EnergyCubeTier.values()[dataStream.readInt()];
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            tier = EnergyCubeTier.get(dataStream.readInt());
+            controlType = RedstoneControl.get(dataStream.readInt());
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -215,8 +215,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        tier = EnergyCubeTier.get(nbtTags.getInteger("tier"));
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
     }
 
     @Nonnull

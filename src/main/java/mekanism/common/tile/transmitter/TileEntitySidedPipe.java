@@ -111,7 +111,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     public BaseTier getBaseTier() {
-        return BaseTier.BASIC;
+        return BaseTier.getDefault();
     }
 
     public void setBaseTier(BaseTier baseTier) {

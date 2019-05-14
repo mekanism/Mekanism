@@ -25,7 +25,7 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
 
-    public TubeTier tier = TubeTier.BASIC;
+    public TubeTier tier = TubeTier.getDefault();
 
     public float currentScale;
 
@@ -138,7 +138,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("tier")) {
-            tier = TubeTier.values()[nbtTags.getInteger("tier")];
+            tier = TubeTier.get(nbtTags.getInteger("tier"));
         }
         buffer.setMaxGas(getCapacity());
         if (nbtTags.hasKey("cacheGas")) {
@@ -280,8 +280,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = TubeTier.values()[tier.ordinal() + 1];
+        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
+            tier = tier.next();
             markDirtyTransmitters();
             sendDesc = true;
             return true;
@@ -291,7 +291,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void handlePacketData(ByteBuf dataStream) throws Exception {
-        tier = TubeTier.values()[dataStream.readInt()];
+        tier = TubeTier.get(dataStream.readInt());
         super.handlePacketData(dataStream);
     }
 

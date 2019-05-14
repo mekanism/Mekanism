@@ -37,13 +37,13 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
 
     @Override
     public String getStoredInfo() {
-        return MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN) + " above ambient";
+        return MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.getCurrent()) + " above ambient";
     }
 
     @Override
     public String getFlowInfo() {
-        return MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN) + " transferred to acceptors, " +
-               MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN) + " lost to environment, " +
+        return MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.getCurrent()) + " transferred to acceptors, " +
+               MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.getCurrent()) + " lost to environment, " +
                (heatTransferred + heatLost == 0 ? "" : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency");
     }
 

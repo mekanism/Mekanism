@@ -1,8 +1,10 @@
 package mekanism.common.tier;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 
-public enum TransporterTier implements ITier {
+public enum TransporterTier implements ITier<TransporterTier> {
     BASIC(1, 5),
     ADVANCED(16, 10),
     ELITE(32, 20),
@@ -15,16 +17,33 @@ public enum TransporterTier implements ITier {
     TransporterTier(int pull, int s) {
         basePull = pull;
         baseSpeed = s;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = BaseTier.get(ordinal());
     }
 
-    public static TransporterTier get(BaseTier tier) {
-        for (TransporterTier transmitter : values()) {
-            if (transmitter.getBaseTier() == tier) {
-                return transmitter;
-            }
-        }
+    public static TransporterTier getDefault() {
         return BASIC;
+    }
+
+    public static TransporterTier get(int index) {
+        if (index < 0 || index >= values().length) {
+            return getDefault();
+        }
+        return values()[index];
+    }
+
+    public static TransporterTier get(@Nonnull BaseTier tier) {
+        return get(tier.ordinal());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return ordinal() + 1 < values().length;
+    }
+
+    @Nullable
+    @Override
+    public TransporterTier next() {
+        return hasNext() ? get(ordinal() + 1) : null;
     }
 
     @Override

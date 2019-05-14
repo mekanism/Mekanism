@@ -62,7 +62,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-    public FluidTankTier tier = FluidTankTier.BASIC;
+    public FluidTankTier tier = FluidTankTier.getDefault();
 
     public int updateDelay;
 
@@ -87,10 +87,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+        if (!tier.hasNext() || upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-        tier = FluidTankTier.values()[upgradeTier.ordinal()];
+        tier = tier.next();
         fluidTank.setCapacity(tier.getStorage());
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();
@@ -251,7 +251,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        tier = FluidTankTier.values()[nbtTags.getInteger("tier")];
+        tier = FluidTankTier.get(nbtTags.getInteger("tier"));
         clientActive = isActive = nbtTags.getBoolean("isActive");
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
         //Needs to be outside the hasKey check because this is just based on the tier which is known information
@@ -266,7 +266,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             FluidTankTier prevTier = tier;
-            tier = FluidTankTier.values()[dataStream.readInt()];
+            tier = FluidTankTier.get(dataStream.readInt());
             fluidTank.setCapacity(tier.getStorage());
 
             clientActive = dataStream.readBoolean();

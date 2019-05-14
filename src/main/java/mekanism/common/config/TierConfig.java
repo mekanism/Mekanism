@@ -51,44 +51,44 @@ public class TierConfig {
 
     private TierConfig(BaseConfig baseConfig, BaseTier tier) {
         String name = tier.getSimpleName();
-        EnergyCubeMaxEnergy = new DoubleOption(baseConfig, "tier", name + "EnergyCubeMaxEnergy", EnergyCubeTier.values()[tier.ordinal()].getBaseMaxEnergy(),
+        EnergyCubeMaxEnergy = new DoubleOption(baseConfig, "tier", name + "EnergyCubeMaxEnergy", EnergyCubeTier.get(tier).getBaseMaxEnergy(),
               "Maximum number of Joules a " + name + " energy cube can store.");
-        EnergyCubeOutput = new DoubleOption(baseConfig, "tier", name + "EnergyCubeOutput", EnergyCubeTier.values()[tier.ordinal()].getBaseOutput(),
+        EnergyCubeOutput = new DoubleOption(baseConfig, "tier", name + "EnergyCubeOutput", EnergyCubeTier.get(tier).getBaseOutput(),
               "Output rate in Joules of a " + name + " energy cube.");
-        FluidTankStorage = new IntOption(baseConfig, "tier", name + "FluidTankStorage", FluidTankTier.values()[tier.ordinal()].getBaseStorage(),
+        FluidTankStorage = new IntOption(baseConfig, "tier", name + "FluidTankStorage", FluidTankTier.get(tier).getBaseStorage(),
               "Storage size of " + name + " gas tank in mB.");
-        FluidTankOutput = new IntOption(baseConfig, "tier", name + "FluidTankOutput", FluidTankTier.values()[tier.ordinal()].getBaseOutput(),
+        FluidTankOutput = new IntOption(baseConfig, "tier", name + "FluidTankOutput", FluidTankTier.get(tier).getBaseOutput(),
               "Output rate of " + name + " gas tank in mB.");
-        GasTankStorage = new IntOption(baseConfig, "tier", name + "GasTankStorage", GasTankTier.values()[tier.ordinal()].getBaseStorage(),
+        GasTankStorage = new IntOption(baseConfig, "tier", name + "GasTankStorage", GasTankTier.get(tier).getBaseStorage(),
               "Storage size of " + name + " gas tank in mB.");
-        GasTankOutput = new IntOption(baseConfig, "tier", name + "GasTankOutput", GasTankTier.values()[tier.ordinal()].getBaseOutput(),
+        GasTankOutput = new IntOption(baseConfig, "tier", name + "GasTankOutput", GasTankTier.get(tier).getBaseOutput(),
               "Output rate of " + name + " gas tank in mB.");
-        BinStorage = new IntOption(baseConfig, "tier", name + "BinStorage", BinTier.values()[tier.ordinal()].getBaseStorage(),
+        BinStorage = new IntOption(baseConfig, "tier", name + "BinStorage", BinTier.get(tier).getBaseStorage(),
               "The number of items a " + name + " bin can store.");
         if (tier != BaseTier.CREATIVE) {
-            InductionCellMaxEnergy = new DoubleOption(baseConfig, "tier", name + "InductionCellMaxEnergy", InductionCellTier.values()[tier.ordinal()].getBaseMaxEnergy(),
+            InductionCellMaxEnergy = new DoubleOption(baseConfig, "tier", name + "InductionCellMaxEnergy", InductionCellTier.get(tier).getBaseMaxEnergy(),
                   "Maximum number of Joules a " + name + " induction cell can store.");
-            InductionProviderOutput = new DoubleOption(baseConfig, "tier", name + "InductionProviderOutput", InductionProviderTier.values()[tier.ordinal()].getBaseOutput(),
+            InductionProviderOutput = new DoubleOption(baseConfig, "tier", name + "InductionProviderOutput", InductionProviderTier.get(tier).getBaseOutput(),
                   "Maximum number of Joules a " + name + " induction provider can output or accept.");
-            CableCapacity = new IntOption(baseConfig, "tier", name + "CableCapacity", CableTier.values()[tier.ordinal()].getBaseCapacity(),
+            CableCapacity = new IntOption(baseConfig, "tier", name + "CableCapacity", CableTier.get(tier).getBaseCapacity(),
                   "Internal buffer in Joules of each " + name + " universal cable.");
-            PipeCapacity = new IntOption(baseConfig, "tier", name + "PipeCapacity", PipeTier.values()[tier.ordinal()].getBaseCapacity(),
+            PipeCapacity = new IntOption(baseConfig, "tier", name + "PipeCapacity", PipeTier.get(tier).getBaseCapacity(),
                   "Capacity of " + name + " mechanical pipe in mB.");
-            PipePullAmount = new IntOption(baseConfig, "tier", name + "PipePullAmount", PipeTier.values()[tier.ordinal()].getBasePull(),
+            PipePullAmount = new IntOption(baseConfig, "tier", name + "PipePullAmount", PipeTier.get(tier).getBasePull(),
                   "Pump rate of " + name + " mechanical pipe in mB/t.");
-            TubeCapacity = new IntOption(baseConfig, "tier", name + "TubeCapacity", TubeTier.values()[tier.ordinal()].getBaseCapacity(),
+            TubeCapacity = new IntOption(baseConfig, "tier", name + "TubeCapacity", TubeTier.get(tier).getBaseCapacity(),
                   "Capacity of " + name + " pressurized tube in mB.");
-            TubePullAmount = new IntOption(baseConfig, "tier", name + "TubePullAmount", TubeTier.values()[tier.ordinal()].getBasePull(),
+            TubePullAmount = new IntOption(baseConfig, "tier", name + "TubePullAmount", TubeTier.get(tier).getBasePull(),
                   "Pump rate of " + name + " pressurized tube in mB/t.");
-            TransporterPullAmount = new IntOption(baseConfig, "tier", name + "TransporterPullAmount", TransporterTier.values()[tier.ordinal()].getBasePull(),
+            TransporterPullAmount = new IntOption(baseConfig, "tier", name + "TransporterPullAmount", TransporterTier.get(tier).getBasePull(),
                   "Item throughput rate of " + name + " logistical transporter in items/s.");
-            TransporterSpeed = new IntOption(baseConfig, "tier", name + "TransporterSpeed", TransporterTier.values()[tier.ordinal()].getBaseSpeed(),
+            TransporterSpeed = new IntOption(baseConfig, "tier", name + "TransporterSpeed", TransporterTier.get(tier).getBaseSpeed(),
                   "Five times travel speed of " + name + " logistical transporter.");
-            ConductorInverseConduction = new DoubleOption(baseConfig, "tier", name + "ConductorInverseConduction", ConductorTier.values()[tier.ordinal()].getBaseConduction(),
+            ConductorInverseConduction = new DoubleOption(baseConfig, "tier", name + "ConductorInverseConduction", ConductorTier.get(tier).getBaseConduction(),
                   "Conduction value of " + name + " thermodynamic conductor.");
-            ConductorHeatCapacity = new DoubleOption(baseConfig, "tier", name + "ConductorHeatCapacity", ConductorTier.values()[tier.ordinal()].getBaseHeatCapacity(),
+            ConductorHeatCapacity = new DoubleOption(baseConfig, "tier", name + "ConductorHeatCapacity", ConductorTier.get(tier).getBaseHeatCapacity(),
                   "Heat capacity of " + name + " thermodynamic conductor.");
-            ConductorConductionInsulation = new DoubleOption(baseConfig, "tier", name + "ConductorConductionInsulation", ConductorTier.values()[tier.ordinal()].getBaseConductionInsulation(),
+            ConductorConductionInsulation = new DoubleOption(baseConfig, "tier", name + "ConductorConductionInsulation", ConductorTier.get(tier).getBaseConductionInsulation(),
                   "Insulation value of " + name + " thermodynamic conductor.");
         } else {
             InductionCellMaxEnergy = null;

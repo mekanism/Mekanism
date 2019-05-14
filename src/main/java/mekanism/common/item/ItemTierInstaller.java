@@ -33,7 +33,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
         }
         TileEntity tile = world.getTileEntity(pos);
         ItemStack stack = player.getHeldItem(hand);
-        BaseTier tier = BaseTier.values()[stack.getItemDamage()];
+        BaseTier tier = BaseTier.get(stack.getItemDamage());
         if (tile instanceof ITierUpgradeable) {
             if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).playersUsing.size() > 0) {
                 return EnumActionResult.FAIL;
@@ -51,7 +51,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
 
     @Override
     public String getTexture(int meta) {
-        return BaseTier.values()[meta].getSimpleName() + "TierInstaller";
+        return BaseTier.get(meta).getSimpleName() + "TierInstaller";
     }
 
     @Override
@@ -73,6 +73,6 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
     @Nonnull
     @Override
     public String getTranslationKey(ItemStack item) {
-        return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName().toLowerCase(Locale.ROOT) + "TierInstaller";
+        return "item." + BaseTier.get(item.getItemDamage()).getSimpleName().toLowerCase(Locale.ROOT) + "TierInstaller";
     }
 }

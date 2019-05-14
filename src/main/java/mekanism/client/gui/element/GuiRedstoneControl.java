@@ -61,14 +61,14 @@ public class GuiRedstoneControl extends GuiTileEntityElement<TileEntity> {
         IRedstoneControl control = (IRedstoneControl) tileEntity;
 
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            RedstoneControl current = control.getControlType();
-            int ordinalToSet = current.ordinal() < (RedstoneControl.values().length - 1) ? current.ordinal() + 1 : 0;
-            if (ordinalToSet == RedstoneControl.PULSE.ordinal() && !control.canPulse()) {
-                ordinalToSet = 0;
+            RedstoneControl next = control.getControlType().next();
+            if (next == RedstoneControl.PULSE && !control.canPulse()) {
+                //Skip it because we cannot pulse
+                next = next.next();
             }
 
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            Mekanism.packetHandler.sendToServer(new RedstoneControlMessage(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+            Mekanism.packetHandler.sendToServer(new RedstoneControlMessage(Coord4D.get(tileEntity), next));
         }
     }
 }

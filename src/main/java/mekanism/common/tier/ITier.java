@@ -1,6 +1,13 @@
 package mekanism.common.tier;
 
-public interface ITier {
+import javax.annotation.Nullable;
+
+public interface ITier<ENUM> {
+
+    boolean hasNext();
+
+    @Nullable
+    ENUM next();
 
     BaseTier getBaseTier();
 }

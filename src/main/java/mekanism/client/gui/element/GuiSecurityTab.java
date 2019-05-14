@@ -103,7 +103,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
 
     private SecurityMode getSecurity() {
         if (!MekanismConfig.current().general.allowProtection.val()) {
-            return SecurityMode.PUBLIC;
+            return SecurityMode.getDefault();
         }
 
         if (isItem) {
@@ -151,14 +151,12 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
         if (button == 0 && MekanismConfig.current().general.allowProtection.val()) {
             if (getOwner() != null && mc.player.getUniqueID().equals(getOwner())) {
                 if (inBounds(xAxis, yAxis)) {
-                    SecurityMode current = getSecurity();
-                    int ordinalToSet = current.ordinal() < (SecurityMode.values().length - 1) ? current.ordinal() + 1 : 0;
-
+                    SecurityMode next = getSecurity().next();
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     if (isItem) {
-                        Mekanism.packetHandler.sendToServer(new SecurityModeMessage(currentHand, SecurityMode.values()[ordinalToSet]));
+                        Mekanism.packetHandler.sendToServer(new SecurityModeMessage(currentHand, next));
                     } else {
-                        Mekanism.packetHandler.sendToServer(new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
+                        Mekanism.packetHandler.sendToServer(new SecurityModeMessage(Coord4D.get(tileEntity), next));
                     }
                 }
             }

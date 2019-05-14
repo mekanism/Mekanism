@@ -62,7 +62,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     private boolean isActive;
     private boolean needsRainCheck;
 
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
 
     public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
@@ -149,7 +149,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             isActive = dataStream.readBoolean();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
             TileUtils.readTankData(dataStream, inputTank);
             TileUtils.readTankData(dataStream, outputTank);
         }
@@ -169,7 +169,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         isActive = nbtTags.getBoolean("isActive");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         inputTank.read(nbtTags.getCompoundTag("inputTank"));
         outputTank.read(nbtTags.getCompoundTag("outputTank"));
     }

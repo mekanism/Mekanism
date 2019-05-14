@@ -47,6 +47,28 @@ public interface IRedstoneControl {
             display = s;
         }
 
+        public static RedstoneControl getDefault() {
+            return DISABLED;
+        }
+
+        public static RedstoneControl get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the next control mode, loops back to start when past the end.
+         */
+        public RedstoneControl next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return getDefault();
+        }
+
         public String getDisplay() {
             return LangUtils.localize(display);
         }

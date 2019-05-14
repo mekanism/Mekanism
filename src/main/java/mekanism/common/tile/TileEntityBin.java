@@ -56,7 +56,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
     public int cacheCount;
 
-    public BinTier tier = BinTier.BASIC;
+    public BinTier tier = BinTier.getDefault();
 
     public ItemStack itemType = ItemStack.EMPTY;
 
@@ -75,10 +75,10 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+        if (!tier.hasNext() || upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-        tier = BinTier.values()[upgradeTier.ordinal()];
+        tier = tier.next();
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();
         return true;
@@ -250,7 +250,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         super.readFromNBT(nbtTags);
         clientActive = isActive = nbtTags.getBoolean("isActive");
         cacheCount = nbtTags.getInteger("itemCount");
-        tier = BinTier.values()[nbtTags.getInteger("tier")];
+        tier = BinTier.get(nbtTags.getInteger("tier"));
         bottomStack = new ItemStack(nbtTags.getCompoundTag("bottomStack"));
         topStack = new ItemStack(nbtTags.getCompoundTag("topStack"));
         if (getItemCount() > 0) {
@@ -276,7 +276,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             clientActive = isActive = dataStream.readBoolean();
             clientAmount = dataStream.readInt();
-            tier = BinTier.values()[dataStream.readInt()];
+            tier = BinTier.get(dataStream.readInt());
             if (clientAmount > 0) {
                 itemType = PacketHandler.readStack(dataStream);
             } else {

@@ -17,7 +17,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 
     public double electricityStored;
 
-    public GasMode dumpMode = GasMode.IDLE;
+    public GasMode dumpMode = GasMode.getDefault();
 
     public int blades;
     public int vents;

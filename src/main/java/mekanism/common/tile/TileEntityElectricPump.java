@@ -96,7 +96,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     /**
      * This machine's current RedstoneControl type.
      */
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
     public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
@@ -240,7 +240,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             TileUtils.readTankData(dataStream, fluidTank);
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
         }
     }
 
@@ -293,7 +293,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
         }
         if (nbtTags.hasKey("controlType")) {
-            controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+            controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         }
         if (nbtTags.hasKey("recurringNodes")) {
             NBTTagList tagList = nbtTags.getTagList("recurringNodes", NBT.TAG_COMPOUND);

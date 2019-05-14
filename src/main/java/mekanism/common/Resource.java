@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import java.util.Locale;
+import javax.annotation.Nullable;
 
 public enum Resource {
     IRON("Iron", 0xaf8e77),
@@ -17,6 +18,14 @@ public enum Resource {
     Resource(String s, int t) {
         name = s;
         tint = t;
+    }
+
+    @Nullable
+    public static Resource get(int index) {
+        if (index < 0 || index >= values().length) {
+            return null;
+        }
+        return values()[index];
     }
 
     public static Resource getFromName(String s) {

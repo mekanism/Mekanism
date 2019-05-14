@@ -69,9 +69,9 @@ public class MultipartTransmitter implements IMultipart {
     public void onPartPlacedBy(IPartInfo part, EntityLivingBase placer, ItemStack stack) {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntitySidedPipe) {
-            BaseTier baseTier = BaseTier.BASIC;
+            BaseTier baseTier = BaseTier.getDefault();
             if (stack.hasTagCompound()) {
-                baseTier = BaseTier.values()[stack.getTagCompound().getInteger("tier")];
+                baseTier = BaseTier.get(stack.getTagCompound().getInteger("tier"));
             }
             ((TileEntitySidedPipe) tile).setBaseTier(baseTier);
         }

@@ -75,7 +75,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
      * How many ticks this machine has been operating for.
      */
     public int operatingTicks;
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
     public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
@@ -193,7 +193,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             finishedCalc = dataStream.readBoolean();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
             TileUtils.readTankData(dataStream, fluidTank);
         }
     }
@@ -244,7 +244,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         super.readFromNBT(nbtTags);
         operatingTicks = nbtTags.getInteger("operatingTicks");
         finishedCalc = nbtTags.getBoolean("finishedCalc");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
 
         if (nbtTags.hasKey("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));

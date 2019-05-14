@@ -1,8 +1,10 @@
 package mekanism.common.tier;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 
-public enum InductionCellTier implements ITier {
+public enum InductionCellTier implements ITier<InductionCellTier> {
     BASIC(1E9D),
     ADVANCED(8E9D),
     ELITE(64E9D),
@@ -13,7 +15,33 @@ public enum InductionCellTier implements ITier {
 
     InductionCellTier(double max) {
         baseMaxEnergy = max;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = BaseTier.get(ordinal());
+    }
+
+    public static InductionCellTier getDefault() {
+        return BASIC;
+    }
+
+    public static InductionCellTier get(int index) {
+        if (index < 0 || index >= values().length) {
+            return getDefault();
+        }
+        return values()[index];
+    }
+
+    public static InductionCellTier get(@Nonnull BaseTier tier) {
+        return get(tier.ordinal());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return ordinal() + 1 < values().length;
+    }
+
+    @Nullable
+    @Override
+    public InductionCellTier next() {
+        return hasNext() ? get(ordinal() + 1) : null;
     }
 
     @Override

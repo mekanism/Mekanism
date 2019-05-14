@@ -60,7 +60,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     public RecipeFormula formula;
 
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
 
     public TileComponentUpgrade upgradeComponent;
     public TileComponentEjector ejectorComponent;
@@ -439,7 +439,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
         super.readFromNBT(nbtTags);
         autoMode = nbtTags.getBoolean("autoMode");
         operatingTicks = nbtTags.getInteger("operatingTicks");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         pulseOperations = nbtTags.getInteger("pulseOperations");
         stockControl = nbtTags.getBoolean("stockControl");
     }
@@ -485,7 +485,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             autoMode = dataStream.readBoolean();
             operatingTicks = dataStream.readInt();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
             isRecipe = dataStream.readBoolean();
             stockControl = dataStream.readBoolean();
             if (dataStream.readBoolean()) {

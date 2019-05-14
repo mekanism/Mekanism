@@ -83,9 +83,9 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
     @Override
     public BaseTier getBaseTier(ItemStack itemstack) {
         if (itemstack.getTagCompound() == null) {
-            return BaseTier.BASIC;
+            return BaseTier.getDefault();
         }
-        return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
+        return BaseTier.get(itemstack.getTagCompound().getInteger("tier"));
     }
 
     @Override
@@ -116,14 +116,14 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
                     } else {
                         list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty"));
                     }
-                    int cap = BinTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
+                    int cap = BinTier.get(getBaseTier(itemstack)).getStorage();
                     list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
                              (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap) + " " + LangUtils.localize("transmission.Items"));
                 } else if (type == BasicBlockType.INDUCTION_CELL) {
-                    InductionCellTier tier = InductionCellTier.values()[getBaseTier(itemstack).ordinal()];
+                    InductionCellTier tier = InductionCellTier.get(getBaseTier(itemstack));
                     list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getMaxEnergy()));
                 } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
-                    InductionProviderTier tier = InductionProviderTier.values()[getBaseTier(itemstack).ordinal()];
+                    InductionProviderTier tier = InductionProviderTier.get(getBaseTier(itemstack));
                     list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getOutput()));
                 }
 
@@ -175,21 +175,21 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
             if (type == BasicBlockType.BIN && stack.getTagCompound() != null) {
                 TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
                 InventoryBin inv = new InventoryBin(stack);
-                tileEntity.tier = BinTier.values()[getBaseTier(stack).ordinal()];
+                tileEntity.tier = BinTier.get(getBaseTier(stack));
                 if (!inv.getItemType().isEmpty()) {
                     tileEntity.setItemType(inv.getItemType());
                 }
                 tileEntity.setItemCount(inv.getItemCount());
             } else if (type == BasicBlockType.INDUCTION_CELL) {
                 TileEntityInductionCell tileEntity = (TileEntityInductionCell) world.getTileEntity(pos);
-                tileEntity.tier = InductionCellTier.values()[getBaseTier(stack).ordinal()];
+                tileEntity.tier = InductionCellTier.get(getBaseTier(stack));
                 if (!world.isRemote) {
                     Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
                           new Range4D(Coord4D.get(tileEntity)));
                 }
             } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
                 TileEntityInductionProvider tileEntity = (TileEntityInductionProvider) world.getTileEntity(pos);
-                tileEntity.tier = InductionProviderTier.values()[getBaseTier(stack).ordinal()];
+                tileEntity.tier = InductionProviderTier.get(getBaseTier(stack));
                 if (!world.isRemote) {
                     Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
                           new Range4D(Coord4D.get(tileEntity)));
@@ -235,7 +235,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         if (BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL) {
-            return InductionCellTier.values()[getBaseTier(itemStack).ordinal()].getMaxEnergy();
+            return InductionCellTier.get(getBaseTier(itemStack)).getMaxEnergy();
         }
         return 0;
     }

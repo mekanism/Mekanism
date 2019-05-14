@@ -1,8 +1,10 @@
 package mekanism.common.tier;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 
-public enum FluidTankTier implements ITier {
+public enum FluidTankTier implements ITier<FluidTankTier> {
     BASIC(14000, 400),
     ADVANCED(28000, 800),
     ELITE(56000, 1600),
@@ -16,7 +18,33 @@ public enum FluidTankTier implements ITier {
     FluidTankTier(int s, int o) {
         baseStorage = s;
         baseOutput = o;
-        baseTier = BaseTier.values()[ordinal()];
+        baseTier = BaseTier.get(ordinal());
+    }
+
+    public static FluidTankTier getDefault() {
+        return BASIC;
+    }
+
+    public static FluidTankTier get(int index) {
+        if (index < 0 || index >= values().length) {
+            return getDefault();
+        }
+        return values()[index];
+    }
+
+    public static FluidTankTier get(@Nonnull BaseTier tier) {
+        return get(tier.ordinal());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return ordinal() + 1 < values().length;
+    }
+
+    @Nullable
+    @Override
+    public FluidTankTier next() {
+        return hasNext() ? get(ordinal() + 1) : null;
     }
 
     @Override

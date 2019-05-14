@@ -40,7 +40,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 
     public double BASE_ENERGY_PER_TICK = MachineType.SEISMIC_VIBRATOR.getUsage();
 
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
 
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
@@ -105,7 +105,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         clientActive = isActive = nbtTags.getBoolean("isActive");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
     }
 
     @Override
@@ -113,7 +113,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             clientActive = dataStream.readBoolean();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
             if (updateDelay == 0 && clientActive != isActive) {
                 updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
                 isActive = clientActive;

@@ -32,7 +32,7 @@ public class RenderFluidTankItem {
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
         float fluidScale = (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0) / itemMachine.getCapacity(stack);
-        FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
+        FluidTankTier tier = FluidTankTier.get(itemMachine.getBaseTier(stack));
         FluidStack fluid = itemMachine.getFluidStack(stack);
 
         GlStateManager.pushMatrix();

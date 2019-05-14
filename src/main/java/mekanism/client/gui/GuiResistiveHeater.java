@@ -15,7 +15,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityResistiveHeater;
@@ -51,7 +50,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
                   LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
         }, this, resource));
         addGuiElement(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
+            TemperatureUnit unit = TemperatureUnit.getCurrent();
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
         }, this, resource));

@@ -23,7 +23,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -111,13 +111,13 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
-    private <T> T chooseByMode(TileEntityGasTank.GasMode dumping, T idleOption, T dumpingOption,
+    private <T> T chooseByMode(GasMode dumping, T idleOption, T dumpingOption,
           T dumpingExcessOption) {
-        if (dumping.equals(TileEntityGasTank.GasMode.IDLE)) {
+        if (dumping.equals(GasMode.IDLE)) {
             return idleOption;
-        } else if (dumping.equals(TileEntityGasTank.GasMode.DUMPING)) {
+        } else if (dumping.equals(GasMode.DUMPING)) {
             return dumpingOption;
-        } else if (dumping.equals(TileEntityGasTank.GasMode.DUMPING_EXCESS)) {
+        } else if (dumping.equals(GasMode.DUMPING_EXCESS)) {
             return dumpingExcessOption;
         }
         return idleOption; //should not happen;

@@ -28,7 +28,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IFluidHandlerWrapper {
 
-    public PipeTier tier = PipeTier.BASIC;
+    public PipeTier tier = PipeTier.getDefault();
 
     public float currentScale;
 
@@ -109,7 +109,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("tier")) {
-            tier = PipeTier.values()[nbtTags.getInteger("tier")];
+            tier = PipeTier.get(nbtTags.getInteger("tier"));
         }
         buffer.setCapacity(getCapacity());
         if (nbtTags.hasKey("cacheFluid")) {
@@ -262,8 +262,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public boolean upgrade(int tierOrdinal) {
-        if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = PipeTier.values()[tier.ordinal() + 1];
+        if (tier.hasNext() && tierOrdinal == tier.ordinal() + 1) {
+            tier = tier.next();
             markDirtyTransmitters();
             sendDesc = true;
             return true;
@@ -273,7 +273,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void handlePacketData(ByteBuf dataStream) throws Exception {
-        tier = PipeTier.values()[dataStream.readInt()];
+        tier = PipeTier.get(dataStream.readInt());
         super.handlePacketData(dataStream);
     }
 

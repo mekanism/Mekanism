@@ -56,7 +56,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
       IComputerIntegration, IUpgradeTile, IComparatorSupport {
 
     public HashList<TransporterFilter> filters = new HashList<>();
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public RedstoneControl controlType = RedstoneControl.getDefault();
     public EnumColor color;
     public boolean autoEject;
     public boolean roundRobin;
@@ -190,7 +190,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         if (nbtTags.hasKey("color")) {
             color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
         }
@@ -275,7 +275,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     }
 
     private void readState(ByteBuf dataStream) {
-        controlType = RedstoneControl.values()[dataStream.readInt()];
+        controlType = RedstoneControl.get(dataStream.readInt());
         int c = dataStream.readInt();
         if (c != -1) {
             color = TransporterUtils.colors.get(c);

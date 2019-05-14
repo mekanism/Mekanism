@@ -167,7 +167,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                 } else {
                     list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
                 }
-                int cap = FluidTankTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
+                int cap = FluidTankTier.get(getBaseTier(itemstack)).getStorage();
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
                          (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap + " mB"));
             }
@@ -271,7 +271,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityFluidTank) {
                 TileEntityFluidTank tile = (TileEntityFluidTank) tileEntity;
-                tile.tier = FluidTankTier.values()[getBaseTier(stack).ordinal()];
+                tile.tier = FluidTankTier.get(getBaseTier(stack));
                 tile.fluidTank.setCapacity(tile.tier.getStorage());
             }
             if (tileEntity instanceof ISecurityTile) {
@@ -307,7 +307,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             if (tileEntity instanceof IRedstoneControl) {
                 if (ItemDataUtils.hasData(stack, "controlType")) {
-                    ((IRedstoneControl) tileEntity).setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
+                    ((IRedstoneControl) tileEntity).setControlType(RedstoneControl.get(ItemDataUtils.getInt(stack, "controlType")));
                 }
             }
 
@@ -618,7 +618,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
     @Override
     public int getCapacity(ItemStack container) {
-        return FluidTankTier.values()[getBaseTier(container).ordinal()].getStorage();
+        return FluidTankTier.get(getBaseTier(container)).getStorage();
     }
 
     @Override
@@ -666,9 +666,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Override
     public BaseTier getBaseTier(ItemStack itemstack) {
         if (!itemstack.hasTagCompound()) {
-            return BaseTier.BASIC;
+            return BaseTier.getDefault();
         }
-        return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
+        return BaseTier.get(itemstack.getTagCompound().getInteger("tier"));
     }
 
     @Override
@@ -699,9 +699,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Override
     public SecurityMode getSecurity(ItemStack stack) {
         if (!MekanismConfig.current().general.allowProtection.val()) {
-            return SecurityMode.PUBLIC;
+            return SecurityMode.getDefault();
         }
-        return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
+        return SecurityMode.get(ItemDataUtils.getInt(stack, "security"));
     }
 
     @Override

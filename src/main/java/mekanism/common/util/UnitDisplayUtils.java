@@ -1,5 +1,8 @@
 package mekanism.common.util;
 
+import javax.annotation.Nullable;
+import mekanism.common.config.MekanismConfig;
+
 /**
  * Code taken from UE and modified to fit Mekanism.
  */
@@ -25,15 +28,12 @@ public class UnitDisplayUtils {
             return value + " " + unitName;
         }
         for (int i = 0; i < MeasurementUnit.values().length; i++) {
-            MeasurementUnit lowerMeasure = MeasurementUnit.values()[i];
-            if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
+            MeasurementUnit lowerMeasure = MeasurementUnit.get(i);
+            if ((lowerMeasure.below(value) && lowerMeasure.isFirst()) || lowerMeasure.isLast()) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
             }
-            if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
-                return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
-            }
-            MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
-            if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
+            MeasurementUnit upperMeasure = lowerMeasure.next();
+            if ((lowerMeasure.above(value) && upperMeasure != null && upperMeasure.below(value)) || lowerMeasure.value == value) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
             }
         }
@@ -76,17 +76,12 @@ public class UnitDisplayUtils {
             return value + (isShort ? "" : " ") + unitName;
         }
         for (int i = 0; i < MeasurementUnit.values().length; i++) {
-            MeasurementUnit lowerMeasure = MeasurementUnit.values()[i];
-            if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
+            MeasurementUnit lowerMeasure = MeasurementUnit.get(i);
+            if ((lowerMeasure.below(value) && lowerMeasure.isFirst()) || lowerMeasure.isLast()) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
             }
-
-            if (lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length) {
-                return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
-            }
-
-            MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
-            if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
+            MeasurementUnit upperMeasure = lowerMeasure.next();
+            if ((lowerMeasure.above(value) && upperMeasure != null && upperMeasure.below(value)) || lowerMeasure.value == value) {
                 return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
             }
         }
@@ -152,6 +147,17 @@ public class UnitDisplayUtils {
             intervalSize = size;
         }
 
+        public static TemperatureUnit get(int index) {
+            if (index < 0 || index >= values().length) {
+                return KELVIN;
+            }
+            return values()[index];
+        }
+
+        public static TemperatureUnit getCurrent() {
+            return get(MekanismConfig.current().general.tempUnit.val().ordinal());
+        }
+
         public double convertFromK(double T, boolean shift) {
             return (T * intervalSize) - (shift ? zeroOffset : 0);
         }
@@ -201,12 +207,32 @@ public class UnitDisplayUtils {
             value = v;
         }
 
+        public static MeasurementUnit get(int index) {
+            if (index < 0 || index >= values().length) {
+                return BASE;
+            }
+            return values()[index];
+        }
+
+        @Nullable
+        public MeasurementUnit next() {
+            int nextOrdinal = ordinal() + 1;
+            return nextOrdinal < values().length ? get(nextOrdinal) : null;
+        }
+
+        public boolean isFirst() {
+            return ordinal() == 0;
+        }
+
+        public boolean isLast() {
+            return ordinal() + 1 == values().length;
+        }
+
         public String getName(boolean getShort) {
             if (getShort) {
                 return symbol;
-            } else {
-                return name;
             }
+            return name;
         }
 
         public double process(double d) {

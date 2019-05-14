@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInductionCell extends TileEntityBasicBlock implements IStrictEnergyStorage {
 
-    public InductionCellTier tier = InductionCellTier.BASIC;
+    public InductionCellTier tier = InductionCellTier.getDefault();
 
     public double electricityStored;
 
@@ -32,7 +32,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             InductionCellTier prevTier = tier;
-            tier = InductionCellTier.values()[dataStream.readInt()];
+            tier = InductionCellTier.get(dataStream.readInt());
             super.handlePacketData(dataStream);
             electricityStored = dataStream.readDouble();
             if (prevTier != tier) {
@@ -52,7 +52,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        tier = InductionCellTier.values()[nbtTags.getInteger("tier")];
+        tier = InductionCellTier.get(nbtTags.getInteger("tier"));
         electricityStored = nbtTags.getDouble("electricityStored");
     }
 

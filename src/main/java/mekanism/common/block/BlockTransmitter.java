@@ -275,7 +275,7 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
                     }
                 }
             } else {
-                list.add(MekanismUtils.getTransmitter(type, BaseTier.BASIC, 1));
+                list.add(MekanismUtils.getTransmitter(type, BaseTier.getDefault(), 1));
             }
         }
     }

@@ -25,7 +25,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     /**
      * This machine's current RedstoneControl type.
      */
-    private RedstoneControl controlType = RedstoneControl.DISABLED;
+    private RedstoneControl controlType = RedstoneControl.getDefault();
 
     public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
@@ -57,7 +57,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            controlType = RedstoneControl.values()[dataStream.readInt()];
+            controlType = RedstoneControl.get(dataStream.readInt());
             energyPerTick = dataStream.readDouble();
             maxEnergy = dataStream.readDouble();
         }
@@ -75,7 +75,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
     }
 
     @Nonnull
