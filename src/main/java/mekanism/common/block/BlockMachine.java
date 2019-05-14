@@ -297,7 +297,7 @@ public abstract class BlockMachine extends BlockMekanismContainer {
                         for (RecipeType recipe : RecipeType.values()) {
                             if (recipe.getType().isEnabled()) {
                                 ItemStack stack = new ItemStack(this, 1, type.meta);
-                                ((IFactory) stack.getItem()).setRecipeType(recipe.ordinal(), stack);
+                                ((IFactory) stack.getItem()).setRecipeType(recipe, stack);
                                 list.add(stack);
                             }
                         }
@@ -633,7 +633,7 @@ public abstract class BlockMachine extends BlockMekanismContainer {
         }
         if (tileEntity instanceof TileEntityFactory) {
             IFactory factoryItem = (IFactory) itemStack.getItem();
-            factoryItem.setRecipeType(((TileEntityFactory) tileEntity).getRecipeType().ordinal(), itemStack);
+            factoryItem.setRecipeType(((TileEntityFactory) tileEntity).getRecipeType(), itemStack);
         }
         //this MUST be done after the factory info is saved, as it caps the energy to max, which is based on the recipe type
         if (tileEntity instanceof IStrictEnergyStorage) {

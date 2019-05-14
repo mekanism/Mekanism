@@ -461,7 +461,7 @@ public class ClientProxy extends CommonProxy {
             RecipeType recipePointer = null;
 
             if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                recipePointer = RecipeType.getDefault();
+                recipePointer = RecipeType.SMELTING;
                 resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
             }
 
@@ -587,13 +587,14 @@ public class ClientProxy extends CommonProxy {
             if (type != null) {
                 String resource = "mekanism:" + type.getName();
                 if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                    RecipeType recipe = ((ItemBlockMachine) stack.getItem()).getRecipeTypeOrNull(stack);
+                    RecipeType recipe = ((ItemBlockMachine) stack.getItem()).getRecipeType(stack);
                     if (recipe != null) {
                         resource = "mekanism:" + type.getName() + "_" + recipe.getName();
                     }
                 }
                 return machineResources.get(resource);
             }
+            //TODO: This is annotated Nonnull
             return null;
         };
 
@@ -611,6 +612,7 @@ public class ClientProxy extends CommonProxy {
                 }
                 return basicResources.get(resource);
             }
+            //TODO: This is annotated Nonnull
             return null;
         };
 
@@ -619,7 +621,6 @@ public class ClientProxy extends CommonProxy {
 
         ItemMeshDefinition transmitterMesher = stack -> {
             TransmitterType type = TransmitterType.get(stack.getItemDamage());
-
             if (type != null) {
                 String resource = "mekanism:" + type.getName();
                 if (type.hasTiers()) {
@@ -628,6 +629,7 @@ public class ClientProxy extends CommonProxy {
                 }
                 return transmitterResources.get(resource);
             }
+            //TODO: This is annotated Nonnull
             return null;
         };
 

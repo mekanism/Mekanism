@@ -40,8 +40,10 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                 ISideConfiguration config = (ISideConfiguration) tile;
 
                 if (message.packetType == ConfigurationPacket.EJECT) {
+                    //TODO: Log warning about invalid data if message.transmission is null
                     config.getConfig().setEjecting(message.transmission, !config.getConfig().isEjecting(message.transmission));
                 } else if (message.packetType == ConfigurationPacket.SIDE_DATA) {
+                    //TODO: Log warning about invalid data if message.transmission is null
                     if (message.clickType == 0) {
                         MekanismUtils.incrementOutput(config, message.transmission, message.configIndex);
                     } else if (message.clickType == 1) {

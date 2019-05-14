@@ -197,7 +197,12 @@ public class TileComponentConfig implements ITileComponent {
         int amount = dataStream.readInt();
 
         for (int i = 0; i < amount; i++) {
-            transmissions.add(TransmissionType.get(dataStream.readInt()));
+            TransmissionType transmissionType = TransmissionType.get(dataStream.readInt());
+            if (transmissionType != null) {
+                transmissions.add(transmissionType);
+            } else {
+                //TODO: Log warning about invalid data
+            }
         }
 
         for (TransmissionType type : transmissions) {

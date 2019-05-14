@@ -37,6 +37,7 @@ public class TransporterStack {
     public Coord4D homeLocation;
     public Coord4D clientNext;
     public Coord4D clientPrev;
+    @Nullable
     public Path pathType;
     private List<Coord4D> pathToTarget = new ArrayList<>();
 
@@ -61,7 +62,8 @@ public class TransporterStack {
 
         data.add(progress);
         originalLocation.write(data);
-        data.add(pathType.ordinal());
+        //Write -1 as that is out of bounds and will make it get read properly as null
+        data.add(pathType == null ? -1 : pathType.ordinal());
 
         if (pathToTarget.indexOf(transporter.coord()) > 0) {
             data.add(true);
@@ -107,7 +109,9 @@ public class TransporterStack {
         if (homeLocation != null) {
             nbtTags.setTag("homeLocation", homeLocation.write(new NBTTagCompound()));
         }
-        nbtTags.setInteger("pathType", pathType.ordinal());
+        if (pathType != null) {
+            nbtTags.setInteger("pathType", pathType.ordinal());
+        }
         itemStack.writeToNBT(nbtTags);
     }
 
@@ -256,8 +260,7 @@ public class TransporterStack {
 
         @Nullable
         public static Path get(int ordinal) {
-            //TODO: Decide if the default type should be NONE
-            return EnumUtils.getEnumSafe(values(), ordinal, DEST);
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
     }
 }

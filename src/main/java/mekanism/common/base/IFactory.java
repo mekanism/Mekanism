@@ -40,15 +40,6 @@ import net.minecraft.util.SoundEvent;
 public interface IFactory {
 
     /**
-     * Gets the recipe type this Smelting Factory currently has.
-     *
-     * @param itemStack - stack to check
-     *
-     * @return RecipeType ordinal
-     */
-    int getRecipeType(ItemStack itemStack);
-
-    /**
      * Gets the recipe type this Factory currently has.
      *
      * @param itemStack - stack to check
@@ -56,15 +47,15 @@ public interface IFactory {
      * @return RecipeType or null if it has invalid NBT
      */
     @Nullable
-    RecipeType getRecipeTypeOrNull(ItemStack itemStack);
+    RecipeType getRecipeType(ItemStack itemStack);
 
     /**
      * Sets the recipe type of this Smelting Factory to a new value.
      *
-     * @param type      - RecipeType ordinal
+     * @param type      - type
      * @param itemStack - stack to set
      */
-    void setRecipeType(int type, ItemStack itemStack);
+    void setRecipeType(RecipeType type, ItemStack itemStack);
 
     enum MachineFuelType {
         BASIC,
@@ -101,12 +92,9 @@ public interface IFactory {
             recipe = r;
         }
 
-        public static RecipeType getDefault() {
-            return SMELTING;
-        }
-
+        @Nullable
         public static RecipeType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
 
         @Nullable

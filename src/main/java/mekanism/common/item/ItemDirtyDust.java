@@ -43,6 +43,6 @@ public class ItemDirtyDust extends ItemMekanism implements IMetaItem {
         if (resource != null) {
             return "item.dirty" + resource.getName() + "Dust";
         }
-        return "Invalid";
+        return "mekanism.invalid.dirty_dust";
     }
 }

@@ -133,7 +133,7 @@ public final class MekanismUtils {
      */
     public static ItemStack getFactory(FactoryTier tier, RecipeType type) {
         ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, MachineType.BASIC_FACTORY.ordinal() + tier.ordinal());
-        ((IFactory) itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
+        ((IFactory) itemstack.getItem()).setRecipeType(type, itemstack);
         return itemstack;
     }
 

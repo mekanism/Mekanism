@@ -146,7 +146,7 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         TransmitterType type = TransmitterType.get(meta);
-        return getDefaultState().withProperty(BlockStateTransmitter.typeProperty, type);
+        return type == null ? getDefaultState() : getDefaultState().withProperty(BlockStateTransmitter.typeProperty, type);
     }
 
     @Override
@@ -350,6 +350,9 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     @Override
     public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         TransmitterType type = TransmitterType.get(meta);
+        if (type == null) {
+            return null;
+        }
         switch (type) {
             case UNIVERSAL_CABLE:
                 return new TileEntityUniversalCable();

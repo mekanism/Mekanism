@@ -2,6 +2,7 @@ package mekanism.common.block.states;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTransmitter;
@@ -52,13 +53,9 @@ public class BlockStateTransmitter extends ExtendedBlockState {
             tiers = b;
         }
 
-        public static TransmitterType getDefault() {
-            //TODO: Decide if this should be default or what, do same for TransmissionType
-            return UNIVERSAL_CABLE;
-        }
-
+        @Nullable
         public static TransmitterType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
 
         @Override

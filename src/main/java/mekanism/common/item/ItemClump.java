@@ -42,6 +42,6 @@ public class ItemClump extends ItemMekanism implements IMetaItem {
         if (resource != null) {
             return "item." + resource.getName().toLowerCase(Locale.ROOT) + "Clump";
         }
-        return "Invalid";
+        return "mekanism.invalid.clump";
     }
 }

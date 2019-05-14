@@ -42,6 +42,6 @@ public class ItemShard extends ItemMekanism implements IMetaItem {
         if (resource != null) {
             return "item." + resource.getName().toLowerCase(Locale.ROOT) + "Shard";
         }
-        return "Invalid";
+        return "mekanism.invalid.shard";
     }
 }

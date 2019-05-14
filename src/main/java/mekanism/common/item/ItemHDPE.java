@@ -41,7 +41,7 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem {
     @Override
     public String getTranslationKey(ItemStack item) {
         PlasticItem plasticItem = PlasticItem.get(item.getItemDamage());
-        return plasticItem == null ? "Invalid" : "item." + plasticItem.getName();
+        return plasticItem == null ? "mekanism.invalid.plastic" : "item." + plasticItem.getName();
     }
 
     public enum PlasticItem {

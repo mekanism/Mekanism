@@ -139,7 +139,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         MachineType type = MachineType.get(itemstack);
         if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
             BaseTier tier = type.factoryTier.getBaseTier();
-            RecipeType recipeType = getRecipeTypeOrNull(itemstack);
+            RecipeType recipeType = getRecipeType(itemstack);
             if (recipeType != null) {
                 String langKey = "tile." + tier.getSimpleName() + recipeType.getTranslationKey() + "Factory";
                 if (I18n.canTranslate(langKey)) {
@@ -194,7 +194,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                 }
             }
             if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                RecipeType recipeType = getRecipeTypeOrNull(itemstack);
+                RecipeType recipeType = getRecipeType(itemstack);
                 if (recipeType != null) {
                     list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY + recipeType.getLocalizedName());
                 }
@@ -313,7 +313,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             if (tileEntity instanceof TileEntityFactory) {
                 TileEntityFactory factory = (TileEntityFactory) tileEntity;
-                RecipeType recipeType = getRecipeTypeOrNull(stack);
+                RecipeType recipeType = getRecipeType(stack);
                 if (recipeType != null) {
                     factory.setRecipeType(recipeType);
                 }
@@ -440,32 +440,21 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }
 
-    @Override
-    public int getRecipeType(ItemStack itemStack) {
-        if (itemStack.getTagCompound() == null) {
-            return 0;
-        }
-        return itemStack.getTagCompound().getInteger("recipeType");
-    }
-
     @Nullable
     @Override
-    public RecipeType getRecipeTypeOrNull(ItemStack itemStack) {
-        //TODO: Should this just be replaced with getting the default instead of null.
-        // Doing so would cleanup readability of various parts of the code
-        int recipeType = getRecipeType(itemStack);
-        if (recipeType < RecipeType.values().length) {
-            return RecipeType.get(recipeType);
+    public RecipeType getRecipeType(ItemStack itemStack) {
+        if (itemStack.getTagCompound() == null) {
+            return null;
         }
-        return null;
+        return RecipeType.get(itemStack.getTagCompound().getInteger("recipeType"));
     }
 
     @Override
-    public void setRecipeType(int type, ItemStack itemStack) {
+    public void setRecipeType(RecipeType type, ItemStack itemStack) {
         if (itemStack.getTagCompound() == null) {
             itemStack.setTagCompound(new NBTTagCompound());
         }
-        itemStack.getTagCompound().setInteger("recipeType", type);
+        itemStack.getTagCompound().setInteger("recipeType", type.ordinal());
     }
 
     @Override
@@ -544,7 +533,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     public double getMaxEnergy(ItemStack itemStack) {
         MachineType machineType = MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage());
         if (machineType.isFactory()) {
-            RecipeType recipeType = getRecipeTypeOrNull(itemStack);
+            RecipeType recipeType = getRecipeType(itemStack);
             int tierProcess = machineType.factoryTier.processes;
             double baseMaxEnergy = tierProcess * (recipeType == null ? 1 : Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage()));
             return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);

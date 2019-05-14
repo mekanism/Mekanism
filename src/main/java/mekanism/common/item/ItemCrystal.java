@@ -42,6 +42,6 @@ public class ItemCrystal extends ItemMekanism implements IMetaItem {
         if (resource != null) {
             return "item." + resource.getName().toLowerCase(Locale.ROOT) + "Crystal";
         }
-        return "Invalid";
+        return "mekanism.invalid.crystal";
     }
 }

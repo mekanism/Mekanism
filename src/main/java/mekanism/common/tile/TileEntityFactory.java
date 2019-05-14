@@ -126,7 +126,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
      * This machine's recipe type.
      */
     @Nonnull
-    private RecipeType recipeType = RecipeType.getDefault();
+    private RecipeType recipeType = RecipeType.SMELTING;
 
     public TileEntityFactory() {
         this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
@@ -322,6 +322,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     public void setRecipeType(@Nonnull RecipeType type) {
+        //TODO: Decide if in places that call setRecipeType if we should have handling for when they are null
+        // They are null if the information about them is invalid
+        // The other option is to gracefully handle it so that there is no crash, and throw a warning instead
         recipeType = Objects.requireNonNull(type);
         BASE_MAX_ENERGY = maxEnergy = tier.processes * Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage());
         BASE_ENERGY_PER_TICK = energyPerTick = recipeType.getEnergyUsage();
@@ -693,7 +696,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             RecipeType oldRecipe = recipeType;
-            recipeType = RecipeType.get(dataStream.readInt());
+            RecipeType newRecipe = RecipeType.get(dataStream.readInt());
             upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
             recipeTicks = dataStream.readInt();
             sorting = dataStream.readBoolean();
@@ -707,8 +710,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 infuseStored.setEmpty();
             }
 
-            if (recipeType != oldRecipe) {
-                setRecipeType(recipeType);
+            if (newRecipe != oldRecipe) {
+                setRecipeType(newRecipe);
                 if (!upgraded) {
                     MekanismUtils.updateBlock(world, getPos());
                 }
@@ -729,8 +732,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        setRecipeType(RecipeType.get(nbtTags.getInteger("recipeType")));
-        upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
+        RecipeType type = RecipeType.get(nbtTags.getInteger("recipeType"));
+        setRecipeType(type);
+        upgradeComponent.setSupported(Upgrade.GAS, this.recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInteger("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
         int amount = nbtTags.getInteger("infuseStored");

@@ -1165,3 +1165,12 @@ cmd.mek.chunk.flush=%d chunks unloaded
 
 #chat messages
 chat.mek.multiblockformed=Multiblock Formed
+
+# Invalid Item Names
+mekanism.invalid.transmitter=Invalid Transmitter Type
+mekanism.invalid.clump=Invalid Clump Type
+mekanism.invalid.crystal=Invalid Crystal Type
+mekanism.invalid.dirty_dust=Invalid Dirty Dust Type
+mekanism.invalid.dust=Invalid Dust Type
+mekanism.invalid.plastic=Invalid Plastic Type
+mekanism.invalid.shard=Invalid Shard Type

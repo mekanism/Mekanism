@@ -42,6 +42,6 @@ public class ItemDust extends ItemMekanism implements IMetaItem {
         if (resource != null) {
             return "item." + resource.getName().toLowerCase(Locale.ROOT) + "Dust";
         }
-        return "Invalid";
+        return "mekanism.invalid.dust";
     }
 }

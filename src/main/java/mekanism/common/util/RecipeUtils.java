@@ -44,9 +44,9 @@ public class RecipeUtils {
 
         if (target.getItem() instanceof IFactory && input.getItem() instanceof IFactory) {
             if (isFactory(target) && isFactory(input)) {
-                RecipeType recipeTypeInput = ((IFactory) input.getItem()).getRecipeTypeOrNull(input);
+                RecipeType recipeTypeInput = ((IFactory) input.getItem()).getRecipeType(input);
                 //If either factory has invalid NBT don't crash it
-                return recipeTypeInput != null && ((IFactory) target.getItem()).getRecipeTypeOrNull(target) == recipeTypeInput;
+                return recipeTypeInput != null && ((IFactory) target.getItem()).getRecipeType(target) == recipeTypeInput;
             }
         }
         return true;

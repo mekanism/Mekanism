@@ -1,5 +1,6 @@
 package mekanism.api.transmitters;
 
+import javax.annotation.Nullable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.translation.I18n;
 
@@ -18,15 +19,11 @@ public enum TransmissionType {
         transmission = t;
     }
 
-    public static TransmissionType getDefault() {
-        //TODO: Should this be the default or something else
-        return ENERGY;
-    }
-
+    @Nullable
     public static TransmissionType get(int index) {
         //TODO: Is there some way for this to use the method in EnumUtils? It isn't in the API package though
         if (index < 0 || index >= values().length) {
-            return getDefault();
+            return null;
         }
         return values()[index];
     }
