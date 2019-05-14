@@ -531,7 +531,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         running = nbtTags.getBoolean("running");
         delay = nbtTags.getInteger("delay");
         numPowering = nbtTags.getInteger("numPowering");
-        searcher.state = State.values()[nbtTags.getInteger("state")];
+        searcher.state = State.get(nbtTags.getInteger("state"));
         controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
         setConfigurationData(nbtTags);
     }
@@ -562,7 +562,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         running = dataStream.readBoolean();
         silkTouch = dataStream.readBoolean();
         numPowering = dataStream.readInt();
-        searcher.state = State.values()[dataStream.readInt()];
+        searcher.state = State.get(dataStream.readInt());
         clientToMine = dataStream.readInt();
         controlType = RedstoneControl.get(dataStream.readInt());
         inverse = dataStream.readBoolean();

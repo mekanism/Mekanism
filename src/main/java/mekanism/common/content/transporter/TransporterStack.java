@@ -3,6 +3,7 @@ package mekanism.common.content.transporter;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
@@ -82,7 +83,7 @@ public class TransporterStack {
 
         progress = dataStream.readInt();
         originalLocation = Coord4D.read(dataStream);
-        pathType = Path.values()[dataStream.readInt()];
+        pathType = Path.get(dataStream.readInt());
 
         if (dataStream.readBoolean()) {
             clientNext = Coord4D.read(dataStream);
@@ -123,7 +124,7 @@ public class TransporterStack {
         if (nbtTags.hasKey("homeLocation")) {
             homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));
         }
-        pathType = Path.values()[nbtTags.getInteger("pathType")];
+        pathType = Path.get(nbtTags.getInteger("pathType"));
         itemStack = new ItemStack(nbtTags);
     }
 
@@ -250,6 +251,15 @@ public class TransporterStack {
     public enum Path {
         DEST,
         HOME,
-        NONE
+        NONE;
+
+        @Nullable
+        public static Path get(int index) {
+            if (index < 0 || index >= values().length) {
+                //TODO: Decide if the default type should be NONE
+                return DEST;
+            }
+            return values()[index];
+        }
     }
 }

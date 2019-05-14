@@ -3,6 +3,7 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.HashSet;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -95,7 +96,15 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
         UPDATE,
         ENERGY,
         GAS,
-        FLUID
+        FLUID;
+
+        @Nullable
+        public static PacketType get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class TransmitterUpdateMessage implements IMessage {
@@ -186,7 +195,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = PacketType.values()[dataStream.readInt()];
+            packetType = PacketType.get(dataStream.readInt());
             coord4D = Coord4D.read(dataStream);
             if (packetType == PacketType.UPDATE) {
                 newNetwork = dataStream.readBoolean();

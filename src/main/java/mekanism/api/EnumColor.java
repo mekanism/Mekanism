@@ -60,6 +60,13 @@ public enum EnumColor implements IStringSerializable {
         textFormatting = tf;
     }
 
+    public static EnumColor getOrDefault(int index, EnumColor fallback) {
+        if (index < 0 || index >= values().length) {
+            return fallback;
+        }
+        return values()[index];
+    }
+
     public static EnumColor getFromDyeName(String s) {
         for (EnumColor c : values()) {
             if (c.dyeName.equalsIgnoreCase(s)) {

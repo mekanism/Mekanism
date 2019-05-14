@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -37,14 +38,14 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                         }
                     }
                 } catch (Exception e) {
-                    Mekanism.logger.error("Error while handling electric chest open packet.", e);
+                    Mekanism.logger.error("Error while handling personal chest open packet.", e);
                 }
             } else if (message.packetType == PersonalChestPacketType.CLIENT_OPEN) {
                 try {
                     Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock,
                           message.coord4D == null ? BlockPos.ORIGIN : message.coord4D.getPos(), message.currentHand);
                 } catch (Exception e) {
-                    Mekanism.logger.error("Error while handling electric chest open packet.", e);
+                    Mekanism.logger.error("Error while handling personal chest open packet.", e);
                 }
             }
         }, player);
@@ -53,7 +54,15 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 
     public enum PersonalChestPacketType {
         CLIENT_OPEN,
-        SERVER_OPEN
+        SERVER_OPEN;
+
+        @Nullable
+        public static PersonalChestPacketType get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class PersonalChestMessage implements IMessage {
@@ -126,13 +135,13 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = PersonalChestPacketType.values()[dataStream.readInt()];
+            packetType = PersonalChestPacketType.get(dataStream.readInt());
             if (packetType == PersonalChestPacketType.SERVER_OPEN) {
                 isBlock = dataStream.readBoolean();
                 if (isBlock) {
                     coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
                 } else {
-                    currentHand = EnumHand.values()[dataStream.readInt()];
+                    currentHand = MekanismUtils.getHandSafe(dataStream.readInt());
                 }
             } else if (packetType == PersonalChestPacketType.CLIENT_OPEN) {
                 guiType = dataStream.readInt();
@@ -141,7 +150,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                 if (isBlock) {
                     coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
                 } else {
-                    currentHand = EnumHand.values()[dataStream.readInt()];
+                    currentHand = MekanismUtils.getHandSafe(dataStream.readInt());
                 }
             }
         }

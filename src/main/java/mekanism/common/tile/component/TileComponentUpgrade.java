@@ -145,7 +145,11 @@ public class TileComponentUpgrade implements ITileComponent {
         int amount = dataStream.readInt();
 
         for (int i = 0; i < amount; i++) {
-            upgrades.put(Upgrade.values()[dataStream.readInt()], dataStream.readInt());
+            Upgrade upgrade = Upgrade.get(dataStream.readInt());
+            int value = dataStream.readInt();
+            if (upgrade != null) {
+                upgrades.put(upgrade, value);
+            }
         }
         upgradeTicks = dataStream.readInt();
         for (Upgrade upgrade : getSupportedTypes()) {

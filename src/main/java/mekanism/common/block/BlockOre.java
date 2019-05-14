@@ -36,7 +36,8 @@ public class BlockOre extends Block {
     @Override
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
+        EnumOreType oreType = EnumOreType.get(meta);
+        return oreType == null ? getDefaultState() : getDefaultState().withProperty(BlockStateOre.typeProperty, oreType);
     }
 
     @Override

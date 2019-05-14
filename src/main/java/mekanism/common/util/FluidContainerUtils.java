@@ -175,6 +175,28 @@ public final class FluidContainerUtils {
             display = s;
         }
 
+        public static ContainerEditMode getDefault() {
+            return BOTH;
+        }
+
+        public static ContainerEditMode get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the next container edit mode, loops back to start when past the end.
+         */
+        public ContainerEditMode next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return get(0);
+        }
+
         public String getDisplay() {
             return LangUtils.localize(display);
         }

@@ -20,6 +20,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
+import mekanism.common.item.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
@@ -118,7 +119,7 @@ public class ClientTickHandler {
         if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
             ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
             /*freeRunners.getEnergy(stack) > 0 && */
-            return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
+            return freeRunners.getMode(stack) == FreeRunnerMode.NORMAL;
         }
         return false;
     }
@@ -305,14 +306,14 @@ public class ClientTickHandler {
                 wheelStatus += event.getDwheel();
                 int scaledDelta = wheelStatus / 120;
                 wheelStatus = wheelStatus % 120;
-                int newVal = configurator.getState(stack).ordinal() + (scaledDelta % ConfiguratorMode.values().length);
-
+                int modes = ConfiguratorMode.values().length;
+                int newVal = configurator.getState(stack).ordinal() + (scaledDelta % modes);
                 if (newVal > 0) {
-                    newVal = newVal % ConfiguratorMode.values().length;
+                    newVal = newVal % modes;
                 } else if (newVal < 0) {
-                    newVal = ConfiguratorMode.values().length + newVal;
+                    newVal = modes + newVal;
                 }
-                configurator.setState(stack, ConfiguratorMode.values()[newVal]);
+                configurator.setState(stack, ConfiguratorMode.get(newVal));
                 Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, new ArrayList<>(newVal)));
                 event.setCanceled(true);
             }

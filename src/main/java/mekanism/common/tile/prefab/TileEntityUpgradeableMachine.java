@@ -38,6 +38,8 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
 
         TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
         RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
+        //If we have an invalid block then RecipeType can return null
+        //TODO: We should fix this or handle it better because setRecipeType requires non null
 
         //Basic
         factory.facing = facing;

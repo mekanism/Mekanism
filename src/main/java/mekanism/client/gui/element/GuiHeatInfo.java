@@ -7,7 +7,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -55,7 +54,7 @@ public class GuiHeatInfo extends GuiElement {
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            MekanismConfig.current().general.tempUnit.set(TempType.values()[(MekanismConfig.current().general.tempUnit.val().ordinal() + 1) % TempType.values().length]);
+            MekanismConfig.current().general.tempUnit.set(MekanismConfig.current().general.tempUnit.val().next());
         }
     }
 }

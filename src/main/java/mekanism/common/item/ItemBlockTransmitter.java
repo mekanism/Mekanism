@@ -74,7 +74,7 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            TransmissionType transmission = TransmitterType.values()[itemstack.getItemDamage()].getTransmission();
+            TransmissionType transmission = TransmitterType.get(itemstack.getItemDamage()).getTransmission();
             BaseTier tier = getBaseTier(itemstack);
             if (transmission == TransmissionType.ENERGY) {
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
@@ -96,7 +96,7 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                      EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
         } else {
-            TransmitterType type = TransmitterType.values()[itemstack.getItemDamage()];
+            TransmitterType type = TransmitterType.get(itemstack.getItemDamage());
             switch (type) {
                 case UNIVERSAL_CABLE: {
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");

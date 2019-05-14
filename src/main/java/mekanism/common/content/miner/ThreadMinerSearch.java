@@ -20,7 +20,7 @@ public class ThreadMinerSearch extends Thread {
 
     private TileEntityDigitalMiner tileEntity;
 
-    public State state = State.IDLE;
+    public State state = State.getDefault();
 
     private Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     private Map<Integer, MinerFilter> replaceMap = new HashMap<>();
@@ -125,6 +125,17 @@ public class ThreadMinerSearch extends Thread {
 
         State(String s) {
             desc = s;
+        }
+
+        public static State getDefault() {
+            return IDLE;
+        }
+
+        public static State get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
         }
     }
 }

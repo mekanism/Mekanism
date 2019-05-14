@@ -176,7 +176,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (clientHasStructure) {
                 clientCapacity = dataStream.readInt();
-                structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
+                structure.editMode = ContainerEditMode.get(dataStream.readInt());
                 structure.fluidStored = TileUtils.readFluidStack(dataStream);
 
                 if (isRendering) {
@@ -209,7 +209,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (structure != null) {
             return structure.editMode;
         }
-        return ContainerEditMode.BOTH;
+        return ContainerEditMode.getDefault();
     }
 
     @Override

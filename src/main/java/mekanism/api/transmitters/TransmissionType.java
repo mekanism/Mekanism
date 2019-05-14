@@ -18,6 +18,18 @@ public enum TransmissionType {
         transmission = t;
     }
 
+    public static TransmissionType getDefault() {
+        //TODO: Should this be the default or something else
+        return ENERGY;
+    }
+
+    public static TransmissionType get(int index) {
+        if (index < 0 || index >= values().length) {
+            return getDefault();
+        }
+        return values()[index];
+    }
+
     public static boolean checkTransmissionType(ITransmitter sideTile, TransmissionType type) {
         return type.checkTransmissionType(sideTile);
     }

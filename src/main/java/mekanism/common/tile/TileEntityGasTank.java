@@ -379,7 +379,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
             if (nextOrdinal < values().length) {
                 return get(nextOrdinal);
             }
-            return getDefault();
+            return get(0);
         }
     }
 }

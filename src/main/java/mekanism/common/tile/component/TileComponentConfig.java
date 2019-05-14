@@ -197,7 +197,7 @@ public class TileComponentConfig implements ITileComponent {
         int amount = dataStream.readInt();
 
         for (int i = 0; i < amount; i++) {
-            transmissions.add(TransmissionType.values()[dataStream.readInt()]);
+            transmissions.add(TransmissionType.get(dataStream.readInt()));
         }
 
         for (TransmissionType type : transmissions) {

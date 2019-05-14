@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemFlamethrower;
+import mekanism.common.item.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
@@ -36,7 +37,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     public static final int DAMAGE = 10;
 
     public Entity owner = null;
-    public ItemFlamethrower.FlamethrowerMode mode = ItemFlamethrower.FlamethrowerMode.COMBAT;
+    public FlamethrowerMode mode = FlamethrowerMode.getDefault();
 
     public EntityFlame(World world) {
         super(world);
@@ -140,7 +141,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
         if (mop != null) {
             if (mop.typeOfHit == Type.ENTITY && mop.entityHit != null && !mop.entityHit.isImmuneToFire()) {
-                if (mop.entityHit instanceof EntityItem && mode != ItemFlamethrower.FlamethrowerMode.COMBAT) {
+                if (mop.entityHit instanceof EntityItem && mode != FlamethrowerMode.COMBAT) {
                     if (mop.entityHit.ticksExisted > 100) {
                         if (!smeltItem((EntityItem) mop.entityHit)) {
                             burn(mop.entityHit);
@@ -156,8 +157,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 Coord4D sideCoord = new Coord4D(mop.getBlockPos().offset(mop.sideHit), world);
 
                 if (MekanismConfig.current().general.aestheticWorldDamage.val() && !fluid && (sideCoord.isAirBlock(world) || sideCoord.isReplaceable(world))) {
-                    if (mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop, world))) {
-                        if (mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !world.isRemote) {
+                    if (mode != FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop, world))) {
+                        if (mode == FlamethrowerMode.INFERNO && !world.isRemote) {
                             world.setBlockState(sideCoord.getPos(), Blocks.FIRE.getDefaultState());
                         }
                     }
@@ -243,7 +244,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
-        mode = ItemFlamethrower.FlamethrowerMode.values()[nbtTags.getInteger("mode")];
+        mode = FlamethrowerMode.get(nbtTags.getInteger("mode"));
     }
 
     @Override
@@ -258,6 +259,6 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     public void readSpawnData(ByteBuf dataStream) {
-        mode = ItemFlamethrower.FlamethrowerMode.values()[dataStream.readInt()];
+        mode = FlamethrowerMode.get(dataStream.readInt());
     }
 }

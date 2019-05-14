@@ -7,7 +7,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -55,7 +54,7 @@ public class GuiEnergyInfo extends GuiElement {
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            MekanismConfig.current().general.energyUnit.set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal() + 1) % EnergyType.values().length]);
+            MekanismConfig.current().general.energyUnit.set(MekanismConfig.current().general.energyUnit.val().next());
         }
     }
 }

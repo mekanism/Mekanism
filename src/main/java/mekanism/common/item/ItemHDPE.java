@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
@@ -17,7 +18,8 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem {
 
     @Override
     public String getTexture(int meta) {
-        return PlasticItem.values()[meta].getName();
+        PlasticItem plasticItem = PlasticItem.get(meta);
+        return plasticItem == null ? "Invalid" : plasticItem.getName();
     }
 
     @Override
@@ -28,7 +30,7 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem {
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
         if (isInCreativeTab(tabs)) {
-            for (int counter = 0; counter < PlasticItem.values().length; counter++) {
+            for (int counter = 0; counter < getVariants(); counter++) {
                 itemList.add(new ItemStack(this, 1, counter));
             }
         }
@@ -37,7 +39,8 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem {
     @Nonnull
     @Override
     public String getTranslationKey(ItemStack item) {
-        return "item." + PlasticItem.values()[item.getItemDamage()].getName();
+        PlasticItem plasticItem = PlasticItem.get(item.getItemDamage());
+        return plasticItem == null ? "Invalid" : "item." + plasticItem.getName();
     }
 
     public enum PlasticItem {
@@ -50,6 +53,14 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem {
 
         PlasticItem(String itemName) {
             name = itemName;
+        }
+
+        @Nullable
+        public static PlasticItem get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
         }
 
         public String getName() {

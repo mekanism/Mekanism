@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
@@ -87,7 +88,15 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
         SIDE_DATA,
         EJECT_COLOR,
         INPUT_COLOR,
-        STRICT_INPUT
+        STRICT_INPUT;
+
+        @Nullable
+        public static ConfigurationPacket get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class ConfigurationUpdateMessage implements IMessage {
@@ -150,15 +159,15 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = ConfigurationPacket.values()[dataStream.readInt()];
+            packetType = ConfigurationPacket.get(dataStream.readInt());
             coord4D = Coord4D.read(dataStream);
 
             if (packetType == ConfigurationPacket.EJECT) {
-                transmission = TransmissionType.values()[dataStream.readInt()];
+                transmission = TransmissionType.get(dataStream.readInt());
             } else if (packetType == ConfigurationPacket.SIDE_DATA) {
                 clickType = dataStream.readInt();
                 configIndex = EnumFacing.byIndex(dataStream.readInt());
-                transmission = TransmissionType.values()[dataStream.readInt()];
+                transmission = TransmissionType.get(dataStream.readInt());
             } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
                 clickType = dataStream.readInt();
             } else if (packetType == ConfigurationPacket.INPUT_COLOR) {

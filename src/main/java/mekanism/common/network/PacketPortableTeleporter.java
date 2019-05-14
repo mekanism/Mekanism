@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
@@ -15,6 +16,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -159,7 +161,15 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
         DATA_RESPONSE,
         SET_FREQ,
         DEL_FREQ,
-        TELEPORT
+        TELEPORT;
+
+        @Nullable
+        public static PortableTeleporterPacketType get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class PortableTeleporterMessage implements IMessage {
@@ -258,14 +268,14 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 
         @Override
         public void fromBytes(ByteBuf buffer) {
-            packetType = PortableTeleporterPacketType.values()[buffer.readInt()];
+            packetType = PortableTeleporterPacketType.get(buffer.readInt());
             if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
-                currentHand = EnumHand.values()[buffer.readInt()];
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 if (buffer.readBoolean()) {
                     frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
                 }
             } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
-                currentHand = EnumHand.values()[buffer.readInt()];
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 if (buffer.readBoolean()) {
                     frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
                 }
@@ -280,13 +290,13 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                     privateCache.add(new Frequency(buffer));
                 }
             } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
-                currentHand = EnumHand.values()[buffer.readInt()];
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
             } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
-                currentHand = EnumHand.values()[buffer.readInt()];
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
             } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
-                currentHand = EnumHand.values()[buffer.readInt()];
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
             }
         }

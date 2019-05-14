@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiOredictionificator;
@@ -60,7 +61,15 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
         SERVER,
         CLIENT,
         SERVER_INDEX,
-        CLIENT_INDEX
+        CLIENT_INDEX;
+
+        @Nullable
+        public static OredictionificatorGuiPacket get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class OredictionificatorGuiMessage implements IMessage {
@@ -157,13 +166,12 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = OredictionificatorGuiPacket.values()[dataStream.readInt()];
+            packetType = OredictionificatorGuiPacket.get(dataStream.readInt());
             coord4D = Coord4D.read(dataStream);
             guiType = dataStream.readInt();
             if (packetType == OredictionificatorGuiPacket.CLIENT || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
                 windowId = dataStream.readInt();
             }
-
             if (packetType == OredictionificatorGuiPacket.SERVER_INDEX || packetType == OredictionificatorGuiPacket.CLIENT_INDEX) {
                 index = dataStream.readInt();
             }

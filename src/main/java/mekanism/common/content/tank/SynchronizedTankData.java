@@ -20,7 +20,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     public FluidStack prevFluid;
     public int prevFluidStage = 0;
 
-    public ContainerEditMode editMode = ContainerEditMode.BOTH;
+    public ContainerEditMode editMode = ContainerEditMode.getDefault();
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 

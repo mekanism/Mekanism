@@ -202,6 +202,7 @@ import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TextComponentGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -460,7 +461,7 @@ public class ClientProxy extends CommonProxy {
             RecipeType recipePointer = null;
 
             if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                recipePointer = RecipeType.values()[0];
+                recipePointer = RecipeType.getDefault();
                 resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
             }
 
@@ -480,8 +481,8 @@ public class ClientProxy extends CommonProxy {
                     modelsToAdd.add(model);
 
                     if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                        if (recipePointer.ordinal() < RecipeType.values().length - 1) {
-                            recipePointer = RecipeType.values()[recipePointer.ordinal() + 1];
+                        recipePointer = recipePointer.next();
+                        if (recipePointer != null) {
                             resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
                             continue;
                         }
@@ -707,9 +708,9 @@ public class ClientProxy extends CommonProxy {
             case 13:
                 return new GuiTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
             case 14:
-                ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
+                ItemStack itemStack = player.getHeldItem(MekanismUtils.getHandSafe(pos.getX()));
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter) {
-                    return new GuiTeleporter(player, EnumHand.values()[pos.getX()], itemStack);
+                    return new GuiTeleporter(player, MekanismUtils.getHandSafe(pos.getX()), itemStack);
                 }
                 return null;
             case 15:
@@ -770,7 +771,7 @@ public class ClientProxy extends CommonProxy {
             case 37:
                 return new GuiChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer) tileEntity);
             case 38:
-                ItemStack itemStack1 = player.getHeldItem(EnumHand.values()[pos.getX()]);
+                ItemStack itemStack1 = player.getHeldItem(MekanismUtils.getHandSafe(pos.getX()));
                 if (!itemStack1.isEmpty() && itemStack1.getItem() instanceof ItemSeismicReader) {
                     return new GuiSeismicReader(world, new Coord4D(player), itemStack1.copy());
                 }

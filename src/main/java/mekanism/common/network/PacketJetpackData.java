@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
@@ -53,7 +54,15 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
     public enum JetpackPacket {
         UPDATE,
         FULL,
-        MODE
+        MODE;
+
+        @Nullable
+        public static JetpackPacket get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class JetpackDataMessage implements IMessage {
@@ -109,7 +118,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = JetpackPacket.values()[dataStream.readInt()];
+            packetType = JetpackPacket.get(dataStream.readInt());
             if (packetType == JetpackPacket.MODE) {
                 value = dataStream.readBoolean();
             } else if (packetType == JetpackPacket.UPDATE) {

@@ -49,7 +49,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     public double diggingProgress;
     public boolean emittingRedstone;
     public int currentRedstoneLevel;
-    public RedstoneOutput outputMode = RedstoneOutput.OFF;
+    public RedstoneOutput outputMode = RedstoneOutput.getDefault();
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityLaserAmplifier() {
@@ -219,7 +219,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
                     time = dataStream.readInt();
                     break;
                 case 3:
-                    outputMode = RedstoneOutput.values()[outputMode.ordinal() == RedstoneOutput.values().length - 1 ? 0 : outputMode.ordinal() + 1];
+                    outputMode = outputMode.next();
                     break;
             }
             return;
@@ -236,7 +236,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
             lastFired = dataStream.readDouble();
             controlType = RedstoneControl.get(dataStream.readInt());
             emittingRedstone = dataStream.readBoolean();
-            outputMode = RedstoneOutput.values()[dataStream.readInt()];
+            outputMode = RedstoneOutput.get(dataStream.readInt());
         }
     }
 
@@ -250,7 +250,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
         collectedEnergy = nbtTags.getDouble("collectedEnergy");
         lastFired = nbtTags.getDouble("lastFired");
         controlType = RedstoneControl.get(nbtTags.getInteger("controlType"));
-        outputMode = RedstoneOutput.values()[nbtTags.getInteger("outputMode")];
+        outputMode = RedstoneOutput.get(nbtTags.getInteger("outputMode"));
     }
 
     @Nonnull
@@ -358,6 +358,28 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
         RedstoneOutput(String name) {
             unlocalizedName = name;
+        }
+
+        public static RedstoneOutput getDefault() {
+            return OFF;
+        }
+
+        public static RedstoneOutput get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the next redstone output mode, loops back to start when past the end.
+         */
+        public RedstoneOutput next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return get(0);
         }
 
         public String getName() {

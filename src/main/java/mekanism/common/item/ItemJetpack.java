@@ -95,7 +95,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     public void incrementMode(ItemStack stack) {
-        setMode(stack, getMode(stack).increment());
+        setMode(stack, getMode(stack).next());
     }
 
     public void useGas(ItemStack stack) {
@@ -145,7 +145,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     public JetpackMode getMode(ItemStack stack) {
-        return JetpackMode.values()[ItemDataUtils.getInt(stack, "mode")];
+        return JetpackMode.get(ItemDataUtils.getInt(stack, "mode"));
     }
 
     public void setMode(ItemStack stack, JetpackMode mode) {
@@ -227,8 +227,26 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
             color = c;
         }
 
-        public JetpackMode increment() {
-            return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
+        public static JetpackMode getDefault() {
+            return NORMAL;
+        }
+
+        public static JetpackMode get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the jetpack mode, loops back to start when past the end.
+         */
+        public JetpackMode next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return get(0);
         }
 
         public String getName() {

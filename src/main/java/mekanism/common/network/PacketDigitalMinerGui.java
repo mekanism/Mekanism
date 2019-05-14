@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiDigitalMiner;
@@ -65,7 +66,15 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
         SERVER,
         CLIENT,
         SERVER_INDEX,
-        CLIENT_INDEX
+        CLIENT_INDEX;
+
+        @Nullable
+        public static MinerGuiPacket get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class DigitalMinerGuiMessage implements IMessage {
@@ -191,12 +200,9 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = MinerGuiPacket.values()[dataStream.readInt()];
-
+            packetType = MinerGuiPacket.get(dataStream.readInt());
             coord4D = Coord4D.read(dataStream);
-
             guiType = dataStream.readInt();
-
             if (packetType == MinerGuiPacket.CLIENT || packetType == MinerGuiPacket.CLIENT_INDEX) {
                 windowId = dataStream.readInt();
             }

@@ -193,7 +193,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     }
 
     public ConfiguratorMode getState(ItemStack itemstack) {
-        return ConfiguratorMode.values()[ItemDataUtils.getInt(itemstack, "state")];
+        return ConfiguratorMode.get(ItemDataUtils.getInt(itemstack, "state"));
     }
 
     @Override
@@ -246,7 +246,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     public void handlePacketData(ItemStack stack, ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int state = dataStream.readInt();
-            setState(stack, ConfiguratorMode.values()[state]);
+            setState(stack, ConfiguratorMode.get(state));
         }
     }
 
@@ -274,6 +274,28 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             transmissionType = s1;
             color = c;
             configurating = b;
+        }
+
+        public static ConfiguratorMode getDefault() {
+            return CONFIGURATE_ITEMS;
+        }
+
+        public static ConfiguratorMode get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the next configurator mode, loops back to start when past the end.
+         */
+        public ConfiguratorMode next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return get(0);
         }
 
         public String getName() {

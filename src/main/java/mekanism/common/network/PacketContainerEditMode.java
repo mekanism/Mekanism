@@ -48,7 +48,7 @@ public class PacketContainerEditMode implements IMessageHandler<ContainerEditMod
         @Override
         public void fromBytes(ByteBuf dataStream) {
             coord4D = Coord4D.read(dataStream);
-            value = ContainerEditMode.values()[dataStream.readInt()];
+            value = ContainerEditMode.get(dataStream.readInt());
         }
     }
 }

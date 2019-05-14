@@ -451,9 +451,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Nullable
     @Override
     public RecipeType getRecipeTypeOrNull(ItemStack itemStack) {
+        //TODO: Should this just be replaced with getting the default instead of null.
+        // Doing so would cleanup readability of various parts of the code
         int recipeType = getRecipeType(itemStack);
         if (recipeType < RecipeType.values().length) {
-            return RecipeType.values()[recipeType];
+            return RecipeType.get(recipeType);
         }
         return null;
     }

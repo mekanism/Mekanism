@@ -67,8 +67,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     private boolean redstoneSet = false;
 
-    public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
-                                               ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
+    public ConnectionType[] connectionTypes = {ConnectionType.getDefault(), ConnectionType.getDefault(), ConnectionType.getDefault(),
+                                               ConnectionType.getDefault(), ConnectionType.getDefault(), ConnectionType.getDefault()};
     public TileEntity[] cachedAcceptors = new TileEntity[6];
 
     public static boolean connectionMapContainsSide(byte connections, EnumFacing side) {
@@ -296,7 +296,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             currentTransmitterConnections = dataStream.readByte();
             currentAcceptorConnections = dataStream.readByte();
             for (int i = 0; i < 6; i++) {
-                connectionTypes[i] = ConnectionType.values()[dataStream.readInt()];
+                connectionTypes[i] = ConnectionType.get(dataStream.readInt());
             }
             markDirty();
             MekanismUtils.updateBlock(world, pos);
@@ -321,7 +321,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         super.readFromNBT(nbtTags);
         redstoneReactive = nbtTags.getBoolean("redstoneReactive");
         for (int i = 0; i < 6; i++) {
-            connectionTypes[i] = ConnectionType.values()[nbtTags.getInteger("connection" + i)];
+            connectionTypes[i] = ConnectionType.get(nbtTags.getInteger("connection" + i));
         }
     }
 
@@ -627,11 +627,26 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         PULL,
         NONE;
 
-        public ConnectionType next() {
-            if (ordinal() == values().length - 1) {
-                return NORMAL;
+        public static ConnectionType getDefault() {
+            return NORMAL;
+        }
+
+        public static ConnectionType get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
             }
-            return values()[ordinal() + 1];
+            return values()[index];
+        }
+
+        /**
+         * Gets the next connection type, loops back to start when past the end.
+         */
+        public ConnectionType next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return get(0);
         }
 
         @Override

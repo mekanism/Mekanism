@@ -251,7 +251,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
-        color = EnumColor.values()[nbtTags.getInteger("color")];
+        color = EnumColor.getOrDefault(nbtTags.getInteger("color"), color);
         if (nbtTags.hasKey("latched")) {
             latched = Coord4D.read(nbtTags.getCompoundTag("latched"));
         }
@@ -300,7 +300,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     @Override
     public void readSpawnData(ByteBuf data) {
         setPosition(data.readDouble(), data.readDouble(), data.readDouble());
-        color = EnumColor.values()[data.readInt()];
+        color = EnumColor.getOrDefault(data.readInt(), color);
         byte type = data.readByte();
         if (type == 1) {
             latched = Coord4D.read(data);

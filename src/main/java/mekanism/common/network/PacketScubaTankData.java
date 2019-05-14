@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemScubaTank;
@@ -47,7 +48,15 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
     public enum ScubaTankPacket {
         UPDATE,
         FULL,
-        MODE
+        MODE;
+
+        @Nullable
+        public static ScubaTankPacket get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class ScubaTankDataMessage implements IMessage {
@@ -103,7 +112,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = ScubaTankPacket.values()[dataStream.readInt()];
+            packetType = ScubaTankPacket.get(dataStream.readInt());
             if (packetType == ScubaTankPacket.MODE) {
                 value = dataStream.readBoolean();
             } else if (packetType == ScubaTankPacket.UPDATE) {

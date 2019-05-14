@@ -142,11 +142,11 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     }
 
     public void incrementMode(ItemStack stack) {
-        setMode(stack, getMode(stack).increment());
+        setMode(stack, getMode(stack).next());
     }
 
     public FlamethrowerMode getMode(ItemStack stack) {
-        return FlamethrowerMode.values()[ItemDataUtils.getInt(stack, "mode")];
+        return FlamethrowerMode.get(ItemDataUtils.getInt(stack, "mode"));
     }
 
     public void setMode(ItemStack stack, FlamethrowerMode mode) {
@@ -166,8 +166,26 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
             color = c;
         }
 
-        public FlamethrowerMode increment() {
-            return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
+        public static FlamethrowerMode getDefault() {
+            return COMBAT;
+        }
+
+        public static FlamethrowerMode get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the flamethrower mode, loops back to start when past the end.
+         */
+        public FlamethrowerMode next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return get(0);
         }
 
         public String getName() {

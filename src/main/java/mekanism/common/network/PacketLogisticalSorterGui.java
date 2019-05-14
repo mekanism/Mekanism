@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.filter.GuiTFilterSelect;
@@ -61,7 +62,15 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
         SERVER,
         CLIENT,
         SERVER_INDEX,
-        CLIENT_INDEX
+        CLIENT_INDEX;
+
+        @Nullable
+        public static SorterGuiPacket get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class LogisticalSorterGuiMessage implements IMessage {
@@ -168,12 +177,9 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = SorterGuiPacket.values()[dataStream.readInt()];
-
+            packetType = SorterGuiPacket.get(dataStream.readInt());
             coord4D = Coord4D.read(dataStream);
-
             guiType = dataStream.readInt();
-
             if (packetType == SorterGuiPacket.CLIENT || packetType == SorterGuiPacket.CLIENT_INDEX) {
                 windowId = dataStream.readInt();
             }

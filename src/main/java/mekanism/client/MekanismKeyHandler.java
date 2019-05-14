@@ -11,6 +11,7 @@ import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
+import mekanism.common.item.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
@@ -84,13 +85,11 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
             if (player.isSneaking() && item instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) item;
-                ConfiguratorMode configuratorMode = configurator.getState(toolStack);
-                int toSet = (configuratorMode.ordinal() + 1) % ConfiguratorMode.values().length;
-                configuratorMode = ConfiguratorMode.values()[toSet];
-                configurator.setState(toolStack, configuratorMode);
-                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(toSet)));
+                ConfiguratorMode nextMode = configurator.getState(toolStack).next();
+                configurator.setState(toolStack, nextMode);
+                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(nextMode.ordinal())));
                 player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                      .translation("mekanism.tooltip.configureState", LangUtils.withColor(configuratorMode.getNameComponent(), configuratorMode.getColor().textFormatting)));
+                      .translation("mekanism.tooltip.configureState", LangUtils.withColor(nextMode.getNameComponent(), nextMode.getColor().textFormatting)));
             } else if (player.isSneaking() && item instanceof ItemElectricBow) {
                 ItemElectricBow bow = (ItemElectricBow) item;
                 boolean newBowState = !bow.getFireState(toolStack);
@@ -153,7 +152,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             if (feetItem instanceof ItemFreeRunners) {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) feetItem;
                 if (player.isSneaking()) {
-                    freeRunners.setMode(feetStack, ItemFreeRunners.FreeRunnerMode.DISABLED);
+                    freeRunners.setMode(feetStack, FreeRunnerMode.DISABLED);
                 } else {
                     freeRunners.incrementMode(feetStack);
                 }

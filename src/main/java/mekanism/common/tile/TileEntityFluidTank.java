@@ -60,7 +60,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     public FluidTank fluidTank;
 
-    public ContainerEditMode editMode = ContainerEditMode.BOTH;
+    public ContainerEditMode editMode = ContainerEditMode.getDefault();
 
     public FluidTankTier tier = FluidTankTier.getDefault();
 
@@ -253,7 +253,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         super.readFromNBT(nbtTags);
         tier = FluidTankTier.get(nbtTags.getInteger("tier"));
         clientActive = isActive = nbtTags.getBoolean("isActive");
-        editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
+        editMode = ContainerEditMode.get(nbtTags.getInteger("editMode"));
         //Needs to be outside the hasKey check because this is just based on the tier which is known information
         fluidTank.setCapacity(tier.getStorage());
         if (nbtTags.hasKey("fluidTank")) {
@@ -271,7 +271,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
             clientActive = dataStream.readBoolean();
             valve = dataStream.readInt();
-            editMode = ContainerEditMode.values()[dataStream.readInt()];
+            editMode = ContainerEditMode.get(dataStream.readInt());
             if (valve > 0) {
                 valveFluid = TileUtils.readFluidStack(dataStream);
             } else {

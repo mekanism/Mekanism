@@ -1,6 +1,7 @@
 package mekanism.common.block.states;
 
 import java.util.Locale;
+import javax.annotation.Nullable;
 import mekanism.common.block.BlockOre;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -21,6 +22,14 @@ public class BlockStateOre extends BlockStateContainer {
         OSMIUM,
         COPPER,
         TIN;
+
+        @Nullable
+        public static EnumOreType get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
 
         @Override
         public String getName() {

@@ -15,7 +15,7 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
 
     public FluidStack fluid;
 
-    public ContainerEditMode editMode = ContainerEditMode.BOTH;
+    public ContainerEditMode editMode = ContainerEditMode.getDefault();
 
     @Override
     public void apply(SynchronizedTankData data) {
@@ -33,7 +33,7 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
+        editMode = ContainerEditMode.get(nbtTags.getInteger("editMode"));
         NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 

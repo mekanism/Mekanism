@@ -33,6 +33,14 @@ public enum Upgrade {
         color = c;
     }
 
+    @Nullable
+    public static Upgrade get(int index) {
+        if (index < 0 || index >= values().length) {
+            return null;
+        }
+        return values()[index];
+    }
+
     public static Map<Upgrade, Integer> buildMap(@Nullable NBTTagCompound nbtTags) {
         Map<Upgrade, Integer> upgrades = new HashMap<>();
         if (nbtTags != null) {
@@ -40,8 +48,10 @@ public enum Upgrade {
                 NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
                 for (int tagCount = 0; tagCount < list.tagCount(); tagCount++) {
                     NBTTagCompound compound = list.getCompoundTagAt(tagCount);
-                    Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
-                    upgrades.put(upgrade, compound.getInteger("amount"));
+                    Upgrade upgrade = Upgrade.get(compound.getInteger("type"));
+                    if (upgrade != null) {
+                        upgrades.put(upgrade, compound.getInteger("amount"));
+                    }
                 }
             }
         }

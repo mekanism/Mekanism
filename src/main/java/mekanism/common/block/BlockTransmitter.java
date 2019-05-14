@@ -169,8 +169,8 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
         if (tile != null) {
             return tile.getExtendedState(state);
         }
-        ConnectionType[] typeArray = new ConnectionType[]{ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
-                                                          ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
+        ConnectionType[] typeArray = new ConnectionType[]{ConnectionType.getDefault(), ConnectionType.getDefault(), ConnectionType.getDefault(),
+                                                          ConnectionType.getDefault(), ConnectionType.getDefault(), ConnectionType.getDefault()};
         PropertyConnection connectionProp = new PropertyConnection((byte) 0, (byte) 0, typeArray, true);
         return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
     }

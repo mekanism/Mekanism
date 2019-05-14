@@ -66,7 +66,7 @@ public interface IRedstoneControl {
             if (nextOrdinal < values().length) {
                 return get(nextOrdinal);
             }
-            return getDefault();
+            return get(0);
         }
 
         public String getDisplay() {

@@ -100,6 +100,24 @@ public interface IFactory {
             recipe = r;
         }
 
+        public static RecipeType getDefault() {
+            return SMELTING;
+        }
+
+        public static RecipeType get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        @Nullable
+        public RecipeType next() {
+            int nextOrdinal = ordinal() + 1;
+            return nextOrdinal < values().length ? get(nextOrdinal) : null;
+        }
+
+        @Nullable
         public static RecipeType getFromMachine(Block block, int meta) {
             RecipeType type = null;
             for (RecipeType iterType : RecipeType.values()) {

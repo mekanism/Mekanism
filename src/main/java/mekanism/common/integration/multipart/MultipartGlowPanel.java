@@ -24,19 +24,19 @@ public class MultipartGlowPanel implements IMultipart {
 
     @Override
     public IPartSlot getSlotForPlacement(World world, BlockPos pos, IBlockState state, EnumFacing facing, float hitX, float hitY, float hitZ, EntityLivingBase placer) {
-        return EnumFaceSlot.values()[facing.ordinal()];
+        return EnumFaceSlot.fromFace(facing);
     }
 
     @Override
     public IPartSlot getSlotFromWorld(IBlockAccess world, BlockPos pos, IBlockState state) {
-        return EnumFaceSlot.values()[state.getValue(BlockStateFacing.facingProperty).ordinal()];
+        return EnumFaceSlot.fromFace(state.getValue(BlockStateFacing.facingProperty));
     }
 
     @Override
     public void onPartPlacedBy(IPartInfo part, EntityLivingBase placer, ItemStack stack) {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntityGlowPanel) {
-            EnumFacing facing = EnumFacing.values()[((EnumFaceSlot) part.getSlot()).ordinal()];
+            EnumFacing facing = ((EnumFaceSlot) part.getSlot()).getFacing();
             EnumColor col = EnumColor.DYES[stack.getItemDamage()];
             TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
             glowPanel.setOrientation(facing);

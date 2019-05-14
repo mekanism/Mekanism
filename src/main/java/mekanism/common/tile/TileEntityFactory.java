@@ -126,7 +126,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
      * This machine's recipe type.
      */
     @Nonnull
-    private RecipeType recipeType = RecipeType.SMELTING;
+    private RecipeType recipeType = RecipeType.getDefault();
 
     public TileEntityFactory() {
         this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
@@ -693,7 +693,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             RecipeType oldRecipe = recipeType;
-            recipeType = RecipeType.values()[dataStream.readInt()];
+            recipeType = RecipeType.get(dataStream.readInt());
             upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
             recipeTicks = dataStream.readInt();
             sorting = dataStream.readBoolean();
@@ -729,7 +729,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        setRecipeType(RecipeType.values()[nbtTags.getInteger("recipeType")]);
+        setRecipeType(RecipeType.get(nbtTags.getInteger("recipeType")));
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInteger("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");

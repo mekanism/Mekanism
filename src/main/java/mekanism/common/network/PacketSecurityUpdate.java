@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -30,7 +31,15 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 
     public enum SecurityPacket {
         UPDATE,
-        FULL
+        FULL;
+
+        @Nullable
+        public static SecurityPacket get(int index) {
+            if (index < 0 || index >= values().length) {
+                return null;
+            }
+            return values()[index];
+        }
     }
 
     public static class SecurityUpdateMessage implements IMessage {
@@ -83,7 +92,7 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = SecurityPacket.values()[dataStream.readInt()];
+            packetType = SecurityPacket.get(dataStream.readInt());
             if (packetType == SecurityPacket.UPDATE) {
                 playerUUID = UUID.fromString(PacketHandler.readString(dataStream));
                 playerUsername = PacketHandler.readString(dataStream);

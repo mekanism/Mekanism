@@ -22,8 +22,8 @@ public class PacketRemoveUpgrade implements IMessageHandler<RemoveUpgradeMessage
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
             if (tileEntity instanceof IUpgradeTile && tileEntity instanceof TileEntityBasicBlock) {
                 IUpgradeTile upgradeTile = (IUpgradeTile) tileEntity;
-                Upgrade upgrade = Upgrade.values()[message.upgradeType];
-                if (upgradeTile.getComponent().getUpgrades(upgrade) > 0) {
+                Upgrade upgrade = Upgrade.get(message.upgradeType);
+                if (upgrade != null && upgradeTile.getComponent().getUpgrades(upgrade) > 0) {
                     if (player.inventory.addItemStackToInventory(upgrade.getStack())) {
                         upgradeTile.getComponent().removeUpgrade(upgrade);
                     }

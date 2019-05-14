@@ -202,10 +202,10 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption blacklistForge = new BooleanOption(this, "general", "BlacklistForgePower", false,
           "Disables Forge Energy (FE,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).");
 
-    public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType", EnergyType.RF,
+    public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType", EnergyType.getDefault(),
           "Displayed energy type in Mekanism GUIs.");
 
-    public EnumOption<TempType> tempUnit = new EnumOption<>(this, "general", "Temperature Units", TempType.K,
+    public EnumOption<TempType> tempUnit = new EnumOption<>(this, "general", "Temperature Units", TempType.getDefault(),
           "Displayed temperature unit in Mekanism GUIs.");
 
     public final IntOption laserRange = new IntOption(this, "general", "LaserRange", 64,

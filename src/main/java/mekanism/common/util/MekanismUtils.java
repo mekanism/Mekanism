@@ -60,6 +60,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -1089,6 +1090,13 @@ public final class MekanismUtils {
     public static int redstoneLevelFromContents(double amount, double capacity) {
         double fractionFull = capacity == 0 ? 0 : amount / capacity;
         return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+    }
+
+    public static EnumHand getHandSafe(int ordinal) {
+        if (ordinal < 0 || ordinal >= EnumHand.values().length) {
+            return EnumHand.MAIN_HAND;
+        }
+        return EnumHand.values()[ordinal];
     }
 
     /**

@@ -51,8 +51,16 @@ public class BlockStateTransmitter extends ExtendedBlockState {
             tiers = b;
         }
 
-        public static TransmitterType get(int meta) {
-            return TransmitterType.values()[meta];
+        public static TransmitterType getDefault() {
+            //TODO: Decide if this should be default or what, do same for TransmissionType
+            return UNIVERSAL_CABLE;
+        }
+
+        public static TransmitterType get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
         }
 
         @Override

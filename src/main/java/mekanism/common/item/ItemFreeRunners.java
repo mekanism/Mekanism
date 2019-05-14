@@ -214,7 +214,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     }
 
     public FreeRunnerMode getMode(ItemStack itemStack) {
-        return FreeRunnerMode.values()[ItemDataUtils.getInt(itemStack, "mode")];
+        return FreeRunnerMode.get(ItemDataUtils.getInt(itemStack, "mode"));
     }
 
     public void setMode(ItemStack itemStack, FreeRunnerMode mode) {
@@ -222,7 +222,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     }
 
     public void incrementMode(ItemStack itemStack) {
-        setMode(itemStack, getMode(itemStack).increment());
+        setMode(itemStack, getMode(itemStack).next());
     }
 
     public enum FreeRunnerMode {
@@ -237,8 +237,26 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
             this.color = color;
         }
 
-        public FreeRunnerMode increment() {
-            return ordinal() < values().length - 1 ? values()[ordinal() + 1] : values()[0];
+        public static FreeRunnerMode getDefault() {
+            return NORMAL;
+        }
+
+        public static FreeRunnerMode get(int index) {
+            if (index < 0 || index >= values().length) {
+                return getDefault();
+            }
+            return values()[index];
+        }
+
+        /**
+         * Gets the free runner mode, loops back to start when past the end.
+         */
+        public FreeRunnerMode next() {
+            int nextOrdinal = ordinal() + 1;
+            if (nextOrdinal < values().length) {
+                return get(nextOrdinal);
+            }
+            return get(0);
         }
 
         public String getName() {
