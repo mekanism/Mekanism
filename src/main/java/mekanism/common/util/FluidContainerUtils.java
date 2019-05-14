@@ -179,11 +179,8 @@ public final class FluidContainerUtils {
             return BOTH;
         }
 
-        public static ContainerEditMode get(int index) {
-            if (index < 0 || index >= values().length) {
-                return getDefault();
-            }
-            return values()[index];
+        public static ContainerEditMode get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
         /**

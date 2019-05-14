@@ -147,11 +147,8 @@ public class UnitDisplayUtils {
             intervalSize = size;
         }
 
-        public static TemperatureUnit get(int index) {
-            if (index < 0 || index >= values().length) {
-                return KELVIN;
-            }
-            return values()[index];
+        public static TemperatureUnit get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, KELVIN);
         }
 
         public static TemperatureUnit getCurrent() {
@@ -207,11 +204,8 @@ public class UnitDisplayUtils {
             value = v;
         }
 
-        public static MeasurementUnit get(int index) {
-            if (index < 0 || index >= values().length) {
-                return BASE;
-            }
-            return values()[index];
+        public static MeasurementUnit get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, BASE);
         }
 
         @Nullable
@@ -258,11 +252,8 @@ public class UnitDisplayUtils {
             return RF;
         }
 
-        public static EnergyType get(int index) {
-            if (index < 0 || index >= values().length) {
-                return getDefault();
-            }
-            return values()[index];
+        public static EnergyType get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
         /**
@@ -288,11 +279,8 @@ public class UnitDisplayUtils {
             return K;
         }
 
-        public static TempType get(int index) {
-            if (index < 0 || index >= values().length) {
-                return getDefault();
-            }
-            return values()[index];
+        public static TempType get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
         /**

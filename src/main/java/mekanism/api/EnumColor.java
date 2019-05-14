@@ -61,6 +61,7 @@ public enum EnumColor implements IStringSerializable {
     }
 
     public static EnumColor getOrDefault(int index, EnumColor fallback) {
+        //TODO: Is there some way for this to use the method in EnumUtils? It isn't in the API package though
         if (index < 0 || index >= values().length) {
             return fallback;
         }

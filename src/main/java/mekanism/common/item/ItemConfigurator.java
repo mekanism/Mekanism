@@ -29,6 +29,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -280,11 +281,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             return CONFIGURATE_ITEMS;
         }
 
-        public static ConfiguratorMode get(int index) {
-            if (index < 0 || index >= values().length) {
-                return getDefault();
-            }
-            return values()[index];
+        public static ConfiguratorMode get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
         /**

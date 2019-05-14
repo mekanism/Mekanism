@@ -4,6 +4,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.util.IStringSerializable;
 
 public enum GasTankTier implements ITier<GasTankTier>, IStringSerializable {
@@ -27,11 +28,8 @@ public enum GasTankTier implements ITier<GasTankTier>, IStringSerializable {
         return BASIC;
     }
 
-    public static GasTankTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static GasTankTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static GasTankTier get(@Nonnull BaseTier tier) {

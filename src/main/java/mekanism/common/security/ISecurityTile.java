@@ -2,6 +2,7 @@ package mekanism.common.security;
 
 import mekanism.api.EnumColor;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 
 public interface ISecurityTile {
@@ -25,11 +26,8 @@ public interface ISecurityTile {
             return PUBLIC;
         }
 
-        public static SecurityMode get(int index) {
-            if (index < 0 || index >= values().length) {
-                return getDefault();
-            }
-            return values()[index];
+        public static SecurityMode get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
         /**

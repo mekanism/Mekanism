@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemFreeRunners.FreeRunnerMode;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -51,11 +52,8 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
         MODE;
 
         @Nullable
-        public static FreeRunnerPacket get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static FreeRunnerPacket get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
     }
 

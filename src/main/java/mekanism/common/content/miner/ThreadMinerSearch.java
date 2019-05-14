@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.util.BlockInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
@@ -131,11 +132,8 @@ public class ThreadMinerSearch extends Thread {
             return IDLE;
         }
 
-        public static State get(int index) {
-            if (index < 0 || index >= values().length) {
-                return getDefault();
-            }
-            return values()[index];
+        public static State get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
     }
 }

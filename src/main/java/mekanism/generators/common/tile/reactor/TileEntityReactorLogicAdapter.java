@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -15,7 +16,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     private static final String[] methods = new String[]{"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat",
                                                          "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing", "getIgnitionTemp", "getEnergy",
                                                          "getMaxEnergy", "getWater", "getSteam", "getFuel", "getDeuterium", "getTritium"};
-    public ReactorLogic logicType = ReactorLogic.DISABLED;
+    public ReactorLogic logicType = ReactorLogic.getDefault();
     public boolean activeCooled;
     public boolean prevOutputting;
 
@@ -179,11 +180,12 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             renderStack = stack;
         }
 
-        public static ReactorLogic get(int index) {
-            if (index < 0 || index >= values().length) {
-                return DISABLED;
-            }
-            return values()[index];
+        public static ReactorLogic getDefault() {
+            return DISABLED;
+        }
+
+        public static ReactorLogic get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
         public ItemStack getRenderStack() {

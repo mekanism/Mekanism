@@ -16,6 +16,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -91,11 +92,8 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
         STRICT_INPUT;
 
         @Nullable
-        public static ConfigurationPacket get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static ConfigurationPacket get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
     }
 

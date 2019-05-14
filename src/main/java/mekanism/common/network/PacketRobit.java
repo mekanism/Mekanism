@@ -6,6 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -62,11 +63,8 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
         DROP_PICKUP;
 
         @Nullable
-        public static RobitPacketType get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static RobitPacketType get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
     }
 

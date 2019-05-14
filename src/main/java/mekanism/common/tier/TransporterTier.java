@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 
 public enum TransporterTier implements ITier<TransporterTier> {
     BASIC(1, 5),
@@ -24,11 +25,8 @@ public enum TransporterTier implements ITier<TransporterTier> {
         return BASIC;
     }
 
-    public static TransporterTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static TransporterTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static TransporterTier get(@Nonnull BaseTier tier) {

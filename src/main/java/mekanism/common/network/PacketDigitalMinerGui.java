@@ -20,6 +20,7 @@ import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -69,11 +70,8 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
         CLIENT_INDEX;
 
         @Nullable
-        public static MinerGuiPacket get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static MinerGuiPacket get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
     }
 

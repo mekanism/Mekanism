@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 
 public enum CableTier implements ITier<CableTier> {
     BASIC(3200),
@@ -22,11 +23,8 @@ public enum CableTier implements ITier<CableTier> {
         return BASIC;
     }
 
-    public static CableTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static CableTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static CableTier get(@Nonnull BaseTier tier) {

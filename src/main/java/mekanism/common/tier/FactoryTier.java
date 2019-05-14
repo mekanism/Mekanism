@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.util.ResourceLocation;
 
 public enum FactoryTier implements ITier<FactoryTier> {
@@ -26,11 +27,8 @@ public enum FactoryTier implements ITier<FactoryTier> {
         return BASIC;
     }
 
-    public static FactoryTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static FactoryTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static FactoryTier get(@Nonnull BaseTier tier) {

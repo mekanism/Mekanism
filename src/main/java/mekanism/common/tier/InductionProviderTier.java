@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 
 public enum InductionProviderTier implements ITier<InductionProviderTier> {
     BASIC(64000),
@@ -22,11 +23,8 @@ public enum InductionProviderTier implements ITier<InductionProviderTier> {
         return BASIC;
     }
 
-    public static InductionProviderTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static InductionProviderTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static InductionProviderTier get(@Nonnull BaseTier tier) {

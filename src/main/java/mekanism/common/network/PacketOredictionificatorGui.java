@@ -14,6 +14,7 @@ import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGui
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -64,11 +65,8 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
         CLIENT_INDEX;
 
         @Nullable
-        public static OredictionificatorGuiPacket get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static OredictionificatorGuiPacket get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
     }
 

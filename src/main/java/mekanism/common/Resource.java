@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.Locale;
 import javax.annotation.Nullable;
+import mekanism.common.util.EnumUtils;
 
 public enum Resource {
     IRON("Iron", 0xaf8e77),
@@ -21,11 +22,8 @@ public enum Resource {
     }
 
     @Nullable
-    public static Resource get(int index) {
-        if (index < 0 || index >= values().length) {
-            return null;
-        }
-        return values()[index];
+    public static Resource get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, null);
     }
 
     public static Resource getFromName(String s) {

@@ -10,6 +10,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -57,11 +58,8 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
         MODE;
 
         @Nullable
-        public static JetpackPacket get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static JetpackPacket get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
     }
 

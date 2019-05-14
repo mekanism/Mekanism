@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 
 public enum TubeTier implements ITier<TubeTier> {
     BASIC(256, 64),
@@ -24,11 +25,8 @@ public enum TubeTier implements ITier<TubeTier> {
         return BASIC;
     }
 
-    public static TubeTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static TubeTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static TubeTier get(@Nonnull BaseTier tier) {

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 
 public enum ConductorTier implements ITier<ConductorTier> {
     BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
@@ -30,11 +31,8 @@ public enum ConductorTier implements ITier<ConductorTier> {
         return BASIC;
     }
 
-    public static ConductorTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static ConductorTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static ConductorTier get(@Nonnull BaseTier tier) {

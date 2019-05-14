@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 
 public enum FluidTankTier implements ITier<FluidTankTier> {
     BASIC(14000, 400),
@@ -25,11 +26,8 @@ public enum FluidTankTier implements ITier<FluidTankTier> {
         return BASIC;
     }
 
-    public static FluidTankTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static FluidTankTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static FluidTankTier get(@Nonnull BaseTier tier) {

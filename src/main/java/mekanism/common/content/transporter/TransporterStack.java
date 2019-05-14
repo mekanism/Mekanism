@@ -14,6 +14,7 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -119,7 +120,7 @@ public class TransporterStack {
         originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
 
         if (nbtTags.hasKey("idleDir")) {
-            idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
+            idleDir = EnumUtils.getEnumSafe(EnumFacing.values(), nbtTags.getInteger("idleDir"), null);
         }
         if (nbtTags.hasKey("homeLocation")) {
             homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));
@@ -254,12 +255,9 @@ public class TransporterStack {
         NONE;
 
         @Nullable
-        public static Path get(int index) {
-            if (index < 0 || index >= values().length) {
-                //TODO: Decide if the default type should be NONE
-                return DEST;
-            }
-            return values()[index];
+        public static Path get(int ordinal) {
+            //TODO: Decide if the default type should be NONE
+            return EnumUtils.getEnumSafe(values(), ordinal, DEST);
         }
     }
 }

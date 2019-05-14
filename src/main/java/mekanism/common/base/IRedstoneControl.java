@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 
 public interface IRedstoneControl {
@@ -51,11 +52,8 @@ public interface IRedstoneControl {
             return DISABLED;
         }
 
-        public static RedstoneControl get(int index) {
-            if (index < 0 || index >= values().length) {
-                return getDefault();
-            }
-            return values()[index];
+        public static RedstoneControl get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
         }
 
         /**

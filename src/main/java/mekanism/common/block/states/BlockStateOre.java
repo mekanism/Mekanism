@@ -3,6 +3,7 @@ package mekanism.common.block.states;
 import java.util.Locale;
 import javax.annotation.Nullable;
 import mekanism.common.block.BlockOre;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.util.IStringSerializable;
@@ -24,11 +25,8 @@ public class BlockStateOre extends BlockStateContainer {
         TIN;
 
         @Nullable
-        public static EnumOreType get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static EnumOreType get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
 
         @Override

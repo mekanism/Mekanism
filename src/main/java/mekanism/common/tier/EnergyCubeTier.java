@@ -4,6 +4,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnergyCubeTier implements ITier<EnergyCubeTier>, IStringSerializable {
@@ -27,11 +28,8 @@ public enum EnergyCubeTier implements ITier<EnergyCubeTier>, IStringSerializable
         return BASIC;
     }
 
-    public static EnergyCubeTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static EnergyCubeTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static EnergyCubeTier get(@Nonnull BaseTier tier) {

@@ -9,7 +9,7 @@ import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -48,11 +48,8 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
         ITEM;
 
         @Nullable
-        public static SecurityPacketType get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static SecurityPacketType get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
     }
 
@@ -95,7 +92,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
             if (packetType == SecurityPacketType.BLOCK) {
                 coord4D = Coord4D.read(dataStream);
             } else {
-                currentHand = MekanismUtils.getHandSafe(dataStream.readInt());
+                currentHand = EnumUtils.getHandSafe(dataStream.readInt());
             }
             value = SecurityMode.get(dataStream.readInt());
         }

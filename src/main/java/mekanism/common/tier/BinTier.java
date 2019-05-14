@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 
 public enum BinTier implements ITier<BinTier> {
     BASIC(4096),
@@ -23,11 +24,8 @@ public enum BinTier implements ITier<BinTier> {
         return BASIC;
     }
 
-    public static BinTier get(int index) {
-        if (index < 0 || index >= values().length) {
-            return getDefault();
-        }
-        return values()[index];
+    public static BinTier get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, getDefault());
     }
 
     public static BinTier get(@Nonnull BaseTier tier) {

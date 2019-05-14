@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -56,11 +57,8 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem {
         }
 
         @Nullable
-        public static PlasticItem get(int index) {
-            if (index < 0 || index >= values().length) {
-                return null;
-            }
-            return values()[index];
+        public static PlasticItem get(int ordinal) {
+            return EnumUtils.getEnumSafe(values(), ordinal, null);
         }
 
         public String getName() {

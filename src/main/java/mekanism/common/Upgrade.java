@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,11 +35,8 @@ public enum Upgrade {
     }
 
     @Nullable
-    public static Upgrade get(int index) {
-        if (index < 0 || index >= values().length) {
-            return null;
-        }
-        return values()[index];
+    public static Upgrade get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal, null);
     }
 
     public static Map<Upgrade, Integer> buildMap(@Nullable NBTTagCompound nbtTags) {
