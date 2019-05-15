@@ -2,7 +2,7 @@ package mekanism.common;
 
 import java.util.Locale;
 import javax.annotation.Nullable;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 
 public enum Resource {
     IRON("Iron", 0xaf8e77),

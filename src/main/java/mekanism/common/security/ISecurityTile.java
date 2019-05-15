@@ -2,7 +2,7 @@ package mekanism.common.security;
 
 import mekanism.api.EnumColor;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 
 public interface ISecurityTile {

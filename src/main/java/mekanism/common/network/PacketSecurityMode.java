@@ -4,12 +4,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
-import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -87,7 +87,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
             if (packetType == SecurityPacketType.BLOCK) {
                 coord4D = Coord4D.read(dataStream);
             } else {
-                currentHand = EnumUtils.getHandSafe(dataStream.readInt());
+                currentHand = MekanismUtils.getHandSafe(dataStream.readInt());
             }
             value = SecurityMode.get(dataStream.readInt());
         }

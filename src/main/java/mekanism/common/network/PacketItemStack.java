@@ -6,7 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
-import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -67,7 +67,7 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            currentHand = EnumUtils.getHandSafe(dataStream.readInt());
+            currentHand = MekanismUtils.getHandSafe(dataStream.readInt());
             storedBuffer = dataStream.copy();
         }
     }

@@ -3,7 +3,7 @@ package mekanism.common.tier;
 import java.util.Locale;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.util.IStringSerializable;
 

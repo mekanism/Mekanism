@@ -1,6 +1,7 @@
 package mekanism.api.transmitters;
 
 import javax.annotation.Nullable;
+import mekanism.api.util.EnumUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.translation.I18n;
 
@@ -20,12 +21,8 @@ public enum TransmissionType {
     }
 
     @Nullable
-    public static TransmissionType get(int index) {
-        //TODO: Is there some way for this to use the method in EnumUtils? It isn't in the API package though
-        if (index < 0 || index >= values().length) {
-            return null;
-        }
-        return values()[index];
+    public static TransmissionType get(int ordinal) {
+        return EnumUtils.getEnumSafe(values(), ordinal);
     }
 
     public static boolean checkTransmissionType(ITransmitter sideTile, TransmissionType type) {

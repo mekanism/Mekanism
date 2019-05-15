@@ -91,7 +91,7 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
-import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -234,7 +234,7 @@ public class CommonProxy implements IGuiProvider {
             case 13:
                 return new ContainerTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
             case 14:
-                ItemStack itemStack = player.getHeldItem(EnumUtils.getHandSafe(pos.getX()));
+                ItemStack itemStack = player.getHeldItem(MekanismUtils.getHandSafe(pos.getX()));
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter) {
                     return new ContainerNull();
                 }

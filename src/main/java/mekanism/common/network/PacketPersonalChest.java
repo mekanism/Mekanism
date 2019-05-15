@@ -6,10 +6,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.tile.TileEntityPersonalChest;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -134,7 +133,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                 if (isBlock) {
                     coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
                 } else {
-                    currentHand = EnumUtils.getHandSafe(dataStream.readInt());
+                    currentHand = MekanismUtils.getHandSafe(dataStream.readInt());
                 }
             } else if (packetType == PersonalChestPacketType.CLIENT_OPEN) {
                 guiType = dataStream.readInt();
@@ -143,7 +142,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                 if (isBlock) {
                     coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
                 } else {
-                    currentHand = EnumUtils.getHandSafe(dataStream.readInt());
+                    currentHand = MekanismUtils.getHandSafe(dataStream.readInt());
                 }
             }
         }

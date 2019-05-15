@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateOre;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;

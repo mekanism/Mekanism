@@ -29,7 +29,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;

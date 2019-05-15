@@ -5,9 +5,9 @@ import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemFlamethrower;
-import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -84,7 +84,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
                 uuid = PacketHandler.readUUID(dataStream);
                 value = dataStream.readBoolean();
             } else if (packetType == FlamethrowerPacket.MODE) {
-                currentHand = EnumUtils.getHandSafe(dataStream.readInt());
+                currentHand = MekanismUtils.getHandSafe(dataStream.readInt());
             }
         }
     }

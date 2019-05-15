@@ -23,7 +23,7 @@ import mekanism.common.network.PacketFreeRunnerData.FreeRunnerDataMessage;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TextComponentGroup;
 import net.minecraft.client.Minecraft;

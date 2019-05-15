@@ -3,7 +3,7 @@ package mekanism.common.tier;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnergyCubeTier implements ITier, IStringSerializable {

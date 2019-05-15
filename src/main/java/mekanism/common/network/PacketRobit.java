@@ -5,7 +5,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;

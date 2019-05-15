@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import net.minecraft.util.ResourceLocation;
 
 public enum FactoryTier implements ITier {

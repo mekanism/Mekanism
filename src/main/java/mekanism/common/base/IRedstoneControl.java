@@ -1,6 +1,6 @@
 package mekanism.common.base;
 
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 
 public interface IRedstoneControl {

@@ -2,7 +2,7 @@ package mekanism.common.tier;
 
 import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 
 public enum FluidTankTier implements ITier {
     BASIC(14000, 400),

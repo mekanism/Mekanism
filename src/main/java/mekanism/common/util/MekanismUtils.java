@@ -15,6 +15,7 @@ import mekanism.api.IMekWrench;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
@@ -61,6 +62,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -1117,6 +1119,17 @@ public final class MekanismUtils {
             return (int) d;
         }
         return Integer.MAX_VALUE;
+    }
+
+    /**
+     * Safely gets which hand is being refered to by the given ordinal, falls back to MAIN_HAND if invalid.
+     *
+     * @param ordinal The ordinal of the hand, should be either 0 or 1.
+     *
+     * @return OFF_HAND if ordinal is 1, MAIN_HAND otherwise.
+     */
+    public static EnumHand getHandSafe(int ordinal) {
+        return EnumUtils.getEnumSafe(EnumHand.values(), ordinal, EnumHand.MAIN_HAND);
     }
 
     public enum ResourceType {

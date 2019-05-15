@@ -8,7 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.util.BlockInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;

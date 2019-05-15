@@ -7,7 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;

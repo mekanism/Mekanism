@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import java.util.Locale;
+import mekanism.api.util.EnumUtils;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -60,12 +61,8 @@ public enum EnumColor implements IStringSerializable {
         textFormatting = tf;
     }
 
-    public static EnumColor getOrDefault(int index, EnumColor fallback) {
-        //TODO: Is there some way for this to use the method in EnumUtils? It isn't in the API package though
-        if (index < 0 || index >= values().length) {
-            return fallback;
-        }
-        return values()[index];
+    public static EnumColor getOrDefault(int ordinal, EnumColor fallback) {
+        return EnumUtils.getEnumSafe(values(), ordinal, fallback);
     }
 
     public static EnumColor getFromDyeName(String s) {

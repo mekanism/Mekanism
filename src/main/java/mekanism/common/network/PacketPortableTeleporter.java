@@ -12,11 +12,11 @@ import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -262,12 +262,12 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
         public void fromBytes(ByteBuf buffer) {
             packetType = EnumUtils.getEnumSafe(PortableTeleporterPacketType.values(), buffer.readInt());
             if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
-                currentHand = EnumUtils.getHandSafe(buffer.readInt());
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 if (buffer.readBoolean()) {
                     frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
                 }
             } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
-                currentHand = EnumUtils.getHandSafe(buffer.readInt());
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 if (buffer.readBoolean()) {
                     frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
                 }
@@ -282,13 +282,13 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                     privateCache.add(new Frequency(buffer));
                 }
             } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
-                currentHand = EnumUtils.getHandSafe(buffer.readInt());
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
             } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
-                currentHand = EnumUtils.getHandSafe(buffer.readInt());
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
             } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
-                currentHand = EnumUtils.getHandSafe(buffer.readInt());
+                currentHand = MekanismUtils.getHandSafe(buffer.readInt());
                 frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
             }
         }

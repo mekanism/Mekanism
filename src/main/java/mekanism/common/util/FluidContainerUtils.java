@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import mekanism.api.util.EnumUtils;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

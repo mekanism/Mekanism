@@ -1,14 +1,12 @@
-package mekanism.common.util;
+package mekanism.api.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.util.EnumHand;
 
+/**
+ * Helpful utility methods for interacting with Enum Data. This is in the API package as a couple Enums we have in it use parts of it.
+ */
 public class EnumUtils {
-
-    public static EnumHand getHandSafe(int ordinal) {
-        return getEnumSafe(EnumHand.values(), ordinal, EnumHand.MAIN_HAND);
-    }
 
     /**
      * @param values   The values of the enum.

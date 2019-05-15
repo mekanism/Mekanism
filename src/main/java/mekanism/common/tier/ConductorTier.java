@@ -3,7 +3,7 @@ package mekanism.common.tier;
 import javax.annotation.Nonnull;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.EnumUtils;
+import mekanism.api.util.EnumUtils;
 
 public enum ConductorTier implements ITier {
     BASIC(5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),

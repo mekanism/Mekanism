@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import javax.annotation.Nullable;
+import mekanism.api.util.EnumUtils;
 import mekanism.common.config.MekanismConfig;
 
 /**
