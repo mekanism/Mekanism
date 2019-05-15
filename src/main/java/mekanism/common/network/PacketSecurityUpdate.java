@@ -4,11 +4,11 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
@@ -32,12 +32,7 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 
     public enum SecurityPacket {
         UPDATE,
-        FULL;
-
-        @Nullable
-        public static SecurityPacket get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        FULL
     }
 
     public static class SecurityUpdateMessage implements IMessage {
@@ -90,7 +85,7 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = SecurityPacket.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(SecurityPacket.values(), dataStream.readInt());
             if (packetType == SecurityPacket.UPDATE) {
                 playerUUID = UUID.fromString(PacketHandler.readString(dataStream));
                 playerUsername = PacketHandler.readString(dataStream);

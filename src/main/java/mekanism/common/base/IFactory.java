@@ -94,7 +94,7 @@ public interface IFactory {
 
         @Nullable
         public static RecipeType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
+            return EnumUtils.getEnumSafe(values(), ordinal);
         }
 
         @Nullable

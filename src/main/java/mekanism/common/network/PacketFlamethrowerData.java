@@ -2,10 +2,10 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemFlamethrower;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,12 +42,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
     public enum FlamethrowerPacket {
         UPDATE,
-        MODE;
-
-        @Nullable
-        public static FlamethrowerPacket get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        MODE
     }
 
     public static class FlamethrowerDataMessage implements IMessage {
@@ -84,7 +79,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = FlamethrowerPacket.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(FlamethrowerPacket.values(), dataStream.readInt());
             if (packetType == FlamethrowerPacket.UPDATE) {
                 uuid = PacketHandler.readUUID(dataStream);
                 value = dataStream.readBoolean();

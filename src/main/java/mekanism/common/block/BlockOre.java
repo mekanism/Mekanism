@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateOre;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -36,7 +37,7 @@ public class BlockOre extends Block {
     @Override
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
-        EnumOreType oreType = EnumOreType.get(meta);
+        EnumOreType oreType = EnumUtils.getEnumSafe(EnumOreType.values(), meta);
         return oreType == null ? getDefaultState() : getDefaultState().withProperty(BlockStateOre.typeProperty, oreType);
     }
 

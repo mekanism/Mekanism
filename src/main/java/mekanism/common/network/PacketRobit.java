@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
@@ -60,12 +59,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
         FOLLOW,
         NAME,
         GO_HOME,
-        DROP_PICKUP;
-
-        @Nullable
-        public static RobitPacketType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        DROP_PICKUP
     }
 
     public static class RobitMessage implements IMessage {
@@ -129,7 +123,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            activeType = RobitPacketType.get(dataStream.readInt());
+            activeType = EnumUtils.getEnumSafe(RobitPacketType.values(), dataStream.readInt());
             if (activeType == RobitPacketType.GUI) {
                 guiType = dataStream.readInt();
                 entityId = dataStream.readInt();

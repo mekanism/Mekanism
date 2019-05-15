@@ -55,7 +55,7 @@ public class BlockStateTransmitter extends ExtendedBlockState {
 
         @Nullable
         public static TransmitterType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
+            return EnumUtils.getEnumSafe(values(), ordinal);
         }
 
         @Override

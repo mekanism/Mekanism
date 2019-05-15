@@ -124,7 +124,7 @@ public class TransporterStack {
         originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
 
         if (nbtTags.hasKey("idleDir")) {
-            idleDir = EnumUtils.getEnumSafe(EnumFacing.values(), nbtTags.getInteger("idleDir"), null);
+            idleDir = EnumUtils.getEnumSafe(EnumFacing.values(), nbtTags.getInteger("idleDir"));
         }
         if (nbtTags.hasKey("homeLocation")) {
             homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));
@@ -260,7 +260,7 @@ public class TransporterStack {
 
         @Nullable
         public static Path get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
+            return EnumUtils.getEnumSafe(values(), ordinal);
         }
     }
 }

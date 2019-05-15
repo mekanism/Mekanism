@@ -4,11 +4,11 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,12 +55,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
     public enum JetpackPacket {
         UPDATE,
         FULL,
-        MODE;
-
-        @Nullable
-        public static JetpackPacket get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        MODE
     }
 
     public static class JetpackDataMessage implements IMessage {
@@ -116,7 +111,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = JetpackPacket.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(JetpackPacket.values(), dataStream.readInt());
             if (packetType == JetpackPacket.MODE) {
                 value = dataStream.readBoolean();
             } else if (packetType == JetpackPacket.UPDATE) {

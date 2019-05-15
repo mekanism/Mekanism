@@ -2,9 +2,9 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -45,12 +45,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 
     public enum SecurityPacketType {
         BLOCK,
-        ITEM;
-
-        @Nullable
-        public static SecurityPacketType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        ITEM
     }
 
     public static class SecurityModeMessage implements IMessage {
@@ -88,7 +83,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = SecurityPacketType.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(SecurityPacketType.values(), dataStream.readInt());
             if (packetType == SecurityPacketType.BLOCK) {
                 coord4D = Coord4D.read(dataStream);
             } else {

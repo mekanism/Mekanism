@@ -23,7 +23,7 @@ public enum Resource {
 
     @Nullable
     public static Resource get(int ordinal) {
-        return EnumUtils.getEnumSafe(values(), ordinal, null);
+        return EnumUtils.getEnumSafe(values(), ordinal);
     }
 
     public static Resource getFromName(String s) {

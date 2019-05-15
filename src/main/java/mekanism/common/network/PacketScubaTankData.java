@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,12 +49,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
     public enum ScubaTankPacket {
         UPDATE,
         FULL,
-        MODE;
-
-        @Nullable
-        public static ScubaTankPacket get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        MODE
     }
 
     public static class ScubaTankDataMessage implements IMessage {
@@ -110,7 +105,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = ScubaTankPacket.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(ScubaTankPacket.values(), dataStream.readInt());
             if (packetType == ScubaTankPacket.MODE) {
                 value = dataStream.readBoolean();
             } else if (packetType == ScubaTankPacket.UPDATE) {

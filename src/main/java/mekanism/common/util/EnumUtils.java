@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.util.EnumHand;
 
@@ -9,6 +10,14 @@ public class EnumUtils {
         return getEnumSafe(EnumHand.values(), ordinal, EnumHand.MAIN_HAND);
     }
 
+    /**
+     * @param values   The values of the enum.
+     * @param ordinal  The index of the element in the enum we are trying to retrieve.
+     * @param fallback The fallback value if ordinal is out of bounds.
+     * @param <TYPE>   Some type of Enum.
+     *
+     * @return Enum value at the given ordinal or fallback if the ordinal is out of bounds.
+     */
     public static <TYPE extends Enum<TYPE>> TYPE getEnumSafe(TYPE[] values, int ordinal, TYPE fallback) {
         if (ordinal < 0 || ordinal >= values.length) {
             return fallback;
@@ -16,8 +25,28 @@ public class EnumUtils {
         return values[ordinal];
     }
 
+    /**
+     * @param values   The values of the enum.
+     * @param ordinal  The index of the element in the enum we are trying to retrieve.
+     * @param <TYPE>   Some type of Enum.
+     *
+     * @return Enum value at the given ordinal or null if the ordinal is out of bounds.
+     */
     @Nullable
-    public static <TYPE extends Enum<TYPE>> TYPE nextValue(TYPE element) {
+    public static <TYPE extends Enum<TYPE>> TYPE getEnumSafe(TYPE[] values, int ordinal) {
+        return getEnumSafe(values, ordinal, null);
+    }
+
+    /**
+     * Gets the Enum value after the given one.
+     *
+     * @param element An element in an enum.
+     * @param <TYPE>  Some type of Enum.
+     *
+     * @return Element after the given one. Null if this is the last element in the Enum.
+     */
+    @Nullable
+    public static <TYPE extends Enum<TYPE>> TYPE nextValue(@Nonnull TYPE element) {
         int nextOrdinal = element.ordinal() + 1;
         Enum[] enumConstants = element.getClass().getEnumConstants();
         if (nextOrdinal >= enumConstants.length) {
@@ -26,7 +55,15 @@ public class EnumUtils {
         return (TYPE) enumConstants[nextOrdinal];
     }
 
-    public static <TYPE extends Enum<TYPE>> TYPE nextValueWrap(TYPE element) {
+    /**
+     * Gets the Enum value after the given one. Wraps around to the start if element is the last value of the Enum.
+     *
+     * @param element An element in an enum.
+     * @param <TYPE>  Some type of Enum.
+     *
+     * @return Element after the given one. If this is the last one it returns the first element in the Enum instead.
+     */
+    public static <TYPE extends Enum<TYPE>> TYPE nextValueWrap(@Nonnull TYPE element) {
         int nextOrdinal = element.ordinal() + 1;
         Enum[] enumConstants = element.getClass().getEnumConstants();
         if (nextOrdinal >= enumConstants.length) {

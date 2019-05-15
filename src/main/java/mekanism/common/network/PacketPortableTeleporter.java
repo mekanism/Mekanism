@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
@@ -13,6 +12,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -161,12 +161,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
         DATA_RESPONSE,
         SET_FREQ,
         DEL_FREQ,
-        TELEPORT;
-
-        @Nullable
-        public static PortableTeleporterPacketType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        TELEPORT
     }
 
     public static class PortableTeleporterMessage implements IMessage {
@@ -265,7 +260,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 
         @Override
         public void fromBytes(ByteBuf buffer) {
-            packetType = PortableTeleporterPacketType.get(buffer.readInt());
+            packetType = EnumUtils.getEnumSafe(PortableTeleporterPacketType.values(), buffer.readInt());
             if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
                 currentHand = EnumUtils.getHandSafe(buffer.readInt());
                 if (buffer.readBoolean()) {

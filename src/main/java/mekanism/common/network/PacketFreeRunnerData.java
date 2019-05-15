@@ -2,11 +2,11 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemFreeRunners.FreeRunnerMode;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -49,12 +49,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
     public enum FreeRunnerPacket {
         UPDATE,
         FULL,
-        MODE;
-
-        @Nullable
-        public static FreeRunnerPacket get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        MODE
     }
 
     public static class FreeRunnerDataMessage implements IMessage {
@@ -95,7 +90,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
 
         @Override
         public void fromBytes(ByteBuf buf) {
-            packetType = FreeRunnerPacket.get(buf.readInt());
+            packetType = EnumUtils.getEnumSafe(FreeRunnerPacket.values(), buf.readInt());
             if (packetType == FreeRunnerPacket.MODE) {
                 value = buf.readBoolean();
             } else if (packetType == FreeRunnerPacket.UPDATE) {

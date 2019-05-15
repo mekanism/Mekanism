@@ -1,12 +1,12 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.EnumUtils;
@@ -55,12 +55,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 
     public enum PersonalChestPacketType {
         CLIENT_OPEN,
-        SERVER_OPEN;
-
-        @Nullable
-        public static PersonalChestPacketType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        SERVER_OPEN
     }
 
     public static class PersonalChestMessage implements IMessage {
@@ -133,7 +128,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = PersonalChestPacketType.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(PersonalChestPacketType.values(), dataStream.readInt());
             if (packetType == PersonalChestPacketType.SERVER_OPEN) {
                 isBlock = dataStream.readBoolean();
                 if (isBlock) {

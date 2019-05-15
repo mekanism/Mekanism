@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiDigitalMiner;
@@ -16,6 +15,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -67,12 +67,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
         SERVER,
         CLIENT,
         SERVER_INDEX,
-        CLIENT_INDEX;
-
-        @Nullable
-        public static MinerGuiPacket get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        CLIENT_INDEX
     }
 
     public static class DigitalMinerGuiMessage implements IMessage {
@@ -198,7 +193,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = MinerGuiPacket.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(MinerGuiPacket.values(), dataStream.readInt());
             coord4D = Coord4D.read(dataStream);
             guiType = dataStream.readInt();
             if (packetType == MinerGuiPacket.CLIENT || packetType == MinerGuiPacket.CLIENT_INDEX) {

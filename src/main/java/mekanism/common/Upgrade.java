@@ -36,7 +36,7 @@ public enum Upgrade {
 
     @Nullable
     public static Upgrade get(int ordinal) {
-        return EnumUtils.getEnumSafe(values(), ordinal, null);
+        return EnumUtils.getEnumSafe(values(), ordinal);
     }
 
     public static Map<Upgrade, Integer> buildMap(@Nullable NBTTagCompound nbtTags) {

@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.filter.GuiTFilterSelect;
@@ -13,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -63,12 +63,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
         SERVER,
         CLIENT,
         SERVER_INDEX,
-        CLIENT_INDEX;
-
-        @Nullable
-        public static SorterGuiPacket get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        CLIENT_INDEX
     }
 
     public static class LogisticalSorterGuiMessage implements IMessage {
@@ -175,7 +170,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = SorterGuiPacket.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(SorterGuiPacket.values(), dataStream.readInt());
             coord4D = Coord4D.read(dataStream);
             guiType = dataStream.readInt();
             if (packetType == SorterGuiPacket.CLIENT || packetType == SorterGuiPacket.CLIENT_INDEX) {

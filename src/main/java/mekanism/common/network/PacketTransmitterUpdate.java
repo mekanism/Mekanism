@@ -3,7 +3,6 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.HashSet;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -14,6 +13,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.PacketHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.transmitters.grid.FluidNetwork;
@@ -97,12 +97,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
         UPDATE,
         ENERGY,
         GAS,
-        FLUID;
-
-        @Nullable
-        public static PacketType get(int ordinal) {
-            return EnumUtils.getEnumSafe(values(), ordinal, null);
-        }
+        FLUID
     }
 
     public static class TransmitterUpdateMessage implements IMessage {
@@ -193,7 +188,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            packetType = PacketType.get(dataStream.readInt());
+            packetType = EnumUtils.getEnumSafe(PacketType.values(), dataStream.readInt());
             coord4D = Coord4D.read(dataStream);
             if (packetType == PacketType.UPDATE) {
                 newNetwork = dataStream.readBoolean();
