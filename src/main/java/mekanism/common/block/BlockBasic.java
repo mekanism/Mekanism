@@ -63,6 +63,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -76,6 +78,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -244,7 +247,6 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
-        Block newBlock = world.getBlockState(fromPos).getBlock();
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
             if (tileEntity instanceof IMultiblock) {
@@ -256,6 +258,7 @@ public abstract class BlockBasic extends BlockTileDrops {
             if (tileEntity instanceof IStructuralMultiblock) {
                 ((IStructuralMultiblock) tileEntity).doUpdate();
             }
+            Block newBlock = world.getBlockState(fromPos).getBlock();
             if (BasicBlockType.get(state) == BasicBlockType.REFINED_OBSIDIAN && newBlock instanceof BlockFire) {
                 BlockPortalOverride.instance.trySpawnPortal(world, fromPos);
             }
@@ -712,74 +715,48 @@ public abstract class BlockBasic extends BlockTileDrops {
 
         private int portalBlockCount;
 
-        public Size(World worldIn, BlockPos p_i45694_2_, EnumFacing.Axis p_i45694_3_) {
-            super(worldIn, p_i45694_2_, p_i45694_3_);
+        public Size(World world, BlockPos pos, Axis axis) {
+            super(world, pos, axis);
         }
 
-        protected int getDistanceUntilEdge(BlockPos p_180120_1_, EnumFacing p_180120_2_) {
-            int i;
-
-            for (i = 0; i < 22; ++i) {
-                BlockPos blockpos = p_180120_1_.offset(p_180120_2_, i);
-                IBlockState state = this.world.getBlockState(blockpos.down());
-                Block block = state.getBlock();
-                BasicBlockType type = null;
-                if (block instanceof BlockBasic) {
-                    type = BasicBlockType.get(state);
-                }
-
-                if (!this.isEmptyBlock(this.world.getBlockState(blockpos).getBlock())
-                    || block != Blocks.OBSIDIAN && !(type != null && type == BasicBlockType.REFINED_OBSIDIAN)) {
-                    break;
-                }
-            }
-
-            IBlockState state = this.world.getBlockState(p_180120_1_.offset(p_180120_2_, i));
+        private boolean isFrame(IBlockState state) {
             Block block = state.getBlock();
             BasicBlockType type = null;
             if (block instanceof BlockBasic) {
                 type = BasicBlockType.get(state);
             }
-            return (block == Blocks.OBSIDIAN || (type != null && type == BasicBlockType.REFINED_OBSIDIAN)) ? i : 0;
+            return block == Blocks.OBSIDIAN || type == BasicBlockType.REFINED_OBSIDIAN;
+        }
+
+        protected int getDistanceUntilEdge(BlockPos pos, @Nonnull EnumFacing facing) {
+            int i;
+            for (i = 0; i < 22; ++i) {
+                BlockPos blockpos = pos.offset(facing, i);
+                if (!this.isEmptyBlock(this.world.getBlockState(blockpos).getBlock()) || !isFrame(this.world.getBlockState(blockpos.down()))) {
+                    break;
+                }
+            }
+            return isFrame(this.world.getBlockState(pos.offset(facing, i))) ? i : 0;
         }
 
         protected int calculatePortalHeight() {
             label56:
-
             for (this.height = 0; this.height < 21; ++this.height) {
                 for (int i = 0; i < this.width; ++i) {
                     BlockPos blockpos = this.bottomLeft.offset(this.rightDir, i).up(this.height);
-                    IBlockState state = this.world.getBlockState(blockpos);
-                    Block block = state.getBlock();
-
+                    Block block = this.world.getBlockState(blockpos).getBlock();
                     if (!this.isEmptyBlock(block)) {
                         break label56;
                     }
-
                     if (block == Blocks.PORTAL) {
                         ++this.portalBlockCount;
                     }
-
                     if (i == 0) {
-                        state = this.world.getBlockState(blockpos.offset(this.leftDir));
-                        block = state.getBlock();
-                        BasicBlockType type = null;
-                        if (block instanceof BlockBasic) {
-                            type = BasicBlockType.get(state);
-                        }
-
-                        if (block != Blocks.OBSIDIAN && !(type != null && type == BasicBlockType.REFINED_OBSIDIAN)) {
+                        if (!isFrame(this.world.getBlockState(blockpos.offset(this.leftDir)))) {
                             break label56;
                         }
                     } else if (i == this.width - 1) {
-                        state = this.world.getBlockState(blockpos.offset(this.rightDir));
-                        block = state.getBlock();
-                        BasicBlockType type = null;
-                        if (block instanceof BlockBasic) {
-                            type = BasicBlockType.get(state);
-                        }
-
-                        if (block != Blocks.OBSIDIAN && !(type != null && type == BasicBlockType.REFINED_OBSIDIAN)) {
+                        if (!isFrame(this.world.getBlockState(blockpos.offset(this.rightDir)))) {
                             break label56;
                         }
                     }
@@ -787,26 +764,18 @@ public abstract class BlockBasic extends BlockTileDrops {
             }
 
             for (int j = 0; j < this.width; ++j) {
-                IBlockState state = this.world.getBlockState(this.bottomLeft.offset(this.rightDir, j).up(this.height));
-                Block block = state.getBlock();
-                BasicBlockType type = null;
-                if (block instanceof BlockBasic) {
-                    type = BasicBlockType.get(state);
-                }
-                if (block != Blocks.OBSIDIAN && !(type != null && type == BasicBlockType.REFINED_OBSIDIAN)) {
+                if (!isFrame(this.world.getBlockState(this.bottomLeft.offset(this.rightDir, j).up(this.height)))) {
                     this.height = 0;
                     break;
                 }
             }
-
             if (this.height <= 21 && this.height >= 3) {
                 return this.height;
-            } else {
-                this.bottomLeft = null;
-                this.width = 0;
-                this.height = 0;
-                return 0;
             }
+            this.bottomLeft = null;
+            this.width = 0;
+            this.height = 0;
+            return 0;
         }
     }
 
@@ -819,100 +788,70 @@ public abstract class BlockBasic extends BlockTileDrops {
             setRegistryName(new ResourceLocation("minecraft", "portal"));
         }
 
+        @Nonnull
         @Override
-        public PatternHelper createPatternHelper(World worldIn, BlockPos p_181089_2_) {
-            EnumFacing.Axis enumfacing$axis = EnumFacing.Axis.Z;
-            BlockBasic.Size size = new BlockBasic.Size(worldIn, p_181089_2_, EnumFacing.Axis.X);
-            LoadingCache<BlockPos, BlockWorldState> loadingcache = BlockPattern.createLoadingCache(worldIn, true);
-
+        public PatternHelper createPatternHelper(@Nonnull World world, BlockPos pos) {
+            Axis axis = Axis.Z;
+            BlockBasic.Size size = new BlockBasic.Size(world, pos, Axis.X);
             if (!size.isValid()) {
-                enumfacing$axis = EnumFacing.Axis.X;
-                size = new BlockBasic.Size(worldIn, p_181089_2_, EnumFacing.Axis.Z);
+                axis = Axis.X;
+                size = new BlockBasic.Size(world, pos, EnumFacing.Axis.Z);
             }
-
+            LoadingCache<BlockPos, BlockWorldState> loadingCache = BlockPattern.createLoadingCache(world, true);
             if (!size.isValid()) {
-                return new BlockPattern.PatternHelper(p_181089_2_, EnumFacing.NORTH, EnumFacing.UP, loadingcache, 1, 1,
-                      1);
-            } else {
-                int[] aint = new int[EnumFacing.AxisDirection.values().length];
-                EnumFacing enumfacing = size.rightDir.rotateYCCW();
-                BlockPos blockpos = size.bottomLeft.up(size.getHeight() - 1);
+                return new PatternHelper(pos, EnumFacing.NORTH, EnumFacing.UP, loadingCache, 1, 1, 1);
+            }
+            int[] aint = new int[AxisDirection.values().length];
+            EnumFacing enumfacing = size.rightDir.rotateYCCW();
+            BlockPos blockpos = size.bottomLeft.up(size.getHeight() - 1);
 
-                for (EnumFacing.AxisDirection enumfacing$axisdirection : EnumFacing.AxisDirection.values()) {
-                    BlockPattern.PatternHelper blockpattern$patternhelper = new BlockPattern.PatternHelper(
-                          enumfacing.getAxisDirection() == enumfacing$axisdirection ? blockpos
-                                                                                    : blockpos.offset(size.rightDir, size.getWidth() - 1),
-                          EnumFacing.getFacingFromAxis(enumfacing$axisdirection, enumfacing$axis), EnumFacing.UP,
-                          loadingcache, size.getWidth(), size.getHeight(), 1);
+            for (AxisDirection direction : AxisDirection.values()) {
+                PatternHelper patternHelper = new PatternHelper(enumfacing.getAxisDirection() == direction ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
+                      EnumFacing.getFacingFromAxis(direction, axis), EnumFacing.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
 
-                    for (int i = 0; i < size.getWidth(); ++i) {
-                        for (int j = 0; j < size.getHeight(); ++j) {
-                            BlockWorldState blockworldstate = blockpattern$patternhelper.translateOffset(i, j, 1);
-
-                            if (blockworldstate.getBlockState() != null
-                                && blockworldstate.getBlockState().getMaterial() != Material.AIR) {
-                                ++aint[enumfacing$axisdirection.ordinal()];
-                            }
+                for (int i = 0; i < size.getWidth(); ++i) {
+                    for (int j = 0; j < size.getHeight(); ++j) {
+                        if (patternHelper.translateOffset(i, j, 1).getBlockState().getMaterial() != Material.AIR) {
+                            ++aint[direction.ordinal()];
                         }
                     }
                 }
-
-                EnumFacing.AxisDirection enumfacing$axisdirection1 = EnumFacing.AxisDirection.POSITIVE;
-
-                for (EnumFacing.AxisDirection enumfacing$axisdirection2 : EnumFacing.AxisDirection.values()) {
-                    if (aint[enumfacing$axisdirection2.ordinal()] < aint[enumfacing$axisdirection1.ordinal()]) {
-                        enumfacing$axisdirection1 = enumfacing$axisdirection2;
-                    }
-                }
-
-                return new BlockPattern.PatternHelper(
-                      enumfacing.getAxisDirection() == enumfacing$axisdirection1 ? blockpos
-                                                                                 : blockpos.offset(size.rightDir, size.getWidth() - 1),
-                      EnumFacing.getFacingFromAxis(enumfacing$axisdirection1, enumfacing$axis), EnumFacing.UP,
-                      loadingcache, size.getWidth(), size.getHeight(), 1);
             }
+
+            AxisDirection axisDirection = AxisDirection.POSITIVE;
+            for (AxisDirection direction : AxisDirection.values()) {
+                if (aint[direction.ordinal()] < aint[axisDirection.ordinal()]) {
+                    axisDirection = direction;
+                }
+            }
+            return new PatternHelper(enumfacing.getAxisDirection() == axisDirection ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
+                  EnumFacing.getFacingFromAxis(axisDirection, axis), EnumFacing.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
         }
 
         @Override
-        public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-            EnumFacing.Axis enumfacing$axis = (EnumFacing.Axis) state.getValue(AXIS);
-
-            if (enumfacing$axis == EnumFacing.Axis.X) {
-                BlockBasic.Size size = new BlockBasic.Size(worldIn, pos, EnumFacing.Axis.X);
-
+        public void neighborChanged(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, Block blockIn, BlockPos fromPos) {
+            Axis axis = state.getValue(AXIS);
+            if (axis == Axis.X || axis == Axis.Z) {
+                BlockBasic.Size size = new BlockBasic.Size(world, pos, axis);
                 if (!size.isValid() || size.portalBlockCount < size.width * size.height) {
-                    worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
-                }
-            } else if (enumfacing$axis == EnumFacing.Axis.Z) {
-                BlockBasic.Size size1 = new BlockBasic.Size(worldIn, pos, EnumFacing.Axis.Z);
-
-                if (!size1.isValid() || size1.portalBlockCount < size1.width * size1.height) {
-                    worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+                    world.setBlockState(pos, Blocks.AIR.getDefaultState());
                 }
             }
         }
 
         @Override
-        public boolean trySpawnPortal(World worldIn, BlockPos pos) {
-            BlockBasic.Size size = new BlockBasic.Size(worldIn, pos, EnumFacing.Axis.X);
+        public boolean trySpawnPortal(@Nonnull World world, BlockPos pos) {
+            return trySpawnPortal(world, pos, Axis.X) || trySpawnPortal(world, pos, Axis.Z);
+        }
 
-            if (size.isValid() && size.portalBlockCount == 0
-                && !net.minecraftforge.event.ForgeEventFactory.onTrySpawnPortal(worldIn, pos, size)) {
+        private boolean trySpawnPortal(@Nonnull World world, BlockPos pos, Axis axis) {
+            BlockBasic.Size size = new BlockBasic.Size(world, pos, axis);
+            if (size.isValid() && size.portalBlockCount == 0 && !ForgeEventFactory.onTrySpawnPortal(world, pos, size)) {
                 size.placePortalBlocks();
                 return true;
-            } else {
-                BlockBasic.Size size1 = new BlockBasic.Size(worldIn, pos, EnumFacing.Axis.Z);
-
-                if (size1.isValid() && size1.portalBlockCount == 0
-                    && !net.minecraftforge.event.ForgeEventFactory.onTrySpawnPortal(worldIn, pos, size1)) {
-                    size1.placePortalBlocks();
-                    return true;
-                } else {
-                    return false;
-                }
             }
+            return false;
         }
-
     }
 
     public static class NeighborListener {
@@ -933,6 +872,5 @@ public abstract class BlockBasic extends BlockTileDrops {
                 }
             }
         }
-
     }
 }
