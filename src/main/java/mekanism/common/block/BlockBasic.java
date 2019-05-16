@@ -3,11 +3,15 @@ package mekanism.common.block;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+
+import com.google.common.cache.LoadingCache;
+
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
@@ -39,10 +43,15 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFire;
+import net.minecraft.block.BlockPortal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.BlockWorldState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.pattern.BlockPattern;
+import net.minecraft.block.state.pattern.BlockPattern.PatternHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
@@ -50,6 +59,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -58,6 +68,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -67,18 +78,26 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Block class for handling multiple metal block IDs. 0:0: Osmium Block 0:1: Bronze Block 0:2: Refined Obsidian 0:3: Charcoal Block 0:4: Refined Glowstone 0:5: Steel
- * Block 0:6: Bin 0:7: Teleporter Frame 0:8: Steel Casing 0:9: Dynamic Tank 0:10: Structural Glass 0:11: Dynamic Valve 0:12: Copper Block 0:13: Tin Block 0:14: Thermal
- * Evaporation Controller 0:15: Thermal Evaporation Valve 1:0: Thermal Evaporation Block 1:1: Induction Casing 1:2: Induction Port 1:3: Induction Cell 1:4: Induction
- * Provider 1:5: Superheating Element 1:6: Pressure Disperser 1:7: Boiler Casing 1:8: Boiler Valve 1:9: Security Desk
+ * Block class for handling multiple metal block IDs. 0:0: Osmium Block 0:1:
+ * Bronze Block 0:2: Refined Obsidian 0:3: Charcoal Block 0:4: Refined Glowstone
+ * 0:5: Steel Block 0:6: Bin 0:7: Teleporter Frame 0:8: Steel Casing 0:9:
+ * Dynamic Tank 0:10: Structural Glass 0:11: Dynamic Valve 0:12: Copper Block
+ * 0:13: Tin Block 0:14: Thermal Evaporation Controller 0:15: Thermal
+ * Evaporation Valve 1:0: Thermal Evaporation Block 1:1: Induction Casing 1:2:
+ * Induction Port 1:3: Induction Cell 1:4: Induction Provider 1:5: Superheating
+ * Element 1:6: Pressure Disperser 1:7: Boiler Casing 1:8: Boiler Valve 1:9:
+ * Security Desk
  *
  * @author AidanBrady
  */
@@ -100,7 +119,8 @@ public abstract class BlockBasic extends BlockTileDrops {
         };
     }
 
-    public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity, EnumHand hand, ItemStack itemStack) {
+    public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity, EnumHand hand,
+            ItemStack itemStack) {
         if (tileEntity.structure == null) {
             return false;
         }
@@ -132,7 +152,8 @@ public abstract class BlockBasic extends BlockTileDrops {
                 FluidStack itemFluid = FluidUtil.getFluidContained(copyStack);
                 int stored = tileEntity.structure.fluidStored != null ? tileEntity.structure.fluidStored.amount : 0;
                 int needed = (tileEntity.structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - stored;
-                if (tileEntity.structure.fluidStored != null && !tileEntity.structure.fluidStored.isFluidEqual(itemFluid)) {
+                if (tileEntity.structure.fluidStored != null
+                        && !tileEntity.structure.fluidStored.isFluidEqual(itemFluid)) {
                     return false;
                 }
                 boolean filled = false;
@@ -208,10 +229,12 @@ public abstract class BlockBasic extends BlockTileDrops {
             state = state.withProperty(BlockStateBasic.activeProperty, ((IActiveState) tile).getActive());
         }
         if (tile instanceof TileEntityInductionCell) {
-            state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityInductionCell) tile).tier.getBaseTier());
+            state = state.withProperty(BlockStateBasic.tierProperty,
+                    ((TileEntityInductionCell) tile).tier.getBaseTier());
         }
         if (tile instanceof TileEntityInductionProvider) {
-            state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityInductionProvider) tile).tier.getBaseTier());
+            state = state.withProperty(BlockStateBasic.tierProperty,
+                    ((TileEntityInductionProvider) tile).tier.getBaseTier());
         }
         if (tile instanceof TileEntityBin) {
             state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityBin) tile).tier.getBaseTier());
@@ -222,7 +245,8 @@ public abstract class BlockBasic extends BlockTileDrops {
         if (tile instanceof TileEntitySuperheatingElement) {
             TileEntitySuperheatingElement element = (TileEntitySuperheatingElement) tile;
             boolean active = false;
-            if (element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null) {
+            if (element.multiblockUUID != null
+                    && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null) {
                 active = SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID);
             }
             state = state.withProperty(BlockStateBasic.activeProperty, active);
@@ -233,6 +257,7 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+        Block newBlock = world.getBlockState(fromPos).getBlock();
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
             if (tileEntity instanceof IMultiblock) {
@@ -243,6 +268,9 @@ public abstract class BlockBasic extends BlockTileDrops {
             }
             if (tileEntity instanceof IStructuralMultiblock) {
                 ((IStructuralMultiblock) tileEntity).doUpdate();
+            }
+            if (BasicBlockType.get(state) == BasicBlockType.REFINED_OBSIDIAN && newBlock instanceof BlockFire) {
+                BlockPortalOverride.instance.trySpawnPortal(world, fromPos);
             }
         }
     }
@@ -267,68 +295,70 @@ public abstract class BlockBasic extends BlockTileDrops {
         for (BasicBlockType type : BasicBlockType.values()) {
             if (type.blockType == getBasicBlock()) {
                 switch (type) {
-                    case INDUCTION_CELL:
-                    case INDUCTION_PROVIDER:
-                    case BIN:
-                        for (BaseTier tier : BaseTier.values()) {
-                            if (type == BasicBlockType.BIN || tier.isObtainable()) {
-                                ItemStack stack = new ItemStack(this, 1, type.meta);
-                                ((ItemBlockBasic) stack.getItem()).setBaseTier(stack, tier);
-                                list.add(stack);
-                            }
+                case INDUCTION_CELL:
+                case INDUCTION_PROVIDER:
+                case BIN:
+                    for (BaseTier tier : BaseTier.values()) {
+                        if (type == BasicBlockType.BIN || tier.isObtainable()) {
+                            ItemStack stack = new ItemStack(this, 1, type.meta);
+                            ((ItemBlockBasic) stack.getItem()).setBaseTier(stack, tier);
+                            list.add(stack);
                         }
-                        break;
-                    default:
-                        list.add(new ItemStack(this, 1, type.meta));
+                    }
+                    break;
+                default:
+                    list.add(new ItemStack(this, 1, type.meta));
                 }
             }
         }
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
+            SpawnPlacementType type) {
         int meta = state.getBlock().getMetaFromState(state);
         switch (getBasicBlock()) {
-            case BASIC_BLOCK_1:
-                switch (meta) {
-                    case 10:
+        case BASIC_BLOCK_1:
+            switch (meta) {
+            case 10:
+                return false;
+            case 9:
+            case 11:
+                TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) MekanismUtils.getTileEntitySafe(world, pos);
+                if (tileEntity != null) {
+                    if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+                        if (tileEntity.structure != null) {
+                            return false;
+                        }
+                    } else if (tileEntity.clientHasStructure) {
                         return false;
-                    case 9:
-                    case 11:
-                        TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) MekanismUtils.getTileEntitySafe(world, pos);
-                        if (tileEntity != null) {
-                            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-                                if (tileEntity.structure != null) {
-                                    return false;
-                                }
-                            } else if (tileEntity.clientHasStructure) {
-                                return false;
-                            }
-                        }
-                    default:
-                        return super.canCreatureSpawn(state, world, pos, type);
-                }
-            case BASIC_BLOCK_2:
-                switch (meta) {
-                    case 1:
-                    case 2:
-                    case 7:
-                    case 8:
-                        TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
-                        if (tileEntity != null) {
-                            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-                                if (tileEntity.structure != null) {
-                                    return false;
-                                }
-                            } else if (tileEntity.clientHasStructure) {
-                                return false;
-                            }
-                        }
-                    default:
-                        return super.canCreatureSpawn(state, world, pos, type);
+                    }
                 }
             default:
                 return super.canCreatureSpawn(state, world, pos, type);
+            }
+        case BASIC_BLOCK_2:
+            switch (meta) {
+            case 1:
+            case 2:
+            case 7:
+            case 8:
+                TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world,
+                        pos);
+                if (tileEntity != null) {
+                    if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+                        if (tileEntity.structure != null) {
+                            return false;
+                        }
+                    } else if (tileEntity.clientHasStructure) {
+                        return false;
+                    }
+                }
+            default:
+                return super.canCreatureSpawn(state, world, pos, type);
+            }
+        default:
+            return super.canCreatureSpawn(state, world, pos, type);
         }
     }
 
@@ -349,12 +379,14 @@ public abstract class BlockBasic extends BlockTileDrops {
                     }
                     if (!player.inventory.addItemStackToInventory(stack)) {
                         BlockPos dropPos = pos.offset(bin.facing);
-                        Entity item = new EntityItem(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
+                        Entity item = new EntityItem(world, dropPos.getX() + .5f, dropPos.getY() + .3f,
+                                dropPos.getZ() + .5f, stack);
                         item.addVelocity(-item.motionX, -item.motionY, -item.motionZ);
                         world.spawnEntity(item);
                     } else {
-                        world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS,
-                              0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f,
+                                SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
+                                ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                     }
                 }
             }
@@ -362,7 +394,8 @@ public abstract class BlockBasic extends BlockTileDrops {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         BasicBlockType type = BasicBlockType.get(state);
         TileEntity tile = world.getTileEntity(pos);
         ItemStack stack = entityplayer.getHeldItem(hand);
@@ -475,7 +508,8 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     @Deprecated
     public boolean isFullCube(IBlockState state) {
-        return false;
+        BasicBlockType type = BasicBlockType.get(state);
+        return type != null && type.isFullBlock;
     }
 
     @Nonnull
@@ -496,17 +530,18 @@ public abstract class BlockBasic extends BlockTileDrops {
         }
         if (getBasicBlock() == BasicBlock.BASIC_BLOCK_1) {
             switch (metadata) {
-                case 2:
-                    return 8;
-                case 4:
-                    return 15;
-                case 7:
-                    return 12;
+            case 2:
+                return 8;
+            case 4:
+                return 15;
+            case 7:
+                return 12;
             }
         } else if (getBasicBlock() == BasicBlock.BASIC_BLOCK_2) {
             if (metadata == 5 && tileEntity instanceof TileEntitySuperheatingElement) {
                 TileEntitySuperheatingElement element = (TileEntitySuperheatingElement) tileEntity;
-                if (element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null) {
+                if (element.multiblockUUID != null
+                        && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null) {
                     return SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 15 : 0;
                 }
                 return 0;
@@ -531,7 +566,8 @@ public abstract class BlockBasic extends BlockTileDrops {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer,
+            ItemStack stack) {
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) te;
@@ -547,18 +583,18 @@ public abstract class BlockBasic extends BlockTileDrops {
             }
             if (change != 0 && change != 1) {
                 switch (side) {
-                    case 0:
-                        change = 2;
-                        break;
-                    case 1:
-                        change = 5;
-                        break;
-                    case 2:
-                        change = 3;
-                        break;
-                    case 3:
-                        change = 4;
-                        break;
+                case 0:
+                    change = 2;
+                    break;
+                case 1:
+                    change = 5;
+                    break;
+                case 2:
+                    change = 3;
+                    break;
+                case 3:
+                    change = 4;
+                    break;
                 }
             }
             tileEntity.setFacing((short) change);
@@ -628,8 +664,10 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     @Deprecated
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-        if (BasicBlockType.get(state) == BasicBlockType.STRUCTURAL_GLASS && BasicBlockType.get(world.getBlockState(pos.offset(side))) == BasicBlockType.STRUCTURAL_GLASS) {
+    public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
+            EnumFacing side) {
+        if (BasicBlockType.get(state) == BasicBlockType.STRUCTURAL_GLASS
+                && BasicBlockType.get(world.getBlockState(pos.offset(side))) == BasicBlockType.STRUCTURAL_GLASS) {
             return false;
         }
         return super.shouldSideBeRendered(state, world, pos, side);
@@ -685,10 +723,237 @@ public abstract class BlockBasic extends BlockTileDrops {
         if (basicBlockType != null && basicBlockType.hasRedstoneOutput) {
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof IComparatorSupport) {
-                //TODO: Add support for induction port (will be done in induction cleanup PR)
+                // TODO: Add support for induction port (will be done in induction cleanup PR)
                 return ((IComparatorSupport) tile).getRedstoneLevel();
             }
         }
         return 0;
+    }
+
+    public static class Size extends BlockPortal.Size {
+        private int portalBlockCount;
+
+        public Size(World worldIn, BlockPos p_i45694_2_, EnumFacing.Axis p_i45694_3_) {
+            super(worldIn, p_i45694_2_, p_i45694_3_);
+        }
+
+        protected int getDistanceUntilEdge(BlockPos p_180120_1_, EnumFacing p_180120_2_) {
+            int i;
+
+            for (i = 0; i < 22; ++i) {
+                BlockPos blockpos = p_180120_1_.offset(p_180120_2_, i);
+                IBlockState state = this.world.getBlockState(blockpos.down());
+                Block block = state.getBlock();
+                BasicBlockType type = null;
+                if (block instanceof BlockBasic) {
+                    type = BasicBlockType.get(state);
+                }
+
+                if (!this.isEmptyBlock(this.world.getBlockState(blockpos).getBlock())
+                        || block != Blocks.OBSIDIAN && !(type != null && type == BasicBlockType.REFINED_OBSIDIAN)) {
+                    break;
+                }
+            }
+
+            IBlockState state = this.world.getBlockState(p_180120_1_.offset(p_180120_2_, i));
+            Block block = state.getBlock();
+            BasicBlockType type = null;
+            if (block instanceof BlockBasic) {
+                type = BasicBlockType.get(state);
+            }
+            return (block == Blocks.OBSIDIAN || (type != null && type == BasicBlockType.REFINED_OBSIDIAN)) ? i : 0;
+        }
+
+        protected int calculatePortalHeight() {
+            label56:
+
+            for (this.height = 0; this.height < 21; ++this.height) {
+                for (int i = 0; i < this.width; ++i) {
+                    BlockPos blockpos = this.bottomLeft.offset(this.rightDir, i).up(this.height);
+                    IBlockState state = this.world.getBlockState(blockpos);
+                    Block block = state.getBlock();
+
+                    if (!this.isEmptyBlock(block)) {
+                        break label56;
+                    }
+
+                    if (block == Blocks.PORTAL) {
+                        ++this.portalBlockCount;
+                    }
+
+                    if (i == 0) {
+                        state = this.world.getBlockState(blockpos.offset(this.leftDir));
+                        block = state.getBlock();
+                        BasicBlockType type = null;
+                        if (block instanceof BlockBasic) {
+                            type = BasicBlockType.get(state);
+                        }
+
+                        if (block != Blocks.OBSIDIAN && !(type != null && type == BasicBlockType.REFINED_OBSIDIAN)) {
+                            break label56;
+                        }
+                    } else if (i == this.width - 1) {
+                        state = this.world.getBlockState(blockpos.offset(this.rightDir));
+                        block = state.getBlock();
+                        BasicBlockType type = null;
+                        if (block instanceof BlockBasic) {
+                            type = BasicBlockType.get(state);
+                        }
+
+                        if (block != Blocks.OBSIDIAN && !(type != null && type == BasicBlockType.REFINED_OBSIDIAN)) {
+                            break label56;
+                        }
+                    }
+                }
+            }
+
+            for (int j = 0; j < this.width; ++j) {
+                IBlockState state = this.world.getBlockState(this.bottomLeft.offset(this.rightDir, j).up(this.height));
+                Block block = state.getBlock();
+                BasicBlockType type = null;
+                if (block instanceof BlockBasic) {
+                    type = BasicBlockType.get(state);
+                }
+                if (block != Blocks.OBSIDIAN && !(type != null && type == BasicBlockType.REFINED_OBSIDIAN)) {
+                    this.height = 0;
+                    break;
+                }
+            }
+
+            if (this.height <= 21 && this.height >= 3) {
+                return this.height;
+            } else {
+                this.bottomLeft = null;
+                this.width = 0;
+                this.height = 0;
+                return 0;
+            }
+        }
+    }
+
+    public static class BlockPortalOverride extends BlockPortal {
+
+        public static final BlockPortalOverride instance = new BlockPortalOverride();
+
+        public BlockPortalOverride() {
+            super();
+            setRegistryName(new ResourceLocation("minecraft", "portal"));
+        }
+
+        @Override
+        public PatternHelper createPatternHelper(World worldIn, BlockPos p_181089_2_) {
+            EnumFacing.Axis enumfacing$axis = EnumFacing.Axis.Z;
+            BlockBasic.Size size = new BlockBasic.Size(worldIn, p_181089_2_, EnumFacing.Axis.X);
+            LoadingCache<BlockPos, BlockWorldState> loadingcache = BlockPattern.createLoadingCache(worldIn, true);
+
+            if (!size.isValid()) {
+                enumfacing$axis = EnumFacing.Axis.X;
+                size = new BlockBasic.Size(worldIn, p_181089_2_, EnumFacing.Axis.Z);
+            }
+
+            if (!size.isValid()) {
+                return new BlockPattern.PatternHelper(p_181089_2_, EnumFacing.NORTH, EnumFacing.UP, loadingcache, 1, 1,
+                        1);
+            } else {
+                int[] aint = new int[EnumFacing.AxisDirection.values().length];
+                EnumFacing enumfacing = size.rightDir.rotateYCCW();
+                BlockPos blockpos = size.bottomLeft.up(size.getHeight() - 1);
+
+                for (EnumFacing.AxisDirection enumfacing$axisdirection : EnumFacing.AxisDirection.values()) {
+                    BlockPattern.PatternHelper blockpattern$patternhelper = new BlockPattern.PatternHelper(
+                            enumfacing.getAxisDirection() == enumfacing$axisdirection ? blockpos
+                                    : blockpos.offset(size.rightDir, size.getWidth() - 1),
+                            EnumFacing.getFacingFromAxis(enumfacing$axisdirection, enumfacing$axis), EnumFacing.UP,
+                            loadingcache, size.getWidth(), size.getHeight(), 1);
+
+                    for (int i = 0; i < size.getWidth(); ++i) {
+                        for (int j = 0; j < size.getHeight(); ++j) {
+                            BlockWorldState blockworldstate = blockpattern$patternhelper.translateOffset(i, j, 1);
+
+                            if (blockworldstate.getBlockState() != null
+                                    && blockworldstate.getBlockState().getMaterial() != Material.AIR) {
+                                ++aint[enumfacing$axisdirection.ordinal()];
+                            }
+                        }
+                    }
+                }
+
+                EnumFacing.AxisDirection enumfacing$axisdirection1 = EnumFacing.AxisDirection.POSITIVE;
+
+                for (EnumFacing.AxisDirection enumfacing$axisdirection2 : EnumFacing.AxisDirection.values()) {
+                    if (aint[enumfacing$axisdirection2.ordinal()] < aint[enumfacing$axisdirection1.ordinal()]) {
+                        enumfacing$axisdirection1 = enumfacing$axisdirection2;
+                    }
+                }
+
+                return new BlockPattern.PatternHelper(
+                        enumfacing.getAxisDirection() == enumfacing$axisdirection1 ? blockpos
+                                : blockpos.offset(size.rightDir, size.getWidth() - 1),
+                        EnumFacing.getFacingFromAxis(enumfacing$axisdirection1, enumfacing$axis), EnumFacing.UP,
+                        loadingcache, size.getWidth(), size.getHeight(), 1);
+            }
+        }
+
+        @Override
+        public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+            EnumFacing.Axis enumfacing$axis = (EnumFacing.Axis) state.getValue(AXIS);
+
+            if (enumfacing$axis == EnumFacing.Axis.X) {
+                BlockBasic.Size size = new BlockBasic.Size(worldIn, pos, EnumFacing.Axis.X);
+
+                if (!size.isValid() || size.portalBlockCount < size.width * size.height) {
+                    worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+                }
+            } else if (enumfacing$axis == EnumFacing.Axis.Z) {
+                BlockBasic.Size size1 = new BlockBasic.Size(worldIn, pos, EnumFacing.Axis.Z);
+
+                if (!size1.isValid() || size1.portalBlockCount < size1.width * size1.height) {
+                    worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+                }
+            }
+        }
+
+        @Override
+        public boolean trySpawnPortal(World worldIn, BlockPos pos) {
+            BlockBasic.Size size = new BlockBasic.Size(worldIn, pos, EnumFacing.Axis.X);
+
+            if (size.isValid() && size.portalBlockCount == 0
+                    && !net.minecraftforge.event.ForgeEventFactory.onTrySpawnPortal(worldIn, pos, size)) {
+                size.placePortalBlocks();
+                return true;
+            } else {
+                BlockBasic.Size size1 = new BlockBasic.Size(worldIn, pos, EnumFacing.Axis.Z);
+
+                if (size1.isValid() && size1.portalBlockCount == 0
+                        && !net.minecraftforge.event.ForgeEventFactory.onTrySpawnPortal(worldIn, pos, size1)) {
+                    size1.placePortalBlocks();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+    }
+
+    public static class NeighborListener {
+
+        public static final NeighborListener instance = new NeighborListener();
+
+        public NeighborListener() {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void onNeighborNotify(NeighborNotifyEvent e) {
+            if (e.getState().getBlock() == Blocks.OBSIDIAN) {
+                World world = e.getWorld();
+                Block newBlock = world.getBlockState(e.getPos()).getBlock();
+                if (newBlock instanceof BlockFire) {
+                    BlockPortalOverride.instance.trySpawnPortal(world, e.getPos());
+                }
+            }
+        }
+
     }
 }
