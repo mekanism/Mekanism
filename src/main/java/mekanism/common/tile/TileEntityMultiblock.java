@@ -75,58 +75,59 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             if (structure == null) {
                 structure = getNewStructure();
             }
-            if (structure != null && structure.renderLocation != null && clientHasStructure && isRendering) {
-                if (!prevStructure) {
-                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength,
-                          structure.volWidth, structure.volHeight, tile -> MultiblockManager.areEqual(this, tile));
-                }
+            if (structure != null && structure.renderLocation != null && clientHasStructure && isRendering && !prevStructure) {
+                Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength, structure.volWidth, structure.volHeight,
+                      tile -> MultiblockManager.areEqual(this, tile));
             }
             prevStructure = clientHasStructure;
         }
+
         if (playersUsing.size() > 0 && ((world.isRemote && !clientHasStructure) || (!world.isRemote && structure == null))) {
             for (EntityPlayer player : playersUsing) {
                 player.closeScreen();
             }
         }
+
         if (!world.isRemote) {
             if (structure == null) {
                 isRendering = false;
                 if (cachedID != null) {
                     getManager().updateCache(this);
                 }
+                if (ticker == 5) {
+                    doUpdate();
+                }
             }
-            if (structure == null && ticker == 5) {
-                doUpdate();
-            }
+
             if (prevStructure == (structure == null)) {
-                if (structure != null && !getSynchronizedData().hasRenderer) {
-                    getSynchronizedData().hasRenderer = true;
+                if (structure != null && !structure.hasRenderer) {
+                    structure.hasRenderer = true;
                     isRendering = true;
                     sendStructure = true;
                 }
+
+                Coord4D thisCoord = Coord4D.get(this);
                 for (EnumFacing side : EnumFacing.VALUES) {
-                    Coord4D obj = Coord4D.get(this).offset(side);
-                    if (structure != null && (structure.locations.contains(obj) || structure.internalLocations
-                          .contains(obj))) {
+                    Coord4D obj = thisCoord.offset(side);
+                    if (structure != null && (structure.locations.contains(obj) || structure.internalLocations.contains(obj))) {
                         continue;
                     }
                     TileEntity tile = obj.getTileEntity(world);
-                    if (!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()) &&
-                        !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
+                    if (!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
                         MekanismUtils.notifyNeighborofChange(world, obj, getPos());
                     }
                 }
 
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(thisCoord, getNetworkedData(new TileNetworkList())), new Range4D(thisCoord));
             }
 
             prevStructure = structure != null;
 
             if (structure != null) {
-                getSynchronizedData().didTick = false;
-                if (getSynchronizedData().inventoryID != null) {
-                    cachedData.sync(getSynchronizedData());
-                    cachedID = getSynchronizedData().inventoryID;
+                structure.didTick = false;
+                if (structure.inventoryID != null) {
+                    cachedData.sync(structure);
+                    cachedID = structure.inventoryID;
                     getManager().updateCache(this);
                 }
             }
@@ -135,21 +136,21 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     @Override
     public void doUpdate() {
-        if (!world.isRemote && (structure == null || !getSynchronizedData().didTick)) {
+        if (!world.isRemote && (structure == null || !structure.didTick)) {
             getProtocol().doUpdate();
             if (structure != null) {
-                getSynchronizedData().didTick = true;
+                structure.didTick = true;
             }
         }
     }
 
     public void sendPacketToRenderer() {
         if (structure != null) {
-            for (Coord4D obj : getSynchronizedData().locations) {
+            for (Coord4D obj : structure.locations) {
                 TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(world);
                 if (tileEntity != null && tileEntity.isRendering) {
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
-                          tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
+                    Coord4D tileCoord = Coord4D.get(tileEntity);
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(tileCoord, tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(tileCoord));
                 }
             }
         }
@@ -166,7 +167,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(isRendering);
         data.add(structure != null);
 
@@ -176,20 +176,19 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
                 data.add(true);
 
-                data.add(getSynchronizedData().volHeight);
-                data.add(getSynchronizedData().volWidth);
-                data.add(getSynchronizedData().volLength);
+                data.add(structure.volHeight);
+                data.add(structure.volWidth);
+                data.add(structure.volLength);
 
-                getSynchronizedData().renderLocation.write(data);
-                data.add(getSynchronizedData().inventoryID != null);//boolean for if has inv id
-                if (getSynchronizedData().inventoryID != null) {
-                    data.add(getSynchronizedData().inventoryID);
+                structure.renderLocation.write(data);
+                data.add(structure.inventoryID != null);//boolean for if has inv id
+                if (structure.inventoryID != null) {
+                    data.add(structure.inventoryID);
                 }
             } else {
                 data.add(false);
             }
         }
-
         return data;
     }
 
@@ -203,17 +202,16 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
             isRendering = dataStream.readBoolean();
             clientHasStructure = dataStream.readBoolean();
-
             if (clientHasStructure && isRendering) {
                 if (dataStream.readBoolean()) {
-                    getSynchronizedData().volHeight = dataStream.readInt();
-                    getSynchronizedData().volWidth = dataStream.readInt();
-                    getSynchronizedData().volLength = dataStream.readInt();
-                    getSynchronizedData().renderLocation = Coord4D.read(dataStream);
+                    structure.volHeight = dataStream.readInt();
+                    structure.volWidth = dataStream.readInt();
+                    structure.volLength = dataStream.readInt();
+                    structure.renderLocation = Coord4D.read(dataStream);
                     if (dataStream.readBoolean()) {
-                        getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
+                        structure.inventoryID = PacketHandler.readString(dataStream);
                     } else {
-                        getSynchronizedData().inventoryID = null;
+                        structure.inventoryID = null;
                     }
                 }
             }

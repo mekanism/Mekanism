@@ -86,6 +86,7 @@ public class MekanismBlocks {
         registry.register(init(RoadPlasticBlock, "RoadPlasticBlock"));
         registry.register(init(PlasticFence, "PlasticFence"));
         registry.register(init(SaltBlock, "SaltBlock"));
+        registry.register(BlockBasic.BlockPortalOverride.instance);
     }
 
     /**

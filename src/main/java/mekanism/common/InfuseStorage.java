@@ -24,6 +24,7 @@ public class InfuseStorage implements ISustainedData {
 
     /**
      * Replace this instance's properties with that from another
+     *
      * @param other the instance to copy from
      */
     public void copyFrom(@Nonnull InfuseStorage other) {

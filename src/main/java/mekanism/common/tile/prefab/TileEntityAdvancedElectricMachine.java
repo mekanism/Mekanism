@@ -15,6 +15,7 @@ import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
@@ -114,7 +115,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * @return fuel ticks
      */
     public GasStack getItemGas(ItemStack itemstack) {
-        return GasUtils.getItemGas(itemstack, this::getIfValid);
+        return GasConversionHandler.getItemGas(itemstack, this::getIfValid);
     }
 
     private GasStack getIfValid(Gas gas, int quantity) {

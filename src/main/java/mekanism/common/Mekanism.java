@@ -57,6 +57,7 @@ import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.recipe.BinRecipe;
+import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
@@ -315,6 +316,7 @@ public class Mekanism {
         event.getRegistry().register(new BinRecipe());
         addRecipes();
         OreDictManager.init();
+        GasConversionHandler.addDefaultGasMappings();
     }
 
     /**

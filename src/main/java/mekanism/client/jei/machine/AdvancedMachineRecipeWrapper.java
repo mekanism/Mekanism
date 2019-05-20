@@ -4,11 +4,11 @@ import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.util.GasUtils;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -31,7 +31,7 @@ public class AdvancedMachineRecipeWrapper implements IRecipeWrapper {
     }
 
     public List<ItemStack> getFuelStacks(Gas gasType) {
-        return GasUtils.getStacksForGas(gasType);
+        return GasConversionHandler.getStacksForGas(gasType);
     }
 
     public AdvancedMachineRecipe getRecipe() {

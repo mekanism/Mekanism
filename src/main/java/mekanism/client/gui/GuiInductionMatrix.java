@@ -24,8 +24,8 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, 6, resource));
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t",
-              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t"), this, resource));
+              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/t",
+              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/t"), this, resource));
     }
 
     @Override
@@ -33,9 +33,9 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x00CD00);
-        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t", 53, 35, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/t", 53, 35, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
-        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t", 53, 53, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/t", 53, 53, 0x00CD00);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
@@ -76,7 +76,6 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                 renderRemaining = scale;
                 scale = 0;
             }
-
             mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
             start += 16;
