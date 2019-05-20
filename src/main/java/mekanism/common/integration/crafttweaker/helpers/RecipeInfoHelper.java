@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.helpers;
 
 import crafttweaker.mc1120.item.MCItemStack;
-import java.util.Map;
+import java.util.Map.Entry;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.inputs.MachineInput;
@@ -22,7 +22,7 @@ public class RecipeInfoHelper {
     private RecipeInfoHelper() {
     }
 
-    public static String getRecipeInfo(Map.Entry<? extends MachineInput, ? extends MachineRecipe> recipe) {
+    public static String getRecipeInfo(Entry<? extends MachineInput, ? extends MachineRecipe> recipe) {
         MachineOutput output = recipe.getValue().recipeOutput;
         if (output instanceof ItemStackOutput) {
             return getItemName(((ItemStackOutput) output).output);

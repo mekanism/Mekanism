@@ -58,7 +58,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
 
         public PropertyEnum<GeneratorType> getProperty() {
             if (generatorTypeProperty == null) {
-                generatorTypeProperty = PropertyEnum.create("type", GeneratorType.class, input-> input != null && input.blockType == this);
+                generatorTypeProperty = PropertyEnum.create("type", GeneratorType.class, input -> input != null && input.blockType == this);
             }
             return generatorTypeProperty;
         }

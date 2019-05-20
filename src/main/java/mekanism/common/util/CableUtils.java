@@ -89,7 +89,7 @@ public final class CableUtils {
         }
 
         IEnergyStorage forgeStorage;
-        if (MekanismUtils.useForge() && (forgeStorage = CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, opposite))!=null) {
+        if (MekanismUtils.useForge() && (forgeStorage = CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, opposite)) != null) {
             return forgeStorage.canExtract();
         }
 

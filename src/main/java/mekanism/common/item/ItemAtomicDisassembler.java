@@ -192,8 +192,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     break;
             }
             return EnumActionResult.SUCCESS;
-        }
-        else if (!player.isSneaking() && block == Blocks.GRASS) {
+        } else if (!player.isSneaking() && block == Blocks.GRASS) {
             if (useShovel(stack, player, world, pos, side) == EnumActionResult.FAIL) {
                 return EnumActionResult.FAIL;
             }
@@ -249,7 +248,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         }
         return EnumActionResult.PASS;
     }
-    
+
     private EnumActionResult useShovel(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing facing) {
         if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return EnumActionResult.FAIL;

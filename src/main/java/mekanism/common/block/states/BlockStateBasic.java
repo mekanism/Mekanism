@@ -60,7 +60,7 @@ public class BlockStateBasic extends ExtendedBlockState {
 
         public PropertyEnum<BasicBlockType> getProperty() {
             if (predicatedProperty == null) {
-                predicatedProperty = PropertyEnum.create("type", BasicBlockType.class, it->Objects.requireNonNull(it).blockType==this);
+                predicatedProperty = PropertyEnum.create("type", BasicBlockType.class, it -> Objects.requireNonNull(it).blockType == this);
             }
             return predicatedProperty;
         }
@@ -125,11 +125,11 @@ public class BlockStateBasic extends ExtendedBlockState {
 
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
               boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput) {
-        	this(block, metadata, s, tileClass, hasDesc, facingAllowed, activeState, t, beaconBase, hasRedstoneOutput, false);
+            this(block, metadata, s, tileClass, hasDesc, facingAllowed, activeState, t, beaconBase, hasRedstoneOutput, false);
         }
-        
+
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
-                boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput, boolean fullBlock) {
+              boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput, boolean fullBlock) {
             blockType = block;
             meta = metadata;
             name = s;

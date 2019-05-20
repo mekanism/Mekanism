@@ -90,7 +90,7 @@ public class BlockStateMachine extends ExtendedBlockState {
 
         public PropertyEnum<MachineType> getProperty() {
             if (machineTypeProperty == null) {
-                machineTypeProperty = PropertyEnum.create("type", MachineType.class, input-> input != null && input.typeBlock == this && input.isValidMachine());
+                machineTypeProperty = PropertyEnum.create("type", MachineType.class, input -> input != null && input.typeBlock == this && input.isValidMachine());
             }
             return machineTypeProperty;
         }
