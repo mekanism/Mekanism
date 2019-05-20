@@ -125,7 +125,7 @@ public class BlockStateBasic extends ExtendedBlockState {
 
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
               boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput) {
-        	this(block, metadata, s, tileClass, hasDesc, facingAllowed, activeState, t, beaconBase, false, false);
+        	this(block, metadata, s, tileClass, hasDesc, facingAllowed, activeState, t, beaconBase, hasRedstoneOutput, false);
         }
         
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
