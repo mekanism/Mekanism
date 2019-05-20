@@ -13,12 +13,12 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
 
     @Override
     public void apply(SynchronizedMatrixData data) {
-        data.inventory = inventory;
+        data.setInventory(inventory);
     }
 
     @Override
     public void sync(SynchronizedMatrixData data) {
-        inventory = data.inventory;
+        inventory = data.getInventory();
     }
 
     @Override

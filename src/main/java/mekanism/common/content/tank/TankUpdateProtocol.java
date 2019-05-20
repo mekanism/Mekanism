@@ -47,20 +47,20 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     }
 
     @Override
-    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTankData> cache,
-          MultiblockCache<SynchronizedTankData> merge) {
-        if (((TankCache) cache).fluid == null) {
-            ((TankCache) cache).fluid = ((TankCache) merge).fluid;
-        } else if (((TankCache) merge).fluid != null && ((TankCache) cache).fluid.isFluidEqual(((TankCache) merge).fluid)) {
-            ((TankCache) cache).fluid.amount += ((TankCache) merge).fluid.amount;
+    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTankData> cache, MultiblockCache<SynchronizedTankData> merge) {
+        TankCache tankCache = (TankCache) cache;
+        TankCache mergeCache = (TankCache) merge;
+        if (tankCache.fluid == null) {
+            tankCache.fluid = mergeCache.fluid;
+        } else if (mergeCache.fluid != null && tankCache.fluid.isFluidEqual(mergeCache.fluid)) {
+            tankCache.fluid.amount += mergeCache.fluid.amount;
         }
-
-        ((TankCache) cache).editMode = ((TankCache) merge).editMode;
-        List<ItemStack> rejects = StackUtils.getMergeRejects(((TankCache) cache).inventory, ((TankCache) merge).inventory);
+        tankCache.editMode = mergeCache.editMode;
+        List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.inventory, mergeCache.inventory);
         if (!rejects.isEmpty()) {
             rejectedItems.addAll(rejects);
         }
-        StackUtils.merge(((TankCache) cache).inventory, ((TankCache) merge).inventory);
+        StackUtils.merge(tankCache.inventory, mergeCache.inventory);
     }
 
     @Override

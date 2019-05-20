@@ -39,10 +39,10 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
     }
 
     public static boolean areEqual(TileEntity tile1, TileEntity tile2) {
-        if (!(tile1 instanceof TileEntityMultiblock) || !(tile2 instanceof TileEntityMultiblock)) {
-            return false;
+        if (tile1 instanceof TileEntityMultiblock && tile2 instanceof TileEntityMultiblock) {
+            return ((TileEntityMultiblock) tile1).getManager() == ((TileEntityMultiblock) tile2).getManager();
         }
-        return ((TileEntityMultiblock) tile1).getManager() == ((TileEntityMultiblock) tile2).getManager();
+        return false;
     }
 
     public static void reset() {
@@ -89,9 +89,8 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
             for (Coord4D obj : entry.getValue().locations) {
                 if (obj.dimensionId == world.provider.getDimension() && obj.exists(world)) {
                     TileEntity tileEntity = obj.getTileEntity(world);
-
                     if (!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock) tileEntity).getManager() != this ||
-                        (getStructureId((TileEntityMultiblock<?>) tileEntity) != null && !Objects.equals(getStructureId((TileEntityMultiblock) tileEntity), inventoryID))) {
+                        (getStructureId(((TileEntityMultiblock<?>) tileEntity)) != null && !Objects.equals(getStructureId(((TileEntityMultiblock) tileEntity)), inventoryID))) {
                         if (!tilesToKill.containsKey(inventoryID)) {
                             tilesToKill.put(inventoryID, new HashSet<>());
                         }
@@ -117,8 +116,8 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
         if (!inventories.containsKey(tile.cachedID)) {
             tile.cachedData.locations.add(Coord4D.get(tile));
             inventories.put(tile.cachedID, tile.cachedData);
-            return;
+        } else {
+            inventories.get(tile.cachedID).locations.add(Coord4D.get(tile));
         }
-        inventories.get(tile.cachedID).locations.add(Coord4D.get(tile));
     }
 }

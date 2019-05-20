@@ -17,7 +17,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -33,8 +32,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     protected static final int[] DISCHARGE_SLOT = {1};
 
     public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
-    public int clientCells;
-    public int clientProviders;
 
     public TileEntityInductionCasing() {
         this("InductionCasing");
@@ -48,15 +45,9 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             if (structure != null && isRendering) {
-                structure.lastInput = structure.transferCap - structure.remainingInput;
-                structure.remainingInput = structure.transferCap;
-
-                structure.lastOutput = structure.transferCap - structure.remainingOutput;
-                structure.remainingOutput = structure.transferCap;
-
+                structure.tick(world);
                 ChargeUtils.charge(0, this);
                 ChargeUtils.discharge(1, this);
             }
@@ -76,43 +67,18 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         if (structure != null) {
-            data.add(structure.getEnergy(world));
-            data.add(structure.storageCap);
-            data.add(structure.transferCap);
-            data.add(structure.lastInput);
-            data.add(structure.lastOutput);
-
-            data.add(structure.volWidth);
-            data.add(structure.volHeight);
-            data.add(structure.volLength);
-
-            data.add(structure.cells.size());
-            data.add(structure.providers.size());
+            structure.addStructureData(data);
         }
-
         return data;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (clientHasStructure) {
-                structure.clientEnergy = dataStream.readDouble();
-                structure.storageCap = dataStream.readDouble();
-                structure.transferCap = dataStream.readDouble();
-                structure.lastInput = dataStream.readDouble();
-                structure.lastOutput = dataStream.readDouble();
-
-                structure.volWidth = dataStream.readInt();
-                structure.volHeight = dataStream.readInt();
-                structure.volLength = dataStream.readInt();
-
-                clientCells = dataStream.readInt();
-                clientProviders = dataStream.readInt();
+                structure.readStructureData(dataStream);
             }
         }
     }
@@ -149,23 +115,28 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Override
     public double getEnergy() {
-        if (!world.isRemote) {
-            return structure != null ? structure.getEnergy(world) : 0;
-        }
-        return structure != null ? structure.clientEnergy : 0;
+        //Uses post queue as that is the actual total we just haven't saved it yet
+        return structure != null ? structure.getEnergyPostQueue() : 0;
     }
 
     @Override
     public void setEnergy(double energy) {
         if (structure != null) {
-            structure.setEnergy(world, Math.max(Math.min(energy, getMaxEnergy()), 0));
-            MekanismUtils.saveChunk(this);
+            structure.queueSetEnergy(Math.max(Math.min(energy, getMaxEnergy()), 0));
         }
+    }
+
+    public double addEnergy(double energy, boolean simulate) {
+        return structure != null ? structure.queueEnergyAddition(energy, simulate) : 0;
+    }
+
+    public double removeEnergy(double energy, boolean simulate) {
+        return structure != null ? structure.queueEnergyRemoval(energy, simulate) : 0;
     }
 
     @Override
     public double getMaxEnergy() {
-        return structure != null ? structure.storageCap : 0;
+        return structure != null ? structure.getStorageCap() : 0;
     }
 
     @Override
@@ -184,11 +155,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             case 1:
                 return new Object[]{getMaxEnergy()};
             case 2:
-                return new Object[]{structure.lastInput};
+                return new Object[]{structure.getLastInput()};
             case 3:
-                return new Object[]{structure.lastOutput};
+                return new Object[]{structure.getLastOutput()};
             case 4:
-                return new Object[]{structure.transferCap};
+                return new Object[]{structure.getTransferCap()};
             default:
                 throw new NoSuchMethodException();
         }

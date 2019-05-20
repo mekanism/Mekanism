@@ -90,7 +90,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
                 CableUtils.emit(this);
             }
-
             int newScale = getScaledEnergyLevel(20);
             if (newScale != prevScale) {
                 Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
@@ -118,9 +117,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 
     @Override
     public double getMaxOutput() {
-        if (tier == EnergyCubeTier.CREATIVE) {
-            return Integer.MAX_VALUE;
-        }
         return tier.getOutput();
     }
 
@@ -185,7 +181,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             case 2:
                 return new Object[]{getMaxEnergy()};
             case 3:
-                return new Object[]{getMaxEnergy() - getEnergy()};
+                return new Object[]{(getMaxEnergy() - getEnergy())};
             default:
                 throw new NoSuchMethodException();
         }
