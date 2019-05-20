@@ -20,8 +20,8 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     private Set<Coord4D> providers = new HashSet<>();
     private Set<Coord4D> cells = new HashSet<>();
-    private double remainingOutput;
-    private double remainingInput;
+    private double queuedOutput;
+    private double queuedInput;
     private double lastOutput;
     private double lastInput;
 
@@ -54,18 +54,12 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     }
 
     public double getEnergyPostQueue() {
-        //The reason we do remainingOutput - remainingInput when it logically appears that
-        // it should be the other way around, is because in reality our value is
-        // (transferCap - remainingInput) - (transferCap - remainingOutput)
-        // which simplifies to remainingOutput - remainingInput
-        // This is because remainingInput and remainingOutput go down if we have
-        // the corresponding one queued.
-        return cachedTotal - remainingInput + remainingOutput;
+        return cachedTotal + queuedInput - queuedOutput;
     }
 
     public void tick(World world) {
         //See comment in getEnergyPostQueue for explanation of how lastChange is calculated.
-        double lastChange = remainingOutput - remainingInput;
+        double lastChange = queuedInput - queuedOutput;
         if (lastChange < 0) {
             //We are removing energy
             removeEnergy(world, -lastChange);
@@ -75,10 +69,10 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         }
         cachedTotal += lastChange;
 
-        lastInput = transferCap - remainingInput;
-        remainingInput = transferCap;
-        lastOutput = transferCap - remainingOutput;
-        remainingOutput = transferCap;
+        lastInput = queuedInput;
+        queuedInput = 0;
+        lastOutput = queuedOutput;
+        queuedOutput = 0;
     }
 
     public double queueEnergyAddition(double energy, boolean simulate) {
@@ -86,6 +80,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             //Ensure that the correct queue type gets called
             return queueEnergyRemoval(-energy, simulate);
         }
+        double remainingInput = getRemainingInput();
         if (energy > remainingInput) {
             energy = remainingInput;
         }
@@ -99,8 +94,8 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             energy = availableEnergy;
         }
         if (!simulate) {
-            //Lower amount remaining input rate by the amount we accepted
-            remainingInput -= energy;
+            //Increase how much we are inputting
+            queuedInput += energy;
         }
         return energy;
     }
@@ -110,6 +105,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             //Ensure that the correct queue type gets called
             return queueEnergyAddition(-energy, simulate);
         }
+        double remainingOutput = getRemainingOutput();
         if (energy > remainingOutput) {
             //If it is more than we can output lower it further
             energy = remainingOutput;
@@ -124,8 +120,8 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             energy = availableEnergy;
         }
         if (!simulate) {
-            //Lower amount remaining output rate by the amount we accepted
-            remainingOutput -= energy;
+            //Increase how much we are outputting by the amount we accepted
+            queuedOutput += energy;
         }
         return energy;
     }
@@ -257,11 +253,11 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     }
 
     public double getRemainingInput() {
-        return remainingInput;
+        return transferCap - queuedInput;
     }
 
     public double getRemainingOutput() {
-        return remainingOutput;
+        return transferCap - queuedOutput;
     }
 
     public int getCellCount() {
