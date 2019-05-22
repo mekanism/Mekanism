@@ -34,6 +34,7 @@ public class IMCHandler {
                         message.equalsIgnoreCase(type.getOldRecipeName() + "Recipe")) {
                         MachineInput input = type.createInput(msg.getNBTValue());
                         if (input != null && input.isValid()) {
+                            @SuppressWarnings("unchecked")
                             MachineRecipe recipe = type.createRecipe(input, msg.getNBTValue());
                             if (recipe != null && recipe.recipeOutput != null) {
                                 if (delete) {

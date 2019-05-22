@@ -640,9 +640,9 @@ public final class RecipeHandler {
         @Nonnull
         private final String jeiCategory;
 
-        private Class<? extends MachineInput> inputClass;
-        private Class<? extends MachineOutput> outputClass;
-        private Class<? extends MachineRecipe> recipeClass;
+        private Class<INPUT> inputClass;
+        private Class<OUTPUT> outputClass;
+        private Class<RECIPE> recipeClass;
 
 
         private Recipe(String name, String oldName, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe) {
@@ -681,9 +681,9 @@ public final class RecipeHandler {
         @Nullable
         public INPUT createInput(NBTTagCompound nbtTags) {
             try {
-                MachineInput input = inputClass.newInstance();
+                INPUT input = inputClass.newInstance();
                 input.load(nbtTags);
-                return (INPUT) input;
+                return input;
             } catch (Exception e) {
                 return null;
             }
@@ -695,11 +695,11 @@ public final class RecipeHandler {
                 MachineOutput output = outputClass.newInstance();
                 output.load(nbtTags);
                 try {
-                    Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
-                    return (RECIPE) construct.newInstance(input, output);
+                    Constructor<RECIPE> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
+                    return construct.newInstance(input, output);
                 } catch (Exception e) {
-                    Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass, NBTTagCompound.class);
-                    return (RECIPE) construct.newInstance(input, output, nbtTags);
+                    Constructor<RECIPE> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass, NBTTagCompound.class);
+                    return construct.newInstance(input, output, nbtTags);
                 }
             } catch (Exception e) {
                 return null;
