@@ -112,13 +112,12 @@ public class BlockStateBasic extends ExtendedBlockState {
         public Supplier<TileEntity> tileEntitySupplier;
         public boolean hasDescription;
         public Predicate<EnumFacing> facingPredicate;
-        private boolean activable;
+        public boolean activable;
         public boolean tiers;
         public boolean isBeaconBase;
         public boolean hasRedstoneOutput;
         public boolean isFullBlock;
-        private boolean isOpaqueCube;
-        private boolean loaded;
+        public boolean isOpaqueCube;
 
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
               boolean activeState, boolean t, boolean beaconBase) {
@@ -217,14 +216,6 @@ public class BlockStateBasic extends ExtendedBlockState {
 
         public boolean hasActiveTexture() {
             return activable;
-        }
-        
-        public boolean isOpaqueCube() {
-            if(meta == 0 && !loaded) {//This is needed to prevent Security Desks and Structural Glass from getting Opaque somhow.
-                loaded = true;
-                return false;
-            }
-            return isOpaqueCube;
         }
     }
 

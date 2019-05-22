@@ -101,7 +101,7 @@ public abstract class BlockBasic extends BlockTileDrops {
     public BlockBasic() {
         super(Material.IRON);
         setHardness(5F);
-        setResistance(20F);
+        setResistance(15F);
         setCreativeTab(Mekanism.tabMekanism);
     }
 
@@ -270,9 +270,19 @@ public abstract class BlockBasic extends BlockTileDrops {
         IBlockState state = world.getBlockState(pos);
         BasicBlockType type = BasicBlockType.get(getBasicBlock(), state.getBlock().getMetaFromState(state));
         if (type == BasicBlockType.REFINED_OBSIDIAN) {
-            return 4000F;
+            return 2400F;//like Obsidian x 2
         }
-        return blockResistance;
+        return blockResistance / 5.0F;
+    }
+
+    @Override
+    @Deprecated
+    public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
+        BasicBlockType type = BasicBlockType.get(getBasicBlock(), blockState.getBlock().getMetaFromState(blockState));
+        if(type == BasicBlockType.REFINED_OBSIDIAN) {
+            return 50.0F;//like Obsidian
+        }
+        return blockHardness;
     }
 
     @Override
@@ -488,7 +498,7 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         BasicBlockType type = BasicBlockType.get(state);
-        return type != null && type.isOpaqueCube();
+        return type != null && type.isOpaqueCube;
     }
 
     @Override
@@ -496,6 +506,22 @@ public abstract class BlockBasic extends BlockTileDrops {
     public boolean isFullCube(IBlockState state) {
         BasicBlockType type = BasicBlockType.get(state);
         return type != null && type.isFullBlock;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isFullBlock(IBlockState state) {
+        BasicBlockType type = BasicBlockType.get(state);
+        return type != null && type.isFullBlock;
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        BasicBlockType type = BasicBlockType.get(state);
+        if(type != null) {
+            return type.isOpaqueCube ? 255 : 0;
+        }
+        return 0;
     }
 
     @Nonnull
