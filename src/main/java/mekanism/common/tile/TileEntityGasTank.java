@@ -184,7 +184,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     @Override
     public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
         if (canDrawGas(side, null)) {
-            return gasTank.draw(amount, doTransfer);
+            return gasTank.draw(amount, doTransfer && tier != GasTankTier.CREATIVE);
         }
         return null;
     }
