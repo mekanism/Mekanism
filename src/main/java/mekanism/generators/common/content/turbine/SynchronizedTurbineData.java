@@ -16,6 +16,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     @Nullable
     public FluidStack fluidStored;
 
+    @Nullable
     public FluidStack prevFluid;
 
     public double electricityStored;
