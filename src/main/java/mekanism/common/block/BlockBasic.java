@@ -487,7 +487,8 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
-        return false;
+        BasicBlockType type = BasicBlockType.get(state);
+        return type != null && type.isOpaqueCube();
     }
 
     @Override
