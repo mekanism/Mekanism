@@ -1,5 +1,6 @@
 package mekanism.generators.common.content.turbine;
 
+import javax.annotation.Nullable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraftforge.fluids.FluidStack;
@@ -15,6 +16,7 @@ public class TurbineFluidTank implements IFluidTank {
     }
 
     @Override
+    @Nullable
     public FluidStack getFluid() {
         return turbine.structure != null ? turbine.structure.fluidStored : null;
     }
@@ -109,7 +111,7 @@ public class TurbineFluidTank implements IFluidTank {
 
     @Override
     public int getFluidAmount() {
-        if (turbine.structure != null) {
+        if (turbine.structure != null && turbine.structure.fluidStored != null) {
             return turbine.structure.fluidStored.amount;
         }
         return 0;

@@ -140,7 +140,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     }
 
     public int getScaledFluidLevel(long i) {
-        if (structure.getFluidCapacity() == 0 || structure.fluidStored == null) {
+        if (structure == null || structure.getFluidCapacity() == 0 || structure.fluidStored == null) {
             return 0;
         }
         return (int) (structure.fluidStored.amount * i / structure.getFluidCapacity());

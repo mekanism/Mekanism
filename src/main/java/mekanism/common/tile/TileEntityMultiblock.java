@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
@@ -33,6 +34,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     /**
      * The multiblock data for this structure.
      */
+    @Nullable
     public T structure;
 
     /**
@@ -63,6 +65,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     /**
      * This multiblock segment's cached inventory ID
      */
+    @Nullable
     public String cachedID = null;
 
     public TileEntityMultiblock(String name) {

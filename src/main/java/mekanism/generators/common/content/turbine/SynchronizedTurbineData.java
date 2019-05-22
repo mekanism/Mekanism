@@ -2,6 +2,7 @@ package mekanism.generators.common.content.turbine;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
@@ -11,6 +12,8 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static Map<String, Float> clientRotationMap = new HashMap<>();
+
+    @Nullable
     public FluidStack fluidStored;
 
     public FluidStack prevFluid;
