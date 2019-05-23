@@ -389,15 +389,14 @@ public final class TransporterPathfinder {
                     TileEntity neighborEntity = neighborEntities[direction.ordinal()];
                     if (transportStack.canInsertToTransporter(neighborEntity, direction)) {
                         double tentativeG = currentScore + CapabilityUtils.getCapability(neighborEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()).getCost();
-                        double neighborScore = gScore.get(neighbor);
-                        if (closedSet.contains(neighbor) && tentativeG >= neighborScore) {
+                        if (closedSet.contains(neighbor) && tentativeG >= gScore.get(neighbor)) {
                             continue;
                         }
 
-                        if (!openSet.contains(neighbor) || tentativeG < neighborScore) {
+                        if (!openSet.contains(neighbor) || tentativeG < gScore.get(neighbor)) {
                             navMap.put(neighbor, currentNode);
                             gScore.put(neighbor, tentativeG);
-                            fScore.put(neighbor, neighborScore + getEstimate(neighbor, finalNode));
+                            fScore.put(neighbor, gScore.get(neighbor) + getEstimate(neighbor, finalNode));
                             openSet.add(neighbor);
                         }
                     } else if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntity)) {
