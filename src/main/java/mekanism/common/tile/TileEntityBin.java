@@ -204,19 +204,16 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
             if (delayTicks == 0) {
                 if (!bottomStack.isEmpty() && isActive) {
                     TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(world);
-                    if (CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP)) {
-                        ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
-                        TransitResponse response = TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0);
-                        if (!response.isEmpty()) {
-                            bottomStack.shrink(response.getStack().getCount());
-                            setInventorySlotContents(0, bottomStack);
-                        }
+                    ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
+                    TransitResponse response;
+                    if (transporter == null) {
+                        response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), EnumFacing.DOWN, false);
                     } else {
-                        TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), EnumFacing.DOWN, false);
-                        if (!response.isEmpty()) {
-                            bottomStack.shrink(response.getStack().getCount());
-                            setInventorySlotContents(0, bottomStack);
-                        }
+                        response = TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0);
+                    }
+                    if (!response.isEmpty() && tier != BinTier.CREATIVE) {
+                        bottomStack.shrink(response.getStack().getCount());
+                        setInventorySlotContents(0, bottomStack);
                     }
                     delayTicks = 10;
                 }
@@ -561,18 +558,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         @Nonnull
         @Override
         public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-            return tileEntityBin.add(stack, simulate);
+            return slot != 0 ? ItemStack.EMPTY : tileEntityBin.add(stack, simulate);
         }
 
         @Nonnull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-            return tileEntityBin.remove(amount, simulate);
+            return slot != 0 ? ItemStack.EMPTY : tileEntityBin.remove(amount, simulate);
         }
     }
 }

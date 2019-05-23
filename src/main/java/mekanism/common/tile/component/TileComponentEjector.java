@@ -154,10 +154,10 @@ public class TileComponentEjector implements ITileComponent {
                 ILogisticalTransporter capability = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite());
                 TransitRequest transitRequest = TransitRequest.getFromStack(stack.copy());
                 TransitResponse response;
-                if (capability != null) {
-                    response = TransporterUtils.insert(tileEntity, capability, transitRequest, outputColor, true, 0);
-                } else {
+                if (capability == null) {
                     response = InventoryUtils.putStackInInventory(tile, transitRequest, side, false);
+                } else {
+                    response = TransporterUtils.insert(tileEntity, capability, transitRequest, outputColor, true, 0);
                 }
                 if (!response.isEmpty()) {
                     stack.shrink(response.getStack().getCount());

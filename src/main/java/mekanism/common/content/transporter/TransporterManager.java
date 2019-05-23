@@ -25,20 +25,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterManager {
 
-    public static Map<Coord4D, Set<TransporterStack>> flowingStacks = new HashMap<>();
+    private static Map<Coord4D, Set<TransporterStack>> flowingStacks = new HashMap<>();
 
     public static void reset() {
         flowingStacks.clear();
     }
 
     public static void add(TransporterStack stack) {
-        Set<TransporterStack> set = new HashSet<>();
-        set.add(stack);
-        if (flowingStacks.get(stack.getDest()) == null) {
-            flowingStacks.put(stack.getDest(), set);
-        } else {
-            flowingStacks.get(stack.getDest()).addAll(set);
-        }
+        flowingStacks.computeIfAbsent(stack.getDest(), k -> new HashSet<>()).add(stack);
     }
 
     public static void remove(TransporterStack stack) {
@@ -47,7 +41,7 @@ public class TransporterManager {
         }
     }
 
-    public static List<TransporterStack> getStacksToDest(Coord4D dest) {
+    private static List<TransporterStack> getStacksToDest(Coord4D dest) {
         List<TransporterStack> ret = new ArrayList<>();
         Set<TransporterStack> transporterStacks = flowingStacks.get(dest);
         if (transporterStacks != null) {
