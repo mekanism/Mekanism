@@ -153,9 +153,9 @@ public class TransporterStack {
             return TransitResponse.EMPTY;
         }
         idleDir = null;
-        setPath(newPath.path, Path.DEST);
+        setPath(newPath.getPath(), Path.DEST);
         initiatedPath = true;
-        return newPath.response;
+        return newPath.getResponse();
     }
 
     public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min) {
@@ -164,9 +164,9 @@ public class TransporterStack {
             return TransitResponse.EMPTY;
         }
         idleDir = null;
-        setPath(newPath.path, Path.DEST);
+        setPath(newPath.getPath(), Path.DEST);
         initiatedPath = true;
-        return newPath.response;
+        return newPath.getResponse();
     }
 
     public boolean calculateIdle(ILogisticalTransporter transporter) {
