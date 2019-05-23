@@ -49,12 +49,11 @@ public class TransporterManager {
 
     public static List<TransporterStack> getStacksToDest(Coord4D dest) {
         List<TransporterStack> ret = new ArrayList<>();
-        if (flowingStacks.containsKey(dest)) {
-            for (TransporterStack stack : flowingStacks.get(dest)) {
-                if (stack != null && stack.pathType != Path.NONE && stack.hasPath()) {
-                    if (stack.getDest().equals(dest)) {
-                        ret.add(stack);
-                    }
+        Set<TransporterStack> transporterStacks = flowingStacks.get(dest);
+        if (transporterStacks != null) {
+            for (TransporterStack stack : transporterStacks) {
+                if (stack != null && stack.pathType != Path.NONE && stack.hasPath() && stack.getDest().equals(dest)) {
+                    ret.add(stack);
                 }
             }
         }

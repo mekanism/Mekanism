@@ -101,6 +101,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         } else if (getTransmitterNetwork() != null) {
             Set<Integer> deletes = new HashSet<>();
             getTileEntity().pullItems();
+            Coord4D coord = coord();
             for (Entry<Integer, TransporterStack> entry : transit.entrySet()) {
                 int stackId = entry.getKey();
                 TransporterStack stack = entry.getValue();
@@ -115,7 +116,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 if (stack.progress >= 100) {
                     Coord4D prevSet = null;
                     if (stack.hasPath()) {
-                        int currentIndex = stack.getPath().indexOf(coord());
+                        int currentIndex = stack.getPath().indexOf(coord);
                         if (currentIndex == 0) { //Necessary for transition reasons, not sure why
                             deletes.add(stackId);
                             continue;
@@ -177,7 +178,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             }
 
             if (deletes.size() > 0 || needsSync.size() > 0) {
-                TileEntityMessage msg = new TileEntityMessage(coord(), getTileEntity().makeBatchPacket(needsSync, deletes));
+                TileEntityMessage msg = new TileEntityMessage(coord, getTileEntity().makeBatchPacket(needsSync, deletes));
                 // Now remove any entries from transit that have been deleted
                 deletes.forEach(id -> transit.remove(id));
 
@@ -185,7 +186,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 needsSync.clear();
 
                 // Finally, notify clients and mark chunk for save
-                Mekanism.packetHandler.sendToReceivers(msg, new Range4D(coord()));
+                Mekanism.packetHandler.sendToReceivers(msg, new Range4D(coord));
                 MekanismUtils.saveChunk(getTileEntity());
             }
         }

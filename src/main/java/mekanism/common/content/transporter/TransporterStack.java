@@ -140,7 +140,7 @@ public class TransporterStack {
     }
 
     public boolean hasPath() {
-        return getPath() != null && getPath().size() >= 2;
+        return pathToTarget != null && pathToTarget.size() >= 2;
     }
 
     public List<Coord4D> getPath() {
@@ -239,7 +239,7 @@ public class TransporterStack {
     }
 
     public Coord4D getDest() {
-        return getPath().get(0);
+        return pathToTarget.get(0);
     }
 
     public enum Path {
