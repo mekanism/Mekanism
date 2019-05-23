@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
@@ -34,7 +35,7 @@ public final class InventoryUtils {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(request.getSingleStack());
         }
-        for (Map.Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap().entrySet()) {
+        for (Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap().entrySet()) {
             ItemStack origInsert = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
             ItemStack toInsert = origInsert.copy();
             if (!isItemHandler(tile, side.getOpposite())) {
@@ -110,10 +111,12 @@ public final class InventoryUtils {
         }
         if (!force && tileEntity instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
-            EnumFacing tileSide = config.getOrientation();
-            EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
-            if (config.getEjector().hasStrictInput() && configColor != null && configColor != color) {
-                return false;
+            if (config.getEjector().hasStrictInput()) {
+                EnumFacing tileSide = config.getOrientation();
+                EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
+                if (configColor != null && configColor != color) {
+                    return false;
+                }
             }
         }
         if (!isItemHandler(tileEntity, side.getOpposite())) {
@@ -155,6 +158,7 @@ public final class InventoryUtils {
         return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
     }
 
+    //TODO: Check what the difference between this method and areItemsStackable is
     public static boolean canStack(ItemStack stack1, ItemStack stack2) {
         return stack1.isEmpty() || stack2.isEmpty() ||
                stack1.getItem() == stack2.getItem() && (!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage())

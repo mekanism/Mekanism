@@ -98,14 +98,10 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             for (TransporterStack stack : transit.values()) {
                 stack.progress = Math.min(100, stack.progress + getTileEntity().tier.getSpeed());
             }
-        } else {
-            if (getTransmitterNetwork() == null) {
-                return;
-            }
-
+        } else if (getTransmitterNetwork() != null) {
             Set<Integer> deletes = new HashSet<>();
             getTileEntity().pullItems();
-            for (Map.Entry<Integer, TransporterStack> entry : transit.entrySet()) {
+            for (Entry<Integer, TransporterStack> entry : transit.entrySet()) {
                 int stackId = entry.getKey();
                 TransporterStack stack = entry.getValue();
                 if (!stack.initiatedPath) {
@@ -138,8 +134,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                         } else if (stack.pathType != Path.NONE) {
                             TileEntity tile = next.getTileEntity(world());
                             if (tile != null) {
-                                TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack),
-                                      stack.getSide(this), stack.pathType == Path.HOME);
+                                TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack), stack.getSide(this),
+                                      stack.pathType == Path.HOME);
                                 // Nothing was rejected; remove the stack from the prediction tracker and
                                 // schedule this stack for deletion. Continue the loop thereafter
                                 if (response.getRejected(stack.itemStack).isEmpty()) {
@@ -208,11 +204,9 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     private boolean recalculate(int stackId, TransporterStack stack, Coord4D from) {
         if (stack.pathType != Path.NONE) {
             TransitResponse ret = stack.recalculatePath(TransitRequest.getFromTransport(stack), this, 0);
-            if (ret.isEmpty()) {
-                if (!stack.calculateIdle(this)) {
-                    TransporterUtils.drop(this, stack);
-                    return false;
-                }
+            if (ret.isEmpty() && !stack.calculateIdle(this)) {
+                TransporterUtils.drop(this, stack);
+                return false;
             }
         } else if (!stack.calculateIdle(this)) {
             TransporterUtils.drop(this, stack);
@@ -309,7 +303,6 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         if (!getTileEntity().canConnect(side)) {
             return false;
         }
-
         return getTileEntity().getConnectionType(side) == ConnectionType.NORMAL || getTileEntity().getConnectionType(side) == ConnectionType.PUSH;
     }
 

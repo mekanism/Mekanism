@@ -226,21 +226,16 @@ public class TransporterStack {
     }
 
     public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from) {
-        if (!CapabilityUtils.hasCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite())) {
-            return false;
+        EnumFacing opposite = from.getOpposite();
+        ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite);
+        if (transporter != null && CapabilityUtils.getCapability(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite).canConnectMutual(opposite)) {
+            return transporter.getColor() == color || transporter.getColor() == null;
         }
-        ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite());
-        if (!CapabilityUtils.getCapability(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, from.getOpposite()).canConnectMutual(from.getOpposite())) {
-            return false;
-        }
-        return transporter.getColor() == color || transporter.getColor() == null;
+        return false;
     }
 
     public boolean canInsertToTransporter(ILogisticalTransporter transporter, EnumFacing side) {
-        if (!transporter.canConnectMutual(side)) {
-            return false;
-        }
-        return transporter.getColor() == color || transporter.getColor() == null;
+        return transporter.canConnectMutual(side) && (transporter.getColor() == color || transporter.getColor() == null);
     }
 
     public Coord4D getDest() {
