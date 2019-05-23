@@ -33,9 +33,9 @@ public class TransporterStack {
     public EnumFacing idleDir = null;
     public Coord4D originalLocation;
     public Coord4D homeLocation;
-    public Coord4D clientNext;
-    public Coord4D clientPrev;
-    public Path pathType;
+    private Coord4D clientNext;
+    private Coord4D clientPrev;
+    private Path pathType;
     private List<Coord4D> pathToTarget = new ArrayList<>();
 
     public static TransporterStack readFromNBT(NBTTagCompound nbtTags) {
@@ -145,6 +145,10 @@ public class TransporterStack {
 
     public List<Coord4D> getPath() {
         return pathToTarget;
+    }
+
+    public Path getPathType() {
+        return pathType;
     }
 
     public TransitResponse recalculatePath(TransitRequest request, ILogisticalTransporter transporter, int min) {

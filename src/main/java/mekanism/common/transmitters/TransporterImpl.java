@@ -132,11 +132,11 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                             } else if (next != null) {
                                 prevSet = next;
                             }
-                        } else if (stack.pathType != Path.NONE) {
+                        } else if (stack.getPathType() != Path.NONE) {
                             TileEntity tile = next.getTileEntity(world());
                             if (tile != null) {
                                 TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack), stack.getSide(this),
-                                      stack.pathType == Path.HOME);
+                                      stack.getPathType() == Path.HOME);
                                 // Nothing was rejected; remove the stack from the prediction tracker and
                                 // schedule this stack for deletion. Continue the loop thereafter
                                 if (response.getRejected(stack.itemStack).isEmpty()) {
@@ -161,7 +161,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                     }
                 } else if (stack.progress == 50) {
                     if (stack.isFinal(this)) {
-                        if (checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.pathType == Path.NONE) {
+                        if (checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE) {
                             if (!recalculate(stackId, stack, null)) {
                                 deletes.add(stackId);
                             }
@@ -193,7 +193,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     private boolean checkPath(TransporterStack stack, Path dest, boolean home) {
-        return stack.pathType == dest && (!checkSideForInsert(stack) || !InventoryUtils.canInsert(stack.getDest().getTileEntity(world()), stack.color, stack.itemStack,
+        return stack.getPathType() == dest && (!checkSideForInsert(stack) || !InventoryUtils.canInsert(stack.getDest().getTileEntity(world()), stack.color, stack.itemStack,
               stack.getSide(this), home));
     }
 
@@ -203,7 +203,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     private boolean recalculate(int stackId, TransporterStack stack, Coord4D from) {
-        if (stack.pathType != Path.NONE) {
+        if (stack.getPathType() != Path.NONE) {
             TransitResponse ret = stack.recalculatePath(TransitRequest.getFromTransport(stack), this, 0);
             if (ret.isEmpty() && !stack.calculateIdle(this)) {
                 TransporterUtils.drop(this, stack);

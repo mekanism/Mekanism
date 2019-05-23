@@ -36,22 +36,9 @@ public class TransporterManager {
     }
 
     public static void remove(TransporterStack stack) {
-        if (stack.hasPath() && stack.pathType != Path.NONE) {
+        if (stack.hasPath() && stack.getPathType() != Path.NONE) {
             flowingStacks.get(stack.getDest()).remove(stack);
         }
-    }
-
-    private static List<TransporterStack> getStacksToDest(Coord4D dest) {
-        List<TransporterStack> ret = new ArrayList<>();
-        Set<TransporterStack> transporterStacks = flowingStacks.get(dest);
-        if (transporterStacks != null) {
-            for (TransporterStack stack : transporterStacks) {
-                if (stack != null && stack.pathType != Path.NONE && stack.hasPath() && stack.getDest().equals(dest)) {
-                    ret.add(stack);
-                }
-            }
-        }
-        return ret;
     }
 
     private static int simulateInsert(IItemHandler handler, InventoryInfo inventoryInfo, ItemStack stack) {
@@ -157,10 +144,15 @@ public class TransporterManager {
 
         //For each of the in-flight stacks, simulate their insert into the tile entity. Note that stackSizes
         // for inventoryInfo is updated each time
-        for (TransporterStack s : getStacksToDest(Coord4D.get(tileEntity))) {
-            if (simulateInsert(handler, inventoryInfo, s.itemStack) > 0) {
-                // Failed to successfully insert this in-flight item; there's no room for anyone else
-                return TransitResponse.EMPTY;
+        Set<TransporterStack> transporterStacks = flowingStacks.get(Coord4D.get(tileEntity));
+        if (transporterStacks != null) {
+            for (TransporterStack stack : transporterStacks) {
+                if (stack != null && stack.getPathType() != Path.NONE) {
+                    if (simulateInsert(handler, inventoryInfo, stack.itemStack) > 0) {
+                        // Failed to successfully insert this in-flight item; there's no room for anyone else
+                        return TransitResponse.EMPTY;
+                    }
+                }
             }
         }
 
