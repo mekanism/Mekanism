@@ -19,6 +19,7 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -60,7 +61,7 @@ public class TransporterManager {
         return ret;
     }
 
-    private static int simulateInsert(IItemHandler handler, List<Integer> inventoryStackSizes, EnumFacing side, ItemStack stack) {
+    private static int simulateInsert(IItemHandler handler, InventoryInfo inventoryInfo, ItemStack stack) {
         for (int i = 0; i < handler.getSlots(); i++) {
             if (stack.isEmpty()) {
                 // Nothing more to insert
@@ -77,10 +78,10 @@ public class TransporterManager {
             // how the inventory would look after the insertion
 
             // Number of items in the destination
-            int destCount = inventoryStackSizes.get(i);
+            int destCount = inventoryInfo.stackSizes.get(i);
 
             // If the destination isn't empty and not stackable, move along
-            if (destCount > 0 && !InventoryUtils.areItemsStackable(handler.getStackInSlot(i), stack)) {
+            if (destCount > 0 && !InventoryUtils.areItemsStackable(inventoryInfo.inventory.get(i), stack)) {
                 continue;
             }
 
@@ -95,7 +96,7 @@ public class TransporterManager {
                 }
 
                 // Set the destStack to match ours
-                inventoryStackSizes.set(i, 0);
+                inventoryInfo.stackSizes.set(i, 0);
                 destCount = 0;
             }
 
@@ -107,11 +108,11 @@ public class TransporterManager {
             int mergedCount = stack.getCount() + destCount;
             if (mergedCount > max) {
                 // Not all the items will fit; put max in and save leftovers
-                inventoryStackSizes.set(i, max);
+                inventoryInfo.stackSizes.set(i, max);
                 return mergedCount - max;
             }
             // All items will fit!
-            inventoryStackSizes.set(i, stack.getCount());
+            inventoryInfo.stackSizes.set(i, stack.getCount());
             return 0;
         }
         return stack.getCount();
@@ -136,17 +137,14 @@ public class TransporterManager {
         // fast if it doesn't
         if (tileEntity instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
-            EnumFacing tileSide = config.getOrientation();
-            EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
-            if (config.getEjector().hasStrictInput() && configColor != null && configColor != color) {
-                return TransitResponse.EMPTY;
+            if (config.getEjector().hasStrictInput()) {
+                EnumFacing tileSide = config.getOrientation();
+                EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
+                if (configColor != null && configColor != color) {
+                    return TransitResponse.EMPTY;
+                }
             }
         }
-
-        // Before we see if this item can fit in the destination, we must first check the stacks that are
-        // en-route. Note that we also have to simulate the current inventory after each stack; we'll make an
-        // initial copy of the inventory and then simulate each in-flight addition. If any in-flight stack
-        // can't be inserted, that we can fail fast.
 
         // Get the item handler for the TE; fail if it's not an item handler (and log for good measure --
         // there shouldn't be anything that's not an IItemHandler anymore)
@@ -155,19 +153,22 @@ public class TransporterManager {
             Mekanism.logger.error("Failed to predict insert; not an IItemHandler: {}", tileEntity);
             return TransitResponse.EMPTY;
         }
-        //This list is used to keep track of the changes in size that would be made to the inventory if we
-        // did not simulate, and instead actually inserted. We use this so that we do not have to copy the
-        // entire inventory for purposes of simulation, as all we really care about for a difference is the
-        // size of the stack.
-        List<Integer> inventoryStackSizes = new ArrayList<>();
-        for (int i = 0; i < handler.getSlots(); i++) {
-            inventoryStackSizes.add(handler.getStackInSlot(i).getCount());
-        }
 
-        //For each of the in-flight stacks, simulate their insert into the tile entity. Note that inventoryStackSizes
-        // is updated each time
+        // Before we see if this item can fit in the destination, we must first check the stacks that are
+        // en-route. Note that we also have to simulate the current inventory after each stack; we'll keep
+        // track of the initial size of the inventory and then simulate each in-flight addition. If any
+        // in-flight stack can't be inserted, that we can fail fast.
+
+        //Information about the inventory, keeps track of the size of a stack a slot will have, and
+        // a cache of what getStackInSlot returns (as it has to call it anyways to get the stack size).
+        // This cache allows potentially expensive getStackInSlot implementations to only have to be called
+        // once instead of potentially many times.
+        InventoryInfo inventoryInfo = new InventoryInfo(handler);
+
+        //For each of the in-flight stacks, simulate their insert into the tile entity. Note that stackSizes
+        // for inventoryInfo is updated each time
         for (TransporterStack s : getStacksToDest(Coord4D.get(tileEntity))) {
-            if (simulateInsert(handler, inventoryStackSizes, side, s.itemStack) > 0) {
+            if (simulateInsert(handler, inventoryInfo, s.itemStack) > 0) {
                 // Failed to successfully insert this in-flight item; there's no room for anyone else
                 return TransitResponse.EMPTY;
             }
@@ -179,7 +180,7 @@ public class TransporterManager {
         for (Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap().entrySet()) {
             // Create a sending ItemStack with the hashed item type and total item count within the request
             ItemStack toSend = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
-            int numLeftOver = simulateInsert(handler, inventoryStackSizes, side, toSend);
+            int numLeftOver = simulateInsert(handler, inventoryInfo, toSend);
 
             // If leftovers is unchanged from the simulation, there's no room at all; move on to the next stack
             if (numLeftOver == toSend.getCount()) {
@@ -191,5 +192,20 @@ public class TransporterManager {
             return new TransitResponse(toSend, requestEntry.getValue().getRight());
         }
         return TransitResponse.EMPTY;
+    }
+
+    private static class InventoryInfo {
+
+        public NonNullList<ItemStack> inventory;
+        public List<Integer> stackSizes = new ArrayList<>();
+
+        public InventoryInfo(IItemHandler handler) {
+            inventory = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack stack = handler.getStackInSlot(i);
+                inventory.set(i, stack);
+                stackSizes.add(stack.getCount());
+            }
+        }
     }
 }
