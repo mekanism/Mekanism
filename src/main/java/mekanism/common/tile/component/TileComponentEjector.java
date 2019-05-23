@@ -14,6 +14,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
@@ -149,14 +150,15 @@ public class TileComponentEjector implements ITileComponent {
                 TileEntity tile = Coord4D.get(tileEntity).offset(side).getTileEntity(tileEntity.getWorld());
                 ItemStack prev = stack.copy();
 
-                if (CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite())) {
-                    TransitResponse response = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()),
-                          TransitRequest.getFromStack(stack.copy()), outputColor, true, 0);
+                ILogisticalTransporter capability = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite());
+                TransitRequest transitRequest = TransitRequest.getFromStack(stack.copy());
+                if (capability != null) {
+                    TransitResponse response = TransporterUtils.insert(tileEntity, capability, transitRequest, outputColor, true, 0);
                     if (!response.isEmpty()) {
                         stack.shrink(response.getStack().getCount());
                     }
                 } else {
-                    TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(stack.copy()), side, false);
+                    TransitResponse response = InventoryUtils.putStackInInventory(tile, transitRequest, side, false);
                     if (!response.isEmpty()) {
                         stack.shrink(response.getStack().getCount());
                     }

@@ -36,26 +36,26 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             if (coord == null || coord.equals(stack.homeLocation)) {
                 continue;
             }
-
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            if (sides == null || sides.isEmpty()) {
+                continue;
+            }
             TileEntity acceptor = coord.getTileEntity(getWorld());
-            if (acceptor == null || sides == null || sides.isEmpty()) {
+            if (acceptor == null) {
                 continue;
             }
 
             AcceptorData data = null;
             for (EnumFacing side : sides) {
-                TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, side.getOpposite());
+                EnumFacing opposite = side.getOpposite();
+                TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, opposite);
                 if (!response.isEmpty()) {
                     if (data == null) {
-                        data = new AcceptorData(coord, response, side.getOpposite());
+                        toReturn.add(data = new AcceptorData(coord, response, opposite));
                     } else {
-                        data.sides.add(side.getOpposite());
+                        data.sides.add(opposite);
                     }
                 }
-            }
-            if (data != null) {
-                toReturn.add(data);
             }
         }
         return toReturn;
