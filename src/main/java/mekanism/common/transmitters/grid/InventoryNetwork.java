@@ -54,7 +54,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
                     if (data == null) {
                         toReturn.add(data = new AcceptorData(coord, response, opposite));
                     } else {
-                        data.add(response, opposite);
+                        data.sides.add(opposite);
                     }
                 }
             }
@@ -102,20 +102,12 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
         private Coord4D location;
         private TransitResponse response;
-        private Set<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
-        //private Map<EnumFacing, TransitResponse> sideResponses = new EnumMap<>(EnumFacing.class);
+        private Set<EnumFacing> sides;
 
         public AcceptorData(Coord4D coord, TransitResponse ret, EnumFacing side) {
             location = coord;
-            //sideResponses.put(side, response);
             response = ret;
-            sides.add(side);
-        }
-
-        public void add(TransitResponse toCombine, EnumFacing side) {
-            sides.add(side);
-            //System.out.println(response.getStack().getCount() + " " + toCombine.getStack().getCount());
-            //TODO: combine the two responses
+            sides = EnumSet.of(side);
         }
 
         public TransitResponse getResponse() {
