@@ -1,5 +1,6 @@
 package mekanism.client.render.tileentity;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -109,7 +110,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         if (cachedOverlays.containsKey(side)) {
             cachedOverlays.get(side).put(type, display);
         } else {
-            Map<TransmissionType, DisplayInteger> map = new HashMap<>();
+            Map<TransmissionType, DisplayInteger> map = new EnumMap<>(TransmissionType.class);
             map.put(type, display);
             cachedOverlays.put(side, map);
         }
