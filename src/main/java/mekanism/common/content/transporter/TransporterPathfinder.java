@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.base.ILogisticalTransporter;
@@ -29,30 +31,15 @@ import org.apache.commons.lang3.tuple.Pair;
 public final class TransporterPathfinder {
 
     public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, TransitRequest request, int min) {
-        List<Destination> paths = new ArrayList<>();
         InventoryNetwork network = start.getTransmitterNetwork();
         if (network == null) {
-            return paths;
+            return Collections.emptyList();
         }
         List<AcceptorData> acceptors = network.calculateAcceptors(request, stack);
-
-        for (AcceptorData entry : acceptors) {
-            DestChecker checker = new DestChecker() {
-                @Override
-                public boolean isValid(TransporterStack stack, EnumFacing dir, TileEntity tile) {
-                    return InventoryUtils.canInsert(tile, stack.color, entry.response.getStack(), dir, false);
-                }
-            };
-            Destination d = getPath(checker, entry.sides, start, entry.location, stack, entry.response, min);
-            if (d != null) {
-                paths.add(d);
-            }
-        }
-        Collections.sort(paths);
-        return paths;
+        return acceptors.stream().map(data -> getPath(data, start, stack, min)).filter(Objects::nonNull).sorted().collect(Collectors.toList());
     }
 
-    public static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack) {
+    private static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack) {
         for (int i = path.size() - 1; i > 0; i--) {
             TileEntity tile = path.get(i).getTileEntity(world);
             ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
@@ -63,15 +50,20 @@ public final class TransporterPathfinder {
         return true;
     }
 
-    public static Destination getPath(DestChecker checker, Set<EnumFacing> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack,
-          TransitResponse response, int min) {
+    private static Destination getPath(AcceptorData data, ILogisticalTransporter start, TransporterStack stack, int min) {
+        TransitResponse response = data.getResponse();
         if (response.getStack().getCount() >= min) {
-            List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
+            Coord4D dest = data.getLocation();
+            List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, data.getSides());
             if (test != null && checkPath(start.world(), test, stack)) {
                 return new Destination(test, false, response, 0).calculateScore(start.world());
             }
-
-            Pathfinder p = new Pathfinder(checker, start.world(), dest, start.coord(), stack);
+            Pathfinder p = new Pathfinder(new DestChecker() {
+                @Override
+                public boolean isValid(TransporterStack stack, EnumFacing dir, TileEntity tile) {
+                    return InventoryUtils.canInsert(tile, stack.color, response.getStack(), dir, false);
+                }
+            }, start.world(), dest, start.coord(), stack);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
                 PathfinderCache.addCachedPath(new PathData(start.coord(), dest, p.getSide()), path);
@@ -121,13 +113,12 @@ public final class TransporterPathfinder {
 
     public static Pair<List<Coord4D>, Path> getIdlePath(ILogisticalTransporter start, TransporterStack stack) {
         if (stack.homeLocation != null) {
-            DestChecker checker = new DestChecker() {
+            Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
                 public boolean isValid(TransporterStack stack, EnumFacing side, TileEntity tile) {
                     return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
-            };
-            Pathfinder p = new Pathfinder(checker, start.world(), stack.homeLocation, start.coord(), stack);
+            }, start.world(), stack.homeLocation, start.coord(), stack);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
                 return Pair.of(path, Path.HOME);
