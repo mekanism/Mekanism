@@ -111,7 +111,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                             TransitRequest request = TransitRequest.getFromStack(itemStack);
                             TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
                             if (!response.isEmpty()) {
-                                invStack.use(response.getStack().getCount());
+                                invStack.use(response.getSendingAmount());
                                 back.markDirty();
                                 setActive(true);
                                 sentItems = true;
@@ -125,7 +125,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                     TransitRequest request = TransitRequest.buildInventoryMap(back, facing.getOpposite(), singleItem ? 1 : 64, new StrictFilterFinder());
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
                     if (!response.isEmpty()) {
-                        response.getInvStack(back, facing).use(response.getStack().getCount());
+                        response.getInvStack(back, facing).use(response.getSendingAmount());
                         back.markDirty();
                         setActive(true);
                     }

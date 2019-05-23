@@ -212,7 +212,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
                         response = TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0);
                     }
                     if (!response.isEmpty() && tier != BinTier.CREATIVE) {
-                        bottomStack.shrink(response.getStack().getCount());
+                        bottomStack.shrink(response.getSendingAmount());
                         setInventorySlotContents(0, bottomStack);
                     }
                     delayTicks = 10;

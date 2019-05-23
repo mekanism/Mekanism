@@ -136,7 +136,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
                 // If the insert succeeded, remove the inserted count and try again for another 10 ticks
                 if (!response.isEmpty()) {
-                    response.getInvStack(tile, side.getOpposite()).use(response.getStack().getCount());
+                    response.getInvStack(tile, side.getOpposite()).use(response.getSendingAmount());
                     delay = 10;
                 } else {
                     // Insert failed; increment the backoff and calculate delay. Note that we cap retries

@@ -1,8 +1,8 @@
 package mekanism.common.tile.component;
 
 import io.netty.buffer.ByteBuf;
+import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,8 +44,8 @@ public class TileComponentEjector implements ITileComponent {
     private EnumColor outputColor;
     private EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
     private int tickDelay = 0;
-    private Map<TransmissionType, SideData> sideData = new HashMap<>();
-    public Map<TransmissionType, int[]> trackers = new HashMap<>();
+    private Map<TransmissionType, SideData> sideData = new EnumMap<>(TransmissionType.class);
+    public Map<TransmissionType, int[]> trackers = new EnumMap<>(TransmissionType.class);
 
     public TileComponentEjector(TileEntityContainerBlock tile) {
         tileEntity = tile;
@@ -138,8 +138,8 @@ public class TileComponentEjector implements ITileComponent {
 
         SideData data = sideData.get(TransmissionType.ITEM);
         Set<EnumFacing> outputSides = getOutputSides(TransmissionType.ITEM, data);
-        for (int index = 0; index < sideData.get(TransmissionType.ITEM).availableSlots.length; index++) {
-            int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];
+        for (int index = 0; index < data.availableSlots.length; index++) {
+            int slotID = data.availableSlots[index];
             if (tileEntity.getStackInSlot(slotID).isEmpty()) {
                 continue;
             }
@@ -160,7 +160,7 @@ public class TileComponentEjector implements ITileComponent {
                     response = TransporterUtils.insert(tileEntity, capability, transitRequest, outputColor, true, 0);
                 }
                 if (!response.isEmpty()) {
-                    stack.shrink(response.getStack().getCount());
+                    stack.shrink(response.getSendingAmount());
                 }
 
                 if (stack.isEmpty() || prevCount != stack.getCount()) {

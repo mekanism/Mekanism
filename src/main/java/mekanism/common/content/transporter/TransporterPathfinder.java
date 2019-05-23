@@ -52,7 +52,7 @@ public final class TransporterPathfinder {
 
     private static Destination getPath(AcceptorData data, ILogisticalTransporter start, TransporterStack stack, int min) {
         TransitResponse response = data.getResponse();
-        if (response.getStack().getCount() >= min) {
+        if (response.getSendingAmount() >= min) {
             Coord4D dest = data.getLocation();
             List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, data.getSides());
             if (test != null && checkPath(start.world(), test, stack)) {

@@ -116,10 +116,7 @@ public class TransporterManager {
     }
 
     public static ItemStack getToUse(ItemStack stack, ItemStack returned) {
-        if (returned.isEmpty() || returned.getCount() == 0) {
-            return stack;
-        }
-        return StackUtils.size(stack, stack.getCount() - returned.getCount());
+        return returned.isEmpty() ? stack : StackUtils.size(stack, stack.getCount() - returned.getCount());
     }
 
     /**
