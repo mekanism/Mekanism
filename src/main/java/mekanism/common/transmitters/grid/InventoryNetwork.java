@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -101,7 +102,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
         public Coord4D location;
         public TransitResponse response;
-        public EnumSet<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
+        public Set<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
 
         public AcceptorData(Coord4D coord, TransitResponse ret, EnumFacing side) {
             location = coord;

@@ -63,7 +63,7 @@ public final class TransporterPathfinder {
         return true;
     }
 
-    public static Destination getPath(DestChecker checker, EnumSet<EnumFacing> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack,
+    public static Destination getPath(DestChecker checker, Set<EnumFacing> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack,
           TransitResponse response, int min) {
         if (response.getStack().getCount() >= min) {
             List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
@@ -74,7 +74,7 @@ public final class TransporterPathfinder {
             Pathfinder p = new Pathfinder(checker, start.world(), dest, start.coord(), stack);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
-                PathfinderCache.cachedPaths.put(new PathData(start.coord(), dest, p.getSide()), path);
+                PathfinderCache.addCachedPath(new PathData(start.coord(), dest, p.getSide()), path);
                 return new Destination(path, false, response, p.finalScore);
             }
         }

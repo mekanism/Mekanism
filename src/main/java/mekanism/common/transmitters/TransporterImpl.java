@@ -223,17 +223,12 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
     @Override
     public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        return insert_do(original, request, color, doEmit, min, false);
-    }
-
-    private TransitResponse insert_do(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min, boolean force) {
         EnumFacing from = coord().sideDifference(original).getOpposite();
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = original;
         stack.homeLocation = original;
         stack.color = color;
-
-        if ((force && !canReceiveFrom(original.getTileEntity(world()), from)) || !stack.canInsertToTransporter(this, from)) {
+        if (!stack.canInsertToTransporter(this, from)) {
             return TransitResponse.EMPTY;
         }
         TransitResponse response = stack.recalculatePath(request, this, min);
@@ -247,7 +242,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             if (doEmit) {
                 int stackId = nextId++;
                 transit.put(stackId, stack);
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getTileEntity().makeSyncPacket(stackId, stack)), new Range4D(coord()));
+                Coord4D coord = coord();
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getTileEntity().makeSyncPacket(stackId, stack)), new Range4D(coord));
                 MekanismUtils.saveChunk(getTileEntity());
             }
             return response;
