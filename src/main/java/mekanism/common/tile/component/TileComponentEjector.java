@@ -88,31 +88,39 @@ public class TileComponentEjector implements ITileComponent {
             tickDelay--;
         }
         if (!tileEntity.getWorld().isRemote) {
-            if (sideData.get(TransmissionType.GAS) != null && getEjecting(TransmissionType.GAS)) {
-                SideData data = sideData.get(TransmissionType.GAS);
-                Set<EnumFacing> outputSides = getOutputSides(TransmissionType.GAS, data);
-                if (((ITankManager) tileEntity).getTanks() != null) {
-                    GasTank tank = (GasTank) ((ITankManager) tileEntity).getTanks()[data.availableSlots[0]];
-                    if (tank.getStored() > 0) {
-                        GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
-                        int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
-                        tank.draw(emit, true);
-                    }
-                }
-            }
+            eject(TransmissionType.GAS);
+            eject(TransmissionType.FLUID);
+        }
+    }
 
-            if (sideData.get(TransmissionType.FLUID) != null && getEjecting(TransmissionType.FLUID)) {
-                SideData data = sideData.get(TransmissionType.FLUID);
-                Set<EnumFacing> outputSides = getOutputSides(TransmissionType.FLUID, data);
-                if (((ITankManager) tileEntity).getTanks() != null) {
-                    FluidTank tank = (FluidTank) ((ITankManager) tileEntity).getTanks()[data.availableSlots[0]];
-                    if (tank.getFluidAmount() > 0) {
-                        FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
-                        int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
-                        tank.drain(emit, true);
-                    }
+    private void eject(TransmissionType type) {
+        SideData data = sideData.get(type);
+        if (data != null && getEjecting(type)) {
+            ITankManager tankManager = (ITankManager) this.tileEntity;
+            if (tankManager.getTanks() != null) {
+                Set<EnumFacing> outputSides = getOutputSides(type, data);
+                if (type == TransmissionType.GAS) {
+                    ejectGas(outputSides, (GasTank) tankManager.getTanks()[data.availableSlots[0]]);
+                } else if (type == TransmissionType.FLUID) {
+                    ejectFluid(outputSides, (FluidTank) tankManager.getTanks()[data.availableSlots[0]]);
                 }
             }
+        }
+    }
+
+    private void ejectGas(Set<EnumFacing> outputSides, GasTank tank) {
+        if (tank.getGas() != null && tank.getStored() > 0) {
+            GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
+            int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
+            tank.draw(emit, true);
+        }
+    }
+
+    private void ejectFluid(Set<EnumFacing> outputSides, FluidTank tank) {
+        if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
+            FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
+            int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
+            tank.drain(emit, true);
         }
     }
 
