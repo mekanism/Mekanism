@@ -6,6 +6,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.outputs.MachineOutput;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
 public class IMCHandler {
@@ -29,27 +30,10 @@ public class IMCHandler {
                     delete = true;
                 }
 
-                for (Recipe type : Recipe.values()) {
+                for (Recipe<?, ?, ?> type : Recipe.values()) {
                     if (message.equalsIgnoreCase(type.getRecipeName() + "Recipe") ||
                         message.equalsIgnoreCase(type.getOldRecipeName() + "Recipe")) {
-                        MachineInput input = type.createInput(msg.getNBTValue());
-                        if (input != null && input.isValid()) {
-                            @SuppressWarnings("unchecked")
-                            MachineRecipe recipe = type.createRecipe(input, msg.getNBTValue());
-                            if (recipe != null && recipe.recipeOutput != null) {
-                                if (delete) {
-                                    RecipeHandler.removeRecipe(type, recipe);
-                                    Mekanism.logger.info(msg.getSender() + " removed recipe of type " + type.getRecipeName() + " from the recipe list.");
-                                } else {
-                                    RecipeHandler.addRecipe(type, recipe);
-                                    Mekanism.logger.info(msg.getSender() + " added recipe of type " + type.getRecipeName() + " to the recipe list.");
-                                }
-                            } else {
-                                Mekanism.logger.error(msg.getSender() + " attempted to " + (delete ? "remove" : "add") + " recipe of type " + type.getRecipeName() + " with an invalid output.");
-                            }
-                        } else {
-                            Mekanism.logger.error(msg.getSender() + " attempted to " + (delete ? "remove" : "add") + " recipe of type " + type.getRecipeName() + " with an invalid input.");
-                        }
+                        handleRecipe(type, msg, delete);
                         found = true;
                         break;
                     }
@@ -58,6 +42,27 @@ public class IMCHandler {
                     Mekanism.logger.error(msg.getSender() + " sent unknown IMC message with key '" + msg.key + ".'");
                 }
             }
+        }
+    }
+
+    private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
+    void handleRecipe(Recipe<INPUT, OUTPUT, RECIPE> type, IMCMessage msg, boolean delete) {
+        INPUT input = type.createInput(msg.getNBTValue());
+        if (input != null && input.isValid()) {
+            RECIPE recipe = type.createRecipe(input, msg.getNBTValue());
+            if (recipe != null && recipe.recipeOutput != null) {
+                if (delete) {
+                    RecipeHandler.removeRecipe(type, recipe);
+                    Mekanism.logger.info(msg.getSender() + " removed recipe of type " + type.getRecipeName() + " from the recipe list.");
+                } else {
+                    RecipeHandler.addRecipe(type, recipe);
+                    Mekanism.logger.info(msg.getSender() + " added recipe of type " + type.getRecipeName() + " to the recipe list.");
+                }
+            } else {
+                Mekanism.logger.error(msg.getSender() + " attempted to " + (delete ? "remove" : "add") + " recipe of type " + type.getRecipeName() + " with an invalid output.");
+            }
+        } else {
+            Mekanism.logger.error(msg.getSender() + " attempted to " + (delete ? "remove" : "add") + " recipe of type " + type.getRecipeName() + " with an invalid input.");
         }
     }
 }
