@@ -41,7 +41,13 @@ public class TransporterManager {
         }
     }
 
-    private static int simulateInsert(IItemHandler handler, InventoryInfo inventoryInfo, ItemStack stack) {
+    private static int simulateInsert(IItemHandler handler, InventoryInfo inventoryInfo, ItemStack stack, int count) {
+        //IMPL NOTE: Make sure to set stack size back to the originalCount when returning from this method
+        int originalCount = stack.getCount();
+        if (count != originalCount) {
+            //If we have a different count than actual count, set the count to the proper amount (allows for slightly reduced copying stacks about)
+            stack.setCount(count);
+        }
         for (int i = 0; i < handler.getSlots(); i++) {
             if (stack.isEmpty()) {
                 // Nothing more to insert
@@ -85,17 +91,27 @@ public class TransporterManager {
                 continue;
             }
 
-            int mergedCount = stack.getCount() + destCount;
+            int mergedCount = count + destCount;
             if (mergedCount > max) {
                 // Not all the items will fit; put max in and save leftovers
                 inventoryInfo.stackSizes.set(i, max);
-                return mergedCount - max;
+                count = mergedCount - max;
+                stack.setCount(count);
+            } else {
+                // All items will fit!
+                inventoryInfo.stackSizes.set(i, count);
+                if (count != originalCount) {
+                    //Set the stack size back to what it was when we got it
+                    stack.setCount(originalCount);
+                }
+                return 0;
             }
-            // All items will fit!
-            inventoryInfo.stackSizes.set(i, stack.getCount());
-            return 0;
         }
-        return stack.getCount();
+        if (count != originalCount) {
+            //Set the stack size back to what it was when we got it
+            stack.setCount(originalCount);
+        }
+        return count;
     }
 
     public static boolean didEmit(ItemStack stack, ItemStack returned) {
@@ -148,7 +164,7 @@ public class TransporterManager {
         if (transporterStacks != null) {
             for (TransporterStack stack : transporterStacks) {
                 if (stack != null && stack.getPathType() != Path.NONE) {
-                    if (simulateInsert(handler, inventoryInfo, stack.itemStack) > 0) {
+                    if (simulateInsert(handler, inventoryInfo, stack.itemStack, stack.itemStack.getCount()) > 0) {
                         // Failed to successfully insert this in-flight item; there's no room for anyone else
                         return TransitResponse.EMPTY;
                     }
@@ -161,17 +177,18 @@ public class TransporterManager {
         // request; it might be possible to not send the first item, but the second could work, etc.
         for (Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap().entrySet()) {
             // Create a sending ItemStack with the hashed item type and total item count within the request
-            ItemStack toSend = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
-            int numLeftOver = simulateInsert(handler, inventoryInfo, toSend);
+            ItemStack stack = requestEntry.getKey().getStack();
+            int numToSend = requestEntry.getValue().getLeft();
+            //Directly pass the stack AND the actual amount we want, so that it does not need to copy the stack if there is no room
+            int numLeftOver = simulateInsert(handler, inventoryInfo, stack, numToSend);
 
             // If leftovers is unchanged from the simulation, there's no room at all; move on to the next stack
-            if (numLeftOver == toSend.getCount()) {
+            if (numLeftOver == numToSend) {
                 continue;
             }
 
             // Otherwise, construct the appropriately size stack to send and return that
-            toSend.setCount(toSend.getCount() - numLeftOver);
-            return new TransitResponse(toSend, requestEntry.getValue().getRight());
+            return new TransitResponse(StackUtils.size(stack, numToSend - numLeftOver), requestEntry.getValue().getRight());
         }
         return TransitResponse.EMPTY;
     }
