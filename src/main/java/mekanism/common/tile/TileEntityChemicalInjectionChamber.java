@@ -19,8 +19,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe> {
 
     public TileEntityChemicalInjectionChamber() {
-        super("injection", "ChemicalInjectionChamber", MachineType.CHEMICAL_INJECTION_CHAMBER.getStorage(),
-              MachineType.CHEMICAL_INJECTION_CHAMBER.getUsage(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super("injection", MachineType.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[]{0}));

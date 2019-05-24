@@ -5,6 +5,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
@@ -28,14 +29,12 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
      * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
      * (4). The machine will not run if it does not have enough electricity.
      *
-     * @param soundPath       - location of the sound effect
-     * @param name            - full name of this machine
-     * @param baseMaxEnergy   - maximum amount of energy this machine can hold.
-     * @param baseEnergyUsage - how much energy this machine uses per tick.
-     * @param ticksRequired   - how many ticks it takes to smelt an item.
+     * @param soundPath     - location of the sound effect
+     * @param type          - the type of this machine
+     * @param ticksRequired - how many ticks it takes to smelt an item.
      */
-    public TileEntityDoubleElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int ticksRequired) {
-        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
+    public TileEntityDoubleElectricMachine(String soundPath, MachineType type, int ticksRequired) {
+        super(soundPath, type, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));

@@ -5,6 +5,7 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.inputs.MachineInput;
@@ -30,12 +31,11 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
      * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
      *
      * @param soundPath         - location of the sound effect
-     * @param name              - full name of this machine
-     * @param baseMaxEnergy     - how much energy this machine can store
+     * @param type              - the type of this machine
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityBasicMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super("machine." + soundPath, name, baseMaxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired);
+    public TileEntityBasicMachine(String soundPath, MachineType type, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+        super("machine." + soundPath, type, upgradeSlot, baseTicksRequired);
         guiLocation = location;
     }
 

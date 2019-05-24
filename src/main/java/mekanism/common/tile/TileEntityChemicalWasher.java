@@ -64,7 +64,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public double clientEnergyUsed;
 
     public TileEntityChemicalWasher() {
-        super("machine.washer", "ChemicalWasher", MachineType.CHEMICAL_WASHER.getStorage(), MachineType.CHEMICAL_WASHER.getUsage(), 4);
+        super("machine.washer", MachineType.CHEMICAL_WASHER, 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     }
 

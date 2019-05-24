@@ -16,8 +16,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> {
 
     public TileEntityPurificationChamber() {
-        super("purification", "PurificationChamber", MachineType.PURIFICATION_CHAMBER.getStorage(), MachineType.PURIFICATION_CHAMBER.getUsage(),
-              BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super("purification", MachineType.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

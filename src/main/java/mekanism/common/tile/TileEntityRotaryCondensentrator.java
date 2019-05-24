@@ -65,8 +65,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     private int currentRedstoneLevel;
 
     public TileEntityRotaryCondensentrator() {
-        super("machine.rotarycondensentrator", "RotaryCondensentrator", MachineType.ROTARY_CONDENSENTRATOR.getStorage(),
-              MachineType.ROTARY_CONDENSENTRATOR.getUsage(), 5);
+        super("machine.rotarycondensentrator", MachineType.ROTARY_CONDENSENTRATOR, 5);
         inventory = NonNullList.withSize(6, ItemStack.EMPTY);
     }
 

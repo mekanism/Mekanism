@@ -48,7 +48,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public TileComponentConfig configComponent;
 
     public TileEntityChemicalCrystallizer() {
-        super("machine.crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.getStorage(), MachineType.CHEMICAL_CRYSTALLIZER.getUsage(), 3, 200);
+        super("machine.crystallizer", MachineType.CHEMICAL_CRYSTALLIZER, 3, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
