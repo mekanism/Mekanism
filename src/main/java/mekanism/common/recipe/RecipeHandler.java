@@ -540,7 +540,7 @@ public final class RecipeHandler {
         private Class<RECIPE> recipeClass;
 
         private Recipe(MachineType type, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe) {
-            this(type.blockName, input, output, recipe);
+            this(type.getBlockName(), input, output, recipe);
         }
 
         private Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe) {
