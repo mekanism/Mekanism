@@ -13,7 +13,6 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.block.states.BlockStateGenerator;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -53,7 +52,7 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
         super.onUpdate();
         if (!world.isRemote) {
             if (MekanismConfig.current().general.destroyDisabledBlocks.val()) {
-                GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
+                GeneratorType type = GeneratorType.get(getBlockType(), getBlockMetadata());
                 if (type != null && !type.isEnabled()) {
                     Mekanism.logger.info("Destroying generator of type '" + type.getBlockName() + "' at coords " + Coord4D.get(this) + " as according to config.");
                     world.setBlockToAir(getPos());

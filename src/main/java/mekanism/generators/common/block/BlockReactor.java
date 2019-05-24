@@ -137,7 +137,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
 
         if (tileEntity instanceof TileEntityReactorLogicAdapter) {
             if (!entityplayer.isSneaking()) {
-                entityplayer.openGui(MekanismGenerators.instance, BlockStateReactor.ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(), pos.getZ());
+                entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(), pos.getZ());
                 return true;
             }
         }
@@ -146,7 +146,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
 
     @Override
     public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
-        for (BlockStateReactor.ReactorBlockType type : BlockStateReactor.ReactorBlockType.values()) {
+        for (ReactorBlockType type : ReactorBlockType.values()) {
             if (type.blockType == getReactorBlock()) {
                 list.add(new ItemStack(this, 1, type.meta));
             }
@@ -238,7 +238,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
 
     @Override
     public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        ReactorBlockType type = BlockStateReactor.ReactorBlockType.get(this, state.getBlock().getMetaFromState(state));
+        ReactorBlockType type = ReactorBlockType.get(this, state.getBlock().getMetaFromState(state));
         return type == ReactorBlockType.REACTOR_LOGIC_ADAPTER;
     }
 

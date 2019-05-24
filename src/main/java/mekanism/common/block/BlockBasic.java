@@ -201,7 +201,7 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
-        BlockStateBasic.BasicBlockType type = BlockStateBasic.BasicBlockType.get(getBasicBlock(), meta & 0xF);
+        BasicBlockType type = BasicBlockType.get(getBasicBlock(), meta & 0xF);
         return getDefaultState().withProperty(getTypeProperty(), type);
     }
 
