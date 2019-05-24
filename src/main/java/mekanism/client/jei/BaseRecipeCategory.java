@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapper>, IGuiWrapper {
+public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> implements IRecipeCategory<WRAPPER>, IGuiWrapper {
 
     private static final GuiDummy gui = new GuiDummy();
 

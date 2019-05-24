@@ -69,19 +69,20 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public final class RecipeHandler {
 
-    public static void addRecipe(@Nonnull Recipe recipeMap, @Nonnull MachineRecipe recipe) {
+    public static <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
+    void addRecipe(@Nonnull Recipe<INPUT, OUTPUT, RECIPE> recipeMap, @Nonnull RECIPE recipe) {
         recipeMap.put(recipe);
     }
 
-    public static void removeRecipe(@Nonnull Recipe recipeMap, @Nonnull MachineRecipe recipe) {
-        List<MachineInput> toRemove = new ArrayList<>();
-        for (Object o : recipeMap.get().keySet()) {
-            MachineInput iterInput = (MachineInput) o;
+    public static <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
+    void removeRecipe(@Nonnull Recipe<INPUT, OUTPUT, RECIPE> recipeMap, @Nonnull RECIPE recipe) {
+        List<INPUT> toRemove = new ArrayList<>();
+        for (INPUT iterInput : recipeMap.get().keySet()) {
             if (iterInput.testEquality(recipe.getInput())) {
                 toRemove.add(iterInput);
             }
         }
-        for (MachineInput iterInput : toRemove) {
+        for (INPUT iterInput : toRemove) {
             recipeMap.get().remove(iterInput);
         }
     }
@@ -754,6 +755,10 @@ public final class RecipeHandler {
                 }
             }
             return false;
+        }
+
+        public Class<RECIPE> getRecipeClass() {
+            return recipeClass;
         }
 
         // N.B. Must return a HashMap, not Map as Unidict expects the stronger type

@@ -9,10 +9,9 @@ import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 
-public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
+public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<RotaryCondensentratorRecipeWrapper> {
 
     private final boolean condensentrating;
 
@@ -30,19 +29,16 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        if (recipeWrapper instanceof RotaryCondensentratorRecipeWrapper) {
-            RotaryCondensentratorRecipeWrapper tempRecipe = (RotaryCondensentratorRecipeWrapper) recipeWrapper;
-            IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-            IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-            fluidStacks.init(0, !condensentrating, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.FLUID_AMOUNT, false, fluidOverlayLarge);
-            if (condensentrating) {
-                initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(tempRecipe.getGasType(), tempRecipe.GAS_AMOUNT), true);
-                fluidStacks.set(0, ingredients.getOutputs(VanillaTypes.FLUID).get(0));
-            } else {
-                initGas(gasStacks, 0, false, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(tempRecipe.getGasType(), tempRecipe.GAS_AMOUNT), true);
-                fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
-            }
+    public void setRecipe(IRecipeLayout recipeLayout, RotaryCondensentratorRecipeWrapper recipeWrapper, IIngredients ingredients) {
+        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
+        fluidStacks.init(0, !condensentrating, 134 - xOffset, 14 - yOffset, 16, 58, RotaryCondensentratorRecipeWrapper.FLUID_AMOUNT, false, fluidOverlayLarge);
+        if (condensentrating) {
+            initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(recipeWrapper.getGasType(), RotaryCondensentratorRecipeWrapper.GAS_AMOUNT), true);
+            fluidStacks.set(0, ingredients.getOutputs(VanillaTypes.FLUID).get(0));
+        } else {
+            initGas(gasStacks, 0, false, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(recipeWrapper.getGasType(), RotaryCondensentratorRecipeWrapper.GAS_AMOUNT), true);
+            fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
         }
     }
 }

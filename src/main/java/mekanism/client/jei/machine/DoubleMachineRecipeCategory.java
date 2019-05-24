@@ -16,9 +16,8 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IRecipeWrapper;
 
-public class DoubleMachineRecipeCategory extends BaseRecipeCategory {
+public class DoubleMachineRecipeCategory<RECIPE extends DoubleMachineRecipe<RECIPE>, WRAPPER extends DoubleMachineRecipeWrapper<RECIPE>> extends BaseRecipeCategory<WRAPPER> {
 
     public DoubleMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
         super(helper, "mekanism:gui/guibasicmachine.png", name, unlocalized, progress, 28, 16, 144, 54);
@@ -45,17 +44,15 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        if (recipeWrapper instanceof DoubleMachineRecipeWrapper) {
-            DoubleMachineRecipe tempRecipe = ((DoubleMachineRecipeWrapper) recipeWrapper).getRecipe();
-            DoubleMachineInput input = (DoubleMachineInput) tempRecipe.recipeInput;
-            IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-            itemStacks.init(0, true, 27, 0);
-            itemStacks.init(1, false, 87, 18);
-            itemStacks.init(2, false, 27, 36);
-            itemStacks.set(0, input.itemStack);
-            itemStacks.set(1, ((ItemStackOutput) tempRecipe.recipeOutput).output);
-            itemStacks.set(2, input.extraStack);
-        }
+    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
+        DoubleMachineRecipe tempRecipe = recipeWrapper.getRecipe();
+        DoubleMachineInput input = (DoubleMachineInput) tempRecipe.recipeInput;
+        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+        itemStacks.init(0, true, 27, 0);
+        itemStacks.init(1, false, 87, 18);
+        itemStacks.init(2, false, 27, 36);
+        itemStacks.set(0, input.itemStack);
+        itemStacks.set(1, ((ItemStackOutput) tempRecipe.recipeOutput).output);
+        itemStacks.set(2, input.extraStack);
     }
 }
