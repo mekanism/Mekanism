@@ -9,7 +9,6 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mezz.jei.api.IGuiHelper;
@@ -44,13 +43,13 @@ public class ChanceMachineRecipeCategory<RECIPE extends ChanceMachineRecipe<RECI
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        ChanceMachineRecipe tempRecipe = recipeWrapper.getRecipe();
+        ChanceMachineRecipe<?> tempRecipe = recipeWrapper.getRecipe();
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);
         itemStacks.init(2, false, 103, 18);
-        itemStacks.set(0, ((ItemStackInput) tempRecipe.recipeInput).ingredient);
-        ChanceOutput output = (ChanceOutput) tempRecipe.getOutput();
+        itemStacks.set(0, tempRecipe.recipeInput.ingredient);
+        ChanceOutput output = tempRecipe.getOutput();
         if (output.hasPrimary()) {
             itemStacks.set(1, output.primaryOutput);
         }

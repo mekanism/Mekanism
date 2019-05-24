@@ -11,9 +11,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiIngredientGroup;
@@ -49,17 +47,16 @@ public class AdvancedMachineRecipeCategory<RECIPE extends AdvancedMachineRecipe<
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        AdvancedMachineRecipe tempRecipe = recipeWrapper.getRecipe();
-        AdvancedMachineInput input = (AdvancedMachineInput) tempRecipe.recipeInput;
+        AdvancedMachineRecipe<?> tempRecipe = recipeWrapper.getRecipe();
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);
         itemStacks.init(2, false, 27, 36);
-        itemStacks.set(0, input.itemStack);
-        itemStacks.set(1, ((ItemStackOutput) tempRecipe.recipeOutput).output);
-        itemStacks.set(2, recipeWrapper.getFuelStacks(input.gasType));
+        itemStacks.set(0, tempRecipe.recipeInput.itemStack);
+        itemStacks.set(1, tempRecipe.recipeOutput.output);
+        itemStacks.set(2, recipeWrapper.getFuelStacks(tempRecipe.recipeInput.gasType));
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(input.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
+        initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(tempRecipe.recipeInput.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
                                                                                * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK), false);
     }
 }

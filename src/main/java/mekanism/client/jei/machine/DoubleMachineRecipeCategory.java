@@ -9,9 +9,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -45,14 +43,13 @@ public class DoubleMachineRecipeCategory<RECIPE extends DoubleMachineRecipe<RECI
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
-        DoubleMachineRecipe tempRecipe = recipeWrapper.getRecipe();
-        DoubleMachineInput input = (DoubleMachineInput) tempRecipe.recipeInput;
+        DoubleMachineRecipe<?> tempRecipe = recipeWrapper.getRecipe();
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         itemStacks.init(0, true, 27, 0);
         itemStacks.init(1, false, 87, 18);
         itemStacks.init(2, false, 27, 36);
-        itemStacks.set(0, input.itemStack);
-        itemStacks.set(1, ((ItemStackOutput) tempRecipe.recipeOutput).output);
-        itemStacks.set(2, input.extraStack);
+        itemStacks.set(0, tempRecipe.recipeInput.itemStack);
+        itemStacks.set(1, tempRecipe.recipeOutput.output);
+        itemStacks.set(2, tempRecipe.recipeInput.extraStack);
     }
 }
