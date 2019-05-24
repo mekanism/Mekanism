@@ -162,17 +162,17 @@ public class BlockStateMachine extends ExtendedBlockState {
         public boolean activable;
         public FactoryTier factoryTier;
 
-        MachineType(MachineBlock block, int i, String s, int j, Supplier<TileEntity> tileClass, boolean electric, boolean model, boolean upgrades,
+        MachineType(MachineBlock block, int m, String name, int gui, Supplier<TileEntity> tileClass, boolean electric, boolean model, boolean upgrades,
               Predicate<EnumFacing> predicate, boolean hasActiveTexture) {
-            this(block, i, s, j, tileClass, electric, model, upgrades, predicate, hasActiveTexture, null);
+            this(block, m, name, gui, tileClass, electric, model, upgrades, predicate, hasActiveTexture, null);
         }
 
-        MachineType(MachineBlock block, int i, String s, int j, Supplier<TileEntity> tileClass, boolean electric, boolean model, boolean upgrades,
+        MachineType(MachineBlock block, int m, String name, int gui, Supplier<TileEntity> tileClass, boolean electric, boolean model, boolean upgrades,
               Predicate<EnumFacing> predicate, boolean hasActiveTexture, FactoryTier factoryTier) {
             typeBlock = block;
-            meta = i;
-            blockName = s;
-            guiId = j;
+            meta = m;
+            blockName = name;
+            guiId = gui;
             tileEntitySupplier = tileClass;
             isElectric = electric;
             hasModel = model;
