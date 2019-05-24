@@ -5,6 +5,7 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,9 +13,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerChanceMachine extends ContainerMekanism<TileEntityChanceMachine> {
+public class ContainerChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityChanceMachine<RECIPE>> {
 
-    public ContainerChanceMachine(InventoryPlayer inventory, TileEntityChanceMachine tile) {
+    public ContainerChanceMachine(InventoryPlayer inventory, TileEntityChanceMachine<RECIPE> tile) {
         super(tile, inventory);
     }
 

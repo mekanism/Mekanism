@@ -203,6 +203,7 @@ public class CommonProxy implements IGuiProvider {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         switch (ID) {
@@ -211,13 +212,13 @@ public class CommonProxy implements IGuiProvider {
             case 2:
                 return new ContainerDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
             case 3:
-                return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine) tileEntity);
+                return new ContainerElectricMachine<>(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 4:
-                return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
+                return new ContainerAdvancedElectricMachine<>(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 5:
-                return new ContainerDoubleElectricMachine(player.inventory, (TileEntityDoubleElectricMachine) tileEntity);
+                return new ContainerDoubleElectricMachine<>(player.inventory, (TileEntityDoubleElectricMachine) tileEntity);
             case 6:
-                return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine) tileEntity);
+                return new ContainerElectricMachine<>(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 7:
                 return new ContainerRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator) tileEntity);
             case 8:
@@ -239,9 +240,9 @@ public class CommonProxy implements IGuiProvider {
                 }
                 return null;
             case 15:
-                return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
+                return new ContainerAdvancedElectricMachine<>(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 16:
-                return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine) tileEntity);
+                return new ContainerElectricMachine<>(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 17:
                 return new ContainerElectricPump(player.inventory, (TileEntityElectricPump) tileEntity);
             case 18:
@@ -287,13 +288,13 @@ public class CommonProxy implements IGuiProvider {
             case 30:
                 return new ContainerChemicalInfuser(player.inventory, (TileEntityChemicalInfuser) tileEntity);
             case 31:
-                return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
+                return new ContainerAdvancedElectricMachine<>(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 32:
                 return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator) tileEntity);
             case 33:
                 return new ContainerThermalEvaporationController(player.inventory, (TileEntityThermalEvaporationController) tileEntity);
             case 34:
-                return new ContainerChanceMachine(player.inventory, (TileEntityChanceMachine) tileEntity);
+                return new ContainerChanceMachine<>(player.inventory, (TileEntityChanceMachine) tileEntity);
             case 35:
                 return new ContainerChemicalDissolutionChamber(player.inventory, (TileEntityChemicalDissolutionChamber) tileEntity);
             case 36:
