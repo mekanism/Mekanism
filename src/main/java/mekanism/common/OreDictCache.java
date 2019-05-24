@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mekanism.api.util.ItemInfo;
 import mekanism.common.util.ItemRegistryUtils;
 import net.minecraft.item.ItemBlock;
@@ -11,9 +12,9 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictCache {
 
-    public static HashMap<ItemInfo, List<String>> cachedKeys = new HashMap<>();
-    public static HashMap<String, List<ItemStack>> oreDictStacks = new HashMap<>();
-    public static HashMap<String, List<ItemStack>> modIDStacks = new HashMap<>();
+    public static Map<ItemInfo, List<String>> cachedKeys = new HashMap<>();
+    public static Map<String, List<ItemStack>> oreDictStacks = new HashMap<>();
+    public static Map<String, List<ItemStack>> modIDStacks = new HashMap<>();
 
     public static List<String> getOreDictName(ItemStack check) {
         if (check.isEmpty()) {

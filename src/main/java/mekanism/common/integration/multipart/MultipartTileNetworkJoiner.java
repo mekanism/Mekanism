@@ -3,6 +3,7 @@ package mekanism.common.integration.multipart;
 import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.multipart.IMultipartTile;
@@ -25,7 +26,7 @@ import net.minecraft.world.IBlockAccess;
  */
 public class MultipartTileNetworkJoiner implements ITileNetwork {
 
-    private final HashMap<Byte, ITileNetwork> tileSideMap;
+    private final Map<Byte, ITileNetwork> tileSideMap;
 
     /**
      * Called by MCMP's multipart container when more than one part implements {@link ITileNetwork}.<br>

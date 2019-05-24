@@ -1,6 +1,6 @@
 package mekanism.client.render.item.basicblock;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderBasicBlockItem extends SubTypeItemRenderer<BasicBlockType> {
 
-    public static Map<BasicBlockType, ItemLayerWrapper> modelMap = new HashMap<>();
+    public static Map<BasicBlockType, ItemLayerWrapper> modelMap = new EnumMap<>(BasicBlockType.class);
 
     @Override
     protected boolean earlyExit() {

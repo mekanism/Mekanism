@@ -4,6 +4,7 @@ import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 import buildcraft.api.mj.MjAPI;
 import java.util.HashMap;
+import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
@@ -13,7 +14,7 @@ import net.minecraftforge.fml.common.ModAPIManager;
 
 public class FuelHandler {
 
-    public static HashMap<String, FuelGas> fuels = new HashMap<>();
+    public static Map<String, FuelGas> fuels = new HashMap<>();
 
     public static void addGas(Gas gas, int burnTicks, double energyPerMilliBucket) {
         fuels.put(gas.getName(), new FuelGas(burnTicks, energyPerMilliBucket));

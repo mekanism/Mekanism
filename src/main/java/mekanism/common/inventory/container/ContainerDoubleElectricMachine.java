@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
@@ -79,7 +80,7 @@ public class ContainerDoubleElectricMachine extends ContainerMekanism<TileEntity
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        for (Map.Entry<DoubleMachineInput, ItemStack> entry : ((Map<DoubleMachineInput, ItemStack>) tileEntity.getRecipes()).entrySet()) {
+        for (Entry<DoubleMachineInput, ItemStack> entry : ((Map<DoubleMachineInput, ItemStack>) tileEntity.getRecipes()).entrySet()) {
             if (entry.getKey().itemStack.isItemEqual(itemstack)) {
                 return true;
             }
@@ -88,7 +89,7 @@ public class ContainerDoubleElectricMachine extends ContainerMekanism<TileEntity
     }
 
     private boolean isExtraItem(ItemStack itemstack) {
-        for (Map.Entry<DoubleMachineInput, ItemStack> entry : ((Map<DoubleMachineInput, ItemStack>) tileEntity.getRecipes()).entrySet()) {
+        for (Entry<DoubleMachineInput, ItemStack> entry : ((Map<DoubleMachineInput, ItemStack>) tileEntity.getRecipes()).entrySet()) {
             if (entry.getKey().extraStack.isItemEqual(itemstack)) {
                 return true;
             }

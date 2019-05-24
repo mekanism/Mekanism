@@ -1,6 +1,6 @@
 package mekanism.client.render.item.machine;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderMachineItem extends SubTypeItemRenderer<MachineType> {
 
-    public static Map<MachineType, ItemLayerWrapper> modelMap = new HashMap<>();
+    public static Map<MachineType, ItemLayerWrapper> modelMap = new EnumMap<>(MachineType.class);
 
     @Override
     protected boolean earlyExit() {

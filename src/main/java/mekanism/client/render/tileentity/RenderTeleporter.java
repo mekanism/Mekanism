@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
+import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
@@ -18,15 +19,14 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTeleporter> {
 
-    private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
+    private Map<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
 
     @Override
     public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.shouldRender) {
             push();
 
-            GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2),
-                  0.75F);
+            GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
 
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate((float) x, (float) y, (float) z);

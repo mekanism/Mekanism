@@ -1,12 +1,13 @@
 package mekanism.client.render;
 
 import java.util.HashMap;
+import java.util.Map;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.ColourRGBA;
 
 public class ColourTemperature extends ColourRGBA {
 
-    public static HashMap<Integer, ColourTemperature> cache = new HashMap<>();
+    public static Map<Integer, ColourTemperature> cache = new HashMap<>();
 
     public double temp;
 

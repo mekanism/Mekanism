@@ -1,6 +1,7 @@
 package mekanism.client.render.transmitter;
 
 import java.util.HashMap;
+import java.util.Map;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -25,7 +26,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final int stages = 100;
     private static final double height = 0.45;
     private static final double offset = 0.015;
-    private static HashMap<Integer, FluidRenderMap<DisplayInteger[]>> cachedLiquids = new HashMap<>();
+    private static Map<Integer, FluidRenderMap<DisplayInteger[]>> cachedLiquids = new HashMap<>();
 
     public static void onStitch() {
         cachedLiquids.clear();

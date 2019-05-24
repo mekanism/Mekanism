@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import mekanism.common.frequency.FrequencyManager;
@@ -18,7 +19,7 @@ public class CommonWorldTickHandler {
 
     private static final long maximumDeltaTimeNanoSecs = 16000000; // 16 milliseconds
 
-    private HashMap<Integer, Queue<ChunkPos>> chunkRegenMap;
+    private Map<Integer, Queue<ChunkPos>> chunkRegenMap;
 
     public void addRegenChunk(int dimensionId, ChunkPos chunkCoord) {
         if (chunkRegenMap == null) {

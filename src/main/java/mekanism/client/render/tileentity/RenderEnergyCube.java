@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergyCube> {
 
     public static int[][] COLORS = new int[][]{new int[]{100, 210, 125}, new int[]{215, 85, 70}, new int[]{80, 125, 230}, new int[]{154, 120, 200}, new int[]{0, 0, 0}};
-    public static Map<EnergyCubeTier, ResourceLocation> resources = new HashMap<>();
+    public static Map<EnergyCubeTier, ResourceLocation> resources = new EnumMap<>(EnergyCubeTier.class);
     public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube.png");
     public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png");
 

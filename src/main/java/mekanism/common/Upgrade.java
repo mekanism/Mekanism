@@ -1,9 +1,10 @@
 package mekanism.common;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IUpgradeTile;
@@ -34,7 +35,7 @@ public enum Upgrade {
     }
 
     public static Map<Upgrade, Integer> buildMap(@Nullable NBTTagCompound nbtTags) {
-        Map<Upgrade, Integer> upgrades = new HashMap<>();
+        Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
         if (nbtTags != null) {
             if (nbtTags.hasKey("upgrades")) {
                 NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
@@ -50,7 +51,7 @@ public enum Upgrade {
 
     public static void saveMap(Map<Upgrade, Integer> upgrades, NBTTagCompound nbtTags) {
         NBTTagList list = new NBTTagList();
-        for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
+        for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             list.appendTag(getTagFor(entry.getKey(), entry.getValue()));
         }
         nbtTags.setTag("upgrades", list);
