@@ -31,8 +31,7 @@ public class IMCHandler {
                 }
 
                 for (Recipe<?, ?, ?> type : Recipe.values()) {
-                    if (message.equalsIgnoreCase(type.getRecipeName() + "Recipe") ||
-                        message.equalsIgnoreCase(type.getOldRecipeName() + "Recipe")) {
+                    if (message.equalsIgnoreCase(type.getRecipeName() + "Recipe")) {
                         handleRecipe(type, msg, delete);
                         found = true;
                         break;
