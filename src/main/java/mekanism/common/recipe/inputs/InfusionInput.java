@@ -14,7 +14,7 @@ import net.minecraftforge.oredict.OreDictionary;
  *
  * @author AidanBrady
  */
-public class InfusionInput extends MachineInput<InfusionInput> {
+public class InfusionInput extends MachineInput<InfusionInput> implements IWildInput<InfusionInput> {
 
     public InfuseStorage infuse;
 
@@ -83,6 +83,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
         return other instanceof InfusionInput;
     }
 
+    @Override
     public InfusionInput wildCopy() {
         return new InfusionInput(infuse, new ItemStack(inputStack.getItem(), inputStack.getCount(), OreDictionary.WILDCARD_VALUE));
     }

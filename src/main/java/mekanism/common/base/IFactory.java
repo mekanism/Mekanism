@@ -91,12 +91,12 @@ public interface IFactory {
         private Recipe recipe;
         private TileEntityAdvancedElectricMachine cacheTile;
 
-        RecipeType(String s, String s1, MachineType t, MachineFuelType ft, boolean b1, Recipe r) {
+        RecipeType(String s, String s1, MachineType t, MachineFuelType ft, boolean speed, Recipe r) {
             name = s;
             sound = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine." + s1));
             type = t;
             fuelType = ft;
-            fuelSpeed = b1;
+            fuelSpeed = speed;
             recipe = r;
         }
 
@@ -113,7 +113,7 @@ public interface IFactory {
         }
 
         public BasicMachineRecipe getRecipe(ItemStackInput input) {
-            return RecipeHandler.getRecipe(input, recipe.get());
+            return (BasicMachineRecipe) RecipeHandler.getRecipe(input, recipe);
         }
 
         public BasicMachineRecipe getRecipe(ItemStack input) {
@@ -121,7 +121,7 @@ public interface IFactory {
         }
 
         public AdvancedMachineRecipe getRecipe(AdvancedMachineInput input) {
-            return RecipeHandler.getRecipe(input, recipe.get());
+            return (AdvancedMachineRecipe) RecipeHandler.getRecipe(input, recipe);
         }
 
         public AdvancedMachineRecipe getRecipe(ItemStack input, Gas gas) {
@@ -129,7 +129,7 @@ public interface IFactory {
         }
 
         public DoubleMachineRecipe getRecipe(DoubleMachineInput input) {
-            return RecipeHandler.getRecipe(input, recipe.get());
+            return (DoubleMachineRecipe) RecipeHandler.getRecipe(input, recipe);
         }
 
         public DoubleMachineRecipe getRecipe(ItemStack input, ItemStack extra) {
@@ -137,7 +137,7 @@ public interface IFactory {
         }
 
         public ChanceMachineRecipe getChanceRecipe(ItemStackInput input) {
-            return RecipeHandler.getChanceRecipe(input, recipe.get());
+            return (ChanceMachineRecipe) RecipeHandler.getRecipe(input, recipe);
         }
 
         public ChanceMachineRecipe getChanceRecipe(ItemStack input) {

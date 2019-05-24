@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class ItemStackInput extends MachineInput<ItemStackInput> {
+public class ItemStackInput extends MachineInput<ItemStackInput> implements IWildInput<ItemStackInput> {
 
     public ItemStack ingredient = ItemStack.EMPTY;
     private ItemStackInput wildVersion = null;
@@ -37,6 +37,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput> {
         return !ingredient.isEmpty();
     }
 
+    @Override
     public ItemStackInput wildCopy() {
         if (wildVersion == null) {
             if (ingredient.getMetadata() != OreDictionary.WILDCARD_VALUE) {

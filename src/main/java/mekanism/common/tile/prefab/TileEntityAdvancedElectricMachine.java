@@ -347,7 +347,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             case 4:
                 return new Object[]{facing};
             case 5:
-                return new Object[]{canOperate(RecipeHandler.getRecipe(getInput(), getRecipes()))};
+                return new Object[]{canOperate(getRecipe())};
             case 6:
                 return new Object[]{maxEnergy};
             case 7:
