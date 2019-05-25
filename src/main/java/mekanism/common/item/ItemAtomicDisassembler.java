@@ -41,6 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ItemAtomicDisassembler extends ItemEnergized {
 
@@ -340,12 +341,13 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         }
 
         private final EntityPlayer player;
-        public World world;
-        public ItemStack stack;
-        public Coord4D location;
-        public Set<Coord4D> found = new HashSet<>();
-        RayTraceResult rayTraceResult;
-        private Block startBlock;
+        public final World world;
+        public final ItemStack stack;
+        public final Coord4D location;
+        public final Set<Coord4D> found = new HashSet<>();
+        private final RayTraceResult rayTraceResult;
+        private final Block startBlock;
+        private final boolean isWood;
 
         public Finder(EntityPlayer p, ItemStack s, Coord4D loc, RayTraceResult traceResult) {
             player = p;
@@ -354,6 +356,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             location = loc;
             startBlock = loc.getBlock(world);
             rayTraceResult = traceResult;
+            isWood = OreDictCache.getOreDictName(stack).contains("logWood");
         }
 
         public void loop(Coord4D pointer) {
@@ -365,8 +368,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 Coord4D coord = pointer.offset(side);
                 ItemStack blockStack = coord.getBlock(world).getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), player);
                 if (coord.exists(world) && checkID(coord.getBlock(world)) &&
-                    (stack.isItemEqual(blockStack) || (coord.getBlock(world) == startBlock && OreDictCache.getOreDictName(stack).contains("logWood")
-                                                       && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4))) {
+                    (ItemHandlerHelper.canItemStacksStack(stack, blockStack) || (coord.getBlock(world) == startBlock && isWood && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4))) {
                     loop(coord);
                 }
             }
