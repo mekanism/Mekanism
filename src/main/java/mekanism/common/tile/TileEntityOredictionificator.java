@@ -50,7 +50,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityOredictionificator() {
-        super(MachineType.OREDICTIONIFICATOR.blockName);
+        super(MachineType.OREDICTIONIFICATOR.getBlockName());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;
     }

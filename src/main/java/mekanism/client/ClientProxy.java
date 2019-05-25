@@ -143,6 +143,13 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
+import mekanism.common.recipe.machines.CombinerRecipe;
+import mekanism.common.recipe.machines.CrusherRecipe;
+import mekanism.common.recipe.machines.EnrichmentRecipe;
+import mekanism.common.recipe.machines.InjectionRecipe;
+import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
+import mekanism.common.recipe.machines.PurificationRecipe;
+import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -678,6 +685,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
@@ -689,13 +697,13 @@ public class ClientProxy extends CommonProxy {
             case 2:
                 return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
             case 3:
-                return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine) tileEntity);
+                return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine<EnrichmentRecipe>) tileEntity);
             case 4:
-                return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
+                return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine<OsmiumCompressorRecipe>) tileEntity);
             case 5:
-                return new GuiCombiner(player.inventory, (TileEntityDoubleElectricMachine) tileEntity);
+                return new GuiCombiner(player.inventory, (TileEntityDoubleElectricMachine<CombinerRecipe>) tileEntity);
             case 6:
-                return new GuiCrusher(player.inventory, (TileEntityElectricMachine) tileEntity);
+                return new GuiCrusher(player.inventory, (TileEntityElectricMachine<CrusherRecipe>) tileEntity);
             case 7:
                 return new GuiRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator) tileEntity);
             case 8:
@@ -717,9 +725,9 @@ public class ClientProxy extends CommonProxy {
                 }
                 return null;
             case 15:
-                return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
+                return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine<PurificationRecipe>) tileEntity);
             case 16:
-                return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine) tileEntity);
+                return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine<SmeltingRecipe>) tileEntity);
             case 17:
                 return new GuiElectricPump(player.inventory, (TileEntityElectricPump) tileEntity);
             case 18:
@@ -760,7 +768,7 @@ public class ClientProxy extends CommonProxy {
             case 30:
                 return new GuiChemicalInfuser(player.inventory, (TileEntityChemicalInfuser) tileEntity);
             case 31:
-                return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
+                return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine<InjectionRecipe>) tileEntity);
             case 32:
                 return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator) tileEntity);
             case 33:

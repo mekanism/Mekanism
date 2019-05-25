@@ -53,7 +53,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public DissolutionRecipe cachedRecipe;
 
     public TileEntityChemicalDissolutionChamber() {
-        super("machine.dissolution", "ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getStorage(), MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getUsage(), 4);
+        super("machine.dissolution", MachineType.CHEMICAL_DISSOLUTION_CHAMBER, 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
         upgradeComponent.setSupported(Upgrade.GAS);
     }

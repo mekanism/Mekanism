@@ -13,9 +13,8 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IRecipeWrapper;
 
-public class MachineRecipeCategory extends BaseRecipeCategory {
+public class MachineRecipeCategory<WRAPPER extends MachineRecipeWrapper> extends BaseRecipeCategory<WRAPPER> {
 
     public MachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress, 28, 16, 144, 54);
@@ -41,12 +40,10 @@ public class MachineRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        if (recipeWrapper instanceof MachineRecipeWrapper) {
-            IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-            itemStacks.init(0, true, 27, 0);
-            itemStacks.init(1, false, 87, 18);
-            itemStacks.set(ingredients);
-        }
+    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
+        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+        itemStacks.init(0, true, 27, 0);
+        itemStacks.init(1, false, 87, 18);
+        itemStacks.set(ingredients);
     }
 }

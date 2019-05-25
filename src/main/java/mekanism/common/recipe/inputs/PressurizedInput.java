@@ -13,7 +13,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * An input of a gas, a fluid and an item for the pressurized reaction chamber
  */
-public class PressurizedInput extends MachineInput<PressurizedInput> {
+public class PressurizedInput extends MachineInput<PressurizedInput> implements IWildInput<PressurizedInput> {
 
     private ItemStack theSolid = ItemStack.EMPTY;
     private FluidStack theFluid;
@@ -146,6 +146,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         return other instanceof PressurizedInput;
     }
 
+    @Override
     public PressurizedInput wildCopy() {
         return new PressurizedInput(new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
     }

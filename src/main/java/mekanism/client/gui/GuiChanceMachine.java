@@ -15,6 +15,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerChanceMachine;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,10 +26,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiChanceMachine extends GuiMekanismTile<TileEntityChanceMachine> {
+public class GuiChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityChanceMachine<RECIPE>> {
 
-    public GuiChanceMachine(InventoryPlayer inventory, TileEntityChanceMachine tile) {
-        super(tile, new ContainerChanceMachine(inventory, tile));
+    public GuiChanceMachine(InventoryPlayer inventory, TileEntityChanceMachine<RECIPE> tile) {
+        super(tile, new ContainerChanceMachine<>(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));

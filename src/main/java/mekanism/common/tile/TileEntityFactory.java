@@ -152,7 +152,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     public TileEntityFactory(FactoryTier type, MachineType machine) {
-        super("null", machine.blockName, 0, 0, 0);
+        super("null", machine, 0);
         tier = type;
         inventory = NonNullList.withSize(5 + type.processes * 2, ItemStack.EMPTY);
         progress = new int[type.processes];

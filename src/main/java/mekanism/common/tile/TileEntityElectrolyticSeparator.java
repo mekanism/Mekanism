@@ -95,7 +95,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     private int currentRedstoneLevel;
 
     public TileEntityElectrolyticSeparator() {
-        super("machine.electrolyticseparator", "ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.getStorage(), 0, 4);
+        super("machine.electrolyticseparator", MachineType.ELECTROLYTIC_SEPARATOR, 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     }
 
@@ -105,7 +105,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
             if (!inventory.get(0).isEmpty()) {
-                if (RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory.get(0))) {
+                if (Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory.get(0))) {
                     if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
                         fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), true);
                     }

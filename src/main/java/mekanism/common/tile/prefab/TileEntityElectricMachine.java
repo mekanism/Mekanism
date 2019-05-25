@@ -5,6 +5,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -29,13 +30,11 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
      * have enough energy.
      *
      * @param soundPath     - location of the sound effect
-     * @param name          - full name of this machine
-     * @param perTick       - energy used per tick.
+     * @param type          - type of this machine
      * @param ticksRequired - ticks required to operate -- or smelt an item.
-     * @param maxEnergy     - maximum energy this machine can hold.
      */
-    public TileEntityElectricMachine(String soundPath, String name, double maxEnergy, double perTick, int ticksRequired) {
-        super(soundPath, name, maxEnergy, perTick, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
+    public TileEntityElectricMachine(String soundPath, MachineType type, int ticksRequired) {
+        super(soundPath, type, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));

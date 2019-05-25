@@ -5,7 +5,7 @@ import java.util.function.BooleanSupplier;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.states.BlockStateGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
@@ -28,7 +28,7 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
 
         if (Loader.isModLoaded(MekanismGenerators.MODID) && JsonUtils.hasField(json, "generatorType")) {
             final String generatorType = JsonUtils.getString(json, "generatorType");
-            final BlockStateGenerator.GeneratorType type = MekanismConfig.current().generators.generatorsManager.typeFromName(generatorType);
+            final GeneratorType type = MekanismConfig.current().generators.generatorsManager.typeFromName(generatorType);
             //noinspection Convert2Lambda - classloading issues if generators not installed
             return new BooleanSupplier() {
                 @Override
