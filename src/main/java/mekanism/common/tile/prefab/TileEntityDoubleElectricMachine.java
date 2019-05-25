@@ -20,6 +20,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<DoubleMachineInput, ItemStackOutput, RECIPE> {
 
@@ -96,7 +97,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             for (DoubleMachineInput input : getRecipes().keySet()) {
-                if (input.itemStack.isItemEqual(itemstack)) {
+                if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
                     return true;
                 }
             }
@@ -104,7 +105,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (slotID == 1) {
             for (DoubleMachineInput input : getRecipes().keySet()) {
-                if (input.extraStack.isItemEqual(itemstack)) {
+                if (ItemHandlerHelper.canItemStacksStack(input.extraStack, itemstack)) {
                     return true;
                 }
             }

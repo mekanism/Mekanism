@@ -70,6 +70,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler, ISpecialConfigData, ITierUpgradeable,
       ISustainedData, IComparatorSupport {
@@ -240,7 +241,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 RecipeType toSet = null;
 
                 for (RecipeType type : RecipeType.values()) {
-                    if (inventory.get(2).isItemEqual(type.getStack())) {
+                    if (ItemHandlerHelper.canItemStacksStack(inventory.get(2), type.getStack())) {
                         toSet = type;
                         break;
                     }

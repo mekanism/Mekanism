@@ -4,6 +4,7 @@ import java.util.Random;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ChanceOutput extends MachineOutput<ChanceOutput> {
 
@@ -49,33 +50,28 @@ public class ChanceOutput extends MachineOutput<ChanceOutput> {
 
     public boolean applyOutputs(NonNullList<ItemStack> inventory, int primaryIndex, int secondaryIndex, boolean doEmit) {
         if (hasPrimary()) {
-            ItemStack primaryStack = inventory.get(primaryIndex);
-            if (primaryStack.isEmpty()) {
-                if (doEmit) {
-                    inventory.set(primaryIndex, primaryOutput.copy());
-                }
-            } else if (primaryStack.isItemEqual(primaryOutput) && primaryStack.getCount() + primaryOutput.getCount() <= primaryStack.getMaxStackSize()) {
-                if (doEmit) {
-                    primaryStack.grow(primaryOutput.getCount());
-                }
-            } else {
+            if (applyOutputs(inventory, primaryIndex, doEmit, primaryOutput)) {
                 return false;
             }
         }
-
         if (hasSecondary() && (!doEmit || checkSecondary())) {
-            ItemStack secondaryStack = inventory.get(secondaryIndex);
-            if (secondaryStack.isEmpty()) {
-                if (doEmit) {
-                    inventory.set(secondaryIndex, secondaryOutput.copy());
-                }
-            } else if (secondaryStack.isItemEqual(secondaryOutput) && secondaryStack.getCount() + primaryOutput.getCount() <= secondaryStack.getMaxStackSize()) {
-                if (doEmit) {
-                    secondaryStack.grow(secondaryOutput.getCount());
-                }
-            } else {
-                return false;
+            return !applyOutputs(inventory, secondaryIndex, doEmit, secondaryOutput);
+        }
+        return true;
+    }
+
+    private boolean applyOutputs(NonNullList<ItemStack> inventory, int index, boolean doEmit, ItemStack output) {
+        ItemStack stack = inventory.get(index);
+        if (stack.isEmpty()) {
+            if (doEmit) {
+                inventory.set(index, output.copy());
             }
+            return false;
+        } else if (ItemHandlerHelper.canItemStacksStack(stack, output) && stack.getCount() + output.getCount() <= stack.getMaxStackSize()) {
+            if (doEmit) {
+                stack.grow(output.getCount());
+            }
+            return false;
         }
         return true;
     }
