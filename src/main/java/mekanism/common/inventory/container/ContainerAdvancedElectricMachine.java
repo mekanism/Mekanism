@@ -3,6 +3,7 @@ package mekanism.common.inventory.container;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.ChargeUtils;
@@ -10,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ContainerAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityAdvancedElectricMachine<RECIPE>> {
 
@@ -78,7 +80,12 @@ public class ContainerAdvancedElectricMachine<RECIPE extends AdvancedMachineReci
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        return tileEntity.getRecipes().keySet().stream().anyMatch(input -> input.itemStack.isItemEqual(itemstack));
+        for (AdvancedMachineInput input : tileEntity.getRecipes().keySet()) {
+            if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
