@@ -3,10 +3,12 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -32,8 +34,17 @@ public final class StackUtils {
         if (wild.isEmpty() || check.isEmpty()) {
             return wildcard;
         }
-        return wildcard && (!wild.hasTagCompound() ? !check.hasTagCompound() : (wild.getTagCompound() == check.getTagCompound() ||
-                                                                                wild.getTagCompound().equals(check.getTagCompound())));
+        return wildcard && equalNBT(wild.getTagCompound(), check.getTagCompound());
+    }
+
+    private static boolean equalNBT(@Nullable NBTTagCompound compound, @Nullable NBTTagCompound check) {
+        //Ensure {} is counted equal to no tag.
+        if (compound == null) {
+            return check == null || check.isEmpty();
+        } else if (check == null) {
+            return compound.isEmpty();
+        }
+        return compound == check || compound.equals(check);
     }
 
     //assumes stacks same
