@@ -47,9 +47,9 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
 
     private static boolean inputItemMatchesDefault(ItemStack container, ItemStack contained) {
         if (OreDictCache.getOreDictName(container).contains("treeSapling")) {
-            return StackUtils.equalsWildcard(contained, container);
+            return StackUtils.equalsWildcard(container, contained);
         }
-        return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
+        return StackUtils.equalsWildcardWithNBT(container, contained) && container.getCount() >= contained.getCount();
     }
 
     @Override
