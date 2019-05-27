@@ -9,6 +9,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.infuse.InfuseType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
@@ -270,8 +271,9 @@ public final class OreDictManager {
             }
         }
 
+        InfuseType tinInfuseType = InfuseRegistry.get("TIN");
         for (ItemStack ingot : OreDictionary.getOres("ingotCopper")) {
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("TIN"), 10, StackUtils.size(ingot, 3),
+            RecipeHandler.addMetallurgicInfuserRecipe(tinInfuseType, 10, StackUtils.size(ingot, 3),
                   new ItemStack(MekanismItems.Ingot, 4, 2));
         }
 
@@ -279,8 +281,9 @@ public final class OreDictManager {
             RecipeHandler.addCrusherRecipe(StackUtils.size(ingot, 1), new ItemStack(MekanismItems.OtherDust, 1, 5));
         }
 
+        InfuseType redstoneInfuseType = InfuseRegistry.get("REDSTONE");
         for (ItemStack ingot : OreDictionary.getOres("ingotOsmium")) {
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ingot, 1),
+            RecipeHandler.addMetallurgicInfuserRecipe(redstoneInfuseType, 10, StackUtils.size(ingot, 1),
                   new ItemStack(MekanismItems.ControlCircuit, 1, 0));
         }
 
@@ -360,18 +363,19 @@ public final class OreDictManager {
             RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(dust, 1), new GasStack(MekanismFluids.Lithium, 100));
         }
 
+        InfuseType diamondInfuseType = InfuseRegistry.get("DIAMOND");
         for (ItemStack dust : OreDictionary.getOres("dustObsidian")) {
             RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 4), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.OBSIDIAN));
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, StackUtils.size(dust, 1),
+            RecipeHandler.addMetallurgicInfuserRecipe(diamondInfuseType, 10, StackUtils.size(dust, 1),
                   new ItemStack(MekanismItems.OtherDust, 1, 5));
         }
 
         for (ItemStack dust : OreDictionary.getOres("dustDiamond")) {
-            InfuseRegistry.registerInfuseObject(dust, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
+            InfuseRegistry.registerInfuseObject(dust, new InfuseObject(diamondInfuseType, 10));
         }
 
         for (ItemStack dust : OreDictionary.getOres("dustTin")) {
-            InfuseRegistry.registerInfuseObject(dust, new InfuseObject(InfuseRegistry.get("TIN"), 10));
+            InfuseRegistry.registerInfuseObject(dust, new InfuseObject(tinInfuseType, 10));
         }
 
         for (ItemStack ore : OreDictionary.getOres("treeSapling")) {

@@ -55,9 +55,10 @@ public class InfusionInput extends MachineInput<InfusionInput> implements IWildI
     }
 
     public boolean use(NonNullList<ItemStack> inventory, int index, InfuseStorage infuseStorage, boolean deplete) {
-        if (inputContains(inventory.get(index), inputStack) && infuseStorage.contains(infuse)) {
+        ItemStack stack = inventory.get(index);
+        if (inputContains(stack, inputStack) && infuseStorage.contains(infuse)) {
             if (deplete) {
-                inventory.set(index, StackUtils.subtract(inventory.get(index), inputStack));
+                inventory.set(index, StackUtils.subtract(stack, inputStack));
                 infuseStorage.subtract(infuse);
             }
             return true;
