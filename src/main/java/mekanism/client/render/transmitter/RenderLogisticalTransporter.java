@@ -1,9 +1,16 @@
 package mekanism.client.render.transmitter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -26,6 +33,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -33,6 +41,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
     private static Map<EnumFacing, Map<Integer, DisplayInteger>> cachedOverlays = new EnumMap<>(EnumFacing.class);
+    private final static ResourceLocation transporterBox = MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png");
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
@@ -55,33 +64,36 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         }
 
         GL11.glPushMatrix();
+        Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
+        if (!inTransit.isEmpty()) {
+            entityItem.setNoDespawn();
+            entityItem.hoverStart = 0;
+            entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
+            entityItem.world = transporter.getWorld();
 
-        entityItem.setNoDespawn();
-        entityItem.hoverStart = 0;
-
-        entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
-        entityItem.world = transporter.getWorld();
-
-        for (TransporterStack stack : transporter.getTransmitter().getTransit()) {
-            if (stack != null) {
+            float partial = partialTick * transporter.tier.getSpeed();
+            for (TransporterStack stack : getReducedTransit(inTransit)) {
                 GL11.glPushMatrix();
                 entityItem.setItem(stack.itemStack);
 
-                float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick * transporter.tier.getSpeed());
+                float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
 
-                GL11.glTranslated(x + pos[0], y + pos[1], z + pos[2]);
+                double xShifted = x + pos[0];
+                double yShifted = y + pos[1];
+                double zShifted = z + pos[2];
+                GL11.glTranslated(xShifted, yShifted, zShifted);
                 GL11.glScalef(0.75F, 0.75F, 0.75F);
 
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
                 GL11.glPopMatrix();
 
                 if (stack.color != null) {
-                    bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
+                    bindTexture(transporterBox);
                     GL11.glPushMatrix();
                     MekanismRenderer.glowOn();
                     GL11.glDisable(GL11.GL_CULL_FACE);
                     GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
-                    GL11.glTranslatef((float) (x + pos[0]), (float) (y + pos[1]), (float) (z + pos[2]));
+                    GL11.glTranslatef((float) xShifted, (float) yShifted, (float) zShifted);
                     modelBox.render(0.0625F);
                     MekanismRenderer.glowOff();
                     GL11.glPopMatrix();
@@ -119,6 +131,24 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         }
 
         GL11.glPopMatrix();
+    }
+
+    private List<TransporterStack> getReducedTransit(Collection<TransporterStack> inTransit) {
+        List<TransporterStack> reducedTransit = new ArrayList<>();
+        //TODO: This should probably check stack type
+        Set<Integer> progresses = new HashSet<>();
+        Set<EnumColor> colors = EnumSet.noneOf(EnumColor.class);
+        for (TransporterStack stack : inTransit) {
+            if (stack == null || progresses.contains(stack.progress) || (stack.color != null && colors.contains(stack.color))) {
+                continue;
+            }
+            reducedTransit.add(stack);
+            progresses.add(stack.progress);
+            if (stack.color != null) {
+                colors.add(stack.color);
+            }
+        }
+        return reducedTransit;
     }
 
     private DisplayInteger getOverlayDisplay(World world, EnumFacing side, int mode) {
