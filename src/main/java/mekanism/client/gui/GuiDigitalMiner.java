@@ -35,8 +35,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
@@ -138,9 +136,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
 
         if (!tileEntity.missingStack.isEmpty()) {
             GlStateManager.pushMatrix();
-            GL11.glColor4f(1, 1, 1, 1);
+            MekanismRenderer.resetColor();
             RenderHelper.enableGUIStandardItemLighting();
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.enableRescaleNormal();
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedRectFromIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
             itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);
@@ -181,7 +179,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

@@ -6,10 +6,10 @@ import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank> {
@@ -37,7 +37,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
 
                 if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity)
+                    GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity)
                                                            + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();
                 } else {

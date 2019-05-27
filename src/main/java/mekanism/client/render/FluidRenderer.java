@@ -8,11 +8,12 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public final class FluidRenderer {
 
@@ -22,7 +23,7 @@ public final class FluidRenderer {
     private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 
     public static void translateToOrigin(Coord4D origin) {
-        GL11.glTranslated(getX(origin.x), getY(origin.y), getZ(origin.z));
+        GlStateManager.translate(getX(origin.x), getY(origin.y), getZ(origin.z));
     }
 
     public static int getStages(RenderData data) {
@@ -30,17 +31,18 @@ public final class FluidRenderer {
     }
 
     public static void pop() {
-        GL11.glPopAttrib();
+        GlStateManager.enableLighting();
+        GlStateManager.disableBlend();
+        GlStateManager.disableCull();
         GlStateManager.popMatrix();
     }
 
     public static void push() {
         GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.enableCull();
+        GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
     public static DisplayInteger getTankDisplay(RenderData data) {

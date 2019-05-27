@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
-import org.lwjgl.opengl.GL11;
 
 public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTeleporter> {
 
@@ -26,7 +25,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
         if (tileEntity.shouldRender) {
             push();
 
-            GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
+            GlStateManager.color(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
 
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate((float) x, (float) y, (float) z);
@@ -38,7 +37,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
             }
 
             int display = getOverlayDisplay(type).display;
-            GL11.glCallList(display);
+            GlStateManager.callList(display);
 
             MekanismRenderer.resetColor();
 
@@ -47,17 +46,17 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
     }
 
     private void pop() {
-        GL11.glPopAttrib();
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
+        GlStateManager.enableLighting();
+        GlStateManager.disableCull();
         GlStateManager.popMatrix();
     }
 
     private void push() {
         GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.enableCull();
+        GlStateManager.disableLighting();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
     }

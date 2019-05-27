@@ -42,8 +42,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSorter> {
@@ -450,14 +448,14 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
 
         if (tileEntity.color != null) {
             GlStateManager.pushMatrix();
-            GL11.glColor4f(1, 1, 1, 1);
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            MekanismRenderer.resetColor();
+            GlStateManager.enableLighting();
+            GlStateManager.enableRescaleNormal();
 
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedRectFromIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
 
-            GL11.glDisable(GL11.GL_LIGHTING);
+            GlStateManager.disableLighting();
             GlStateManager.popMatrix();
         }
 
@@ -491,7 +489,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
 
         // Draw main gui background
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Draw scrollbar

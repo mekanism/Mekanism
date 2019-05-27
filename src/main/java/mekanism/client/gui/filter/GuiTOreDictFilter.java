@@ -24,8 +24,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEntityLogisticalSorter> {
@@ -73,12 +71,12 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
         }
         if (filter.color != null) {
             GlStateManager.pushMatrix();
-            GL11.glColor4f(1, 1, 1, 1);
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            MekanismRenderer.resetColor();
+            GlStateManager.enableLighting();
+            GlStateManager.enableRescaleNormal();
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
-            GL11.glDisable(GL11.GL_LIGHTING);
+            GlStateManager.disableLighting();
             GlStateManager.popMatrix();
         }
         int xAxis = mouseX - (width - xSize) / 2;
@@ -99,7 +97,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

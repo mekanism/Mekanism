@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import mekanism.api.Coord4D;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -18,7 +19,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Rectangle;
 
 @SideOnly(Side.CLIENT)
@@ -53,7 +53,7 @@ public class GuiSeismicReader extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
 
@@ -63,19 +63,19 @@ public class GuiSeismicReader extends GuiScreen {
         // Draws the up button
 
         if (upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
-            GL11.glColor3f(0.5f, 0.5f, 1f);
+            GlStateManager.color(0.5f, 0.5f, 1f);
         }
 
         drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
-        GL11.glColor3f(1, 1, 1);
+        GlStateManager.color(1, 1, 1);
 
         // Draws the down button
         if (downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
-            GL11.glColor3f(0.5f, 0.5f, 1f);
+            GlStateManager.color(0.5f, 0.5f, 1f);
         }
 
         drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
-        GL11.glColor3f(1, 1, 1);
+        GlStateManager.color(1, 1, 1);
 
         // Fix the overlapping if > 100
         GlStateManager.pushMatrix();
@@ -136,7 +136,7 @@ public class GuiSeismicReader extends GuiScreen {
                 int fontLengthX = fontRenderer.getStringWidth(capitalised) + 5;
                 int renderX = mouseX + 10, renderY = mouseY - 5;
                 GlStateManager.pushMatrix();
-                GL11.glColor3f(1, 1, 1);
+                GlStateManager.color(1, 1, 1);
                 drawTexturedModalRect(renderX, renderY, 0, 0, fontLengthX, 16);
                 drawTexturedModalRect(renderX + fontLengthX, renderY, 0, 16, 2, 16);
                 fontRenderer.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);

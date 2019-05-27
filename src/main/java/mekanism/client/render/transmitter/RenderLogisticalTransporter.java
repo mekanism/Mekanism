@@ -243,8 +243,10 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     private void popTransporter() {
-        MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
+        MekanismRenderer.glowOff();
+        GlStateManager.enableLighting();
+        GlStateManager.disableCull();
         GlStateManager.popMatrix();
     }
 

@@ -10,12 +10,12 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEntityBoilerCasing> {
@@ -51,8 +51,8 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     MekanismRenderer.colorFluid(tileEntity.structure.waterStored);
 
                     if (tileEntity.structure.waterStored.getFluid().isGaseous()) {
-                        GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.waterStored.amount / (float) tileEntity.clientWaterCapacity)
-                                                               + MekanismRenderer.GAS_RENDER_BASE));
+                        GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.waterStored.amount / (float) tileEntity.clientWaterCapacity)
+                                                                     + MekanismRenderer.GAS_RENDER_BASE));
                         FluidRenderer.getTankDisplay(data).render();
                     } else {
                         FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
@@ -101,7 +101,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
 
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity)
+                    GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity)
                                                            + MekanismRenderer.GAS_RENDER_BASE));
                     display.render();
 

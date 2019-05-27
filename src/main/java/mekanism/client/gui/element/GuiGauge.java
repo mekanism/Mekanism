@@ -89,9 +89,7 @@ public abstract class GuiGauge<T> extends GuiElement {
 
             mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
 
-            if (getRenderColor() != -1) {
-                MekanismRenderer.color(getRenderColor());
-            }
+            MekanismRenderer.color(getRenderColor());
 
             for (int i = 0; i < number; i++) {
                 guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);

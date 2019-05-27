@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderBalloon extends Render<EntityBalloon> {
@@ -53,7 +52,7 @@ public class RenderBalloon extends Render<EntityBalloon> {
 
     public void render(EnumColor color, double x, double y, double z) {
         GlStateManager.pushMatrix();
-        GL11.glTranslated(x, y, z);
+        GlStateManager.translate(x, y, z);
         GlStateManager.rotate(180, 1, 0, 0);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
         model.render(0.0625F, color);

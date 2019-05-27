@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
@@ -38,18 +37,18 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             GlStateManager.pushMatrix();
             switch (facing) {
                 case NORTH:
-                    GL11.glTranslated(x + 0.73, y + 0.83, z - 0.0001);
+                    GlStateManager.translate(x + 0.73, y + 0.83, z - 0.0001);
                     break;
                 case SOUTH:
-                    GL11.glTranslated(x + 0.27, y + 0.83, z + 1.0001);
+                    GlStateManager.translate(x + 0.27, y + 0.83, z + 1.0001);
                     GlStateManager.rotate(180, 0, 1, 0);
                     break;
                 case WEST:
-                    GL11.glTranslated(x - 0.0001, y + 0.83, z + 0.27);
+                    GlStateManager.translate(x - 0.0001, y + 0.83, z + 0.27);
                     GlStateManager.rotate(90, 0, 1, 0);
                     break;
                 case EAST:
-                    GL11.glTranslated(x + 1.0001, y + 0.83, z + 0.73);
+                    GlStateManager.translate(x + 1.0001, y + 0.83, z + 0.73);
                     GlStateManager.rotate(-90, 0, 1, 0);
                     break;
                 default:

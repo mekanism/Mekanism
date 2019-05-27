@@ -6,7 +6,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelJetpack extends ModelBase {
@@ -188,7 +187,7 @@ public class ModelJetpack extends ModelBase {
         MekanismRenderer.blendOn();
         MekanismRenderer.glowOn();
         GlStateManager.enableCull();
-        GL11.glColor4f(1, 1, 1, 0.2F);
+        GlStateManager.color(1, 1, 1, 0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);

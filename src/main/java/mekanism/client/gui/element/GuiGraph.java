@@ -6,10 +6,10 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiGraph extends GuiElement {
@@ -111,7 +111,7 @@ public class GuiGraph extends GuiElement {
 
             for (int iter = 0; iter < displays; iter++) {
                 MekanismRenderer.blendOn();
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
                 MekanismRenderer.blendOff();

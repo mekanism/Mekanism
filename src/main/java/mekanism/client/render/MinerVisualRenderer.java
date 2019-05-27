@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
-import org.lwjgl.opengl.GL11;
 
 public final class MinerVisualRenderer {
 
@@ -23,11 +22,11 @@ public final class MinerVisualRenderer {
 
     public static void render(TileEntityDigitalMiner miner) {
         GlStateManager.pushMatrix();
-        GL11.glTranslated(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
+        GlStateManager.translate(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
         MekanismRenderer.blendOn();
         MekanismRenderer.glowOn();
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+        GlStateManager.enableCull();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.8F);
         mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
         getList(new MinerRenderData(miner)).render();
         MekanismRenderer.resetColor();

@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
@@ -61,7 +60,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GL11.glColor4f((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (energy / tier.getMaxEnergy()));
+            GlStateManager.color((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (energy / tier.getMaxEnergy()));
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
             GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
             GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);

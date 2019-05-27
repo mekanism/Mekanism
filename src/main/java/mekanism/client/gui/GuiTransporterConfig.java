@@ -29,8 +29,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlock> {
@@ -53,7 +51,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
@@ -102,12 +100,12 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         fontRenderer.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
         if (configurable.getEjector().getOutputColor() != null) {
             GlStateManager.pushMatrix();
-            GL11.glColor4f(1, 1, 1, 1);
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            MekanismRenderer.resetColor();
+            GlStateManager.enableLighting();
+            GlStateManager.enableRescaleNormal();
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedRectFromIcon(122, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
-            GL11.glDisable(GL11.GL_LIGHTING);
+            GlStateManager.disableLighting();
             GlStateManager.popMatrix();
         }
         int xAxis = mouseX - (width - xSize) / 2;

@@ -40,8 +40,8 @@ public class ParticleLaser extends Particle {
         tessellator.draw();
 
         GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_POLYGON_BIT + GL11.GL_ENABLE_BIT);
-        GL11.glDisable(GL11.GL_CULL_FACE);
+        GlStateManager.enablePolygonOffset();
+        GlStateManager.disableCull();
         MekanismRenderer.glowOn();
 
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
@@ -95,7 +95,7 @@ public class ParticleLaser extends Particle {
         tessellator.draw();
 
         MekanismRenderer.glowOff();
-        GL11.glPopAttrib();
+        GlStateManager.disablePolygonOffset();
         GlStateManager.popMatrix();
 
         buffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);

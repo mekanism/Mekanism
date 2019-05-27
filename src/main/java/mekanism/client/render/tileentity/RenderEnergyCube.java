@@ -17,7 +17,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergyCube> {
@@ -82,7 +81,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
             GlStateManager.pushMatrix();
-            GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+            GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
 
             MekanismRenderer.blendOn();
@@ -92,7 +91,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GL11.glColor4f((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (tileEntity.getEnergy() / tileEntity.getMaxEnergy()));
+            GlStateManager.color((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (tileEntity.getEnergy() / tileEntity.getMaxEnergy()));
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
             GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
             GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);

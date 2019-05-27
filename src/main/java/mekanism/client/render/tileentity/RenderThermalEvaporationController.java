@@ -9,13 +9,14 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderThermalEvaporationController extends TileEntitySpecialRenderer<TileEntityThermalEvaporationController> {
@@ -79,17 +80,18 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
     }
 
     private void pop() {
-        GL11.glPopAttrib();
+        GlStateManager.enableLighting();
+        GlStateManager.disableBlend();
+        GlStateManager.disableCull();
         GlStateManager.popMatrix();
     }
 
     private void push() {
         GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.enableCull();
+        GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
     private DisplayInteger[] getListAndRender(FluidStack fluid) {

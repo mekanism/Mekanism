@@ -33,7 +33,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
@@ -80,7 +79,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
@@ -101,9 +100,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
                 if (gas != null) {
                     //TODO: Use GuiGasGauge?
                     int tint = gas.getGas().getTint();
-                    if (tint != -1) {
-                        MekanismRenderer.color(tint);
-                    }
+                    MekanismRenderer.color(tint);
                     displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, gas.getGas().getSprite());
                     MekanismRenderer.resetColor();
                 }

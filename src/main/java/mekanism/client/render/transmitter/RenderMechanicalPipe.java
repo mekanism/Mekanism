@@ -16,13 +16,13 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
 
@@ -71,13 +71,13 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
         if (scale > 0.01 && fluid != null) {
             push();
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.disableBlend();
 
             MekanismRenderer.glowOn(fluid.getLuminosity());
             MekanismRenderer.color(fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : fluid.getColor());
 
             bindTexture(MekanismRenderer.getBlocksTexture());
-            GL11.glTranslated(x, y, z);
+            GlStateManager.translate(x, y, z);
 
             boolean gas = fluid.isGaseous();
 
@@ -89,12 +89,12 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                         if (!gas) {
                             displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
                         } else {
-                            GL11.glColor4f(1F, 1F, 1F, scale);
+                            GlStateManager.color(1F, 1F, 1F, scale);
                             displayLists[stages - 1].render();
                         }
                     }
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
-                    GL11.glTranslated(0.5, 0.5, 0.5);
+                    GlStateManager.translate(0.5, 0.5, 0.5);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder worldRenderer = tessellator.getBuffer();
 
@@ -102,7 +102,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                         tessellator.draw();
                     }
 
-                    GL11.glTranslated(-0.5, -0.5, -0.5);
+                    GlStateManager.translate(-0.5, -0.5, -0.5);
                 }
             }
 
@@ -112,7 +112,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 if (!gas) {
                     displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
                 } else {
-                    GL11.glColor4f(1F, 1F, 1F, scale);
+                    GlStateManager.color(1F, 1F, 1F, scale);
                     displayLists[stages - 1].render();
                 }
             }
@@ -120,6 +120,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             MekanismRenderer.glowOff();
             MekanismRenderer.resetColor();
 
+            GlStateManager.enableBlend();
             pop();
         }
     }

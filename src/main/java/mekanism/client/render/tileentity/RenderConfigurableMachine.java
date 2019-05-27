@@ -26,7 +26,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntitySpecialRenderer<S> {
@@ -66,7 +65,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                         GlStateManager.translate((float) x, (float) y, (float) z);
 
                         int display = getOverlayDisplay(pos.sideHit, type).display;
-                        GL11.glCallList(display);
+                        GlStateManager.callList(display);
 
                         MekanismRenderer.resetColor();
 
@@ -80,17 +79,17 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
     }
 
     private void pop() {
-        GL11.glPopAttrib();
-        MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
+        MekanismRenderer.glowOff();
+        GlStateManager.enableLighting();
+        GlStateManager.disableCull();
         GlStateManager.popMatrix();
     }
 
     private void push() {
         GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.enableCull();
+        GlStateManager.disableLighting();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
     }

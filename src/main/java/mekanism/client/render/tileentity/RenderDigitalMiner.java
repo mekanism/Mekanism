@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderDigitalMiner extends TileEntitySpecialRenderer<TileEntityDigitalMiner> {
@@ -25,20 +24,20 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer<TileEntityDigi
 
         switch (tileEntity.facing.ordinal()) {
             case 2:
-                GL11.glRotatef(0, 0.0F, 1.0F, 0.0F);
-                GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
+                GlStateManager.translate(0.0F, 0.0F, -1.0F);
                 break;
             case 3:
-                GL11.glRotatef(180, 0.0F, 1.0F, 0.0F);
-                GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+                GlStateManager.translate(0.0F, 0.0F, -1.0F);
                 break;
             case 4:
-                GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
-                GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+                GlStateManager.translate(0.0F, 0.0F, -1.0F);
                 break;
             case 5:
-                GL11.glRotatef(270, 0.0F, 1.0F, 0.0F);
-                GL11.glTranslatef(0.0F, 0.0F, -1.0F);
+                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
+                GlStateManager.translate(0.0F, 0.0F, -1.0F);
                 break;
         }
 

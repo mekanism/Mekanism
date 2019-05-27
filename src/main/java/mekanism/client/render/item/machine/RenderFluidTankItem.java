@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderFluidTankItem {
@@ -38,13 +37,12 @@ public class RenderFluidTankItem {
         GlStateManager.pushMatrix();
         if (fluid != null && fluidScale > 0) {
             GlStateManager.pushMatrix();
-            GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-            GL11.glEnable(GL11.GL_CULL_FACE);
-            GL11.glDisable(GL11.GL_LIGHTING);
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
             MekanismRenderer.blendOn();
 
             MekanismRenderer.bindTexture(MekanismRenderer.getBlocksTexture());
-            GL11.glTranslated(-0.5, -0.5, -0.5);
+            GlStateManager.translate(-0.5, -0.5, -0.5);
 
             MekanismRenderer.glowOn(fluid.getFluid().getLuminosity(fluid));
             MekanismRenderer.colorFluid(fluid);
@@ -56,7 +54,7 @@ public class RenderFluidTankItem {
             }
 
             if (fluid.getFluid().isGaseous(fluid)) {
-                GL11.glColor4f(1F, 1F, 1F, Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
+                GlStateManager.color(1F, 1F, 1F, Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
@@ -65,7 +63,8 @@ public class RenderFluidTankItem {
             MekanismRenderer.resetColor();
             MekanismRenderer.glowOff();
 
-            GL11.glPopAttrib();
+            GlStateManager.disableCull();
+            GlStateManager.enableLighting();
             MekanismRenderer.blendOff();
             GlStateManager.popMatrix();
         }
@@ -104,7 +103,7 @@ public class RenderFluidTankItem {
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            GL11.glEndList();
+            GlStateManager.glEndList();
         }
 
         return displays;

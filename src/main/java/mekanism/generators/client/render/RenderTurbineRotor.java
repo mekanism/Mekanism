@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurbineRotor> {
@@ -47,7 +46,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
 
         if (tileEntity.getHousedBlades() > 0) {
             GlStateManager.pushMatrix();
-            GL11.glTranslated(x + 0.5, y - 1, z + 0.5);
+            GlStateManager.translate(x + 0.5, y - 1, z + 0.5);
             GlStateManager.rotate(tileEntity.rotationLower, 0.0F, 1.0F, 0.0F);
             model.render(0.0625F, baseIndex);
             GlStateManager.popMatrix();
@@ -55,7 +54,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
 
         if (tileEntity.getHousedBlades() == 2) {
             GlStateManager.pushMatrix();
-            GL11.glTranslated(x + 0.5, y - 0.5, z + 0.5);
+            GlStateManager.translate(x + 0.5, y - 0.5, z + 0.5);
             GlStateManager.rotate(tileEntity.rotationUpper, 0.0F, 1.0F, 0.0F);
             model.render(0.0625F, baseIndex + 1);
             GlStateManager.popMatrix();

@@ -6,7 +6,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelGasMask extends ModelBase {
@@ -237,7 +236,7 @@ public class ModelGasMask extends ModelBase {
 
         MekanismRenderer.blendOn();
         MekanismRenderer.glowOn();
-        GL11.glColor4f(1, 1, 1, 0.3F);
+        GlStateManager.color(1, 1, 1, 0.3F);
         GlStateManager.enableCull();
 
         glasstop.render(size);

@@ -13,7 +13,6 @@ import net.minecraft.init.Blocks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTank> {
@@ -41,7 +40,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             push();
 
             bindTexture(MekanismRenderer.getBlocksTexture());
-            GL11.glTranslated(x, y, z);
+            GlStateManager.translate(x, y, z);
 
             MekanismRenderer.glowOn(fluid.getFluid().getLuminosity(fluid));
             MekanismRenderer.colorFluid(fluid);
@@ -53,7 +52,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             }
 
             if (fluid.getFluid().isGaseous(fluid)) {
-                GL11.glColor4f(1F, 1F, 1F, Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
+                GlStateManager.color(1F, 1F, 1F, Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
@@ -69,7 +68,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             push();
 
             bindTexture(MekanismRenderer.getBlocksTexture());
-            GL11.glTranslated(x, y, z);
+            GlStateManager.translate(x, y, z);
 
             MekanismRenderer.glowOn(valveFluid.getFluid().getLuminosity(valveFluid));
             MekanismRenderer.colorFluid(valveFluid);
@@ -86,16 +85,16 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
     }
 
     private void pop() {
-        GL11.glPopAttrib();
         MekanismRenderer.blendOff();
+        GlStateManager.enableLighting();
+        GlStateManager.disableCull();
         GlStateManager.popMatrix();
     }
 
     private void push() {
         GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.enableCull();
+        GlStateManager.disableLighting();
         MekanismRenderer.blendOn();
     }
 
@@ -126,7 +125,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            GL11.glEndList();
+            GlStateManager.glEndList();
         }
 
         return displays;
@@ -159,7 +158,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            GL11.glEndList();
+            GlStateManager.glEndList();
         }
 
         return displays;

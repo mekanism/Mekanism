@@ -5,9 +5,9 @@ import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumFacing;
-import org.lwjgl.opengl.GL11;
 
 public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable> {
 
@@ -20,7 +20,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
         push();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuffer();
-        GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+        GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
 
         for (EnumFacing side : EnumFacing.VALUES) {
             renderEnergySide(worldRenderer, side, cable);

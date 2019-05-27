@@ -13,8 +13,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class RenderFlame extends Render<EntityFlame> {
@@ -35,7 +33,7 @@ public class RenderFlame extends Render<EntityFlame> {
         GlStateManager.pushMatrix();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
-        GL11.glColor4f(1, 1, 1, 1 - alpha);
+        GlStateManager.color(1, 1, 1, 1 - alpha);
 
         bindTexture(getEntityTexture(entity));
 
@@ -53,14 +51,14 @@ public class RenderFlame extends Render<EntityFlame> {
         float f5 = (float) (5 + i * 10) / 32F;
         float scale = 0.05625F * (0.8F + size);
 
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.enableRescaleNormal();
         GlStateManager.rotate(45F, 1.0F, 0.0F, 0.0F);
         GlStateManager.scale(scale, scale, scale);
         GlStateManager.translate(-4F, 0.0F, 0.0F);
 
         for (int j = 0; j < 4; j++) {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glNormal3f(0.0F, 0.0F, scale);
+            GlStateManager.glNormal3f(0.0F, 0.0F, scale);
 
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
             worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex((double) f2, (double) f4).endVertex();
@@ -70,7 +68,7 @@ public class RenderFlame extends Render<EntityFlame> {
             tessellator.draw();
         }
 
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.disableRescaleNormal();
         MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();

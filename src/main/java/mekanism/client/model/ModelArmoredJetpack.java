@@ -4,7 +4,6 @@ import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.opengl.GL11;
 
 public class ModelArmoredJetpack extends ModelBase {
 
@@ -242,8 +241,7 @@ public class ModelArmoredJetpack extends ModelBase {
         MekanismRenderer.blendOn();
         MekanismRenderer.glowOn();
         GlStateManager.enableCull();
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glColor4f(1, 1, 1, 0.2F);
+        GlStateManager.color(1, 1, 1, 0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);

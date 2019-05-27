@@ -7,6 +7,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -15,7 +16,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntityTurbineCasing> {
@@ -63,7 +63,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                     MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
                     MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
 
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount /
+                    GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount /
                                                             (float) tileEntity.structure.getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();
 

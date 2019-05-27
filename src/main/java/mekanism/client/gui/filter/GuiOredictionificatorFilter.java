@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -28,7 +29,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredictionificator> {
@@ -134,7 +134,7 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

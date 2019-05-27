@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerDictionary;
@@ -18,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiDictionary extends GuiMekanism {
@@ -49,7 +49,7 @@ public class GuiDictionary extends GuiMekanism {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
@@ -57,15 +57,15 @@ public class GuiDictionary extends GuiMekanism {
         int yAxis = mouseY - guiHeight;
         if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
             GlStateManager.pushMatrix();
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
 
             int x = guiWidth + 6;
             int y = guiHeight + 6;
             drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
 
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepth();
             GlStateManager.popMatrix();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

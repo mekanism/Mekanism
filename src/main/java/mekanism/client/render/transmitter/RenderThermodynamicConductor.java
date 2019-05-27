@@ -5,9 +5,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumFacing;
-import org.lwjgl.opengl.GL11;
 
 public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor> {
 
@@ -20,7 +20,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
         push();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuffer();
-        GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+        GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
 
         for (EnumFacing side : EnumFacing.VALUES) {
             renderHeatSide(worldRenderer, side, transmitter);

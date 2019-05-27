@@ -24,6 +24,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.CullFace;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -210,7 +213,7 @@ public class MekanismRenderer {
         }
 
         GlStateManager.pushMatrix();
-        GL11.glTranslated(object.minX, object.minY, object.minZ);
+        GlStateManager.translate(object.minX, object.minY, object.minZ);
         RenderResizableCuboid.INSTANCE.renderCube(object);
         GlStateManager.popMatrix();
     }
@@ -228,11 +231,11 @@ public class MekanismRenderer {
     }
 
     public static void color(EnumColor color, float alpha, float multiplier) {
-        GL11.glColor4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+        GlStateManager.color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
     }
 
     public static void resetColor() {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1, 1, 1, 1);
     }
 
     public static TextureAtlasSprite getColorIcon(EnumColor color) {
@@ -244,8 +247,7 @@ public class MekanismRenderer {
     }
 
     public static void glowOn(int glow) {
-        GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-
+        GlStateManager.enableLighting();
         try {
             lightmapLastX = OpenGlHelper.lastBrightnessX;
             lightmapLastY = OpenGlHelper.lastBrightnessY;
@@ -265,33 +267,35 @@ public class MekanismRenderer {
         if (!optifineBreak) {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
         }
-
-        GL11.glPopAttrib();
+        GlStateManager.disableLighting();
     }
 
     public static void blendOn() {
-        GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_LIGHTING_BIT);
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        //GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_LIGHTING_BIT);
+        GlStateManager.enableLighting();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
     public static void blendOff() {
-        GL11.glPopAttrib();
+        GlStateManager.disableLighting();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
     }
 
     /**
      * Blender .objs have a different handedness of coordinate system to MC, so faces are wound backwards.
      */
     public static void cullFrontFace() {
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glCullFace(GL11.GL_FRONT);
+        GlStateManager.enableCull();
+        GlStateManager.cullFace(CullFace.FRONT);
     }
 
     public static void disableCullFace() {
-        GL11.glCullFace(GL11.GL_BACK);
-        GL11.glDisable(GL11.GL_CULL_FACE);
+        GlStateManager.cullFace(CullFace.BACK);
+        GlStateManager.disableCull();
     }
 
     public static void colorFluidGLSM(FluidStack fluid) {
@@ -317,8 +321,7 @@ public class MekanismRenderer {
         float cR = (color >> 16 & 0xFF) / 255.0F;
         float cG = (color >> 8 & 0xFF) / 255.0F;
         float cB = (color & 0xFF) / 255.0F;
-
-        GL11.glColor3f(cR, cG, cB);
+        GlStateManager.color(cR, cG, cB);
     }
 
     public static float getPartialTick() {
@@ -473,12 +476,12 @@ public class MekanismRenderer {
         public static DisplayInteger createAndStart() {
             DisplayInteger newInteger = new DisplayInteger();
             newInteger.display = GLAllocation.generateDisplayLists(1);
-            GL11.glNewList(newInteger.display, GL11.GL_COMPILE);
+            GlStateManager.glNewList(newInteger.display, GL11.GL_COMPILE);
             return newInteger;
         }
 
         public static void endList() {
-            GL11.glEndList();
+            GlStateManager.glEndList();
         }
 
         @Override
@@ -494,7 +497,7 @@ public class MekanismRenderer {
         }
 
         public void render() {
-            GL11.glCallList(display);
+            GlStateManager.callList(display);
         }
     }
 

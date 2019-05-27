@@ -17,6 +17,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerPRC;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.LangUtils;
@@ -26,7 +27,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiPRC extends GuiMekanismTile<TileEntityPRC> {
@@ -70,7 +70,7 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPRC> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
