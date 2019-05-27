@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiSecurityTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -40,7 +39,6 @@ public class GuiPersonalChest extends GuiMekanismTile<TileEntityPersonalChest> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

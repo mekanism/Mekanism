@@ -489,7 +489,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
 
         // Draw main gui background
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Draw scrollbar
@@ -519,8 +518,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
                 }
 
-                drawTexturedModalRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW,
-                      filterH);
+                drawTexturedModalRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
                 MekanismRenderer.resetColor();
 
                 // Draw sort buttons

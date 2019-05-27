@@ -2,7 +2,6 @@ package mekanism.client.gui.robit;
 
 import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
@@ -37,7 +36,6 @@ public abstract class GuiRobit extends GuiMekanism {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        MekanismRenderer.resetColor();
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

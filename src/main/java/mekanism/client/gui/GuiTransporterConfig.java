@@ -51,7 +51,6 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        MekanismRenderer.resetColor();
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
@@ -69,12 +68,10 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
             drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 28, 14, 14, 14);
         }
         for (int i = 0; i < slotPosMap.size(); i++) {
-            MekanismRenderer.resetColor();
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
             EnumColor color = configurable.getEjector().getInputColor(EnumFacing.byIndex(i));
-            if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i))
-                != TileComponentConfig.EMPTY) {
+            if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY) {
                 if (color != null) {
                     MekanismRenderer.color(color);
                 }
@@ -83,11 +80,11 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
                 } else {
                     drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
                 }
+                MekanismRenderer.resetColor();
             } else {
                 drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
             }
         }
-        MekanismRenderer.resetColor();
     }
 
     @Override
@@ -100,7 +97,6 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         fontRenderer.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
         if (configurable.getEjector().getOutputColor() != null) {
             GlStateManager.pushMatrix();
-            MekanismRenderer.resetColor();
             GlStateManager.enableLighting();
             GlStateManager.enableRescaleNormal();
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());

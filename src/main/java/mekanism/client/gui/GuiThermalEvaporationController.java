@@ -4,7 +4,6 @@ import java.util.Collections;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
@@ -75,7 +74,6 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

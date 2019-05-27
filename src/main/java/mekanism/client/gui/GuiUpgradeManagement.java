@@ -54,7 +54,6 @@ public class GuiUpgradeManagement extends GuiMekanism {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         drawTexturedModalRect(84, 8 + getScroll(), 202, 0, 4, 4);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.upgrades.supported") + ":", 26, 59, 0x404040);
@@ -116,7 +115,6 @@ public class GuiUpgradeManagement extends GuiMekanism {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

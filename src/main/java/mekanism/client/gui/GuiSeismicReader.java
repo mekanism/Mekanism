@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import mekanism.api.Coord4D;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -53,7 +52,6 @@ public class GuiSeismicReader extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
-        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
 

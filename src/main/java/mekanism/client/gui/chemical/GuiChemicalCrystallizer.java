@@ -21,7 +21,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -105,7 +104,6 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

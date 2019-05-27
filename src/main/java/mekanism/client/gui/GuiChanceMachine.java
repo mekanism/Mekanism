@@ -14,7 +14,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerChanceMachine;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.tile.TileEntityChanceMachine;
@@ -67,7 +66,6 @@ public class GuiChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extend
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

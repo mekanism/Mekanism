@@ -1,7 +1,6 @@
 package mekanism.client.gui.chemical;
 
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.Container;
@@ -20,7 +19,6 @@ public abstract class GuiChemical<TILE extends TileEntityElectricBlock> extends 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

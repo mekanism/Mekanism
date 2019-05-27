@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import mekanism.client.gui.element.GuiScrollList;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerDictionary;
@@ -49,7 +48,6 @@ public class GuiDictionary extends GuiMekanism {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        MekanismRenderer.resetColor();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

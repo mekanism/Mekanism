@@ -3,7 +3,6 @@ package mekanism.client.gui.element;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -101,8 +100,6 @@ public class GuiScrollList extends GuiElement {
     }
 
     public void drawScroll() {
-        MekanismRenderer.resetColor();
-
         int xStart = xPosition + xSize - 6;
         int yStart = yPosition;
 
