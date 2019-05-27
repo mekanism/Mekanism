@@ -5,6 +5,7 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,9 +13,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerElectricMachine extends ContainerMekanism<TileEntityElectricMachine> {
+public class ContainerElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityElectricMachine<RECIPE>> {
 
-    public ContainerElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine tile) {
+    public ContainerElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine<RECIPE> tile) {
         super(tile, inventory);
     }
 

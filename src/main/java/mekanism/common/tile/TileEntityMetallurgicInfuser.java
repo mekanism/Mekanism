@@ -19,8 +19,8 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -40,6 +40,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
 
 public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, ITierUpgradeable,
@@ -59,8 +60,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public TileComponentConfig configComponent;
 
     public TileEntityMetallurgicInfuser() {
-        super("machine.metalinfuser", "MetallurgicInfuser", MekanismConfig.current().storage.metallurgicInfuser.val(),
-              MekanismConfig.current().usage.metallurgicInfuser.val(), 0, 200);
+        super("machine.metalinfuser", MachineType.METALLURGIC_INFUSER, 0, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -84,13 +84,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(4, this);
-            if (!inventory.get(1).isEmpty()) {
-                InfuseObject pendingInfuseInput = InfuseRegistry.getObject(inventory.get(1));
+            ItemStack infuseInput = inventory.get(1);
+            if (!infuseInput.isEmpty()) {
+                InfuseObject pendingInfuseInput = InfuseRegistry.getObject(infuseInput);
                 if (pendingInfuseInput != null) {
                     if (infuseStored.getType() == null || infuseStored.getType() == pendingInfuseInput.type) {
                         if (infuseStored.getAmount() + pendingInfuseInput.stored <= MAX_INFUSE) {
                             infuseStored.increase(pendingInfuseInput);
-                            inventory.get(1).shrink(1);
+                            infuseInput.shrink(1);
                         }
                     }
                 }
@@ -195,7 +196,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             if (infuseStored.getType() != null) {
                 return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null;
             }
-            return Recipe.METALLURGIC_INFUSER.get().keySet().stream().anyMatch(input -> input.inputStack.isItemEqual(itemstack));
+            for (InfusionInput input : Recipe.METALLURGIC_INFUSER.get().keySet()) {
+                if (ItemHandlerHelper.canItemStacksStack(input.inputStack, itemstack)) {
+                    return true;
+                }
+            }
         } else if (slotID == 4) {
             return ChargeUtils.canBeDischarged(itemstack);
         }

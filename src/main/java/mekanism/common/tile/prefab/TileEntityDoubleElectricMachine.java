@@ -5,6 +5,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
@@ -19,6 +20,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<DoubleMachineInput, ItemStackOutput, RECIPE> {
 
@@ -28,14 +30,12 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
      * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
      * (4). The machine will not run if it does not have enough electricity.
      *
-     * @param soundPath       - location of the sound effect
-     * @param name            - full name of this machine
-     * @param baseMaxEnergy   - maximum amount of energy this machine can hold.
-     * @param baseEnergyUsage - how much energy this machine uses per tick.
-     * @param ticksRequired   - how many ticks it takes to smelt an item.
+     * @param soundPath     - location of the sound effect
+     * @param type          - the type of this machine
+     * @param ticksRequired - how many ticks it takes to smelt an item.
      */
-    public TileEntityDoubleElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int ticksRequired) {
-        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
+    public TileEntityDoubleElectricMachine(String soundPath, MachineType type, int ticksRequired) {
+        super(soundPath, type, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -97,7 +97,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             for (DoubleMachineInput input : getRecipes().keySet()) {
-                if (input.itemStack.isItemEqual(itemstack)) {
+                if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
                     return true;
                 }
             }
@@ -105,7 +105,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (slotID == 1) {
             for (DoubleMachineInput input : getRecipes().keySet()) {
-                if (input.extraStack.isItemEqual(itemstack)) {
+                if (ItemHandlerHelper.canItemStacksStack(input.extraStack, itemstack)) {
                     return true;
                 }
             }
@@ -164,7 +164,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             case 3:
                 return new Object[]{facing};
             case 4:
-                return new Object[]{canOperate(RecipeHandler.getRecipe(getInput(), getRecipes()))};
+                return new Object[]{canOperate(getRecipe())};
             case 5:
                 return new Object[]{maxEnergy};
             case 6:

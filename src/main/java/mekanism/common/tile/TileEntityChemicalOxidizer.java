@@ -40,7 +40,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     public OxidationRecipe cachedRecipe;
 
     public TileEntityChemicalOxidizer() {
-        super("machine.oxidizer", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.getStorage(), MachineType.CHEMICAL_OXIDIZER.getUsage(), 3, 100);
+        super("machine.oxidizer", MachineType.CHEMICAL_OXIDIZER, 3, 100);
         inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     }
 

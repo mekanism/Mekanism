@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,8 +19,8 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
 
     public int ticksRequired;
 
-    protected TileEntityOperationalMachine(String sound, String name, double baseMaxEnergy, double baseEnergyUsage, int upgradeSlot, int baseTicksRequired) {
-        super(sound, name, baseMaxEnergy, baseEnergyUsage, upgradeSlot);
+    protected TileEntityOperationalMachine(String sound, MachineType type, int upgradeSlot, int baseTicksRequired) {
+        super(sound, type, upgradeSlot);
         ticksRequired = BASE_TICKS_REQUIRED = baseTicksRequired;
     }
 

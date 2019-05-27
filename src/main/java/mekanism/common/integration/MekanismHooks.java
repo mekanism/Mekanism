@@ -24,6 +24,7 @@ import mekanism.common.integration.computer.OCDriver;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
@@ -162,7 +163,7 @@ public final class MekanismHooks {
     private void hookIC2Recipes() {
         for (MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes()) {
             if (!entry.getInput().getInputs().isEmpty()) {
-                if (!RecipeHandler.Recipe.CRUSHER.containsRecipe(entry.getInput().getInputs().get(0))) {
+                if (!Recipe.CRUSHER.containsRecipe(entry.getInput().getInputs().get(0))) {
                     List<String> names = OreDictCache.getOreDictName(entry.getInput().getInputs().get(0));
                     for (String name : names) {
                         if (name.startsWith("ingot") || name.startsWith("crystal")) {

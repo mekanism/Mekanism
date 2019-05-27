@@ -20,10 +20,9 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
-public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory {
+public class MetallurgicInfuserRecipeCategory<WRAPPER extends MetallurgicInfuserRecipeWrapper<MetallurgicInfuserRecipe>> extends BaseRecipeCategory<WRAPPER> {
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiMetallurgicInfuser.png", Recipe.METALLURGIC_INFUSER.getJEICategory(),
@@ -55,16 +54,14 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        if (recipeWrapper instanceof MetallurgicInfuserRecipeWrapper) {
-            MetallurgicInfuserRecipe tempRecipe = ((MetallurgicInfuserRecipeWrapper) recipeWrapper).getRecipe();
-            IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-            itemStacks.init(0, true, 45, 26);
-            itemStacks.init(1, false, 103, 26);
-            itemStacks.init(2, true, 11, 18);
-            itemStacks.set(0, tempRecipe.getInput().inputStack);
-            itemStacks.set(1, tempRecipe.getOutput().output);
-            itemStacks.set(2, getInfuseStacks(tempRecipe.getInput().infuse.getType()));
-        }
+    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
+        MetallurgicInfuserRecipe tempRecipe = recipeWrapper.getRecipe();
+        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+        itemStacks.init(0, true, 45, 26);
+        itemStacks.init(1, false, 103, 26);
+        itemStacks.init(2, true, 11, 18);
+        itemStacks.set(0, tempRecipe.getInput().inputStack);
+        itemStacks.set(1, tempRecipe.getOutput().output);
+        itemStacks.set(2, getInfuseStacks(tempRecipe.getInput().infuse.getType()));
     }
 }

@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.IntOption;
 import mekanism.common.config.options.IntSetOption;
-import mekanism.generators.common.block.states.BlockStateGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -60,8 +60,8 @@ public class GeneratorsConfig extends BaseConfig {
     public final IntSetOption windGenerationDimBlacklist = new IntSetOption(this, "generation", "WindGenerationDimBlacklist", new int[0],
           "The list of dimension ids that the Wind Generator will not generate power in.");
 
-    public TypeConfigManager<BlockStateGenerator.GeneratorType> generatorsManager = new TypeConfigManager<>(this, "generators", BlockStateGenerator.GeneratorType.class,
-          BlockStateGenerator.GeneratorType::getGeneratorsForConfig, t -> t.blockName);
+    public TypeConfigManager<GeneratorType> generatorsManager = new TypeConfigManager<>(this, "generators", GeneratorType.class,
+          GeneratorType::getGeneratorsForConfig, GeneratorType::getBlockName);
 
     @Override
     public void load(Configuration config) {

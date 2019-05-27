@@ -7,6 +7,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class InventoryBin {
 
@@ -66,7 +67,7 @@ public class InventoryBin {
         if (getItemType().isEmpty()) {
             return true;
         }
-        return stack.isItemEqual(getItemType()) && ItemStack.areItemStackTagsEqual(stack, getItemType());
+        return ItemHandlerHelper.canItemStacksStack(stack, getItemType());
     }
 
     public int getMaxStorage() {

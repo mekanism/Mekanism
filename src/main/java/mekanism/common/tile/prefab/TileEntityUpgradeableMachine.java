@@ -6,6 +6,7 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
@@ -20,12 +21,11 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
      * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
      *
      * @param soundPath         - location of the sound effect
-     * @param name              - full name of this machine
-     * @param baseMaxEnergy     - how much energy this machine can store
+     * @param type              - the type of this machine
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityUpgradeableMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired, location);
+    public TileEntityUpgradeableMachine(String soundPath, MachineType type, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+        super(soundPath, type, upgradeSlot, baseTicksRequired, location);
     }
 
     @Override

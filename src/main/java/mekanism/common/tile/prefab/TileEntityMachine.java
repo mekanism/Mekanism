@@ -7,6 +7,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -30,9 +31,9 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-    public TileEntityMachine(String sound, String name, double baseMaxEnergy, double baseEnergyUsage, int upgradeSlot) {
-        super(sound, name, baseMaxEnergy);
-        energyPerTick = BASE_ENERGY_PER_TICK = baseEnergyUsage;
+    public TileEntityMachine(String sound, MachineType type, int upgradeSlot) {
+        super(sound, type.getBlockName(), type.getStorage());
+        energyPerTick = BASE_ENERGY_PER_TICK = type.getUsage();
 
         upgradeComponent = new TileComponentUpgrade(this, upgradeSlot);
         upgradeComponent.setSupported(Upgrade.MUFFLING);

@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> {
+public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> implements IWildInput<AdvancedMachineInput> {
 
     public ItemStack itemStack = ItemStack.EMPTY;
 
@@ -78,6 +78,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> {
         return other instanceof AdvancedMachineInput;
     }
 
+    @Override
     public AdvancedMachineInput wildCopy() {
         return new AdvancedMachineInput(new ItemStack(itemStack.getItem(), itemStack.getCount(), OreDictionary.WILDCARD_VALUE), gasType);
     }

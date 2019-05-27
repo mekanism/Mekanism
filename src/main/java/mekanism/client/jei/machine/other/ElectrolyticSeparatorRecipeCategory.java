@@ -22,9 +22,8 @@ import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
-import mezz.jei.api.recipe.IRecipeWrapper;
 
-public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory {
+public class ElectrolyticSeparatorRecipeCategory<WRAPPER extends ElectrolyticSeparatorRecipeWrapper<SeparatorRecipe>> extends BaseRecipeCategory<WRAPPER> {
 
     public ElectrolyticSeparatorRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiElectrolyticSeparator.png", Recipe.ELECTROLYTIC_SEPARATOR.getJEICategory(),
@@ -55,15 +54,13 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        if (recipeWrapper instanceof ElectrolyticSeparatorRecipeWrapper) {
-            SeparatorRecipe tempRecipe = ((ElectrolyticSeparatorRecipeWrapper) recipeWrapper).getRecipe();
-            IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-            fluidStacks.init(0, true, 2, 2, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlayLarge);
-            fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
-            IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-            initGas(gasStacks, 0, false, 59 - xOffset, 19 - yOffset, 16, 28, tempRecipe.recipeOutput.leftGas, true);
-            initGas(gasStacks, 1, false, 101 - xOffset, 19 - yOffset, 16, 28, tempRecipe.recipeOutput.rightGas, true);
-        }
+    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
+        SeparatorRecipe tempRecipe = recipeWrapper.getRecipe();
+        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+        fluidStacks.init(0, true, 2, 2, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlayLarge);
+        fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
+        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
+        initGas(gasStacks, 0, false, 59 - xOffset, 19 - yOffset, 16, 28, tempRecipe.recipeOutput.leftGas, true);
+        initGas(gasStacks, 1, false, 101 - xOffset, 19 - yOffset, 16, 28, tempRecipe.recipeOutput.rightGas, true);
     }
 }

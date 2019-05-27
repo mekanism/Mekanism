@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMetallurgicInfuser> {
 
@@ -70,7 +71,12 @@ public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMet
         if (tileEntity.infuseStored.getType() != null) {
             return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(tileEntity.infuseStored, itemStack)) != null;
         }
-        return Recipe.METALLURGIC_INFUSER.get().keySet().stream().anyMatch(input -> input.inputStack.isItemEqual(itemStack));
+        for (InfusionInput input : Recipe.METALLURGIC_INFUSER.get().keySet()) {
+            if (ItemHandlerHelper.canItemStacksStack(input.inputStack, itemStack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

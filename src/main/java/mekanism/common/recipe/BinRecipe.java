@@ -17,6 +17,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
@@ -80,7 +81,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
         if (!addStack.isEmpty()) {
             if (!(addStack.getItem() instanceof ItemProxy)) {
-                if (!binInv.getItemType().isEmpty() && !binInv.getItemType().isItemEqual(addStack)) {
+                if (!binInv.getItemType().isEmpty() && !ItemHandlerHelper.canItemStacksStack(binInv.getItemType(), addStack)) {
                     return ItemStack.EMPTY;
                 }
                 binInv.add(addStack);
@@ -118,7 +119,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
                         int size = inv.getItemCount();
                         ItemStack testRemove = inv.removeStack();
-                        int newCount = size - (!testRemove.isEmpty() ? testRemove.getCount() : 0);
+                        int newCount = size - testRemove.getCount();
                         if (inv.getTier() == BinTier.CREATIVE) {
                             newCount = size;
                         }

@@ -109,18 +109,18 @@ public class BlockStateGenerator extends ExtendedBlockState {
         public boolean activable;
         public boolean hasRedstoneOutput;
 
-        GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Supplier<TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
+        GeneratorType(GeneratorBlock block, int m, String name, int gui, double energy, Supplier<TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
               boolean hasActiveTexture) {
-            this(block, i, s, j, k, tileClass, model, predicate, hasActiveTexture, false);
+            this(block, m, name, gui, energy, tileClass, model, predicate, hasActiveTexture, false);
         }
 
-        GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Supplier<TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
+        GeneratorType(GeneratorBlock block, int m, String name, int gui, double energy, Supplier<TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate,
               boolean hasActiveTexture, boolean hasRedstoneOutput) {
             blockType = block;
-            meta = i;
-            blockName = s;
-            guiId = j;
-            maxEnergy = k;
+            meta = m;
+            blockName = name;
+            guiId = gui;
+            maxEnergy = energy;
             tileEntitySupplier = tileClass;
             hasModel = model;
             facingPredicate = predicate;

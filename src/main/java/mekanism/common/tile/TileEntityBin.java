@@ -41,6 +41,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
 
@@ -120,7 +121,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         if (itemType.isEmpty()) {
             return true;
         }
-        return stack.isItemEqual(itemType) && ItemStack.areItemStackTagsEqual(stack, itemType);
+        return ItemHandlerHelper.canItemStacksStack(itemType, stack);
     }
 
     public ItemStack add(ItemStack stack, boolean simulate) {

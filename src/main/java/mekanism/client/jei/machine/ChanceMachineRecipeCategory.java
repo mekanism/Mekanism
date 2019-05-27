@@ -9,16 +9,14 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IRecipeWrapper;
 
-public class ChanceMachineRecipeCategory extends BaseRecipeCategory {
+public class ChanceMachineRecipeCategory<RECIPE extends ChanceMachineRecipe<RECIPE>, WRAPPER extends ChanceMachineRecipeWrapper<RECIPE>> extends BaseRecipeCategory<WRAPPER> {
 
     public ChanceMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress, 28, 16, 144, 54);
@@ -44,21 +42,19 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        if (recipeWrapper instanceof ChanceMachineRecipeWrapper) {
-            ChanceMachineRecipe tempRecipe = ((ChanceMachineRecipeWrapper) recipeWrapper).getRecipe();
-            IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-            itemStacks.init(0, true, 27, 0);
-            itemStacks.init(1, false, 87, 18);
-            itemStacks.init(2, false, 103, 18);
-            itemStacks.set(0, ((ItemStackInput) tempRecipe.recipeInput).ingredient);
-            ChanceOutput output = (ChanceOutput) tempRecipe.getOutput();
-            if (output.hasPrimary()) {
-                itemStacks.set(1, output.primaryOutput);
-            }
-            if (output.hasSecondary()) {
-                itemStacks.set(2, output.secondaryOutput);
-            }
+    public void setRecipe(IRecipeLayout recipeLayout, WRAPPER recipeWrapper, IIngredients ingredients) {
+        ChanceMachineRecipe<?> tempRecipe = recipeWrapper.getRecipe();
+        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+        itemStacks.init(0, true, 27, 0);
+        itemStacks.init(1, false, 87, 18);
+        itemStacks.init(2, false, 103, 18);
+        itemStacks.set(0, tempRecipe.recipeInput.ingredient);
+        ChanceOutput output = tempRecipe.getOutput();
+        if (output.hasPrimary()) {
+            itemStacks.set(1, output.primaryOutput);
+        }
+        if (output.hasSecondary()) {
+            itemStacks.set(2, output.secondaryOutput);
         }
     }
 }

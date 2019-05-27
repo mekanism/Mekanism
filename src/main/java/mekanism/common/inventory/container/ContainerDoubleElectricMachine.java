@@ -1,21 +1,21 @@
 package mekanism.common.inventory.container;
 
-import java.util.Map;
-import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
+import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
-public class ContainerDoubleElectricMachine extends ContainerMekanism<TileEntityDoubleElectricMachine> {
+public class ContainerDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityDoubleElectricMachine<RECIPE>> {
 
-    public ContainerDoubleElectricMachine(InventoryPlayer inventory, TileEntityDoubleElectricMachine tile) {
+    public ContainerDoubleElectricMachine(InventoryPlayer inventory, TileEntityDoubleElectricMachine<RECIPE> tile) {
         super(tile, inventory);
     }
 
@@ -80,8 +80,8 @@ public class ContainerDoubleElectricMachine extends ContainerMekanism<TileEntity
     }
 
     private boolean isInputItem(ItemStack itemstack) {
-        for (Entry<DoubleMachineInput, ItemStack> entry : ((Map<DoubleMachineInput, ItemStack>) tileEntity.getRecipes()).entrySet()) {
-            if (entry.getKey().itemStack.isItemEqual(itemstack)) {
+        for (DoubleMachineInput input : tileEntity.getRecipes().keySet()) {
+            if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
                 return true;
             }
         }
@@ -89,8 +89,8 @@ public class ContainerDoubleElectricMachine extends ContainerMekanism<TileEntity
     }
 
     private boolean isExtraItem(ItemStack itemstack) {
-        for (Entry<DoubleMachineInput, ItemStack> entry : ((Map<DoubleMachineInput, ItemStack>) tileEntity.getRecipes()).entrySet()) {
-            if (entry.getKey().extraStack.isItemEqual(itemstack)) {
+        for (DoubleMachineInput input : tileEntity.getRecipes().keySet()) {
+            if (ItemHandlerHelper.canItemStacksStack(input.extraStack, itemstack)) {
                 return true;
             }
         }

@@ -14,7 +14,7 @@ import net.minecraftforge.oredict.OreDictionary;
  *
  * @author AidanBrady
  */
-public class InfusionInput extends MachineInput<InfusionInput> {
+public class InfusionInput extends MachineInput<InfusionInput> implements IWildInput<InfusionInput> {
 
     public InfuseStorage infuse;
 
@@ -55,9 +55,10 @@ public class InfusionInput extends MachineInput<InfusionInput> {
     }
 
     public boolean use(NonNullList<ItemStack> inventory, int index, InfuseStorage infuseStorage, boolean deplete) {
-        if (inputContains(inventory.get(index), inputStack) && infuseStorage.contains(infuse)) {
+        ItemStack stack = inventory.get(index);
+        if (inputContains(stack, inputStack) && infuseStorage.contains(infuse)) {
             if (deplete) {
-                inventory.set(index, StackUtils.subtract(inventory.get(index), inputStack));
+                inventory.set(index, StackUtils.subtract(stack, inputStack));
                 infuseStorage.subtract(infuse);
             }
             return true;
@@ -83,6 +84,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
         return other instanceof InfusionInput;
     }
 
+    @Override
     public InfusionInput wildCopy() {
         return new InfusionInput(infuse, new ItemStack(inputStack.getItem(), inputStack.getCount(), OreDictionary.WILDCARD_VALUE));
     }

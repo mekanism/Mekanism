@@ -14,6 +14,7 @@ import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
@@ -36,6 +37,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends
       TileEntityUpgradeableMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ISustainedData {
@@ -62,14 +64,12 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * The machine will not run if it does not have enough electricity, or if it doesn't have enough fuel ticks.
      *
      * @param soundPath        - location of the sound effect
-     * @param name             - full name of this machine
-     * @param baseMaxEnergy    - maximum amount of energy this machine can hold.
-     * @param baseEnergyUsage  - how much energy this machine uses per tick.
+     * @param type             - the type of this machine
      * @param ticksRequired    - how many ticks it takes to smelt an item.
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
-    public TileEntityAdvancedElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int ticksRequired, int secondaryPerTick) {
-        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
+    public TileEntityAdvancedElectricMachine(String soundPath, MachineType type, int ticksRequired, int secondaryPerTick) {
+        super(soundPath, type, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -189,7 +189,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             for (AdvancedMachineInput input : getRecipes().keySet()) {
-                if (input.itemStack.isItemEqual(itemstack)) {
+                if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
                     return true;
                 }
             }
@@ -347,7 +347,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             case 4:
                 return new Object[]{facing};
             case 5:
-                return new Object[]{canOperate(RecipeHandler.getRecipe(getInput(), getRecipes()))};
+                return new Object[]{canOperate(getRecipe())};
             case 6:
                 return new Object[]{maxEnergy};
             case 7:

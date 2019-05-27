@@ -1,6 +1,5 @@
 package mekanism.common.inventory.container;
 
-import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.base.IFactory.RecipeType;
@@ -15,6 +14,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
@@ -69,7 +69,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                 if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (slotID != 1 && slotID != 2 && isProperMachine(slotStack) && !slotStack.isItemEqual(tileEntity.getMachineStack())) {
+            } else if (slotID != 1 && slotID != 2 && isProperMachine(slotStack) && !ItemHandlerHelper.canItemStacksStack(slotStack, tileEntity.getMachineStack())) {
                 if (!mergeItemStack(slotStack, 1, 2, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -138,7 +138,11 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
     public boolean isProperMachine(ItemStack itemStack) {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockMachine) {
-            return Arrays.stream(RecipeType.values()).findFirst().filter(type -> itemStack.isItemEqual(type.getStack())).isPresent();
+            for (RecipeType type : RecipeType.values()) {
+                if (ItemHandlerHelper.canItemStacksStack(itemStack, type.getStack())) {
+                    return true;
+                }
+            }
         }
         return false;
     }

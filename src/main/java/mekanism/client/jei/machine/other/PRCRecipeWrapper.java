@@ -1,17 +1,15 @@
 package mekanism.client.jei.machine.other;
 
 import mekanism.client.jei.MekanismJEI;
+import mekanism.client.jei.machine.MekanismRecipeWrapper;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
-import mezz.jei.api.recipe.IRecipeWrapper;
 
-public class PRCRecipeWrapper implements IRecipeWrapper {
+public class PRCRecipeWrapper<RECIPE extends PressurizedRecipe> extends MekanismRecipeWrapper<RECIPE> {
 
-    private final PressurizedRecipe recipe;
-
-    public PRCRecipeWrapper(PressurizedRecipe r) {
-        recipe = r;
+    public PRCRecipeWrapper(RECIPE recipe) {
+        super(recipe);
     }
 
     @Override
@@ -21,9 +19,5 @@ public class PRCRecipeWrapper implements IRecipeWrapper {
         ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.recipeInput.getGas());
         ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.getItemOutput());
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.getGasOutput());
-    }
-
-    public PressurizedRecipe getRecipe() {
-        return recipe;
     }
 }

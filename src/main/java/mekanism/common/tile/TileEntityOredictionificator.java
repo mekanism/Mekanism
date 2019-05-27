@@ -35,6 +35,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile {
@@ -50,7 +51,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityOredictionificator() {
-        super(MachineType.OREDICTIONIFICATOR.blockName);
+        super(MachineType.OREDICTIONIFICATOR.getBlockName());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;
     }
@@ -65,22 +66,24 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
             }
 
             didProcess = false;
-            if (MekanismUtils.canFunction(this) && !inventory.get(0).isEmpty() && getValidName(inventory.get(0)) != null) {
-                ItemStack result = getResult(inventory.get(0));
+            ItemStack inputStack = inventory.get(0);
+            if (MekanismUtils.canFunction(this) && !inputStack.isEmpty() && getValidName(inputStack) != null) {
+                ItemStack result = getResult(inputStack);
                 if (!result.isEmpty()) {
-                    if (inventory.get(1).isEmpty()) {
-                        inventory.get(0).shrink(1);
-                        if (inventory.get(0).getCount() <= 0) {
+                    ItemStack outputStack = inventory.get(1);
+                    if (outputStack.isEmpty()) {
+                        inputStack.shrink(1);
+                        if (inputStack.getCount() <= 0) {
                             inventory.set(0, ItemStack.EMPTY);
                         }
                         inventory.set(1, result);
                         didProcess = true;
-                    } else if (inventory.get(1).isItemEqual(result) && inventory.get(1).getCount() < inventory.get(1).getMaxStackSize()) {
-                        inventory.get(0).shrink(1);
-                        if (inventory.get(0).getCount() <= 0) {
+                    } else if (ItemHandlerHelper.canItemStacksStack(outputStack, result) && outputStack.getCount() < outputStack.getMaxStackSize()) {
+                        inputStack.shrink(1);
+                        if (inputStack.getCount() <= 0) {
                             inventory.set(0, ItemStack.EMPTY);
                         }
-                        inventory.get(1).grow(1);
+                        outputStack.grow(1);
                         didProcess = true;
                     }
                     markDirty();
