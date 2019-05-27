@@ -6,7 +6,6 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -24,10 +23,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -47,7 +46,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
     private EntityItem entityItem = new EntityItem(null);
-    private Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
+    private Render<EntityItem> renderer = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
 
     public static void onStitch(TextureMap map) {
         cachedOverlays.clear();
@@ -62,10 +61,13 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }
-
-        GL11.glPushMatrix();
+        //Keep track of if we had to push. Makes it so that we don't have to push and pop if we end up doing no rendering
+        boolean pushed = false;
         Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
         if (!inTransit.isEmpty()) {
+            GlStateManager.pushMatrix();
+            pushed = true;
+
             entityItem.setNoDespawn();
             entityItem.hoverStart = 0;
             entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
@@ -73,19 +75,17 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
             float partial = partialTick * transporter.tier.getSpeed();
             for (TransporterStack stack : getReducedTransit(inTransit)) {
-                GL11.glPushMatrix();
                 entityItem.setItem(stack.itemStack);
-
                 float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
-
                 double xShifted = x + pos[0];
                 double yShifted = y + pos[1];
                 double zShifted = z + pos[2];
-                GL11.glTranslated(xShifted, yShifted, zShifted);
-                GL11.glScalef(0.75F, 0.75F, 0.75F);
 
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(xShifted, yShifted, zShifted);
+                GlStateManager.scale(0.75, 0.75, 0.75);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
                 if (stack.color != null) {
                     bindTexture(transporterBox);
@@ -102,6 +102,11 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         }
 
         if (transporter instanceof TileEntityDiversionTransporter) {
+            if (!pushed) {
+                GlStateManager.pushMatrix();
+                pushed = true;
+            }
+
             EntityPlayer player = mc.player;
             World world = mc.player.world;
             ItemStack itemStack = player.inventory.getCurrentItem();
@@ -129,13 +134,18 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 }
             }
         }
-
-        GL11.glPopMatrix();
+        if (pushed) {
+            //If we did anything we need to pop the matrix we pushed
+            GlStateManager.popMatrix();
+        }
     }
 
-    private List<TransporterStack> getReducedTransit(Collection<TransporterStack> inTransit) {
-        List<TransporterStack> reducedTransit = new ArrayList<>();
-        //TODO: This should probably check stack type
+    /**
+     * Shrink the in transit list as much as possible. Don't try to render things that are in the same spot with the same color
+     */
+    private Collection<TransporterStack> getReducedTransit(Collection<TransporterStack> inTransit) {
+        Collection<TransporterStack> reducedTransit = new ArrayList<>();
+        //TODO: Should this check stack type also. Not sure if it really matters.
         Set<Integer> progresses = new HashSet<>();
         Set<EnumColor> colors = EnumSet.noneOf(EnumColor.class);
         for (TransporterStack stack : inTransit) {
