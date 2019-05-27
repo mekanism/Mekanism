@@ -298,14 +298,7 @@ public class MekanismRenderer {
         GlStateManager.disableCull();
     }
 
-    public static void colorFluidGLSM(FluidStack fluid) {
-        int color = fluid.getFluid().getColor(fluid);
-        if (color != -1) {
-            colorGLSM(color);
-        }
-    }
-
-    public static void colorGLSM(int color) {
+    public static void colorAlpha(int color) {
         float red = (color >> 16 & 0xFF) / 255.0F;
         float green = (color >> 8 & 0xFF) / 255.0F;
         float blue = (color & 0xFF) / 255.0F;
@@ -314,7 +307,7 @@ public class MekanismRenderer {
     }
 
     public static void colorFluid(FluidStack fluid) {
-        color(fluid.getFluid().getColor(fluid));
+        colorAlpha(fluid.getFluid().getColor(fluid));
     }
 
     public static void color(int color) {

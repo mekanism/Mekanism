@@ -27,7 +27,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         int start = 0;
-        MekanismRenderer.colorFluidGLSM(fluid);
+        MekanismRenderer.colorFluid(fluid);
         TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
         mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
         while (true) {

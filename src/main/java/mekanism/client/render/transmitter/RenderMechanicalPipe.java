@@ -74,7 +74,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             GlStateManager.disableBlend();
 
             MekanismRenderer.glowOn(fluid.getLuminosity());
-            MekanismRenderer.color(fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : fluid.getColor());
+            MekanismRenderer.colorAlpha(fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : fluid.getColor());
 
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(x, y, z);
