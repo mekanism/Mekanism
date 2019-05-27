@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
@@ -28,14 +27,11 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
@@ -89,14 +85,14 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
                 if (stack.color != null) {
                     bindTexture(transporterBox);
-                    GL11.glPushMatrix();
+                    GlStateManager.pushMatrix();
                     MekanismRenderer.glowOn();
-                    GL11.glDisable(GL11.GL_CULL_FACE);
-                    GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
-                    GL11.glTranslatef((float) xShifted, (float) yShifted, (float) zShifted);
+                    GlStateManager.disableCull();
+                    GlStateManager.color(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2));
+                    GlStateManager.translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
                     MekanismRenderer.glowOff();
-                    GL11.glPopMatrix();
+                    GlStateManager.popMatrix();
                 }
             }
         }
@@ -106,30 +102,20 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 GlStateManager.pushMatrix();
                 pushed = true;
             }
-
-            EntityPlayer player = mc.player;
-            World world = mc.player.world;
-            ItemStack itemStack = player.inventory.getCurrentItem();
-            RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
-
-            if (pos != null && !itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
-                Coord4D obj = new Coord4D(pos.getBlockPos(), transporter.getWorld());
-
-                if (obj.equals(new Coord4D(transporter.getPos(), transporter.getWorld())) && pos.sideHit != null) {
+            ItemStack itemStack = mc.player.inventory.getCurrentItem();
+            if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
+                RayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
+                if (pos != null && pos.sideHit != null && pos.getBlockPos().equals(transporter.getPos())) {
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.sideHit.ordinal()];
-
                     pushTransporter();
-
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 0.8F);
                     bindTexture(MekanismRenderer.getBlocksTexture());
-                    GL11.glTranslatef((float) x, (float) y, (float) z);
-                    GL11.glScalef(0.5F, 0.5F, 0.5F);
-                    GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+                    GlStateManager.translate(x, y, z);
+                    GlStateManager.scale(0.5, 0.5, 0.5);
+                    GlStateManager.translate(0.5, 0.5, 0.5);
 
-                    int display = getOverlayDisplay(world, pos.sideHit, mode).display;
-                    GL11.glCallList(display);
-
+                    int display = getOverlayDisplay(pos.sideHit, mode).display;
+                    GlStateManager.callList(display);
                     popTransporter();
                 }
             }
@@ -161,13 +147,12 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         return reducedTransit;
     }
 
-    private DisplayInteger getOverlayDisplay(World world, EnumFacing side, int mode) {
+    private DisplayInteger getOverlayDisplay(EnumFacing side, int mode) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode)) {
             return cachedOverlays.get(side).get(mode);
         }
 
         TextureAtlasSprite icon = null;
-
         switch (mode) {
             case 0:
                 icon = gunpowderIcon;
@@ -195,7 +180,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         }
 
         switch (side) {
-            case DOWN: {
+            case DOWN:
                 toReturn.minY = -0.01;
                 toReturn.maxY = 0;
 
@@ -204,8 +189,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxX = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case UP: {
+            case UP:
                 toReturn.minY = 1;
                 toReturn.maxY = 1.01;
 
@@ -214,8 +198,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxX = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case NORTH: {
+            case NORTH:
                 toReturn.minZ = -0.01;
                 toReturn.maxZ = 0;
 
@@ -224,8 +207,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxX = 1;
                 toReturn.maxY = 1;
                 break;
-            }
-            case SOUTH: {
+            case SOUTH:
                 toReturn.minZ = 1;
                 toReturn.maxZ = 1.01;
 
@@ -234,8 +216,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxX = 1;
                 toReturn.maxY = 1;
                 break;
-            }
-            case WEST: {
+            case WEST:
                 toReturn.minX = -0.01;
                 toReturn.maxX = 0;
 
@@ -244,8 +225,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxY = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case EAST: {
+            case EAST:
                 toReturn.minX = 1;
                 toReturn.maxX = 1.01;
 
@@ -254,30 +234,24 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxY = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            default: {
+            default:
                 break;
-            }
         }
-
         MekanismRenderer.renderObject(toReturn);
         DisplayInteger.endList();
-
         return display;
     }
 
     private void popTransporter() {
-        GL11.glPopAttrib();
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     private void pushTransporter() {
-        GL11.glPushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.pushMatrix();
+        GlStateManager.enableCull();
+        GlStateManager.disableLighting();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
     }
