@@ -5,6 +5,7 @@ import mekanism.api.gas.GasTank;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class PressurizedOutput extends MachineOutput<PressurizedOutput> {
 
@@ -30,8 +31,8 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput> {
     }
 
     public boolean canAddProducts(NonNullList<ItemStack> inventory, int index) {
-        return inventory.get(index).isEmpty() ||
-               (inventory.get(index).isItemEqual(itemOutput) && inventory.get(index).getCount() + itemOutput.getCount() <= inventory.get(index).getMaxStackSize());
+        ItemStack stack = inventory.get(index);
+        return stack.isEmpty() || (ItemHandlerHelper.canItemStacksStack(stack, itemOutput) && stack.getCount() + itemOutput.getCount() <= stack.getMaxStackSize());
     }
 
     public void fillTank(GasTank tank) {
@@ -39,10 +40,11 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput> {
     }
 
     public void addProducts(NonNullList<ItemStack> inventory, int index) {
-        if (inventory.get(index).isEmpty()) {
+        ItemStack stack = inventory.get(index);
+        if (stack.isEmpty()) {
             inventory.set(index, itemOutput.copy());
-        } else if (inventory.get(index).isItemEqual(itemOutput)) {
-            inventory.get(index).grow(itemOutput.getCount());
+        } else if (ItemHandlerHelper.canItemStacksStack(stack, itemOutput)) {
+            stack.grow(itemOutput.getCount());
         }
     }
 

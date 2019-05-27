@@ -40,6 +40,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
 
 public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, ITierUpgradeable,
@@ -194,7 +195,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             if (infuseStored.getType() != null) {
                 return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null;
             }
-            return Recipe.METALLURGIC_INFUSER.get().keySet().stream().anyMatch(input -> input.inputStack.isItemEqual(itemstack));
+            for (InfusionInput input : Recipe.METALLURGIC_INFUSER.get().keySet()) {
+                if (ItemHandlerHelper.canItemStacksStack(input.inputStack, itemstack)) {
+                    return true;
+                }
+            }
         } else if (slotID == 4) {
             return ChargeUtils.canBeDischarged(itemstack);
         }

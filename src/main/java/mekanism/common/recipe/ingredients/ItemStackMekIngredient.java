@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ItemStackMekIngredient implements IMekanismIngredient<ItemStack> {
 
@@ -27,7 +28,7 @@ public class ItemStackMekIngredient implements IMekanismIngredient<ItemStack> {
 
     @Override
     public boolean contains(@Nonnull ItemStack stack) {
-        return ItemStack.areItemStacksEqual(this.stack, stack);
+        return ItemHandlerHelper.canItemStacksStack(this.stack, stack);
     }
 
     @Override

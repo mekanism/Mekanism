@@ -37,6 +37,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends
       TileEntityUpgradeableMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ISustainedData {
@@ -188,7 +189,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             for (AdvancedMachineInput input : getRecipes().keySet()) {
-                if (input.itemStack.isItemEqual(itemstack)) {
+                if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {
                     return true;
                 }
             }
