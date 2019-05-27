@@ -119,7 +119,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
                         int size = inv.getItemCount();
                         ItemStack testRemove = inv.removeStack();
-                        int newCount = size - (!testRemove.isEmpty() ? testRemove.getCount() : 0);
+                        int newCount = size - testRemove.getCount();
                         if (inv.getTier() == BinTier.CREATIVE) {
                             newCount = size;
                         }
