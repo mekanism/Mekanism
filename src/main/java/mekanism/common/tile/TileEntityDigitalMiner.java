@@ -372,8 +372,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             return ItemStack.EMPTY;
         }
         for (int i = 0; i < 27; i++) {
-            if (!inventory.get(i).isEmpty() && inventory.get(i).isItemEqual(filter.replaceStack)) {
-                inventory.get(i).shrink(1);
+            ItemStack stack = inventory.get(i);
+            if (!stack.isEmpty() && stack.isItemEqual(filter.replaceStack)) {
+                stack.shrink(1);
                 return StackUtils.size(filter.replaceStack, 1);
             }
         }
@@ -456,15 +457,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             return;
         }
 
-        stacks:
         for (ItemStack stack : stacks) {
             for (int i = 0; i < 27; i++) {
-                if (inventory.get(i).isEmpty()) {
+                ItemStack currentStack = inventory.get(i);
+                if (currentStack.isEmpty()) {
                     inventory.set(i, stack);
-                    continue stacks;
-                } else if (inventory.get(i).isItemEqual(stack) && inventory.get(i).getCount() + stack.getCount() <= stack.getMaxStackSize()) {
-                    inventory.get(i).grow(stack.getCount());
-                    continue stacks;
+                    break;
+                } else if (ItemHandlerHelper.canItemStacksStack(currentStack, stack) && currentStack.getCount() + stack.getCount() <= stack.getMaxStackSize()) {
+                    currentStack.grow(stack.getCount());
+                    break;
                 }
             }
         }

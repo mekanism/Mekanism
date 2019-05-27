@@ -15,6 +15,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class StackUtils {
@@ -91,10 +92,7 @@ public final class StackUtils {
         if (orig.isEmpty()) {
             return toAdd;
         }
-        if (toAdd.isEmpty()) {
-            return orig;
-        }
-        if (!orig.isItemEqual(toAdd) || !ItemStack.areItemStackTagsEqual(orig, toAdd)) {
+        if (toAdd.isEmpty() || !ItemHandlerHelper.canItemStacksStack(orig, toAdd)) {
             return orig;
         }
         return size(orig, Math.min(orig.getMaxStackSize(), orig.getCount() + toAdd.getCount()));
@@ -104,10 +102,7 @@ public final class StackUtils {
         if (orig.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        if (toAdd.isEmpty()) {
-            return orig;
-        }
-        if (!orig.isItemEqual(toAdd) || !ItemStack.areItemStackTagsEqual(orig, toAdd)) {
+        if (toAdd.isEmpty() || !ItemHandlerHelper.canItemStacksStack(orig, toAdd)) {
             return orig;
         }
         int newSize = orig.getCount() + toAdd.getCount();

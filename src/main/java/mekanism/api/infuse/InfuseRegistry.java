@@ -3,6 +3,7 @@ package mekanism.api.infuse;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * Use this class to add a new object that registers as an infuse object.
@@ -82,7 +83,7 @@ public class InfuseRegistry {
      */
     public static InfuseObject getObject(ItemStack itemStack) {
         for (Map.Entry<ItemStack, InfuseObject> obj : infuseObjects.entrySet()) {
-            if (itemStack.isItemEqual(obj.getKey())) {
+            if (ItemHandlerHelper.canItemStacksStack(obj.getKey(), itemStack)) {
                 return obj.getValue();
             }
         }

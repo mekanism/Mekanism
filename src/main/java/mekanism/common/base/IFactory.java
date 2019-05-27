@@ -30,6 +30,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * Internal interface for managing various Factory types.
@@ -163,11 +164,10 @@ public interface IFactory {
             } else if (this == INFUSING) {
                 if (infuse.getType() != null) {
                     return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuse, slotStack));
-                } else {
-                    for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get().entrySet()) {
-                        if (entry.getKey().inputStack.isItemEqual(slotStack)) {
-                            return entry.getValue();
-                        }
+                }
+                for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get().entrySet()) {
+                    if (ItemHandlerHelper.canItemStacksStack(entry.getKey().inputStack, slotStack)) {
+                        return entry.getValue();
                     }
                 }
             }
