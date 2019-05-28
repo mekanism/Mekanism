@@ -4,7 +4,6 @@ import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -187,13 +186,11 @@ public class ModelJetpack extends ModelBase {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.blendOn(renderHelper);
         MekanismRenderer.glowOn();
-        renderHelper.enableCull();
-        GlStateManager.color(1, 1, 1, 0.2F);
+        renderHelper.enableCull().colorAlpha(0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
-        MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         renderHelper.cleanup();
 

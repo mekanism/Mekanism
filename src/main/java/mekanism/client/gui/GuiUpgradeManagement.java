@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -154,9 +154,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
             } else {
                 yRender = 166 + 12;
             }
-            MekanismRenderer.color(upgrade.getColor(), 1.0F, 2.5F);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(upgrade.getColor(), 1.0F, 2.5F);
             drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 0, yRender, 58, 12);
-            MekanismRenderer.resetColor();
+            renderHelper.cleanup();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }

@@ -25,11 +25,9 @@ public final class MinerVisualRenderer {
         GlStateManager.translate(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
         MekanismRenderer.blendOn(renderHelper);
         MekanismRenderer.glowOn();
-        renderHelper.enableCull();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.8F);
+        renderHelper.enableCull().color(1.0F, 1.0F, 1.0F, 0.8F);
         mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
         getList(new MinerRenderData(miner)).render();
-        MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         renderHelper.cleanup();
     }

@@ -11,7 +11,6 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,6 +24,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
@@ -86,7 +86,7 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
 
     @Override
     public void drawExtras(Minecraft minecraft) {
-        MekanismRenderer.resetColor();
+        GlStateManager.color(1, 1, 1, 1);
         minecraft.renderEngine.bindTexture(guiLocation);
         guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
     }

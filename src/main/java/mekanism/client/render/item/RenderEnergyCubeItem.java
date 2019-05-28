@@ -53,17 +53,14 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.blendOn(coreRenderHelper);
             MekanismRenderer.glowOn();
 
-            int[] c = RenderEnergyCube.COLORS[tier.getBaseTier().ordinal()];
-
-            GlStateManager.pushMatrix();
+            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true);
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GlStateManager.color((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (energy / tier.getMaxEnergy()));
+            coreColorRenderHelper.color(tier.getBaseTier().getColor());
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
             GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
             GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);
             core.render(0.0625F);
-            MekanismRenderer.resetColor();
-            GlStateManager.popMatrix();
+            coreColorRenderHelper.cleanup();
 
             MekanismRenderer.glowOff();
             coreRenderHelper.cleanup();

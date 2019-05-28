@@ -502,19 +502,20 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                 // Flag for mouse over this filter
                 boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
 
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper();
                 // Change colour based on filter type
                 if (filter instanceof TItemStackFilter) {
-                    MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
+                    renderHelper.color(EnumColor.INDIGO, 1.0F, 2.5F);
                 } else if (filter instanceof TOreDictFilter) {
-                    MekanismRenderer.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
+                    renderHelper.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
                 } else if (filter instanceof TMaterialFilter) {
-                    MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
+                    renderHelper.color(EnumColor.PURPLE, 1.0F, 4F);
                 } else if (filter instanceof TModIDFilter) {
-                    MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
+                    renderHelper.color(EnumColor.PINK, 1.0F, 2.5F);
                 }
 
                 drawTexturedModalRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
-                MekanismRenderer.resetColor();
+                renderHelper.cleanup();
 
                 // Draw sort buttons
                 final int arrowX = filterX + filterW - 12;

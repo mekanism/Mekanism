@@ -222,22 +222,6 @@ public class MekanismRenderer {
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
     }
 
-    public static void color(EnumColor color) {
-        color(color, 1.0F);
-    }
-
-    public static void color(EnumColor color, float alpha) {
-        color(color, alpha, 1.0F);
-    }
-
-    public static void color(EnumColor color, float alpha, float multiplier) {
-        GlStateManager.color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
-    }
-
-    public static void resetColor() {
-        GlStateManager.color(1, 1, 1, 1);
-    }
-
     public static TextureAtlasSprite getColorIcon(EnumColor color) {
         return colors[color.ordinal()];
     }

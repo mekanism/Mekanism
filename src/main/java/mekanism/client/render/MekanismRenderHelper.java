@@ -3,6 +3,7 @@ package mekanism.client.render;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import javax.annotation.Nullable;
+import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,7 +29,8 @@ public class MekanismRenderHelper {
     }
 
     //TODO: Invalidate this better/throw some kind of warning so that we can easier see if something attempts to use one we already cleaned up
-    // That or add support for reusing it
+    // That or add support for reusing it. Adding support for reusing it at least via a reset method would potentially be useful for various spots
+    // that the helper is just used for color management
     public void cleanup() {
         if (colorSet) {
             //Reset the color
@@ -62,6 +64,15 @@ public class MekanismRenderHelper {
         return this;
     }
 
+    //TODO: Remove the need for this
+    public MekanismRenderHelper resetColor() {
+        return color(1, 1, 1, 1);
+    }
+
+    public MekanismRenderHelper colorAlpha(float alpha) {
+        return color(1, 1, 1, alpha);
+    }
+
     public MekanismRenderHelper color3f(float red, float green, float blue) {
         return color(red, green, blue, 1.0F);
     }
@@ -91,6 +102,18 @@ public class MekanismRenderHelper {
 
     public MekanismRenderHelper color(@Nullable Gas gas) {
         return gas == null ? this : color3f(gas.getTint());
+    }
+
+    public MekanismRenderHelper color(@Nullable EnumColor color) {
+        return color(color, 1.0F);
+    }
+
+    public MekanismRenderHelper color(@Nullable EnumColor color, float alpha) {
+        return color(color, alpha, 1.0F);
+    }
+
+    public MekanismRenderHelper color(@Nullable EnumColor color, float alpha, float multiplier) {
+        return color == null ? this : color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
     }
 
     //Instead of RenderHelper

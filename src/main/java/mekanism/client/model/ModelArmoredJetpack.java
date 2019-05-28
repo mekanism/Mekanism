@@ -241,13 +241,11 @@ public class ModelArmoredJetpack extends ModelBase {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.blendOn(renderHelper);
         MekanismRenderer.glowOn();
-        renderHelper.enableCull();
-        GlStateManager.color(1, 1, 1, 0.2F);
+        renderHelper.enableCull().colorAlpha(0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
-        MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         renderHelper.cleanup();
 

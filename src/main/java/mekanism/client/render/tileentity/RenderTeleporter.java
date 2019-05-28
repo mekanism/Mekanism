@@ -24,9 +24,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
     @Override
     public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.shouldRender) {
-            MekanismRenderHelper renderHelper = initHelper();
-
-            GlStateManager.color(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
+            MekanismRenderHelper renderHelper = initHelper().color(EnumColor.PURPLE, 0.75F);
 
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate((float) x, (float) y, (float) z);
@@ -39,7 +37,6 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
             int display = getOverlayDisplay(type).display;
             GlStateManager.callList(display);
-            MekanismRenderer.resetColor();
             cleanup(renderHelper);
         }
     }

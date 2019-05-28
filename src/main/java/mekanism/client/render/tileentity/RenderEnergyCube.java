@@ -22,7 +22,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergyCube> {
 
-    public static int[][] COLORS = new int[][]{new int[]{100, 210, 125}, new int[]{215, 85, 70}, new int[]{80, 125, 230}, new int[]{154, 120, 200}, new int[]{0, 0, 0}};
     public static Map<EnergyCubeTier, ResourceLocation> resources = new EnumMap<>(EnergyCubeTier.class);
     public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube.png");
     public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png");
@@ -84,21 +83,17 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
             GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
-
             MekanismRenderer.blendOn(coreRenderHelper);
             MekanismRenderer.glowOn();
 
-            int[] c = COLORS[tileEntity.tier.getBaseTier().ordinal()];
-
-            GlStateManager.pushMatrix();
+            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true);
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GlStateManager.color((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (tileEntity.getEnergy() / tileEntity.getMaxEnergy()));
+            coreColorRenderHelper.color(tileEntity.tier.getBaseTier().getColor());
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
             GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
             GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
             core.render(0.0625F);
-            MekanismRenderer.resetColor();
-            GlStateManager.popMatrix();
+            coreColorRenderHelper.cleanup();
 
             MekanismRenderer.glowOff();
             coreRenderHelper.cleanup();

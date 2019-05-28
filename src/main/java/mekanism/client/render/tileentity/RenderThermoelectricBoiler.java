@@ -64,16 +64,10 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
                     for (ValveData valveData : tileEntity.valveViewing) {
                         MekanismRenderHelper valveRenderHelper = FluidRenderer.initHelper();
-
                         FluidRenderer.translateToOrigin(valveData.location);
-
                         MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
-
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
-
                         MekanismRenderer.glowOff();
-                        MekanismRenderer.resetColor();
-
                         valveRenderHelper.cleanup();
                     }
                 }

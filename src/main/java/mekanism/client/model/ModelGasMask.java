@@ -4,7 +4,6 @@ import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -238,8 +237,7 @@ public class ModelGasMask extends ModelBase {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         MekanismRenderer.blendOn(renderHelper);
         MekanismRenderer.glowOn();
-        GlStateManager.color(1, 1, 1, 0.3F);
-        renderHelper.enableCull();
+        renderHelper.colorAlpha(0.3F).enableCull();
 
         glasstop.render(size);
         glassfront.render(size);
@@ -248,7 +246,6 @@ public class ModelGasMask extends ModelBase {
         glassbackR.render(size);
         glassbackL.render(size);
 
-        MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         renderHelper.cleanup();
 

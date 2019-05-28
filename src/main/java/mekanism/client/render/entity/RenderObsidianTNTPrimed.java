@@ -2,7 +2,6 @@ package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.entity.EntityObsidianTNT;
 import net.minecraft.client.Minecraft;
@@ -50,12 +49,11 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
         if (entityobsidiantnt.fuse / 5 % 2 == 0) {
             renderHelper.disableTexture2D().disableLighting().enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.DST_ALPHA);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, f3);
+            renderHelper.colorAlpha(f3);
             GlStateManager.doPolygonOffset(-3.0F, -3.0F);
             renderHelper.enablePolygonOffset();
             renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), 1.0F);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
-            MekanismRenderer.resetColor();
         }
 
         renderHelper.cleanup();

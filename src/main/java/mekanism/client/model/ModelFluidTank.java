@@ -98,12 +98,11 @@ public class ModelFluidTank extends ModelBase {
 
         MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         MekanismRenderer.blendOn(renderHelper);
-        MekanismRenderer.color(tier.getBaseTier().getColor());
+        renderHelper.color(tier.getBaseTier().getColor());
         FrontGlass.render(size);
         BackGlass.render(size);
         RightGlass.render(size);
         LeftGlass.render(size);
-        MekanismRenderer.resetColor();
         renderHelper.cleanup();
     }
 

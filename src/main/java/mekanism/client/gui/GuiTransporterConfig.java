@@ -72,15 +72,13 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
             int y = slotPosMap.get(i).yPos;
             EnumColor color = configurable.getEjector().getInputColor(EnumFacing.byIndex(i));
             if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY) {
-                if (color != null) {
-                    MekanismRenderer.color(color);
-                }
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(color);
                 if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
                     drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
                 } else {
                     drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
                 }
-                MekanismRenderer.resetColor();
+                renderHelper.cleanup();
             } else {
                 drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
             }

@@ -4,7 +4,7 @@ import java.io.IOException;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
@@ -67,9 +67,9 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
         for (ReactorLogic type : ReactorLogic.values()) {
-            MekanismRenderer.color(EnumColor.RED);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(EnumColor.RED);
             drawTexturedModalRect(guiWidth + 24, guiHeight + 32 + (22 * type.ordinal()), 0, 166 + (type == tileEntity.logicType ? 22 : 0), 128, 22);
-            MekanismRenderer.resetColor();
+            renderHelper.cleanup();
         }
         if (xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30) {
             drawTexturedModalRect(guiWidth + 23, guiHeight + 19, 176, 0, 11, 11);

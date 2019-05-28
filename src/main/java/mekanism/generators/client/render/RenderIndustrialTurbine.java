@@ -58,19 +58,14 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
 
                 if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
-
                     FluidRenderer.translateToOrigin(data.location);
-
                     MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
                     renderHelper.color(tileEntity.structure.fluidStored);
 
                     GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount /
                                                             (float) tileEntity.structure.getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();
-
                     MekanismRenderer.glowOff();
-                    MekanismRenderer.resetColor();
-
                     renderHelper.cleanup();
                 }
             }

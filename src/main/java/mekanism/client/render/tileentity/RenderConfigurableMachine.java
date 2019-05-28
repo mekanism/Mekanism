@@ -56,13 +56,11 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 if (bp.equals(configurable.getPos())) {
                     SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
                     if (data != TileComponentConfig.EMPTY) {
-                        MekanismRenderHelper renderHelper = initHelper();
-                        MekanismRenderer.color(data.color, 0.6F);
+                        MekanismRenderHelper renderHelper = initHelper().color(data.color, 0.6F);
                         bindTexture(MekanismRenderer.getBlocksTexture());
                         GlStateManager.translate((float) x, (float) y, (float) z);
                         int display = getOverlayDisplay(pos.sideHit, type).display;
                         GlStateManager.callList(display);
-                        MekanismRenderer.resetColor();
                         cleanup(renderHelper);
                     }
                 }

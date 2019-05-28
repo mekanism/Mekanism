@@ -9,6 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.element.GuiConfigTypeTab;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -104,15 +105,16 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             int y = slotPosMap.get(i).yPos;
             SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
             if (data != TileComponentConfig.EMPTY) {
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper();
                 if (data.color != EnumColor.GREY) {
-                    MekanismRenderer.color(data.color);
+                    renderHelper.color(data.color);
                 }
                 if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
                     drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
                 } else {
                     drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
                 }
-                MekanismRenderer.resetColor();
+                renderHelper.cleanup();
             } else {
                 drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
             }

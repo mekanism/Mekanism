@@ -135,8 +135,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
 
         if (!tileEntity.missingStack.isEmpty()) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting().enableRescaleNormal();
-            //TODO: I think this call shouldn't be needed. Mainly a reminder to myself to check for state leaks/try removing once color is done through the helper
-            MekanismRenderer.resetColor();
+            //TODO: Fix coloring being off because of not having a resetColor call
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedRectFromIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
             itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);

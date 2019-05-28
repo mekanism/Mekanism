@@ -10,7 +10,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
@@ -432,21 +432,21 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 MinerFilter filter = tileEntity.filters.get(getFilterIndex() + i);
                 int yStart = i * 29 + 18;
-
                 boolean mouseOver = xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart + 29;
 
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper();
                 if (filter instanceof MItemStackFilter) {
-                    MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
+                    renderHelper.color(EnumColor.INDIGO, 1.0F, 2.5F);
                 } else if (filter instanceof MOreDictFilter) {
-                    MekanismRenderer.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
+                    renderHelper.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
                 } else if (filter instanceof MMaterialFilter) {
-                    MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
+                    renderHelper.color(EnumColor.PURPLE, 1.0F, 4F);
                 } else if (filter instanceof MModIDFilter) {
-                    MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
+                    renderHelper.color(EnumColor.PINK, 1.0F, 2.5F);
                 }
 
                 drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
-                MekanismRenderer.resetColor();
+                renderHelper.cleanup();
 
                 // Draw sort buttons
                 final int arrowX = filterX + filterW - 12;

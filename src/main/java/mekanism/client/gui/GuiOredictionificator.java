@@ -13,7 +13,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerOredictionificator;
@@ -128,11 +128,12 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
                 boolean mouseOver = xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22;
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper();
                 if (mouseOver) {
-                    MekanismRenderer.color(EnumColor.GREY, 3.0F);
+                    renderHelper.color(EnumColor.GREY, 3.0F);
                 }
                 drawTexturedModalRect(guiWidth + 10, guiHeight + yStart, 0, 230, 142, 22);
-                MekanismRenderer.resetColor();
+                renderHelper.cleanup();
             }
         }
     }
