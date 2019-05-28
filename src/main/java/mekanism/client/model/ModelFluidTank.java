@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -96,8 +95,7 @@ public class ModelFluidTank extends ModelBase {
         PoleRF.render(size);
         Top.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
         renderHelper.color(tier.getBaseTier().getColor());
         FrontGlass.render(size);
         BackGlass.render(size);

@@ -238,7 +238,7 @@ public class ModelArmoredJetpack extends ModelBase {
         Packdoodad3.render(size);
         Bottomthruster.render(size);
 
-        MekanismRenderHelper renderHelper = MekanismRenderer.blendOn(new MekanismRenderHelper(true));
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset();
         MekanismRenderer.glowOn();
         renderHelper.enableCull().colorAlpha(0.2F);
 

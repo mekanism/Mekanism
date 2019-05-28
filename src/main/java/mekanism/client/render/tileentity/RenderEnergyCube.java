@@ -83,7 +83,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
             GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
-            MekanismRenderer.blendOn(coreRenderHelper);
+            coreRenderHelper.enableBlendPreset();
             MekanismRenderer.glowOn();
 
             MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tileEntity.tier.getBaseTier().getColor());

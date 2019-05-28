@@ -250,6 +250,6 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private MekanismRenderHelper pushTransporter() {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.glowOn();
-        return MekanismRenderer.blendOn(renderHelper);
+        return renderHelper.enableBlendPreset();
     }
 }

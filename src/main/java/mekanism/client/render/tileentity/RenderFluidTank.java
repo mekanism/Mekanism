@@ -73,7 +73,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
     }
 
     private MekanismRenderHelper initHelper() {
-        return MekanismRenderer.blendOn(new MekanismRenderHelper(true).enableCull().disableLighting());
+        return new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
     }
 
     private DisplayInteger[] getValveRender(FluidStack fluid) {

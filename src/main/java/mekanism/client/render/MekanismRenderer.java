@@ -25,8 +25,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.CullFace;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -252,14 +250,6 @@ public class MekanismRenderer {
         if (!optifineBreak) {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
         }
-    }
-
-    public static MekanismRenderHelper blendOn(MekanismRenderHelper renderHelper) {
-        //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        renderHelper.disableAlpha().enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        return renderHelper;
     }
 
     /**

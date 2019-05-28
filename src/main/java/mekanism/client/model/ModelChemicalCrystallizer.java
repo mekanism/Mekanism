@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -137,8 +136,7 @@ public class ModelChemicalCrystallizer extends ModelBase {
     }
 
     public void render(float size) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
 
         tray.render(size);
         support4.render(size);

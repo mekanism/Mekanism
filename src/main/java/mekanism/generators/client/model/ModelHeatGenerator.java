@@ -141,8 +141,7 @@ public class ModelHeatGenerator extends ModelBase {
     }
 
     public void render(float size, boolean on, TextureManager manager) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset();
 
         doRender(size);
 

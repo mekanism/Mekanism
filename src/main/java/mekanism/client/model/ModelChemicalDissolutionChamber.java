@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -228,8 +227,7 @@ public class ModelChemicalDissolutionChamber extends ModelBase {
     }
 
     public void render(float size) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
 
         support2.render(size);
         vat5.render(size);

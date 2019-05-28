@@ -166,8 +166,7 @@ public class ModelResistiveHeater extends ModelBase {
     }
 
     public void render(float size, boolean on, TextureManager manager, boolean renderMain) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset();
 
         if (renderMain) {
             doRender(size);

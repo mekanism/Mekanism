@@ -35,7 +35,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(0.0F, -1.0F, 0.0F);
 
-        MekanismRenderer.blendOn(cubeRenderHelper);
+        cubeRenderHelper.enableBlendPreset();
 
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
@@ -50,7 +50,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         if (energy / tier.getMaxEnergy() > 0.1) {
             MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
-            MekanismRenderer.blendOn(coreRenderHelper);
+            coreRenderHelper.enableBlendPreset();
             MekanismRenderer.glowOn();
 
             MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tier.getBaseTier().getColor());

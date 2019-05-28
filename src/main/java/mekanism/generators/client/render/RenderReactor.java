@@ -25,7 +25,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             GlStateManager.translate(x + 0.5, y - 1.5, z + 0.5);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
-            MekanismRenderer.blendOn(renderHelper);
+            renderHelper.enableBlendPreset();
             MekanismRenderer.glowOn();
 
             long scaledTemp = Math.round(tileEntity.getPlasmaTemp() / 1E8);

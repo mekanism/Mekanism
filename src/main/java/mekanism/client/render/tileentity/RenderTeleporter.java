@@ -49,7 +49,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
     private MekanismRenderHelper initHelper() {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.glowOn();
-        return MekanismRenderer.blendOn(renderHelper);
+        return renderHelper.enableBlendPreset();
     }
 
     private DisplayInteger getOverlayDisplay(Integer type) {

@@ -7,9 +7,12 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
 
 public class MekanismRenderHelper {
 
@@ -56,6 +59,14 @@ public class MekanismRenderHelper {
     private MekanismRenderHelper disable(KnownStates state) {
         changedStates.push(Pair.of(state, false));
         state.disable();
+        return this;
+    }
+
+    public MekanismRenderHelper enableBlendPreset() {
+        //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        disableAlpha().enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         return this;
     }
 

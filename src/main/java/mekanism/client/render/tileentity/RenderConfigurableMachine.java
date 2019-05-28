@@ -77,7 +77,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
     private MekanismRenderHelper initHelper() {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.glowOn();
-        return MekanismRenderer.blendOn(renderHelper);
+        return renderHelper.enableBlendPreset();
     }
 
     private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type) {

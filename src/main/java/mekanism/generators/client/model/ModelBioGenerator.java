@@ -1,7 +1,6 @@
 package mekanism.generators.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
@@ -63,8 +62,7 @@ public class ModelBioGenerator extends ModelBase {
         back.render(size);
         bar.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
         glass.render(size);
         renderHelper.cleanup();
     }

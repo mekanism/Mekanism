@@ -37,8 +37,7 @@ public class RenderFluidTankItem {
 
         MekanismRenderHelper tankRenderHelper = new MekanismRenderHelper(true);
         if (fluid != null && fluidScale > 0) {
-            MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
-            MekanismRenderer.blendOn(fluidRenderHelper);
+            MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
             MekanismRenderer.bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(-0.5, -0.5, -0.5);
             MekanismRenderer.glowOn(fluid.getFluid().getLuminosity(fluid));

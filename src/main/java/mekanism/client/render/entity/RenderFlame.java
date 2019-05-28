@@ -34,7 +34,7 @@ public class RenderFlame extends Render<EntityFlame> {
 
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.glowOn();
-        MekanismRenderer.blendOn(renderHelper).colorAlpha(1 - alpha);
+        renderHelper.enableBlendPreset().colorAlpha(1 - alpha);
 
         bindTexture(getEntityTexture(entity));
 

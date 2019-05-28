@@ -95,8 +95,7 @@ public class ModelSecurityDesk extends ModelBase {
     }
 
     public void render(float size, TextureManager manager) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset();
 
         doRender(size);
 
