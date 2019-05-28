@@ -132,6 +132,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             selectedType = null;
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         for (int i = 0; i < 4; i++) {
             int index = getUpgradeIndex() + i;
             if (index > upgrades.length - 1) {
@@ -148,9 +149,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
             } else {
                 yRender = 166 + 12;
             }
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(upgrade.getColor(), 1.0F, 2.5F);
+            renderHelper.color(upgrade.getColor(), 1.0F, 2.5F);
             drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 0, yRender, 58, 12);
-            renderHelper.cleanup();
+            renderHelper.cleanup(); //As it is just color and no matrix we can reuse the same one rather than recreating it the next call around
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }

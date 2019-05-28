@@ -183,8 +183,7 @@ public class ModelJetpack extends ModelBase {
         ExtendosupportL.render(size);
         ExtendosupportR.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderHelper renderHelper = MekanismRenderer.blendOn(new MekanismRenderHelper(true));
         MekanismRenderer.glowOn();
         renderHelper.enableCull().colorAlpha(0.2F);
 

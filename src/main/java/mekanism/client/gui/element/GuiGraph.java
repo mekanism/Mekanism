@@ -7,7 +7,6 @@ import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -111,8 +110,7 @@ public class GuiGraph extends GuiElement {
             int displays = (relativeHeight - 1) / 10 + ((relativeHeight - 1) % 10 > 0 ? 1 : 0);
 
             for (int iter = 0; iter < displays; iter++) {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper();
-                MekanismRenderer.blendOn(renderHelper);
+                MekanismRenderHelper renderHelper = MekanismRenderer.blendOn(new MekanismRenderHelper());
                 renderHelper.colorAlpha(0.2F + (0.8F * ((float) i / (float) graphData.size())));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);

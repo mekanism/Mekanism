@@ -357,7 +357,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                         itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
                         renderHelper.cleanup();
                     }
-
                     fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof MOreDictFilter) {
                     MOreDictFilter oreFilter = (MOreDictFilter) filter;

@@ -8,7 +8,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -61,8 +60,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                     FluidRenderer.translateToOrigin(data.location);
                     MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
                     renderHelper.color(tileEntity.structure.fluidStored);
-                    renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.fluidStored.amount /
-                                                            (float) tileEntity.structure.getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
+                    renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure.getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();
                     MekanismRenderer.glowOff();
                     renderHelper.cleanup();

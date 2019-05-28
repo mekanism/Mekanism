@@ -10,7 +10,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.element.GuiConfigTypeTab;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -100,12 +99,12 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         } else {
             drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 14, 14, 14, 14);
         }
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
             SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
             if (data != TileComponentConfig.EMPTY) {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper();
                 if (data.color != EnumColor.GREY) {
                     renderHelper.color(data.color);
                 }
@@ -114,7 +113,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
                 } else {
                     drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
                 }
-                renderHelper.cleanup();
+                renderHelper.cleanup(); //As it is just color and no matrix we can reuse the same one rather than recreating it the next call around
             } else {
                 drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
             }
