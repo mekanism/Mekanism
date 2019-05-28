@@ -1,6 +1,10 @@
 package mekanism.client.render.transmitter;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -25,7 +29,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final int stages = 100;
     private static final double height = 0.45;
     private static final double offset = 0.015;
-    private static HashMap<Integer, FluidRenderMap<DisplayInteger[]>> cachedLiquids = new HashMap<>();
+    //TODO this is basically used as an enum map (EnumFacing), but null key is possible, which EnumMap doesn't support. 6 is used for null side
+    private static Int2ObjectMap<FluidRenderMap<DisplayInteger[]>> cachedLiquids = new Int2ObjectArrayMap<>(7);
 
     public static void onStitch() {
         cachedLiquids.clear();

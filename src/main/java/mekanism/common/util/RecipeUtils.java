@@ -1,7 +1,8 @@
 package mekanism.common.util;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
@@ -158,12 +159,12 @@ public class RecipeUtils {
         }
 
         if (MachineType.get(toReturn) != null && MachineType.get(toReturn).supportsUpgrades) {
-            Map<Upgrade, Integer> upgrades = new HashMap<>();
+            Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
                 if (!itemstack.isEmpty() && MachineType.get(itemstack) != null && MachineType.get(itemstack).supportsUpgrades) {
                     Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(itemstack));
-                    for (Map.Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
+                    for (Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
                         if (entry != null && entry.getKey() != null && entry.getValue() != null) {
                             Integer val = upgrades.get(entry.getKey());
                             upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), (val != null ? val : 0) + entry.getValue()));

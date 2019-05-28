@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -115,22 +116,24 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
 
         // Update displayed stacks
         if (stackSwitch == 0) {
-            for (final Map.Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
+            for (final Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
                 setNextRenderStack(entry.getValue());
             }
-            for (final Map.Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet()) {
+            for (final Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet()) {
                 setNextRenderStack(entry.getValue());
             }
             stackSwitch = 20;
         } else {
-            for (final Map.Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0) {
-                    entry.getValue().renderStack = ItemStack.EMPTY;
+            for (final Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
+                StackData data = entry.getValue();
+                if (data.iterStacks != null && data.iterStacks.size() == 0) {
+                    data.renderStack = ItemStack.EMPTY;
                 }
             }
-            for (final Map.Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0) {
-                    entry.getValue().renderStack = ItemStack.EMPTY;
+            for (Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet()) {
+                StackData data = entry.getValue();
+                if (data.iterStacks != null && data.iterStacks.size() == 0) {
+                    data.renderStack = ItemStack.EMPTY;
                 }
             }
         }

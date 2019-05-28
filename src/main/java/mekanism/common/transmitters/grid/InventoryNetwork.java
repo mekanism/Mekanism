@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -36,26 +37,26 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             if (coord == null || coord.equals(stack.homeLocation)) {
                 continue;
             }
-
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            if (sides == null || sides.isEmpty()) {
+                continue;
+            }
             TileEntity acceptor = coord.getTileEntity(getWorld());
-            if (acceptor == null || sides == null || sides.isEmpty()) {
+            if (acceptor == null) {
                 continue;
             }
 
             AcceptorData data = null;
             for (EnumFacing side : sides) {
-                TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, side.getOpposite());
+                EnumFacing opposite = side.getOpposite();
+                TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, opposite);
                 if (!response.isEmpty()) {
                     if (data == null) {
-                        data = new AcceptorData(coord, response, side.getOpposite());
+                        toReturn.add(data = new AcceptorData(coord, response, opposite));
                     } else {
-                        data.sides.add(side.getOpposite());
+                        data.sides.add(opposite);
                     }
                 }
-            }
-            if (data != null) {
-                toReturn.add(data);
             }
         }
         return toReturn;
@@ -99,14 +100,26 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     public static class AcceptorData {
 
-        public Coord4D location;
-        public TransitResponse response;
-        public EnumSet<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
+        private Coord4D location;
+        private TransitResponse response;
+        private Set<EnumFacing> sides;
 
         public AcceptorData(Coord4D coord, TransitResponse ret, EnumFacing side) {
             location = coord;
             response = ret;
-            sides.add(side);
+            sides = EnumSet.of(side);
+        }
+
+        public TransitResponse getResponse() {
+            return response;
+        }
+
+        public Coord4D getLocation() {
+            return location;
+        }
+
+        public Set<EnumFacing> getSides() {
+            return sides;
         }
     }
 }

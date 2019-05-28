@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
@@ -873,7 +874,7 @@ public class Mekanism {
 
         // Add all furnace recipes to the energized smelter
         // Must happen after CraftTweaker for vanilla stuff has run.
-        for (Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
+        for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
             SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
             Recipe.ENERGIZED_SMELTER.put(recipe);
         }

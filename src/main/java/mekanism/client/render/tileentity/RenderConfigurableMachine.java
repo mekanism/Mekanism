@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
@@ -33,7 +33,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
     private Minecraft mc = FMLClientHandler.instance().getClient();
 
-    private Map<EnumFacing, Map<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<>();
+    private Map<EnumFacing, Map<TransmissionType, DisplayInteger>> cachedOverlays = new EnumMap<>(EnumFacing.class);
 
     public RenderConfigurableMachine() {
         rendererDispatcher = TileEntityRendererDispatcher.instance;
@@ -109,7 +109,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         if (cachedOverlays.containsKey(side)) {
             cachedOverlays.get(side).put(type, display);
         } else {
-            Map<TransmissionType, DisplayInteger> map = new HashMap<>();
+            Map<TransmissionType, DisplayInteger> map = new EnumMap<>(TransmissionType.class);
             map.put(type, display);
             cachedOverlays.put(side, map);
         }

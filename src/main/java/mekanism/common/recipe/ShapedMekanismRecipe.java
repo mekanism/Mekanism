@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
@@ -89,7 +90,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
         //    group = context.getModId() + ":" + group;
 
         Map<Character, Ingredient> ingMap = new HashMap<>();
-        for (Map.Entry<String, JsonElement> entry : JsonUtils.getJsonObject(json, "key").entrySet()) {
+        for (Entry<String, JsonElement> entry : JsonUtils.getJsonObject(json, "key").entrySet()) {
             if (entry.getKey().length() != 1) {
                 throw new JsonSyntaxException("Invalid key entry: '" + entry.getKey() + "' is an invalid symbol (must be 1 character only).");
             }

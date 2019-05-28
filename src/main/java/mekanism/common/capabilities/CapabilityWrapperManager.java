@@ -1,15 +1,14 @@
 package mekanism.common.capabilities;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import net.minecraft.util.EnumFacing;
 
 public class CapabilityWrapperManager<IMPL, WRAPPER> {
 
-    public Map<EnumFacing, WRAPPER> wrappers = new HashMap<>();
-
-    public Class<IMPL> typeClass;
-    public Class<WRAPPER> wrapperClass;
+    private Map<EnumFacing, WRAPPER> wrappers = new EnumMap<>(EnumFacing.class);
+    private Class<IMPL> typeClass;
+    private Class<WRAPPER> wrapperClass;
 
     public CapabilityWrapperManager(Class<IMPL> type, Class<WRAPPER> wrapper) {
         typeClass = type;

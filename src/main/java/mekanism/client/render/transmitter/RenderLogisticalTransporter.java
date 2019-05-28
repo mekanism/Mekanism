@@ -1,6 +1,8 @@
 package mekanism.client.render.transmitter;
 
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
@@ -30,7 +32,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
-    private static HashMap<EnumFacing, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<>();
+    private static Map<EnumFacing, Map<Integer, DisplayInteger>> cachedOverlays = new EnumMap<>(EnumFacing.class);
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
@@ -96,7 +98,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             if (pos != null && !itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
                 Coord4D obj = new Coord4D(pos.getBlockPos(), transporter.getWorld());
 
-                if (obj.equals(new Coord4D(transporter.getPos(), transporter.getWorld()))) {
+                if (obj.equals(new Coord4D(transporter.getPos(), transporter.getWorld())) && pos.sideHit != null) {
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.sideHit.ordinal()];
 
                     pushTransporter();
@@ -147,7 +149,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         if (cachedOverlays.containsKey(side)) {
             cachedOverlays.get(side).put(mode, display);
         } else {
-            HashMap<Integer, DisplayInteger> map = new HashMap<>();
+            Map<Integer, DisplayInteger> map = new HashMap<>();
             map.put(mode, display);
             cachedOverlays.put(side, map);
         }

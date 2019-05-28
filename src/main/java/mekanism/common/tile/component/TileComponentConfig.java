@@ -2,8 +2,8 @@ package mekanism.common.tile.component;
 
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,11 +29,11 @@ public class TileComponentConfig implements ITileComponent {
     public static SideData EMPTY = new SideData("Empty", EnumColor.BLACK, InventoryUtils.EMPTY);
 
     public TileEntityContainerBlock tileEntity;
-    public List<TransmissionType> transmissions = new ArrayList<>();
-    private Map<TransmissionType, SideConfig> sideConfigs = new HashMap<>();
-    private Map<TransmissionType, ArrayList<SideData>> sideOutputs = new HashMap<>();
-    private Map<TransmissionType, Boolean> ejecting = new HashMap<>();
-    private Map<TransmissionType, Boolean> canEject = new HashMap<>();
+    private List<TransmissionType> transmissions = new ArrayList<>();
+    private Map<TransmissionType, SideConfig> sideConfigs = new EnumMap<>(TransmissionType.class);
+    private Map<TransmissionType, ArrayList<SideData>> sideOutputs = new EnumMap<>(TransmissionType.class);
+    private Map<TransmissionType, Boolean> ejecting = new EnumMap<>(TransmissionType.class);
+    private Map<TransmissionType, Boolean> canEject = new EnumMap<>(TransmissionType.class);
 
     public TileComponentConfig(TileEntityContainerBlock tile, TransmissionType... types) {
         tileEntity = tile;
@@ -41,6 +41,10 @@ public class TileComponentConfig implements ITileComponent {
             addSupported(type);
         }
         tile.components.add(this);
+    }
+
+    public List<TransmissionType> getTransmissions() {
+        return transmissions;
     }
 
     public void readFrom(TileComponentConfig config) {

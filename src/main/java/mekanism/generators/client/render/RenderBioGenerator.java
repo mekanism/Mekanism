@@ -1,6 +1,6 @@
 package mekanism.generators.client.render;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -22,7 +22,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 
     private static final int stages = 40;
     private ModelBioGenerator model = new ModelBioGenerator();
-    private Map<EnumFacing, DisplayInteger[]> energyDisplays = new HashMap<>();
+    private Map<EnumFacing, DisplayInteger[]> energyDisplays = new EnumMap<>(EnumFacing.class);
 
     @Override
     public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {

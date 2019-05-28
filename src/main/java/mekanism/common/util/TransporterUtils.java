@@ -75,12 +75,11 @@ public final class TransporterUtils {
     public static void incrementColor(ILogisticalTransporter tileEntity) {
         if (tileEntity.getColor() == null) {
             tileEntity.setColor(colors.get(0));
-            return;
         } else if (colors.indexOf(tileEntity.getColor()) == colors.size() - 1) {
             tileEntity.setColor(null);
-            return;
+        } else {
+            int index = colors.indexOf(tileEntity.getColor());
+            tileEntity.setColor(colors.get(index + 1));
         }
-        int index = colors.indexOf(tileEntity.getColor());
-        tileEntity.setColor(colors.get(index + 1));
     }
 }

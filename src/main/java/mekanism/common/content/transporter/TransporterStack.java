@@ -33,9 +33,9 @@ public class TransporterStack {
     public EnumFacing idleDir = null;
     public Coord4D originalLocation;
     public Coord4D homeLocation;
-    public Coord4D clientNext;
-    public Coord4D clientPrev;
-    public Path pathType;
+    private Coord4D clientNext;
+    private Coord4D clientPrev;
+    private Path pathType;
     private List<Coord4D> pathToTarget = new ArrayList<>();
 
     public static TransporterStack readFromNBT(NBTTagCompound nbtTags) {
@@ -140,11 +140,15 @@ public class TransporterStack {
     }
 
     public boolean hasPath() {
-        return getPath() != null && getPath().size() >= 2;
+        return pathToTarget != null && pathToTarget.size() >= 2;
     }
 
     public List<Coord4D> getPath() {
         return pathToTarget;
+    }
+
+    public Path getPathType() {
+        return pathType;
     }
 
     public TransitResponse recalculatePath(TransitRequest request, ILogisticalTransporter transporter, int min) {
@@ -153,9 +157,9 @@ public class TransporterStack {
             return TransitResponse.EMPTY;
         }
         idleDir = null;
-        setPath(newPath.path, Path.DEST);
+        setPath(newPath.getPath(), Path.DEST);
         initiatedPath = true;
-        return newPath.response;
+        return newPath.getResponse();
     }
 
     public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min) {
@@ -164,9 +168,9 @@ public class TransporterStack {
             return TransitResponse.EMPTY;
         }
         idleDir = null;
-        setPath(newPath.path, Path.DEST);
+        setPath(newPath.getPath(), Path.DEST);
         initiatedPath = true;
-        return newPath.response;
+        return newPath.getResponse();
     }
 
     public boolean calculateIdle(ILogisticalTransporter transporter) {
@@ -226,25 +230,20 @@ public class TransporterStack {
     }
 
     public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from) {
-        if (!CapabilityUtils.hasCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite())) {
-            return false;
+        EnumFacing opposite = from.getOpposite();
+        ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite);
+        if (transporter != null && CapabilityUtils.getCapability(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite).canConnectMutual(opposite)) {
+            return transporter.getColor() == color || transporter.getColor() == null;
         }
-        ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite());
-        if (!CapabilityUtils.getCapability(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, from.getOpposite()).canConnectMutual(from.getOpposite())) {
-            return false;
-        }
-        return transporter.getColor() == color || transporter.getColor() == null;
+        return false;
     }
 
     public boolean canInsertToTransporter(ILogisticalTransporter transporter, EnumFacing side) {
-        if (!transporter.canConnectMutual(side)) {
-            return false;
-        }
-        return transporter.getColor() == color || transporter.getColor() == null;
+        return transporter.canConnectMutual(side) && (transporter.getColor() == color || transporter.getColor() == null);
     }
 
     public Coord4D getDest() {
-        return getPath().get(0);
+        return pathToTarget.get(0);
     }
 
     public enum Path {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -83,8 +84,8 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
 
     public void tickSelf(World world) {
         ArrayList<String> idsToKill = new ArrayList<>();
-        HashMap<String, HashSet<Coord4D>> tilesToKill = new HashMap<>();
-        for (Map.Entry<String, MultiblockCache<T>> entry : inventories.entrySet()) {
+        Map<String, Set<Coord4D>> tilesToKill = new HashMap<>();
+        for (Entry<String, MultiblockCache<T>> entry : inventories.entrySet()) {
             String inventoryID = entry.getKey();
             for (Coord4D obj : entry.getValue().locations) {
                 if (obj.dimensionId == world.provider.getDimension() && obj.exists(world)) {
@@ -102,7 +103,7 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
                 idsToKill.add(inventoryID);
             }
         }
-        for (Map.Entry<String, HashSet<Coord4D>> entry : tilesToKill.entrySet()) {
+        for (Entry<String, Set<Coord4D>> entry : tilesToKill.entrySet()) {
             for (Coord4D obj : entry.getValue()) {
                 inventories.get(entry.getKey()).locations.remove(obj);
             }

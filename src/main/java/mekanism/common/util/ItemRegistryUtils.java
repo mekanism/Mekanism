@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +16,7 @@ public final class ItemRegistryUtils {
     private static final Map<String, String> modIDMap = new HashMap<>();
 
     private static void populateMap() {
-        for (Map.Entry<String, ModContainer> entry : Loader.instance().getIndexedModList().entrySet()) {
+        for (Entry<String, ModContainer> entry : Loader.instance().getIndexedModList().entrySet()) {
             modIDMap.put(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue().getName());
         }
     }

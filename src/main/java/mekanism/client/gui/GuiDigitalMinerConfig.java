@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -97,38 +98,42 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         }
 
         if (stackSwitch == 0) {
-            for (Map.Entry<MOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0) {
-                    if (entry.getValue().stackIndex == -1 || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex = 0;
-                    } else if (entry.getValue().stackIndex < entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex++;
+            for (Entry<MOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
+                StackData data = entry.getValue();
+                if (data.iterStacks != null && data.iterStacks.size() > 0) {
+                    if (data.stackIndex == -1 || data.stackIndex == data.iterStacks.size() - 1) {
+                        data.stackIndex = 0;
+                    } else if (data.stackIndex < data.iterStacks.size() - 1) {
+                        data.stackIndex++;
                     }
-                    entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
+                    data.renderStack = data.iterStacks.get(data.stackIndex);
                 }
             }
 
-            for (Map.Entry<MModIDFilter, StackData> entry : modIDStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0) {
-                    if (entry.getValue().stackIndex == -1 || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex = 0;
-                    } else if (entry.getValue().stackIndex < entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex++;
+            for (Entry<MModIDFilter, StackData> entry : modIDStacks.entrySet()) {
+                StackData data = entry.getValue();
+                if (data.iterStacks != null && data.iterStacks.size() > 0) {
+                    if (data.stackIndex == -1 || data.stackIndex == data.iterStacks.size() - 1) {
+                        data.stackIndex = 0;
+                    } else if (data.stackIndex < data.iterStacks.size() - 1) {
+                        data.stackIndex++;
                     }
-                    entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
+                    data.renderStack = data.iterStacks.get(data.stackIndex);
                 }
             }
 
             stackSwitch = 20;
         } else {
-            for (Map.Entry<MOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0) {
-                    entry.getValue().renderStack = ItemStack.EMPTY;
+            for (Entry<MOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
+                StackData data = entry.getValue();
+                if (data.iterStacks != null && data.iterStacks.size() == 0) {
+                    data.renderStack = ItemStack.EMPTY;
                 }
             }
-            for (Map.Entry<MModIDFilter, StackData> entry : modIDStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0) {
-                    entry.getValue().renderStack = ItemStack.EMPTY;
+            for (Entry<MModIDFilter, StackData> entry : modIDStacks.entrySet()) {
+                StackData data = entry.getValue();
+                if (data.iterStacks != null && data.iterStacks.size() == 0) {
+                    data.renderStack = ItemStack.EMPTY;
                 }
             }
         }

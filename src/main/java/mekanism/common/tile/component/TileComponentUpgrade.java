@@ -1,9 +1,10 @@
 package mekanism.common.tile.component;
 
 import io.netty.buffer.ByteBuf;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -30,8 +31,8 @@ public class TileComponentUpgrade implements ITileComponent {
      * TileEntity implementing this component.
      */
     public TileEntityContainerBlock tileEntity;
-    private Map<Upgrade, Integer> upgrades = new HashMap<>();
-    private Set<Upgrade> supported = new HashSet<>();
+    private Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
+    private Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
     /**
      * The inventory slot the upgrade slot of this component occupies.
      */
@@ -156,7 +157,7 @@ public class TileComponentUpgrade implements ITileComponent {
     @Override
     public void write(TileNetworkList data) {
         data.add(upgrades.size());
-        for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
+        for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             data.add(entry.getKey().ordinal());
             data.add(entry.getValue());
         }

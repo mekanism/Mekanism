@@ -15,7 +15,7 @@ import mekanism.common.recipe.machines.MachineRecipe;
 
 public abstract class RecipeMapModification<INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> implements IAction {
 
-    protected final HashMap<INPUT, RECIPE> recipes;
+    protected final Map<INPUT, RECIPE> recipes;
     protected final Map<INPUT, RECIPE> map;
     protected final String name;
     protected boolean add;

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -46,7 +47,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     /**
      * The players currently using this block.
      */
-    public HashSet<EntityPlayer> playersUsing = new HashSet<>();
+    public Set<EntityPlayer> playersUsing = new HashSet<>();
 
     /**
      * A timer used to send packets to clients.

@@ -2,6 +2,7 @@ package mekanism.common.content.transporter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
@@ -88,8 +89,9 @@ public class TransitRequest {
             slotMap.put(slot, stack.getCount());
             itemMap.put(hashed, Pair.of(stack.getCount(), slotMap));
         } else {
-            int count = itemMap.get(hashed).getLeft() + stack.getCount();
-            Map<Integer, Integer> slotMap = itemMap.get(hashed).getRight();
+            Pair<Integer, Map<Integer, Integer>> itemInfo = itemMap.get(hashed);
+            int count = itemInfo.getLeft() + stack.getCount();
+            Map<Integer, Integer> slotMap = itemInfo.getRight();
             slotMap.put(slot, stack.getCount());
             itemMap.put(hashed, Pair.of(count, slotMap));
         }
@@ -100,12 +102,7 @@ public class TransitRequest {
     }
 
     public boolean hasType(ItemStack stack) {
-        for (HashedItem item : itemMap.keySet()) {
-            if (InventoryUtils.areItemsStackable(stack, item.getStack())) {
-                return true;
-            }
-        }
-        return false;
+        return itemMap.keySet().stream().anyMatch(item -> InventoryUtils.areItemsStackable(stack, item.getStack()));
     }
 
     /**
@@ -129,8 +126,8 @@ public class TransitRequest {
             toSend = i;
 
             // generate our ID/ItemStack map based on the amount of items we're sending
-            int amount = toSend.getCount();
-            for (Map.Entry<Integer, Integer> entry : slots.entrySet()) {
+            int amount = getSendingAmount();
+            for (Entry<Integer, Integer> entry : slots.entrySet()) {
                 int toUse = Math.min(amount, entry.getValue());
                 idMap.put(entry.getKey(), toUse);
                 amount -= toUse;
@@ -144,12 +141,16 @@ public class TransitRequest {
             return toSend;
         }
 
+        public int getSendingAmount() {
+            return toSend.getCount();
+        }
+
         public boolean isEmpty() {
             return this == EMPTY || idMap.isEmpty() || (toSend != null && toSend.isEmpty());
         }
 
         public ItemStack getRejected(ItemStack orig) {
-            return StackUtils.size(orig, orig.getCount() - toSend.getCount());
+            return StackUtils.size(orig, orig.getCount() - getSendingAmount());
         }
 
         public InvStack getInvStack(TileEntity tile, EnumFacing side) {

@@ -2,6 +2,7 @@ package mekanism.api.infuse;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -82,7 +83,7 @@ public class InfuseRegistry {
      * @return the ItemStack's InfuseObject
      */
     public static InfuseObject getObject(ItemStack itemStack) {
-        for (Map.Entry<ItemStack, InfuseObject> obj : infuseObjects.entrySet()) {
+        for (Entry<ItemStack, InfuseObject> obj : infuseObjects.entrySet()) {
             if (ItemHandlerHelper.canItemStacksStack(obj.getKey(), itemStack)) {
                 return obj.getValue();
             }

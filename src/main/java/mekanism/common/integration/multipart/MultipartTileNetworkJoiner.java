@@ -1,8 +1,12 @@
 package mekanism.common.integration.multipart;
 
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.multipart.IMultipartTile;
@@ -25,7 +29,8 @@ import net.minecraft.world.IBlockAccess;
  */
 public class MultipartTileNetworkJoiner implements ITileNetwork {
 
-    private final HashMap<Byte, ITileNetwork> tileSideMap;
+    //TODO nullable-ish enum map
+    private final Int2ObjectMap<ITileNetwork> tileSideMap;
 
     /**
      * Called by MCMP's multipart container when more than one part implements {@link ITileNetwork}.<br>
@@ -35,7 +40,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
      * @param tileList A list of the tile entities that implement {@link ITileNetwork} in the container.
      */
     public MultipartTileNetworkJoiner(List<ITileNetwork> tileList) {
-        tileSideMap = new HashMap<>();
+        tileSideMap = new Int2ObjectArrayMap<>(7);
         IMultipartContainer container = null;
 
         TileEntity first = (TileEntity) tileList.get(0);
@@ -103,7 +108,8 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         TileNetworkList childData = new TileNetworkList();
-        for (byte slotValue : tileSideMap.keySet()) {
+        for (IntIterator iterator = tileSideMap.keySet().iterator(); iterator.hasNext(); ) {
+            int slotValue = iterator.nextInt();
             tileSideMap.get(slotValue).getNetworkedData(childData);
             data.addAll(childData);
             childData.clear();

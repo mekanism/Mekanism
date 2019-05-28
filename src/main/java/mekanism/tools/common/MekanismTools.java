@@ -76,6 +76,7 @@ public class MekanismTools implements IModule {
     public static ArmorMaterial armorGLOWSTONE;
     public static ArmorMaterial armorSTEEL;
 
+    //Can't use EnumMap as the custom ToolMaterial's do not exist yet
     public static Map<ToolMaterial, Float> AXE_DAMAGE = new HashMap<>();
     public static Map<ToolMaterial, Float> AXE_SPEED = new HashMap<>();
 

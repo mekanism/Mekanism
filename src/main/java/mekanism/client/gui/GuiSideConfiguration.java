@@ -46,7 +46,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         ySize = 95;
         configurable = tile;
         ResourceLocation resource = getGuiLocation();
-        for (TransmissionType type : configurable.getConfig().transmissions) {
+        for (TransmissionType type : configurable.getConfig().getTransmissions()) {
             GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, resource);
             addGuiElement(tab);
             configTabs.add(tab);
@@ -62,7 +62,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     }
 
     public TransmissionType getTopTransmission() {
-        return configurable.getConfig().transmissions.get(0);
+        return configurable.getConfig().getTransmissions().get(0);
     }
 
     public void setCurrentType(TransmissionType type) {

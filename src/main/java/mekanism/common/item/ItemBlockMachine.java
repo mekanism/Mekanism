@@ -6,6 +6,7 @@ import ic2.api.item.ISpecialElectricItem;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -222,7 +223,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             }
             if (type.supportsUpgrades && ItemDataUtils.hasData(itemstack, "upgrades")) {
                 Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
-                for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
+                for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                     list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
                 }
             }

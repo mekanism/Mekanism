@@ -1,7 +1,7 @@
 package mekanism.client.render;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
@@ -56,7 +56,7 @@ public class MekanismRenderer {
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite laserIcon;
     public static float GAS_RENDER_BASE = 0.2F;
-    public static Map<TransmissionType, TextureAtlasSprite> overlays = new HashMap<>();
+    public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     public static int[] directionMap = new int[]{3, 0, 1, 2};
     private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
     public static TextureAtlasSprite missingIcon;

@@ -1,11 +1,11 @@
 package mekanism.common.tile.component;
 
 import io.netty.buffer.ByteBuf;
-import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -14,6 +14,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
@@ -36,15 +37,15 @@ import net.minecraftforge.fluids.FluidTank;
 
 public class TileComponentEjector implements ITileComponent {
 
-    public static final int GAS_OUTPUT = 256;
-    public static final int FLUID_OUTPUT = 256;
-    public TileEntityContainerBlock tileEntity;
-    public boolean strictInput;
-    public EnumColor outputColor;
-    public EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
-    public int tickDelay = 0;
-    public Map<TransmissionType, SideData> sideData = new HashMap<>();
-    public Map<TransmissionType, int[]> trackers = new HashMap<>();
+    private static final int GAS_OUTPUT = 256;
+    private static final int FLUID_OUTPUT = 256;
+    private TileEntityContainerBlock tileEntity;
+    private boolean strictInput;
+    private EnumColor outputColor;
+    private EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
+    private int tickDelay = 0;
+    private Map<TransmissionType, SideData> sideData = new EnumMap<>(TransmissionType.class);
+    public Map<TransmissionType, int[]> trackers = new EnumMap<>(TransmissionType.class);
 
     public TileComponentEjector(TileEntityContainerBlock tile) {
         tileEntity = tile;
@@ -65,13 +66,13 @@ public class TileComponentEjector implements ITileComponent {
         sideData = ejector.sideData;
     }
 
-    private List<EnumFacing> getTrackedOutputs(TransmissionType type, int index, Set<EnumFacing> dirs) {
-        List<EnumFacing> sides = new ArrayList<>();
-        for (int i = trackers.get(type)[index] + 1; i <= trackers.get(type)[index] + 6; i++) {
-            for (EnumFacing side : dirs) {
-                if (EnumFacing.byIndex(i % 6) == side) {
-                    sides.add(side);
-                }
+    private Set<EnumFacing> getTrackedOutputs(TransmissionType type, int index, Set<EnumFacing> dirs) {
+        Set<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
+        int tracker = trackers.get(type)[index];
+        for (int i = tracker + 1; i <= tracker + 6; i++) {
+            EnumFacing side = EnumFacing.byIndex(i % 6);
+            if (dirs.contains(side)) {
+                sides.add(side);
             }
         }
         return sides;
@@ -87,31 +88,39 @@ public class TileComponentEjector implements ITileComponent {
             tickDelay--;
         }
         if (!tileEntity.getWorld().isRemote) {
-            if (sideData.get(TransmissionType.GAS) != null && getEjecting(TransmissionType.GAS)) {
-                SideData data = sideData.get(TransmissionType.GAS);
-                Set<EnumFacing> outputSides = getOutputSides(TransmissionType.GAS, data);
-                if (((ITankManager) tileEntity).getTanks() != null) {
-                    GasTank tank = (GasTank) ((ITankManager) tileEntity).getTanks()[data.availableSlots[0]];
-                    if (tank.getStored() > 0) {
-                        GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
-                        int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
-                        tank.draw(emit, true);
-                    }
-                }
-            }
+            eject(TransmissionType.GAS);
+            eject(TransmissionType.FLUID);
+        }
+    }
 
-            if (sideData.get(TransmissionType.FLUID) != null && getEjecting(TransmissionType.FLUID)) {
-                SideData data = sideData.get(TransmissionType.FLUID);
-                Set<EnumFacing> outputSides = getOutputSides(TransmissionType.FLUID, data);
-                if (((ITankManager) tileEntity).getTanks() != null) {
-                    FluidTank tank = (FluidTank) ((ITankManager) tileEntity).getTanks()[data.availableSlots[0]];
-                    if (tank.getFluidAmount() > 0) {
-                        FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
-                        int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
-                        tank.drain(emit, true);
-                    }
+    private void eject(TransmissionType type) {
+        SideData data = sideData.get(type);
+        if (data != null && getEjecting(type)) {
+            ITankManager tankManager = (ITankManager) this.tileEntity;
+            if (tankManager.getTanks() != null) {
+                Set<EnumFacing> outputSides = getOutputSides(type, data);
+                if (type == TransmissionType.GAS) {
+                    ejectGas(outputSides, (GasTank) tankManager.getTanks()[data.availableSlots[0]]);
+                } else if (type == TransmissionType.FLUID) {
+                    ejectFluid(outputSides, (FluidTank) tankManager.getTanks()[data.availableSlots[0]]);
                 }
             }
+        }
+    }
+
+    private void ejectGas(Set<EnumFacing> outputSides, GasTank tank) {
+        if (tank.getGas() != null && tank.getStored() > 0) {
+            GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
+            int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
+            tank.draw(emit, true);
+        }
+    }
+
+    private void ejectFluid(Set<EnumFacing> outputSides, FluidTank tank) {
+        if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
+            FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
+            int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
+            tank.drain(emit, true);
         }
     }
 
@@ -119,7 +128,7 @@ public class TileComponentEjector implements ITileComponent {
         Set<EnumFacing> outputSides = EnumSet.noneOf(EnumFacing.class);
         TileComponentConfig config = ((ISideConfiguration) tileEntity).getConfig();
         SideConfig sideConfig = config.getConfig(type);
-        ArrayList<SideData> outputs = config.getOutputs(type);
+        List<SideData> outputs = config.getOutputs(type);
         EnumFacing[] facings = MekanismUtils.getBaseOrientations(tileEntity.facing);
         for (int i = 0; i < EnumFacing.VALUES.length; i++) {
             EnumFacing side = facings[i];
@@ -137,32 +146,32 @@ public class TileComponentEjector implements ITileComponent {
 
         SideData data = sideData.get(TransmissionType.ITEM);
         Set<EnumFacing> outputSides = getOutputSides(TransmissionType.ITEM, data);
-        for (int index = 0; index < sideData.get(TransmissionType.ITEM).availableSlots.length; index++) {
-            int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];
+        for (int index = 0; index < data.availableSlots.length; index++) {
+            int slotID = data.availableSlots[index];
             if (tileEntity.getStackInSlot(slotID).isEmpty()) {
                 continue;
             }
 
             ItemStack stack = tileEntity.getStackInSlot(slotID);
-            List<EnumFacing> outputs = getTrackedOutputs(TransmissionType.ITEM, index, outputSides);
+            Coord4D tileCoord = Coord4D.get(tileEntity);
+            Set<EnumFacing> outputs = getTrackedOutputs(TransmissionType.ITEM, index, outputSides);
             for (EnumFacing side : outputs) {
-                TileEntity tile = Coord4D.get(tileEntity).offset(side).getTileEntity(tileEntity.getWorld());
-                ItemStack prev = stack.copy();
+                TileEntity tile = tileCoord.offset(side).getTileEntity(tileEntity.getWorld());
+                int prevCount = stack.getCount();
 
-                if (CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite())) {
-                    TransitResponse response = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()),
-                          TransitRequest.getFromStack(stack.copy()), outputColor, true, 0);
-                    if (!response.isEmpty()) {
-                        stack.shrink(response.getStack().getCount());
-                    }
+                ILogisticalTransporter capability = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite());
+                TransitRequest transitRequest = TransitRequest.getFromStack(stack.copy());
+                TransitResponse response;
+                if (capability == null) {
+                    response = InventoryUtils.putStackInInventory(tile, transitRequest, side, false);
                 } else {
-                    TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(stack.copy()), side, false);
-                    if (!response.isEmpty()) {
-                        stack.shrink(response.getStack().getCount());
-                    }
+                    response = TransporterUtils.insert(tileEntity, capability, transitRequest, outputColor, true, 0);
+                }
+                if (!response.isEmpty()) {
+                    stack.shrink(response.getSendingAmount());
                 }
 
-                if (stack.isEmpty() || prev.getCount() != stack.getCount()) {
+                if (stack.isEmpty() || prevCount != stack.getCount()) {
                     trackers.get(TransmissionType.ITEM)[index] = side.ordinal();
                 }
                 if (stack.isEmpty()) {
@@ -206,25 +215,19 @@ public class TileComponentEjector implements ITileComponent {
     @Override
     public void read(NBTTagCompound nbtTags) {
         strictInput = nbtTags.getBoolean("strictInput");
-
         if (nbtTags.hasKey("ejectColor")) {
-            outputColor = TransporterUtils.colors.get(nbtTags.getInteger("ejectColor"));
+            outputColor = readColor(nbtTags.getInteger("ejectColor"));
         }
-
-        for (TransmissionType type : sideData.keySet()) {
-            for (int i = 0; i < sideData.get(type).availableSlots.length; i++) {
+        for (Entry<TransmissionType, SideData> entry : sideData.entrySet()) {
+            TransmissionType type = entry.getKey();
+            SideData data = entry.getValue();
+            for (int i = 0; i < data.availableSlots.length; i++) {
                 trackers.get(type)[i] = nbtTags.getInteger("tracker" + type.getTransmission() + i);
             }
         }
-
         for (int i = 0; i < 6; i++) {
             if (nbtTags.hasKey("inputColors" + i)) {
-                int inC = nbtTags.getInteger("inputColors" + i);
-                if (inC != -1) {
-                    inputColors[i] = TransporterUtils.colors.get(inC);
-                } else {
-                    inputColors[i] = null;
-                }
+                inputColors[i] = readColor(nbtTags.getInteger("inputColors" + i));
             }
         }
     }
@@ -232,23 +235,9 @@ public class TileComponentEjector implements ITileComponent {
     @Override
     public void read(ByteBuf dataStream) {
         strictInput = dataStream.readBoolean();
-
-        int c = dataStream.readInt();
-
-        if (c != -1) {
-            outputColor = TransporterUtils.colors.get(c);
-        } else {
-            outputColor = null;
-        }
-
+        outputColor = readColor(dataStream.readInt());
         for (int i = 0; i < 6; i++) {
-            int inC = dataStream.readInt();
-
-            if (inC != -1) {
-                inputColors[i] = TransporterUtils.colors.get(inC);
-            } else {
-                inputColors[i] = null;
-            }
+            inputColors[i] = readColor(dataStream.readInt());
         }
     }
 
@@ -256,39 +245,41 @@ public class TileComponentEjector implements ITileComponent {
     public void write(NBTTagCompound nbtTags) {
         nbtTags.setBoolean("strictInput", strictInput);
         if (outputColor != null) {
-            nbtTags.setInteger("ejectColor", TransporterUtils.colors.indexOf(outputColor));
+            nbtTags.setInteger("ejectColor", getColorIndex(outputColor));
         }
-        for (TransmissionType type : sideData.keySet()) {
-            for (int i = 0; i < sideData.get(type).availableSlots.length; i++) {
+        for (Entry<TransmissionType, SideData> entry : sideData.entrySet()) {
+            TransmissionType type = entry.getKey();
+            SideData data = entry.getValue();
+            for (int i = 0; i < data.availableSlots.length; i++) {
                 nbtTags.setInteger("tracker" + type.getTransmission() + i, trackers.get(type)[i]);
             }
         }
         for (int i = 0; i < 6; i++) {
-            if (inputColors[i] == null) {
-                nbtTags.setInteger("inputColors" + i, -1);
-            } else {
-                nbtTags.setInteger("inputColors" + i, TransporterUtils.colors.indexOf(inputColors[i]));
-            }
+            nbtTags.setInteger("inputColors" + i, getColorIndex(inputColors[i]));
         }
     }
 
     @Override
     public void write(TileNetworkList data) {
         data.add(strictInput);
-
-        if (outputColor != null) {
-            data.add(TransporterUtils.colors.indexOf(outputColor));
-        } else {
-            data.add(-1);
-        }
-
+        data.add(getColorIndex(outputColor));
         for (int i = 0; i < 6; i++) {
-            if (inputColors[i] == null) {
-                data.add(-1);
-            } else {
-                data.add(TransporterUtils.colors.indexOf(inputColors[i]));
-            }
+            data.add(getColorIndex(inputColors[i]));
         }
+    }
+
+    private EnumColor readColor(int inputColor) {
+        if (inputColor == -1) {
+            return null;
+        }
+        return TransporterUtils.colors.get(inputColor);
+    }
+
+    private int getColorIndex(EnumColor color) {
+        if (color == null) {
+            return -1;
+        }
+        return TransporterUtils.colors.indexOf(color);
     }
 
     @Override

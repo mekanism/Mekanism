@@ -46,8 +46,8 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         }
     }
 
-    public static HashMap<String, IBakedModel> buildModelMap(OBJModel objModel) {
-        HashMap<String, IBakedModel> modelParts = new HashMap<>();
+    public static Map<String, IBakedModel> buildModelMap(OBJModel objModel) {
+        Map<String, IBakedModel> modelParts = new HashMap<>();
         Set<String> keys = objModel.getMatLib().getGroups().keySet();
         if (!keys.isEmpty()) {
             for (String key : keys) {

@@ -1,12 +1,15 @@
 package mekanism.client.render;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.HashMap;
+import java.util.Map;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.ColourRGBA;
 
 public class ColourTemperature extends ColourRGBA {
 
-    public static HashMap<Integer, ColourTemperature> cache = new HashMap<>();
+    public static Int2ObjectMap<ColourTemperature> cache = new Int2ObjectOpenHashMap<>();
 
     public double temp;
 
@@ -76,33 +79,11 @@ public class ColourTemperature extends ColourRGBA {
 
         alpha = temperature / 1000;
 
-        if (red < 0) {
-            red = 0;
-        }
-        if (red > 1) {
-            red = 1;
-        }
-
-        if (green < 0) {
-            green = 0;
-        }
-        if (green > 1) {
-            green = 1;
-        }
-
-        if (blue < 0) {
-            blue = 0;
-        }
-        if (blue > 1) {
-            blue = 1;
-        }
-
-        if (alpha < 0) {
-            alpha = 0;
-        }
-        if (alpha > 1) {
-            alpha = 1;
-        }
+        //clamp to 0 <= n >= 1
+        red = Math.min(Math.max(red, 0), 1);
+        green = Math.min(Math.max(green, 0), 1);
+        blue = Math.min(Math.max(blue, 0), 1);
+        alpha = Math.min(Math.max(alpha, 0), 1);
 
         ColourTemperature colourTemperature = new ColourTemperature(red, green, blue, alpha, temperature);
         cache.put((int) absTemp, colourTemperature);
