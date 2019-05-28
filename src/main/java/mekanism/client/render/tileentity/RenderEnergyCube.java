@@ -86,9 +86,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             MekanismRenderer.blendOn(coreRenderHelper);
             MekanismRenderer.glowOn();
 
-            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true);
-            GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            coreColorRenderHelper.color(tileEntity.tier.getBaseTier().getColor());
+            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tileEntity.tier.getBaseTier().getColor());
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
             GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
             GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);

@@ -62,9 +62,7 @@ public class GuiSeismicReader extends GuiScreen {
             renderHelper.color3f(0.5f, 0.5f, 1f);
         }
         drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
-        renderHelper.cleanup();
-        //TODO: Once I make cleanup fully reset the state then I don't need to recreate the variable
-        renderHelper = new MekanismRenderHelper();
+        renderHelper.cleanup();//Clean it up. We don't have to recreate it as we don't need a matrix
 
         // Draws the down button
         if (downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
@@ -74,16 +72,16 @@ public class GuiSeismicReader extends GuiScreen {
         renderHelper.cleanup();
 
         // Fix the overlapping if > 100
-        GlStateManager.pushMatrix();
+        renderHelper = new MekanismRenderHelper(true);
         GlStateManager.translate(guiWidth + 48, guiHeight + 87, 0);
 
         if (currentLayer >= 100) {
             GlStateManager.translate(0, 1, 0);
-            GlStateManager.scale(0.7f, 0.7f, 0.7f);
+            renderHelper.scale(0.7F);
         }
 
         fontRenderer.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
 
         // Render the item stacks
         for (int i = 0; i < 9; i++) {
@@ -102,7 +100,7 @@ public class GuiSeismicReader extends GuiScreen {
 
                 if (i != 4) {
                     GlStateManager.translate(1.5f, 0, 0);
-                    GlStateManager.scale(0.8f, 0.8f, 0.8f);
+                    stackRenderHelper.scale(0.8F);
                 }
 
                 stackRenderHelper.enableGUIStandardItemLighting();
@@ -120,11 +118,11 @@ public class GuiSeismicReader extends GuiScreen {
             int lengthX = fontRenderer.getStringWidth(capitalised);
             float renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
-            GlStateManager.pushMatrix();
+            MekanismRenderHelper nameRenderHelper = new MekanismRenderHelper(true);
             GlStateManager.translate(guiWidth + 72, guiHeight + 16, 0);
-            GlStateManager.scale(renderScale, renderScale, renderScale);
+            nameRenderHelper.scale(renderScale);
             fontRenderer.drawString(capitalised, 0, 0, 0x919191);
-            GlStateManager.popMatrix();
+            nameRenderHelper.cleanup();
 
             if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
                 mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
@@ -150,11 +148,11 @@ public class GuiSeismicReader extends GuiScreen {
             }
         }
 
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper abundancy = new MekanismRenderHelper(true);
         GlStateManager.translate(guiWidth + 72, guiHeight + 26, 0);
-        GlStateManager.scale(0.70f, 0.70f, 0.70f);
+        abundancy.scale(0.70F);
         fontRenderer.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
-        GlStateManager.popMatrix();
+        abundancy.cleanup();
         super.drawScreen(mouseX, mouseY, partialTick);
     }
 

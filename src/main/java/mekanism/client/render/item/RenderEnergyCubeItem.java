@@ -27,15 +27,15 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        MekanismRenderHelper cubeRenderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(0.0F, -1.0F, 0.0F);
 
-        MekanismRenderer.blendOn(renderHelper);
+        MekanismRenderer.blendOn(cubeRenderHelper);
 
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
@@ -43,7 +43,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
             energyCube.renderSide(0.0625F, side, side == EnumFacing.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getMinecraft().renderEngine);
         }
-        renderHelper.cleanup();
+        cubeRenderHelper.cleanup();
 
         double energy = ItemDataUtils.getDouble(stack, "energyStored");
 
@@ -53,9 +53,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.blendOn(coreRenderHelper);
             MekanismRenderer.glowOn();
 
-            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true);
-            GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            coreColorRenderHelper.color(tier.getBaseTier().getColor());
+            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tier.getBaseTier().getColor());
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
             GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
             GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);
@@ -68,7 +66,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
 
     }
 

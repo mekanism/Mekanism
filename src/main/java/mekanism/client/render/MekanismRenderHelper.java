@@ -14,7 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class MekanismRenderHelper {
 
     private Deque<Pair<KnownStates, Boolean>> changedStates = new ArrayDeque<>();
-    private final boolean hasMatrix;
+    private boolean hasMatrix;
     private boolean colorSet;
 
     public MekanismRenderHelper() {
@@ -35,6 +35,7 @@ public class MekanismRenderHelper {
         if (colorSet) {
             //Reset the color
             GlStateManager.color(1, 1, 1, 1);
+            colorSet = false;
         }
         while (!changedStates.isEmpty()) {
             Pair<KnownStates, Boolean> stateInfo = changedStates.pop();
@@ -42,6 +43,7 @@ public class MekanismRenderHelper {
         }
         if (hasMatrix) {
             GlStateManager.popMatrix();
+            hasMatrix = false;
         }
     }
 
@@ -57,16 +59,30 @@ public class MekanismRenderHelper {
         return this;
     }
 
+    //Helper wrappers
+    public MekanismRenderHelper scale(float scaleX, float scaleY, float scaleZ) {
+        GlStateManager.scale(scaleX, scaleY, scaleZ);
+        return this;
+    }
+
+    public MekanismRenderHelper scale(double scaleX, double scaleY, double scaleZ) {
+        GlStateManager.scale(scaleX, scaleY, scaleZ);
+        return this;
+    }
+
+    public MekanismRenderHelper scale(float scale) {
+        return scale(scale, scale, scale);
+    }
+
+    public MekanismRenderHelper scale(double scale) {
+        return scale(scale, scale, scale);
+    }
+
     //Color
     public MekanismRenderHelper color(float red, float green, float blue, float alpha) {
         colorSet = true;
         GlStateManager.color(red, green, blue, alpha);
         return this;
-    }
-
-    //TODO: Remove the need for this
-    public MekanismRenderHelper resetColor() {
-        return color(1, 1, 1, 1);
     }
 
     public MekanismRenderHelper colorAlpha(float alpha) {

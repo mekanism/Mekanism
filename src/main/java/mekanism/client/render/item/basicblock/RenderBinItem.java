@@ -1,6 +1,7 @@
 package mekanism.client.render.item.basicblock;
 
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -9,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderBinItem {
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         //TODO: The idea of this is to render the bin's contents onto the bin
         //TODO: Implement it
         /*MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);

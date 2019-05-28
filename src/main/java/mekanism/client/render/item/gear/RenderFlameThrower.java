@@ -2,6 +2,7 @@ package mekanism.client.render.item.gear;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFlamethrower;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
@@ -20,12 +21,12 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
         GlStateManager.rotate(160, 0.0F, 0.0F, 1.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Flamethrower.png"));
 
@@ -46,7 +47,7 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
             } else {//if(type == TransformType.THIRD_PERSON_LEFT_HAND)
                 GlStateManager.translate(-0.5F, 0.7F, 0.0F);
             }
-            GlStateManager.scale(2.5F, 2.5F, 2.5F);
+            localRenderHelper.scale(2.5F);
             GlStateManager.translate(0.0F, -1.0F, -0.5F);
         } else if (transformType == TransformType.GUI) {
             GlStateManager.translate(-0.6F, 0.0F, 0.0F);
@@ -54,7 +55,7 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
         }
 
         flamethrower.render(0.0625F);
-        GlStateManager.popMatrix();
+        localRenderHelper.cleanup();
     }
 
     @Nonnull

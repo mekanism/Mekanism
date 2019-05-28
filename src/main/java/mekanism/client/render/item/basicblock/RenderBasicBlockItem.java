@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.SubTypeItemRenderer;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
@@ -23,19 +24,19 @@ public class RenderBasicBlockItem extends SubTypeItemRenderer<BasicBlockType> {
     }
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         BasicBlockType basicType = BasicBlockType.get(stack);
         if (basicType != null) {
             if (basicType == BasicBlockType.BIN) {
-                RenderBinItem.renderStack(stack, transformType);
+                RenderBinItem.renderStack(stack, transformType, renderHelper);
             } else if (basicType == BasicBlockType.SECURITY_DESK) {
-                RenderSecurityDeskItem.renderStack(stack, transformType);
+                RenderSecurityDeskItem.renderStack(stack, transformType, renderHelper);
             }
         }
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
     }
 
     @Nullable

@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.SubTypeItemRenderer;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
@@ -23,27 +24,27 @@ public class RenderGeneratorItem extends SubTypeItemRenderer<GeneratorType> {
     }
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         GeneratorType generatorType = GeneratorType.get(stack);
         if (generatorType != null) {
             if (generatorType == GeneratorType.BIO_GENERATOR) {
-                RenderBioGeneratorItem.renderStack(stack, transformType);
+                RenderBioGeneratorItem.renderStack(stack, transformType, renderHelper);
             } else if (generatorType == GeneratorType.ADVANCED_SOLAR_GENERATOR) {
-                RenderAdvancedSolarGeneratorItem.renderStack(stack, transformType);
+                RenderAdvancedSolarGeneratorItem.renderStack(stack, transformType, renderHelper);
             } else if (generatorType == GeneratorType.SOLAR_GENERATOR) {
-                RenderSolarGeneratorItem.renderStack(stack, transformType);
+                RenderSolarGeneratorItem.renderStack(stack, transformType, renderHelper);
             } else if (generatorType == GeneratorType.HEAT_GENERATOR) {
-                RenderHeatGeneratorItem.renderStack(stack, transformType);
+                RenderHeatGeneratorItem.renderStack(stack, transformType, renderHelper);
             } else if (generatorType == GeneratorType.GAS_GENERATOR) {
-                RenderGasGeneratorItem.renderStack(stack, transformType);
+                RenderGasGeneratorItem.renderStack(stack, transformType, renderHelper);
             } else if (generatorType == GeneratorType.WIND_GENERATOR) {
-                RenderWindGeneratorItem.renderStack(stack, transformType);
+                RenderWindGeneratorItem.renderStack(stack, transformType, renderHelper);
             }
         }
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
 
     }
 

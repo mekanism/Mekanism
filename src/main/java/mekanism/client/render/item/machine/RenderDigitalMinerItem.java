@@ -2,6 +2,7 @@ package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelDigitalMiner;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,7 +19,7 @@ public class RenderDigitalMinerItem {
 
     private static ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(180, 0, 0, 1);
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {

@@ -1,6 +1,7 @@
 package mekanism.generators.client.render.item;
 
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -17,8 +18,8 @@ public class RenderWindGeneratorItem {
     private static ModelWindGenerator windGenerator = new ModelWindGenerator();
     private static int angle = 0;
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
@@ -29,7 +30,7 @@ public class RenderWindGeneratorItem {
                 GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
             }
             GlStateManager.rotate(50, 1.0F, 0.0F, 0.0F);
-            GlStateManager.scale(2.0F, 2.0F, 2.0F);
+            localRenderHelper.scale(2.0F);
             GlStateManager.translate(0.0F, -0.4F, 0.4F);
         } else {
             if (transformType == TransformType.GUI) {
@@ -47,6 +48,6 @@ public class RenderWindGeneratorItem {
         //in a blacklisted dimension or not.
         angle = (angle + 2) % 360;
         windGenerator.render(0.016F, angle);
-        GlStateManager.popMatrix();
+        localRenderHelper.cleanup();
     }
 }

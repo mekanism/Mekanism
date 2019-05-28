@@ -2,6 +2,7 @@ package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelChemicalCrystallizer;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,7 +17,7 @@ public class RenderChemicalCrystallizerItem {
 
     private static ModelChemicalCrystallizer chemicalCrystallizer = new ModelChemicalCrystallizer();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         GlStateManager.translate(0.05F, -1.001F, 0.05F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));

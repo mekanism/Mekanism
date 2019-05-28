@@ -1,5 +1,6 @@
 package mekanism.generators.client.model;
 
+import mekanism.client.render.MekanismRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -60,46 +61,28 @@ public class ModelTurbine extends ModelBase {
 
     public void render(float size, int index) {
         GlStateManager.pushMatrix();
-
         GlStateManager.rotate(index * 5, 0.0F, 1.0F, 0.0F);
-
-        float scale = index * 0.5F;
-        float widthDiv = 16;
-
         extension_south.render(size);
         extension_west.render(size);
         extension_east.render(size);
         extension_north.render(size);
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(-0.25F, 0.0F, 0.0F);
-        GlStateManager.scale(1.0F + scale, 1.0F, 1.0F + scale / widthDiv);
-        GlStateManager.translate(0.25F, 0.0F, 0.0F);
-        blade_west.render(size);
-        GlStateManager.popMatrix();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0.25F, 0.0F, 0.0F);
-        GlStateManager.scale(1.0F + scale, 1.0F, 1.0F + scale / widthDiv);
-        GlStateManager.translate(-0.25F, 0.0F, 0.0F);
-        blade_east.render(size);
-        GlStateManager.popMatrix();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0.0F, 0.0F, -0.25F);
-        GlStateManager.scale(1.0F + scale / widthDiv, 1.0F, 1.0F + scale);
-        GlStateManager.translate(0.0F, 0.0F, 0.25F);
-        blade_north.render(size);
-        GlStateManager.popMatrix();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0.0F, 0.0F, 0.25F);
-        GlStateManager.scale(1.0F + scale / widthDiv, 1.0F, 1.0F + scale);
-        GlStateManager.translate(0.0F, 0.0F, -0.25F);
-        blade_south.render(size);
-        GlStateManager.popMatrix();
+        float scale = index * 0.5F;
+        float widthDiv = 16;
+        renderBlade(blade_west, size, scale, scale / widthDiv, -0.25F, 0.0F);
+        renderBlade(blade_east, size, scale, scale / widthDiv, 0.25F, 0.0F);
+        renderBlade(blade_north, size, scale / widthDiv, scale, 0.0F, -0.25F);
+        renderBlade(blade_south, size, scale / widthDiv, scale, 0.0F, 0.25F);
 
         GlStateManager.popMatrix();
+    }
+
+    private void renderBlade(ModelRenderer blade, float size, float scaleX, float scaleZ, float transX, float transZ) {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.translate(transX, 0.0F, transZ);//
+        renderHelper.scale(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
+        GlStateManager.translate(-transX, 0.0F, -transZ);//
+        blade.render(size);
+        renderHelper.cleanup();
     }
 
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {

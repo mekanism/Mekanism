@@ -1,6 +1,7 @@
 package mekanism.client.render.item;
 
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
 import net.minecraft.client.Minecraft;
@@ -16,9 +17,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class MekanismItemStackRenderer extends TileEntityItemStackRenderer {
 
-    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType);
+    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper);
 
-    protected abstract void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType);
+    protected abstract void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper);
 
     @Nonnull
     protected abstract TransformType getTransform(@Nonnull ItemStack stack);
@@ -27,13 +28,13 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         return false;
     }
 
-    protected void renderWithTransform(@Nonnull ItemStack stack) {
+    protected void renderWithTransform(@Nonnull ItemStack stack, MekanismRenderHelper renderHelper) {
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
             GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
         }
 
-        renderBlockSpecific(stack, transformType);
+        renderBlockSpecific(stack, transformType, renderHelper);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
@@ -41,7 +42,7 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
             } else {
                 GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
             }
-            renderItemSpecific(stack, transformType);
+            renderItemSpecific(stack, transformType, renderHelper);
         }
     }
 
@@ -50,23 +51,23 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
         GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
 
         //
-        renderWithTransform(stack);
+        renderWithTransform(stack, renderHelper);
         //
 
         //TODO: Make this use helper for lighting and then disable it after bindTexture?
-        GlStateManager.enableLighting();
+        renderHelper.enableLighting();
         GlStateManager.enableLight(0);
         GlStateManager.enableLight(1);
         GlStateManager.enableColorMaterial();
         GlStateManager.colorMaterial(1032, 5634);
-        GlStateManager.enableCull();
+        renderHelper.enableCull();
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
 
         MekanismRenderer.resumeRenderer(tessellator, renderState);
     }

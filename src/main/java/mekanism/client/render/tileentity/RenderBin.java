@@ -35,7 +35,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             if (clientAmount == Integer.MAX_VALUE) {
                 amount = LangUtils.localize("gui.infinite");
             }
-            GlStateManager.pushMatrix();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
             switch (facing) {
                 case NORTH:
                     GlStateManager.translate(x + 0.73, y + 0.83, z - 0.0001);
@@ -58,10 +58,10 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
 
             float scale = 0.03125F;
             float scaler = 0.9F;
-            GlStateManager.scale(scale * scaler, scale * scaler, -0.0001F);
+            renderHelper.scale(scale * scaler, scale * scaler, -0.0001F);
             GlStateManager.rotate(180, 0, 0, 1);
             renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         if (text && !amount.equals("")) {
             renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
@@ -115,8 +115,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             scale = Math.min(scale, maxScale);
         }
 
-        GlStateManager.scale(scale, -scale, scale);
-        renderHelper.disableDepthMask();
+        renderHelper.scale(scale, -scale, scale).disableDepthMask();
         int realHeight = (int) Math.floor(displayHeight / scale);
         int realWidth = (int) Math.floor(displayWidth / scale);
         int offsetX = (realWidth - requiredWidth) / 2;

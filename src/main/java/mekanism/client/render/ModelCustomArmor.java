@@ -183,7 +183,7 @@ public class ModelCustomArmor extends ModelBiped {
         @Override
         public void render(float size) {
             if (ModelCustomArmor.this.modelType != null) {
-                GlStateManager.pushMatrix();
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
                 GlStateManager.translate(0, 0, 0.06F);
                 mc.renderEngine.bindTexture(modelType.resource);
                 if (useModel(biped.modelType, partRender, biped)) {
@@ -197,7 +197,7 @@ public class ModelCustomArmor extends ModelBiped {
                         GlStateManager.translate(0, 0, -0.05F);
                         ArmorModel.gasMaskModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.FREERUNNERS) {
-                        GlStateManager.scale(1.02F, 1.02F, 1.02F);
+                        renderHelper.scale(1.02F);
                         if (partRender == biped.bipedLeftLeg) {
                             GlStateManager.translate(-0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderLeft(0.0625F);
@@ -207,7 +207,7 @@ public class ModelCustomArmor extends ModelBiped {
                         }
                     }
                 }
-                GlStateManager.popMatrix();
+                renderHelper.cleanup();
             }
         }
     }

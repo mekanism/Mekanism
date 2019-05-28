@@ -2,6 +2,7 @@ package mekanism.client.render.item.gear;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFreeRunners;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
@@ -20,19 +21,19 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(90, 0.0F, -1.0F, 0.0F);
-        GlStateManager.scale(2.0F, 2.0F, 2.0F);
+        localRenderHelper.scale(2.0F);
         GlStateManager.translate(0.2F, -1.43F, 0.12F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
         freeRunners.render(0.0625F);
-        GlStateManager.popMatrix();
+        localRenderHelper.cleanup();
     }
 
     @Nonnull

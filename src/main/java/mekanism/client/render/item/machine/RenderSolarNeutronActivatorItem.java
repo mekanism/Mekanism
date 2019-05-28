@@ -2,6 +2,7 @@ package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelSolarNeutronActivator;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,9 +17,9 @@ public class RenderSolarNeutronActivatorItem {
 
     private static ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.scale(0.6F, 0.6F, 0.6F);
+        renderHelper.scale(0.6F);
         GlStateManager.translate(0.0F, -0.55F, 0.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
         solarNeutronActivator.render(0.0625F);

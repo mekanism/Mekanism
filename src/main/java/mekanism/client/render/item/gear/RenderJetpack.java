@@ -2,6 +2,7 @@ package mekanism.client.render.item.gear;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelJetpack;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
@@ -20,11 +21,11 @@ public class RenderJetpack extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(90, 0.0F, -1.0F, 0.0F);

@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.SubTypeItemRenderer;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -23,34 +24,34 @@ public class RenderMachineItem extends SubTypeItemRenderer<MachineType> {
     }
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         MachineType machineType = MachineType.get(stack);
 
         if (machineType != null) {
             if (machineType == MachineType.FLUID_TANK) {
-                RenderFluidTankItem.renderStack(stack, transformType);
+                RenderFluidTankItem.renderStack(stack, transformType, renderHelper);
             } else if (machineType == MachineType.PERSONAL_CHEST) {
-                RenderPersonalChestItem.renderStack(stack, transformType);
+                RenderPersonalChestItem.renderStack(stack, transformType, renderHelper);
             } else if (machineType == MachineType.SOLAR_NEUTRON_ACTIVATOR) {
-                RenderSolarNeutronActivatorItem.renderStack(stack, transformType);
+                RenderSolarNeutronActivatorItem.renderStack(stack, transformType, renderHelper);
             } else if (machineType == MachineType.SEISMIC_VIBRATOR) {
-                RenderSeismicVibratorItem.renderStack(stack, transformType);
+                RenderSeismicVibratorItem.renderStack(stack, transformType, renderHelper);
             } else if (machineType == MachineType.CHEMICAL_CRYSTALLIZER) {
-                RenderChemicalCrystallizerItem.renderStack(stack, transformType);
+                RenderChemicalCrystallizerItem.renderStack(stack, transformType, renderHelper);
             } else if (machineType == MachineType.CHEMICAL_DISSOLUTION_CHAMBER) {
-                RenderChemicalDissolutionChamberItem.renderStack(stack, transformType);
+                RenderChemicalDissolutionChamberItem.renderStack(stack, transformType, renderHelper);
             } else if (machineType == MachineType.QUANTUM_ENTANGLOPORTER) {
-                RenderQuantumEntangloporterItem.renderStack(stack, transformType);
+                RenderQuantumEntangloporterItem.renderStack(stack, transformType, renderHelper);
             } else if (machineType == MachineType.RESISTIVE_HEATER) {
-                RenderResistiveHeaterItem.renderStack(stack, transformType);
+                RenderResistiveHeaterItem.renderStack(stack, transformType, renderHelper);
             } else if (machineType == MachineType.DIGITAL_MINER) {
-                RenderDigitalMinerItem.renderStack(stack, transformType);
+                RenderDigitalMinerItem.renderStack(stack, transformType, renderHelper);
             }
         }
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
 
     }
 

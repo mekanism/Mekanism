@@ -55,7 +55,7 @@ public class RenderFlame extends Render<EntityFlame> {
 
         renderHelper.enableRescaleNormal();
         GlStateManager.rotate(45F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scale(scale, scale, scale);
+        renderHelper.scale(scale);
         GlStateManager.translate(-4F, 0.0F, 0.0F);
 
         for (int j = 0; j < 4; j++) {

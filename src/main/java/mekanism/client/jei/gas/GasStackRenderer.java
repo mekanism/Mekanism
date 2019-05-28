@@ -87,7 +87,6 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlend().enableAlpha();
         drawGas(minecraft, xPosition, yPosition, gasStack);
-        renderHelper.resetColor();
         if (overlay != null) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 200);

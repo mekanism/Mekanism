@@ -101,7 +101,7 @@ public class ModelSecurityDesk extends ModelBase {
         doRender(size);
 
         manager.bindTexture(OVERLAY);
-        GlStateManager.scale(1.001F, 1.001F, 1.001F);
+        renderHelper.scale(1.001F);
         GlStateManager.translate(0, -0.0011F, 0);
         MekanismRenderer.glowOn();
 

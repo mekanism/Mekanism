@@ -29,20 +29,20 @@ public class RenderFluidTankItem {
 
     private static int stages = 1400;
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
         float fluidScale = (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0) / itemMachine.getCapacity(stack);
         FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
         FluidStack fluid = itemMachine.getFluidStack(stack);
 
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper tankRenderHelper = new MekanismRenderHelper(true);
         if (fluid != null && fluidScale > 0) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
-            MekanismRenderer.blendOn(renderHelper);
+            MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
+            MekanismRenderer.blendOn(fluidRenderHelper);
             MekanismRenderer.bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(-0.5, -0.5, -0.5);
             MekanismRenderer.glowOn(fluid.getFluid().getLuminosity(fluid));
-            renderHelper.color(fluid);
+            fluidRenderHelper.color(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
@@ -50,20 +50,20 @@ public class RenderFluidTankItem {
             }
 
             if (fluid.getFluid().isGaseous(fluid)) {
-                renderHelper.colorAlpha(Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
+                fluidRenderHelper.colorAlpha(Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
             MekanismRenderer.glowOff();
-            renderHelper.cleanup();
+            fluidRenderHelper.cleanup();
         }
 
         GlStateManager.translate(0F, -0.9F, 0F);
-        GlStateManager.scale(0.9F, 0.8F, 0.9F);
+        tankRenderHelper.scale(0.9F, 0.8F, 0.9F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
         fluidTank.render(0.073F, tier);
-        GlStateManager.popMatrix();
+        tankRenderHelper.cleanup();
     }
 
     private static DisplayInteger[] getListAndRender(FluidStack fluid) {

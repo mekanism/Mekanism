@@ -54,8 +54,7 @@ public class ModelBalloon extends ModelBase {
     }
 
     public void render(float size, EnumColor color) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).color(color);
-        GlStateManager.scale(1.5F, 1.5F, 1.5F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).color(color).scale(1.5F);
         GlStateManager.translate(0, -0.07F, 0);
 
         Balloon2.render(size);
@@ -65,10 +64,9 @@ public class ModelBalloon extends ModelBase {
 
         renderHelper.cleanup();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(0.2F, 1, 0.2F);
+        renderHelper = new MekanismRenderHelper(true).scale(0.2F, 1, 0.2F);
         String.render(size);
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

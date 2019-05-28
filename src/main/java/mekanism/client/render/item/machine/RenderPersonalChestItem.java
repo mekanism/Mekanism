@@ -1,6 +1,7 @@
 package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,17 +17,16 @@ public class RenderPersonalChestItem {
 
     private static ModelChest personalChest = new ModelChest();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
-
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
         GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
         GlStateManager.translate(0, 1.0F, 1.0F);
-        GlStateManager.scale(1.0F, -1F, -1F);
+        localRenderHelper.scale(1.0F, -1F, -1F);
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
 
         personalChest.renderAll();
-        GlStateManager.popMatrix();
+        localRenderHelper.cleanup();
     }
 }

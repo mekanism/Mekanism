@@ -46,9 +46,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
 
     private void renderPart(EnumColor color, double scale, float ticks, long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
         float ticksScaledTemp = ticks * scaledTemp;
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        GlStateManager.scale(scale, scale, scale);
-        renderHelper.color(color);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(scale).color(color);
         GlStateManager.rotate(ticksScaledTemp * mult1 + shift1, 0, 1, 0);
         GlStateManager.rotate(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
         core.render(0.0625F);

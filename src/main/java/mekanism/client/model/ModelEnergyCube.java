@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
@@ -374,8 +375,7 @@ public class ModelEnergyCube extends ModelBase {
             corner1.render(size);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(1.001F, 1.005F, 1.001F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(1.001F);
         GlStateManager.translate(0, -0.0061F, 0);
         manager.bindTexture(RenderEnergyCube.resources.get(tier));
         MekanismRenderer.glowOn();
@@ -390,7 +390,7 @@ public class ModelEnergyCube extends ModelBase {
         corner1.render(size);
 
         MekanismRenderer.glowOff();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     public void renderSide(float size, EnumFacing side, IOState state, EnergyCubeTier tier, TextureManager renderer) {
