@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -27,7 +28,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         int start = 0;
-        MekanismRenderer.colorFluid(fluid);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(fluid);
         TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
         mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
         while (true) {
@@ -45,7 +46,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock
                 break;
             }
         }
-
+        renderHelper.cleanup();
         mc.renderEngine.bindTexture(getGaugeResource());
         drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
     }

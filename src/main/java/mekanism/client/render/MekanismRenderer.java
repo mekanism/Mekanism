@@ -246,6 +246,7 @@ public class MekanismRenderer {
         glowOn(15);
     }
 
+    //TODO: Handle glow through the render helper
     public static void glowOn(int glow) {
         //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
         try {
@@ -281,32 +282,15 @@ public class MekanismRenderer {
      * Blender .objs have a different handedness of coordinate system to MC, so faces are wound backwards.
      */
     public static void cullFrontFace() {
+        //TODO: Can this method be removed?
         GlStateManager.enableCull();
         GlStateManager.cullFace(CullFace.FRONT);
     }
 
     public static void disableCullFace() {
+        //TODO: Can this method be removed?
         GlStateManager.cullFace(CullFace.BACK);
         GlStateManager.disableCull();
-    }
-
-    public static void colorAlpha(int color) {
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-        float alpha = (color >> 24 & 0xFF) / 255f;
-        GlStateManager.color(red, green, blue, alpha);
-    }
-
-    public static void colorFluid(FluidStack fluid) {
-        colorAlpha(fluid.getFluid().getColor(fluid));
-    }
-
-    public static void color(int color) {
-        float cR = (color >> 16 & 0xFF) / 255.0F;
-        float cG = (color >> 8 & 0xFF) / 255.0F;
-        float cB = (color & 0xFF) / 255.0F;
-        GlStateManager.color(cR, cG, cB);
     }
 
     public static float getPartialTick() {

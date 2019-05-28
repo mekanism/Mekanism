@@ -39,15 +39,12 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
     public void render(FluidTankTier tier, FluidStack fluid, float fluidScale, boolean active, FluidStack valveFluid, double x, double y, double z) {
         if (fluid != null && fluidScale > 0) {
             MekanismRenderHelper renderHelper = initHelper();
-
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(x, y, z);
-
             MekanismRenderer.glowOn(fluid.getFluid().getLuminosity(fluid));
-            MekanismRenderer.colorFluid(fluid);
+            renderHelper.color(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
-
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
@@ -58,29 +55,19 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
-
-            MekanismRenderer.resetColor();
             MekanismRenderer.glowOff();
-
             renderHelper.cleanup();
         }
 
         if (valveFluid != null && !valveFluid.getFluid().isGaseous(valveFluid)) {
             MekanismRenderHelper renderHelper = initHelper();
-
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(x, y, z);
-
             MekanismRenderer.glowOn(valveFluid.getFluid().getLuminosity(valveFluid));
-            MekanismRenderer.colorFluid(valveFluid);
-
+            renderHelper.color(valveFluid);
             DisplayInteger[] valveList = getValveRender(valveFluid);
-
             valveList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
-
             MekanismRenderer.glowOff();
-            MekanismRenderer.resetColor();
-
             renderHelper.cleanup();
         }
     }

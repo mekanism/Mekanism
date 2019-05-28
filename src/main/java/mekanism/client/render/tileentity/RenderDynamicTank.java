@@ -35,7 +35,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 FluidRenderer.translateToOrigin(data.location);
 
                 MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
+                renderHelper.color(tileEntity.structure.fluidStored);
 
                 if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
                     GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity)
@@ -46,23 +46,15 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 }
 
                 MekanismRenderer.glowOff();
-                MekanismRenderer.resetColor();
-
                 renderHelper.cleanup();
 
                 for (ValveData valveData : tileEntity.valveViewing) {
                     MekanismRenderHelper valveRenderHelper = FluidRenderer.initHelper();
-
                     FluidRenderer.translateToOrigin(valveData.location);
-
                     MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
-
+                    valveRenderHelper.color(tileEntity.structure.fluidStored);
                     FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
-
                     MekanismRenderer.glowOff();
-                    MekanismRenderer.resetColor();
-
                     valveRenderHelper.cleanup();
                 }
             }

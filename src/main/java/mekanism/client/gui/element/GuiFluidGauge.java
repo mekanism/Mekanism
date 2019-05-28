@@ -5,6 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.Mekanism;
@@ -39,12 +40,11 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
     }
 
     @Override
-    public int getRenderColor() {
+    protected MekanismRenderHelper applyRenderColor(MekanismRenderHelper renderHelper) {
         if (dummy) {
-            return dummyType.getFluid().getColor();
+            return renderHelper.color(dummyType);
         }
-        FluidStack fluid = infoHandler.getTank().getFluid();
-        return fluid == null ? dummyType.getFluid().getColor() : fluid.getFluid().getColor(fluid);
+        return renderHelper.color(infoHandler.getTank().getFluid());
     }
 
     @Override

@@ -38,10 +38,9 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
             bindTexture(MekanismRenderer.getBlocksTexture());
             if (tileEntity.height - 2 >= 1 && tileEntity.inputTank.getCapacity() > 0) {
                 MekanismRenderHelper renderHelper = initHelper();
-
                 FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
                 MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
-                MekanismRenderer.colorFluid(tileEntity.inputTank.getFluid());
+                renderHelper.color(tileEntity.inputTank.getFluid());
                 DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid());
 
                 float levels = Math.min((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity(), 1);
@@ -71,10 +70,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
                     }
                 }
                 displayList[partialLevels].render();
-
-                MekanismRenderer.resetColor();
                 MekanismRenderer.glowOff();
-
                 renderHelper.cleanup();
             }
         }
@@ -100,8 +96,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
         }
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
-        MekanismRenderer.colorFluid(fluid);
-
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(fluid);
         if (fluid.getFluid().getStill(fluid) == null) {
             DisplayInteger empty = DisplayInteger.createAndStart();
             DisplayInteger.endList();
@@ -118,10 +113,8 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
             model.setSideRender(EnumFacing.DOWN, true);
             displays[CONCAVE_INDEX] = generateLevel(LEVELS - 1, model);
         }
-
-        MekanismRenderer.resetColor();
+        renderHelper.cleanup();
         cachedCenterFluids.put(fluid, displays);
-
         return displays;
     }
 

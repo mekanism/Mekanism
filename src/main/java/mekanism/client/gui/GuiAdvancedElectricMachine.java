@@ -15,6 +15,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
@@ -94,15 +95,11 @@ public class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<REC
         if (gas == null) {
             return;
         }
-
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-
         mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-        //TODO: Use GuiGasGauge?
-        int tint = gas.getGas().getTint();
-        MekanismRenderer.color(tint);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(gas);
         drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, gas.getGas().getSprite(), sizeX, sizeY);
-        MekanismRenderer.resetColor();
+        renderHelper.cleanup();
     }
 }

@@ -49,7 +49,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     FluidRenderer.translateToOrigin(data.location);
 
                     MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.waterStored);
+                    renderHelper.color(tileEntity.structure.waterStored);
 
                     if (tileEntity.structure.waterStored.getFluid().isGaseous()) {
                         GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.waterStored.amount / (float) tileEntity.clientWaterCapacity)
@@ -60,8 +60,6 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     }
 
                     MekanismRenderer.glowOff();
-                    MekanismRenderer.resetColor();
-
                     renderHelper.cleanup();
 
                     for (ValveData valveData : tileEntity.valveViewing) {
@@ -94,21 +92,15 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
                 if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null) {
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
-
                     FluidRenderer.translateToOrigin(data.location);
-
                     MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.steamStored);
+                    renderHelper.color(tileEntity.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
-
                     GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity)
                                                            + MekanismRenderer.GAS_RENDER_BASE));
                     display.render();
-
                     MekanismRenderer.glowOff();
-                    MekanismRenderer.resetColor();
-
                     renderHelper.cleanup();
                 }
             }

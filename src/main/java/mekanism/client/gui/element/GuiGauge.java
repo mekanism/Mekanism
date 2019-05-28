@@ -4,6 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -53,8 +54,8 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     public abstract String getTooltipText();
 
-    public int getRenderColor() {
-        return -1;
+    protected MekanismRenderHelper applyRenderColor(MekanismRenderHelper renderHelper) {
+        return renderHelper;
     }
 
     @Override
@@ -78,7 +79,6 @@ public abstract class GuiGauge<T> extends GuiElement {
 
         while (scale > 0) {
             int renderRemaining;
-
             if (scale > 16) {
                 renderRemaining = 16;
                 scale -= 16;
@@ -89,16 +89,13 @@ public abstract class GuiGauge<T> extends GuiElement {
 
             mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
 
-            MekanismRenderer.color(getRenderColor());
-
+            //TODO: Should this include alpha
+            MekanismRenderHelper renderHelper = applyRenderColor(new MekanismRenderHelper());
             for (int i = 0; i < number; i++) {
                 guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
             }
-
-            MekanismRenderer.resetColor();
-
+            renderHelper.cleanup();
             start += 16;
-
             if (scale == 0) {
                 break;
             }

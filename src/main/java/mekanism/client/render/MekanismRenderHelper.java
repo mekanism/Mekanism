@@ -2,14 +2,19 @@ package mekanism.client.render;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import javax.annotation.Nullable;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class MekanismRenderHelper {
 
     private Deque<Pair<KnownStates, Boolean>> changedStates = new ArrayDeque<>();
     private final boolean hasMatrix;
+    private boolean colorSet;
 
     public MekanismRenderHelper() {
         this(false);
@@ -25,6 +30,10 @@ public class MekanismRenderHelper {
     //TODO: Invalidate this better/throw some kind of warning so that we can easier see if something attempts to use one we already cleaned up
     // That or add support for reusing it
     public void cleanup() {
+        if (colorSet) {
+            //Reset the color
+            GlStateManager.color(1, 1, 1, 1);
+        }
         while (!changedStates.isEmpty()) {
             Pair<KnownStates, Boolean> stateInfo = changedStates.pop();
             stateInfo.getKey().cleanup(stateInfo.getValue());
@@ -44,6 +53,44 @@ public class MekanismRenderHelper {
         changedStates.push(Pair.of(state, false));
         state.disable();
         return this;
+    }
+
+    //Color
+    public MekanismRenderHelper color(float red, float green, float blue, float alpha) {
+        colorSet = true;
+        GlStateManager.color(red, green, blue, alpha);
+        return this;
+    }
+
+    public MekanismRenderHelper color3f(float red, float green, float blue) {
+        return color(red, green, blue, 1.0F);
+    }
+
+    public MekanismRenderHelper color3f(int color) {
+        float red = (color >> 16 & 0xFF) / 255.0F;
+        float green = (color >> 8 & 0xFF) / 255.0F;
+        float blue = (color & 0xFF) / 255.0F;
+        return color3f(red, green, blue);
+    }
+
+    public MekanismRenderHelper color(int color) {
+        float red = (color >> 16 & 0xFF) / 255.0F;
+        float green = (color >> 8 & 0xFF) / 255.0F;
+        float blue = (color & 0xFF) / 255.0F;
+        float alpha = (color >> 24 & 0xFF) / 255f;
+        return color(red, green, blue, alpha);
+    }
+
+    public MekanismRenderHelper color(@Nullable FluidStack fluid) {
+        return fluid == null ? this : color(fluid.getFluid().getColor(fluid));
+    }
+
+    public MekanismRenderHelper color(@Nullable GasStack gasStack) {
+        return gasStack == null ? this : color(gasStack);
+    }
+
+    public MekanismRenderHelper color(@Nullable Gas gas) {
+        return gas == null ? this : color3f(gas.getTint());
     }
 
     //Instead of RenderHelper
