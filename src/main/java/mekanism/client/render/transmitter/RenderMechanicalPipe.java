@@ -2,10 +2,8 @@ package mekanism.client.render.transmitter;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import mekanism.client.render.FluidRenderMap;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -70,8 +68,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         float scale = Math.min(pipe.currentScale, 1);
 
         if (scale > 0.01 && fluid != null) {
-            push();
-            GlStateManager.disableBlend();
+            MekanismRenderHelper renderHelper = initHelper().disableBlend();
 
             MekanismRenderer.glowOn(fluid.getLuminosity());
             MekanismRenderer.colorAlpha(fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : fluid.getColor());
@@ -120,8 +117,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             MekanismRenderer.glowOff();
             MekanismRenderer.resetColor();
 
-            GlStateManager.enableBlend();
-            pop();
+            renderHelper.cleanup();
         }
     }
 

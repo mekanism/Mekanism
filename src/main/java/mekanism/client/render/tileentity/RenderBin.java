@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.api.Coord4D;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.Minecraft;
@@ -69,9 +70,9 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
 
     @SuppressWarnings("incomplete-switch")
     private void renderText(String text, EnumFacing side, float maxScale, double x, double y, double z) {
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         GlStateManager.doPolygonOffset(-10, -10);
-        GlStateManager.enablePolygonOffset();
+        renderHelper.enablePolygonOffset();
         //TODO: Look into this because it gets cast to 1 due to division
         float displayWidth = 1 - (2 / 16);
         float displayHeight = 1 - (2 / 16);
@@ -110,26 +111,18 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
         float scaler = 0.4F;
         float scaleX = displayWidth / requiredWidth;
         float scale = scaleX * scaler;
-
         if (maxScale > 0) {
             scale = Math.min(scale, maxScale);
         }
 
         GlStateManager.scale(scale, -scale, scale);
-        GlStateManager.depthMask(false);
-
+        renderHelper.disableDepthMask();
         int realHeight = (int) Math.floor(displayHeight / scale);
         int realWidth = (int) Math.floor(displayWidth / scale);
-
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
-
-        GlStateManager.disableLighting();
+        renderHelper.disableLighting();
         fontRenderer.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
-        GlStateManager.enableLighting();
-        GlStateManager.depthMask(true);
-        GlStateManager.disablePolygonOffset();
-
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 }

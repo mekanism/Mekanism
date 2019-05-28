@@ -3,6 +3,7 @@ package mekanism.generators.client.render;
 import mekanism.api.Coord4D;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -56,7 +57,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                 bindTexture(MekanismRenderer.getBlocksTexture());
 
                 if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
-                    FluidRenderer.push();
+                    MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
 
                     FluidRenderer.translateToOrigin(data.location);
 
@@ -70,7 +71,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                     MekanismRenderer.glowOff();
                     MekanismRenderer.resetColor();
 
-                    FluidRenderer.pop();
+                    renderHelper.cleanup();
                 }
             }
         }

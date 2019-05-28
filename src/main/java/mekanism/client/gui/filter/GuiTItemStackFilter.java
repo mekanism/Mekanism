@@ -3,6 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -137,13 +138,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             GlStateManager.popMatrix();
         }
         if (filter.color != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableLighting();
-            GlStateManager.enableRescaleNormal();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableLighting().enableRescaleNormal();
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
-            GlStateManager.disableLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
@@ -200,17 +198,13 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         minField.drawTextBox();
         maxField.drawTextBox();
         if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
-            GlStateManager.pushMatrix();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth();
             GlStateManager.colorMask(true, true, true, false);
             int x = guiWidth + 12;
             int y = guiHeight + 19;
             drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
             GlStateManager.colorMask(true, true, true, true);
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }

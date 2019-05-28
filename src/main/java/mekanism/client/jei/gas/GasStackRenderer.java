@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -20,6 +21,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.Fluid;
+import org.lwjgl.opengl.GL11;
 
 public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
@@ -80,7 +82,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuffer();
-        vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         vertexBuffer.pos(xCoord, yCoord + 16, zLevel).tex(uMin, vMax).endVertex();
         vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + 16, zLevel).tex(uMax, vMax).endVertex();
         vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
@@ -90,8 +92,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
     @Override
     public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
-        GlStateManager.enableBlend();
-        GlStateManager.enableAlpha();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlend().enableAlpha();
         drawGas(minecraft, xPosition, yPosition, gasStack);
         GlStateManager.color(1, 1, 1, 1);
         if (overlay != null) {
@@ -100,9 +101,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
             overlay.draw(minecraft, xPosition, yPosition);
             GlStateManager.popMatrix();
         }
-
-        GlStateManager.disableAlpha();
-        GlStateManager.disableBlend();
+        renderHelper.cleanup();
     }
 
     private void drawGas(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {

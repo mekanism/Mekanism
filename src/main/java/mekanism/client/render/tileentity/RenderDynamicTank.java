@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
@@ -29,7 +30,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
             bindTexture(MekanismRenderer.getBlocksTexture());
 
             if (data.location != null && data.height >= 1) {
-                FluidRenderer.push();
+                MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
 
                 FluidRenderer.translateToOrigin(data.location);
 
@@ -47,10 +48,10 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 MekanismRenderer.glowOff();
                 MekanismRenderer.resetColor();
 
-                FluidRenderer.pop();
+                renderHelper.cleanup();
 
                 for (ValveData valveData : tileEntity.valveViewing) {
-                    FluidRenderer.push();
+                    MekanismRenderHelper valveRenderHelper = FluidRenderer.initHelper();
 
                     FluidRenderer.translateToOrigin(valveData.location);
 
@@ -62,7 +63,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                     MekanismRenderer.glowOff();
                     MekanismRenderer.resetColor();
 
-                    FluidRenderer.pop();
+                    valveRenderHelper.cleanup();
                 }
             }
         }

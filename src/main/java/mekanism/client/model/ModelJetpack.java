@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -183,20 +184,19 @@ public class ModelJetpack extends ModelBase {
         ExtendosupportL.render(size);
         ExtendosupportR.render(size);
 
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.blendOn();
         MekanismRenderer.glowOn();
-        GlStateManager.enableCull();
+        renderHelper.enableCull();
         GlStateManager.color(1, 1, 1, 0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
         MekanismRenderer.resetColor();
-        GlStateManager.disableCull();
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
 
         Packdoodad2.render(size);
         Packdoodad3.render(size);

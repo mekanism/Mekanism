@@ -30,19 +30,10 @@ public final class FluidRenderer {
         return data.height * BLOCK_STAGES;
     }
 
-    public static void pop() {
-        GlStateManager.enableLighting();
-        GlStateManager.disableBlend();
-        GlStateManager.disableCull();
-        GlStateManager.popMatrix();
-    }
-
-    public static void push() {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableCull();
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
+    public static MekanismRenderHelper initHelper() {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().enableBlend().disableLighting();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        return renderHelper;
     }
 
     public static DisplayInteger getTankDisplay(RenderData data) {

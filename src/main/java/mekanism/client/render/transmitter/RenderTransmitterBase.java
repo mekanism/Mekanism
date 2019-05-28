@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -62,19 +63,10 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         return modelParts;
     }
 
-    protected void push() {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableCull();
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
+    protected MekanismRenderHelper initHelper() {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().enableBlend().disableLighting();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-    }
-
-    protected void pop() {
-        GlStateManager.enableLighting();
-        GlStateManager.disableBlend();
-        GlStateManager.disableCull();
-        GlStateManager.popMatrix();
+        return renderHelper;
     }
 
     public void renderTransparency(BufferBuilder renderer, TextureAtlasSprite icon, IBakedModel cc, ColourRGBA color) {

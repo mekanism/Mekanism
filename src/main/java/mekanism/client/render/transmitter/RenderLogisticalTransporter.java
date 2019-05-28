@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -85,14 +86,14 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
                 if (stack.color != null) {
                     bindTexture(transporterBox);
-                    GlStateManager.pushMatrix();
+                    MekanismRenderHelper colorRenderHelper = new MekanismRenderHelper(true);
                     MekanismRenderer.glowOn();
-                    GlStateManager.disableCull();
+                    colorRenderHelper.disableCull();
                     GlStateManager.color(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2));
                     GlStateManager.translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
                     MekanismRenderer.glowOff();
-                    GlStateManager.popMatrix();
+                    colorRenderHelper.cleanup();
                 }
             }
         }
@@ -107,7 +108,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 RayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
                 if (pos != null && pos.sideHit != null && pos.getBlockPos().equals(transporter.getPos())) {
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.sideHit.ordinal()];
-                    pushTransporter();
+                    MekanismRenderHelper renderHelper = pushTransporter();
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 0.8F);
                     bindTexture(MekanismRenderer.getBlocksTexture());
                     GlStateManager.translate(x, y, z);
@@ -116,7 +117,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
                     int display = getOverlayDisplay(pos.sideHit, mode).display;
                     GlStateManager.callList(display);
-                    popTransporter();
+                    popTransporter(renderHelper);
                 }
             }
         }
@@ -242,19 +243,16 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         return display;
     }
 
-    private void popTransporter() {
+    private void popTransporter(MekanismRenderHelper renderHelper) {
         MekanismRenderer.blendOff();
         MekanismRenderer.glowOff();
-        GlStateManager.enableLighting();
-        GlStateManager.disableCull();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
-    private void pushTransporter() {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableCull();
-        GlStateManager.disableLighting();
+    private MekanismRenderHelper pushTransporter() {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
+        return renderHelper;
     }
 }

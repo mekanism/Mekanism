@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -20,7 +21,6 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
@@ -96,13 +96,10 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         fontRenderer.drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
         fontRenderer.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
         if (configurable.getEjector().getOutputColor() != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableLighting();
-            GlStateManager.enableRescaleNormal();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableLighting().enableRescaleNormal();
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedRectFromIcon(122, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
-            GlStateManager.disableLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;

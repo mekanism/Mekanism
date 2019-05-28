@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -40,6 +41,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
     @Override
     public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+        //TODO: Check if this outer push/pop matrix needed
         GlStateManager.pushMatrix();
 
         EntityPlayer player = mc.player;
@@ -49,49 +51,37 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         Item item = itemStack.getItem();
         if (pos != null && !itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
             BlockPos bp = pos.getBlockPos();
-
             TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
-
             if (configurable.getConfig().supports(type)) {
                 if (bp.equals(configurable.getPos())) {
                     SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
-
                     if (data != TileComponentConfig.EMPTY) {
-                        push();
-
+                        MekanismRenderHelper renderHelper = initHelper();
                         MekanismRenderer.color(data.color, 0.6F);
-
                         bindTexture(MekanismRenderer.getBlocksTexture());
                         GlStateManager.translate((float) x, (float) y, (float) z);
-
                         int display = getOverlayDisplay(pos.sideHit, type).display;
                         GlStateManager.callList(display);
-
                         MekanismRenderer.resetColor();
-
-                        pop();
+                        cleanup(renderHelper);
                     }
                 }
             }
         }
-
         GlStateManager.popMatrix();
     }
 
-    private void pop() {
+    private void cleanup(MekanismRenderHelper renderHelper) {
         MekanismRenderer.blendOff();
         MekanismRenderer.glowOff();
-        GlStateManager.enableLighting();
-        GlStateManager.disableCull();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
-    private void push() {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableCull();
-        GlStateManager.disableLighting();
+    private MekanismRenderHelper initHelper() {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
+        return renderHelper;
     }
 
     private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type) {

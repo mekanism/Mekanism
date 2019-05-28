@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -23,7 +24,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
     @Override
     public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.shouldRender) {
-            push();
+            MekanismRenderHelper renderHelper = initHelper();
 
             GlStateManager.color(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
 
@@ -38,27 +39,22 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
             int display = getOverlayDisplay(type).display;
             GlStateManager.callList(display);
-
             MekanismRenderer.resetColor();
-
-            pop();
+            cleanup(renderHelper);
         }
     }
 
-    private void pop() {
+    private void cleanup(MekanismRenderHelper renderHelper) {
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
-        GlStateManager.enableLighting();
-        GlStateManager.disableCull();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
-    private void push() {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableCull();
-        GlStateManager.disableLighting();
+    private MekanismRenderHelper initHelper() {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
+        return renderHelper;
     }
 
     private DisplayInteger getOverlayDisplay(Integer type) {

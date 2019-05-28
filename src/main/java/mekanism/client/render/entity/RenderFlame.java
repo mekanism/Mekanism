@@ -1,6 +1,7 @@
 package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderFlame extends Render<EntityFlame> {
@@ -30,7 +32,7 @@ public class RenderFlame extends Render<EntityFlame> {
         float alpha = (entity.ticksExisted + partialTick) / (float) EntityFlame.LIFESPAN;
         float size = (float) Math.pow(2 * alpha, 2);
 
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
         GlStateManager.color(1, 1, 1, 1 - alpha);
@@ -51,7 +53,7 @@ public class RenderFlame extends Render<EntityFlame> {
         float f5 = (float) (5 + i * 10) / 32F;
         float scale = 0.05625F * (0.8F + size);
 
-        GlStateManager.enableRescaleNormal();
+        renderHelper.enableRescaleNormal();
         GlStateManager.rotate(45F, 1.0F, 0.0F, 0.0F);
         GlStateManager.scale(scale, scale, scale);
         GlStateManager.translate(-4F, 0.0F, 0.0F);
@@ -60,19 +62,17 @@ public class RenderFlame extends Render<EntityFlame> {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.glNormal3f(0.0F, 0.0F, scale);
 
-            worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+            worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex((double) f2, (double) f4).endVertex();
             worldrenderer.pos(8.0D, -2.0D, 0.0D).tex((double) f3, (double) f4).endVertex();
             worldrenderer.pos(8.0D, 2.0D, 0.0D).tex((double) f3, (double) f5).endVertex();
             worldrenderer.pos(-8.0D, 2.0D, 0.0D).tex((double) f2, (double) f5).endVertex();
             tessellator.draw();
         }
-
-        GlStateManager.disableRescaleNormal();
         MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     @Override

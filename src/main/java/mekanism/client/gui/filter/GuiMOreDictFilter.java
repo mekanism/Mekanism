@@ -2,6 +2,7 @@ package mekanism.client.gui.filter;
 
 import java.io.IOException;
 import mekanism.api.Coord4D;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
@@ -110,17 +111,13 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
         }
         oreDictText.drawTextBox();
         if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-            GlStateManager.pushMatrix();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth();
             GlStateManager.colorMask(true, true, true, false);
             int x = guiWidth + 149;
             int y = guiHeight + 19;
             drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
             GlStateManager.colorMask(true, true, true, true);
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }

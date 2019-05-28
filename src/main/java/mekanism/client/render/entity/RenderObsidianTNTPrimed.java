@@ -1,6 +1,7 @@
 package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.entity.EntityObsidianTNT;
@@ -28,7 +29,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
     @Override
     public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
         BlockRendererDispatcher renderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         GlStateManager.translate((float) x, (float) y + 0.5F, (float) z);
 
         if (entityobsidiantnt.fuse - partialTicks + 1.0F < 10.0F) {
@@ -47,23 +48,17 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
         GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
         if (entityobsidiantnt.fuse / 5 % 2 == 0) {
-            GlStateManager.disableTexture2D();
-            GlStateManager.disableLighting();
-            GlStateManager.enableBlend();
+            renderHelper.disableTexture2D().disableLighting().enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.DST_ALPHA);
             GlStateManager.color(1.0F, 1.0F, 1.0F, f3);
             GlStateManager.doPolygonOffset(-3.0F, -3.0F);
-            GlStateManager.enablePolygonOffset();
+            renderHelper.enablePolygonOffset();
             renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), 1.0F);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
-            GlStateManager.disablePolygonOffset();
             MekanismRenderer.resetColor();
-            GlStateManager.disableBlend();
-            GlStateManager.enableLighting();
-            GlStateManager.enableTexture2D();
         }
 
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     @Override

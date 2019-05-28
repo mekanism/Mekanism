@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.render.FluidRenderMap;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -37,7 +38,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 
     public void render(FluidTankTier tier, FluidStack fluid, float fluidScale, boolean active, FluidStack valveFluid, double x, double y, double z) {
         if (fluid != null && fluidScale > 0) {
-            push();
+            MekanismRenderHelper renderHelper = initHelper();
 
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(x, y, z);
@@ -61,11 +62,11 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             MekanismRenderer.resetColor();
             MekanismRenderer.glowOff();
 
-            pop();
+            cleanup(renderHelper);
         }
 
         if (valveFluid != null && !valveFluid.getFluid().isGaseous(valveFluid)) {
-            push();
+            MekanismRenderHelper renderHelper = initHelper();
 
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(x, y, z);
@@ -80,22 +81,19 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             MekanismRenderer.glowOff();
             MekanismRenderer.resetColor();
 
-            pop();
+            cleanup(renderHelper);
         }
     }
 
-    private void pop() {
+    private void cleanup(MekanismRenderHelper renderHelper) {
         MekanismRenderer.blendOff();
-        GlStateManager.enableLighting();
-        GlStateManager.disableCull();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
-    private void push() {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableCull();
-        GlStateManager.disableLighting();
+    private MekanismRenderHelper initHelper() {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.blendOn();
+        return renderHelper;
     }
 
     private DisplayInteger[] getValveRender(FluidStack fluid) {

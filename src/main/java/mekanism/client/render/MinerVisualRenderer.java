@@ -21,18 +21,18 @@ public final class MinerVisualRenderer {
     private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 
     public static void render(TileEntityDigitalMiner miner) {
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         GlStateManager.translate(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
         MekanismRenderer.blendOn();
         MekanismRenderer.glowOn();
-        GlStateManager.enableCull();
+        renderHelper.enableCull();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 0.8F);
         mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
         getList(new MinerRenderData(miner)).render();
         MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
         MekanismRenderer.blendOff();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     private static DisplayInteger getList(MinerRenderData data) {

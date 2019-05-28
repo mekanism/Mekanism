@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerDictionary;
@@ -54,17 +55,11 @@ public class GuiDictionary extends GuiMekanism {
         int xAxis = mouseX - guiWidth;
         int yAxis = mouseY - guiHeight;
         if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
-            GlStateManager.pushMatrix();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth();
             int x = guiWidth + 6;
             int y = guiHeight + 6;
             drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
-
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }

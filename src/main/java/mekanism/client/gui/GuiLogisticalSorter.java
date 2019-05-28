@@ -13,6 +13,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -447,16 +448,10 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         }
 
         if (tileEntity.color != null) {
-            GlStateManager.pushMatrix();
-            MekanismRenderer.resetColor();
-            GlStateManager.enableLighting();
-            GlStateManager.enableRescaleNormal();
-
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableLighting().enableRescaleNormal();
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedRectFromIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
-
-            GlStateManager.disableLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
 
         // Draw tooltips for buttons

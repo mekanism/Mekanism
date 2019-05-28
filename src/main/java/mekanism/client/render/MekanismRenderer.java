@@ -247,7 +247,9 @@ public class MekanismRenderer {
     }
 
     public static void glowOn(int glow) {
+        //TODO: Doesn't fully work anymore after change away from GL11
         GlStateManager.enableLighting();
+        //GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
         try {
             lightmapLastX = OpenGlHelper.lastBrightnessX;
             lightmapLastY = OpenGlHelper.lastBrightnessY;

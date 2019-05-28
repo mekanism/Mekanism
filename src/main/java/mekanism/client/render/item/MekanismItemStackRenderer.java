@@ -58,6 +58,7 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         renderWithTransform(stack);
         //
 
+        //TODO: Make this use helper for lighting and then disable it after bindTexture?
         GlStateManager.enableLighting();
         GlStateManager.enableLight(0);
         GlStateManager.enableLight(1);

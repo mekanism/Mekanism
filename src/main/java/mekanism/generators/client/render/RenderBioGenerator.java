@@ -2,6 +2,7 @@ package mekanism.generators.client.render;
 
 import java.util.EnumMap;
 import java.util.Map;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -28,15 +29,13 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
     @Override
     public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.bioFuelSlot.fluidStored > 0) {
-            push();
-
+            MekanismRenderHelper renderHelper = initHelper();
             MekanismRenderer.glowOn();
             GlStateManager.translate((float) x, (float) y, (float) z);
             bindTexture(MekanismRenderer.getBlocksTexture());
             getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages - 1)].render();
             MekanismRenderer.glowOff();
-
-            pop();
+            renderHelper.cleanup();
         }
 
         GlStateManager.pushMatrix();
@@ -121,22 +120,12 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
         }
 
         energyDisplays.put(side, displays);
-
         return displays;
     }
 
-    private void pop() {
-        GlStateManager.enableLighting();
-        GlStateManager.disableBlend();
-        GlStateManager.disableCull();
-        GlStateManager.popMatrix();
-    }
-
-    private void push() {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableCull();
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
+    private MekanismRenderHelper initHelper() {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().enableBlend().disableLighting();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        return renderHelper;
     }
 }

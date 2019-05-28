@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import java.util.Arrays;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.FluidRenderer;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -36,7 +37,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
         if (tileEntity.structured && tileEntity.inputTank.getFluid() != null) {
             bindTexture(MekanismRenderer.getBlocksTexture());
             if (tileEntity.height - 2 >= 1 && tileEntity.inputTank.getCapacity() > 0) {
-                push();
+                MekanismRenderHelper renderHelper = initHelper();
 
                 FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
                 MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
@@ -74,24 +75,15 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
                 MekanismRenderer.resetColor();
                 MekanismRenderer.glowOff();
 
-                pop();
+                renderHelper.cleanup();
             }
         }
     }
 
-    private void pop() {
-        GlStateManager.enableLighting();
-        GlStateManager.disableBlend();
-        GlStateManager.disableCull();
-        GlStateManager.popMatrix();
-    }
-
-    private void push() {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableCull();
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
+    private MekanismRenderHelper initHelper() {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().enableBlend().disableLighting();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        return renderHelper;
     }
 
     private DisplayInteger[] getListAndRender(FluidStack fluid) {

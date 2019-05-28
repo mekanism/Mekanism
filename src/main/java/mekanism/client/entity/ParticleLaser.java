@@ -1,6 +1,7 @@
 package mekanism.client.entity;
 
 import mekanism.api.Pos3D;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -36,12 +37,9 @@ public class ParticleLaser extends Particle {
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         Tessellator tessellator = Tessellator.getInstance();
-
         tessellator.draw();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.enablePolygonOffset();
-        GlStateManager.disableCull();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enablePolygonOffset().disableCull();
         MekanismRenderer.glowOn();
 
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
@@ -95,10 +93,9 @@ public class ParticleLaser extends Particle {
         tessellator.draw();
 
         MekanismRenderer.glowOff();
-        GlStateManager.disablePolygonOffset();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
 
-        buffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
     }
 
     @Override
