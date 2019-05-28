@@ -247,9 +247,7 @@ public class MekanismRenderer {
     }
 
     public static void glowOn(int glow) {
-        //TODO: Doesn't fully work anymore after change away from GL11
-        GlStateManager.enableLighting();
-        //GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+        //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
         try {
             lightmapLastX = OpenGlHelper.lastBrightnessX;
             lightmapLastY = OpenGlHelper.lastBrightnessY;
@@ -269,12 +267,10 @@ public class MekanismRenderer {
         if (!optifineBreak) {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
         }
-        GlStateManager.disableLighting();
     }
 
     public static void blendOn() {
-        //GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_LIGHTING_BIT);
-        GlStateManager.enableLighting();
+        //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
@@ -282,7 +278,6 @@ public class MekanismRenderer {
     }
 
     public static void blendOff() {
-        GlStateManager.disableLighting();
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
     }
