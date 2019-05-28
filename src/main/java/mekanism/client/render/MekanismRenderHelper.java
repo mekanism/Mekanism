@@ -86,7 +86,7 @@ public class MekanismRenderHelper {
     }
 
     public MekanismRenderHelper color(@Nullable GasStack gasStack) {
-        return gasStack == null ? this : color(gasStack);
+        return gasStack == null ? this : color(gasStack.getGas());
     }
 
     public MekanismRenderHelper color(@Nullable Gas gas) {
