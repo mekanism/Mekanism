@@ -72,7 +72,6 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
     }
 
     private void cleanup(MekanismRenderHelper renderHelper) {
-        MekanismRenderer.blendOff();
         MekanismRenderer.glowOff();
         renderHelper.cleanup();
     }
@@ -80,8 +79,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
     private MekanismRenderHelper initHelper() {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.glowOn();
-        MekanismRenderer.blendOn();
-        return renderHelper;
+        return MekanismRenderer.blendOn(renderHelper);
     }
 
     private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type) {

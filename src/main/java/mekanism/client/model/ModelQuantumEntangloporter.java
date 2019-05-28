@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -312,8 +313,8 @@ public class ModelQuantumEntangloporter extends ModelBase {
     }
 
     public void render(float size, TextureManager manager, boolean renderMain) {
-        GlStateManager.pushMatrix();
-        MekanismRenderer.blendOn();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        MekanismRenderer.blendOn(renderHelper);
 
         if (renderMain) {
             doRender(size);
@@ -327,8 +328,7 @@ public class ModelQuantumEntangloporter extends ModelBase {
         doRender(size);
 
         MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     public void doRender(float size) {

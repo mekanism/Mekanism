@@ -6,6 +6,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
@@ -80,11 +81,11 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
         GlStateManager.popMatrix();
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
-            GlStateManager.pushMatrix();
+            MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
             GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
 
-            MekanismRenderer.blendOn();
+            MekanismRenderer.blendOn(coreRenderHelper);
             MekanismRenderer.glowOn();
 
             int[] c = COLORS[tileEntity.tier.getBaseTier().ordinal()];
@@ -100,9 +101,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             GlStateManager.popMatrix();
 
             MekanismRenderer.glowOff();
-            MekanismRenderer.blendOff();
-
-            GlStateManager.popMatrix();
+            coreRenderHelper.cleanup();
         }
 
         MekanismRenderer.machineRenderer().render(tileEntity, x, y, z, partialTick, destroyStage, alpha);

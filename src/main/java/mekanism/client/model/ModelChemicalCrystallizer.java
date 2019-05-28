@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -136,7 +137,8 @@ public class ModelChemicalCrystallizer extends ModelBase {
     }
 
     public void render(float size) {
-        MekanismRenderer.blendOn();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
+        MekanismRenderer.blendOn(renderHelper);
 
         tray.render(size);
         support4.render(size);
@@ -156,7 +158,7 @@ public class ModelChemicalCrystallizer extends ModelBase {
         base.render(size);
         Shape1.render(size);
 
-        MekanismRenderer.blendOff();
+        renderHelper.cleanup();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

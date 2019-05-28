@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -165,8 +166,8 @@ public class ModelResistiveHeater extends ModelBase {
     }
 
     public void render(float size, boolean on, TextureManager manager, boolean renderMain) {
-        GlStateManager.pushMatrix();
-        MekanismRenderer.blendOn();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        MekanismRenderer.blendOn(renderHelper);
 
         if (renderMain) {
             doRender(size);
@@ -180,8 +181,7 @@ public class ModelResistiveHeater extends ModelBase {
         doRender(size);
 
         MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     private void doRender(float size) {

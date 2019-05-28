@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
@@ -27,15 +28,14 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(0.0F, -1.0F, 0.0F);
 
-        MekanismRenderer.blendOn();
+        MekanismRenderer.blendOn(renderHelper);
 
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
@@ -43,17 +43,14 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
             energyCube.renderSide(0.0625F, side, side == EnumFacing.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getMinecraft().renderEngine);
         }
-
-        MekanismRenderer.blendOff();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
 
         double energy = ItemDataUtils.getDouble(stack, "energyStored");
 
         if (energy / tier.getMaxEnergy() > 0.1) {
-            GlStateManager.pushMatrix();
+            MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
-
-            MekanismRenderer.blendOn();
+            MekanismRenderer.blendOn(coreRenderHelper);
             MekanismRenderer.glowOn();
 
             int[] c = RenderEnergyCube.COLORS[tier.getBaseTier().ordinal()];
@@ -69,9 +66,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             GlStateManager.popMatrix();
 
             MekanismRenderer.glowOff();
-            MekanismRenderer.blendOff();
-
-            GlStateManager.popMatrix();
+            coreRenderHelper.cleanup();
         }
     }
 

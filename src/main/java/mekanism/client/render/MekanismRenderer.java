@@ -269,17 +269,12 @@ public class MekanismRenderer {
         }
     }
 
-    public static void blendOn() {
+    public static MekanismRenderHelper blendOn(MekanismRenderHelper renderHelper) {
         //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlpha();
-        GlStateManager.enableBlend();
+        renderHelper.disableAlpha().enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-    }
-
-    public static void blendOff() {
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
+        return renderHelper;
     }
 
     /**

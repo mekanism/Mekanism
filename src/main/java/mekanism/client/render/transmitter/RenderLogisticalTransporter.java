@@ -244,7 +244,6 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     private void popTransporter(MekanismRenderHelper renderHelper) {
-        MekanismRenderer.blendOff();
         MekanismRenderer.glowOff();
         renderHelper.cleanup();
     }
@@ -252,7 +251,6 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private MekanismRenderHelper pushTransporter() {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
         MekanismRenderer.glowOn();
-        MekanismRenderer.blendOn();
-        return renderHelper;
+        return MekanismRenderer.blendOn(renderHelper);
     }
 }

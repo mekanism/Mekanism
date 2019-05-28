@@ -239,7 +239,7 @@ public class ModelArmoredJetpack extends ModelBase {
         Bottomthruster.render(size);
 
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        MekanismRenderer.blendOn();
+        MekanismRenderer.blendOn(renderHelper);
         MekanismRenderer.glowOn();
         renderHelper.enableCull();
         GlStateManager.color(1, 1, 1, 0.2F);
@@ -249,7 +249,6 @@ public class ModelArmoredJetpack extends ModelBase {
 
         MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
         renderHelper.cleanup();
 
         MekanismRenderer.glowOn();

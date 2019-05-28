@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.client.model.ModelBase;
@@ -95,14 +96,15 @@ public class ModelFluidTank extends ModelBase {
         PoleRF.render(size);
         Top.render(size);
 
-        MekanismRenderer.blendOn();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
+        MekanismRenderer.blendOn(renderHelper);
         MekanismRenderer.color(tier.getBaseTier().getColor());
         FrontGlass.render(size);
         BackGlass.render(size);
         RightGlass.render(size);
         LeftGlass.render(size);
         MekanismRenderer.resetColor();
-        MekanismRenderer.blendOff();
+        renderHelper.cleanup();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

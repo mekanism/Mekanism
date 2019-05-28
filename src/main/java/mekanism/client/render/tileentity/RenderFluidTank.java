@@ -62,7 +62,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             MekanismRenderer.resetColor();
             MekanismRenderer.glowOff();
 
-            cleanup(renderHelper);
+            renderHelper.cleanup();
         }
 
         if (valveFluid != null && !valveFluid.getFluid().isGaseous(valveFluid)) {
@@ -81,19 +81,12 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             MekanismRenderer.glowOff();
             MekanismRenderer.resetColor();
 
-            cleanup(renderHelper);
+            renderHelper.cleanup();
         }
     }
 
-    private void cleanup(MekanismRenderHelper renderHelper) {
-        MekanismRenderer.blendOff();
-        renderHelper.cleanup();
-    }
-
     private MekanismRenderHelper initHelper() {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
-        MekanismRenderer.blendOn();
-        return renderHelper;
+        return MekanismRenderer.blendOn(new MekanismRenderHelper(true).enableCull().disableLighting());
     }
 
     private DisplayInteger[] getValveRender(FluidStack fluid) {

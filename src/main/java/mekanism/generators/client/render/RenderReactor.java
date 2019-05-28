@@ -3,6 +3,7 @@ package mekanism.generators.client.render;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -20,11 +21,11 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
     @Override
     public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.isBurning()) {
-            GlStateManager.pushMatrix();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
             GlStateManager.translate(x + 0.5, y - 1.5, z + 0.5);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
-            MekanismRenderer.blendOn();
+            MekanismRenderer.blendOn(renderHelper);
             MekanismRenderer.glowOn();
 
             EnumColor c;
@@ -65,10 +66,8 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             GlStateManager.popMatrix();
 
             MekanismRenderer.glowOff();
-            MekanismRenderer.blendOff();
             MekanismRenderer.resetColor();
-
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -227,7 +228,8 @@ public class ModelChemicalDissolutionChamber extends ModelBase {
     }
 
     public void render(float size) {
-        MekanismRenderer.blendOn();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
+        MekanismRenderer.blendOn(renderHelper);
 
         support2.render(size);
         vat5.render(size);
@@ -260,7 +262,7 @@ public class ModelChemicalDissolutionChamber extends ModelBase {
         portToggle1.render(size);
         portToggle2.render(size);
 
-        MekanismRenderer.blendOff();
+        renderHelper.cleanup();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

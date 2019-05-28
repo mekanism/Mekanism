@@ -236,7 +236,7 @@ public class ModelGasMask extends ModelBase {
         filterpipeupper.render(size);
 
         MekanismRenderHelper renderHelper = new MekanismRenderHelper();
-        MekanismRenderer.blendOn();
+        MekanismRenderer.blendOn(renderHelper);
         MekanismRenderer.glowOn();
         GlStateManager.color(1, 1, 1, 0.3F);
         renderHelper.enableCull();
@@ -250,7 +250,6 @@ public class ModelGasMask extends ModelBase {
 
         MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
         renderHelper.cleanup();
 
         pipecornerFL.render(size);

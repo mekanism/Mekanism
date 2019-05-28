@@ -34,7 +34,7 @@ public class RenderFlame extends Render<EntityFlame> {
 
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.glowOn();
-        MekanismRenderer.blendOn();
+        MekanismRenderer.blendOn(renderHelper);
         GlStateManager.color(1, 1, 1, 1 - alpha);
 
         bindTexture(getEntityTexture(entity));
@@ -71,7 +71,6 @@ public class RenderFlame extends Render<EntityFlame> {
         }
         MekanismRenderer.resetColor();
         MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
         renderHelper.cleanup();
     }
 
