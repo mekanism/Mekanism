@@ -98,7 +98,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             if (pos != null && !itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
                 Coord4D obj = new Coord4D(pos.getBlockPos(), transporter.getWorld());
 
-                if (obj.equals(new Coord4D(transporter.getPos(), transporter.getWorld()))) {
+                if (obj.equals(new Coord4D(transporter.getPos(), transporter.getWorld())) && pos.sideHit != null) {
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.sideHit.ordinal()];
 
                     pushTransporter();
