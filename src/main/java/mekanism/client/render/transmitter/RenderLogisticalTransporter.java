@@ -89,7 +89,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     MekanismRenderHelper colorRenderHelper = new MekanismRenderHelper(true);
                     MekanismRenderer.glowOn();
                     colorRenderHelper.disableCull();
-                    GlStateManager.color(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2));
+                    colorRenderHelper.color(stack.color);
                     GlStateManager.translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
                     MekanismRenderer.glowOff();
@@ -109,7 +109,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 if (pos != null && pos.sideHit != null && pos.getBlockPos().equals(transporter.getPos())) {
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.sideHit.ordinal()];
                     MekanismRenderHelper renderHelper = pushTransporter();
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 0.8F);
+                    renderHelper.colorAlpha(0.8F);
                     bindTexture(MekanismRenderer.getBlocksTexture());
                     GlStateManager.translate(x, y, z);
                     GlStateManager.scale(0.5, 0.5, 0.5);

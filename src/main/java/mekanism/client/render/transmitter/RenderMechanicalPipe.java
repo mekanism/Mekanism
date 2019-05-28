@@ -86,7 +86,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                         if (!gas) {
                             displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
                         } else {
-                            GlStateManager.color(1F, 1F, 1F, scale);
+                            renderHelper.colorAlpha(scale);
                             displayLists[stages - 1].render();
                         }
                     }
@@ -109,7 +109,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 if (!gas) {
                     displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
                 } else {
-                    GlStateManager.color(1F, 1F, 1F, scale);
+                    renderHelper.colorAlpha(scale);
                     displayLists[stages - 1].render();
                 }
             }

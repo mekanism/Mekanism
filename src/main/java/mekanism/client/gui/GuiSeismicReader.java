@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import mekanism.api.Coord4D;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -54,26 +55,24 @@ public class GuiSeismicReader extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png"));
-
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         // Draws the up button
-
         if (upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
-            GlStateManager.color(0.5f, 0.5f, 1f);
+            renderHelper.color3f(0.5f, 0.5f, 1f);
         }
-
         drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
-        GlStateManager.color(1, 1, 1);
+        renderHelper.cleanup();
+        //TODO: Once I make cleanup fully reset the state then I don't need to recreate the variable
+        renderHelper = new MekanismRenderHelper();
 
         // Draws the down button
         if (downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
-            GlStateManager.color(0.5f, 0.5f, 1f);
+            renderHelper.color3f(0.5f, 0.5f, 1f);
         }
-
         drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
-        GlStateManager.color(1, 1, 1);
+        renderHelper.cleanup();
 
         // Fix the overlapping if > 100
         GlStateManager.pushMatrix();
@@ -134,7 +133,6 @@ public class GuiSeismicReader extends GuiScreen {
                 int fontLengthX = fontRenderer.getStringWidth(capitalised) + 5;
                 int renderX = mouseX + 10, renderY = mouseY - 5;
                 GlStateManager.pushMatrix();
-                GlStateManager.color(1, 1, 1);
                 drawTexturedModalRect(renderX, renderY, 0, 0, fontLengthX, 16);
                 drawTexturedModalRect(renderX + fontLengthX, renderY, 0, 16, 2, 16);
                 fontRenderer.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);

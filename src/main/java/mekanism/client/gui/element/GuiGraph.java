@@ -113,7 +113,7 @@ public class GuiGraph extends GuiElement {
             for (int iter = 0; iter < displays; iter++) {
                 MekanismRenderHelper renderHelper = new MekanismRenderHelper();
                 MekanismRenderer.blendOn(renderHelper);
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
+                renderHelper.colorAlpha(0.2F + (0.8F * ((float) i / (float) graphData.size())));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
                 renderHelper.cleanup();

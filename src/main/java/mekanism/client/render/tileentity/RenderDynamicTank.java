@@ -38,8 +38,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 renderHelper.color(tileEntity.structure.fluidStored);
 
                 if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
-                    GlStateManager.color(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity)
-                                                           + MekanismRenderer.GAS_RENDER_BASE));
+                    renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity) + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();
                 } else {
                     FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();

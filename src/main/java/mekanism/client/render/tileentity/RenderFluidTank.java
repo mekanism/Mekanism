@@ -50,7 +50,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             }
 
             if (fluid.getFluid().isGaseous(fluid)) {
-                GlStateManager.color(1F, 1F, 1F, Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
+                renderHelper.colorAlpha(Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();

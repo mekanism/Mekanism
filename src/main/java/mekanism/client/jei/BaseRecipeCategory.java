@@ -24,7 +24,6 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
@@ -86,7 +85,6 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
 
     @Override
     public void drawExtras(Minecraft minecraft) {
-        GlStateManager.color(1, 1, 1, 1);
         minecraft.renderEngine.bindTexture(guiLocation);
         guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
     }

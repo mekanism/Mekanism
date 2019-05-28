@@ -65,13 +65,6 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         return gasStillSprite;
     }
 
-    private static void setGLColorFromInt(int color) {
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-        GlStateManager.color(red, green, blue, 1.0F);
-    }
-
     private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite, int maskTop, int maskRight, double zLevel) {
         double uMin = (double) textureSprite.getMinU();
         double uMax = (double) textureSprite.getMaxU();
@@ -94,7 +87,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlend().enableAlpha();
         drawGas(minecraft, xPosition, yPosition, gasStack);
-        GlStateManager.color(1, 1, 1, 1);
+        renderHelper.resetColor();
         if (overlay != null) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 200);
@@ -116,13 +109,13 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         if (scaledAmount > height) {
             scaledAmount = height;
         }
-        drawTiledSprite(minecraft, xPosition, yPosition, width, height, gas.getTint(), scaledAmount, getStillGasSprite(minecraft, gas));
+        drawTiledSprite(minecraft, xPosition, yPosition, width, height, gas, scaledAmount, getStillGasSprite(minecraft, gas));
     }
 
-    private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, int color, int scaledAmount,
+    private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, Gas gas, int scaledAmount,
           TextureAtlasSprite sprite) {
         minecraft.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        setGLColorFromInt(color);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;
         final int xRemainder = tiledWidth - (xTileCount * TEX_WIDTH);
@@ -145,6 +138,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
                 }
             }
         }
+        renderHelper.cleanup();
     }
 
     @Override
