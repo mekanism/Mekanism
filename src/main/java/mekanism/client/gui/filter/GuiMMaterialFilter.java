@@ -15,7 +15,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -60,18 +59,14 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
         fontRenderer.drawString(LangUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
         if (!filter.getMaterialItem().isEmpty()) {
             renderScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, 0x00CD00, 107);
-            GlStateManager.pushMatrix();
-            RenderHelper.enableGUIStandardItemLighting();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
             itemRender.renderItemAndEffectIntoGUI(filter.getMaterialItem(), 12, 19);
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         if (!filter.replaceStack.isEmpty()) {
-            GlStateManager.pushMatrix();
-            RenderHelper.enableGUIStandardItemLighting();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
             itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;

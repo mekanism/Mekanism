@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -94,7 +93,7 @@ public class GuiSeismicReader extends GuiScreen {
             if (0 <= layer && layer < blockList.size()) {
                 ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
 
-                GlStateManager.pushMatrix();
+                MekanismRenderHelper stackRenderHelper = new MekanismRenderHelper(true);
                 GlStateManager.translate(centralX - 2, centralY - i * 16 + (22 * 2), 0);
 
                 if (i < 4) {
@@ -106,10 +105,9 @@ public class GuiSeismicReader extends GuiScreen {
                     GlStateManager.scale(0.8f, 0.8f, 0.8f);
                 }
 
-                RenderHelper.enableGUIStandardItemLighting();
+                stackRenderHelper.enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(stack, 0, 0);
-                RenderHelper.disableStandardItemLighting();
-                GlStateManager.popMatrix();
+                stackRenderHelper.cleanup();
             }
         }
 

@@ -17,8 +17,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -62,11 +60,9 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
         fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
         if (!renderStack.isEmpty()) {
             try {
-                GlStateManager.pushMatrix();
-                RenderHelper.enableGUIStandardItemLighting();
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
-                RenderHelper.disableStandardItemLighting();
-                GlStateManager.popMatrix();
+                renderHelper.cleanup();
             } catch (Exception ignored) {
             }
         }

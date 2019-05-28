@@ -21,14 +21,13 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -90,11 +89,9 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         }
         if (!renderStack.isEmpty()) {
             try {
-                GlStateManager.pushMatrix();
-                RenderHelper.enableGUIStandardItemLighting();
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(renderStack, 131, 14);
-                RenderHelper.disableStandardItemLighting();
-                GlStateManager.popMatrix();
+                renderHelper.cleanup();
             } catch (Exception ignored) {
             }
         }

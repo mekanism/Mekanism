@@ -104,12 +104,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale) {
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         GlStateManager.scale(size, size, size);
-        RenderHelper.enableGUIStandardItemLighting();
+        renderHelper.enableGUIStandardItemLighting();
         itemRender.renderItemAndEffectIntoGUI(type.getStack(), scale ? (int) ((1F / size) * x) : x, scale ? (int) ((1F / size) * y) : y);
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     @Override

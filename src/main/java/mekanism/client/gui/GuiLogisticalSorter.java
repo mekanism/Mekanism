@@ -33,8 +33,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -366,11 +364,9 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     final TItemStackFilter itemFilter = (TItemStackFilter) filter;
 
                     if (!itemFilter.itemType.isEmpty()) {
-                        GlStateManager.pushMatrix();
-                        RenderHelper.enableGUIStandardItemLighting();
+                        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                         itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
-                        RenderHelper.disableStandardItemLighting();
-                        GlStateManager.popMatrix();
+                        renderHelper.cleanup();
                     }
 
                     fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
@@ -384,11 +380,9 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     ItemStack renderStack = oreDictStacks.get(filter).renderStack;
                     if (!renderStack.isEmpty()) {
                         try {
-                            GlStateManager.pushMatrix();
-                            RenderHelper.enableGUIStandardItemLighting();
+                            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                             itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
-                            RenderHelper.disableStandardItemLighting();
-                            GlStateManager.popMatrix();
+                            renderHelper.cleanup();
                         } catch (final Exception ignored) {
                         }
                     }
@@ -398,11 +392,9 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                 } else if (filter instanceof TMaterialFilter) {
                     final TMaterialFilter itemFilter = (TMaterialFilter) filter;
                     if (!itemFilter.getMaterialItem().isEmpty()) {
-                        GlStateManager.pushMatrix();
-                        RenderHelper.enableGUIStandardItemLighting();
+                        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                         itemRender.renderItemAndEffectIntoGUI(itemFilter.getMaterialItem(), 59, yStart + 3);
-                        RenderHelper.disableStandardItemLighting();
-                        GlStateManager.popMatrix();
+                        renderHelper.cleanup();
                     }
 
                     fontRenderer.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
@@ -418,11 +410,9 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
 
                     if (!renderStack.isEmpty()) {
                         try {
-                            GlStateManager.pushMatrix();
-                            RenderHelper.enableGUIStandardItemLighting();
+                            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                             itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
-                            RenderHelper.disableStandardItemLighting();
-                            GlStateManager.popMatrix();
+                            renderHelper.cleanup();
                         } catch (final Exception ignored) {
                         }
                     }

@@ -14,8 +14,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -38,11 +36,9 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
         fontRenderer.drawString(text, (xSize / 2) - (fontRenderer.getStringWidth(text) / 2), 136, 0x404040);
         for (ReactorLogic type : ReactorLogic.values()) {
-            GlStateManager.pushMatrix();
-            RenderHelper.enableGUIStandardItemLighting();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
             itemRender.renderItemAndEffectIntoGUI(type.getRenderStack(), 27, 35 + (22 * type.ordinal()));
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
             fontRenderer.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34 + (22 * type.ordinal()), 0x404040);
         }
         int xAxis = mouseX - (width - xSize) / 2;

@@ -30,8 +30,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -355,11 +353,9 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                 if (filter instanceof MItemStackFilter) {
                     MItemStackFilter itemFilter = (MItemStackFilter) filter;
                     if (!itemFilter.itemType.isEmpty()) {
-                        GlStateManager.pushMatrix();
-                        RenderHelper.enableGUIStandardItemLighting();
+                        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                         itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
-                        RenderHelper.disableStandardItemLighting();
-                        GlStateManager.popMatrix();
+                        renderHelper.cleanup();
                     }
 
                     fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
@@ -371,11 +367,9 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                     ItemStack renderStack = oreDictStacks.get(filter).renderStack;
                     if (!renderStack.isEmpty()) {
                         try {
-                            GlStateManager.pushMatrix();
-                            RenderHelper.enableGUIStandardItemLighting();
+                            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                             itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
-                            RenderHelper.disableStandardItemLighting();
-                            GlStateManager.popMatrix();
+                            renderHelper.cleanup();
                         } catch (Exception ignored) {
                         }
                     }
@@ -383,11 +377,9 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                 } else if (filter instanceof MMaterialFilter) {
                     MMaterialFilter itemFilter = (MMaterialFilter) filter;
                     if (!itemFilter.getMaterialItem().isEmpty()) {
-                        GlStateManager.pushMatrix();
-                        RenderHelper.enableGUIStandardItemLighting();
+                        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                         itemRender.renderItemAndEffectIntoGUI(itemFilter.getMaterialItem(), 59, yStart + 3);
-                        RenderHelper.disableStandardItemLighting();
-                        GlStateManager.popMatrix();
+                        renderHelper.cleanup();
                     }
                     fontRenderer.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof MModIDFilter) {
@@ -398,11 +390,9 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                     ItemStack renderStack = modIDStacks.get(filter).renderStack;
                     if (!renderStack.isEmpty()) {
                         try {
-                            GlStateManager.pushMatrix();
-                            RenderHelper.enableGUIStandardItemLighting();
+                            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                             itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
-                            RenderHelper.disableStandardItemLighting();
-                            GlStateManager.popMatrix();
+                            renderHelper.cleanup();
                         } catch (Exception ignored) {
                         }
                     }

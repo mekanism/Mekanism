@@ -18,7 +18,6 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -65,11 +64,9 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
         if (!filter.getMaterialItem().isEmpty()) {
             renderScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, 0x00CD00, 107);
-            GlStateManager.pushMatrix();
-            RenderHelper.enableGUIStandardItemLighting();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
             itemRender.renderItemAndEffectIntoGUI(filter.getMaterialItem(), 12, 19);
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         if (filter.color != null) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableLighting().enableRescaleNormal();

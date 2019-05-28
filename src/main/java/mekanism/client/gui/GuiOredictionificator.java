@@ -25,8 +25,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -100,11 +98,9 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 }
                 ItemStack stack = renderStacks.get(filter);
                 if (!stack.isEmpty()) {
-                    GlStateManager.pushMatrix();
-                    RenderHelper.enableGUIStandardItemLighting();
+                    MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                     itemRender.renderItemAndEffectIntoGUI(stack, 13, yStart + 3);
-                    RenderHelper.disableStandardItemLighting();
-                    GlStateManager.popMatrix();
+                    renderHelper.cleanup();
                 }
                 fontRenderer.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
                 renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);

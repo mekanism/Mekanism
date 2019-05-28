@@ -9,8 +9,6 @@ import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
@@ -37,11 +35,9 @@ public class GuiDictionary extends GuiMekanism {
         fontRenderer.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         if (!itemType.isEmpty()) {
-            GlStateManager.pushMatrix();
-            RenderHelper.enableGUIStandardItemLighting();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
             itemRender.renderItemAndEffectIntoGUI(itemType, 6, 6);
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

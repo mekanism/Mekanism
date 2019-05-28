@@ -21,7 +21,6 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -131,11 +130,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
         if (!filter.itemType.isEmpty()) {
             renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 89);
-            GlStateManager.pushMatrix();
-            RenderHelper.enableGUIStandardItemLighting();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
             itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
         if (filter.color != null) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableLighting().enableRescaleNormal();

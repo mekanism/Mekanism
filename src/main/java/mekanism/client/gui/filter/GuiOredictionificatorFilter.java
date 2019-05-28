@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -18,8 +19,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -100,11 +99,9 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
         }
         if (!renderStack.isEmpty()) {
             try {
-                GlStateManager.pushMatrix();
-                RenderHelper.enableGUIStandardItemLighting();
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(renderStack, 45, 19);
-                RenderHelper.disableStandardItemLighting();
-                GlStateManager.popMatrix();
+                renderHelper.cleanup();
             } catch (Exception ignored) {
             }
         }
