@@ -15,7 +15,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -94,12 +93,10 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
         }
         modIDText.drawTextBox();
         if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth();
-            GlStateManager.colorMask(true, true, true, false);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
             int x = guiWidth + 149;
             int y = guiHeight + 19;
             drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
-            GlStateManager.colorMask(true, true, true, true);
             renderHelper.cleanup();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

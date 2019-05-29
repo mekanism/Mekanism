@@ -17,7 +17,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -108,12 +107,10 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
             drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 11, 11, 11);
         }
         if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth();
-            GlStateManager.colorMask(true, true, true, false);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
             int x = guiWidth + 12;
             int y = guiHeight + 19;
             drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
-            GlStateManager.colorMask(true, true, true, true);
             renderHelper.cleanup();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

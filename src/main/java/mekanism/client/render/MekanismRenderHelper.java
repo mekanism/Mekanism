@@ -27,6 +27,7 @@ public class MekanismRenderHelper {
     private Deque<Pair<KnownStates, Boolean>> changedStates = new ArrayDeque<>();
     private boolean hasMatrix;
     private boolean colorSet;
+    private boolean colorMasked;
     private boolean glowEnabled;
     private float lightmapLastX;
     private float lightmapLastY;
@@ -48,6 +49,11 @@ public class MekanismRenderHelper {
     public void cleanup() {
         if (glowEnabled) {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
+            glowEnabled = false;
+        }
+        if (colorMasked) {
+            GlStateManager.colorMask(true, true, true, true);
+            colorMasked = false;
         }
         if (colorSet) {
             //Reset the color
@@ -99,6 +105,7 @@ public class MekanismRenderHelper {
     }
 
     public MekanismRenderHelper enableGlow(int glow) {
+        //TODO: Is glow even needed anymore it seems things work fine without it??
         if (!glowEnabled && !FMLClientHandler.instance().hasOptifine()) {
             //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
             lightmapLastX = OpenGlHelper.lastBrightnessX;
@@ -140,6 +147,17 @@ public class MekanismRenderHelper {
     }
 
     //Color
+    public MekanismRenderHelper colorMask(boolean red, boolean green, boolean blue, boolean alpha) {
+        //TODO: If all true then don't set colorMasked
+        colorMasked = true;
+        GlStateManager.colorMask(red, green, blue, alpha);
+        return this;
+    }
+
+    public MekanismRenderHelper colorMaskAlpha() {
+        return colorMask(true, true, true, false);
+    }
+
     public MekanismRenderHelper color(float red, float green, float blue, float alpha) {
         colorSet = true;
         GlStateManager.color(red, green, blue, alpha);
