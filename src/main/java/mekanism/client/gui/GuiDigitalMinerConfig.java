@@ -346,55 +346,29 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         fontRenderer.drawString("Max: " + tileEntity.maxY, 11, 108, 0x00CD00);
 
         for (int i = 0; i < 4; i++) {
-            if (tileEntity.filters.get(getFilterIndex() + i) != null) {
-                MinerFilter filter = tileEntity.filters.get(getFilterIndex() + i);
+            MinerFilter filter = tileEntity.filters.get(getFilterIndex() + i);
+            if (filter != null) {
                 int yStart = i * 29 + 18;
 
                 if (filter instanceof MItemStackFilter) {
-                    MItemStackFilter itemFilter = (MItemStackFilter) filter;
-                    if (!itemFilter.itemType.isEmpty()) {
-                        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                        itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
-                        renderHelper.cleanup();
-                    }
+                    renderItem(((MItemStackFilter) filter).itemType, yStart);
                     fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof MOreDictFilter) {
                     MOreDictFilter oreFilter = (MOreDictFilter) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
-                    ItemStack renderStack = oreDictStacks.get(filter).renderStack;
-                    if (!renderStack.isEmpty()) {
-                        try {
-                            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                            itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
-                            renderHelper.cleanup();
-                        } catch (Exception ignored) {
-                        }
-                    }
+                    renderItem(oreDictStacks.get(filter).renderStack, yStart);
                     fontRenderer.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof MMaterialFilter) {
-                    MMaterialFilter itemFilter = (MMaterialFilter) filter;
-                    if (!itemFilter.getMaterialItem().isEmpty()) {
-                        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                        itemRender.renderItemAndEffectIntoGUI(itemFilter.getMaterialItem(), 59, yStart + 3);
-                        renderHelper.cleanup();
-                    }
+                    renderItem(((MMaterialFilter) filter).getMaterialItem(), yStart);
                     fontRenderer.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof MModIDFilter) {
                     MModIDFilter modFilter = (MModIDFilter) filter;
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }
-                    ItemStack renderStack = modIDStacks.get(filter).renderStack;
-                    if (!renderStack.isEmpty()) {
-                        try {
-                            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                            itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
-                            renderHelper.cleanup();
-                        } catch (Exception ignored) {
-                        }
-                    }
+                    renderItem(modIDStacks.get(filter).renderStack, yStart);
                     fontRenderer.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
                 }
             }
@@ -403,6 +377,18 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
             drawHoveringText(LangUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+
+    private void renderItem(ItemStack stack, int yStart) {
+        //TODO: This try catch got extracted with it but is there any real need for it to exist in the first place?
+        try {
+            if (!stack.isEmpty()) {
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
+                itemRender.renderItemAndEffectIntoGUI(stack, 59, yStart + 3);
+                renderHelper.cleanup();
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
