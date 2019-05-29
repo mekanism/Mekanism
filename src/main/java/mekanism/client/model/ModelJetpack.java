@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -165,6 +164,7 @@ public class ModelJetpack extends ModelBase {
     }
 
     public void render(float size) {
+        //TODO: Try reordering things so that it can just do the glow all in one batch???
         Packtop.render(size);
         Packbottom.render(size);
         Thrusterleft.render(size);
@@ -173,9 +173,9 @@ public class ModelJetpack extends ModelBase {
         Fueltubeleft.render(size);
         Packmid.render(size);
 
-        MekanismRenderer.glowOn();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
         Packcore.render(size);
-        MekanismRenderer.glowOff();
+        renderHelper.cleanup();
 
         WingsupportL.render(size);
         WingsupportR.render(size);
@@ -183,26 +183,24 @@ public class ModelJetpack extends ModelBase {
         ExtendosupportL.render(size);
         ExtendosupportR.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset();
-        MekanismRenderer.glowOn();
-        renderHelper.enableCull().colorAlpha(0.2F);
+        //We need a matrix so we need to create a new instance
+        renderHelper = new MekanismRenderHelper(true).enableBlendPreset().enableGlow().enableCull().colorAlpha(0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
 
         Packdoodad2.render(size);
         Packdoodad3.render(size);
         Bottomthruster.render(size);
 
-        MekanismRenderer.glowOn();
+        renderHelper.enableGlow();//No matrix so we can reuse a cleaned up render helper
         light1.render(size);
         light2.render(size);
         light3.render(size);
         Packcore.render(size);
-        MekanismRenderer.glowOff();
+        renderHelper.cleanup();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

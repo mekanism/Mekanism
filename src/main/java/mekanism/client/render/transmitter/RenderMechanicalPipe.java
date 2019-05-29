@@ -70,8 +70,11 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (scale > 0.01 && fluid != null) {
             MekanismRenderHelper renderHelper = initHelper().disableBlend();
 
-            MekanismRenderer.glowOn(fluid.getLuminosity());
-            renderHelper.color(fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : fluid.getColor());
+            if (fluidStack != null) {
+                renderHelper.enableGlow(fluidStack).color(fluidStack);
+            } else {
+                renderHelper.enableGlow(fluid).color(fluid);
+            }
 
             bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(x, y, z);
@@ -114,7 +117,6 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 }
             }
 
-            MekanismRenderer.glowOff();
             renderHelper.cleanup();
         }
     }

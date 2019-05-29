@@ -23,12 +23,9 @@ public final class MinerVisualRenderer {
     public static void render(TileEntityDigitalMiner miner) {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         GlStateManager.translate(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
-        renderHelper.enableBlendPreset();
-        MekanismRenderer.glowOn();
-        renderHelper.enableCull().color(1.0F, 1.0F, 1.0F, 0.8F);
+        renderHelper.enableBlendPreset().enableGlow().enableCull().colorAlpha(0.8F);
         mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
         getList(new MinerRenderData(miner)).render();
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
     }
 

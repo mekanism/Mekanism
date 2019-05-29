@@ -39,8 +39,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
             if (tileEntity.height - 2 >= 1 && tileEntity.inputTank.getCapacity() > 0) {
                 MekanismRenderHelper renderHelper = initHelper();
                 FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
-                MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
-                renderHelper.color(tileEntity.inputTank.getFluid());
+                renderHelper.enableGlow(tileEntity.inputTank.getFluid()).color(tileEntity.inputTank.getFluid());
                 DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid());
 
                 float levels = Math.min((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity(), 1);
@@ -70,7 +69,6 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
                     }
                 }
                 displayList[partialLevels].render();
-                MekanismRenderer.glowOff();
                 renderHelper.cleanup();
             }
         }

@@ -11,7 +11,6 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -48,8 +47,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
                     FluidRenderer.translateToOrigin(data.location);
 
-                    MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
-                    renderHelper.color(tileEntity.structure.waterStored);
+                    renderHelper.enableGlow(tileEntity.structure.waterStored).color(tileEntity.structure.waterStored);
 
                     if (tileEntity.structure.waterStored.getFluid().isGaseous()) {
                         renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.waterStored.amount / (float) tileEntity.clientWaterCapacity) + MekanismRenderer.GAS_RENDER_BASE));
@@ -58,15 +56,13 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                         FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
                     }
 
-                    MekanismRenderer.glowOff();
                     renderHelper.cleanup();
 
                     for (ValveData valveData : tileEntity.valveViewing) {
                         MekanismRenderHelper valveRenderHelper = FluidRenderer.initHelper();
                         FluidRenderer.translateToOrigin(valveData.location);
-                        MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
+                        valveRenderHelper.enableGlow(tileEntity.structure.waterStored);
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
-                        MekanismRenderer.glowOff();
                         valveRenderHelper.cleanup();
                     }
                 }
@@ -86,13 +82,11 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                 if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null) {
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
                     FluidRenderer.translateToOrigin(data.location);
-                    MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
-                    renderHelper.color(tileEntity.structure.steamStored);
+                    renderHelper.enableGlow(tileEntity.structure.steamStored).color(tileEntity.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
                     renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity) + MekanismRenderer.GAS_RENDER_BASE));
                     display.render();
-                    MekanismRenderer.glowOff();
                     renderHelper.cleanup();
                 }
             }

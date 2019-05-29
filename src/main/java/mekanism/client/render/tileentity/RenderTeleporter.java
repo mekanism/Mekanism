@@ -37,19 +37,12 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
             int display = getOverlayDisplay(type).display;
             GlStateManager.callList(display);
-            cleanup(renderHelper);
+            renderHelper.cleanup();
         }
     }
 
-    private void cleanup(MekanismRenderHelper renderHelper) {
-        MekanismRenderer.glowOff();
-        renderHelper.cleanup();
-    }
-
     private MekanismRenderHelper initHelper() {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
-        MekanismRenderer.glowOn();
-        return renderHelper.enableBlendPreset();
+        return new MekanismRenderHelper(true).enableCull().disableLighting().enableGlow().enableBlendPreset();
     }
 
     private DisplayInteger getOverlayDisplay(Integer type) {

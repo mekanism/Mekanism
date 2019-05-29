@@ -86,12 +86,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
                 if (stack.color != null) {
                     bindTexture(transporterBox);
-                    MekanismRenderHelper colorRenderHelper = new MekanismRenderHelper(true);
-                    MekanismRenderer.glowOn();
-                    colorRenderHelper.disableCull().color(stack.color);
+                    MekanismRenderHelper colorRenderHelper = new MekanismRenderHelper(true).enableGlow().disableCull().color(stack.color);
                     GlStateManager.translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
-                    MekanismRenderer.glowOff();
                     colorRenderHelper.cleanup();
                 }
             }
@@ -116,7 +113,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
                     int display = getOverlayDisplay(pos.sideHit, mode).display;
                     GlStateManager.callList(display);
-                    popTransporter(renderHelper);
+                    renderHelper.cleanup();
                 }
             }
         }
@@ -242,14 +239,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         return display;
     }
 
-    private void popTransporter(MekanismRenderHelper renderHelper) {
-        MekanismRenderer.glowOff();
-        renderHelper.cleanup();
-    }
-
     private MekanismRenderHelper pushTransporter() {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
-        MekanismRenderer.glowOn();
-        return renderHelper.enableBlendPreset();
+        return new MekanismRenderHelper(true).enableCull().disableLighting().enableGlow().enableBlendPreset();
     }
 }

@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -238,17 +237,14 @@ public class ModelArmoredJetpack extends ModelBase {
         Packdoodad3.render(size);
         Bottomthruster.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset();
-        MekanismRenderer.glowOn();
-        renderHelper.enableCull().colorAlpha(0.2F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset().enableGlow().enableCull().colorAlpha(0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
 
-        MekanismRenderer.glowOn();
+        renderHelper.enableGlow();//No matrix so we can reuse a cleaned up render helper
         light1.render(size);
         light2.render(size);
         light3.render(size);
@@ -259,7 +255,8 @@ public class ModelArmoredJetpack extends ModelBase {
 
         Rightlight.render(size);
         Leftlight.render(size);
-        MekanismRenderer.glowOff();
+        renderHelper.cleanup();
+        //TODO: Pushing into a matrix and then cleaning it up just feels weird, look into if there is a bit better of a way
 
         Chestplate.render(size);
         Leftguardtop.render(size);

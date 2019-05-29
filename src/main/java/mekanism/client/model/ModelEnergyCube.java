@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
 import mekanism.common.tier.EnergyCubeTier;
@@ -378,7 +377,7 @@ public class ModelEnergyCube extends ModelBase {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(1.001F);
         GlStateManager.translate(0, -0.0061F, 0);
         manager.bindTexture(RenderEnergyCube.resources.get(tier));
-        MekanismRenderer.glowOn();
+        renderHelper.enableGlow();
 
         corner8.render(size);
         corner7.render(size);
@@ -389,7 +388,6 @@ public class ModelEnergyCube extends ModelBase {
         corner2.render(size);
         corner1.render(size);
 
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
     }
 
@@ -399,25 +397,24 @@ public class ModelEnergyCube extends ModelBase {
             ports[side.ordinal()].render(size);
 
             if (state == IOState.OUTPUT) {
-                MekanismRenderer.glowOn();
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
                 renderer.bindTexture(RenderEnergyCube.resources.get(tier));
                 ports[side.ordinal()].render(size);
-                MekanismRenderer.glowOff();
+                renderHelper.cleanup();
             }
         }
 
         renderer.bindTexture(state == IOState.OUTPUT ? OVERLAY_ON : OVERLAY_OFF);
 
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         if (state == IOState.OUTPUT) {
-            MekanismRenderer.glowOn();
+            renderHelper.enableGlow();
         }
 
         leds1[side.ordinal()].render(size);
         leds2[side.ordinal()].render(size);
 
-        if (state == IOState.OUTPUT) {
-            MekanismRenderer.glowOff();
-        }
+        renderHelper.cleanup();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

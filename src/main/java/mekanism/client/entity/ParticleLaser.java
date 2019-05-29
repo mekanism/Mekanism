@@ -39,9 +39,8 @@ public class ParticleLaser extends Particle {
         Tessellator tessellator = Tessellator.getInstance();
         tessellator.draw();
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableCull();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableCull().enableGlow();
         //TODO: Double check if GL11.GL_POLYGON_BIT is needed. It didn't seem to be used and removing it doesn't seem to have broken anything
-        MekanismRenderer.glowOn();
 
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
         float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
@@ -93,9 +92,7 @@ public class ParticleLaser extends Particle {
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
         tessellator.draw();
 
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
-
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
     }
 

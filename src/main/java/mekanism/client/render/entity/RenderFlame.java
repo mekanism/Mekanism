@@ -32,9 +32,7 @@ public class RenderFlame extends Render<EntityFlame> {
         float alpha = (entity.ticksExisted + partialTick) / (float) EntityFlame.LIFESPAN;
         float size = (float) Math.pow(2 * alpha, 2);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        MekanismRenderer.glowOn();
-        renderHelper.enableBlendPreset().colorAlpha(1 - alpha);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGlow().enableBlendPreset().colorAlpha(1 - alpha);
 
         bindTexture(getEntityTexture(entity));
 
@@ -68,7 +66,6 @@ public class RenderFlame extends Render<EntityFlame> {
             worldrenderer.pos(-8.0D, 2.0D, 0.0D).tex((double) f2, (double) f5).endVertex();
             tessellator.draw();
         }
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
     }
 

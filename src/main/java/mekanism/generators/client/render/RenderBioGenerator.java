@@ -29,12 +29,10 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
     @Override
     public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.bioFuelSlot.fluidStored > 0) {
-            MekanismRenderHelper renderHelper = initHelper();
-            MekanismRenderer.glowOn();
+            MekanismRenderHelper renderHelper = initHelper().enableGlow();
             GlStateManager.translate((float) x, (float) y, (float) z);
             bindTexture(MekanismRenderer.getBlocksTexture());
             getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages - 1)].render();
-            MekanismRenderer.glowOff();
             renderHelper.cleanup();
         }
 

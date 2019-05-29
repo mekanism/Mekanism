@@ -163,9 +163,9 @@ public class ModelCustomArmor extends ModelBiped {
             }
 
             setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
-            MekanismRenderer.glowOn();
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
             super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-            MekanismRenderer.glowOff();
+            renderHelper.cleanup();
         }
     }
 

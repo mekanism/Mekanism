@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,9 +21,8 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
             renderSide(worldRenderer, side, transmitter);
         }
 
-        MekanismRenderer.glowOn(glow);
+        renderHelper.enableGlow(glow);
         tessellator.draw();
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
     }
 }

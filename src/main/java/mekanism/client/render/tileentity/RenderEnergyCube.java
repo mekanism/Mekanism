@@ -83,8 +83,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
             GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
-            coreRenderHelper.enableBlendPreset();
-            MekanismRenderer.glowOn();
+            coreRenderHelper.enableBlendPreset().enableGlow();
 
             MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tileEntity.tier.getBaseTier().getColor());
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
@@ -92,8 +91,6 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
             core.render(0.0625F);
             coreColorRenderHelper.cleanup();
-
-            MekanismRenderer.glowOff();
             coreRenderHelper.cleanup();
         }
 

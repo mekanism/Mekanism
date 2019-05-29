@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -234,9 +233,7 @@ public class ModelGasMask extends ModelBase {
         filterpipelower.render(size);
         filterpipeupper.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
-        MekanismRenderer.glowOn();
-        renderHelper.colorAlpha(0.3F).enableCull();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset().enableGlow().colorAlpha(0.3F).enableCull();
 
         glasstop.render(size);
         glassfront.render(size);
@@ -245,7 +242,6 @@ public class ModelGasMask extends ModelBase {
         glassbackR.render(size);
         glassbackL.render(size);
 
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
 
         pipecornerFL.render(size);
@@ -253,10 +249,10 @@ public class ModelGasMask extends ModelBase {
         pipecornerBR.render(size);
         pipecornerBL.render(size);
 
-        MekanismRenderer.glowOn();
+        renderHelper.enableGlow();//No matrix so we can reuse a cleaned up render helper
         lightL.render(size);
         lightR.render(size);
-        MekanismRenderer.glowOff();
+        renderHelper.cleanup();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

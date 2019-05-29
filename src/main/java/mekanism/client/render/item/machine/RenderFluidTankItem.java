@@ -40,8 +40,7 @@ public class RenderFluidTankItem {
             MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
             MekanismRenderer.bindTexture(MekanismRenderer.getBlocksTexture());
             GlStateManager.translate(-0.5, -0.5, -0.5);
-            MekanismRenderer.glowOn(fluid.getFluid().getLuminosity(fluid));
-            fluidRenderHelper.color(fluid);
+            fluidRenderHelper.enableGlow(fluid).color(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
@@ -54,7 +53,6 @@ public class RenderFluidTankItem {
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
-            MekanismRenderer.glowOff();
             fluidRenderHelper.cleanup();
         }
 

@@ -61,7 +61,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                         GlStateManager.translate((float) x, (float) y, (float) z);
                         int display = getOverlayDisplay(pos.sideHit, type).display;
                         GlStateManager.callList(display);
-                        cleanup(renderHelper);
+                        renderHelper.cleanup();
                     }
                 }
             }
@@ -69,15 +69,8 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         GlStateManager.popMatrix();
     }
 
-    private void cleanup(MekanismRenderHelper renderHelper) {
-        MekanismRenderer.glowOff();
-        renderHelper.cleanup();
-    }
-
     private MekanismRenderHelper initHelper() {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().disableLighting();
-        MekanismRenderer.glowOn();
-        return renderHelper.enableBlendPreset();
+        return new MekanismRenderHelper(true).enableCull().disableLighting().enableGlow().enableBlendPreset();
     }
 
     private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type) {

@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.CullFace;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -61,9 +60,6 @@ public class MekanismRenderer {
     public static int[] directionMap = new int[]{3, 0, 1, 2};
     private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
     public static TextureAtlasSprite missingIcon;
-    private static float lightmapLastX;
-    private static float lightmapLastY;
-    private static boolean optifineBreak = false;
     private static String[] simpleSides = new String[]{"Bottom", "Top", "Front", "Back", "Left", "Right"};
     private static TextureMap texMap = null;
 
@@ -222,34 +218,6 @@ public class MekanismRenderer {
 
     public static TextureAtlasSprite getColorIcon(EnumColor color) {
         return colors[color.ordinal()];
-    }
-
-    public static void glowOn() {
-        glowOn(15);
-    }
-
-    //TODO: Handle glow through the render helper
-    public static void glowOn(int glow) {
-        //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
-        try {
-            lightmapLastX = OpenGlHelper.lastBrightnessX;
-            lightmapLastY = OpenGlHelper.lastBrightnessY;
-        } catch (NoSuchFieldError e) {
-            optifineBreak = true;
-        }
-
-        float glowRatioX = Math.min((glow / 15F) * 240F + lightmapLastX, 240);
-        float glowRatioY = Math.min((glow / 15F) * 240F + lightmapLastY, 240);
-
-        if (!optifineBreak) {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);
-        }
-    }
-
-    public static void glowOff() {
-        if (!optifineBreak) {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
-        }
     }
 
     /**

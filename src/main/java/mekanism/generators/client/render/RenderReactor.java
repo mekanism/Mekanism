@@ -25,8 +25,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             GlStateManager.translate(x + 0.5, y - 1.5, z + 0.5);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
-            renderHelper.enableBlendPreset();
-            MekanismRenderer.glowOn();
+            renderHelper.enableBlendPreset().enableGlow();
 
             long scaledTemp = Math.round(tileEntity.getPlasmaTemp() / 1E8);
             float ticks = MekanismClient.ticksPassed + partialTick;
@@ -39,7 +38,6 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             scale = 1 - 0.9 * Math.sin(Math.toRadians(ticks * 4 * scaledTemp + 90F));
             renderPart(EnumColor.ORANGE, scale, ticks, scaledTemp, 5, -3, -35, 106);
 
-            MekanismRenderer.glowOff();
             renderHelper.cleanup();
         }
     }

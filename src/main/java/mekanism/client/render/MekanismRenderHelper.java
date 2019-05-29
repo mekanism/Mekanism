@@ -9,16 +9,25 @@ import mekanism.api.gas.GasStack;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class MekanismRenderHelper {
 
     private Deque<Pair<KnownStates, Boolean>> changedStates = new ArrayDeque<>();
     private boolean hasMatrix;
     private boolean colorSet;
+    private boolean glowEnabled;
+    private float lightmapLastX;
+    private float lightmapLastY;
 
     public MekanismRenderHelper() {
         this(false);
@@ -35,6 +44,9 @@ public class MekanismRenderHelper {
     // That or add support for reusing it. Adding support for reusing it at least via a reset method would potentially be useful for various spots
     // that the helper is just used for color management
     public void cleanup() {
+        if (glowEnabled) {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
+        }
         if (colorSet) {
             //Reset the color
             GlStateManager.color(1, 1, 1, 1);
@@ -68,6 +80,33 @@ public class MekanismRenderHelper {
         disableAlpha().enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         return this;
+    }
+
+    //Glow
+    public MekanismRenderHelper enableGlow() {
+        return enableGlow(15);
+    }
+
+    public MekanismRenderHelper enableGlow(int glow) {
+        if (!FMLClientHandler.instance().hasOptifine()) {
+            //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
+            lightmapLastX = OpenGlHelper.lastBrightnessX;
+            lightmapLastY = OpenGlHelper.lastBrightnessY;
+
+            float glowRatioX = Math.min((glow / 15F) * 240F + lightmapLastX, 240);
+            float glowRatioY = Math.min((glow / 15F) * 240F + lightmapLastY, 240);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);
+            glowEnabled = true;
+        }
+        return this;
+    }
+
+    public MekanismRenderHelper enableGlow(@Nullable FluidStack fluid) {
+        return fluid == null || fluid.getFluid() == null ? this : enableGlow(fluid.getFluid().getLuminosity(fluid));
+    }
+
+    public MekanismRenderHelper enableGlow(@Nullable Fluid fluid) {
+        return fluid == null ? this : enableGlow(fluid.getLuminosity());
     }
 
     //Helper wrappers
@@ -120,7 +159,11 @@ public class MekanismRenderHelper {
     }
 
     public MekanismRenderHelper color(@Nullable FluidStack fluid) {
-        return fluid == null ? this : color(fluid.getFluid().getColor(fluid));
+        return fluid == null || fluid.getFluid() == null ? this : color(fluid.getFluid().getColor(fluid));
+    }
+
+    public MekanismRenderHelper color(@Nullable Fluid fluid) {
+        return fluid == null ? this : color(fluid.getColor());
     }
 
     public MekanismRenderHelper color(@Nullable GasStack gasStack) {

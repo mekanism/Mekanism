@@ -148,11 +148,10 @@ public class ModelHeatGenerator extends ModelBase {
         manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
         renderHelper.scale(1.001F);
         GlStateManager.translate(0, -0.0011F, 0);
-        MekanismRenderer.glowOn();
+        renderHelper.enableGlow();
 
         doRender(size);
 
-        MekanismRenderer.glowOff();
         renderHelper.cleanup();
     }
 

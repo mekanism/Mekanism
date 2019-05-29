@@ -7,7 +7,6 @@ import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,8 +33,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
                 FluidRenderer.translateToOrigin(data.location);
 
-                MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                renderHelper.color(tileEntity.structure.fluidStored);
+                renderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored);
 
                 if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
                     renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity) + MekanismRenderer.GAS_RENDER_BASE));
@@ -44,16 +42,13 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                     FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();
                 }
 
-                MekanismRenderer.glowOff();
                 renderHelper.cleanup();
 
                 for (ValveData valveData : tileEntity.valveViewing) {
                     MekanismRenderHelper valveRenderHelper = FluidRenderer.initHelper();
                     FluidRenderer.translateToOrigin(valveData.location);
-                    MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                    valveRenderHelper.color(tileEntity.structure.fluidStored);
+                    valveRenderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored);
                     FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
-                    MekanismRenderer.glowOff();
                     valveRenderHelper.cleanup();
                 }
             }

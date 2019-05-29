@@ -1,9 +1,8 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class ModelAtomicDisassembler extends ModelBase {
 
@@ -127,8 +126,7 @@ public class ModelAtomicDisassembler extends ModelBase {
     }
 
     public void render(float size) {
-        GlStateManager.pushMatrix();
-        MekanismRenderer.glowOn();
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGlow();
 
         Shape3.render(size);
         Shape5.render(size);
@@ -136,8 +134,7 @@ public class ModelAtomicDisassembler extends ModelBase {
         Shape16.render(size);
         Shape14.render(size);
 
-        MekanismRenderer.glowOff();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
 
         Shape1.render(size);
         Shape2.render(size);
