@@ -19,17 +19,18 @@ public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHea
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
 
+        //All facings in D-U-N-S-W-E order
         switch (tileEntity.facing.ordinal()) {
-            case 2:
+            case 2://NOTH
                 renderHelper.rotateY(180, 1);
                 break;
-            case 3:
+            case 3://SOUTH
                 renderHelper.rotateY(0, 1);
                 break;
-            case 4:
+            case 4://WEST
                 renderHelper.rotateY(270, 1);
                 break;
-            case 5:
+            case 5://EAST
                 renderHelper.rotateY(90,  1);
                 break;
         }

@@ -19,18 +19,17 @@ public class RenderGasGenerator extends TileEntitySpecialRenderer<TileEntityGasG
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 
-        //TODO: Can this use helper method for facing
         switch (tileEntity.facing.ordinal()) {
-            case 2:
+            case 2://NORTH
                 renderHelper.rotateY(90, 1);
                 break;
-            case 3:
+            case 3://SOUTH
                 renderHelper.rotateY(270, 1);
                 break;
-            case 4:
+            case 4://WEST
                 renderHelper.rotateY(180, 1);
                 break;
-            case 5:
+            case 5://EAST
                 renderHelper.rotateY(0, 1);
                 break;
         }

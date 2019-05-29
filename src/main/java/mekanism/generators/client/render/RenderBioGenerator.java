@@ -40,16 +40,16 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
         switch (tileEntity.facing.ordinal()) {
-            case 2:
+            case 2://NORTH
                 renderHelper.rotateY(180, 1);
                 break;
-            case 3:
+            case 3://SOUTH
                 renderHelper.rotateY(0, 1);
                 break;
-            case 4:
+            case 4://WEST
                 renderHelper.rotateY(270, 1);
                 break;
-            case 5:
+            case 5://EAST
                 renderHelper.rotateY(90, 1);
                 break;
         }
