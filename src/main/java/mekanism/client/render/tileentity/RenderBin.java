@@ -41,16 +41,13 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
                     renderHelper.translate(x + 0.73, y + 0.83, z - 0.0001);
                     break;
                 case SOUTH:
-                    renderHelper.translate(x + 0.27, y + 0.83, z + 1.0001);
-                    GlStateManager.rotate(180, 0, 1, 0);
+                    renderHelper.translate(x + 0.27, y + 0.83, z + 1.0001).rotateY(180, 1);
                     break;
                 case WEST:
-                    renderHelper.translate(x - 0.0001, y + 0.83, z + 0.27);
-                    GlStateManager.rotate(90, 0, 1, 0);
+                    renderHelper.translate(x - 0.0001, y + 0.83, z + 0.27).rotateY(90, 1);
                     break;
                 case EAST:
-                    renderHelper.translate(x + 1.0001, y + 0.83, z + 0.73);
-                    GlStateManager.rotate(-90, 0, 1, 0);
+                    renderHelper.translate(x + 1.0001, y + 0.83, z + 0.73).rotateY(-90, 1);
                     break;
                 default:
                     break;
@@ -59,7 +56,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             float scale = 0.03125F;
             float scaler = 0.9F;
             renderHelper.scale(scale * scaler, scale * scaler, -0.0001F);
-            GlStateManager.rotate(180, 0, 0, 1);
+            renderHelper.rotateZ(180, 1);
             renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
             renderHelper.cleanup();
         }
@@ -80,29 +77,20 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
 
         switch (side) {
             case SOUTH:
-                renderHelper.translateY(1);
-                GlStateManager.rotate(0, 0, 1, 0);
-                GlStateManager.rotate(90, 1, 0, 0);
+                renderHelper.translateY(1).rotateY(0, 1).rotateX(90, 1);
                 break;
             case NORTH:
-                renderHelper.translate(1, 1, 1);
-                GlStateManager.rotate(180, 0, 1, 0);
-                GlStateManager.rotate(90, 1, 0, 0);
+                renderHelper.translateAll(1).rotateY(180, 1).rotateX(90, 1);
                 break;
             case EAST:
-                renderHelper.translateYZ(1, 1);
-                GlStateManager.rotate(90, 0, 1, 0);
-                GlStateManager.rotate(90, 1, 0, 0);
+                renderHelper.translateYZ(1, 1).rotateY(90, 1).rotateX(90, 1);
                 break;
             case WEST:
-                renderHelper.translateXY(1, 1);
-                GlStateManager.rotate(-90, 0, 1, 0);
-                GlStateManager.rotate(90, 1, 0, 0);
+                renderHelper.translateXY(1, 1).rotateY(-90, 1).rotateX(90, 1);
                 break;
         }
 
-        renderHelper.translate(displayWidth / 2, 1F, displayHeight / 2);
-        GlStateManager.rotate(-90, 1, 0, 0);
+        renderHelper.translate(displayWidth / 2, 1F, displayHeight / 2).rotateX(-90, 1);
 
         FontRenderer fontRenderer = getFontRenderer();
 

@@ -31,16 +31,16 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
     protected void renderWithTransform(@Nonnull ItemStack stack, MekanismRenderHelper renderHelper) {
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
-            GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+            renderHelper.rotateY(180, 1);
         }
 
         renderBlockSpecific(stack, transformType, renderHelper);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
-                GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(90, 1);
             } else {
-                GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(180, 1);
             }
             renderItemSpecific(stack, transformType, renderHelper);
         }
@@ -51,8 +51,7 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translateAll(0.5F);
-        GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translateAll(0.5F).rotateY(180, 1);
 
         //
         renderWithTransform(stack, renderHelper);

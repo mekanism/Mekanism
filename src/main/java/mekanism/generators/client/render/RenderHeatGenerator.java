@@ -5,7 +5,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,20 +21,20 @@ public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHea
 
         switch (tileEntity.facing.ordinal()) {
             case 2:
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(180, 1);
                 break;
             case 3:
-                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(0, 1);
                 break;
             case 4:
-                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(270, 1);
                 break;
             case 5:
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(90,  1);
                 break;
         }
 
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+        renderHelper.rotateZ(180, 1);
         model.render(0.0625F, tileEntity.getActive(), rendererDispatcher.renderEngine);
         renderHelper.cleanup();
     }

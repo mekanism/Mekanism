@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -211,6 +212,50 @@ public class MekanismRenderHelper {
 
     public MekanismRenderHelper translateZ(double z) {
         return translate(0, 0, z);
+    }
+
+    public MekanismRenderHelper rotate(float angle, float x, float y, float z) {
+        GlStateManager.rotate(angle, x, y, z);
+        return this;
+    }
+
+    public MekanismRenderHelper rotateXY(float angle, float x, float y) {
+        return rotate(angle, x, y, 0);
+    }
+
+    public MekanismRenderHelper rotateXZ(float angle, float x, float z) {
+        return rotate(angle, x, 0, z);
+    }
+
+    public MekanismRenderHelper rotateYZ(float angle, float y, float z) {
+        return rotate(angle, 0, y, z);
+    }
+
+    public MekanismRenderHelper rotateX(float angle, float x) {
+        return rotate(angle, x, 0, 0);
+    }
+
+    public MekanismRenderHelper rotateY(float angle, float y) {
+        return rotate(angle, 0, y, 0);
+    }
+
+    public MekanismRenderHelper rotateZ(float angle, float z) {
+        return rotate(angle, 0, 0, z);
+    }
+
+    //TODO: Figure out why a few things don't use this and if they should be instead
+    public MekanismRenderHelper rotate(EnumFacing facing) {
+        switch (facing) /*TODO: switch the enum*/ {
+            case NORTH:
+                return rotateY(0, 1);
+            case SOUTH:
+                return rotateY(180, 1);
+            case WEST:
+                return rotateY(90, 1);
+            case EAST:
+                return rotateY(270, 1);
+        }
+        return this;
     }
 
     //Color

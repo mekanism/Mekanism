@@ -46,15 +46,13 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
         }
 
         if (tileEntity.getHousedBlades() > 0) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y - 1, z + 0.5);
-            GlStateManager.rotate(tileEntity.rotationLower, 0.0F, 1.0F, 0.0F);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y - 1, z + 0.5).rotateY(tileEntity.rotationLower, 1);
             model.render(0.0625F, baseIndex);
             renderHelper.cleanup();
         }
 
         if (tileEntity.getHousedBlades() == 2) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y - 0.5, z + 0.5);
-            GlStateManager.rotate(tileEntity.rotationUpper, 0.0F, 1.0F, 0.0F);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y - 0.5, z + 0.5).rotateY(tileEntity.rotationUpper, 1);
             model.render(0.0625F, baseIndex + 1);
             renderHelper.cleanup();
         }

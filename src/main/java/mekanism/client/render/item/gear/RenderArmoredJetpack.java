@@ -8,7 +8,6 @@ import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,10 +25,8 @@ public class RenderArmoredJetpack extends MekanismItemStackRenderer {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
-        GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(90, 0.0F, -1.0F, 0.0F);
-        localRenderHelper.translateXY(0.2F, -0.35F);
+        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true)
+              .rotateZ(180, 1).rotateY(90, -1).translateXY(0.2F, -0.35F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
         armoredJetpack.render(0.0625F);
         localRenderHelper.cleanup();

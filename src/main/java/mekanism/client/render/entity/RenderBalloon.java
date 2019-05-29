@@ -8,7 +8,6 @@ import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -52,8 +51,7 @@ public class RenderBalloon extends Render<EntityBalloon> {
     }
 
     public void render(EnumColor color, double x, double y, double z) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x, y, z);
-        GlStateManager.rotate(180, 1, 0, 0);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x, y, z).rotateX(180, 1);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
         model.render(0.0625F, color);
         renderHelper.cleanup();

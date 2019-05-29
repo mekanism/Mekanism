@@ -12,7 +12,6 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -31,8 +30,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
         MekanismRenderHelper cubeRenderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+        cubeRenderHelper.rotateZ(180, 1).rotateY(180, 1);
         cubeRenderHelper.translateY(-1.0F);
 
         cubeRenderHelper.enableBlendPreset();
@@ -53,9 +51,8 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             coreRenderHelper.enableBlendPreset().enableGlow();
 
             MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true)
-                  .scale(0.4F).color(tier.getBaseTier()).translateY(Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7);
-            GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
-            GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);
+                  .scale(0.4F).color(tier.getBaseTier()).translateY(Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7)
+                  .rotateY(MekanismClient.ticksPassed * 4, 1).rotateYZ(36F + MekanismClient.ticksPassed * 4, 1, 1);
             core.render(0.0625F);
             coreColorRenderHelper.cleanup();
             coreRenderHelper.cleanup();

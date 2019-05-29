@@ -6,7 +6,6 @@ import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,8 +17,7 @@ public class RenderChemicalDissolutionChamberItem {
     private static ModelChemicalDissolutionChamber chemicalDissolutionChamber = new ModelChemicalDissolutionChamber();
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        renderHelper.translate(0.05F, -1.001F, 0.05F);
+        renderHelper.rotateZ(180, 1).translate(0.05F, -1.001F, 0.05F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
         chemicalDissolutionChamber.render(0.0625F);
     }

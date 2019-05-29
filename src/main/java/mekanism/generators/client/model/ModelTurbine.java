@@ -3,7 +3,6 @@ package mekanism.generators.client.model;
 import mekanism.client.render.MekanismRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class ModelTurbine extends ModelBase {
 
@@ -60,8 +59,7 @@ public class ModelTurbine extends ModelBase {
     }
 
     public void render(float size, int index) {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotate(index * 5, 0.0F, 1.0F, 0.0F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).rotateY(index * 5, 1);
         extension_south.render(size);
         extension_west.render(size);
         extension_east.render(size);
@@ -72,8 +70,7 @@ public class ModelTurbine extends ModelBase {
         renderBlade(blade_east, size, scale, scale / widthDiv, 0.25F, 0.0F);
         renderBlade(blade_north, size, scale / widthDiv, scale, 0.0F, -0.25F);
         renderBlade(blade_south, size, scale / widthDiv, scale, 0.0F, 0.25F);
-
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     private void renderBlade(ModelRenderer blade, float size, float scaleX, float scaleZ, float transX, float transZ) {

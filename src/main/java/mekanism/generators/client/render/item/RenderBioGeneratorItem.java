@@ -6,7 +6,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelBioGenerator;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,8 +17,7 @@ public class RenderBioGeneratorItem {
     private static ModelBioGenerator bioGenerator = new ModelBioGenerator();
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        renderHelper.translateY(-1.0F);
+        renderHelper.rotateZ(180, 1).translateY(-1.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
         bioGenerator.render(0.0625F);
     }

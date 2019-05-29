@@ -8,7 +8,6 @@ import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,32 +25,25 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
-        GlStateManager.rotate(160, 0.0F, 0.0F, 1.0F);
+        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true).rotateZ(160, 1);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Flamethrower.png"));
-
-        localRenderHelper.translateY(-1.0F);
-        GlStateManager.rotate(135, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(-20, 0.0F, 0.0F, 1.0F);
+        localRenderHelper.translateY(-1.0F).rotateY(135, 1).rotateZ(-20, 1);
 
         if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_RIGHT_HAND
             || transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                GlStateManager.rotate(55, 0.0F, 1.0F, 0.0F);
+                localRenderHelper.rotateY(55, 1);
             } else if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                GlStateManager.rotate(-160, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(30F, 1.0F, 0.0F, 0.0F);
+                localRenderHelper.rotateY(-160, 1).rotateX(30, 1);
             } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
-                localRenderHelper.translateY(0.7F);
-                GlStateManager.rotate(75, 0.0F, 1.0F, 0.0F);
+                localRenderHelper.translateY(0.7F).rotateY(75, 1);
             } else {//if(type == TransformType.THIRD_PERSON_LEFT_HAND)
                 localRenderHelper.translateXY(-0.5F, 0.7F);
             }
             localRenderHelper.scale(2.5F);
             localRenderHelper.translateYZ(-1.0F, -0.5F);
         } else if (transformType == TransformType.GUI) {
-            localRenderHelper.translateX(-0.6F);
-            GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
+            localRenderHelper.translateX(-0.6F).rotateY(45, 1);
         }
 
         flamethrower.render(0.0625F);

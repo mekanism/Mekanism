@@ -10,11 +10,11 @@ import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import mekanism.api.EnumColor;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -120,18 +120,18 @@ public class GlowPanelModel extends OBJBakedModelBase {
     @Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType) {
+        //NOTE: Does not call cleanup as it is only being used for the wrapper methods and it doesn't create a matrix
+        MekanismRenderHelper helper = new MekanismRenderHelper();
         if (transformType == TransformType.GUI) {
-            GlStateManager.rotate(180, 1, 0, 0);
+            helper.rotateX(180, 1);
             ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
-            GlStateManager.translate(0.65F, 0.45F, 0.0F);
-            GlStateManager.rotate(90, 1, 0, 0);
-            GlStateManager.scale(1.6F, 1.6F, 1.6F);
+            helper.translateXY(0.65F, 0.45F).rotateX(90, 1).scale(1.6F);
             return Pair.of(this, null);
         } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            helper.translateY(0.2F);
         } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
-            GlStateManager.translate(0.0F, 0.3F, 0.2F);
+            helper.translateYZ(0.3F, 0.2F);
             return Pair.of(this, null);
         }
         return Pair.of(this, transforms.get(transformType).getMatrix());

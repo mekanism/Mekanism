@@ -12,7 +12,6 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -45,30 +44,28 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
         switch (tileEntity.facing.ordinal()) {
             case 0: {
-                GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
-                renderHelper.translateYZ(1.0F, -1.0F);
+                renderHelper.rotateX(90, -1).translateYZ(1.0F, -1.0F);
                 break;
             }
             case 1: {
-                GlStateManager.rotate(90F, 1.0F, 0.0F, 0.0F);
-                renderHelper.translateYZ(1.0F, 1.0F);
+                renderHelper.rotateX(90, 1).translateYZ(1.0F, 1.0F);
                 break;
             }
             case 2:
-                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(0, 1);
                 break;
             case 3:
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(180, 1);
                 break;
             case 4:
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(90, 1);
                 break;
             case 5:
-                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(270, 1);
                 break;
         }
 
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+        renderHelper.rotateZ(180, 1);
         model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine, false);
 
         for (EnumFacing side : EnumFacing.values()) {
@@ -84,10 +81,10 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             bindTexture(coreTexture);
             coreRenderHelper.enableBlendPreset().enableGlow();
 
-            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tileEntity.tier.getBaseTier());
-            coreColorRenderHelper.translateY(Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7);
-            GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
-            GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
+            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tileEntity.tier.getBaseTier())
+                  .translateY(Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7)
+                  .rotateY((MekanismClient.ticksPassed + partialTick) * 4, 1)
+                  .rotateYZ(36F + (MekanismClient.ticksPassed + partialTick) * 4, 1, 1);
             core.render(0.0625F);
             coreColorRenderHelper.cleanup();
             coreRenderHelper.cleanup();

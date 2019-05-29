@@ -6,7 +6,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -19,24 +18,20 @@ public class RenderWindGeneratorItem {
     private static int angle = 0;
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
-        GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
+        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true).rotateZ(180, 1);
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-            localRenderHelper.translateY(0.4F);
+            localRenderHelper.rotateY(180, 1).translateY(0.4F);
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                GlStateManager.rotate(-45, 0.0F, 1.0F, 0.0F);
+                localRenderHelper.rotateY(-45, 1);
             } else {
-                GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
+                localRenderHelper.rotateY(45, 1);
             }
-            GlStateManager.rotate(50, 1.0F, 0.0F, 0.0F);
-            localRenderHelper.scale(2.0F);
-            localRenderHelper.translateY(-0.4F);
+            localRenderHelper.rotateX(50, 1).scale(2.0F).translateY(-0.4F);
         } else {
             if (transformType == TransformType.GUI) {
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+                localRenderHelper.rotateY(90, 1);
             } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+                localRenderHelper.rotateY(180, 1);
             }
             localRenderHelper.translateY(0.4F);
         }

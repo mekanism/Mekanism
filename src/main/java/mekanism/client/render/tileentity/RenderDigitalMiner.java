@@ -6,7 +6,6 @@ import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,24 +23,20 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer<TileEntityDigi
 
         switch (tileEntity.facing.ordinal()) {
             case 2:
-                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
-                renderHelper.translateZ(-1.0F);
+                renderHelper.rotateY(0, 1).translateZ(-1.0F);
                 break;
             case 3:
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
-                renderHelper.translateZ(-1.0F);
+                renderHelper.rotateY(180, 1).translateZ(-1.0F);
                 break;
             case 4:
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
-                renderHelper.translateZ(-1.0F);
+                renderHelper.rotateY(90, 1).translateZ(-1.0F);
                 break;
             case 5:
-                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
-                renderHelper.translateZ(-1.0F);
+                renderHelper.rotateY(270, 1).translateZ(-1.0F);
                 break;
         }
 
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+        renderHelper.rotateZ(180, 1);
         model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine, true);
         renderHelper.cleanup();
 

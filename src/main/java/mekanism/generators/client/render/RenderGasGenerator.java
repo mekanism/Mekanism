@@ -5,7 +5,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelGasGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,24 +19,23 @@ public class RenderGasGenerator extends TileEntitySpecialRenderer<TileEntityGasG
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 
+        //TODO: Can this use helper method for facing
         switch (tileEntity.facing.ordinal()) {
             case 2:
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(90, 1);
                 break;
             case 3:
-                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(270, 1);
                 break;
             case 4:
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(180, 1);
                 break;
             case 5:
-                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
+                renderHelper.rotateY(0, 1);
                 break;
         }
 
-        GlStateManager.rotate(180F, 0.0F, 1.0F, 1.0F);
-        GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate(90F, 0.0F, 1.0F, 0.0F);
+        renderHelper.rotateYZ(180, 1, 1).rotateY(90, -1).rotateY(90, 1);
         model.render(0.0625F);
         renderHelper.cleanup();
     }

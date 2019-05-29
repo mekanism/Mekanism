@@ -6,7 +6,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelGasGenerator;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,10 +17,7 @@ public class RenderGasGeneratorItem {
     private static ModelGasGenerator gasGenerator = new ModelGasGenerator();
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        GlStateManager.rotate(180F, 0.0F, 1.0F, 1.0F);
-        GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
-        renderHelper.translateY(-1.0F);
-        GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+        renderHelper.rotateYZ(180, 1, 1).rotateX(90, -1).translateY(-1.0F).rotateY(180, 1);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
         gasGenerator.render(0.0625F);
     }

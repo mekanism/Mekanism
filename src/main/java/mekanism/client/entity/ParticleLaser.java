@@ -5,7 +5,6 @@ import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -55,11 +54,11 @@ public class ParticleLaser extends Particle {
                 break;
             case WEST:
             case EAST:
-                GlStateManager.rotate(90, 0, 0, 1);
+                renderHelper.rotateZ(90, 1);
                 break;
             case NORTH:
             case SOUTH:
-                GlStateManager.rotate(90, 1, 0, 0);
+                renderHelper.rotateX(90, 1);
                 break;
         }
 
@@ -68,7 +67,7 @@ public class ParticleLaser extends Particle {
         float vMin = particleTexture.getInterpolatedV(0);
         float vMax = particleTexture.getInterpolatedV(16);
 
-        GlStateManager.rotate(45, 0, 1, 0);
+        renderHelper.rotateY(45, 1);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
         buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
@@ -80,7 +79,7 @@ public class ParticleLaser extends Particle {
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
         tessellator.draw();
 
-        GlStateManager.rotate(90, 0, 1, 0);
+        renderHelper.rotateY(90, 1);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
         buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin)
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
