@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelDigitalMiner;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -17,33 +18,32 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer<TileEntityDigi
 
     @Override
     public void render(TileEntityDigitalMiner tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
 
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
 
         switch (tileEntity.facing.ordinal()) {
             case 2:
                 GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
-                GlStateManager.translate(0.0F, 0.0F, -1.0F);
+                renderHelper.translateZ(-1.0F);
                 break;
             case 3:
                 GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
-                GlStateManager.translate(0.0F, 0.0F, -1.0F);
+                renderHelper.translateZ(-1.0F);
                 break;
             case 4:
                 GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
-                GlStateManager.translate(0.0F, 0.0F, -1.0F);
+                renderHelper.translateZ(-1.0F);
                 break;
             case 5:
                 GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
-                GlStateManager.translate(0.0F, 0.0F, -1.0F);
+                renderHelper.translateZ(-1.0F);
                 break;
         }
 
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine, true);
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
 
         if (tileEntity.clientRendering) {
             MinerVisualRenderer.render(tileEntity);

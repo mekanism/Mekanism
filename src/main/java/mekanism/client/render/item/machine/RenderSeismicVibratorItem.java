@@ -19,8 +19,7 @@ public class RenderSeismicVibratorItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        renderHelper.scale(0.6F);
-        GlStateManager.translate(0.0F, -0.55F, 0.0F);
+        renderHelper.scale(0.6F).translateY(-0.55F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
         seismicVibrator.render(0.0625F);
     }

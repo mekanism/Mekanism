@@ -29,8 +29,7 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
         MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(90, 0.0F, -1.0F, 0.0F);
-        localRenderHelper.scale(2.0F);
-        GlStateManager.translate(0.2F, -1.43F, 0.12F);
+        localRenderHelper.scale(2.0F).translate(0.2F, -1.43F, 0.12F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
         freeRunners.render(0.0625F);
         localRenderHelper.cleanup();

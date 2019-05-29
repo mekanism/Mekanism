@@ -33,7 +33,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(0.0F, -1.0F, 0.0F);
+        cubeRenderHelper.translateY(-1.0F);
 
         cubeRenderHelper.enableBlendPreset();
 
@@ -52,8 +52,8 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
             coreRenderHelper.enableBlendPreset().enableGlow();
 
-            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tier.getBaseTier());
-            GlStateManager.translate(0, (float) Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
+            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true)
+                  .scale(0.4F).color(tier.getBaseTier()).translateY(Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7);
             GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
             GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);
             core.render(0.0625F);

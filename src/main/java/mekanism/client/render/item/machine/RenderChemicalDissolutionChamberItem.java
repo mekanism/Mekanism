@@ -19,7 +19,7 @@ public class RenderChemicalDissolutionChamberItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.translate(0.05F, -1.001F, 0.05F);
+        renderHelper.translate(0.05F, -1.001F, 0.05F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
         chemicalDissolutionChamber.render(0.0625F);
     }

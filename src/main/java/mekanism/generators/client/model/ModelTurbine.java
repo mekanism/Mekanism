@@ -77,10 +77,8 @@ public class ModelTurbine extends ModelBase {
     }
 
     private void renderBlade(ModelRenderer blade, float size, float scaleX, float scaleZ, float transX, float transZ) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        GlStateManager.translate(transX, 0.0F, transZ);//
-        renderHelper.scale(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
-        GlStateManager.translate(-transX, 0.0F, -transZ);//
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true)
+              .translateXZ(transX, transZ).scale(1.0F + scaleX, 1.0F, 1.0F + scaleZ).translateXZ(-transX, -transZ);
         blade.render(size);
         renderHelper.cleanup();
     }

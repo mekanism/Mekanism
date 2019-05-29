@@ -30,14 +30,13 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
     public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.bioFuelSlot.fluidStored > 0) {
             MekanismRenderHelper renderHelper = initHelper().enableGlow();
-            GlStateManager.translate((float) x, (float) y, (float) z);
+            renderHelper.translate(x, y, z);
             bindTexture(MekanismRenderer.getBlocksTexture());
             getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages - 1)].render();
             renderHelper.cleanup();
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
         switch (tileEntity.facing.ordinal()) {
@@ -57,7 +56,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 
         GlStateManager.rotate(180, 0F, 0F, 1F);
         model.render(0.0625F);
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     @SuppressWarnings("incomplete-switch")

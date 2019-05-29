@@ -36,19 +36,17 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
 
             GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(50, 1.0F, 0.0F, 0.0F);
-            localRenderHelper.scale(2.0F);
-            GlStateManager.translate(0.0F, -0.4F, 0.4F);
+            localRenderHelper.scale(2.0F).translateYZ(-0.4F, 0.4F);
         } else if (transformType == TransformType.GUI) {
             GlStateManager.rotate(225, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(45, -1.0F, 0.0F, -1.0F);
-            localRenderHelper.scale(0.6F);
-            GlStateManager.translate(0.0F, -0.2F, 0.0F);
+            localRenderHelper.scale(0.6F).translateY(-0.2F);
         } else {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
                 GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
             }
             GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
-            GlStateManager.translate(0.0F, -0.7F, 0.0F);
+            localRenderHelper.translateY(-0.7F);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));

@@ -27,7 +27,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
             MekanismRenderHelper renderHelper = initHelper().color(EnumColor.PURPLE, 0.75F);
 
             bindTexture(MekanismRenderer.getBlocksTexture());
-            GlStateManager.translate((float) x, (float) y, (float) z);
+            renderHelper.translate(x, y, z);
             Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
             int type = 0;
             IBlockState s = obj.getBlockState(tileEntity.getWorld());

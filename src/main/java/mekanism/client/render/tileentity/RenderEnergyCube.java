@@ -39,20 +39,19 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
     @Override
     public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
 
         bindTexture(baseTexture);
 
         switch (tileEntity.facing.ordinal()) {
             case 0: {
                 GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
-                GlStateManager.translate(0.0F, 1.0F, -1.0F);
+                renderHelper.translateYZ(1.0F, -1.0F);
                 break;
             }
             case 1: {
                 GlStateManager.rotate(90F, 1.0F, 0.0F, 0.0F);
-                GlStateManager.translate(0.0F, 1.0F, 1.0F);
+                renderHelper.translateYZ(1.0F, 1.0F);
                 break;
             }
             case 2:
@@ -77,16 +76,16 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, tileEntity.tier, rendererDispatcher.renderEngine);
         }
 
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
             MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
-            GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
+            coreRenderHelper.translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
             coreRenderHelper.enableBlendPreset().enableGlow();
 
             MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tileEntity.tier.getBaseTier());
-            GlStateManager.translate(0, (float) Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
+            coreColorRenderHelper.translateY(Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7);
             GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
             GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
             core.render(0.0625F);

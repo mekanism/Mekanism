@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelResistiveHeater;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.util.MekanismUtils;
@@ -17,14 +18,13 @@ public class RenderResistiveHeater extends TileEntitySpecialRenderer<TileEntityR
 
     @Override
     public void render(TileEntityResistiveHeater tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
 
         MekanismRenderer.glRotateForFacing(tileEntity);
 
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine, true);
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 }

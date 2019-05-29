@@ -11,7 +11,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -183,8 +182,7 @@ public class ModelCustomArmor extends ModelBiped {
         @Override
         public void render(float size) {
             if (ModelCustomArmor.this.modelType != null) {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-                GlStateManager.translate(0, 0, 0.06F);
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translateZ(0.06F);
                 mc.renderEngine.bindTexture(modelType.resource);
                 if (useModel(biped.modelType, partRender, biped)) {
                     if (biped.modelType == ArmorModel.JETPACK) {
@@ -194,15 +192,15 @@ public class ModelCustomArmor extends ModelBiped {
                     } else if (biped.modelType == ArmorModel.SCUBATANK) {
                         ArmorModel.scubaTankModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.GASMASK) {
-                        GlStateManager.translate(0, 0, -0.05F);
+                        renderHelper.translateZ(-0.05F);
                         ArmorModel.gasMaskModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.FREERUNNERS) {
                         renderHelper.scale(1.02F);
                         if (partRender == biped.bipedLeftLeg) {
-                            GlStateManager.translate(-0.1375F, -0.75F, -0.0625F);
+                            renderHelper.translate(-0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderLeft(0.0625F);
                         } else if (partRender == biped.bipedRightLeg) {
-                            GlStateManager.translate(0.1375F, -0.75F, -0.0625F);
+                            renderHelper.translate(0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderRight(0.0625F);
                         }
                     }

@@ -28,8 +28,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
     @Override
     public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
         BlockRendererDispatcher renderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        GlStateManager.translate((float) x, (float) y + 0.5F, (float) z);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x, y + 0.5, z);
 
         if (entityobsidiantnt.fuse - partialTicks + 1.0F < 10.0F) {
             float f = 1.0F - (entityobsidiantnt.fuse - partialTicks + 1.0F) / 10.0F;
@@ -41,9 +40,9 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
 
         float f3 = (1.0F - ((entityobsidiantnt.fuse - partialTicks) + 1.0F) / 100F) * 0.8F;
         bindEntityTexture(entityobsidiantnt);
-        GlStateManager.translate(-0.5F, -0.5F, 0.5F);
+        renderHelper.translate(-0.5F, -0.5F, 0.5F);
         renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), entityobsidiantnt.getBrightness());
-        GlStateManager.translate(0.0F, 0.0F, 1.0F);
+        renderHelper.translateZ(1.0F);
 
         if (entityobsidiantnt.fuse / 5 % 2 == 0) {
             renderHelper.disableTexture2D().disableLighting().enableBlend();

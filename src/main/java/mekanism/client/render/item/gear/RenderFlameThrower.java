@@ -30,7 +30,7 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
         GlStateManager.rotate(160, 0.0F, 0.0F, 1.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Flamethrower.png"));
 
-        GlStateManager.translate(0.0F, -1.0F, 0.0F);
+        localRenderHelper.translateY(-1.0F);
         GlStateManager.rotate(135, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-20, 0.0F, 0.0F, 1.0F);
 
@@ -42,15 +42,15 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
                 GlStateManager.rotate(-160, 0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(30F, 1.0F, 0.0F, 0.0F);
             } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
-                GlStateManager.translate(0.0F, 0.7F, 0.0F);
+                localRenderHelper.translateY(0.7F);
                 GlStateManager.rotate(75, 0.0F, 1.0F, 0.0F);
             } else {//if(type == TransformType.THIRD_PERSON_LEFT_HAND)
-                GlStateManager.translate(-0.5F, 0.7F, 0.0F);
+                localRenderHelper.translateXY(-0.5F, 0.7F);
             }
             localRenderHelper.scale(2.5F);
-            GlStateManager.translate(0.0F, -1.0F, -0.5F);
+            localRenderHelper.translateYZ(-1.0F, -0.5F);
         } else if (transformType == TransformType.GUI) {
-            GlStateManager.translate(-0.6F, 0.0F, 0.0F);
+            localRenderHelper.translateX(-0.6F);
             GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
         }
 

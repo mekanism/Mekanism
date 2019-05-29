@@ -146,6 +146,73 @@ public class MekanismRenderHelper {
         return scale(scale, scale, scale);
     }
 
+    public MekanismRenderHelper translate(float x, float y, float z) {
+        GlStateManager.translate(x, y, z);
+        return this;
+    }
+
+    public MekanismRenderHelper translate(double x, double y, double z) {
+        GlStateManager.translate(x, y, z);
+        return this;
+    }
+
+    public MekanismRenderHelper translateXY(float x, float y) {
+        return translate(x, y, 0);
+    }
+
+    public MekanismRenderHelper translateXY(double x, double y) {
+        return translate(x, y, 0);
+    }
+
+    public MekanismRenderHelper translateXZ(float x, float z) {
+        return translate(x, 0, z);
+    }
+
+    public MekanismRenderHelper translateXZ(double x, double z) {
+        GlStateManager.translate(x, 0, z);
+        return this;
+    }
+
+    public MekanismRenderHelper translateYZ(float y, float z) {
+        return translate(0, y, z);
+    }
+
+    public MekanismRenderHelper translateYZ(double y, double z) {
+        return translate(0, y, z);
+    }
+
+    public MekanismRenderHelper translateAll(float t) {
+        return translate(t, t, t);
+    }
+
+    public MekanismRenderHelper translateAll(double t) {
+        return translate(t, t, t);
+    }
+
+    public MekanismRenderHelper translateX(float x) {
+        return translate(x, 0, 0);
+    }
+
+    public MekanismRenderHelper translateX(double x) {
+        return translate(x, 0, 0);
+    }
+
+    public MekanismRenderHelper translateY(float y) {
+        return translate(0, y, 0);
+    }
+
+    public MekanismRenderHelper translateY(double y) {
+        return translate(0, y, 0);
+    }
+
+    public MekanismRenderHelper translateZ(float z) {
+        return translate(0, 0, z);
+    }
+
+    public MekanismRenderHelper translateZ(double z) {
+        return translate(0, 0, z);
+    }
+
     //Color
     public MekanismRenderHelper colorMask(boolean red, boolean green, boolean blue, boolean alpha) {
         //TODO: If all true then don't set colorMasked

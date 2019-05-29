@@ -12,7 +12,6 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -88,10 +87,9 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlend().enableAlpha();
         drawGas(minecraft, xPosition, yPosition, gasStack);
         if (overlay != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0, 0, 200);
+            MekanismRenderHelper overlayRenderHelper = new MekanismRenderHelper(true).translateZ(200);
             overlay.draw(minecraft, xPosition, yPosition);
-            GlStateManager.popMatrix();
+            overlayRenderHelper.cleanup();
         }
         renderHelper.cleanup();
     }

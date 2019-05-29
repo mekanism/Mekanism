@@ -14,7 +14,6 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
@@ -77,7 +76,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             }
 
             bindTexture(MekanismRenderer.getBlocksTexture());
-            GlStateManager.translate(x, y, z);
+            renderHelper.translate(x, y, z);
 
             boolean gas = fluid.isGaseous();
 
@@ -94,7 +93,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                         }
                     }
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
-                    GlStateManager.translate(0.5, 0.5, 0.5);
+                    renderHelper.translateAll(0.5);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder worldRenderer = tessellator.getBuffer();
 
@@ -102,7 +101,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                         tessellator.draw();
                     }
 
-                    GlStateManager.translate(-0.5, -0.5, -0.5);
+                    renderHelper.translateAll(-0.5);
                 }
             }
 

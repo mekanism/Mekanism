@@ -73,10 +73,10 @@ public class GuiSeismicReader extends GuiScreen {
 
         // Fix the overlapping if > 100
         renderHelper.addMatrix(); //We need a matrix for this
-        GlStateManager.translate(guiWidth + 48, guiHeight + 87, 0);
+        renderHelper.translateXY(guiWidth + 48, guiHeight + 87);
 
         if (currentLayer >= 100) {
-            GlStateManager.translate(0, 1, 0);
+            renderHelper.translateY(1);
             renderHelper.scale(0.7F);
         }
 
@@ -91,16 +91,14 @@ public class GuiSeismicReader extends GuiScreen {
             if (0 <= layer && layer < blockList.size()) {
                 ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
 
-                MekanismRenderHelper stackRenderHelper = new MekanismRenderHelper(true);
-                GlStateManager.translate(centralX - 2, centralY - i * 16 + (22 * 2), 0);
+                MekanismRenderHelper stackRenderHelper = new MekanismRenderHelper(true).translateXY(centralX - 2, centralY - i * 16 + (22 * 2));
 
                 if (i < 4) {
-                    GlStateManager.translate(0.2f, 2.5f, 0);
+                    stackRenderHelper.translateXY(0.2F, 2.5F);
                 }
 
                 if (i != 4) {
-                    GlStateManager.translate(1.5f, 0, 0);
-                    stackRenderHelper.scale(0.8F);
+                    stackRenderHelper.translateX(1.5F).scale(0.8F);
                 }
 
                 stackRenderHelper.enableGUIStandardItemLighting();
@@ -118,9 +116,7 @@ public class GuiSeismicReader extends GuiScreen {
             int lengthX = fontRenderer.getStringWidth(capitalised);
             float renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
-            MekanismRenderHelper nameRenderHelper = new MekanismRenderHelper(true);
-            GlStateManager.translate(guiWidth + 72, guiHeight + 16, 0);
-            nameRenderHelper.scale(renderScale);
+            MekanismRenderHelper nameRenderHelper = new MekanismRenderHelper(true).translateXY(guiWidth + 72, guiHeight + 16).scale(renderScale);
             fontRenderer.drawString(capitalised, 0, 0, 0x919191);
             nameRenderHelper.cleanup();
 
@@ -149,8 +145,7 @@ public class GuiSeismicReader extends GuiScreen {
         }
 
         MekanismRenderHelper abundancy = new MekanismRenderHelper(true);
-        GlStateManager.translate(guiWidth + 72, guiHeight + 26, 0);
-        abundancy.scale(0.70F);
+        abundancy.translateXY(guiWidth + 72, guiHeight + 26).scale(0.70F);
         fontRenderer.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
         abundancy.cleanup();
         super.drawScreen(mouseX, mouseY, partialTick);

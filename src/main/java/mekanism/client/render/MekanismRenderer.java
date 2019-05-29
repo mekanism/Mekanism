@@ -206,10 +206,9 @@ public class MekanismRenderer {
             return;
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(object.minX, object.minY, object.minZ);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(object.minX, object.minY, object.minZ);
         RenderResizableCuboid.INSTANCE.renderCube(object);
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 
     public static void bindTexture(ResourceLocation texture) {

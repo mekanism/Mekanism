@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelChemicalDissolutionChamber;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.util.MekanismUtils;
@@ -17,14 +18,13 @@ public class RenderChemicalDissolutionChamber extends TileEntitySpecialRenderer<
 
     @Override
     public void render(TileEntityChemicalDissolutionChamber tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
 
         MekanismRenderer.glRotateForFacing(tileEntity);
 
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         model.render(0.0625F);
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 }

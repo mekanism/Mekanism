@@ -26,13 +26,13 @@ public class RenderArmoredJetpack extends MekanismItemStackRenderer {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        GlStateManager.pushMatrix();
+        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(90, 0.0F, -1.0F, 0.0F);
-        GlStateManager.translate(0.2F, -0.35F, 0.0F);
+        localRenderHelper.translateXY(0.2F, -0.35F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
         armoredJetpack.render(0.0625F);
-        GlStateManager.popMatrix();
+        localRenderHelper.cleanup();
     }
 
     @Nonnull

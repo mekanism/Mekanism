@@ -30,7 +30,7 @@ public class RenderScubaTank extends MekanismItemStackRenderer {
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(90, 0.0F, -1.0F, 0.0F);
         localRenderHelper.scale(1.6F);
-        GlStateManager.translate(0.2F, -0.5F, 0.0F);
+        localRenderHelper.translate(0.2F, -0.5F, 0.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
         scubaTank.render(0.0625F);
         localRenderHelper.cleanup();

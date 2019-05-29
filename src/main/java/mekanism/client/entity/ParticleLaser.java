@@ -46,7 +46,7 @@ public class ParticleLaser extends Particle {
         float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
         float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - interpPosZ);
 
-        GlStateManager.translate(newX, newY, newZ);
+        renderHelper.translate(newX, newY, newZ);
 
         switch (direction) {
             case UP:

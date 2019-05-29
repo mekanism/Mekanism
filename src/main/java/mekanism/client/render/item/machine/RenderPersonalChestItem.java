@@ -20,9 +20,7 @@ public class RenderPersonalChestItem {
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true);
         GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-        GlStateManager.translate(0, 1.0F, 1.0F);
-        localRenderHelper.scale(1.0F, -1F, -1F);
+        localRenderHelper.translateAll(-0.5F).translateYZ(1.0F, 1.0F).scale(1.0F, -1F, -1F);
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
 

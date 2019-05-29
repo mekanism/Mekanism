@@ -51,8 +51,7 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-        GlStateManager.translate(0.5F, 0.5F, 0.5F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translateAll(0.5F);
         GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
 
         //

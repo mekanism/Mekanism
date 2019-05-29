@@ -47,25 +47,25 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
                 int partialLevels = (int) ((levels - (int) levels) * 16);
                 switch (tileEntity.facing) {
                     case SOUTH:
-                        GlStateManager.translate(-1, 0, -1);
+                        renderHelper.translateXZ(-1, -1);
                         break;
                     case EAST:
-                        GlStateManager.translate(-1, 0, 0);
+                        renderHelper.translateX(-1);
                         break;
                     case WEST:
-                        GlStateManager.translate(0, 0, -1);
+                        renderHelper.translateZ(-1);
                         break;
                     default:
                         break;
                 }
 
-                GlStateManager.translate(0, 0.01, 0);
+                renderHelper.translateY(0.01);
                 if ((int) levels > 0) {
                     displayList[CONCAVE_INDEX].render();
-                    GlStateManager.translate(0, 1, 0);
+                    renderHelper.translateY(1);
                     for (int i = 1; i < (int) levels; i++) {
                         displayList[RING_INDEX].render();
-                        GlStateManager.translate(0, 1, 0);
+                        renderHelper.translateY(1);
                     }
                 }
                 displayList[partialLevels].render();

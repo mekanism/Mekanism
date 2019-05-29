@@ -4,7 +4,6 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -54,8 +53,7 @@ public class ModelBalloon extends ModelBase {
     }
 
     public void render(float size, EnumColor color) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).color(color).scale(1.5F);
-        GlStateManager.translate(0, -0.07F, 0);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).color(color).scale(1.5F).translateY(-0.07F);
 
         Balloon2.render(size);
         Balloon1.render(size);

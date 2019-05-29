@@ -79,15 +79,13 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 double zShifted = z + pos[2];
 
                 MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-                GlStateManager.translate(xShifted, yShifted, zShifted);
-                renderHelper.scale(0.75);
+                renderHelper.translate(xShifted, yShifted, zShifted).scale(0.75);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
                 renderHelper.cleanup();
 
                 if (stack.color != null) {
                     bindTexture(transporterBox);
-                    MekanismRenderHelper colorRenderHelper = new MekanismRenderHelper(true).enableGlow().disableCull().color(stack.color);
-                    GlStateManager.translate(xShifted, yShifted, zShifted);
+                    MekanismRenderHelper colorRenderHelper = new MekanismRenderHelper(true).enableGlow().disableCull().color(stack.color).translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
                     colorRenderHelper.cleanup();
                 }
@@ -107,9 +105,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     MekanismRenderHelper renderHelper = pushTransporter();
                     renderHelper.colorAlpha(0.8F);
                     bindTexture(MekanismRenderer.getBlocksTexture());
-                    GlStateManager.translate(x, y, z);
-                    renderHelper.scale(0.5);
-                    GlStateManager.translate(0.5, 0.5, 0.5);
+                    renderHelper.translate(x, y, z).scale(0.5).translateAll(0.5);
 
                     int display = getOverlayDisplay(pos.sideHit, mode).display;
                     GlStateManager.callList(display);

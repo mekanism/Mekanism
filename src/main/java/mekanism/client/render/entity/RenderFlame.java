@@ -2,7 +2,6 @@ package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -36,7 +35,7 @@ public class RenderFlame extends Render<EntityFlame> {
 
         bindTexture(getEntityTexture(entity));
 
-        GlStateManager.translate((float) x, (float) y, (float) z);
+        renderHelper.translate(x, y, z);
         GlStateManager.rotate((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F, 0.0F, 1.0F);
 
@@ -52,8 +51,7 @@ public class RenderFlame extends Render<EntityFlame> {
 
         renderHelper.enableRescaleNormal();
         GlStateManager.rotate(45F, 1.0F, 0.0F, 0.0F);
-        renderHelper.scale(scale);
-        GlStateManager.translate(-4F, 0.0F, 0.0F);
+        renderHelper.scale(scale).translateX(-4F);
 
         for (int j = 0; j < 4; j++) {
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);

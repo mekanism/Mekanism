@@ -1,5 +1,6 @@
 package mekanism.generators.client.render;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -45,19 +46,17 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
         }
 
         if (tileEntity.getHousedBlades() > 0) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(x + 0.5, y - 1, z + 0.5);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y - 1, z + 0.5);
             GlStateManager.rotate(tileEntity.rotationLower, 0.0F, 1.0F, 0.0F);
             model.render(0.0625F, baseIndex);
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
 
         if (tileEntity.getHousedBlades() == 2) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(x + 0.5, y - 0.5, z + 0.5);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y - 0.5, z + 0.5);
             GlStateManager.rotate(tileEntity.rotationUpper, 0.0F, 1.0F, 0.0F);
             model.render(0.0625F, baseIndex + 1);
-            GlStateManager.popMatrix();
+            renderHelper.cleanup();
         }
 
         GlStateManager.popMatrix();

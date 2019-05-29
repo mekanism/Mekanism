@@ -4,7 +4,6 @@ import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -21,8 +20,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
     @Override
     public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.isBurning()) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-            GlStateManager.translate(x + 0.5, y - 1.5, z + 0.5);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y - 1.5, z + 0.5);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
             renderHelper.enableBlendPreset().enableGlow();

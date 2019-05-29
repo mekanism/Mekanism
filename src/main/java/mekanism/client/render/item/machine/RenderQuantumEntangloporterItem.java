@@ -20,7 +20,7 @@ public class RenderQuantumEntangloporterItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.translate(0.0F, -1.0F, 0.0F);
+        renderHelper.translateY(-1.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter.png"));
         quantumEntangloporter.render(0.0625F, Minecraft.getMinecraft().renderEngine, true);
     }

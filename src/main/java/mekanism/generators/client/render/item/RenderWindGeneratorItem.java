@@ -23,7 +23,7 @@ public class RenderWindGeneratorItem {
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.translate(0.0F, 0.4F, 0.0F);
+            localRenderHelper.translateY(0.4F);
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
                 GlStateManager.rotate(-45, 0.0F, 1.0F, 0.0F);
             } else {
@@ -31,14 +31,14 @@ public class RenderWindGeneratorItem {
             }
             GlStateManager.rotate(50, 1.0F, 0.0F, 0.0F);
             localRenderHelper.scale(2.0F);
-            GlStateManager.translate(0.0F, -0.4F, 0.4F);
+            localRenderHelper.translateY(-0.4F);
         } else {
             if (transformType == TransformType.GUI) {
                 GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
             } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
                 GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
             }
-            GlStateManager.translate(0.0F, 0.4F, 0.0F);
+            localRenderHelper.translateY(0.4F);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));

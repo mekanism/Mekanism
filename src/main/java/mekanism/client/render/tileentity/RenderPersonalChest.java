@@ -1,5 +1,6 @@
 package mekanism.client.render.tileentity;
 
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,26 +17,26 @@ public class RenderPersonalChest extends TileEntitySpecialRenderer<TileEntityPer
 
     @Override
     public void render(TileEntityPersonalChest tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x, (float) y + 1.0F, (float) z);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        renderHelper.translate(x, y + 1, z);
         GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
 
         switch (tileEntity.facing.ordinal()) {
             case 2:
                 GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
-                GlStateManager.translate(1.0F, 0.0F, 0.0F);
+                renderHelper.translateX(1.0F);
                 break;
             case 3:
                 GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
-                GlStateManager.translate(0.0F, 0.0F, -1.0F);
+                renderHelper.translateZ(-1.0F);
                 break;
             case 4:
                 GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
                 break;
             case 5:
                 GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
-                GlStateManager.translate(1.0F, 0.0F, -1.0F);
+                renderHelper.translateXZ(1.0F, -1.0F);
                 break;
         }
 
@@ -45,6 +46,6 @@ public class RenderPersonalChest extends TileEntitySpecialRenderer<TileEntityPer
         model.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         model.renderAll();
-        GlStateManager.popMatrix();
+        renderHelper.cleanup();
     }
 }
