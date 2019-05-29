@@ -95,8 +95,7 @@ public class ModelFluidTank extends ModelBase {
         PoleRF.render(size);
         Top.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
-        renderHelper.color(tier.getBaseTier().getColor());
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset().color(tier.getBaseTier());
         FrontGlass.render(size);
         BackGlass.render(size);
         RightGlass.render(size);

@@ -2,10 +2,12 @@ package mekanism.client.render;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.common.tier.BaseTier;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
@@ -74,6 +76,15 @@ public class MekanismRenderHelper {
         return this;
     }
 
+    //TODO: Better name so that it is clear it only happens if no matrix exists for use after cleanup is called
+    public MekanismRenderHelper addMatrix() {
+        if (!hasMatrix) {
+            hasMatrix = true;
+            GlStateManager.pushMatrix();
+        }
+        return this;
+    }
+
     public MekanismRenderHelper enableBlendPreset() {
         //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
@@ -88,7 +99,7 @@ public class MekanismRenderHelper {
     }
 
     public MekanismRenderHelper enableGlow(int glow) {
-        if (!FMLClientHandler.instance().hasOptifine()) {
+        if (!glowEnabled && !FMLClientHandler.instance().hasOptifine()) {
             //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
             lightmapLastX = OpenGlHelper.lastBrightnessX;
             lightmapLastY = OpenGlHelper.lastBrightnessY;
@@ -172,6 +183,10 @@ public class MekanismRenderHelper {
 
     public MekanismRenderHelper color(@Nullable Gas gas) {
         return gas == null ? this : color3f(gas.getTint());
+    }
+
+    public MekanismRenderHelper color(@Nonnull BaseTier tier) {
+        return color(tier.getColor());
     }
 
     public MekanismRenderHelper color(@Nullable EnumColor color) {

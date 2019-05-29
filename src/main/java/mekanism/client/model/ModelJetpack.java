@@ -164,7 +164,6 @@ public class ModelJetpack extends ModelBase {
     }
 
     public void render(float size) {
-        //TODO: Try reordering things so that it can just do the glow all in one batch???
         Packtop.render(size);
         Packbottom.render(size);
         Thrusterleft.render(size);
@@ -173,33 +172,30 @@ public class ModelJetpack extends ModelBase {
         Fueltubeleft.render(size);
         Packmid.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
-        Packcore.render(size);
-        renderHelper.cleanup();
-
         WingsupportL.render(size);
         WingsupportR.render(size);
         Packtoprear.render(size);
         ExtendosupportL.render(size);
         ExtendosupportR.render(size);
 
-        //We need a matrix so we need to create a new instance
-        renderHelper = new MekanismRenderHelper(true).enableBlendPreset().enableGlow().enableCull().colorAlpha(0.2F);
-
-        WingbladeL.render(size);
-        WingbladeR.render(size);
-
-        renderHelper.cleanup();
-
         Packdoodad2.render(size);
         Packdoodad3.render(size);
         Bottomthruster.render(size);
 
-        renderHelper.enableGlow();//No matrix so we can reuse a cleaned up render helper
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
+        Packcore.render(size);
+
         light1.render(size);
         light2.render(size);
         light3.render(size);
         Packcore.render(size);
+
+        //Wing blades need some more special stuff
+        renderHelper.addMatrix().enableBlendPreset().enableCull().colorAlpha(0.2F);
+
+        WingbladeL.render(size);
+        WingbladeR.render(size);
+
         renderHelper.cleanup();
     }
 

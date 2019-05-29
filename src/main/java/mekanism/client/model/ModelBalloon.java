@@ -64,7 +64,7 @@ public class ModelBalloon extends ModelBase {
 
         renderHelper.cleanup();
 
-        renderHelper = new MekanismRenderHelper(true).scale(0.2F, 1, 0.2F);
+        renderHelper.addMatrix().scale(0.2F, 1, 0.2F);
         String.render(size);
         renderHelper.cleanup();
     }

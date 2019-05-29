@@ -233,7 +233,17 @@ public class ModelGasMask extends ModelBase {
         filterpipelower.render(size);
         filterpipeupper.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset().enableGlow().colorAlpha(0.3F).enableCull();
+        pipecornerFL.render(size);
+        pipecornerFR.render(size);
+        pipecornerBR.render(size);
+        pipecornerBL.render(size);
+
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
+        lightL.render(size);
+        lightR.render(size);
+
+        //Glass needs more settings
+        renderHelper.enableBlendPreset().colorAlpha(0.3F).enableCull();
 
         glasstop.render(size);
         glassfront.render(size);
@@ -242,16 +252,6 @@ public class ModelGasMask extends ModelBase {
         glassbackR.render(size);
         glassbackL.render(size);
 
-        renderHelper.cleanup();
-
-        pipecornerFL.render(size);
-        pipecornerFR.render(size);
-        pipecornerBR.render(size);
-        pipecornerBL.render(size);
-
-        renderHelper.enableGlow();//No matrix so we can reuse a cleaned up render helper
-        lightL.render(size);
-        lightR.render(size);
         renderHelper.cleanup();
     }
 

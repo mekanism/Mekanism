@@ -72,7 +72,7 @@ public class GuiSeismicReader extends GuiScreen {
         renderHelper.cleanup();
 
         // Fix the overlapping if > 100
-        renderHelper = new MekanismRenderHelper(true);
+        renderHelper.addMatrix(); //We need a matrix for this
         GlStateManager.translate(guiWidth + 48, guiHeight + 87, 0);
 
         if (currentLayer >= 100) {
