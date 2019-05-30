@@ -34,7 +34,7 @@ public class RenderGasGenerator extends TileEntitySpecialRenderer<TileEntityGasG
                 break;
         }
 
-        renderHelper.rotateYZ(180, 1, 1).rotateY(90, -1).rotateY(90, 1);
+        renderHelper.rotateYZ(180, 1, 1).rotateX(90, -1).rotateY(90, 1);
         model.render(0.0625F);
         renderHelper.cleanup();
     }
