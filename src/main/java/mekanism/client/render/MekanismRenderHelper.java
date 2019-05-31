@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -23,8 +22,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class MekanismRenderHelper {
+public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
 
+    //TODO: Keep track of things so if they are toggled back manually we don't toggle them twice at the end
     private Deque<Pair<KnownStates, Boolean>> changedStates = new ArrayDeque<>();
     private boolean hasMatrix;
     private boolean colorSet;
@@ -44,9 +44,6 @@ public class MekanismRenderHelper {
         }
     }
 
-    //TODO: Invalidate this better/throw some kind of warning so that we can easier see if something attempts to use one we already cleaned up
-    // That or add support for reusing it. Adding support for reusing it at least via a reset method would potentially be useful for various spots
-    // that the helper is just used for color management
     public void cleanup() {
         if (glowEnabled) {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
@@ -93,7 +90,6 @@ public class MekanismRenderHelper {
     }
 
     public MekanismRenderHelper enableBlendPreset() {
-        //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         disableAlpha().enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -106,9 +102,8 @@ public class MekanismRenderHelper {
     }
 
     public MekanismRenderHelper enableGlow(int glow) {
-        //TODO: Is glow even needed anymore it seems things work fine without it??
+        //Glow is needed when underground or in the dark. Initial thoughts were wrong
         if (!glowEnabled && !FMLClientHandler.instance().hasOptifine()) {
-            //TODO: Verify we don't need more here to mirror the saving done by glPushAttrib
             lightmapLastX = OpenGlHelper.lastBrightnessX;
             lightmapLastY = OpenGlHelper.lastBrightnessY;
 
@@ -126,136 +121,6 @@ public class MekanismRenderHelper {
 
     public MekanismRenderHelper enableGlow(@Nullable Fluid fluid) {
         return fluid == null ? this : enableGlow(fluid.getLuminosity());
-    }
-
-    //Helper wrappers
-    public MekanismRenderHelper scale(float scaleX, float scaleY, float scaleZ) {
-        GlStateManager.scale(scaleX, scaleY, scaleZ);
-        return this;
-    }
-
-    public MekanismRenderHelper scale(double scaleX, double scaleY, double scaleZ) {
-        GlStateManager.scale(scaleX, scaleY, scaleZ);
-        return this;
-    }
-
-    public MekanismRenderHelper scale(float scale) {
-        return scale(scale, scale, scale);
-    }
-
-    public MekanismRenderHelper scale(double scale) {
-        return scale(scale, scale, scale);
-    }
-
-    public MekanismRenderHelper translate(float x, float y, float z) {
-        GlStateManager.translate(x, y, z);
-        return this;
-    }
-
-    public MekanismRenderHelper translate(double x, double y, double z) {
-        GlStateManager.translate(x, y, z);
-        return this;
-    }
-
-    public MekanismRenderHelper translateXY(float x, float y) {
-        return translate(x, y, 0);
-    }
-
-    public MekanismRenderHelper translateXY(double x, double y) {
-        return translate(x, y, 0);
-    }
-
-    public MekanismRenderHelper translateXZ(float x, float z) {
-        return translate(x, 0, z);
-    }
-
-    public MekanismRenderHelper translateXZ(double x, double z) {
-        GlStateManager.translate(x, 0, z);
-        return this;
-    }
-
-    public MekanismRenderHelper translateYZ(float y, float z) {
-        return translate(0, y, z);
-    }
-
-    public MekanismRenderHelper translateYZ(double y, double z) {
-        return translate(0, y, z);
-    }
-
-    public MekanismRenderHelper translateAll(float t) {
-        return translate(t, t, t);
-    }
-
-    public MekanismRenderHelper translateAll(double t) {
-        return translate(t, t, t);
-    }
-
-    public MekanismRenderHelper translateX(float x) {
-        return translate(x, 0, 0);
-    }
-
-    public MekanismRenderHelper translateX(double x) {
-        return translate(x, 0, 0);
-    }
-
-    public MekanismRenderHelper translateY(float y) {
-        return translate(0, y, 0);
-    }
-
-    public MekanismRenderHelper translateY(double y) {
-        return translate(0, y, 0);
-    }
-
-    public MekanismRenderHelper translateZ(float z) {
-        return translate(0, 0, z);
-    }
-
-    public MekanismRenderHelper translateZ(double z) {
-        return translate(0, 0, z);
-    }
-
-    public MekanismRenderHelper rotate(float angle, float x, float y, float z) {
-        GlStateManager.rotate(angle, x, y, z);
-        return this;
-    }
-
-    public MekanismRenderHelper rotateXY(float angle, float x, float y) {
-        return rotate(angle, x, y, 0);
-    }
-
-    public MekanismRenderHelper rotateXZ(float angle, float x, float z) {
-        return rotate(angle, x, 0, z);
-    }
-
-    public MekanismRenderHelper rotateYZ(float angle, float y, float z) {
-        return rotate(angle, 0, y, z);
-    }
-
-    public MekanismRenderHelper rotateX(float angle, float x) {
-        return rotate(angle, x, 0, 0);
-    }
-
-    public MekanismRenderHelper rotateY(float angle, float y) {
-        return rotate(angle, 0, y, 0);
-    }
-
-    public MekanismRenderHelper rotateZ(float angle, float z) {
-        return rotate(angle, 0, 0, z);
-    }
-
-    //TODO: Figure out why a few things don't use this and if they should be instead
-    public MekanismRenderHelper rotate(EnumFacing facing) {
-        switch (facing) /*TODO: switch the enum*/ {
-            case NORTH:
-                return rotateY(0, 1);
-            case SOUTH:
-                return rotateY(180, 1);
-            case WEST:
-                return rotateY(90, 1);
-            case EAST:
-                return rotateY(270, 1);
-        }
-        return this;
     }
 
     //Color
