@@ -295,7 +295,7 @@ public class PacketHandler {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (server != null) {
             for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
-                if (player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range)) {
+                if (range.hasPlayerInRange(player)) {
                     sendTo(message, player);
                 }
             }
