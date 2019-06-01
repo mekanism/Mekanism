@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -251,7 +252,7 @@ public class ModelArmoredJetpack extends ModelBase {
         Packcore.render(size);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.0F, 0.0F, -0.0625F);
+        GLSMHelper.INSTANCE.translateZ(-0.0625F);
 
         Rightlight.render(size);
         Leftlight.render(size);

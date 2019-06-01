@@ -26,14 +26,11 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
         MekanismRenderHelper cubeRenderHelper = new MekanismRenderHelper(true);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-        cubeRenderHelper.rotateZ(180, 1).rotateY(180, 1);
-        cubeRenderHelper.translateY(-1.0F);
-
-        cubeRenderHelper.enableBlendPreset();
+        cubeRenderHelper.rotateZ(180, 1).rotateY(180, 1).translateY(-1.0F).enableBlendPreset();
 
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
@@ -60,7 +57,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
 
     }
 

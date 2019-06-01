@@ -55,8 +55,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
 
             float scale = 0.03125F;
             float scaler = 0.9F;
-            renderHelper.scale(scale * scaler, scale * scaler, -0.0001F);
-            renderHelper.rotateZ(180, 1);
+            renderHelper.scale(scale * scaler, scale * scaler, -0.0001F).rotateZ(180, 1);
             renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
             renderHelper.cleanup();
         }

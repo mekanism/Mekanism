@@ -20,16 +20,16 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true)
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true)
               .rotateZ(180, 1).rotateY(90, -1).scale(2.0F).translate(0.2F, -1.43F, 0.12F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
         freeRunners.render(0.0625F);
-        localRenderHelper.cleanup();
+        renderHelper.cleanup();
     }
 
     @Nonnull

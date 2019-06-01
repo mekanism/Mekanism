@@ -18,16 +18,16 @@ public class RenderDigitalMinerItem {
 
     private static ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true).rotateZ(180, 1);
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).rotateZ(180, 1);
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            localRenderHelper.rotateY(-90, 1);
+            renderHelper.rotateY(-90, 1);
         } else if (transformType != TransformType.GUI) {
-            localRenderHelper.rotateY(90, 1);
+            renderHelper.rotateY(90, 1);
         }
-        localRenderHelper.translateXY(0.35, 0.1);
+        renderHelper.translateXY(0.35, 0.1);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
         digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine, true);
-        localRenderHelper.cleanup();
+        renderHelper.cleanup();
     }
 }

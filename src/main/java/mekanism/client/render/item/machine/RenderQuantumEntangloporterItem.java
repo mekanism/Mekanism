@@ -2,7 +2,7 @@ package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelQuantumEntangloporter;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -17,8 +17,8 @@ public class RenderQuantumEntangloporterItem {
 
     private static ModelQuantumEntangloporter quantumEntangloporter = new ModelQuantumEntangloporter();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        renderHelper.rotateZ(180, 1).translateY(-1.0F);
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+        GLSMHelper.INSTANCE.rotateZ(180, 1).translateY(-1.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter.png"));
         quantumEntangloporter.render(0.0625F, Minecraft.getMinecraft().renderEngine, true);
     }

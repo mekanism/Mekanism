@@ -20,16 +20,15 @@ public class RenderGasMask extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true)
-              .rotateZ(180, 1).rotateY(90, -1).translateXY(0.1F, 0.2F);
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).rotateZ(180, 1).rotateY(90, -1).translateXY(0.1F, 0.2F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
         gasMask.render(0.0625F);
-        localRenderHelper.cleanup();
+        renderHelper.cleanup();
     }
 
     @Nonnull

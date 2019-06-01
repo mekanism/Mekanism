@@ -1,7 +1,7 @@
 package mekanism.generators.client.render.item;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,8 +16,8 @@ public class RenderGasGeneratorItem {
 
     private static ModelGasGenerator gasGenerator = new ModelGasGenerator();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        renderHelper.rotateYZ(180, 1, 1).rotateX(90, -1).translateY(-1.0F).rotateY(180, 1);
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+        GLSMHelper.INSTANCE.rotateYZ(180, 1, 1).rotateX(90, -1).translateY(-1.0F).rotateY(180, 1);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
         gasGenerator.render(0.0625F);
     }

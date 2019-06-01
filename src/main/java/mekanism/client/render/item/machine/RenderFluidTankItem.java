@@ -29,7 +29,7 @@ public class RenderFluidTankItem {
 
     private static int stages = 1400;
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
         float fluidScale = (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0) / itemMachine.getCapacity(stack);
         FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
@@ -55,8 +55,7 @@ public class RenderFluidTankItem {
             fluidRenderHelper.cleanup();
         }
 
-        tankRenderHelper.translateY(-0.9F);
-        tankRenderHelper.scale(0.9F, 0.8F, 0.9F);
+        tankRenderHelper.translateY(-0.9F).scale(0.9F, 0.8F, 0.9F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
         fluidTank.render(0.073F, tier);
         tankRenderHelper.cleanup();

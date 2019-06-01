@@ -1,7 +1,7 @@
 package mekanism.generators.client.render.item;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,8 +16,8 @@ public class RenderAdvancedSolarGeneratorItem {
 
     private static ModelAdvancedSolarGenerator advancedSolarGenerator = new ModelAdvancedSolarGenerator();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        renderHelper.rotateZ(180, 1).rotateY(90, 1).translateY(0.2F);
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+        GLSMHelper.INSTANCE.rotateZ(180, 1).rotateY(90, 1).translateY(0.2F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
         advancedSolarGenerator.render(0.022F);
     }

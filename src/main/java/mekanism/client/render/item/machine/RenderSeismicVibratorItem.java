@@ -2,7 +2,7 @@ package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelSeismicVibrator;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,8 +16,8 @@ public class RenderSeismicVibratorItem {
 
     private static ModelSeismicVibrator seismicVibrator = new ModelSeismicVibrator();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        renderHelper.rotateZ(180, 1).scale(0.6F).translateY(-0.55F);
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+        GLSMHelper.INSTANCE.rotateZ(180, 1).scale(0.6F).translateY(-0.55F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
         seismicVibrator.render(0.0625F);
     }

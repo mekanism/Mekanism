@@ -20,31 +20,31 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        MekanismRenderHelper localRenderHelper = new MekanismRenderHelper(true).scale(1.4F).rotateZ(180, 1);
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(1.4F).rotateZ(180, 1);
 
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                localRenderHelper.rotateY(-90, 1);
+                renderHelper.rotateY(-90, 1);
             }
 
-            localRenderHelper.rotateY(45, 1).rotateX(50, 1).scale(2.0F).translateYZ(-0.4F, 0.4F);
+            renderHelper.rotateY(45, 1).rotateX(50, 1).scale(2.0F).translateYZ(-0.4F, 0.4F);
         } else if (transformType == TransformType.GUI) {
-            localRenderHelper.rotateY(225, 1).rotateXZ(45, -1, -1).scale(0.6F).translateY(-0.2F);
+            renderHelper.rotateY(225, 1).rotateXZ(45, -1, -1).scale(0.6F).translateY(-0.2F);
         } else {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                localRenderHelper.rotateY(90, 1);
+                renderHelper.rotateY(90, 1);
             }
-            localRenderHelper.rotateY(45, 1).translateY(-0.7F);
+            renderHelper.rotateY(45, 1).translateY(-0.7F);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));
         atomicDisassembler.render(0.0625F);
-        localRenderHelper.cleanup();
+        renderHelper.cleanup();
     }
 
     @Nonnull

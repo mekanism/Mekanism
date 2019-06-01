@@ -2,7 +2,7 @@ package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelResistiveHeater;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,8 +18,8 @@ public class RenderResistiveHeaterItem {
 
     private static ModelResistiveHeater resistiveHeater = new ModelResistiveHeater();
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper) {
-        renderHelper.rotateZ(180, 1).translate(0.05F, -0.96F, 0.05F);
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+        GLSMHelper.INSTANCE.rotateZ(180, 1).translate(0.05F, -0.96F, 0.05F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
         resistiveHeater.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine, true);
     }

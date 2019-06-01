@@ -1,6 +1,7 @@
 package mekanism.client.render.item;
 
 import javax.annotation.Nonnull;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
@@ -17,9 +18,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class MekanismItemStackRenderer extends TileEntityItemStackRenderer {
 
-    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper);
+    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType);
 
-    protected abstract void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType, MekanismRenderHelper renderHelper);
+    protected abstract void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType);
 
     @Nonnull
     protected abstract TransformType getTransform(@Nonnull ItemStack stack);
@@ -28,21 +29,21 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         return false;
     }
 
-    protected void renderWithTransform(@Nonnull ItemStack stack, MekanismRenderHelper renderHelper) {
+    protected void renderWithTransform(@Nonnull ItemStack stack) {
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
-            renderHelper.rotateY(180, 1);
+            GLSMHelper.INSTANCE.rotateY(180, 1);
         }
 
-        renderBlockSpecific(stack, transformType, renderHelper);
+        renderBlockSpecific(stack, transformType);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
-                renderHelper.rotateY(90, 1);
+                GLSMHelper.INSTANCE.rotateY(90, 1);
             } else {
-                renderHelper.rotateY(180, 1);
+                GLSMHelper.INSTANCE.rotateY(180, 1);
             }
-            renderItemSpecific(stack, transformType, renderHelper);
+            renderItemSpecific(stack, transformType);
         }
     }
 
@@ -54,7 +55,7 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translateAll(0.5F).rotateY(180, 1);
 
         //
-        renderWithTransform(stack, renderHelper);
+        renderWithTransform(stack);
         //
 
         //TODO: Make this use helper for lighting and then disable it after bindTexture?

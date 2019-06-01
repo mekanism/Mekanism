@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GLSMHelper<HELPER extends GLSMHelper<HELPER>> {
 
-    public static GLSMHelper INSTANCE = new GLSMHelper();
+    public final static GLSMHelper INSTANCE = new GLSMHelper();
 
     public HELPER scale(float scaleX, float scaleY, float scaleZ) {
         GlStateManager.scale(scaleX, scaleY, scaleZ);
