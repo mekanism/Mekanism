@@ -78,7 +78,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
             return false;
         }
         tier = BinTier.values()[upgradeTier.ordinal()];
-        Mekanism.packetHandler.sendToAllTracking(this);
+        Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
     }
@@ -349,7 +349,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         super.markDirty();
         if (!world.isRemote) {
             MekanismUtils.saveChunk(this);
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             prevCount = getItemCount();
             sortStacks();
         }
@@ -468,7 +468,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             clientActive = active;
         }
     }

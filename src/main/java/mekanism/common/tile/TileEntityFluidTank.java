@@ -91,7 +91,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         }
         tier = FluidTankTier.values()[upgradeTier.ordinal()];
         fluidTank.setCapacity(tier.getStorage());
-        Mekanism.packetHandler.sendToAllTracking(this);
+        Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
     }
@@ -332,7 +332,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             updateDelay = 10;
             clientActive = active;
         }

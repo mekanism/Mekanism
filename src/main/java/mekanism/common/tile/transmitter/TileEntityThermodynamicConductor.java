@@ -104,7 +104,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     public void sendTemp() {
-        Mekanism.packetHandler.sendToAllTracking(this);
+        Mekanism.packetHandler.sendUpdatePacket(this);
     }
 
     @Override

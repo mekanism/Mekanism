@@ -180,13 +180,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
                 TileEntityInductionCell tileEntity = (TileEntityInductionCell) world.getTileEntity(pos);
                 tileEntity.tier = InductionCellTier.values()[getBaseTier(stack).ordinal()];
                 if (!world.isRemote) {
-                    Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                    Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                 }
             } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
                 TileEntityInductionProvider tileEntity = (TileEntityInductionProvider) world.getTileEntity(pos);
                 tileEntity.tier = InductionProviderTier.values()[getBaseTier(stack).ordinal()];
                 if (!world.isRemote) {
-                    Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                    Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                 }
             }
             TileEntity tileEntity = world.getTileEntity(pos);

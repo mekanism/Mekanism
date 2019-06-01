@@ -809,7 +809,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             clientActive = active;
         }
     }

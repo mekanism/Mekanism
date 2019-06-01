@@ -106,7 +106,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
         clientActive = active;
     }

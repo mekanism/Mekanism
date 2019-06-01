@@ -107,7 +107,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         notifyTileChange();
         player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " +
                                                    LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-        Mekanism.packetHandler.sendToAllTracking(this);
+        Mekanism.packetHandler.sendUpdatePacket(this);
         return EnumActionResult.SUCCESS;
     }
 

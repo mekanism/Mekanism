@@ -200,7 +200,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
             facing = EnumFacing.byIndex(direction);
         }
         if (!(facing == clientFacing || world.isRemote)) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
             clientFacing = facing;
         }
@@ -238,7 +238,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         boolean power = world.getRedstonePowerFromNeighbors(getPos()) > 0;
         if (redstone != power) {
             redstone = power;
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             onPowerChange();
         }
     }

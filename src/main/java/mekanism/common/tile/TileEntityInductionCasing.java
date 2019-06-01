@@ -54,7 +54,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             player.openGui(Mekanism.instance, 49, world, getPos().getX(), getPos().getY(), getPos().getZ());
             return true;
         }

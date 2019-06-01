@@ -316,7 +316,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     factory.setRecipeType(recipeType);
                 }
                 world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
-                Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
 
             if (tileEntity instanceof ISustainedTank) {

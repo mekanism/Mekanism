@@ -105,7 +105,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
             // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
             // traffic from previous implementation that send the update every 10 ticks.
             if (world.getTotalWorldTime() % 20 == 0) {
-                Mekanism.packetHandler.sendToAllTracking(this);
+                Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
             int newRedstoneLevel = getRedstoneLevel();
@@ -299,7 +299,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         boolean stateChange = isActive != active;
         if (stateChange) {
             isActive = active;
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 

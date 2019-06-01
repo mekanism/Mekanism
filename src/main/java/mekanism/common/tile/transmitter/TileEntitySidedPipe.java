@@ -102,7 +102,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 forceUpdate = false;
             }
             if (sendDesc) {
-                Mekanism.packetHandler.sendToAllTracking(this);
+                Mekanism.packetHandler.sendUpdatePacket(this);
                 sendDesc = false;
             }
         }

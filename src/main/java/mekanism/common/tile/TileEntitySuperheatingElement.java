@@ -28,7 +28,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
         super.setMultiblock(id);
 
         if (packet && !world.isRemote) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 

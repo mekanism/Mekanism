@@ -52,7 +52,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
             }
             tileEntity.setColour(col);
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
         }
         return place;

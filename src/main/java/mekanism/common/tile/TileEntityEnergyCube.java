@@ -89,7 +89,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             }
             int newScale = getScaledEnergyLevel(20);
             if (newScale != prevScale) {
-                Mekanism.packetHandler.sendToAllTracking(this);
+                Mekanism.packetHandler.sendUpdatePacket(this);
             }
             prevScale = newScale;
         }
@@ -101,7 +101,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             return false;
         }
         tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
-        Mekanism.packetHandler.sendToAllTracking(this);
+        Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
     }

@@ -59,7 +59,7 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
             TileEntitySidedPipe tileEntity = (TileEntitySidedPipe) world.getTileEntity(pos);
             tileEntity.setBaseTier(getBaseTier(stack));
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
         }
         return place;

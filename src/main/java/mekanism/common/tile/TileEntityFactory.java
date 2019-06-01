@@ -219,7 +219,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         factory.upgraded = true;
         factory.markDirty();
-        Mekanism.packetHandler.sendToAllTracking(factory);
+        Mekanism.packetHandler.sendUpdatePacket(factory);
         return true;
     }
 

@@ -382,7 +382,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
             String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
                                                        LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }
         return EnumActionResult.SUCCESS;

@@ -133,7 +133,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         }
         tier = GasTankTier.values()[upgradeTier.ordinal()];
         gasTank.setMaxGas(tier.getStorage());
-        Mekanism.packetHandler.sendToAllTracking(this);
+        Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
     }

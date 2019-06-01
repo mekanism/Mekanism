@@ -234,7 +234,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     @Override
     public void openInventory(@Nonnull EntityPlayer player) {
         if (!world.isRemote) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 

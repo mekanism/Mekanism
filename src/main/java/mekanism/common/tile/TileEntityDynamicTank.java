@@ -103,7 +103,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - (structure.fluidStored != null ? structure.fluidStored.amount : 0);
         if (FluidContainerUtils.isFluidContainer(structure.inventory.get(0))) {
             structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.inventory, structure.editMode, structure.fluidStored, needed, 0, 1, null);
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 
@@ -111,7 +111,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
             if (!BlockBasic.manageInventory(player, this, hand, stack)) {
-                Mekanism.packetHandler.sendToAllTracking(this);
+                Mekanism.packetHandler.sendUpdatePacket(this);
                 player.openGui(Mekanism.instance, 18, world, getPos().getX(), getPos().getY(), getPos().getZ());
             } else {
                 player.inventory.markDirty();

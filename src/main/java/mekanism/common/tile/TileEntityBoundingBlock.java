@@ -29,7 +29,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         receivedCoords = true;
         if (!world.isRemote) {
             mainPos = pos;
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 

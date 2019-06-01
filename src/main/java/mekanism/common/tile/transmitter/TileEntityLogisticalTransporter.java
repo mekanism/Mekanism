@@ -283,7 +283,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         TransporterUtils.incrementColor(getTransmitter());
         onPartChanged(null);
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
-        Mekanism.packetHandler.sendToAllTracking(this);
+        Mekanism.packetHandler.sendUpdatePacket(this);
         TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
               .translation("tooltip.configurator.toggleColor").string(": ");
 

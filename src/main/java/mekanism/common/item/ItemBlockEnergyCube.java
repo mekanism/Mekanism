@@ -130,7 +130,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
             }
             ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
         }
         return place;

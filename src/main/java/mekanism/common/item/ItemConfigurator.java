@@ -102,7 +102,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                                                                + getToggleModeText(transmissionType) + ": " + data.color + data.localize() + " (" +
                                                                                data.color.getColoredName() + ")"));
                                     if (config instanceof TileEntityBasicBlock) {
-                                        Mekanism.packetHandler.sendToAllTracking((TileEntityBasicBlock) config);
+                                        Mekanism.packetHandler.sendUpdatePacket((TileEntityBasicBlock) config);
                                     }
                                 } else {
                                     SecurityUtils.displayNoAccess(player);

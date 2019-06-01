@@ -64,7 +64,7 @@ public class TileComponentUpgrade implements ITileComponent {
                         upgradeTicks = 0;
                         addUpgrade(type);
                         tileEntity.inventory.get(upgradeSlot).shrink(1);
-                        Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                        Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                         tileEntity.markDirty();
                     }
                 } else {

@@ -126,7 +126,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     private void sendUpdatePacket() {
-        Mekanism.packetHandler.sendToAllTracking(this);
+        Mekanism.packetHandler.sendUpdatePacket(this);
     }
 
     @Override

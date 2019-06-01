@@ -95,7 +95,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
 
             soundScale = newSoundScale;
             if (packet) {
-                Mekanism.packetHandler.sendToAllTracking(this);
+                Mekanism.packetHandler.sendUpdatePacket(this);
             }
         }
     }
@@ -239,7 +239,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendToAllTracking(this);
+            Mekanism.packetHandler.sendUpdatePacket(this);
             updateDelay = 10;
             clientActive = active;
         }

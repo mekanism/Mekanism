@@ -119,7 +119,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     }
                 }
 
-                Mekanism.packetHandler.sendToAllTracking(this);
+                Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
             prevStructure = structure != null;
@@ -150,7 +150,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             for (Coord4D obj : structure.locations) {
                 TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(world);
                 if (tileEntity != null && tileEntity.isRendering) {
-                    Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                    Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                 }
             }
         }

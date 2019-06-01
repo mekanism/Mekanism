@@ -293,7 +293,7 @@ public class PacketHandler {
         }
     }
 
-    public <TILE extends TileEntity & ITileNetwork> void sendToAllTracking(TILE tile) {
+    public <TILE extends TileEntity & ITileNetwork> void sendUpdatePacket(TILE tile) {
         sendToAllTracking(new TileEntityMessage(tile), tile);
     }
 
@@ -307,12 +307,11 @@ public class PacketHandler {
     }
 
     public void sendToAllTracking(IMessage message, int dimension, double x, double y, double z) {
-        //TODO: Double check if this range is fine
-        sendToAllTracking(message, new TargetPoint(dimension, x, y, z, 16));
+        //Range is ignored for sendToAllTracking, and only gets sent to clients that have the location loaded
+        sendToAllTracking(message, new TargetPoint(dimension, x, y, z, 1));
     }
 
     public void sendToAllTracking(IMessage message, TargetPoint point) {
-        //TODO: Does this need to check the server like sendToReceivers did
         netHandler.sendToAllTracking(message, point);
     }
 

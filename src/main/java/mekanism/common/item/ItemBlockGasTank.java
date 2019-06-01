@@ -100,7 +100,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
             ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToAllTracking(tileEntity);
+                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
         }
         return place;

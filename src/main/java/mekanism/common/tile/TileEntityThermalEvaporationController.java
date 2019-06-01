@@ -132,7 +132,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             }
             if (structured) {
                 if (Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
-                    Mekanism.packetHandler.sendToAllTracking(this);
+                    Mekanism.packetHandler.sendUpdatePacket(this);
                     prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
                 }
             }
@@ -168,7 +168,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 clearStructure();
                 structured = buildStructure();
                 if (structured != clientStructured) {
-                    Mekanism.packetHandler.sendToAllTracking(this);
+                    Mekanism.packetHandler.sendUpdatePacket(this);
                     clientStructured = structured;
                 }
 
