@@ -2,6 +2,8 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.Arrays;
+import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -162,7 +164,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                     int guiX = guiWidth + slot.xPos;
                     int guiY = guiHeight + slot.yPos;
                     if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {
-                        drawGradientRect(guiX, guiY, guiX + 16, guiY + 16, -2137456640, -2137456640);
+                        int color = MekanismRenderer.getColorARGB(EnumColor.DARK_RED);
+                        drawGradientRect(guiX, guiY, guiX + 16, guiY + 16, color, color);
                     }
 
                     renderHelper.enableGUIStandardItemLighting();

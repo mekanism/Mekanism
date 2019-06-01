@@ -217,6 +217,15 @@ public class MekanismRenderer {
         return colors[color.ordinal()];
     }
 
+    //TODO: This is at 80% opacity should it be a param instead?
+    public static int getColorARGB(EnumColor color) {
+        int argb = 204 << 24;
+        argb |= color.rgbCode[0] << 16;
+        argb |= color.rgbCode[1] << 8;
+        argb |= color.rgbCode[2];
+        return argb;
+    }
+
     public static float getPartialTick() {
         return Minecraft.getMinecraft().getRenderPartialTicks();
     }
