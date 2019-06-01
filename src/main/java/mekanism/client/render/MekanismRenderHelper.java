@@ -1,7 +1,8 @@
 package mekanism.client.render;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
@@ -18,14 +19,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
 
-    //TODO: Keep track of things so if they are toggled back manually we don't toggle them twice at the end
-    private Deque<Pair<KnownStates, Boolean>> changedStates = new ArrayDeque<>();
+    private Map<KnownStates, Boolean> changedStates = new EnumMap<>(KnownStates.class);
     private boolean hasMatrix;
     private boolean colorSet;
     private boolean colorMasked;
@@ -58,9 +57,8 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
             GlStateManager.color(1, 1, 1, 1);
             colorSet = false;
         }
-        while (!changedStates.isEmpty()) {
-            Pair<KnownStates, Boolean> stateInfo = changedStates.pop();
-            stateInfo.getKey().cleanup(stateInfo.getValue());
+        for (Entry<KnownStates, Boolean> entry : changedStates.entrySet()) {
+            entry.getKey().cleanup(entry.getValue());
         }
         if (hasMatrix) {
             GlStateManager.popMatrix();
@@ -69,13 +67,21 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
     }
 
     private MekanismRenderHelper enable(KnownStates state) {
-        changedStates.push(Pair.of(state, true));
+        Boolean previous = changedStates.get(state);
+        if (previous != null && previous) {
+            return this;
+        }
+        changedStates.put(state, true);
         state.enable();
         return this;
     }
 
     private MekanismRenderHelper disable(KnownStates state) {
-        changedStates.push(Pair.of(state, false));
+        Boolean previous = changedStates.get(state);
+        if (previous != null && !previous) {
+            return this;
+        }
+        changedStates.put(state, false);
         state.disable();
         return this;
     }
@@ -125,8 +131,8 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
 
     //Color
     public MekanismRenderHelper colorMask(boolean red, boolean green, boolean blue, boolean alpha) {
-        //TODO: If all true then don't set colorMasked
-        colorMasked = true;
+        //If they are all being set to true, then we don't need the colorMasked boolean to be true
+        colorMasked = !red || !green || !blue || !alpha;
         GlStateManager.colorMask(red, green, blue, alpha);
         return this;
     }
@@ -136,7 +142,8 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
     }
 
     public MekanismRenderHelper color(float red, float green, float blue, float alpha) {
-        colorSet = true;
+        //If the color is our default color then we do not need to have colorSet be called
+        colorSet = red != 1 || green != 1 || blue != 1 || alpha != 1;
         GlStateManager.color(red, green, blue, alpha);
         return this;
     }
@@ -146,7 +153,7 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
     }
 
     public MekanismRenderHelper color3f(float red, float green, float blue) {
-        return color(red, green, blue, 1.0F);
+        return color(red, green, blue, 1);
     }
 
     public MekanismRenderHelper color3f(int color) {

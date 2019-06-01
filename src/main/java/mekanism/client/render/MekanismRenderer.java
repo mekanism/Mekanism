@@ -23,7 +23,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.CullFace;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -216,21 +215,6 @@ public class MekanismRenderer {
 
     public static TextureAtlasSprite getColorIcon(EnumColor color) {
         return colors[color.ordinal()];
-    }
-
-    /**
-     * Blender .objs have a different handedness of coordinate system to MC, so faces are wound backwards.
-     */
-    public static void cullFrontFace() {
-        //TODO: Can this method be removed?
-        GlStateManager.enableCull();
-        GlStateManager.cullFace(CullFace.FRONT);
-    }
-
-    public static void disableCullFace() {
-        //TODO: Can this method be removed?
-        GlStateManager.cullFace(CullFace.BACK);
-        GlStateManager.disableCull();
     }
 
     public static float getPartialTick() {

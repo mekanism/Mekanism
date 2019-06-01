@@ -51,8 +51,7 @@ public class GLSMHelper<HELPER extends GLSMHelper<HELPER>> {
     }
 
     public HELPER translateXZ(double x, double z) {
-        GlStateManager.translate(x, 0, z);
-        return (HELPER) this;
+        return translate(x, 0, z);
     }
 
     public HELPER translateYZ(float y, float z) {
