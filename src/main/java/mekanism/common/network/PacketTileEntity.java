@@ -52,6 +52,10 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
         public TileEntityMessage() {
         }
 
+        public TileEntityMessage(TileEntity tile, TileNetworkList params) {
+            this(Coord4D.get(tile), params);
+        }
+
         public TileEntityMessage(Coord4D coord, TileNetworkList params) {
             coord4D = coord;
             parameters = params;

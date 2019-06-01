@@ -2,7 +2,6 @@ package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -10,7 +9,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -144,7 +142,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         boolean stateChange = isActive != active;
         if (stateChange) {
             isActive = active;
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
         }
     }
 

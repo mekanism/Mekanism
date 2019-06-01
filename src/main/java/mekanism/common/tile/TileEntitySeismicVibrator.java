@@ -10,7 +10,6 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
@@ -66,7 +65,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
             if (updateDelay > 0) {
                 updateDelay--;
                 if (updateDelay == 0 && clientActive != isActive) {
-                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+                    Mekanism.packetHandler.sendToAllTracking(this);
                 }
             }
 
@@ -138,7 +137,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
             updateDelay = 10;
             clientActive = active;
         }

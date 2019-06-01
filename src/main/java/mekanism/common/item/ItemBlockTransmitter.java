@@ -3,9 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mcmultipart.api.multipart.IMultipart;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -14,7 +12,6 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
@@ -62,7 +59,7 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
             TileEntitySidedPipe tileEntity = (TileEntitySidedPipe) world.getTileEntity(pos);
             tileEntity.setBaseTier(getBaseTier(stack));
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
+                Mekanism.packetHandler.sendToAllTracking(tileEntity);
             }
         }
         return place;

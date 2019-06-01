@@ -162,8 +162,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
             shouldRender = status == 1 || status > 4;
             if (shouldRender != prevShouldRender) {
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                      Coord4D.get(this).getTargetPoint(40D));
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(40D));
                 //This also means the comparator output changed so notify the neighbors we have a change
                 MekanismUtils.notifyLoadedNeighborsOfTileChange(world, Coord4D.get(this));
             }

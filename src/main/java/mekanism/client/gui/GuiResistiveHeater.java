@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
@@ -100,7 +99,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         if (!energyUsageField.getText().isEmpty()) {
             int toUse = Integer.parseInt(energyUsageField.getText());
             TileNetworkList data = TileNetworkList.withContents(toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             energyUsageField.setText("");
         }
     }

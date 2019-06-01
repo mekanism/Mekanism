@@ -10,7 +10,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.InventoryUtils;
@@ -113,7 +112,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
             player.openGui(MekanismGenerators.instance, 6, world, getPos().getX(), getPos().getY(), getPos().getZ());
             return true;
         }

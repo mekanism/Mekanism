@@ -2,11 +2,9 @@ package mekanism.generators.common.tile.turbine;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -128,7 +126,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     private void sendUpdatePacket() {
-        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+        Mekanism.packetHandler.sendToAllTracking(this);
     }
 
     @Override

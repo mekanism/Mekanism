@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiAmplifierTab;
 import mekanism.client.gui.element.GuiGauge.Type;
@@ -146,7 +145,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
                 return;
             }
             TileNetworkList data = TileNetworkList.withContents(0, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             minField.setText("");
         }
     }
@@ -161,7 +160,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
                 return;
             }
             TileNetworkList data = TileNetworkList.withContents(1, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             maxField.setText("");
         }
     }
@@ -170,7 +169,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
         if (!timerField.getText().isEmpty()) {
             int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
             TileNetworkList data = TileNetworkList.withContents(2, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             timerField.setText("");
         }
     }

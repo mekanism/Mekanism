@@ -13,7 +13,6 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
@@ -133,7 +132,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             }
             if (structured) {
                 if (Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
-                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+                    Mekanism.packetHandler.sendToAllTracking(this);
                     prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
                 }
             }
@@ -169,7 +168,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 clearStructure();
                 structured = buildStructure();
                 if (structured != clientStructured) {
-                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+                    Mekanism.packetHandler.sendToAllTracking(this);
                     clientStructured = structured;
                 }
 

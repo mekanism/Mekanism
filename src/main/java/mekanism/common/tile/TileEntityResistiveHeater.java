@@ -11,7 +11,6 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
@@ -96,7 +95,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
 
             soundScale = newSoundScale;
             if (packet) {
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+                Mekanism.packetHandler.sendToAllTracking(this);
             }
         }
     }
@@ -240,7 +239,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
             updateDelay = 10;
             clientActive = active;
         }

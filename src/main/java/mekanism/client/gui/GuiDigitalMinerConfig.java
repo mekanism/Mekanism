@@ -190,7 +190,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                         if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20) {
                             // Process up button click
                             final TileNetworkList data = TileNetworkList.withContents(11, getFilterIndex() + i);
-                            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                             return;
                         }
@@ -200,7 +200,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                         if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
                             // Process down button click
                             final TileNetworkList data = TileNetworkList.withContents(12, getFilterIndex() + i);
-                            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                             return;
                         }
@@ -248,7 +248,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
             if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
                 TileNetworkList data = TileNetworkList.withContents(10);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }
@@ -524,7 +524,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         if (!radiusField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
             TileNetworkList data = TileNetworkList.withContents(6, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             radiusField.setText("");
         }
     }
@@ -533,7 +533,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         if (!minField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
             TileNetworkList data = TileNetworkList.withContents(7, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             minField.setText("");
         }
     }
@@ -542,7 +542,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         if (!maxField.getText().isEmpty()) {
             int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
             TileNetworkList data = TileNetworkList.withContents(8, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             maxField.setText("");
         }
     }

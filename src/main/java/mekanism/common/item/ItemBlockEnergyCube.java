@@ -6,9 +6,7 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
@@ -24,7 +22,6 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -133,7 +130,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
             }
             ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
+                Mekanism.packetHandler.sendToAllTracking(tileEntity);
             }
         }
         return place;

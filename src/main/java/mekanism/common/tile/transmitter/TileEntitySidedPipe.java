@@ -22,7 +22,6 @@ import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -103,7 +102,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 forceUpdate = false;
             }
             if (sendDesc) {
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+                Mekanism.packetHandler.sendToAllTracking(this);
                 sendDesc = false;
             }
         }

@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import java.io.IOException;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiMekanismTile;
@@ -91,7 +90,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             if (xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(0);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 return;
             }
             for (ReactorLogic type : ReactorLogic.values()) {
@@ -99,7 +98,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
                     if (type != tileEntity.logicType) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         TileNetworkList data = TileNetworkList.withContents(1, type.ordinal());
-                        Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                        Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                         return;
                     }
                 }

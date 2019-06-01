@@ -7,6 +7,8 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
@@ -290,6 +292,10 @@ public class PacketHandler {
                 }
             }
         }
+    }
+
+    public <TILE extends TileEntity & ITileNetwork> void sendToAllTracking(TILE tile) {
+        sendToAllTracking(new TileEntityMessage(tile, tile.getNetworkedData(new TileNetworkList())), tile);
     }
 
     public void sendToAllTracking(IMessage message, TileEntity tile) {

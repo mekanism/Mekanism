@@ -13,7 +13,6 @@ import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -120,7 +119,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     }
                 }
 
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(thisCoord, getNetworkedData(new TileNetworkList())), thisCoord);
+                Mekanism.packetHandler.sendToAllTracking(this);
             }
 
             prevStructure = structure != null;
@@ -151,7 +150,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             for (Coord4D obj : structure.locations) {
                 TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(world);
                 if (tileEntity != null && tileEntity.isRendering) {
-                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
+                    Mekanism.packetHandler.sendToAllTracking(tileEntity);
                 }
             }
         }

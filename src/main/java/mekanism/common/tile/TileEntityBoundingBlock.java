@@ -29,7 +29,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         receivedCoords = true;
         if (!world.isRemote) {
             mainPos = pos;
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
         }
     }
 
@@ -53,7 +53,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
                     onNoPower();
                 }
                 prevPower = power;
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), this);
+                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(tileEntity, tileEntity.getNetworkedData(new TileNetworkList())), this);
             }
         }
     }

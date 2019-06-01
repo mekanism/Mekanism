@@ -87,7 +87,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         if (!world.isRemote) {
             if (doAutoSync && playersUsing.size() > 0) {
                 for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
                 }
             }
         }
@@ -200,7 +200,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
             facing = EnumFacing.byIndex(direction);
         }
         if (!(facing == clientFacing || world.isRemote)) {
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
             markDirty();
             clientFacing = facing;
         }
@@ -238,7 +238,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         boolean power = world.getRedstonePowerFromNeighbors(getPos()) > 0;
         if (redstone != power) {
             redstone = power;
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
             onPowerChange();
         }
     }

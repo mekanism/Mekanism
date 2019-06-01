@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.ClientTickHandler;
@@ -272,7 +271,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
                 if (tileEntity != null) {
                     TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 } else {
                     Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
                     Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
@@ -383,7 +382,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         }
         if (tileEntity != null) {
             TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
         } else {
             Frequency newFreq = new Frequency(freq, null).setPublic(!privateMode);
             Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));

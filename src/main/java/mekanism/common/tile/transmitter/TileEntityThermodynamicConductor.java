@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
@@ -11,7 +10,6 @@ import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
@@ -106,8 +104,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     public void sendTemp() {
-        Coord4D coord = new Coord4D(getPos(), getWorld());
-        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())), coord);
+        Mekanism.packetHandler.sendToAllTracking(this);
     }
 
     @Override

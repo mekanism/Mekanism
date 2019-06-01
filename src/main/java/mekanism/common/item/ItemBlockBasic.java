@@ -2,9 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.MekKeyHandler;
@@ -14,7 +12,6 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.InductionCellTier;
@@ -183,13 +180,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
                 TileEntityInductionCell tileEntity = (TileEntityInductionCell) world.getTileEntity(pos);
                 tileEntity.tier = InductionCellTier.values()[getBaseTier(stack).ordinal()];
                 if (!world.isRemote) {
-                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
+                    Mekanism.packetHandler.sendToAllTracking(tileEntity);
                 }
             } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
                 TileEntityInductionProvider tileEntity = (TileEntityInductionProvider) world.getTileEntity(pos);
                 tileEntity.tier = InductionProviderTier.values()[getBaseTier(stack).ordinal()];
                 if (!world.isRemote) {
-                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
+                    Mekanism.packetHandler.sendToAllTracking(tileEntity);
                 }
             }
             TileEntity tileEntity = world.getTileEntity(pos);

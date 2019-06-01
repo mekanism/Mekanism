@@ -20,7 +20,6 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.transmitters.TransporterImpl;
@@ -284,7 +283,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         TransporterUtils.incrementColor(getTransmitter());
         onPartChanged(null);
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
-        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+        Mekanism.packetHandler.sendToAllTracking(this);
         TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
               .translation("tooltip.configurator.toggleColor").string(": ");
 

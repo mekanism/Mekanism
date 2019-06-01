@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
@@ -134,7 +133,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         }
         tier = GasTankTier.values()[upgradeTier.ordinal()];
         gasTank.setMaxGas(tier.getStorage());
-        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+        Mekanism.packetHandler.sendToAllTracking(this);
         markDirty();
         return true;
     }
@@ -242,7 +241,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
                 dumping = GasMode.values()[index];
             }
             for (EntityPlayer player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+                Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
             }
 
             return;

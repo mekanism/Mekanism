@@ -15,7 +15,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -79,7 +78,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
             return false;
         }
         tier = BinTier.values()[upgradeTier.ordinal()];
-        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+        Mekanism.packetHandler.sendToAllTracking(this);
         markDirty();
         return true;
     }
@@ -350,7 +349,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         super.markDirty();
         if (!world.isRemote) {
             MekanismUtils.saveChunk(this);
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
             prevCount = getItemCount();
             sortStacks();
         }
@@ -469,7 +468,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active) {
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
             clientActive = active;
         }
     }

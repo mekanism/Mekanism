@@ -42,7 +42,7 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
                 }
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null)) {
                     ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(tileEntity, network.getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
                 }
             }
         }, player);

@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiScrollList;
@@ -81,7 +80,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             return;
         }
         TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
-        Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+        Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
     }
 
     public String getSecurity(Frequency freq) {
@@ -183,7 +182,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             if (selection != -1) {
                 Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
                 TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 scrollList.clearSelection();
             }
         }

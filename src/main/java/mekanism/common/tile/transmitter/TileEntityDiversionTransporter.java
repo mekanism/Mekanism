@@ -10,7 +10,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -108,7 +107,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         notifyTileChange();
         player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " +
                                                    LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+        Mekanism.packetHandler.sendToAllTracking(this);
         return EnumActionResult.SUCCESS;
     }
 

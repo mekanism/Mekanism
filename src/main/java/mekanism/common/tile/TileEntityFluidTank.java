@@ -91,7 +91,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         }
         tier = FluidTankTier.values()[upgradeTier.ordinal()];
         fluidTank.setCapacity(tier.getStorage());
-        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+        Mekanism.packetHandler.sendToAllTracking(this);
         markDirty();
         return true;
     }
@@ -151,8 +151,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 currentRedstoneLevel = newRedstoneLevel;
             }
             if (needsPacket) {
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                      Coord4D.get(this).getTargetPoint(50));
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50));
             }
             needsPacket = false;
         }
@@ -333,7 +332,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
+            Mekanism.packetHandler.sendToAllTracking(this);
             updateDelay = 10;
             clientActive = active;
         }
