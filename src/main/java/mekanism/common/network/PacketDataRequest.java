@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -42,7 +41,7 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
                 }
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null)) {
                     ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(tileEntity, network.getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(tileEntity, network.getNetworkedData()), (EntityPlayerMP) player);
                 }
             }
         }, player);

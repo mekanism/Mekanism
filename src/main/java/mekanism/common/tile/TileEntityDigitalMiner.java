@@ -521,7 +521,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public void openInventory(@Nonnull EntityPlayer player) {
         super.openInventory(player);
         if (!world.isRemote) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+            Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (EntityPlayerMP) player);
         }
     }
 

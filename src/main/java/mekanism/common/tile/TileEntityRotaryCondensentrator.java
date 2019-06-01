@@ -159,7 +159,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 mode = mode == 0 ? 1 : 0;
             }
             for (EntityPlayer player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+                Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (EntityPlayerMP) player);
             }
 
             return;

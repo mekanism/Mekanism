@@ -106,7 +106,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
                 if (!on || firing != lastFired) {
                     on = true;
                     lastFired = firing;
-                    Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50D));
+                    Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(50D));
                 }
 
                 LaserInfo info = LaserManager.fireLaser(this, facing, firing, world);
@@ -134,7 +134,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
             } else if (on) {
                 on = false;
                 diggingProgress = 0;
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50D));
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(50D));
             }
 
             if (outputMode != RedstoneOutput.ENTITY_DETECTION) {

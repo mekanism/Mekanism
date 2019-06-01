@@ -53,7 +53,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
                     onNoPower();
                 }
                 prevPower = power;
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(tileEntity, tileEntity.getNetworkedData(new TileNetworkList())), this);
+                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(tileEntity), this);
             }
         }
     }

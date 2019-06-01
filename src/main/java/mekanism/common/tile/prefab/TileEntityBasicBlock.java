@@ -87,7 +87,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         if (!world.isRemote) {
             if (doAutoSync && playersUsing.size() > 0) {
                 for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (EntityPlayerMP) player);
                 }
             }
         }

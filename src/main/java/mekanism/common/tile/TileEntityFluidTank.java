@@ -151,7 +151,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 currentRedstoneLevel = newRedstoneLevel;
             }
             if (needsPacket) {
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this, getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50));
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(50));
             }
             needsPacket = false;
         }
