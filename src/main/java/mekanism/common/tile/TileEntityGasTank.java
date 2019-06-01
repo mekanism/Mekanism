@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -135,7 +134,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         }
         tier = GasTankTier.values()[upgradeTier.ordinal()];
         gasTank.setMaxGas(tier.getStorage());
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
         markDirty();
         return true;
     }

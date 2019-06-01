@@ -9,7 +9,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -334,7 +333,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
             entity.changeDimension(coord.dimensionId, (world, entity2, yaw) -> entity2.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
         } else {
             entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
-            Mekanism.packetHandler.sendToReceivers(new EntityMoveMessage(entity), new Range4D(new Coord4D(entity)));
+            Mekanism.packetHandler.sendToAllTracking(new EntityMoveMessage(entity), new Coord4D(entity));
         }
     }
 

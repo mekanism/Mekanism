@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -134,7 +133,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             }
             if (structured) {
                 if (Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
                     prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
                 }
             }
@@ -170,7 +169,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 clearStructure();
                 structured = buildStructure();
                 if (structured != clientStructured) {
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
                     clientStructured = structured;
                 }
 

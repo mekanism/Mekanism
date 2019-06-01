@@ -3,7 +3,6 @@ package mekanism.common.tile.prefab;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -145,7 +144,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         boolean stateChange = isActive != active;
         if (stateChange) {
             isActive = active;
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
         }
     }
 

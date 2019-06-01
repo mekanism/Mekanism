@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.MekanismHooks;
@@ -56,8 +55,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
             }
             tileEntity.setColour(col);
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
-                      new Range4D(Coord4D.get(tileEntity)));
+                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
             }
         }
         return place;

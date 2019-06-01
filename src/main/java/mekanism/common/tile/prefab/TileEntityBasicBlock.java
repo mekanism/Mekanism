@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
@@ -201,7 +200,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
             facing = EnumFacing.byIndex(direction);
         }
         if (!(facing == clientFacing || world.isRemote)) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
             markDirty();
             clientFacing = facing;
         }
@@ -239,7 +238,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         boolean power = world.getRedstonePowerFromNeighbors(getPos()) > 0;
         if (redstone != power) {
             redstone = power;
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
             onPowerChange();
         }
     }

@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -236,7 +235,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     @Override
     public void openInventory(@Nonnull EntityPlayer player) {
         if (!world.isRemote) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new TileNetworkList())), this);
         }
     }
 

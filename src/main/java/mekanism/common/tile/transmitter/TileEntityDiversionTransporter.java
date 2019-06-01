@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -109,8 +108,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         notifyTileChange();
         player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " +
                                                    LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-        Coord4D coord = new Coord4D(getPos(), getWorld());
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())), new Range4D(coord));
+        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
         return EnumActionResult.SUCCESS;
     }
 

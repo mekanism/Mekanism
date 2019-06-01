@@ -15,7 +15,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IMekWrench;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -107,8 +106,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                                                                data.color.getColoredName() + ")"));
                                     if (config instanceof TileEntityBasicBlock) {
                                         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) config;
-                                        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
-                                              new Range4D(Coord4D.get(tileEntity)));
+                                        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
                                     }
                                 } else {
                                     SecurityUtils.displayNoAccess(player);

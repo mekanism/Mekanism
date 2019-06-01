@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -80,7 +79,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
             return false;
         }
         tier = BinTier.values()[upgradeTier.ordinal()];
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
         markDirty();
         return true;
     }
@@ -351,7 +350,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         super.markDirty();
         if (!world.isRemote) {
             MekanismUtils.saveChunk(this);
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
             prevCount = getItemCount();
             sortStacks();
         }
@@ -470,7 +469,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
             clientActive = active;
         }
     }

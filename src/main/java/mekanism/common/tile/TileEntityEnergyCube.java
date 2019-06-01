@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -92,7 +91,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             }
             int newScale = getScaledEnergyLevel(20);
             if (newScale != prevScale) {
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
             }
             prevScale = newScale;
         }
@@ -104,7 +103,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             return false;
         }
         tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
         markDirty();
         return true;
     }

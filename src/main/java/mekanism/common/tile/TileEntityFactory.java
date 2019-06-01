@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -222,7 +221,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         factory.upgraded = true;
         factory.markDirty();
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(factory)));
+        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new TileNetworkList())), factory);
         return true;
     }
 

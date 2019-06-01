@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -32,7 +31,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
         super.setMultiblock(id);
 
         if (packet && !world.isRemote) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), this);
         }
     }
 

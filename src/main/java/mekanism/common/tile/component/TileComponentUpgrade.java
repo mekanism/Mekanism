@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -67,8 +66,7 @@ public class TileComponentUpgrade implements ITileComponent {
                         upgradeTicks = 0;
                         addUpgrade(type);
                         tileEntity.inventory.get(upgradeSlot).shrink(1);
-                        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
-                              new Range4D(Coord4D.get(tileEntity)));
+                        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
                         tileEntity.markDirty();
                     }
                 } else {

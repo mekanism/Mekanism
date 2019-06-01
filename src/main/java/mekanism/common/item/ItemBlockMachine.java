@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
@@ -319,8 +318,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     factory.setRecipeType(recipeType);
                 }
                 world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
-                      new Range4D(Coord4D.get(tileEntity)));
+                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), tileEntity);
             }
 
             if (tileEntity instanceof ISustainedTank) {

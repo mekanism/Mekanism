@@ -5,7 +5,6 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColourRGBA;
@@ -108,7 +107,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     public void sendTemp() {
         Coord4D coord = new Coord4D(getPos(), getWorld());
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())), new Range4D(coord));
+        Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())), coord);
     }
 
     @Override
