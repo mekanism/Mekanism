@@ -39,28 +39,24 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
     @Override
     public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
-
         bindTexture(baseTexture);
-
-        switch (tileEntity.facing.ordinal()) {
-            case 0: {
+        switch (tileEntity.facing) {
+            case DOWN:
                 renderHelper.rotateX(90, -1).translateYZ(1.0F, -1.0F);
                 break;
-            }
-            case 1: {
+            case UP:
                 renderHelper.rotateX(90, 1).translateYZ(1.0F, 1.0F);
                 break;
-            }
-            case 2:
+            case NORTH:
                 renderHelper.rotateY(0, 1);
                 break;
-            case 3:
+            case SOUTH:
                 renderHelper.rotateY(180, 1);
                 break;
-            case 4:
+            case WEST:
                 renderHelper.rotateY(90, 1);
                 break;
-            case 5:
+            case EAST:
                 renderHelper.rotateY(270, 1);
                 break;
         }
@@ -76,15 +72,13 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
         renderHelper.cleanup();
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
-            MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
-            coreRenderHelper.translate(x + 0.5, y + 0.5, z + 0.5);
+            MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
             coreRenderHelper.enableBlendPreset().enableGlow();
 
+            float ticks = MekanismClient.ticksPassed + partialTick;
             MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tileEntity.tier.getBaseTier())
-                  .translateY(Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7)
-                  .rotateY((MekanismClient.ticksPassed + partialTick) * 4, 1)
-                  .rotateYZ(36F + (MekanismClient.ticksPassed + partialTick) * 4, 1, 1);
+                  .translateY(Math.sin(Math.toRadians(3 * ticks)) / 7).rotateY(4 * ticks, 1).rotateYZ(36F + 4 * ticks, 1, 1);
             core.render(0.0625F);
             coreColorRenderHelper.cleanup();
             coreRenderHelper.cleanup();

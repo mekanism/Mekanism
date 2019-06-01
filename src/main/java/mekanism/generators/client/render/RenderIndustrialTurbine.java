@@ -28,8 +28,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
     }
 
     public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null
-            && tileEntity.structure.complex != null) {
+        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
             Coord4D coord = tileEntity.structure.complex;
 
@@ -58,6 +57,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                 if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
                     FluidRenderer.translateToOrigin(data.location);
+                    //TODO: Does the color alpha overwrite the color set based on fluid
                     renderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored).colorAlpha(Math.min(1,
                           ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure.getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();

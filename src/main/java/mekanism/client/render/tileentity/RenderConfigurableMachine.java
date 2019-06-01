@@ -16,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,32 +40,28 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
     @Override
     public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        //TODO: Check if this outer push/pop matrix needed
-        GlStateManager.pushMatrix();
-
-        EntityPlayer player = mc.player;
-        ItemStack itemStack = player.inventory.getCurrentItem();
-        RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
-
+        ItemStack itemStack = mc.player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
-        if (pos != null && !itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
-            BlockPos bp = pos.getBlockPos();
-            TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
-            if (configurable.getConfig().supports(type)) {
-                if (bp.equals(configurable.getPos())) {
-                    SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
-                    if (data != TileComponentConfig.EMPTY) {
-                        MekanismRenderHelper renderHelper = initHelper().color(data.color, 0.6F);
-                        bindTexture(MekanismRenderer.getBlocksTexture());
-                        renderHelper.translate(x, y, z);
-                        int display = getOverlayDisplay(pos.sideHit, type).display;
-                        GlStateManager.callList(display);
-                        renderHelper.cleanup();
+        if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
+            RayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
+            if (pos != null) {
+                BlockPos bp = pos.getBlockPos();
+                TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
+                if (configurable.getConfig().supports(type)) {
+                    if (bp.equals(configurable.getPos())) {
+                        SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
+                        if (data != TileComponentConfig.EMPTY) {
+                            MekanismRenderHelper renderHelper = initHelper().color(data.color, 0.6F);
+                            bindTexture(MekanismRenderer.getBlocksTexture());
+                            renderHelper.translate(x, y, z);
+                            int display = getOverlayDisplay(pos.sideHit, type).display;
+                            GlStateManager.callList(display);
+                            renderHelper.cleanup();
+                        }
                     }
                 }
             }
         }
-        GlStateManager.popMatrix();
     }
 
     private MekanismRenderHelper initHelper() {

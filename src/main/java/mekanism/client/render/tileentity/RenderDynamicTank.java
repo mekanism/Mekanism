@@ -36,6 +36,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 renderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored);
 
                 if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
+                    //TODO: Does the color alpha overwrite the color set based on fluid
                     renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity) + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();
                 } else {

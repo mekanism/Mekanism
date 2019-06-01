@@ -17,10 +17,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelEnergyCube extends ModelBase {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils
-          .getResource(ResourceType.RENDER, "EnergyCube_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils
-          .getResource(ResourceType.RENDER, "EnergyCube_OverlayOff.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayOn.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayOff.png");
     public ModelRenderer[] leds1;
     public ModelRenderer[] leds2;
     public ModelRenderer[] ports;
@@ -342,10 +340,8 @@ public class ModelEnergyCube extends ModelBase {
         leds1 = new ModelRenderer[]{ledBottom1, ledTop1, ledFront1, ledBack1, ledLeft1, ledRight1};
         leds2 = new ModelRenderer[]{ledBottom2, ledTop2, ledFront2, ledBack2, ledLeft2, ledRight2};
 
-        ports = new ModelRenderer[]{portBottomToggle, portTopToggle, portFrontToggle, portBackToggle, portLeftToggle,
-                                    portRightToggle};
-        connectors = new ModelRenderer[]{connectorBottomToggle, connectorTopToggle, connectorFrontToggle,
-                                         connectorBackToggle, connectorLeftToggle, connectorRightToggle};
+        ports = new ModelRenderer[]{portBottomToggle, portTopToggle, portFrontToggle, portBackToggle, portLeftToggle, portRightToggle};
+        connectors = new ModelRenderer[]{connectorBottomToggle, connectorTopToggle, connectorFrontToggle, connectorBackToggle, connectorLeftToggle, connectorRightToggle};
     }
 
     public void render(float size, EnergyCubeTier tier, TextureManager manager, boolean renderMain) {
@@ -373,7 +369,7 @@ public class ModelEnergyCube extends ModelBase {
             corner1.render(size);
         }
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(1.001F).translateY(-0.0061F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(1.001F, 1.005F, 1.001F).translateY(-0.0061F);
         manager.bindTexture(RenderEnergyCube.resources.get(tier));
         renderHelper.enableGlow();
 
@@ -390,24 +386,19 @@ public class ModelEnergyCube extends ModelBase {
     }
 
     public void renderSide(float size, EnumFacing side, IOState state, EnergyCubeTier tier, TextureManager renderer) {
-        if (state != IOState.OFF) {
+        if (state != IOState.OFF) { //input or output
             connectors[side.ordinal()].render(size);
             ports[side.ordinal()].render(size);
-
-            if (state == IOState.OUTPUT) {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
-                renderer.bindTexture(RenderEnergyCube.resources.get(tier));
-                ports[side.ordinal()].render(size);
-                renderHelper.cleanup();
-            }
         }
-
-        renderer.bindTexture(state == IOState.OUTPUT ? OVERLAY_ON : OVERLAY_OFF);
 
         MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         if (state == IOState.OUTPUT) {
             renderHelper.enableGlow();
+            renderer.bindTexture(RenderEnergyCube.resources.get(tier));
+            ports[side.ordinal()].render(size);
         }
+
+        renderer.bindTexture(state == IOState.OUTPUT ? OVERLAY_ON : OVERLAY_OFF);
 
         leds1[side.ordinal()].render(size);
         leds2[side.ordinal()].render(size);
@@ -437,7 +428,7 @@ public class ModelEnergyCube extends ModelBase {
         }
 
         public void render(float size) {
-            cube.render(0.0625F);
+            cube.render(size);
         }
     }
 }
