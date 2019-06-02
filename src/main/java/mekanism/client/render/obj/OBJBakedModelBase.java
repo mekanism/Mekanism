@@ -47,6 +47,17 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
     protected ImmutableMap<String, TextureAtlasSprite> textureMap;
     protected Map<TransformType, Matrix4f> transformationMap;
 
+    static {
+        try {
+            f_textures = OBJBakedModel.class.getDeclaredField("textures");
+            f_textures.setAccessible(true);
+            m_updateStateVisibilityMap = OBJBakedModel.class.getDeclaredMethod("updateStateVisibilityMap", OBJState.class);
+            m_updateStateVisibilityMap.setAccessible(true);
+        } catch (ReflectiveOperationException e){
+            throw new RuntimeException("Could not set up reflection helpers", e);
+        }
+    }
+
     public OBJBakedModelBase(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures,
           Map<TransformType, Matrix4f> transform) {
         model.super(model, state, format, textures);
@@ -100,15 +111,11 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
     @SuppressWarnings("unchecked")
     public static ImmutableMap<String, TextureAtlasSprite> getTexturesForOBJModel(IBakedModel model) {
         try {
-            if (f_textures == null) {
-                f_textures = OBJBakedModel.class.getDeclaredField("textures");
-                f_textures.setAccessible(true);
-            }
             return (ImmutableMap<String, TextureAtlasSprite>) f_textures.get(model);
         } catch (ReflectiveOperationException | ClassCastException e) {
             Mekanism.logger.error("Could not get private field textures", e);
         }
-        return null;
+        return ImmutableMap.of();
     }
 
     @Nonnull
@@ -202,10 +209,6 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
     @SuppressWarnings("deprecation")
     protected void updateStateVisibilityMap(OBJState state) {
         try {
-            if (m_updateStateVisibilityMap == null) {
-                m_updateStateVisibilityMap = OBJBakedModel.class.getDeclaredMethod("updateStateVisibilityMap", OBJState.class);
-                m_updateStateVisibilityMap.setAccessible(true);
-            }
             m_updateStateVisibilityMap.invoke(this, state);
         } catch (ReflectiveOperationException | ClassCastException e) {
             Mekanism.logger.error("Could not get private field updateStateVisibilityMap", e);
