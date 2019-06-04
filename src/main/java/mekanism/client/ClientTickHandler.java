@@ -1,6 +1,6 @@
 package mekanism.client;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -313,7 +313,7 @@ public class ClientTickHandler {
                     newVal = ConfiguratorMode.values().length + newVal;
                 }
                 configurator.setState(stack, ConfiguratorMode.values()[newVal]);
-                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, new ArrayList<>(newVal)));
+                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(newVal)));
                 event.setCanceled(true);
             }
         }

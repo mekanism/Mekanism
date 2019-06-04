@@ -1,6 +1,5 @@
 package mekanism.api.transmitters;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -64,7 +63,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
             updateCapacity();
             clampBuffer();
-            queueClientUpdate(new ArrayList<>(transmittersToAdd));
+            queueClientUpdate(transmittersToAdd);
             transmittersToAdd.clear();
         }
 
