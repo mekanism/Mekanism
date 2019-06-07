@@ -256,10 +256,11 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public boolean canConnectMutual(EnumFacing side) {
-        if (!canConnect(side)) {
+        BlockPos testPos = getPos().offset(side);
+        if (!world.isBlockLoaded(testPos) || !canConnect(side)) {
             return false;
         }
-        TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
+        TileEntity tile = getWorld().getTileEntity(testPos);
         if (!CapabilityUtils.hasCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite())) {
             return true;
         }
