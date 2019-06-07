@@ -45,8 +45,7 @@ public class ChemicalInjection {
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
-          @Optional IIngredient gasInput) {
+    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput, @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER, new IngredientWrapper(itemOutput),
                   new IngredientWrapper(itemInput, gasInput)));

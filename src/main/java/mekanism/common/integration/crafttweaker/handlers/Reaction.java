@@ -34,8 +34,7 @@ public class Reaction {
     public static final String NAME = Mekanism.MOD_NAME + " Reaction";
 
     @ZenMethod
-    public static void addRecipe(IIngredient ingredientInput, ILiquidStack liquidInput, IGasStack gasInput,
-          IItemStack itemOutput, IGasStack gasOutput, double energy, int duration) {
+    public static void addRecipe(IIngredient ingredientInput, ILiquidStack liquidInput, IGasStack gasInput, IItemStack itemOutput, IGasStack gasOutput, double energy, int duration) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, liquidInput, gasInput, itemOutput, gasOutput)) {
             FluidStack fluidInput = IngredientHelper.toFluid(liquidInput);
             GasStack gas = GasHelper.toGas(gasInput);
@@ -49,8 +48,7 @@ public class Reaction {
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, IIngredient gasOutput, @Optional IIngredient itemInput,
-          @Optional IIngredient liquidInput, @Optional IIngredient gasInput) {
+    public static void removeRecipe(IIngredient itemOutput, IIngredient gasOutput, @Optional IIngredient itemInput, @Optional IIngredient liquidInput, @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput, gasOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER, new IngredientWrapper(itemOutput, gasOutput),
                   new IngredientWrapper(itemInput, liquidInput, gasInput)));

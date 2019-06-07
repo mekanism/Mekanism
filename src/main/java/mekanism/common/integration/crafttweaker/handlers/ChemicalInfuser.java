@@ -32,8 +32,7 @@ public class ChemicalInfuser {
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient leftGasInput,
-          @Optional IIngredient rightGasInput) {
+    public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient leftGasInput, @Optional IIngredient rightGasInput) {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER, new IngredientWrapper(gasOutput),
                   new IngredientWrapper(leftGasInput, rightGasInput)));

@@ -32,8 +32,7 @@ public class Infuser {
     public static final String NAME = Mekanism.MOD_NAME + " Metallurgic Infuser";
 
     @ZenMethod
-    public static void addRecipe(String infuseType, int infuseAmount, IIngredient ingredientInput,
-          IItemStack itemOutput) {
+    public static void addRecipe(String infuseType, int infuseAmount, IIngredient ingredientInput, IItemStack itemOutput) {
         if (infuseType == null || infuseType.isEmpty()) {
             CraftTweakerAPI.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;
@@ -50,8 +49,7 @@ public class Infuser {
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
-          @Optional String infuseType) {
+    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput, @Optional String infuseType) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput),
                   new IngredientWrapper(itemInput, infuseType)));
@@ -60,6 +58,6 @@ public class Infuser {
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER));
     }
 }

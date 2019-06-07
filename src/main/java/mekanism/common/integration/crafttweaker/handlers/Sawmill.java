@@ -29,8 +29,7 @@ public class Sawmill {
     public static final String NAME = Mekanism.MOD_NAME + " Sawmill";
 
     @ZenMethod
-    public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput,
-          @Optional IItemStack optionalItemOutput, @Optional double optionalChance) {
+    public static void addRecipe(IIngredient ingredientInput, IItemStack itemOutput, @Optional IItemStack optionalItemOutput, @Optional double optionalChance) {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, itemOutput)) {
             ChanceOutput output = optionalItemOutput == null ? new ChanceOutput(CraftTweakerMC.getItemStack(itemOutput)) : new ChanceOutput(CraftTweakerMC.getItemStack(itemOutput),
                   CraftTweakerMC.getItemStack(optionalItemOutput), optionalChance);
@@ -43,8 +42,7 @@ public class Sawmill {
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient itemInput, @Optional IIngredient itemOutput,
-          @Optional IIngredient optionalItemOutput) {
+    public static void removeRecipe(IIngredient itemInput, @Optional IIngredient itemOutput, @Optional IIngredient optionalItemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.PRECISION_SAWMILL, new IngredientWrapper(itemOutput, optionalItemOutput),
                   new IngredientWrapper(itemInput)));
