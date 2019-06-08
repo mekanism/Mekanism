@@ -316,7 +316,6 @@ public class Mekanism {
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         event.getRegistry().register(new BinRecipe());
         addRecipes();
-        OreDictManager.init();
         GasConversionHandler.addDefaultGasMappings();
     }
 
