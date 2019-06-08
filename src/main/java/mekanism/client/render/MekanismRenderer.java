@@ -377,7 +377,6 @@ public class MekanismRenderer {
         }
 
         public void render() {
-            //TODO: The call list seems to have issues with GLStateManager that it doesn't do things properly
             GlStateManager.callList(display);
         }
     }
