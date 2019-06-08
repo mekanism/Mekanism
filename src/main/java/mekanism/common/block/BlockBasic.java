@@ -101,7 +101,7 @@ public abstract class BlockBasic extends BlockTileDrops {
     public BlockBasic() {
         super(Material.IRON);
         setHardness(5F);
-        setResistance(15F);
+        setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
     }
 
@@ -270,9 +270,16 @@ public abstract class BlockBasic extends BlockTileDrops {
         IBlockState state = world.getBlockState(pos);
         BasicBlockType type = BasicBlockType.get(getBasicBlock(), state.getBlock().getMetaFromState(state));
         if (type == BasicBlockType.REFINED_OBSIDIAN) {
-            return 2400F;//like Obsidian x 2
+            return 2400F;
         }
-        return blockResistance / 5.0F;
+        else if (type == BasicBlockType.OSMIUM_BLOCK) {
+            return 12F;
+        }
+        else if (type == BasicBlockType.STEEL_BLOCK || type == BasicBlockType.BRONZE_BLOCK || type == BasicBlockType.STEEL_CASING || type == BasicBlockType.SECURITY_DESK
+              ||type == BasicBlockType.THERMAL_EVAPORATION_BLOCK || type == BasicBlockType.THERMAL_EVAPORATION_VALVE  || type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER) {
+            return 9F;
+        }
+        return blockResistance / 5F;
     }
 
     @Override
@@ -280,7 +287,10 @@ public abstract class BlockBasic extends BlockTileDrops {
     public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
         BasicBlockType type = BasicBlockType.get(getBasicBlock(), blockState.getBlock().getMetaFromState(blockState));
         if(type == BasicBlockType.REFINED_OBSIDIAN) {
-            return 50.0F;//like Obsidian
+            return 50.0F;
+        }
+        else if(type == BasicBlockType.OSMIUM_BLOCK) {
+            return 7.5F;
         }
         return blockHardness;
     }
@@ -518,10 +528,7 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         BasicBlockType type = BasicBlockType.get(state);
-        if(type != null) {
-            return type.isOpaqueCube ? 255 : 0;
-        }
-        return 0;
+        return type != null && type.isOpaqueCube ? 255 : 0;
     }
 
     @Nonnull
