@@ -3,14 +3,11 @@ package mekanism.common.tile;
 import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasItem;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.util.GasUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> {
@@ -35,20 +32,6 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         return gasTank.canReceive(type) && isValidGas(type);
-    }
-
-    @Override
-    public void handleSecondaryFuel() {
-        ItemStack itemStack = inventory.get(1);
-        if (!itemStack.isEmpty() && gasTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
-            GasStack gas = ((IGasItem) itemStack.getItem()).getGas(itemStack);
-            if (gas != null) {
-                GasStack removed = GasUtils.removeGas(itemStack, gas.getGas(), gasTank.getNeeded());
-                gasTank.receive(removed, true);
-                return;
-            }
-        }
-        super.handleSecondaryFuel();
     }
 
     @Override

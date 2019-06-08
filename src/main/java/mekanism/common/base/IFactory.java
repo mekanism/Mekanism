@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
 import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -174,14 +173,6 @@ public interface IFactory {
             return getRecipe(slotStack);
         }
 
-        @Nullable
-        public GasStack getItemGas(ItemStack itemstack) {
-            if (fuelType == MachineFuelType.ADVANCED) {
-                return getTile().getItemGas(itemstack);
-            }
-            return null;
-        }
-
         public int getSecondaryEnergyPerTick() {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().BASE_SECONDARY_ENERGY_PER_TICK;
@@ -198,13 +189,6 @@ public interface IFactory {
 
         public boolean supportsGas() {
             return fuelType == MachineFuelType.ADVANCED;
-        }
-
-        public boolean isValidGas(Gas gas) {
-            if (fuelType == MachineFuelType.ADVANCED) {
-                return getTile().isValidGas(gas);
-            }
-            return false;
         }
 
         public boolean hasRecipe(ItemStack itemStack) {

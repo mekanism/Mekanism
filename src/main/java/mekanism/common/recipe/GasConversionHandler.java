@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.ingredients.IMekanismIngredient;
@@ -83,21 +86,39 @@ public class GasConversionHandler {
     }
 
     /**
+     * Gets an item gas checking if it will be valid for a specific tank and if the type is also valid.
+     */
+    @Nullable
+    public static GasStack getItemGas(ItemStack itemStack, GasTank gasTank, Predicate<Gas> isValidGas) {
+        return getItemGas(itemStack, gasTank.getNeeded(), (gas, quantity) -> {
+            if (gas != null && gasTank.canReceive(gas) && isValidGas.test(gas)) {
+                return new GasStack(gas, quantity);
+            }
+            return null;
+        });
+    }
+
+    /**
      * Gets the amount of ticks the declared itemstack can fuel this machine.
      *
-     * @param itemStack - itemstack to check with
+     * @param itemStack - itemstack to check with.
+     * @param needed    The max amount we need for use with IGasItem's so that we do not return a value that is too large, thus making it so it thinks there is no room.
      *
      * @return fuel ticks
      */
-    public static GasStack getItemGas(ItemStack itemStack, BiFunction<Gas, Integer, GasStack> getIfValid) {
+    @Nullable
+    public static GasStack getItemGas(ItemStack itemStack, int needed, BiFunction<Gas, Integer, GasStack> getIfValid) {
         if (itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
             GasStack gas = item.getGas(itemStack);
             //Check to make sure it can provide the gas it contains
             if (gas != null && item.canProvideGas(itemStack, gas.getGas())) {
-                GasStack gasStack = getIfValid.apply(gas.getGas(), 1);
-                if (gasStack != null) {
-                    return gasStack;
+                int amount = Math.min(needed, Math.min(gas.amount, item.getRate(itemStack)));
+                if (amount > 0) {
+                    GasStack gasStack = getIfValid.apply(gas.getGas(), amount);
+                    if (gasStack != null) {
+                        return gasStack;
+                    }
                 }
             }
         }

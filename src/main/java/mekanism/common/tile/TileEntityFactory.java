@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.TileNetworkList;
@@ -32,6 +33,7 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
@@ -469,31 +471,38 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         return MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick());
     }
 
-    public void handleSecondaryFuel() {
-        if (!inventory.get(4).isEmpty()) {
-            if (recipeType.getFuelType() == MachineFuelType.ADVANCED && gasTank.getNeeded() > 0) {
-                if (inventory.get(4).getItem() instanceof IGasItem) {
-                    GasStack gas = ((IGasItem) inventory.get(4).getItem()).getGas(inventory.get(4));
-                    if (gas != null && recipeType.isValidGas(gas.getGas())) {
-                        GasStack removed = GasUtils.removeGas(inventory.get(4), gasTank.getGasType(), gasTank.getNeeded());
-                        gasTank.receive(removed, true);
-                    }
-                    return;
-                }
+    @Nullable
+    public GasStack getItemGas(ItemStack itemStack) {
+        if (recipeType.getFuelType() == MachineFuelType.ADVANCED) {
+            return GasConversionHandler.getItemGas(itemStack, gasTank, recipeType.getTile()::isValidGas);
+        }
+        return null;
+    }
 
-                GasStack stack = recipeType.getItemGas(inventory.get(4));
-                int gasNeeded = gasTank.getNeeded();
-                if (stack != null && stack.amount <= gasNeeded) {
-                    gasTank.receive(stack, true);
-                    inventory.get(4).shrink(1);
+    public void handleSecondaryFuel() {
+        ItemStack extra = inventory.get(4);
+        if (!extra.isEmpty()) {
+            if (recipeType.getFuelType() == MachineFuelType.ADVANCED && gasTank.getNeeded() > 0) {
+                GasStack gasStack = getItemGas(extra);
+                if (gasStack != null) {
+                    Gas gas = gasStack.getGas();
+                    if (gasTank.canReceive(gas) && gasTank.getNeeded() >= gasStack.amount) {
+                        if (extra.getItem() instanceof IGasItem) {
+                            IGasItem item = (IGasItem) extra.getItem();
+                            gasTank.receive(item.removeGas(extra, gasStack.amount), true);
+                        } else {
+                            gasTank.receive(gasStack, true);
+                            extra.shrink(1);
+                        }
+                    }
                 }
             } else if (recipeType == RecipeType.INFUSING) {
-                InfuseObject pendingInfusionInput = InfuseRegistry.getObject(inventory.get(4));
+                InfuseObject pendingInfusionInput = InfuseRegistry.getObject(extra);
                 if (pendingInfusionInput != null) {
                     if (infuseStored.getType() == null || infuseStored.getType() == pendingInfusionInput.type) {
                         if (infuseStored.getAmount() + pendingInfusionInput.stored <= maxInfuse) {
                             infuseStored.increase(pendingInfusionInput);
-                            inventory.get(4).shrink(1);
+                            extra.shrink(1);
                         }
                     }
                 }
@@ -564,7 +573,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (slotID == 4) {
             if (recipeType.getFuelType() == MachineFuelType.ADVANCED) {
-                return recipeType.getItemGas(itemstack) != null;
+                return getItemGas(itemstack) != null;
             } else if (recipeType.getFuelType() == MachineFuelType.DOUBLE) {
                 return recipeType.hasRecipeForExtra(itemstack);
             } else if (recipeType == RecipeType.INFUSING) {

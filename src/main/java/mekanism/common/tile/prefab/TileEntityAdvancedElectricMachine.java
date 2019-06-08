@@ -2,6 +2,7 @@ package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
@@ -9,6 +10,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
@@ -110,19 +112,13 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     /**
      * Gets the amount of ticks the declared itemstack can fuel this machine.
      *
-     * @param itemstack - itemstack to check with
+     * @param itemStack - itemstack to check with
      *
      * @return fuel ticks
      */
-    public GasStack getItemGas(ItemStack itemstack) {
-        return GasConversionHandler.getItemGas(itemstack, this::getIfValid);
-    }
-
-    private GasStack getIfValid(Gas gas, int quantity) {
-        if (gas != null && gasTank.canReceive(gas) && isValidGas(gas)) {
-            return new GasStack(gas, quantity);
-        }
-        return null;
+    @Nullable
+    public GasStack getItemGas(ItemStack itemStack) {
+        return GasConversionHandler.getItemGas(itemStack, gasTank, this::isValidGas);
     }
 
     public abstract boolean isValidGas(Gas gas);
@@ -163,12 +159,18 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     }
 
     public void handleSecondaryFuel() {
-        if (!inventory.get(1).isEmpty() && gasTank.getNeeded() > 0) {
-            GasStack stack = getItemGas(inventory.get(1));
-            int gasNeeded = gasTank.getNeeded();
-            if (stack != null && gasTank.canReceive(stack.getGas()) && gasNeeded >= stack.amount) {
-                gasTank.receive(stack, true);
-                inventory.get(1).shrink(1);
+        ItemStack itemStack = inventory.get(1);
+        int needed = gasTank.getNeeded();
+        if (!itemStack.isEmpty() && needed > 0) {
+            GasStack gasStack = getItemGas(itemStack);
+            if (gasStack != null && needed >= gasStack.amount) {
+                if (itemStack.getItem() instanceof IGasItem) {
+                    IGasItem item = (IGasItem) itemStack.getItem();
+                    gasTank.receive(item.removeGas(itemStack, gasStack.amount), true);
+                } else {
+                    gasTank.receive(gasStack, true);
+                    itemStack.shrink(1);
+                }
             }
         }
     }

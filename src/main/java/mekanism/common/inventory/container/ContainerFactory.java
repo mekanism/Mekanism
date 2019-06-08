@@ -93,7 +93,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                 } else if (!mergeItemStack(slotStack, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (tileEntity.getRecipeType().getItemGas(slotStack) != null) {
+            } else if (tileEntity.getItemGas(slotStack) != null) {
                 if (transferExtraSlot(slotID, slotStack)) {
                     return ItemStack.EMPTY;
                 }

@@ -4,7 +4,6 @@ import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -12,7 +11,6 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.util.EnumFacing;
 
@@ -44,19 +42,6 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && gasTank.canReceive(type) && isValidGas(type);
 
-    }
-
-    @Override
-    public void handleSecondaryFuel() {
-        if (!inventory.get(1).isEmpty() && gasTank.getNeeded() > 0 && inventory.get(1).getItem() instanceof IGasItem) {
-            GasStack gas = ((IGasItem) inventory.get(1).getItem()).getGas(inventory.get(1));
-            if (gas != null && isValidGas(gas.getGas())) {
-                GasStack removed = GasUtils.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded());
-                gasTank.receive(removed, true);
-            }
-            return;
-        }
-        super.handleSecondaryFuel();
     }
 
     @Override
