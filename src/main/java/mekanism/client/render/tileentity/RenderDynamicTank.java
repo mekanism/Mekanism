@@ -20,7 +20,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null &&
             tileEntity.structure.fluidStored.amount != 0) {
             RenderData data = new RenderData();
-
             data.location = tileEntity.structure.renderLocation;
             data.height = tileEntity.structure.volHeight - 2;
             data.length = tileEntity.structure.volLength;
@@ -31,11 +30,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 
             if (data.location != null && data.height >= 1) {
                 MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
-
                 FluidRenderer.translateToOrigin(data.location);
-
                 renderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored);
-
                 if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
                     //TODO: Does the color alpha overwrite the color set based on fluid
                     renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity) + MekanismRenderer.GAS_RENDER_BASE));

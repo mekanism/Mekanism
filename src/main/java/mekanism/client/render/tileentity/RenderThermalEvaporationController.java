@@ -35,43 +35,41 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 
     @Override
     public void render(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        if (tileEntity.structured && tileEntity.inputTank.getFluid() != null) {
+        if (tileEntity.structured && tileEntity.inputTank.getFluid() != null && tileEntity.height - 2 >= 1 && tileEntity.inputTank.getFluidAmount() > 0) {
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            if (tileEntity.height - 2 >= 1 && tileEntity.inputTank.getCapacity() > 0) {
-                MekanismRenderHelper renderHelper = initHelper();
-                FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
-                renderHelper.enableGlow(tileEntity.inputTank.getFluid()).color(tileEntity.inputTank.getFluid());
-                DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid());
+            MekanismRenderHelper renderHelper = initHelper();
+            FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
+            renderHelper.enableGlow(tileEntity.inputTank.getFluid()).color(tileEntity.inputTank.getFluid());
+            DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid());
 
-                float levels = Math.min((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity(), 1);
-                levels *= tileEntity.height - 2;
-                int partialLevels = (int) ((levels - (int) levels) * 16);
-                switch (tileEntity.facing) {
-                    case SOUTH:
-                        renderHelper.translateXZ(-1, -1);
-                        break;
-                    case EAST:
-                        renderHelper.translateX(-1);
-                        break;
-                    case WEST:
-                        renderHelper.translateZ(-1);
-                        break;
-                    default:
-                        break;
-                }
-
-                renderHelper.translateY(0.01);
-                if ((int) levels > 0) {
-                    displayList[CONCAVE_INDEX].render();
-                    renderHelper.translateY(1);
-                    for (int i = 1; i < (int) levels; i++) {
-                        displayList[RING_INDEX].render();
-                        renderHelper.translateY(1);
-                    }
-                }
-                displayList[partialLevels].render();
-                renderHelper.cleanup();
+            float levels = Math.min((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity(), 1);
+            levels *= tileEntity.height - 2;
+            int partialLevels = (int) ((levels - (int) levels) * 16);
+            switch (tileEntity.facing) {
+                case SOUTH:
+                    renderHelper.translateXZ(-1, -1);
+                    break;
+                case EAST:
+                    renderHelper.translateX(-1);
+                    break;
+                case WEST:
+                    renderHelper.translateZ(-1);
+                    break;
+                default:
+                    break;
             }
+
+            renderHelper.translateY(0.01);
+            if ((int) levels > 0) {
+                displayList[CONCAVE_INDEX].render();
+                renderHelper.translateY(1);
+                for (int i = 1; i < (int) levels; i++) {
+                    displayList[RING_INDEX].render();
+                    renderHelper.translateY(1);
+                }
+            }
+            displayList[partialLevels].render();
+            renderHelper.cleanup();
         }
     }
 

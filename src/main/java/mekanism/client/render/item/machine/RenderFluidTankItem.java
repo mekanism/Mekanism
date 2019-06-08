@@ -12,7 +12,6 @@ import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
@@ -89,7 +88,7 @@ public class RenderFluidTankItem {
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            GlStateManager.glEndList();
+            DisplayInteger.endList();
         }
 
         return displays;

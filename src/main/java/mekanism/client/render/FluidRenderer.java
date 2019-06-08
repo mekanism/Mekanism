@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 public final class FluidRenderer {
@@ -58,7 +59,10 @@ public final class FluidRenderer {
         }
 
         Model3D toReturn = new Model3D();
-        toReturn.baseBlock = Blocks.WATER;
+        toReturn.baseBlock = data.fluidType.getFluid().getBlock();
+        if (toReturn.baseBlock == null) {
+            toReturn.baseBlock = FluidRegistry.WATER.getBlock();
+        }
         toReturn.setTexture(MekanismRenderer.getFluidTexture(data.fluidType, FluidType.STILL));
 
         DisplayInteger display = DisplayInteger.createAndStart();

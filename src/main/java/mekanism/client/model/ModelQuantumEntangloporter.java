@@ -13,8 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelQuantumEntangloporter extends ModelBase {
 
-    public static ResourceLocation OVERLAY = MekanismUtils
-          .getResource(ResourceType.RENDER, "QuantumEntangloporter_Overlay.png");
+    public static ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter_Overlay.png");
 
     ModelRenderer portTop;
     ModelRenderer portBottom;

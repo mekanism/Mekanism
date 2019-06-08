@@ -28,10 +28,8 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
-        MekanismRenderHelper cubeRenderHelper = new MekanismRenderHelper(true);
+        MekanismRenderHelper cubeRenderHelper = new MekanismRenderHelper(true).rotateZ(180, 1).rotateY(180, 1).translateY(-1.0F).enableBlendPreset();
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-        cubeRenderHelper.rotateZ(180, 1).rotateY(180, 1).translateY(-1.0F).enableBlendPreset();
-
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
         for (EnumFacing side : EnumFacing.VALUES) {

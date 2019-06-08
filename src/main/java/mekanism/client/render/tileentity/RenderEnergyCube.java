@@ -39,7 +39,6 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
     @Override
     public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
-        bindTexture(baseTexture);
         switch (tileEntity.facing) {
             case DOWN:
                 renderHelper.rotateX(90, -1).translateYZ(1.0F, -1.0F);

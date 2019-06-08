@@ -8,7 +8,6 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
@@ -98,7 +97,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            GlStateManager.glEndList();
+            DisplayInteger.endList();
         }
 
         return displays;
@@ -131,7 +130,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            GlStateManager.glEndList();
+            DisplayInteger.endList();
         }
 
         return displays;
