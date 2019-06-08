@@ -104,7 +104,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.sideHit.ordinal()];
                     MekanismRenderHelper renderHelper = pushTransporter();
                     renderHelper.colorAlpha(0.8F);
-                    bindTexture(MekanismRenderer.getBlocksTexture());
+                    bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                     renderHelper.translate(x, y, z).scale(0.5).translateAll(0.5);
 
                     int display = getOverlayDisplay(pos.sideHit, mode).display;

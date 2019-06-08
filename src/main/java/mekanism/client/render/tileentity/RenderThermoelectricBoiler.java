@@ -11,6 +11,7 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,7 +41,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = WATER;
 
-                bindTexture(MekanismRenderer.getBlocksTexture());
+                bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
                 if (data.height >= 1 && tileEntity.structure.waterStored.getFluid() != null) {
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
@@ -77,7 +78,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = STEAM;
 
-                bindTexture(MekanismRenderer.getBlocksTexture());
+                bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
                 if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null) {
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();

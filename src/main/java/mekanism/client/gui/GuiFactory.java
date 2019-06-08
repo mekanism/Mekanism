@@ -14,7 +14,6 @@ import mekanism.client.gui.element.GuiSortingTab;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFactory.MachineFuelType;
@@ -27,6 +26,7 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -115,7 +115,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
         if (icon != null) {
             int guiWidth = (width - xSize) / 2;
             int guiHeight = (height - ySize) / 2;
-            mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+            mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, icon, sizeX, sizeY);
         }
     }

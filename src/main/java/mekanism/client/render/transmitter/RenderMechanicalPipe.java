@@ -16,6 +16,7 @@ import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
@@ -68,7 +69,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 renderHelper.enableGlow(fluid).color(fluid);
             }
 
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             renderHelper.translate(x, y, z);
 
             boolean gas = fluid.isGaseous();
@@ -216,7 +217,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
     public boolean renderFluidInOut(BufferBuilder renderer, EnumFacing side, TileEntityMechanicalPipe pipe) {
         if (pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null) {
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
             TextureAtlasSprite tex;
             if (fn.buffer != null) {

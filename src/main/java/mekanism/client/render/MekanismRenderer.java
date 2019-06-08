@@ -230,11 +230,6 @@ public class MekanismRenderer {
         return Minecraft.getMinecraft().getRenderPartialTicks();
     }
 
-    //TODO: Inline
-    public static ResourceLocation getBlocksTexture() {
-        return TextureMap.LOCATION_BLOCKS_TEXTURE;
-    }
-
     @SubscribeEvent
     public void onStitch(TextureStitchEvent.Pre event) {
         for (EnumColor color : EnumColor.values()) {

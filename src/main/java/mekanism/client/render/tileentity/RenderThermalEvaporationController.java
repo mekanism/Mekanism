@@ -12,6 +12,7 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -35,7 +36,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
     @Override
     public void render(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.structured && tileEntity.inputTank.getFluid() != null) {
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             if (tileEntity.height - 2 >= 1 && tileEntity.inputTank.getCapacity() > 0) {
                 MekanismRenderHelper renderHelper = initHelper();
                 FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());

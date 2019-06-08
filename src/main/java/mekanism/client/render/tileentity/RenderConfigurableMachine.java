@@ -14,6 +14,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
@@ -52,7 +53,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                         SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
                         if (data != TileComponentConfig.EMPTY) {
                             MekanismRenderHelper renderHelper = initHelper().color(data.color, 0.6F);
-                            bindTexture(MekanismRenderer.getBlocksTexture());
+                            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                             renderHelper.translate(x, y, z);
                             int display = getOverlayDisplay(pos.sideHit, type).display;
                             GlStateManager.callList(display);

@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -69,7 +70,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         }
         if (filter.color != null) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableLighting().enableRescaleNormal();
-            mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+            mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
             renderHelper.cleanup();
         }

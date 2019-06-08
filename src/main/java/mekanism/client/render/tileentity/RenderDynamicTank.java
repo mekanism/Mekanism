@@ -7,6 +7,7 @@ import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,7 +27,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
             data.width = tileEntity.structure.volWidth;
             data.fluidType = tileEntity.structure.fluidStored;
 
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
             if (data.location != null && data.height >= 1) {
                 MekanismRenderHelper renderHelper = FluidRenderer.initHelper();

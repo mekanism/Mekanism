@@ -1,11 +1,11 @@
 package mekanism.client.render.transmitter;
 
 import mekanism.api.gas.Gas;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
 
 public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPressurizedTube> {
@@ -21,7 +21,7 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
 
     @Override
     protected void renderSide(BufferBuilder renderer, EnumFacing side, TileEntityPressurizedTube tube) {
-        bindTexture(MekanismRenderer.getBlocksTexture());
+        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         Gas gas = tube.getTransmitter().getTransmitterNetwork().refGas;
         ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
         c.setRGBFromInt(gas.getTint());

@@ -13,6 +13,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -26,7 +27,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
         if (tileEntity.shouldRender) {
             MekanismRenderHelper renderHelper = initHelper().color(EnumColor.PURPLE, 0.75F);
 
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             renderHelper.translate(x, y, z);
             Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
             int type = 0;

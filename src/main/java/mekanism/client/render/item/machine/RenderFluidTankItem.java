@@ -14,6 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,7 +39,7 @@ public class RenderFluidTankItem {
         MekanismRenderHelper tankRenderHelper = new MekanismRenderHelper(true);
         if (fluid != null && fluidScale > 0) {
             MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
-            MekanismRenderer.bindTexture(MekanismRenderer.getBlocksTexture());
+            MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             fluidRenderHelper.translateAll(-0.5).enableGlow(fluid).color(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);

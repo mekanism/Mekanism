@@ -13,6 +13,7 @@ import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -31,7 +32,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
         if (tileEntity.bioFuelSlot.fluidStored > 0) {
             MekanismRenderHelper renderHelper = initHelper().enableGlow();
             renderHelper.translate(x, y, z);
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages - 1)].render();
             renderHelper.cleanup();
         }

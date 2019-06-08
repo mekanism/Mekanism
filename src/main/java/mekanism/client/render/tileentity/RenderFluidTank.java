@@ -9,6 +9,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,7 +40,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
     public void render(FluidTankTier tier, FluidStack fluid, float fluidScale, boolean active, FluidStack valveFluid, double x, double y, double z) {
         if (fluid != null && fluidScale > 0) {
             MekanismRenderHelper renderHelper = initHelper();
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             renderHelper.translate(x, y, z).enableGlow(fluid).color(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
@@ -58,7 +59,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 
         if (valveFluid != null && !valveFluid.getFluid().isGaseous(valveFluid)) {
             MekanismRenderHelper renderHelper = initHelper();
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             renderHelper.translate(x, y, z).enableGlow(valveFluid).color(valveFluid);
             DisplayInteger[] valveList = getValveRender(valveFluid);
             valveList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();

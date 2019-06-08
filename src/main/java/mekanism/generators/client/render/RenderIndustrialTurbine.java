@@ -8,6 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -52,7 +53,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = STEAM;
 
-                bindTexture(MekanismRenderer.getBlocksTexture());
+                bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
                 if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();

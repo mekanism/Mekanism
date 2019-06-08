@@ -10,6 +10,7 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -74,7 +75,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                 renderRemaining = scale;
                 scale = 0;
             }
-            mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+            mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
             start += 16;
             if (renderRemaining == 0 || scale == 0) {
