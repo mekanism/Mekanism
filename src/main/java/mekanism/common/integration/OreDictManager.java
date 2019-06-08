@@ -410,7 +410,10 @@ public final class OreDictManager {
                 return false;
             }
         };
-        DummyWorld dummyWorld = new DummyWorld();
+        DummyWorld dummyWorld = null;
+        try {
+            dummyWorld = new DummyWorld();
+        } catch (Exception ignored){}
 
         InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
 
