@@ -42,14 +42,19 @@ public final class FluidRenderer {
 
     public static DisplayInteger getTankDisplay(RenderData data, double scale) {
         int maxStages = getStages(data);
-        int stage = Math.min(maxStages, (int) (scale * (float) maxStages));
-
+        int stage = Math.min(maxStages, (int) (scale * maxStages));
+        DisplayInteger[] cachedCenter;
         if (cachedCenterFluids.containsKey(data)) {
-            DisplayInteger[] ret = cachedCenterFluids.get(data);
+            cachedCenter = cachedCenterFluids.get(data);
 
-            if (ret[stage] != null) {
-                return ret[stage];
+            if (cachedCenter[stage] != null) {
+                return cachedCenter[stage];
             }
+        } else {
+            cachedCenterFluids.put(data, cachedCenter = new DisplayInteger[maxStages + 1]);
+        }
+        if (maxStages == 0) {
+            maxStages = stage = 1;
         }
 
         Model3D toReturn = new Model3D();
@@ -57,21 +62,12 @@ public final class FluidRenderer {
         toReturn.setTexture(MekanismRenderer.getFluidTexture(data.fluidType, FluidType.STILL));
 
         DisplayInteger display = DisplayInteger.createAndStart();
-
-        if (!cachedCenterFluids.containsKey(data)) {
-            cachedCenterFluids.put(data, new DisplayInteger[maxStages + 1]);
-        }
-
-        cachedCenterFluids.get(data)[stage] = display;
-
-        if (maxStages == 0) {
-            maxStages = stage = 1;
-        }
+        cachedCenter[stage] = display;
 
         if (data.fluidType.getFluid().getStill(data.fluidType) != null) {
-            toReturn.minX = 0 + .01;
-            toReturn.minY = 0 + .01;
-            toReturn.minZ = 0 + .01;
+            toReturn.minX = 0.01;
+            toReturn.minY = 0.01;
+            toReturn.minZ = 0.01;
 
             toReturn.maxX = data.length - .01;
             toReturn.maxY = ((float) stage / (float) maxStages) * data.height - .01;

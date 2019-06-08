@@ -40,11 +40,17 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
 
         float targetScale;
-
+        Fluid fluid;
+        FluidStack fluidStack;
         if (pipe.getTransmitter().hasTransmitterNetwork()) {
-            targetScale = pipe.getTransmitter().getTransmitterNetwork().fluidScale;
+            FluidNetwork network = pipe.getTransmitter().getTransmitterNetwork();
+            targetScale = network.fluidScale;
+            fluid = network.refFluid;
+            fluidStack = network.buffer;
         } else {
             targetScale = (float) pipe.buffer.getFluidAmount() / (float) pipe.buffer.getCapacity();
+            fluidStack = pipe.getBuffer();
+            fluid = fluidStack == null ? null : fluidStack.getFluid();
         }
 
         if (Math.abs(pipe.currentScale - targetScale) > 0.01) {
@@ -53,22 +59,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             pipe.currentScale = targetScale;
         }
 
-        Fluid fluid;
-        FluidStack fluidStack;
-
-        if (pipe.getTransmitter().hasTransmitterNetwork()) {
-            fluid = pipe.getTransmitter().getTransmitterNetwork().refFluid;
-            fluidStack = pipe.getTransmitter().getTransmitterNetwork().buffer;
-        } else {
-            fluidStack = pipe.getBuffer();
-            fluid = fluidStack == null ? null : fluidStack.getFluid();
-        }
-
         float scale = Math.min(pipe.currentScale, 1);
-
         if (scale > 0.01 && fluid != null) {
             MekanismRenderHelper renderHelper = initHelper().disableBlend();
-
             if (fluidStack != null) {
                 renderHelper.enableGlow(fluidStack).color(fluidStack);
             } else {
@@ -79,44 +72,32 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             renderHelper.translate(x, y, z);
 
             boolean gas = fluid.isGaseous();
-
             for (EnumFacing side : EnumFacing.VALUES) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
-                    DisplayInteger[] displayLists = getListAndRender(side, fluidStack);
-
-                    if (displayLists != null) {
-                        if (!gas) {
-                            displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
-                        } else {
-                            renderHelper.colorAlpha(scale);
-                            displayLists[stages - 1].render();
-                        }
-                    }
+                    renderDisplayLists(getListAndRender(side, fluidStack), renderHelper, scale, gas);
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
                     renderHelper.translateAll(0.5);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder worldRenderer = tessellator.getBuffer();
-
                     if (renderFluidInOut(worldRenderer, side, pipe)) {
                         tessellator.draw();
                     }
-
                     renderHelper.translateAll(-0.5);
                 }
             }
-
-            DisplayInteger[] displayLists = getListAndRender(null, fluidStack);
-
-            if (displayLists != null) {
-                if (!gas) {
-                    displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
-                } else {
-                    renderHelper.colorAlpha(scale);
-                    displayLists[stages - 1].render();
-                }
-            }
-
+            renderDisplayLists(getListAndRender(null, fluidStack), renderHelper, scale, gas);
             renderHelper.cleanup();
+        }
+    }
+
+    private void renderDisplayLists(DisplayInteger[] displayLists, MekanismRenderHelper renderHelper, float scale, boolean gas) {
+        if (displayLists != null) {
+            if (gas) {
+                renderHelper.colorAlpha(scale);
+                displayLists[stages - 1].render();
+            } else {
+                displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
+            }
         }
     }
 
@@ -249,10 +230,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 c.setRGBFromInt(color);
             }
             renderTransparency(renderer, tex, getModelForSide(pipe, side), c);
-
             return true;
         }
-
         return false;
     }
 }

@@ -55,12 +55,8 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
         toReturn.setTexture(MekanismFluids.Oxygen.getSprite());
 
         DisplayInteger display = DisplayInteger.createAndStart();
-
-        if (cachedOverlays.containsKey(type)) {
-            cachedOverlays.get(type);
-        } else {
-            cachedOverlays.put(type, display);
-        }
+        //We already know it does not contain type, so add it
+        cachedOverlays.put(type, display);
 
         switch (type) {
             case 0: {

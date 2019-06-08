@@ -7,7 +7,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -254,7 +253,6 @@ public class RenderResizableCuboid {
         Vec3d transVertex = locationFormula.transformToWorld(vertex);
         BlockPos pos = convertFloor(transVertex);
         IBlockState state = access.getBlockState(pos);
-        Block block = state.getBlock();
         int combindedLight = state.getPackedLightmapCoords(access, pos);
 
         skyLight[0] = combindedLight / 0x10000;

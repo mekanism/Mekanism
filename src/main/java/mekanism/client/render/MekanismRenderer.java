@@ -230,6 +230,7 @@ public class MekanismRenderer {
         return Minecraft.getMinecraft().getRenderPartialTicks();
     }
 
+    //TODO: Inline
     public static ResourceLocation getBlocksTexture() {
         return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
@@ -343,8 +344,7 @@ public class MekanismRenderer {
             Arrays.fill(textures, tex);
         }
 
-        public void setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north,
-              TextureAtlasSprite south, TextureAtlasSprite west, TextureAtlasSprite east) {
+        public void setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite west, TextureAtlasSprite east) {
             textures[0] = down;
             textures[1] = up;
             textures[2] = north;
