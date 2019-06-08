@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiScrollList;
@@ -61,7 +60,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
             return;
         }
         TileNetworkList data = TileNetworkList.withContents(0, trusted);
-        Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+        Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
     }
 
     public void updateButtons() {
@@ -123,7 +122,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
                     }
                 }
                 if (!data.isEmpty()) {
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 }
             }
         }
@@ -158,7 +157,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
             int selection = scrollList.getSelection();
             if (tileEntity.frequency != null && selection != -1) {
                 TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 scrollList.clearSelection();
             }
         }

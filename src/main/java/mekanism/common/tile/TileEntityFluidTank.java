@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -92,7 +91,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         }
         tier = FluidTankTier.values()[upgradeTier.ordinal()];
         fluidTank.setCapacity(tier.getStorage());
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+        Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
     }
@@ -152,8 +151,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 currentRedstoneLevel = newRedstoneLevel;
             }
             if (needsPacket) {
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                      Coord4D.get(this).getTargetPoint(50));
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(50));
             }
             needsPacket = false;
         }
@@ -334,7 +332,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendUpdatePacket(this);
             updateDelay = 10;
             clientActive = active;
         }

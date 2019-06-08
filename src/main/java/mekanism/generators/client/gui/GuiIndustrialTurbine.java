@@ -2,7 +2,6 @@ package mekanism.generators.client.gui;
 
 import java.io.IOException;
 import java.util.Arrays;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiEmbeddedGaugeTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -120,7 +119,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         int yAxis = y - (height - ySize) / 2;
         if (xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82) {
             TileNetworkList data = TileNetworkList.withContents((byte) 0);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }

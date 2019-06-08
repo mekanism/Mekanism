@@ -1,6 +1,5 @@
 package mekanism.client.gui.element;
 
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
@@ -58,7 +57,7 @@ public class GuiSortingTab extends GuiTileEntityElement<TileEntityFactory> {
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
             TileNetworkList data = TileNetworkList.withContents(0);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }

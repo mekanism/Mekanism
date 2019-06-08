@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.Arrays;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
@@ -136,7 +135,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
                 ItemStack stack = mc.player.inventory.getItemStack();
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                     TileNetworkList data = TileNetworkList.withContents(1);
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 }
             }

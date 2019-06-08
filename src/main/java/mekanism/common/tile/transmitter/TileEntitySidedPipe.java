@@ -9,7 +9,6 @@ import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
@@ -23,7 +22,6 @@ import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -104,7 +102,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 forceUpdate = false;
             }
             if (sendDesc) {
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendUpdatePacket(this);
                 sendDesc = false;
             }
         }

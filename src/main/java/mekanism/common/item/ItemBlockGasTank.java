@@ -3,10 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -19,7 +16,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -104,8 +100,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
             ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
-                      tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
+                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
         }
         return place;

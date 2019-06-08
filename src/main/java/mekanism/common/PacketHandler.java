@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
@@ -69,13 +71,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -238,10 +243,7 @@ public class PacketHandler {
      * @param message - message to send
      */
     public void sendToAll(IMessage message) {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
-            sendTo(message, player);
-        }
+        netHandler.sendToAll(message);
     }
 
     /**
@@ -250,7 +252,7 @@ public class PacketHandler {
      * @param message - the message to send
      * @param point   - the TargetPoint around which to send
      */
-    public void sendToAllAround(IMessage message, NetworkRegistry.TargetPoint point) {
+    public void sendToAllAround(IMessage message, TargetPoint point) {
         netHandler.sendToAllAround(message, point);
     }
 
@@ -291,11 +293,34 @@ public class PacketHandler {
         }
     }
 
+    public <TILE extends TileEntity & ITileNetwork> void sendUpdatePacket(TILE tile) {
+        sendToAllTracking(new TileEntityMessage(tile), tile);
+    }
+
+    public void sendToAllTracking(IMessage message, TileEntity tile) {
+        BlockPos pos = tile.getPos();
+        sendToAllTracking(message, tile.getWorld().provider.getDimension(), pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public void sendToAllTracking(IMessage message, Coord4D point) {
+        sendToAllTracking(message, point.dimensionId, point.x, point.y, point.z);
+    }
+
+    public void sendToAllTracking(IMessage message, int dimension, double x, double y, double z) {
+        //Range is ignored for sendToAllTracking, and only gets sent to clients that have the location loaded
+        sendToAllTracking(message, new TargetPoint(dimension, x, y, z, 1));
+    }
+
+    public void sendToAllTracking(IMessage message, TargetPoint point) {
+        netHandler.sendToAllTracking(message, point);
+    }
+
+    //TODO: change Network stuff over to using this
     public void sendToReceivers(IMessage message, Range4D range) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (server != null) {
             for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
-                if (player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range)) {
+                if (range.hasPlayerInRange(player)) {
                     sendTo(message, player);
                 }
             }

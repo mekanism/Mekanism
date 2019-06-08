@@ -2,10 +2,8 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -16,7 +14,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.EnergyCubeTier;
@@ -92,7 +89,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             }
             int newScale = getScaledEnergyLevel(20);
             if (newScale != prevScale) {
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendUpdatePacket(this);
             }
             prevScale = newScale;
         }
@@ -104,7 +101,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             return false;
         }
         tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+        Mekanism.packetHandler.sendUpdatePacket(this);
         markDirty();
         return true;
     }

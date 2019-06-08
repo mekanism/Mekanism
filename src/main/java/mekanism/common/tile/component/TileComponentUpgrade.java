@@ -6,14 +6,11 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -67,8 +64,7 @@ public class TileComponentUpgrade implements ITileComponent {
                         upgradeTicks = 0;
                         addUpgrade(type);
                         tileEntity.inventory.get(upgradeSlot).shrink(1);
-                        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
-                              new Range4D(Coord4D.get(tileEntity)));
+                        Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                         tileEntity.markDirty();
                     }
                 } else {

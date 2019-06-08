@@ -98,10 +98,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
             TileNetworkList data = TileNetworkList.withContents(3);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
         } else if (guibutton.id == 1) {
             TileNetworkList data = TileNetworkList.withContents(4);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
         } else if (guibutton.id == 2) {
             Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
         }
@@ -226,25 +226,25 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
             if (xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(0);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             }
 
             if (xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(1);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             }
 
             if (xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(5);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             }
 
             if (xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(9);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             }
         }
     }

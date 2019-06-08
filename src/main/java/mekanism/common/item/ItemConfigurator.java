@@ -11,12 +11,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IMekWrench;
-import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -24,7 +21,6 @@ import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -106,9 +102,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                                                                + getToggleModeText(transmissionType) + ": " + data.color + data.localize() + " (" +
                                                                                data.color.getColoredName() + ")"));
                                     if (config instanceof TileEntityBasicBlock) {
-                                        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) config;
-                                        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
-                                              new Range4D(Coord4D.get(tileEntity)));
+                                        Mekanism.packetHandler.sendUpdatePacket((TileEntityBasicBlock) config);
                                     }
                                 } else {
                                     SecurityUtils.displayNoAccess(player);

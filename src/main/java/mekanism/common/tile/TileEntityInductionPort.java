@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -24,7 +23,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
@@ -349,7 +347,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             String modeText = " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
                                                        LangUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }
         return EnumActionResult.SUCCESS;

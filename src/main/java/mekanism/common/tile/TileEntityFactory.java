@@ -4,10 +4,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -34,7 +32,6 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
@@ -222,7 +219,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         factory.upgraded = true;
         factory.markDirty();
-        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(factory)));
+        Mekanism.packetHandler.sendUpdatePacket(factory);
         return true;
     }
 

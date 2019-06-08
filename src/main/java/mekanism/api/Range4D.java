@@ -3,6 +3,7 @@ package mekanism.api;
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class Range4D {
@@ -36,13 +37,7 @@ public class Range4D {
     }
 
     public Range4D(Coord4D coord) {
-        xMin = coord.x;
-        yMin = coord.y;
-        zMin = coord.z;
-        xMax = coord.x + 1;
-        yMax = coord.y + 1;
-        zMax = coord.z + 1;
-        dimensionId = coord.dimensionId;
+        this(coord.x, coord.y, coord.z, coord.x + 1, coord.y + 1, coord.z + 1, coord.dimensionId);
     }
 
     public static Range4D getChunkRange(EntityPlayer player) {
@@ -77,8 +72,20 @@ public class Range4D {
     }
 
     public boolean intersects(Range4D range) {
-        return (xMax + 1 - 1.E-05D > range.xMin) && (range.xMax + 1 - 1.E-05D > xMin) && (yMax + 1 - 1.E-05D > range.yMin) &&
-               (range.yMax + 1 - 1.E-05D > yMin) && (zMax + 1 - 1.E-05D > range.zMin) && (range.zMax + 1 - 1.E-05D > zMin);
+        return (xMax + 0.99999 > range.xMin) && (range.xMax + 0.99999 > xMin) && (yMax + 0.99999 > range.yMin) &&
+               (range.yMax + 0.99999 > yMin) && (zMax + 0.99999 > range.zMin) && (range.zMax + 0.99999 > zMin);
+    }
+
+    public boolean hasPlayerInRange(EntityPlayerMP player) {
+        if (player.dimension != dimensionId) {
+            return false;
+        }
+        //Ignore height for partial Cubic chunks support as range comparision gets used ignoring player height normally anyways
+        int radius = player.server.getPlayerList().getViewDistance() * 16;
+        int playerX = (int) player.posX;
+        int playerZ = (int) player.posZ;
+        return (playerX + radius + 0.99999 > xMin) && (xMax + 0.99999 > playerX - radius) &&
+               (playerZ + radius + 0.99999 > zMin) && (zMax + 1 - 0.99999 > playerZ - radius);
     }
 
     @Override

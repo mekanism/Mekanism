@@ -2,8 +2,6 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -49,7 +47,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                     }
 
                     tile.markDirty();
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, network.getNetworkedData(new TileNetworkList())), new Range4D(message.coord4D));
+                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(message.coord4D, network.getNetworkedData()), message.coord4D);
                     //Notify the neighbor on that side our state changed
                     MekanismUtils.notifyNeighborOfChange(tile.getWorld(), message.configIndex, tile.getPos());
                 } else if (message.packetType == ConfigurationPacket.EJECT_COLOR) {
@@ -75,7 +73,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
                 for (EntityPlayer p : ((TileEntityBasicBlock) config).playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData(new TileNetworkList())), (EntityPlayerMP) p);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData()), (EntityPlayerMP) p);
                 }
             }
         }, player);

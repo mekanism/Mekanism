@@ -2,14 +2,10 @@ package mekanism.common.item;
 
 import javax.annotation.Nonnull;
 import mcmultipart.api.multipart.IMultipart;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
@@ -56,8 +52,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
             }
             tileEntity.setColour(col);
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
-                      new Range4D(Coord4D.get(tileEntity)));
+                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
         }
         return place;

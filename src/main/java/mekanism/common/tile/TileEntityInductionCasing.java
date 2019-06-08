@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
@@ -13,7 +11,6 @@ import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -57,7 +54,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendUpdatePacket(this);
             player.openGui(Mekanism.instance, 49, world, getPos().getX(), getPos().getY(), getPos().getZ());
             return true;
         }

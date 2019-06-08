@@ -7,7 +7,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -18,7 +17,6 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
@@ -384,7 +382,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
             String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
                                                        LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }
         return EnumActionResult.SUCCESS;

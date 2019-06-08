@@ -11,7 +11,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILogisticalTransporter;
@@ -186,7 +185,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 needsSync.clear();
 
                 // Finally, notify clients and mark chunk for save
-                Mekanism.packetHandler.sendToReceivers(msg, new Range4D(coord));
+                Mekanism.packetHandler.sendToAllTracking(msg, coord);
                 MekanismUtils.saveChunk(getTileEntity());
             }
         }
@@ -244,7 +243,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 int stackId = nextId++;
                 transit.put(stackId, stack);
                 Coord4D coord = coord();
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getTileEntity().makeSyncPacket(stackId, stack)), new Range4D(coord));
+                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(coord, getTileEntity().makeSyncPacket(stackId, stack)), coord);
                 MekanismUtils.saveChunk(getTileEntity());
             }
             return response;

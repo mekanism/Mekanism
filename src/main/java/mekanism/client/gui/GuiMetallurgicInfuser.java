@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.Arrays;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -98,7 +97,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
             int yAxis = y - (height - ySize) / 2;
             if (xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82) {
                 TileNetworkList data = TileNetworkList.withContents(0);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }

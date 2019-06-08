@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -15,7 +14,6 @@ import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -145,7 +143,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendUpdatePacket(this);
             player.openGui(Mekanism.instance, 54, world, getPos().getX(), getPos().getY(), getPos().getZ());
             return true;
         }

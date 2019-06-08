@@ -1,6 +1,5 @@
 package mekanism.client.gui.element;
 
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
@@ -58,7 +57,7 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), TileNetworkList.withContents(3)));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3)));
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }

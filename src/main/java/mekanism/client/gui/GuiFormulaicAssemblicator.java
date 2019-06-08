@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.Arrays;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -34,7 +33,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator> {
@@ -87,7 +85,6 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
@@ -200,7 +197,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                 if (xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     TileNetworkList data = TileNetworkList.withContents(4);
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 }
 
                 if (tileEntity.isRecipe) {
@@ -208,20 +205,20 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                         if (xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                             TileNetworkList data = TileNetworkList.withContents(1);
-                            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                         }
                     }
 
                     if (xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         TileNetworkList data = TileNetworkList.withContents(2);
-                        Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                        Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                     }
 
                     if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         TileNetworkList data = TileNetworkList.withContents(3);
-                        Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                        Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                     }
                 }
             }
@@ -230,13 +227,13 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                 if (xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     TileNetworkList data = TileNetworkList.withContents(0);
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 }
 
                 if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     TileNetworkList data = TileNetworkList.withContents(5);
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 }
             }
         }

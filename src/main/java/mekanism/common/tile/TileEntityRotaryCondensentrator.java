@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -160,7 +159,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 mode = mode == 0 ? 1 : 0;
             }
             for (EntityPlayer player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+                Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (EntityPlayerMP) player);
             }
 
             return;

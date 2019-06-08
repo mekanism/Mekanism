@@ -202,7 +202,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                                 && yAxis <= yStart + 20) {
                                 // Process up button click
                                 final TileNetworkList data = TileNetworkList.withContents(3, getFilterIndex() + i);
-                                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                                 return;
                             }
@@ -212,7 +212,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                                 && yAxis <= yStart + 27) {
                                 // Process down button click
                                 final TileNetworkList data = TileNetworkList.withContents(4, getFilterIndex() + i);
-                                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                                 return;
                             }
@@ -243,21 +243,21 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             // Check for auto eject button
             if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
                 final TileNetworkList data = TileNetworkList.withContents(1);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
 
             // Check for round robin button
             if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
                 final TileNetworkList data = TileNetworkList.withContents(2);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
 
             // Check for single item button
             if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
                 final TileNetworkList data = TileNetworkList.withContents(5);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }
@@ -269,7 +269,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         // Check for default colour button
         if (xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153) {
             final TileNetworkList data = TileNetworkList.withContents(0, mouseBtn);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
             SoundHandler.playSound(MekanismSounds.DING);
         }
     }

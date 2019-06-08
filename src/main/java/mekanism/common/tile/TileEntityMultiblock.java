@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -14,7 +13,6 @@ import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -121,7 +119,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     }
                 }
 
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(thisCoord, getNetworkedData(new TileNetworkList())), new Range4D(thisCoord));
+                Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
             prevStructure = structure != null;
@@ -152,8 +150,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             for (Coord4D obj : structure.locations) {
                 TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(world);
                 if (tileEntity != null && tileEntity.isRendering) {
-                    Coord4D tileCoord = Coord4D.get(tileEntity);
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(tileCoord, tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(tileCoord));
+                    Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                 }
             }
         }

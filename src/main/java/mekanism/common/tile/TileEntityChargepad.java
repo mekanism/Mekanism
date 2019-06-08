@@ -4,13 +4,10 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -109,7 +106,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
         clientActive = active;
     }

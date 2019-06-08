@@ -101,7 +101,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (isFormed()) {
             getReactor().simulate();
             if (!world.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000)) {
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50D));
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(50D));
                 clientBurning = getReactor().isBurning();
                 clientTemp = getReactor().getPlasmaTemp();
             }

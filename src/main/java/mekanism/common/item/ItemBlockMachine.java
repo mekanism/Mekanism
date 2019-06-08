@@ -12,8 +12,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
@@ -41,7 +39,6 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -319,8 +316,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     factory.setRecipeType(recipeType);
                 }
                 world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
-                      new Range4D(Coord4D.get(tileEntity)));
+                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
 
             if (tileEntity instanceof ISustainedTank) {

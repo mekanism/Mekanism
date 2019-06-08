@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -96,7 +95,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                                         TileEntityTeleporter.alignPlayer((EntityPlayerMP) player, coords);
                                     }
                                     world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                                    Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
+                                    Mekanism.packetHandler.sendToAllTracking(new PortalFXMessage(coords), coords);
                                 } catch (Exception ignored) {
                                 }
                             }

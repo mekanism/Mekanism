@@ -279,7 +279,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
             if (playersUsing.size() > 0) {
                 for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getSmallPacket(new TileNetworkList())), (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getSmallPacket(new TileNetworkList())), (EntityPlayerMP) player);
                 }
             }
             prevEnergy = getEnergy();
@@ -521,7 +521,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public void openInventory(@Nonnull EntityPlayer player) {
         super.openInventory(player);
         if (!world.isRemote) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
+            Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (EntityPlayerMP) player);
         }
     }
 
@@ -631,7 +631,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
             MekanismUtils.saveChunk(this);
             for (EntityPlayer player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
+                Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
             }
             return;
         }
@@ -809,7 +809,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public void setActive(boolean active) {
         isActive = active;
         if (clientActive != active) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendUpdatePacket(this);
             clientActive = active;
         }
     }
@@ -1001,7 +1001,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             return new Object[]{searcher != null ? searcher.found : 0};
         }
         for (EntityPlayer player : playersUsing) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
+            Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
         }
         return null;
     }

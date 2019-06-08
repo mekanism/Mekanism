@@ -4,9 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -61,7 +59,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
         if (!world.isRemote) {
             if (playersUsing.size() > 0) {
                 for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
                 }
             }
 
@@ -236,7 +234,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     @Override
     public void openInventory(@Nonnull EntityPlayer player) {
         if (!world.isRemote) {
-            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 
