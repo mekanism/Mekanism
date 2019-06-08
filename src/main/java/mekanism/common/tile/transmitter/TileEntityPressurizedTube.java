@@ -82,7 +82,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
                 if (connectedAcceptors[side.ordinal()] != null) {
                     IGasHandler container = connectedAcceptors[side.ordinal()];
                     if (container != null) {
-                        GasStack received = container.drawGas(side.getOpposite(), tier.getTubePullAmount(), false);
+                        GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), false);
                         if (received != null && received.amount != 0) {
                             container.drawGas(side.getOpposite(), takeGas(received, true), true);
                         }
@@ -96,6 +96,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
             }
         }
         super.update();
+    }
+
+    public int getAvailablePull() {
+        if (getTransmitter().hasTransmitterNetwork()) {
+            return Math.min(tier.getTubePullAmount(), getTransmitter().getTransmitterNetwork().getGasNeeded());
+        }
+        return Math.min(tier.getTubePullAmount(), buffer.getNeeded());
     }
 
     @Override

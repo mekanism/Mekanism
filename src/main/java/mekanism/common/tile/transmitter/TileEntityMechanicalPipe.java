@@ -57,7 +57,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
                 if (connectedAcceptors[side.ordinal()] != null) {
                     IFluidHandler container = connectedAcceptors[side.ordinal()];
                     if (container != null) {
-                        FluidStack received = container.drain(getPullAmount(), false);
+                        FluidStack received = container.drain(getAvailablePull(), false);
                         if (received != null && received.amount != 0) {
                             container.drain(takeFluid(received, true), true);
                         }
@@ -251,6 +251,13 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
         }
         return null;
+    }
+
+    public int getAvailablePull() {
+        if (getTransmitter().hasTransmitterNetwork()) {
+            return Math.min(getPullAmount(), getTransmitter().getTransmitterNetwork().getFluidNeeded());
+        }
+        return Math.min(getPullAmount(), buffer.getCapacity() - buffer.getFluidAmount());
     }
 
     public int takeFluid(FluidStack fluid, boolean doEmit) {
