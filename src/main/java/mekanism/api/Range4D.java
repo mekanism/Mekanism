@@ -84,8 +84,10 @@ public class Range4D {
         int radius = player.server.getPlayerList().getViewDistance() * 16;
         int playerX = (int) player.posX;
         int playerZ = (int) player.posZ;
-        return (playerX + radius + 0.99999 > xMin) && (xMax + 0.99999 > playerX - radius) &&
-               (playerZ + radius + 0.99999 > zMin) && (zMax + 1 - 0.99999 > playerZ - radius);
+        //playerX/Z + radius is the max, so to stay in line with how it was before,
+        // it has an extra + 1 added to it
+        return (playerX + radius + 1.99999 > xMin) && (xMax + 0.99999 > playerX - radius) &&
+               (playerZ + radius + 1.99999 > zMin) && (zMax + 0.99999 > playerZ - radius);
     }
 
     @Override
