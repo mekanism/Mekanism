@@ -159,7 +159,6 @@ public class RenderResizableCuboid {
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder wr = tess.getBuffer();
 
-        //TODO: Alpha seems to behave strangely now for the energy cube
         MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableAlpha();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         renderHelper.disableLighting();
