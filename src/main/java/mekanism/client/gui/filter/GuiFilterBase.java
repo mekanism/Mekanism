@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,9 +28,15 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected boolean isNew;
     protected int ticker;
 
+    protected GuiFilterBase(TILE tile, Container container) {
+        super(tile, container);
+    }
+
     protected GuiFilterBase(EntityPlayer player, TILE tile) {
         super(player, tile);
     }
+
+    protected abstract void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis);
 
     @Override
     public void initGui() {
@@ -41,6 +48,18 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         if (isNew) {
             buttonList.get(1).enabled = false;
         }
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
+        mc.renderEngine.bindTexture(getGuiLocation());
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawGuiContainerBackgroundLayer(guiWidth, guiHeight, xAxis, yAxis);
+        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {

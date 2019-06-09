@@ -14,6 +14,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.filter.IFilter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -344,7 +345,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
         return i != 0 && i != 1;
     }
 
-    public static class OredictionificatorFilter {
+    public static class OredictionificatorFilter implements IFilter {
 
         public String filter;
         public int index;

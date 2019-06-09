@@ -22,11 +22,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEntityContainerBlock> extends GuiFilterBase<FILTER, TILE> {
+public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEntityContainerBlock> extends GuiTextFilterBase<FILTER, TILE> {
 
-    protected ItemStack renderStack = ItemStack.EMPTY;
     protected List<ItemStack> iterStacks;
-    protected GuiTextField text;
     protected int stackSwitch;
     protected int stackIndex;
 
@@ -34,36 +32,19 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         super(player, tile);
     }
 
-    protected abstract void setText();
-
     @Override
-    public void keyTyped(char c, int i) throws IOException {
-        if (!text.isFocused() || i == Keyboard.KEY_ESCAPE) {
-            super.keyTyped(c, i);
-        }
-        if (text.isFocused() && i == Keyboard.KEY_RETURN) {
-            setText();
-            return;
-        }
-        if (Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || isTextboxKey(c, i)) {
-            text.textboxKeyTyped(c, i);
-        }
+    protected boolean wasTextboxKey(char c, int i) {
+        return TransporterFilter.SPECIAL_CHARS.contains(c) || super.wasTextboxKey(c, i);
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        text = new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
-        text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
-        text.setFocused(true);
+    protected GuiTextField createTextField(int guiWidth, int guiHeight) {
+        return new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
-        text.updateCursorCounter();
         if (ticker > 0) {
             ticker--;
         } else {
@@ -86,13 +67,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
         drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 187, xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59, 12);
         if (tileEntity instanceof TileEntityDigitalMiner) {
@@ -103,7 +78,6 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
             drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
             text.drawTextBox();
         }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     @Override

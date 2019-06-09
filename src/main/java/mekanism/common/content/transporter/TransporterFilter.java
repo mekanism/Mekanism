@@ -3,6 +3,7 @@ package mekanism.common.content.transporter;
 import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
@@ -21,23 +22,19 @@ public abstract class TransporterFilter implements IFilter {
     public boolean allowDefault;
 
     public static TransporterFilter readFromNBT(NBTTagCompound nbtTags) {
-        int type = nbtTags.getInteger("type");
-        TransporterFilter filter = null;
-        if (type == 0) {
-            filter = new TItemStackFilter();
-        } else if (type == 1) {
-            filter = new TOreDictFilter();
-        } else if (type == 2) {
-            filter = new TMaterialFilter();
-        } else if (type == 3) {
-            filter = new TModIDFilter();
-        }
+        TransporterFilter filter = getType(nbtTags.getInteger("type"));
         filter.read(nbtTags);
         return filter;
     }
 
     public static TransporterFilter readFromPacket(ByteBuf dataStream) {
-        int type = dataStream.readInt();
+        TransporterFilter filter = getType(dataStream.readInt());
+        filter.read(dataStream);
+        return filter;
+    }
+
+    @Nullable
+    private static TransporterFilter getType(int type) {
         TransporterFilter filter = null;
         if (type == 0) {
             filter = new TItemStackFilter();
@@ -48,7 +45,6 @@ public abstract class TransporterFilter implements IFilter {
         } else if (type == 3) {
             filter = new TModIDFilter();
         }
-        filter.read(dataStream);
         return filter;
     }
 

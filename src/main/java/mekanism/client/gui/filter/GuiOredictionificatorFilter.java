@@ -3,8 +3,6 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import java.util.List;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -26,16 +24,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredictionificator> {
-
-    private OredictionificatorFilter origFilter;
-    private OredictionificatorFilter filter = new OredictionificatorFilter();
-    private GuiTextField filterText;
-    private boolean isNew;
-    private ItemStack renderStack = ItemStack.EMPTY;
+public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator> {
 
     public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tile, int index) {
         super(tile, new ContainerFilter(player.inventory, tile));
@@ -46,22 +37,28 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
 
     public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tile) {
         super(tile, new ContainerFilter(player.inventory, tile));
+        filter = new OredictionificatorFilter();
         isNew = true;
     }
 
-    public void setFilter() {
-        String newFilter = filterText.getText();
-        boolean has = false;
-        for (String s : TileEntityOredictionificator.possibleFilters) {
-            if (newFilter.startsWith(s)) {
-                has = true;
-                break;
-            }
-        }
-        if (has) {
+    @Override
+    protected void addButtons(int guiWidth, int guiHeight) {
+        buttonList.add(new GuiButton(0, guiWidth + 31, guiHeight + 62, 54, 20, LangUtils.localize("gui.save")));
+        buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 54, 20, LangUtils.localize("gui.delete")));
+    }
+
+    @Override
+    protected void sendPacketToServer(int guiID) {
+        Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, guiID));
+    }
+
+    @Override
+    public void setText() {
+        String newFilter = text.getText();
+        if (TileEntityOredictionificator.possibleFilters.stream().anyMatch(newFilter::startsWith)) {
             filter.filter = newFilter;
             filter.index = 0;
-            filterText.setText("");
+            text.setText("");
             updateRenderStack();
         }
         updateButtons();
@@ -73,19 +70,13 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
     }
 
     @Override
+    protected GuiTextField createTextField(int guiWidth, int guiHeight) {
+        return new GuiTextField(2, fontRenderer, guiWidth + 33, guiHeight + 48, 96, 12);
+    }
+
+    @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        buttonList.clear();
-        buttonList.add(new GuiButton(0, guiWidth + 31, guiHeight + 62, 54, 20, LangUtils.localize("gui.save")));
-        buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 54, 20, LangUtils.localize("gui.delete")));
-        if (isNew) {
-            buttonList.get(1).enabled = false;
-        }
-        filterText = new GuiTextField(2, fontRenderer, guiWidth + 33, guiHeight + 48, 96, 12);
-        filterText.setMaxStringLength(TileEntityOredictionificator.MAX_LENGTH);
-        filterText.setFocused(true);
         updateButtons();
     }
 
@@ -97,14 +88,7 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
         if (filter.filter != null) {
             renderScaledText(filter.filter, 32, 38, 0x404040, 111);
         }
-        if (!renderStack.isEmpty()) {
-            try {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                itemRender.renderItemAndEffectIntoGUI(renderStack, 45, 19);
-                renderHelper.cleanup();
-            } catch (Exception ignored) {
-            }
-        }
+        renderItem(renderStack, 45, 19);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
@@ -127,41 +111,20 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 212, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
         drawTexturedModalRect(guiWidth + 31, guiHeight + 21, 200, xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33, 12);
         drawTexturedModalRect(guiWidth + 63, guiHeight + 21, 188, xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33, 12);
         drawTexturedModalRect(guiWidth + 130, guiHeight + 48, 176, xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60, 12);
-        filterText.drawTextBox();
-    }
-
-    @Override
-    public void keyTyped(char c, int i) throws IOException {
-        if (!filterText.isFocused() || i == Keyboard.KEY_ESCAPE) {
-            super.keyTyped(c, i);
-        }
-        if (filterText.isFocused() && i == Keyboard.KEY_RETURN) {
-            setFilter();
-            return;
-        }
-        if (Character.isLetter(c) || Character.isDigit(c) || isTextboxKey(c, i)) {
-            filterText.textboxKeyTyped(c, i);
-        }
+        text.drawTextBox();
     }
 
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
-            if (!filterText.getText().isEmpty()) {
-                setFilter();
+            if (!text.getText().isEmpty()) {
+                setText();
             }
             if (filter.filter != null && !filter.filter.isEmpty()) {
                 if (isNew) {
@@ -169,34 +132,28 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
                 } else {
                     Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
+                sendPacketToServer(52);
             }
         } else if (guibutton.id == 1) {
             Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
+            sendPacketToServer(52);
         }
-    }
-
-    @Override
-    public void updateScreen() {
-        super.updateScreen();
-        filterText.updateCursorCounter();
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        filterText.mouseClicked(mouseX, mouseY, button);
+        text.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
             int xAxis = mouseX - (width - xSize) / 2;
             int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
+                sendPacketToServer(52);
             }
             if (xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                setFilter();
+                setText();
             }
             if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -230,7 +187,7 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
         return MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificatorFilter.png");
     }
 
-    public void updateRenderStack() {
+    private void updateRenderStack() {
         if (filter.filter == null || filter.filter.isEmpty()) {
             renderStack = ItemStack.EMPTY;
             return;

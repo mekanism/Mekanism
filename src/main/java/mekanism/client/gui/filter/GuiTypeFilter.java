@@ -19,13 +19,7 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
         if (tileEntity instanceof TileEntityDigitalMiner) {
             drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 11);
@@ -37,6 +31,5 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
         drawItemStackBackground(guiWidth, guiHeight, xAxis, yAxis);
 
         drawRect(xAxis, yAxis, guiWidth, guiHeight);
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 }
