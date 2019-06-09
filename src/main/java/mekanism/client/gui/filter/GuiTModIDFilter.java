@@ -71,24 +71,9 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
-        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 187, xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59, 12);
-        drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
-        modIDText.drawTextBox();
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    }
-
-    @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        modIDText.mouseClicked(mouseX, mouseY, button);
+        text.mouseClicked(mouseX, mouseY, button);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
         if (button == 0) {
@@ -98,7 +83,7 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
             }
             if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                setModID();
+                setText();
             }
             if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

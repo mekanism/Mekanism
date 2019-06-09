@@ -69,31 +69,9 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
-        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 187, xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59, 12);
-        drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 14);
-        modIDText.drawTextBox();
-        if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
-            int x = guiWidth + 149;
-            int y = guiHeight + 19;
-            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
-            renderHelper.cleanup();
-        }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    }
-
-    @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        modIDText.mouseClicked(mouseX, mouseY, button);
+        text.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
             int xAxis = mouseX - (width - xSize) / 2;
             int yAxis = mouseY - (height - ySize) / 2;
@@ -103,7 +81,7 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
             }
             if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                setModID();
+                setText();
             }
             if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
