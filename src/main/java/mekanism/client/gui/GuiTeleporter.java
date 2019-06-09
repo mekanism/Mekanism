@@ -217,8 +217,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         updateButtons();
         frequencyField.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             if (xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114) {
                 setFrequency(frequencyField.getText());
                 frequencyField.setText("");
@@ -297,8 +297,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
               32 + fontRenderer.getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
         String str = LangUtils.localize("gui.set") + ":";
         renderScaledText(str, 27, 104, 0x404040, 20);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24) {
             if (getFrequency() == null) {
                 drawHoveringText(EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);

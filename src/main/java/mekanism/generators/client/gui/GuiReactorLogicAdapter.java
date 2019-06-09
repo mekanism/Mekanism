@@ -42,8 +42,8 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             renderHelper.cleanup();
             fontRenderer.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34 + (22 * type.ordinal()), 0x404040);
         }
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         for (ReactorLogic type : ReactorLogic.values()) {
             if (xAxis >= 24 && xAxis <= 152 && yAxis >= 32 + (22 * type.ordinal()) && yAxis <= 32 + 22 + (22 * type.ordinal())) {
                 displayTooltips(MekanismUtils.splitTooltip(type.getDescription(), ItemStack.EMPTY), xAxis, yAxis);
@@ -69,8 +69,8 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             if (xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(0);

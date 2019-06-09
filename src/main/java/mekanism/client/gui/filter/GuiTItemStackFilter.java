@@ -128,8 +128,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             renderItem(filter.itemType, 12, 19);
         }
         drawColorIcon(12, 44, filter.color, 1);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {
             String sizeModeTooltip = LangUtils.localize("gui.sizeMode");
             if (tileEntity.singleItem && filter.sizeMode) {
@@ -169,8 +169,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         super.mouseClicked(mouseX, mouseY, button);
         minField.mouseClicked(mouseX, mouseY, button);
         maxField.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (button == 0) {
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

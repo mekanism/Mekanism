@@ -79,8 +79,8 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             renderItem(filter.itemType, 12, 19);
         }
         renderItem(filter.replaceStack, 149, 19);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
         }
@@ -99,8 +99,8 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             minerFilterClickCommon(xAxis, yAxis, filter);
             if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

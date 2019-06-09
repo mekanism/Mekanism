@@ -51,8 +51,8 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
         renderScaledText(LangUtils.localize("gui.key") + ": " + filter.getOreDictName(), 35, 32, 0x00CD00, 107);
         renderItem(renderStack, 12, 19);
         renderItem(filter.replaceStack, 149, 19);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils
                   .transYesNo(filter.requireStack), xAxis, yAxis);

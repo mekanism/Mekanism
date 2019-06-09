@@ -160,8 +160,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         maxField.mouseClicked(mouseX, mouseY, button);
 
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
 
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (needsScrollBars()) {
@@ -327,8 +327,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
 
         fontRenderer.drawString(LangUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);

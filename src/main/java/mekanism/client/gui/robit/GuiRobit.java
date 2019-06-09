@@ -65,9 +65,9 @@ public abstract class GuiRobit extends GuiMekanism {
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         extraClickListeners(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
+        int xAxis = mouseX - guiLeft;
         if (button == 0 && xAxis >= 179 && xAxis <= 197) {
-            int yAxis = mouseY - (height - ySize) / 2;
+            int yAxis = mouseY - guiTop;
             if (yAxis >= 10 && yAxis <= 28) {
                 buttonClicked(0);
             } else if (yAxis >= 30 && yAxis <= 48) {

@@ -89,8 +89,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
             renderScaledText(filter.filter, 32, 38, 0x404040, 111);
         }
         renderItem(renderStack, 45, 19);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
             drawHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
         }
@@ -145,8 +145,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 sendPacketToServer(52);

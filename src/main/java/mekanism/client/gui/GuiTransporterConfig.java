@@ -73,8 +73,8 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         fontRenderer.drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
         fontRenderer.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
         drawColorIcon(122, 49, configurable.getEjector().getOutputColor(), 1);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
@@ -102,8 +102,8 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         TileEntity tile = (TileEntity) configurable;
         if (button == 0) {
             if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {

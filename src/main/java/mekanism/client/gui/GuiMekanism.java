@@ -68,8 +68,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.renderForeground(xAxis, yAxis));
     }
 
@@ -93,8 +93,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.preMouseClicked(xAxis, yAxis, button));
         super.mouseClicked(mouseX, mouseY, button);
         guiElements.forEach(element -> element.mouseClicked(xAxis, yAxis, button));
@@ -128,16 +128,16 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.mouseClickMove(xAxis, yAxis, button, ticks));
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int type) {
         super.mouseReleased(mouseX, mouseY, type);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.mouseReleased(xAxis, yAxis, type));
     }
 
@@ -146,18 +146,10 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         super.handleMouseInput();
         int delta = Mouse.getEventDWheel();
         if (delta != 0) {
-            int xAxis = Mouse.getEventX() * width / mc.displayWidth - getXPos();
-            int yAxis = height - Mouse.getEventY() * height / mc.displayHeight - 1 - getYPos();
+            int xAxis = Mouse.getEventX() * width / mc.displayWidth - guiLeft;
+            int yAxis = height - Mouse.getEventY() * height / mc.displayHeight - 1 - guiTop;
             guiElements.forEach(element -> element.mouseWheel(xAxis, yAxis, delta));
         }
-    }
-
-    public int getXPos() {
-        return (width - xSize) / 2;
-    }
-
-    public int getYPos() {
-        return (height - ySize) / 2;
     }
 
     protected FontRenderer getFontRenderer() {

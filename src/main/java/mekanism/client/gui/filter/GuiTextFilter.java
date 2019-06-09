@@ -84,8 +84,8 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             setText();

@@ -46,17 +46,19 @@ public class GuiSeismicReader extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        upButton = new Rectangle((width - xSize) / 2 + 70, (height - ySize) / 2 + 75, 13, 13);
-        downButton = new Rectangle((width - xSize) / 2 + 70, (height - ySize) / 2 + 92, 13, 13);
-        tooltip = new Rectangle((width - xSize) / 2 + 30, (height - ySize) / 2 + 82, 16, 16);
+        int guiLeft = (width - xSize) / 2;
+        int guiTop = (height - ySize) / 2;
+        upButton = new Rectangle(guiLeft + 70, guiTop + 75, 13, 13);
+        downButton = new Rectangle(guiLeft + 70, guiTop + 92, 13, 13);
+        tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
+        int guiLeft = (width - xSize) / 2;
+        int guiTop = (height - ySize) / 2;
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png"));
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         // Draws the up button
         boolean upIntersects = upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1));
         if (upIntersects) {
@@ -79,7 +81,7 @@ public class GuiSeismicReader extends GuiScreen {
 
         // Fix the overlapping if > 100
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translateXY(guiWidth + 48, guiHeight + 87);
+        GLSMHelper.INSTANCE.translateXY(guiLeft + 48, guiTop + 87);
 
         if (currentLayer >= 100) {
             GLSMHelper.INSTANCE.translateY(1).scale(0.7F);
@@ -90,7 +92,7 @@ public class GuiSeismicReader extends GuiScreen {
 
         // Render the item stacks
         for (int i = 0; i < 9; i++) {
-            int centralX = guiWidth + 32, centralY = guiHeight + 103;
+            int centralX = guiLeft + 32, centralY = guiTop + 103;
             int layer = currentLayer + (i - 5);
             if (0 <= layer && layer < blockList.size()) {
                 ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
@@ -117,7 +119,7 @@ public class GuiSeismicReader extends GuiScreen {
             float renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
             GlStateManager.pushMatrix();
-            GLSMHelper.INSTANCE.translateXY(guiWidth + 72, guiHeight + 16).scale(renderScale);
+            GLSMHelper.INSTANCE.translateXY(guiLeft + 72, guiTop + 16).scale(renderScale);
             fontRenderer.drawString(capitalised, 0, 0, 0x919191);
             GlStateManager.popMatrix();
 
@@ -146,7 +148,7 @@ public class GuiSeismicReader extends GuiScreen {
         }
 
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translateXY(guiWidth + 72, guiHeight + 26).scale(0.70F);
+        GLSMHelper.INSTANCE.translateXY(guiLeft + 72, guiTop + 26).scale(0.70F);
         fontRenderer.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
         GlStateManager.popMatrix();
         super.drawScreen(mouseX, mouseY, partialTick);

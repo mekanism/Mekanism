@@ -24,8 +24,8 @@ public abstract class GuiChemical<TILE extends TileEntityElectricBlock> extends 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawForegroundText();
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         }

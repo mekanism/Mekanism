@@ -129,8 +129,8 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         updateButtons();
         frequencyField.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             if (xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114) {
                 setFrequency(frequencyField.getText());
                 frequencyField.setText("");

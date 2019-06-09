@@ -87,8 +87,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         updateButtons();
         trustedField.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             //TODO: replace compare with uuid instead of clientOwner and player name
             if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.clientOwner.equals(mc.player.getName())) {
                 if (xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79) {
@@ -175,8 +175,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         }
         fontRenderer.drawString(security, 13, 103, 0x404040);
         renderScaledText(LangUtils.localize("gui.add") + ":", 13, 70, 0x404040, 20);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (tileEntity.frequency != null && xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75) {
             displayTooltip(LangUtils.localize("gui.securityOverride") + ": " + LangUtils.transOnOff(tileEntity.frequency.override), xAxis, yAxis);
         }

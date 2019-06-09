@@ -66,8 +66,8 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
     @Override
     protected void mouseClicked(int x, int y, int button) throws IOException {
         super.mouseClicked(x, y, button);
-        int xAxis = x - (width - xSize) / 2;
-        int yAxis = y - (height - ySize) / 2;
+        int xAxis = x - guiLeft;
+        int yAxis = y - guiTop;
         if (xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82) {
             TileNetworkList data = TileNetworkList.withContents(0);
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));

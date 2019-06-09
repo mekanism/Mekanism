@@ -100,8 +100,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         super.mouseClicked(mouseX, mouseY, button);
         energyUsageField.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             if (xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61) {
                 setEnergyUsage();
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

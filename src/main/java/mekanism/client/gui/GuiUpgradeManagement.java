@@ -76,8 +76,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
             }
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         for (int i = 0; i < 4; i++) {
             int index = getUpgradeIndex() + i;
             if (index > upgrades.length - 1) {
@@ -186,8 +186,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         TileEntity tile = (TileEntity) tileEntity;
         if (button == 0) {
             if (xAxis >= 84 && xAxis <= 88 && yAxis >= getScroll() + 8 && yAxis <= getScroll() + 8 + 4) {

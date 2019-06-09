@@ -37,7 +37,7 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
     @Override
     public void initGui() {
         super.initGui();
-        text = createTextField((width - xSize) / 2, (height - ySize) / 2);
+        text = createTextField(guiLeft, guiTop);
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
         text.setFocused(true);
     }

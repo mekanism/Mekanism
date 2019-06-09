@@ -87,8 +87,8 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         injectionRateField.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         if (button == 0) {
             if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -40,9 +40,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     public void initGui() {
         super.initGui();
         Keyboard.enableRepeatEvents(true);
-        int i = (width - xSize) / 2;
-        int j = (height - ySize) / 2;
-        itemNameField = new GuiTextField(0, fontRenderer, i + 62, j + 24, 103, 12);
+        itemNameField = new GuiTextField(0, fontRenderer, guiLeft + 62, guiTop + 24, 103, 12);
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
