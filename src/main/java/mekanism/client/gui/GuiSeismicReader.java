@@ -57,32 +57,36 @@ public class GuiSeismicReader extends GuiScreen {
         int guiHeight = (height - ySize) / 2;
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png"));
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         // Draws the up button
-        if (upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
-            renderHelper.color3f(0.5f, 0.5f, 1f);
+        boolean upIntersects = upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1));
+        if (upIntersects) {
+            GLSMHelper.INSTANCE.color3f(0.5F, 0.5F, 1);
         }
         drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
-        renderHelper.cleanup();//Clean it up. We don't have to recreate it as we don't need a matrix
+        if (upIntersects) {
+            GLSMHelper.INSTANCE.resetColor();
+        }
 
         // Draws the down button
-        if (downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
-            renderHelper.color3f(0.5f, 0.5f, 1f);
+        boolean downIntersects = downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1));
+        if (downIntersects) {
+            GLSMHelper.INSTANCE.color3f(0.5F, 0.5F, 1);
         }
         drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
-        renderHelper.cleanup();
+        if (downIntersects) {
+            GLSMHelper.INSTANCE.resetColor();
+        }
 
         // Fix the overlapping if > 100
-        renderHelper.addMatrix(); //We need a matrix for this
-        renderHelper.translateXY(guiWidth + 48, guiHeight + 87);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.translateXY(guiWidth + 48, guiHeight + 87);
 
         if (currentLayer >= 100) {
-            renderHelper.translateY(1);
-            renderHelper.scale(0.7F);
+            GLSMHelper.INSTANCE.translateY(1).scale(0.7F);
         }
 
         fontRenderer.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
 
         // Render the item stacks
         for (int i = 0; i < 9; i++) {

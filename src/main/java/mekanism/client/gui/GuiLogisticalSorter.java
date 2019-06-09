@@ -13,6 +13,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
@@ -488,25 +489,22 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         for (int i = 0; i < 4; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 final TransporterFilter filter = tileEntity.filters.get(getFilterIndex() + i);
-                final int yStart = i * filterH + filterY;
-
-                // Flag for mouse over this filter
-                boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
-
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper();
                 // Change colour based on filter type
                 if (filter instanceof TItemStackFilter) {
-                    renderHelper.color(EnumColor.INDIGO, 1.0F, 2.5F);
+                    GLSMHelper.INSTANCE.color(EnumColor.INDIGO, 1.0F, 2.5F);
                 } else if (filter instanceof TOreDictFilter) {
-                    renderHelper.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
+                    GLSMHelper.INSTANCE.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
                 } else if (filter instanceof TMaterialFilter) {
-                    renderHelper.color(EnumColor.PURPLE, 1.0F, 4F);
+                    GLSMHelper.INSTANCE.color(EnumColor.PURPLE, 1.0F, 4F);
                 } else if (filter instanceof TModIDFilter) {
-                    renderHelper.color(EnumColor.PINK, 1.0F, 2.5F);
+                    GLSMHelper.INSTANCE.color(EnumColor.PINK, 1.0F, 2.5F);
                 }
 
+                final int yStart = i * filterH + filterY;
+                // Flag for mouse over this filter
+                boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
                 drawTexturedModalRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
-                renderHelper.cleanup();
+                GLSMHelper.INSTANCE.resetColor();
 
                 // Draw sort buttons
                 final int arrowX = filterX + filterW - 12;

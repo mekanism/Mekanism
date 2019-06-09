@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import java.util.Arrays;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.FluidRenderer;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -93,7 +94,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
         }
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(fluid);
+        GLSMHelper.INSTANCE.color(fluid);
         if (fluid.getFluid().getStill(fluid) == null) {
             DisplayInteger empty = DisplayInteger.createAndStart();
             DisplayInteger.endList();
@@ -110,7 +111,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
             model.setSideRender(EnumFacing.DOWN, true);
             displays[CONCAVE_INDEX] = generateLevel(LEVELS - 1, model);
         }
-        renderHelper.cleanup();
+        GLSMHelper.INSTANCE.resetColor();
         cachedCenterFluids.put(fluid, displays);
         return displays;
     }

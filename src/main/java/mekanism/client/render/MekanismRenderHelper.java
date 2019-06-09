@@ -3,12 +3,7 @@ package mekanism.client.render;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.EnumColor;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
-import mekanism.common.tier.BaseTier;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
@@ -53,9 +48,7 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
             colorMasked = false;
         }
         if (colorSet) {
-            //Reset the color
-            GlStateManager.color(1, 1, 1, 1);
-            colorSet = false;
+            resetColor();
         }
         for (Entry<KnownStates, Boolean> entry : changedStates.entrySet()) {
             entry.getKey().cleanup(entry.getValue());
@@ -141,66 +134,11 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
         return colorMask(true, true, true, false);
     }
 
+    @Override
     public MekanismRenderHelper color(float red, float green, float blue, float alpha) {
         //If the color is our default color then we do not need to have colorSet be called
         colorSet = red != 1 || green != 1 || blue != 1 || alpha != 1;
-        GlStateManager.color(red, green, blue, alpha);
-        return this;
-    }
-
-    public MekanismRenderHelper colorAlpha(float alpha) {
-        return color(1, 1, 1, alpha);
-    }
-
-    public MekanismRenderHelper color3f(float red, float green, float blue) {
-        return color(red, green, blue, 1);
-    }
-
-    public MekanismRenderHelper color3f(int color) {
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-        return color3f(red, green, blue);
-    }
-
-    public MekanismRenderHelper color(int color) {
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-        float alpha = (color >> 24 & 0xFF) / 255f;
-        return color(red, green, blue, alpha);
-    }
-
-    public MekanismRenderHelper color(@Nullable FluidStack fluid) {
-        return fluid == null || fluid.getFluid() == null ? this : color(fluid.getFluid().getColor(fluid));
-    }
-
-    public MekanismRenderHelper color(@Nullable Fluid fluid) {
-        return fluid == null ? this : color(fluid.getColor());
-    }
-
-    public MekanismRenderHelper color(@Nullable GasStack gasStack) {
-        return gasStack == null ? this : color(gasStack.getGas());
-    }
-
-    public MekanismRenderHelper color(@Nullable Gas gas) {
-        return gas == null ? this : color3f(gas.getTint());
-    }
-
-    public MekanismRenderHelper color(@Nonnull BaseTier tier) {
-        return color(tier.getColor());
-    }
-
-    public MekanismRenderHelper color(@Nullable EnumColor color) {
-        return color(color, 1.0F);
-    }
-
-    public MekanismRenderHelper color(@Nullable EnumColor color, float alpha) {
-        return color(color, alpha, 1.0F);
-    }
-
-    public MekanismRenderHelper color(@Nullable EnumColor color, float alpha, float multiplier) {
-        return color == null ? this : color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+        return super.color(red, green, blue, alpha);
     }
 
     //Instead of RenderHelper

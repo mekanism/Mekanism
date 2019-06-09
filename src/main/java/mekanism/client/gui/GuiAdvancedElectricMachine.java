@@ -15,7 +15,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -98,8 +98,8 @@ public class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<REC
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().color(gas);
+        GLSMHelper.INSTANCE.color(gas);
         drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, gas.getGas().getSprite(), sizeX, sizeY);
-        renderHelper.cleanup();
+        GLSMHelper.INSTANCE.resetColor();
     }
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -62,11 +63,10 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         for (ReactorLogic type : ReactorLogic.values()) {
-            renderHelper.color(EnumColor.RED);
+            GLSMHelper.INSTANCE.color(EnumColor.RED);
             drawTexturedModalRect(guiWidth + 24, guiHeight + 32 + (22 * type.ordinal()), 0, 166 + (type == tileEntity.logicType ? 22 : 0), 128, 22);
-            renderHelper.cleanup(); //As it is just color and no matrix we can reuse the same one rather than recreating it the next call around
+            GLSMHelper.INSTANCE.resetColor();
         }
         if (xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30) {
             drawTexturedModalRect(guiWidth + 23, guiHeight + 19, 176, 0, 11, 11);

@@ -13,6 +13,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -120,16 +121,17 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         int xAxis = mouseX - guiWidth;
         int yAxis = mouseY - guiHeight;
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
                 boolean mouseOver = xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22;
                 if (mouseOver) {
-                    renderHelper.color(EnumColor.GREY, 3.0F);
+                    GLSMHelper.INSTANCE.color(EnumColor.GREY, 3.0F);
                 }
                 drawTexturedModalRect(guiWidth + 10, guiHeight + yStart, 0, 230, 142, 22);
-                renderHelper.cleanup(); //As it is just color and no matrix we can reuse the same one rather than recreating it the next call around
+                if (mouseOver) {
+                    GLSMHelper.INSTANCE.resetColor();
+                }
             }
         }
     }

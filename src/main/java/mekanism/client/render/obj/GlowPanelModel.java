@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import mekanism.api.EnumColor;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.state.IBlockState;
@@ -121,17 +121,16 @@ public class GlowPanelModel extends OBJBakedModelBase {
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType) {
         //NOTE: Does not call cleanup as it is only being used for the wrapper methods and it doesn't create a matrix
-        MekanismRenderHelper helper = new MekanismRenderHelper();
         if (transformType == TransformType.GUI) {
-            helper.rotateX(180, 1);
+            GLSMHelper.INSTANCE.rotateX(180, 1);
             ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
-            helper.translateXY(0.65F, 0.45F).rotateX(90, 1).scale(1.6F);
+            GLSMHelper.INSTANCE.translateXY(0.65F, 0.45F).rotateX(90, 1).scale(1.6F);
             return Pair.of(this, null);
         } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-            helper.translateY(0.2F);
+            GLSMHelper.INSTANCE.translateY(0.2F);
         } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
-            helper.translateYZ(0.3F, 0.2F);
+            GLSMHelper.INSTANCE.translateYZ(0.3F, 0.2F);
             return Pair.of(this, null);
         }
         return Pair.of(this, transforms.get(transformType).getMatrix());

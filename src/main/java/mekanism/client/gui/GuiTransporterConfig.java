@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
@@ -68,18 +69,17 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         } else {
             drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 28, 14, 14, 14);
         }
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
             if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY) {
-                renderHelper.color(configurable.getEjector().getInputColor(EnumFacing.byIndex(i)));
+                GLSMHelper.INSTANCE.color(configurable.getEjector().getInputColor(EnumFacing.byIndex(i)));
                 if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
                     drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
                 } else {
                     drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
                 }
-                renderHelper.cleanup(); //As it is just color and no matrix we can reuse the same one rather than recreating it the next call around
+                GLSMHelper.INSTANCE.resetColor();
             } else {
                 drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
             }
