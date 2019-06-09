@@ -63,7 +63,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     private List<Frequency> clientPublicCache = new ArrayList<>();
     private List<Frequency> clientPrivateCache = new ArrayList<>();
     private boolean isInit = true;
-    private boolean isPortable;
+    private final boolean isPortable;
 
     public GuiTeleporter(InventoryPlayer inventory, TileEntityTeleporter tile) {
         super(tile, new ContainerTeleporter(inventory, tile));

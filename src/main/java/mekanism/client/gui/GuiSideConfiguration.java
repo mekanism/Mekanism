@@ -184,8 +184,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
 
     public static class GuiPos {
 
-        public int xPos;
-        public int yPos;
+        public final int xPos;
+        public final int yPos;
 
         public GuiPos(int x, int y) {
             xPos = x;

@@ -71,11 +71,11 @@ public class GuiProgress extends GuiElement {
         SMALL_LEFT(32, 10, 128, 40),
         BI(20, 8, 128, 50);
 
-        public int width;
-        public int height;
+        public final int width;
+        public final int height;
 
-        public int textureX;
-        public int textureY;
+        public final int textureX;
+        public final int textureY;
 
         ProgressBar(int w, int h, int u, int v) {
             width = w;

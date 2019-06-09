@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
 
-    private DecimalFormat powerFormat = new DecimalFormat("0.##");
+    private final DecimalFormat powerFormat = new DecimalFormat("0.##");
 
     public GuiWindGenerator(InventoryPlayer inventory, TileEntityWindGenerator tile) {
         super(tile, new ContainerWindGenerator(inventory, tile));

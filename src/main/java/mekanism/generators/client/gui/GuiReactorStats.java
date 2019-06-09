@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiReactorStats extends GuiMekanismTile<TileEntityReactorController> {
 
-    private static NumberFormat nf = NumberFormat.getIntegerInstance();
+    private static final NumberFormat nf = NumberFormat.getIntegerInstance();
 
     public GuiReactorStats(InventoryPlayer inventory, final TileEntityReactorController tile) {
         super(tile, new ContainerNull(inventory.player, tile));

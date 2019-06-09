@@ -69,9 +69,9 @@ public class GuiBoilerTab extends GuiTileEntityElement<TileEntityBoilerCasing> {
         MAIN("GuiGasesTab.png", 54, "gui.main"),
         STAT("GuiStatsTab.png", 55, "gui.stats");
 
-        private String path;
-        private int guiId;
-        private String desc;
+        private final String path;
+        private final int guiId;
+        private final String desc;
 
         BoilerTab(String s, int id, String s1) {
             path = s;

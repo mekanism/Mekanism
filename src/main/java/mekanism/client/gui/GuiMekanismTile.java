@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiMekanismTile<TILE extends TileEntityContainerBlock> extends GuiMekanism {
 
-    protected TILE tileEntity;
+    protected final TILE tileEntity;
 
     public GuiMekanismTile(TILE tile, Container container) {
         super(container);

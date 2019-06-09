@@ -70,9 +70,9 @@ public class GuiTurbineTab extends GuiTileEntityElement<TileEntityTurbineCasing>
         MAIN("GuiGasesTab.png", 6, "gui.main"),
         STAT("GuiStatsTab.png", 7, "gui.stats");
 
-        private String path;
-        private int guiId;
-        private String desc;
+        private final String path;
+        private final int guiId;
+        private final String desc;
 
         TurbineTab(String s, int id, String s1) {
             path = s;

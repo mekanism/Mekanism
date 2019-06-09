@@ -24,7 +24,7 @@ import org.lwjgl.util.Rectangle;
 @SideOnly(Side.CLIENT)
 public class GuiSeismicReader extends GuiScreen {
 
-    private ItemStack itemStack;
+    private final ItemStack itemStack;
     private Coord4D pos;
     private int xSize = 137;
     private int ySize = 182;

@@ -70,9 +70,9 @@ public class GuiMatrixTab extends GuiTileEntityElement<TileEntityInductionCasing
         MAIN("GuiEnergyTab.png", 49, "gui.main"),
         STAT("GuiStatsTab.png", 50, "gui.stats");
 
-        private String path;
-        private int guiId;
-        private String desc;
+        private final String path;
+        private final int guiId;
+        private final String desc;
 
         MatrixTab(String s, int id, String s1) {
             path = s;

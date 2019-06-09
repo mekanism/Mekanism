@@ -29,7 +29,7 @@ import org.lwjgl.input.Keyboard;
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
 
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
-    private static int MAX_LENGTH = 24;
+    private static final int MAX_LENGTH = 24;
     private GuiButton removeButton;
     private GuiScrollList scrollList;
     private GuiTextField trustedField;

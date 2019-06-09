@@ -164,13 +164,13 @@ public abstract class GuiGauge<T> extends GuiElement {
         SMALL_ORANGE(EnumColor.ORANGE, 18, 30, 0, 90, 1, "GuiGaugeSmall.png"),
         SMALL_BLUE(EnumColor.DARK_BLUE, 18, 30, 0, 120, 1, "GuiGaugeSmall.png");
 
-        public EnumColor color;
-        public int width;
-        public int height;
-        public int texX;
-        public int texY;
-        public int number;
-        public String textureLocation;
+        public final EnumColor color;
+        public final int width;
+        public final int height;
+        public final int texX;
+        public final int texY;
+        public final int number;
+        public final String textureLocation;
 
         Type(EnumColor c, int w, int h, int tx, int ty, int n, String t) {
             color = c;
