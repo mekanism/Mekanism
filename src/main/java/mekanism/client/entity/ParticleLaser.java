@@ -39,8 +39,6 @@ public class ParticleLaser extends Particle {
         tessellator.draw();
 
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableCull().enableGlow();
-        //TODO: Double check if GL11.GL_POLYGON_BIT is needed. It didn't seem to be used and removing it doesn't seem to have broken anything
-
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
         float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
         float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - interpPosZ);

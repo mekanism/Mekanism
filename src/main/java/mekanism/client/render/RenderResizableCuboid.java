@@ -128,9 +128,10 @@ public class RenderResizableCuboid {
      * This will render a cuboid from its middle.
      */
     public void renderCubeFromCentre(Model3D cuboid) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(-cuboid.sizeX() / 2D, -cuboid.sizeY() / 2D, -cuboid.sizeZ() / 2D);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.translate(-cuboid.sizeX() / 2D, -cuboid.sizeY() / 2D, -cuboid.sizeZ() / 2D);
         renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 
     public void renderCube(Model3D cuboid) {

@@ -3,10 +3,11 @@ package mekanism.client.gui.element;
 import java.awt.Rectangle;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -68,9 +69,10 @@ public abstract class GuiElement {
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
 
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(scale);
+            GlStateManager.pushMatrix();
+            GLSMHelper.INSTANCE.scale(scale);
             getFontRenderer().drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-            renderHelper.cleanup();
+            GlStateManager.popMatrix();
         }
     }
 

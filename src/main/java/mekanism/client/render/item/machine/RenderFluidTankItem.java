@@ -3,6 +3,7 @@ package mekanism.client.render.item.machine;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -12,6 +13,7 @@ import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
@@ -35,7 +37,7 @@ public class RenderFluidTankItem {
         FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
         FluidStack fluid = itemMachine.getFluidStack(stack);
 
-        MekanismRenderHelper tankRenderHelper = new MekanismRenderHelper(true);
+        GlStateManager.pushMatrix();
         if (fluid != null && fluidScale > 0) {
             MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
             MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -55,10 +57,10 @@ public class RenderFluidTankItem {
             fluidRenderHelper.cleanup();
         }
 
-        tankRenderHelper.translateY(-0.9F).scale(0.9F, 0.8F, 0.9F);
+        GLSMHelper.INSTANCE.translateY(-0.9F).scale(0.9F, 0.8F, 0.9F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
         fluidTank.render(0.073F, tier);
-        tankRenderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 
     private static DisplayInteger[] getListAndRender(FluidStack fluid) {

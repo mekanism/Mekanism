@@ -2,12 +2,13 @@ package mekanism.client.render.item.gear;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelJetpack;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,10 +26,11 @@ public class RenderJetpack extends MekanismItemStackRenderer {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).rotateZ(180, 1).rotateY(90, -1).translateXY(0.2F, -0.35F);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.rotateZ(180, 1).rotateY(90, -1).translateXY(0.2F, -0.35F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
         jetpack.render(0.0625F);
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 
     @Nonnull

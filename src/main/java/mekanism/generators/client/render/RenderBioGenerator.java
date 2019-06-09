@@ -2,6 +2,7 @@ package mekanism.generators.client.render;
 
 import java.util.EnumMap;
 import java.util.Map;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -37,27 +38,28 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
             renderHelper.cleanup();
         }
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
         switch (tileEntity.facing.ordinal()) {
             case 2://NORTH
-                renderHelper.rotateY(180, 1);
+                GLSMHelper.INSTANCE.rotateY(180, 1);
                 break;
             case 3://SOUTH
-                renderHelper.rotateY(0, 1);
+                GLSMHelper.INSTANCE.rotateY(0, 1);
                 break;
             case 4://WEST
-                renderHelper.rotateY(270, 1);
+                GLSMHelper.INSTANCE.rotateY(270, 1);
                 break;
             case 5://EAST
-                renderHelper.rotateY(90, 1);
+                GLSMHelper.INSTANCE.rotateY(90, 1);
                 break;
         }
 
-        renderHelper.rotateZ(180, 1);
+        GLSMHelper.INSTANCE.rotateZ(180, 1);
         model.render(0.0625F);
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 
     @SuppressWarnings("incomplete-switch")

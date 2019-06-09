@@ -1,11 +1,12 @@
 package mekanism.generators.client.render.item;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,22 +19,23 @@ public class RenderWindGeneratorItem {
     private static int angle = 0;
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).rotateZ(180, 1);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.rotateZ(180, 1);
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            renderHelper.rotateY(180, 1).translateY(0.4F);
+            GLSMHelper.INSTANCE.rotateY(180, 1).translateY(0.4F);
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                renderHelper.rotateY(-45, 1);
+                GLSMHelper.INSTANCE.rotateY(-45, 1);
             } else {
-                renderHelper.rotateY(45, 1);
+                GLSMHelper.INSTANCE.rotateY(45, 1);
             }
-            renderHelper.rotateX(50, 1).scale(2.0F).translateY(-0.4F);
+            GLSMHelper.INSTANCE.rotateX(50, 1).scale(2.0F).translateY(-0.4F);
         } else {
             if (transformType == TransformType.GUI) {
-                renderHelper.rotateY(90, 1);
+                GLSMHelper.INSTANCE.rotateY(90, 1);
             } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                renderHelper.rotateY(180, 1);
+                GLSMHelper.INSTANCE.rotateY(180, 1);
             }
-            renderHelper.translateY(0.4F);
+            GLSMHelper.INSTANCE.translateY(0.4F);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));
@@ -43,6 +45,6 @@ public class RenderWindGeneratorItem {
         //in a blacklisted dimension or not.
         angle = (angle + 2) % 360;
         windGenerator.render(0.016F, angle);
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 }

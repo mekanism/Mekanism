@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -78,16 +79,16 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 double yShifted = y + pos[1];
                 double zShifted = z + pos[2];
 
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-                renderHelper.translate(xShifted, yShifted, zShifted).scale(0.75);
+                GlStateManager.pushMatrix();
+                GLSMHelper.INSTANCE.translate(xShifted, yShifted, zShifted).scale(0.75);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
-                renderHelper.cleanup();
+                GlStateManager.popMatrix();
 
                 if (stack.color != null) {
                     bindTexture(transporterBox);
-                    MekanismRenderHelper colorRenderHelper = new MekanismRenderHelper(true).enableGlow().disableCull().color(stack.color).translate(xShifted, yShifted, zShifted);
+                    MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGlow().disableCull().color(stack.color).translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
-                    colorRenderHelper.cleanup();
+                    renderHelper.cleanup();
                 }
             }
         }

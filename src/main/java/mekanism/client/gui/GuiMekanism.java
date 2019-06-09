@@ -5,9 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -55,9 +56,10 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
             float scale = (float) maxX / length;
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(scale);
+            GlStateManager.pushMatrix();
+            GLSMHelper.INSTANCE.scale(scale);
             fontRenderer.drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-            renderHelper.cleanup();
+            GlStateManager.popMatrix();
         }
     }
 

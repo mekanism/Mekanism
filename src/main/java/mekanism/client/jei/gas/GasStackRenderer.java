@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.gui.IDrawable;
@@ -12,6 +13,7 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -87,9 +89,10 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlend().enableAlpha();
         drawGas(minecraft, xPosition, yPosition, gasStack);
         if (overlay != null) {
-            MekanismRenderHelper overlayRenderHelper = new MekanismRenderHelper(true).translateZ(200);
+            GlStateManager.pushMatrix();
+            GLSMHelper.INSTANCE.translateZ(200);
             overlay.draw(minecraft, xPosition, yPosition);
-            overlayRenderHelper.cleanup();
+            GlStateManager.popMatrix();
         }
         renderHelper.cleanup();
     }

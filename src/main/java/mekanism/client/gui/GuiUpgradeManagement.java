@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Set;
 import mekanism.api.Coord4D;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -15,6 +16,7 @@ import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
@@ -95,9 +97,10 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     private void renderText(String text, int x, int y, float size, boolean scale) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(size);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.scale(size);
         fontRenderer.drawString(text, scale ? (int) ((1F / size) * x) : x, scale ? (int) ((1F / size) * y) : y, 0x00CD00);
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 
     private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import mekanism.api.Coord4D;
+import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -87,20 +88,15 @@ public class GuiSeismicReader extends GuiScreen {
         for (int i = 0; i < 9; i++) {
             int centralX = guiWidth + 32, centralY = guiHeight + 103;
             int layer = currentLayer + (i - 5);
-
             if (0 <= layer && layer < blockList.size()) {
                 ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
-
                 MekanismRenderHelper stackRenderHelper = new MekanismRenderHelper(true).translateXY(centralX - 2, centralY - i * 16 + (22 * 2));
-
                 if (i < 4) {
                     stackRenderHelper.translateXY(0.2F, 2.5F);
                 }
-
                 if (i != 4) {
                     stackRenderHelper.translateX(1.5F).scale(0.8F);
                 }
-
                 stackRenderHelper.enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(stack, 0, 0);
                 stackRenderHelper.cleanup();
@@ -116,9 +112,10 @@ public class GuiSeismicReader extends GuiScreen {
             int lengthX = fontRenderer.getStringWidth(capitalised);
             float renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
-            MekanismRenderHelper nameRenderHelper = new MekanismRenderHelper(true).translateXY(guiWidth + 72, guiHeight + 16).scale(renderScale);
+            GlStateManager.pushMatrix();
+            GLSMHelper.INSTANCE.translateXY(guiWidth + 72, guiHeight + 16).scale(renderScale);
             fontRenderer.drawString(capitalised, 0, 0, 0x919191);
-            nameRenderHelper.cleanup();
+            GlStateManager.popMatrix();
 
             if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
                 mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
@@ -144,10 +141,10 @@ public class GuiSeismicReader extends GuiScreen {
             }
         }
 
-        MekanismRenderHelper abundancy = new MekanismRenderHelper(true);
-        abundancy.translateXY(guiWidth + 72, guiHeight + 26).scale(0.70F);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.translateXY(guiWidth + 72, guiHeight + 26).scale(0.70F);
         fontRenderer.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
-        abundancy.cleanup();
+        GlStateManager.popMatrix();
         super.drawScreen(mouseX, mouseY, partialTick);
     }
 

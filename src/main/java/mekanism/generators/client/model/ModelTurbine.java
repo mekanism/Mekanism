@@ -1,8 +1,9 @@
 package mekanism.generators.client.model;
 
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class ModelTurbine extends ModelBase {
 
@@ -59,7 +60,8 @@ public class ModelTurbine extends ModelBase {
     }
 
     public void render(float size, int index) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).rotateY(index * 5, 1);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.rotateY(index * 5, 1);
         extension_south.render(size);
         extension_west.render(size);
         extension_east.render(size);
@@ -70,14 +72,14 @@ public class ModelTurbine extends ModelBase {
         renderBlade(blade_east, size, scale, scale / widthDiv, 0.25F, 0.0F);
         renderBlade(blade_north, size, scale / widthDiv, scale, 0.0F, -0.25F);
         renderBlade(blade_south, size, scale / widthDiv, scale, 0.0F, 0.25F);
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 
     private void renderBlade(ModelRenderer blade, float size, float scaleX, float scaleZ, float transX, float transZ) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true)
-              .translateXZ(transX, transZ).scale(1.0F + scaleX, 1.0F, 1.0F + scaleZ).translateXZ(-transX, -transZ);
+        GlStateManager.pushMatrix();
+        GLSMHelper.INSTANCE.translateXZ(transX, transZ).scale(1.0F + scaleX, 1.0F, 1.0F + scaleZ).translateXZ(-transX, -transZ);
         blade.render(size);
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
