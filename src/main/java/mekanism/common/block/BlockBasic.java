@@ -101,7 +101,7 @@ public abstract class BlockBasic extends BlockTileDrops {
     public BlockBasic() {
         super(Material.IRON);
         setHardness(5F);
-        setResistance(20F);
+        setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
     }
 
@@ -269,10 +269,39 @@ public abstract class BlockBasic extends BlockTileDrops {
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         IBlockState state = world.getBlockState(pos);
         BasicBlockType type = BasicBlockType.get(getBasicBlock(), state.getBlock().getMetaFromState(state));
-        if (type == BasicBlockType.REFINED_OBSIDIAN) {
-            return 4000F;
+        float defaultResistance = blockResistance / 5F;
+        if (type == null) {
+            return defaultResistance;
         }
-        return blockResistance;
+        switch(type) {
+            case REFINED_OBSIDIAN:
+                return 2400F;
+            case OSMIUM_BLOCK:
+                return 12F;
+            case STEEL_BLOCK:
+            case BRONZE_BLOCK:
+            case STEEL_CASING:
+            case SECURITY_DESK:
+            case THERMAL_EVAPORATION_BLOCK:
+            case THERMAL_EVAPORATION_VALVE:
+            case THERMAL_EVAPORATION_CONTROLLER:
+                  return 9F;
+            default:
+                return defaultResistance;
+        }
+    }
+
+    @Override
+    @Deprecated
+    public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
+        BasicBlockType type = BasicBlockType.get(getBasicBlock(), blockState.getBlock().getMetaFromState(blockState));
+        if(type == BasicBlockType.REFINED_OBSIDIAN) {
+            return 50.0F;
+        }
+        else if(type == BasicBlockType.OSMIUM_BLOCK) {
+            return 7.5F;
+        }
+        return blockHardness;
     }
 
     @Override
@@ -487,7 +516,8 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Override
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
-        return false;
+        BasicBlockType type = BasicBlockType.get(state);
+        return type != null && type.isOpaqueCube;
     }
 
     @Override
@@ -495,6 +525,19 @@ public abstract class BlockBasic extends BlockTileDrops {
     public boolean isFullCube(IBlockState state) {
         BasicBlockType type = BasicBlockType.get(state);
         return type != null && type.isFullBlock;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isFullBlock(IBlockState state) {
+        BasicBlockType type = BasicBlockType.get(state);
+        return type != null && type.isFullBlock;
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        BasicBlockType type = BasicBlockType.get(state);
+        return type != null && type.isOpaqueCube ? 255 : 0;
     }
 
     @Nonnull
