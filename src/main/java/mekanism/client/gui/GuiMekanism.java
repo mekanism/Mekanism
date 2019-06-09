@@ -178,10 +178,17 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     }
 
     protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {
+        renderItem(stack, xAxis, yAxis, 1);
+    }
+
+    protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
         if (!stack.isEmpty()) {
             //TODO: Is this try catch even needed, some places had it
             try {
                 MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableDepth().enableGUIStandardItemLighting();
+                if (scale != 1) {
+                    renderHelper.scale(scale);
+                }
                 itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 renderHelper.cleanup();
             } catch (Exception ignored) {

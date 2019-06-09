@@ -104,9 +104,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
 
     private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale) {
         if (scale) {
-            renderItem(type.getStack(), (int) ((float) x / size), (int) ((float) y / size));
+            renderItem(type.getStack(), (int) ((float) x / size), (int) ((float) y / size), size);
         } else {
-            renderItem(type.getStack(), x, y);
+            renderItem(type.getStack(), x, y, size);
         }
     }
 
