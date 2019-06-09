@@ -3,7 +3,6 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
@@ -128,9 +127,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
         if (!filter.itemType.isEmpty()) {
             renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 89);
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-            itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
-            renderHelper.cleanup();
+            renderItem(filter.itemType, 12, 19);
         }
         drawColorIcon(12, 44, filter.color, 1);
         int xAxis = mouseX - (width - xSize) / 2;

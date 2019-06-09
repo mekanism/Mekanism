@@ -3,7 +3,6 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import java.util.List;
 import mekanism.api.EnumColor;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismSounds;
 import mekanism.common.content.filter.IFilter;
@@ -14,30 +13,22 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEntityContainerBlock> extends GuiFilter<TILE> {
+public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEntityContainerBlock> extends GuiFilterBase<FILTER, TILE> {
 
-    protected String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
     protected ItemStack renderStack = ItemStack.EMPTY;
     protected List<ItemStack> iterStacks;
     protected GuiTextField text;
-    protected FILTER origFilter;
     protected int stackSwitch;
     protected int stackIndex;
-    protected FILTER filter;
-    protected boolean isNew;
-    protected int ticker;
 
     protected GuiTextFilter(EntityPlayer player, TILE tile) {
         super(player, tile);
@@ -64,11 +55,6 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         super.initGui();
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        buttonList.clear();
-        addButtons(guiWidth, guiHeight);
-        if (isNew) {
-            buttonList.get(1).enabled = false;
-        }
         text = new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
         text.setFocused(true);
@@ -112,13 +98,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         if (tileEntity instanceof TileEntityDigitalMiner) {
             drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 14);
             text.drawTextBox();
-            if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
-                int x = guiWidth + 149;
-                int y = guiHeight + 19;
-                drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
-                renderHelper.cleanup();
-            }
+            drawRect(xAxis, yAxis, guiWidth, guiHeight);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
             drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
             text.drawTextBox();
@@ -138,34 +118,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         }
         if (tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
             if (button == 0) {
-                MinerFilter mFilter = (MinerFilter) filter;
-                if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                    sendPacketToServer(isNew ? 5 : 0);
-                }
-                if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                    mFilter.requireStack = !mFilter.requireStack;
-                }
-                if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-                    boolean doNull = false;
-                    ItemStack stack = mc.player.inventory.getItemStack();
-                    ItemStack toUse = ItemStack.EMPTY;
-                    if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                        if (stack.getItem() instanceof ItemBlock) {
-                            if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                                toUse = stack.copy();
-                                toUse.setCount(1);
-                            }
-                        }
-                    } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                        doNull = true;
-                    }
-                    if (!toUse.isEmpty() || doNull) {
-                        mFilter.replaceStack = toUse;
-                    }
-                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                }
+                minerFilterClickCommon(xAxis, yAxis, (MinerFilter) filter);
             }
         } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
             TransporterFilter tFilter = (TransporterFilter) filter;

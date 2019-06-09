@@ -1,7 +1,6 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.miner.MOreDictFilter;
@@ -50,19 +49,8 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
                                 LangUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
         renderScaledText(LangUtils.localize("gui.key") + ": " + filter.getOreDictName(), 35, 32, 0x00CD00, 107);
-        if (!renderStack.isEmpty()) {
-            try {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
-                renderHelper.cleanup();
-            } catch (Exception ignored) {
-            }
-        }
-        if (!filter.replaceStack.isEmpty()) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-            itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
-            renderHelper.cleanup();
-        }
+        renderItem(renderStack, 12, 19);
+        renderItem(filter.replaceStack, 149, 19);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {

@@ -1,7 +1,6 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TOreDictFilter;
@@ -51,14 +50,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
         fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
         renderScaledText(LangUtils.localize("gui.key") + ": " + filter.getOreDictName(), 35, 32, 0x00CD00, 107);
         fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
-        if (!renderStack.isEmpty()) {
-            try {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
-                renderHelper.cleanup();
-            } catch (Exception ignored) {
-            }
-        }
+        renderItem(renderStack, 12, 19);
         drawColorIcon(12, 44, filter.color, 1);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;

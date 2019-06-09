@@ -3,7 +3,6 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MItemStackFilter;
@@ -77,15 +76,9 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         fontRenderer.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
         if (!filter.itemType.isEmpty()) {
             renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 107);
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-            itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
-            renderHelper.cleanup();
+            renderItem(filter.itemType, 12, 19);
         }
-        if (!filter.replaceStack.isEmpty()) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-            itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
-            renderHelper.cleanup();
-        }
+        renderItem(filter.replaceStack, 149, 19);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
@@ -108,33 +101,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         if (button == 0) {
             int xAxis = mouseX - (width - xSize) / 2;
             int yAxis = mouseY - (height - ySize) / 2;
-            if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                sendPacketToServer(isNew ? 5 : 0);
-            }
-            if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                filter.requireStack = !filter.requireStack;
-            }
-            if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-                boolean doNull = false;
-                ItemStack stack = mc.player.inventory.getItemStack();
-                ItemStack toUse = ItemStack.EMPTY;
-                if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    if (stack.getItem() instanceof ItemBlock) {
-                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                            toUse = stack.copy();
-                            toUse.setCount(1);
-                        }
-                    }
-                } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    doNull = true;
-                }
-                if (!toUse.isEmpty() || doNull) {
-                    filter.replaceStack = toUse;
-                }
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
+            minerFilterClickCommon(xAxis, yAxis, filter);
             if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 filter.fuzzy = !filter.fuzzy;

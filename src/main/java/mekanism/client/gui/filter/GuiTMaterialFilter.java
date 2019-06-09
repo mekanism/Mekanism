@@ -2,7 +2,6 @@ package mekanism.client.gui.filter;
 
 import java.io.IOException;
 import mekanism.api.Coord4D;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
@@ -62,9 +61,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
         if (!filter.getMaterialItem().isEmpty()) {
             renderScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, 0x00CD00, 107);
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-            itemRender.renderItemAndEffectIntoGUI(filter.getMaterialItem(), 12, 19);
-            renderHelper.cleanup();
+            renderItem(filter.getMaterialItem(), 12, 19);
         }
         drawColorIcon(12, 44, filter.color, 1);
         int xAxis = mouseX - (width - xSize) / 2;
