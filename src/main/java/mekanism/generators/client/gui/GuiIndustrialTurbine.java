@@ -90,11 +90,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         if (tileEntity.structure != null) {
             int displayInt = chooseByMode(tileEntity.structure.dumpMode, 142, 150, 158);
             drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
@@ -104,7 +100,6 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
                 displayGauge(23, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 1);
             }
         }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     @Override

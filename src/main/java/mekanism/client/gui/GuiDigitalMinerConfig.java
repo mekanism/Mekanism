@@ -387,16 +387,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
-
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
 
         for (int i = 0; i < 4; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {

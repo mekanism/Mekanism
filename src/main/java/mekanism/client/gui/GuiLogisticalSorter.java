@@ -458,19 +458,12 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         // Draw main gui background
-        mc.renderEngine.bindTexture(getGuiLocation());
         drawTexturedModalRect(guiLeft, guiTop);
 
         // Draw scrollbar
         drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
-
-        // Get mouse position relative to gui
-        final int xAxis = mouseX - guiLeft;
-        final int yAxis = mouseY - guiTop;
 
         // Draw filter backgrounds
         for (int i = 0; i < 4; i++) {

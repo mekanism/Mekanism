@@ -83,13 +83,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         if (!tileEntity.autoMode) {
             drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 238, xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91, 16);
         } else {
@@ -145,8 +139,6 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                 }
             }
         }
-
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     private boolean canEncode() {

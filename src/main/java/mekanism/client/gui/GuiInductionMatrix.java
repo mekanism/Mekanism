@@ -45,10 +45,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        mc.renderEngine.bindTexture(getGuiLocation());
-        drawDefaultTexturedModalRect();
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         if (tileEntity.getScaledEnergyLevel(58) > 0) {
             displayGauge(7, 14, tileEntity.getScaledEnergyLevel(58), 0);
             displayGauge(23, 14, tileEntity.getScaledEnergyLevel(58), 1);

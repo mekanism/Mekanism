@@ -43,13 +43,7 @@ public class GuiDictionary extends GuiMekanism {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth();
             int x = guiWidth + 6;
@@ -57,7 +51,6 @@ public class GuiDictionary extends GuiMekanism {
             drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
             renderHelper.cleanup();
         }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     @Override

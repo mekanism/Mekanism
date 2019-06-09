@@ -72,10 +72,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        drawDefaultTexturedModalRect();
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         minField.drawTextBox();
         maxField.drawTextBox();
         timerField.drawTextBox();

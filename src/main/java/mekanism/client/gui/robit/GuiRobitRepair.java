@@ -131,10 +131,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(guiWidth, guiHeight, xAxis, yAxis);
         drawTexturedModalRect(guiWidth + 59, guiHeight + 20, 0, ySize + (repairContainer.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((repairContainer.getSlot(0).getHasStack() || repairContainer.getSlot(1).getHasStack()) && !repairContainer.getSlot(2).getHasStack()) {
             drawTexturedModalRect(guiWidth + 99, guiHeight + 45, xSize + 18, 36, 28, 21);

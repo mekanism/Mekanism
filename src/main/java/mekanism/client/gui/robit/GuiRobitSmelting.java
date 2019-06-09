@@ -27,10 +27,8 @@ public class GuiRobitSmelting extends GuiRobit {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(guiWidth, guiHeight, xAxis, yAxis);
         int displayInt;
         if (robit.furnaceBurnTime > 0) {
             displayInt = getBurnTimeRemainingScaled(12);

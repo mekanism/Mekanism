@@ -36,8 +36,6 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         super(player, tile);
     }
 
-    protected abstract void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis);
-
     @Override
     public void initGui() {
         super.initGui();
@@ -48,18 +46,6 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         if (isNew) {
             buttonList.get(1).enabled = false;
         }
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
-        drawGuiContainerBackgroundLayer(guiWidth, guiHeight, xAxis, yAxis);
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {

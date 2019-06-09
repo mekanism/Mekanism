@@ -34,14 +34,7 @@ public abstract class GuiRobit extends GuiMekanism {
     protected abstract String getBackgroundImage();
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         boolean correctX = xAxis >= 179 && xAxis <= 197;
         drawRect(correctX, yAxis, guiWidth, guiHeight, 10, 0);
         drawRect(correctX, yAxis, guiWidth, guiHeight, 30, 36);

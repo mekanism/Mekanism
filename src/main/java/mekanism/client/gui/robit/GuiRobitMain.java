@@ -117,14 +117,7 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png"));
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 201, xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28, 18);
         drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 201, 36, xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48, 18);
         drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 201, 72, xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68, 18);
@@ -197,6 +190,6 @@ public class GuiRobitMain extends GuiMekanism {
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return null;
+        return MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png");
     }
 }

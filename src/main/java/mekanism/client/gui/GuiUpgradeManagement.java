@@ -110,13 +110,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
         if (selectedType == null) {
             drawTexturedModalRect(guiWidth + 136, guiHeight + 57, 176 + 14, 24, 12, 12);
@@ -149,7 +143,6 @@ public class GuiUpgradeManagement extends GuiMekanism {
             drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 0, yRender, 58, 12);
             GLSMHelper.INSTANCE.resetColor();
         }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     private Set<Upgrade> getCurrentUpgrades() {

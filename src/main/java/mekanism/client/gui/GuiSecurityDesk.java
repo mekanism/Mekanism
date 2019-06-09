@@ -195,13 +195,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         //TODO: replace compare with uuid instead of clientOwner and player name
         if (tileEntity.frequency != null && tileEntity.clientOwner != null && mc.player.getName().equals(tileEntity.clientOwner)) {
             drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
@@ -241,7 +235,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
             drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 128, 40, 16);
         }
         drawTexturedModalRect(guiWidth + 123, guiHeight + 68, xSize, xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79, 11);
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         trustedField.drawTextBox();
     }
 }

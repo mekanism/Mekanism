@@ -63,13 +63,6 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        drawDefaultTexturedModalRect();
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    }
-
-    @Override
     protected ResourceLocation getGuiLocation() {
         return MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png");
     }

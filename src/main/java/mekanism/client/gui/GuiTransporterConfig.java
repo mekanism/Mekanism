@@ -48,14 +48,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 190, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
         drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 204, xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20, 14);
         for (int i = 0; i < slotPosMap.size(); i++) {

@@ -111,16 +111,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-
+    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
