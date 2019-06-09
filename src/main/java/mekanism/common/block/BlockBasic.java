@@ -269,17 +269,22 @@ public abstract class BlockBasic extends BlockTileDrops {
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         IBlockState state = world.getBlockState(pos);
         BasicBlockType type = BasicBlockType.get(getBasicBlock(), state.getBlock().getMetaFromState(state));
-        if (type == BasicBlockType.REFINED_OBSIDIAN) {
-            return 2400F;
+        switch(type) {
+            case REFINED_OBSIDIAN:
+                return 2400F;
+            case OSMIUM_BLOCK:
+                return 12F;
+            case STEEL_BLOCK:
+            case BRONZE_BLOCK:
+            case STEEL_CASING:
+            case SECURITY_DESK:
+            case THERMAL_EVAPORATION_BLOCK:
+            case THERMAL_EVAPORATION_VALVE:
+            case THERMAL_EVAPORATION_CONTROLLER:
+                  return 9F;
+            default:
+                return blockResistance / 5F;
         }
-        else if (type == BasicBlockType.OSMIUM_BLOCK) {
-            return 12F;
-        }
-        else if (type == BasicBlockType.STEEL_BLOCK || type == BasicBlockType.BRONZE_BLOCK || type == BasicBlockType.STEEL_CASING || type == BasicBlockType.SECURITY_DESK
-              ||type == BasicBlockType.THERMAL_EVAPORATION_BLOCK || type == BasicBlockType.THERMAL_EVAPORATION_VALVE  || type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER) {
-            return 9F;
-        }
-        return blockResistance / 5F;
     }
 
     @Override
