@@ -16,10 +16,6 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE e
     }
 
     @Override
-    protected void sendPacketToServer(int guiID) {
-    }
-
-    @Override
     public void updateScreen() {
         super.updateScreen();
         if (ticker > 0) {

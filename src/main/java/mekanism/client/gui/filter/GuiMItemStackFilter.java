@@ -48,6 +48,11 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     }
 
     @Override
+    protected void sendPacketToServer(int guiID) {
+        Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
+    }
+
+    @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
@@ -57,14 +62,14 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 } else {
                     Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
-                Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+                sendPacketToServer(0);
             } else {
                 status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
                 ticker = 20;
             }
         } else if (guibutton.id == 1) {
             Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-            Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+            sendPacketToServer(0);
         }
     }
 

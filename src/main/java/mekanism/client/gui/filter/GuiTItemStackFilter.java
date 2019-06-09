@@ -76,7 +76,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                     } else {
                         Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
                     }
-                    Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+                    sendPacketToServer(0);
                 } else if (min > max) {
                     status = EnumColor.DARK_RED + "Max<min";
                     ticker = 20;
@@ -93,7 +93,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             }
         } else if (guibutton.id == 1) {
             Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-            Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+            sendPacketToServer(0);
         }
     }
 
@@ -162,6 +162,11 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         drawTexturedModalRect(guiLeft + 128, guiTop + 44, 187, xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55, 11);
         minField.drawTextBox();
         maxField.drawTextBox();
+    }
+
+    @Override
+    protected void sendPacketToServer(int guiID) {
+        Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
     }
 
     @Override
