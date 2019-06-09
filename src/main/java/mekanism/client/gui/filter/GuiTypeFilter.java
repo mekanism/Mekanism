@@ -15,7 +15,7 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
         super(player, tile);
     }
 
-    protected void drawItemStackBackground(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawItemStackBackground(int xAxis, int yAxis) {
     }
 
     @Override
@@ -23,13 +23,13 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
         drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
         if (tileEntity instanceof TileEntityDigitalMiner) {
             drawTexturedModalRect(guiLeft + 148, guiTop + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 11);
-            drawRect(xAxis, yAxis, guiLeft, guiTop);
+            drawRect(xAxis, yAxis);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
             drawTexturedModalRect(guiLeft + 11, guiTop + 64, 198, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
         }
         //Draw the itemstack specific background
-        drawItemStackBackground(guiLeft, guiTop, xAxis, yAxis);
+        drawItemStackBackground(xAxis, yAxis);
 
-        drawRect(xAxis, yAxis, guiLeft, guiTop);
+        drawRect(xAxis, yAxis);
     }
 }

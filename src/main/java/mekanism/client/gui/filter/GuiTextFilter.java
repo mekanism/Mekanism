@@ -38,8 +38,8 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
-    protected GuiTextField createTextField(int guiWidth, int guiHeight) {
-        return new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
+    protected GuiTextField createTextField() {
+        return new GuiTextField(2, fontRenderer, guiLeft + 35, guiTop + 47, 95, 12);
     }
 
     @Override
@@ -73,7 +73,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         if (tileEntity instanceof TileEntityDigitalMiner) {
             drawTexturedModalRect(guiLeft + 148, guiTop + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 14);
             text.drawTextBox();
-            drawRect(xAxis, yAxis, guiLeft, guiTop);
+            drawRect(xAxis, yAxis);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
             drawTexturedModalRect(guiLeft + 11, guiTop + 64, 199, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
             text.drawTextBox();

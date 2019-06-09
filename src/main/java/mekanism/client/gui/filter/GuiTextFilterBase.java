@@ -28,7 +28,7 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
 
     protected abstract void setText();
 
-    protected abstract GuiTextField createTextField(int guiWidth, int guiHeight);
+    protected abstract GuiTextField createTextField();
 
     protected boolean wasTextboxKey(char c, int i) {
         return Character.isLetter(c) || Character.isDigit(c) || isTextboxKey(c, i);
@@ -37,7 +37,7 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
     @Override
     public void initGui() {
         super.initGui();
-        text = createTextField(guiLeft, guiTop);
+        text = createTextField();
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
         text.setFocused(true);
     }

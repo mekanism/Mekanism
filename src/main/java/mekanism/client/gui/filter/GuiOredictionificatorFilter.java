@@ -42,9 +42,9 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     @Override
-    protected void addButtons(int guiWidth, int guiHeight) {
-        buttonList.add(new GuiButton(0, guiWidth + 31, guiHeight + 62, 54, 20, LangUtils.localize("gui.save")));
-        buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 54, 20, LangUtils.localize("gui.delete")));
+    protected void addButtons() {
+        buttonList.add(new GuiButton(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
+        buttonList.add(new GuiButton(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
     }
 
     @Override
@@ -70,8 +70,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     @Override
-    protected GuiTextField createTextField(int guiWidth, int guiHeight) {
-        return new GuiTextField(2, fontRenderer, guiWidth + 33, guiHeight + 48, 96, 12);
+    protected GuiTextField createTextField() {
+        return new GuiTextField(2, fontRenderer, guiLeft + 33, guiTop + 48, 96, 12);
     }
 
     @Override

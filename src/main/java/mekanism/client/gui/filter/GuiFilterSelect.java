@@ -23,11 +23,11 @@ public abstract class GuiFilterSelect<TILE extends TileEntityContainerBlock> ext
     }
 
     @Override
-    protected void addButtons(int guiWidth, int guiHeight) {
-        buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, LangUtils.localize("gui.itemstack")));
-        buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, LangUtils.localize("gui.oredict")));
-        buttonList.add(new GuiButton(2, guiWidth + 24, guiHeight + 72, 128, 20, LangUtils.localize("gui.material")));
-        buttonList.add(new GuiButton(3, guiWidth + 24, guiHeight + 92, 128, 20, LangUtils.localize("gui.modID")));
+    protected void addButtons() {
+        buttonList.add(new GuiButton(0, guiLeft + 24, guiTop + 32, 128, 20, LangUtils.localize("gui.itemstack")));
+        buttonList.add(new GuiButton(1, guiLeft + 24, guiTop + 52, 128, 20, LangUtils.localize("gui.oredict")));
+        buttonList.add(new GuiButton(2, guiLeft + 24, guiTop + 72, 128, 20, LangUtils.localize("gui.material")));
+        buttonList.add(new GuiButton(3, guiLeft + 24, guiTop + 92, 128, 20, LangUtils.localize("gui.modID")));
     }
 
     @Override

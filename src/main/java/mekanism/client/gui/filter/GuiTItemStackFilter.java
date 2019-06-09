@@ -45,9 +45,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     }
 
     @Override
-    protected void addButtons(int guiWidth, int guiHeight) {
-        buttonList.add(new GuiButton(0, guiWidth + 47, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttonList.add(new GuiButton(1, guiWidth + 109, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
+    protected void addButtons() {
+        buttonList.add(new GuiButton(0, guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
+        buttonList.add(new GuiButton(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
     }
 
     @Override
@@ -158,8 +158,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     }
 
     @Override
-    protected void drawItemStackBackground(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 128, guiHeight + 44, 187, xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55, 11);
+    protected void drawItemStackBackground(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 128, guiTop + 44, 187, xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55, 11);
         minField.drawTextBox();
         maxField.drawTextBox();
     }
