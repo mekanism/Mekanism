@@ -349,7 +349,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
             MinerFilter filter = tileEntity.filters.get(getFilterIndex() + i);
             if (filter != null) {
                 int yStart = i * 29 + 18;
-
                 if (filter instanceof MItemStackFilter) {
                     renderItem(((MItemStackFilter) filter).itemType, yStart);
                     fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
@@ -383,7 +382,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         //TODO: This try catch got extracted with it but is there any real need for it to exist in the first place?
         try {
             if (!stack.isEmpty()) {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableDepth().enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(stack, 59, yStart + 3);
                 renderHelper.cleanup();
             }
@@ -406,9 +405,6 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         for (int i = 0; i < 4; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 MinerFilter filter = tileEntity.filters.get(getFilterIndex() + i);
-                int yStart = i * 29 + 18;
-                boolean mouseOver = xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart + 29;
-
                 MekanismRenderHelper renderHelper = new MekanismRenderHelper();
                 if (filter instanceof MItemStackFilter) {
                     renderHelper.color(EnumColor.INDIGO, 1.0F, 2.5F);
@@ -419,7 +415,8 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                 } else if (filter instanceof MModIDFilter) {
                     renderHelper.color(EnumColor.PINK, 1.0F, 2.5F);
                 }
-
+                int yStart = i * 29 + 18;
+                boolean mouseOver = xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart + 29;
                 drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
                 renderHelper.cleanup();
 

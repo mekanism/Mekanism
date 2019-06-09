@@ -9,8 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityContainerBlock> extends
-      GuiFilter<TILE> {
+public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityContainerBlock> extends GuiFilter<TILE> {
 
     protected String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
     protected boolean isNew = false;

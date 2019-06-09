@@ -20,8 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE extends TileEntityContainerBlock> extends
-      GuiFilter<TILE> {
+public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE extends TileEntityContainerBlock> extends GuiFilter<TILE> {
 
     protected String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
     protected ItemStack renderStack = ItemStack.EMPTY;
