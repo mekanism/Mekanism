@@ -58,7 +58,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
                     IFluidHandler container = connectedAcceptors[side.ordinal()];
                     if (container != null) {
                         FluidStack received = container.drain(getAvailablePull(), false);
-                        if (received != null && received.amount != 0) {
+                        if (received != null && received.amount != 0 && takeFluid(received, false) == received.amount) {
                             container.drain(takeFluid(received, true), true);
                         }
                     }
