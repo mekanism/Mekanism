@@ -296,25 +296,22 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-
         buttonList.clear();
-        buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 96, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(new GuiButton(0, guiLeft + 56, guiTop + 136, 96, 20, LangUtils.localize("gui.newFilter")));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
         String prevMin = minField != null ? minField.getText() : "";
         String prevMax = maxField != null ? maxField.getText() : "";
 
-        radiusField = new GuiTextField(1, fontRenderer, guiWidth + 12, guiHeight + 67, 26, 11);
+        radiusField = new GuiTextField(1, fontRenderer, guiLeft + 12, guiTop + 67, 26, 11);
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.current().general.digitalMinerMaxRadius.val()).length());
         radiusField.setText(prevRad);
 
-        minField = new GuiTextField(2, fontRenderer, guiWidth + 12, guiHeight + 92, 26, 11);
+        minField = new GuiTextField(2, fontRenderer, guiLeft + 12, guiTop + 92, 26, 11);
         minField.setMaxStringLength(3);
         minField.setText(prevMin);
 
-        maxField = new GuiTextField(3, fontRenderer, guiWidth + 12, guiHeight + 117, 26, 11);
+        maxField = new GuiTextField(3, fontRenderer, guiLeft + 12, guiTop + 117, 26, 11);
         maxField.setMaxStringLength(3);
         maxField.setText(prevMax);
     }
@@ -387,7 +384,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
         for (int i = 0; i < 4; i++) {
@@ -404,7 +401,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                 }
                 int yStart = i * 29 + 18;
                 boolean mouseOver = xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart + 29;
-                drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
+                drawTexturedModalRect(guiLeft + 56, guiTop + yStart, mouseOver ? 0 : 96, 166, 96, 29);
                 GLSMHelper.INSTANCE.resetColor();
 
                 // Draw sort buttons
@@ -419,11 +416,11 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                 }
             }
         }
-        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiWidth + 39, guiHeight + 67, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78, 11);
-        drawTexturedModalRect(guiWidth + 39, guiHeight + 92, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103, 11);
-        drawTexturedModalRect(guiWidth + 39, guiHeight + 117, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128, 11);
-        drawTexturedModalRect(guiWidth + 11, guiHeight + 141, 198, xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155, 14);
+        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+        drawTexturedModalRect(guiLeft + 39, guiTop + 67, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78, 11);
+        drawTexturedModalRect(guiLeft + 39, guiTop + 92, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103, 11);
+        drawTexturedModalRect(guiLeft + 39, guiTop + 117, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128, 11);
+        drawTexturedModalRect(guiLeft + 11, guiTop + 141, 198, xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155, 14);
 
         radiusField.drawTextBox();
         minField.drawTextBox();

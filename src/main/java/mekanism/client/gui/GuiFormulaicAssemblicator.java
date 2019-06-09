@@ -83,41 +83,41 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         if (!tileEntity.autoMode) {
-            drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 238, xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiLeft + 44, guiTop + 75, 238, xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91, 16);
         } else {
-            drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 238, 32, 16, 16);
+            drawTexturedModalRect(guiLeft + 44, guiTop + 75, 238, 32, 16, 16);
         }
         if (!tileEntity.autoMode && tileEntity.isRecipe) {
             if (canEncode()) {
-                drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59, 14);
+                drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59, 14);
             } else {
-                drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 28, 14, 14);
+                drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, 28, 14, 14);
             }
-            drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 190, xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91, 16);
-            drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 206, xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiLeft + 71, guiTop + 75, 190, xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiLeft + 89, guiTop + 75, 206, xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91, 16);
         } else {
-            drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 28, 14, 14);
-            drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 176 + 14, 32, 16, 16);
-            drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 176 + 30, 32, 16, 16);
+            drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, 28, 14, 14);
+            drawTexturedModalRect(guiLeft + 71, guiTop + 75, 176 + 14, 32, 16, 16);
+            drawTexturedModalRect(guiLeft + 89, guiTop + 75, 176 + 30, 32, 16, 16);
         }
 
         if (tileEntity.formula != null) {
-            drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 222, xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91, 16);
-            drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 238, 48, xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiLeft + 107, guiTop + 75, 222, xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiLeft + 26, guiTop + 75, 238, 48, xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91, 16);
         } else {
-            drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 176 + 46, 32, 16, 16);
-            drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 176 + 62, 48 + 32, 16, 16);
+            drawTexturedModalRect(guiLeft + 107, guiTop + 75, 176 + 46, 32, 16, 16);
+            drawTexturedModalRect(guiLeft + 26, guiTop + 75, 176 + 62, 48 + 32, 16, 16);
         }
 
         if (tileEntity.operatingTicks > 0) {
             int display = (int) ((double) tileEntity.operatingTicks * 22 / (double) tileEntity.ticksRequired);
-            drawTexturedModalRect(guiWidth + 86, guiHeight + 43, 176, 48, display, 16);
+            drawTexturedModalRect(guiLeft + 86, guiTop + 43, 176, 48, display, 16);
         }
 
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
-        drawTexturedModalRect(guiWidth + 90, guiHeight + 25, tileEntity.isRecipe ? 2 : 20, 39, 14, 12);
+        drawTexturedModalRect(guiLeft + 90, guiTop + 25, tileEntity.isRecipe ? 2 : 20, 39, 14, 12);
 
         if (tileEntity.formula != null) {
             for (int i = 0; i < 9; i++) {
@@ -127,8 +127,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                     Slot slot = inventorySlots.inventorySlots.get(i + 20);
                     MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
 
-                    int guiX = guiWidth + slot.xPos;
-                    int guiY = guiHeight + slot.yPos;
+                    int guiX = guiLeft + slot.xPos;
+                    int guiY = guiTop + slot.yPos;
                     if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {
                         drawColorIcon(guiX, guiY, EnumColor.DARK_RED, 0.8F);
                     }

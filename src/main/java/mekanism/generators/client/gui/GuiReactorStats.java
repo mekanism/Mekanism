@@ -71,8 +71,8 @@ public class GuiReactorStats extends GuiMekanismTile<TileEntityReactorController
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
     }
 
     @Override

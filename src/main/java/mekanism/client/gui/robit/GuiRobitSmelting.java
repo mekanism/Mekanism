@@ -27,15 +27,15 @@ public class GuiRobitSmelting extends GuiRobit {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(guiWidth, guiHeight, xAxis, yAxis);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt;
         if (robit.furnaceBurnTime > 0) {
             displayInt = getBurnTimeRemainingScaled(12);
-            drawTexturedModalRect(guiWidth + 56, guiHeight + 36 + 12 - displayInt, 176 + 25 + 18, 36 + 12 - displayInt, 14, displayInt + 2);
+            drawTexturedModalRect(guiLeft + 56, guiTop + 36 + 12 - displayInt, 176 + 25 + 18, 36 + 12 - displayInt, 14, displayInt + 2);
         }
         displayInt = getCookProgressScaled(24);
-        drawTexturedModalRect(guiWidth + 79, guiHeight + 34, 176 + 25 + 18, 36 + 14, displayInt + 1, 16);
+        drawTexturedModalRect(guiLeft + 79, guiTop + 34, 176 + 25 + 18, 36 + 14, displayInt + 1, 16);
     }
 
     @Override

@@ -72,8 +72,8 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
         injectionRateField.drawTextBox();
     }
 
@@ -130,10 +130,8 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
-        injectionRateField = new GuiTextField(0, fontRenderer, guiWidth + 98, guiHeight + 115, 26, 11);
+        injectionRateField = new GuiTextField(0, fontRenderer, guiLeft + 98, guiTop + 115, 26, 11);
         injectionRateField.setMaxStringLength(2);
         injectionRateField.setText(prevRad);
     }

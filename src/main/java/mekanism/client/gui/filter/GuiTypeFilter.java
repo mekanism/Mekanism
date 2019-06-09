@@ -19,17 +19,17 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
         if (tileEntity instanceof TileEntityDigitalMiner) {
-            drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 11);
-            drawRect(xAxis, yAxis, guiWidth, guiHeight);
+            drawTexturedModalRect(guiLeft + 148, guiTop + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 11);
+            drawRect(xAxis, yAxis, guiLeft, guiTop);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
-            drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
+            drawTexturedModalRect(guiLeft + 11, guiTop + 64, 198, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
         }
         //Draw the itemstack specific background
-        drawItemStackBackground(guiWidth, guiHeight, xAxis, yAxis);
+        drawItemStackBackground(guiLeft, guiTop, xAxis, yAxis);
 
-        drawRect(xAxis, yAxis, guiWidth, guiHeight);
+        drawRect(xAxis, yAxis, guiLeft, guiTop);
     }
 }

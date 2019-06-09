@@ -34,18 +34,18 @@ public abstract class GuiRobit extends GuiMekanism {
     protected abstract String getBackgroundImage();
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         boolean correctX = xAxis >= 179 && xAxis <= 197;
-        drawRect(correctX, yAxis, guiWidth, guiHeight, 10, 0);
-        drawRect(correctX, yAxis, guiWidth, guiHeight, 30, 36);
-        drawRect(correctX, yAxis, guiWidth, guiHeight, 50, 72);
-        drawRect(correctX, yAxis, guiWidth, guiHeight, 70, 108);
-        drawRect(correctX, yAxis, guiWidth, guiHeight, 90, 144);
+        drawRect(correctX, yAxis, 10, 0);
+        drawRect(correctX, yAxis, 30, 36);
+        drawRect(correctX, yAxis, 50, 72);
+        drawRect(correctX, yAxis, 70, 108);
+        drawRect(correctX, yAxis, 90, 144);
     }
 
-    private void drawRect(boolean correctX, int yAxis, int guiWidth, int guiHeight, int heightBonus, int textureY) {
+    private void drawRect(boolean correctX, int yAxis, int heightBonus, int textureY) {
         int yBonus = correctX && yAxis >= heightBonus && yAxis <= heightBonus + 18 ? 0 : 18;
-        drawTexturedModalRect(guiWidth + 179, guiHeight + heightBonus, 201, textureY + yBonus, 18, 18);
+        drawTexturedModalRect(guiLeft + 179, guiTop + heightBonus, 201, textureY + yBonus, 18, 18);
     }
 
     private void buttonClicked(int id) {

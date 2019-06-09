@@ -53,12 +53,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        minField = new GuiTextField(2, fontRenderer, guiWidth + 149, guiHeight + 19, 20, 11);
+        minField = new GuiTextField(2, fontRenderer, guiLeft + 149, guiTop + 19, 20, 11);
         minField.setMaxStringLength(2);
         minField.setText("" + filter.min);
-        maxField = new GuiTextField(3, fontRenderer, guiWidth + 149, guiHeight + 31, 20, 11);
+        maxField = new GuiTextField(3, fontRenderer, guiLeft + 149, guiTop + 31, 20, 11);
         maxField.setMaxStringLength(2);
         maxField.setText("" + filter.max);
     }

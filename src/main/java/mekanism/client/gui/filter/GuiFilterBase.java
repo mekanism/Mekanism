@@ -39,10 +39,6 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        buttonList.clear();
-        addButtons(guiWidth, guiHeight);
         if (isNew) {
             buttonList.get(1).enabled = false;
         }

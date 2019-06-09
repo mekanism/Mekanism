@@ -78,16 +78,16 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiLeft + 165, guiTop + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
         int xOffset = tileEntity.tier == FactoryTier.BASIC ? 59 : tileEntity.tier == FactoryTier.ADVANCED ? 39 : 33;
         int xDistance = tileEntity.tier == FactoryTier.BASIC ? 38 : tileEntity.tier == FactoryTier.ADVANCED ? 26 : 19;
 
         for (int i = 0; i < tileEntity.tier.processes; i++) {
             int xPos = xOffset + (i * xDistance);
             displayInt = tileEntity.getScaledProgress(20, i);
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
+            drawTexturedModalRect(guiLeft + xPos, guiTop + 33, 176, 52, 8, displayInt);
         }
 
         if (tileEntity.getRecipeType().getFuelType() == MachineFuelType.ADVANCED) {
@@ -108,10 +108,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
 
     public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, TextureAtlasSprite icon) {
         if (icon != null) {
-            int guiWidth = (width - xSize) / 2;
-            int guiHeight = (height - ySize) / 2;
             mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, icon, sizeX, sizeY);
+            drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, icon, sizeX, sizeY);
         }
     }
 

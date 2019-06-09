@@ -72,10 +72,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         buttonList.clear();
-        buttonList.add(new GuiButton(0, guiWidth + 10, guiHeight + 86, 142, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(new GuiButton(0, guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter")));
     }
 
     @Override
@@ -111,8 +109,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232, 0, 12, 15);
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
@@ -120,7 +118,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 if (mouseOver) {
                     GLSMHelper.INSTANCE.color(EnumColor.GREY, 3.0F);
                 }
-                drawTexturedModalRect(guiWidth + 10, guiHeight + yStart, 0, 230, 142, 22);
+                drawTexturedModalRect(guiLeft + 10, guiTop + yStart, 0, 230, 142, 22);
                 if (mouseOver) {
                     GLSMHelper.INSTANCE.resetColor();
                 }

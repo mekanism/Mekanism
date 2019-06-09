@@ -61,8 +61,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, 52, tileEntity.getActive(), 12);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 20, guiTop + 37, 176, 52, tileEntity.getActive(), 12);
     }
 
     @Override

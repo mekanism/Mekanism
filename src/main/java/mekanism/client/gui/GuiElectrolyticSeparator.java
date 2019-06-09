@@ -94,12 +94,12 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int displayInt = chooseByMode(tileEntity.dumpLeft, 52, 60, 68);
-        drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, displayInt, 8, 8);
+        drawTexturedModalRect(guiLeft + 8, guiTop + 73, 176, displayInt, 8, 8);
 
         displayInt = chooseByMode(tileEntity.dumpRight, 52, 60, 68);
-        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
+        drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, displayInt, 8, 8);
     }
 
     private <T> T chooseByMode(TileEntityGasTank.GasMode dumping, T idleOption, T dumpingOption,

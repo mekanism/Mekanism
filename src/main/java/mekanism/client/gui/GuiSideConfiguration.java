@@ -81,9 +81,9 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 204, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
-        drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 190, xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20, 14);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 204, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
+        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 190, xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20, 14);
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
@@ -93,12 +93,12 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
                 if (doColor) {
                     GLSMHelper.INSTANCE.color(data.color);
                 }
-                drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14, 14);
+                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14, 14);
                 if (doColor) {
                     GLSMHelper.INSTANCE.resetColor();
                 }
             } else {
-                drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
+                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 28, 14, 14);
             }
         }
     }

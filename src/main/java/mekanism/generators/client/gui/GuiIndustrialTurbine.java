@@ -90,10 +90,10 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         if (tileEntity.structure != null) {
             int displayInt = chooseByMode(tileEntity.structure.dumpMode, 142, 150, 158);
-            drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
+            drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, displayInt, 8, 8);
             int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
             if (scaledFluidLevel > 0) {
                 displayGauge(7, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 0);

@@ -458,10 +458,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        // Draw main gui background
-        drawTexturedModalRect(guiLeft, guiTop);
-
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         // Draw scrollbar
         drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 

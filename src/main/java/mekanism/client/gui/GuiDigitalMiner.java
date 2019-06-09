@@ -69,18 +69,16 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         buttonList.clear();
-        startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, LangUtils.localize("gui.start"));
+        startButton = new GuiButton(0, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start"));
         if (tileEntity.searcher.state != State.IDLE && tileEntity.running) {
             startButton.enabled = false;
         }
-        stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, LangUtils.localize("gui.stop"));
+        stopButton = new GuiButton(1, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop"));
         if (tileEntity.searcher.state == State.IDLE || !tileEntity.running) {
             stopButton.enabled = false;
         }
-        configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, LangUtils.localize("gui.config"));
+        configButton = new GuiButton(2, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config"));
         if (tileEntity.searcher.state != State.IDLE) {
             configButton.enabled = false;
         }
@@ -170,13 +168,13 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 164, guiHeight + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
-        drawTexturedModalRect(guiWidth + 147, guiHeight + 47, 180, xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61, 14);
-        drawTexturedModalRect(guiWidth + 147, guiHeight + 63, 194, xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77, 14);
-        drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 208, xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61, 14);
-        drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 222, xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77, 14);
+        drawTexturedModalRect(guiLeft + 164, guiTop + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiLeft + 147, guiTop + 47, 180, xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61, 14);
+        drawTexturedModalRect(guiLeft + 147, guiTop + 63, 194, xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77, 14);
+        drawTexturedModalRect(guiLeft + 131, guiTop + 47, 208, xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61, 14);
+        drawTexturedModalRect(guiLeft + 131, guiTop + 63, 222, xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77, 14);
     }
 
     @Override

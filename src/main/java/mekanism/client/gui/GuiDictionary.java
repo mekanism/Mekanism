@@ -43,11 +43,11 @@ public class GuiDictionary extends GuiMekanism {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth();
-            int x = guiWidth + 6;
-            int y = guiHeight + 6;
+            int x = guiLeft + 6;
+            int y = guiTop + 6;
             drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
             renderHelper.cleanup();
         }

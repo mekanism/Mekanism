@@ -45,7 +45,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         if (tileEntity.getScaledEnergyLevel(58) > 0) {
             displayGauge(7, 14, tileEntity.getScaledEnergyLevel(58), 0);
             displayGauge(23, 14, tileEntity.getScaledEnergyLevel(58), 1);
@@ -58,8 +58,6 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     }
 
     public void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/) {
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         int start = 0;
         while (true) {
             int renderRemaining;
@@ -71,13 +69,13 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                 scale = 0;
             }
             mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
+            drawTexturedModalRect(guiLeft + xPos, guiTop + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
             start += 16;
             if (renderRemaining == 0 || scale == 0) {
                 break;
             }
         }
         mc.renderEngine.bindTexture(getGuiLocation());
-        drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+        drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 176, side == 0 ? 0 : 54, 16, 54);
     }
 }

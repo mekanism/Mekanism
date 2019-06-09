@@ -23,15 +23,6 @@ public abstract class GuiFilterSelect<TILE extends TileEntityContainerBlock> ext
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        buttonList.clear();
-        addButtons(guiWidth, guiHeight);
-    }
-
-    @Override
     protected void addButtons(int guiWidth, int guiHeight) {
         buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, LangUtils.localize("gui.itemstack")));
         buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, LangUtils.localize("gui.oredict")));
@@ -46,8 +37,8 @@ public abstract class GuiFilterSelect<TILE extends TileEntityContainerBlock> ext
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, inBounds(xAxis, yAxis), 11);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, inBounds(xAxis, yAxis), 11);
     }
 
     @Override

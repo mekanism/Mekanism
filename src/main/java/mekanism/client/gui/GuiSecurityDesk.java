@@ -43,11 +43,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         buttonList.clear();
-        removeButton = new GuiButton(0, guiWidth + 13, guiHeight + 81, 122, 20, LangUtils.localize("gui.remove"));
-        trustedField = new GuiTextField(1, fontRenderer, guiWidth + 35, guiHeight + 69, 86, 11);
+        removeButton = new GuiButton(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove"));
+        trustedField = new GuiTextField(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
         updateButtons();
@@ -195,46 +193,46 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         //TODO: replace compare with uuid instead of clientOwner and player name
         if (tileEntity.frequency != null && tileEntity.clientOwner != null && mc.player.getName().equals(tileEntity.clientOwner)) {
-            drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
-            drawTexturedModalRect(guiWidth + 146, guiHeight + 59, xSize + 12, xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75, 16);
+            drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
+            drawTexturedModalRect(guiLeft + 146, guiTop + 59, xSize + 12, xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75, 16);
             if (tileEntity.frequency.securityMode != SecurityMode.PUBLIC) {
                 if (xAxis >= 13 && xAxis <= 53 && yAxis >= 113 && yAxis <= 129) {
-                    drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 48, 40, 16);
+                    drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 48, 40, 16);
                 } else {
-                    drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 64, 40, 16);
+                    drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 64, 40, 16);
                 }
             } else {
-                drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 80, 40, 16);
+                drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 80, 40, 16);
             }
             if (tileEntity.frequency.securityMode != SecurityMode.PRIVATE) {
                 if (xAxis >= 54 && xAxis <= 94 && yAxis >= 113 && yAxis <= 129) {
-                    drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 48, 40, 16);
+                    drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 48, 40, 16);
                 } else {
-                    drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 64, 40, 16);
+                    drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 64, 40, 16);
                 }
             } else {
-                drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 80, 40, 16);
+                drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 80, 40, 16);
             }
             if (tileEntity.frequency.securityMode != SecurityMode.TRUSTED) {
                 if (xAxis >= 95 && xAxis <= 135 && yAxis >= 113 && yAxis <= 129) {
-                    drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 96, 40, 16);
+                    drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 96, 40, 16);
                 } else {
-                    drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 112, 40, 16);
+                    drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 112, 40, 16);
                 }
             } else {
-                drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 128, 40, 16);
+                drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 128, 40, 16);
             }
         } else {
-            drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize, 28, 6, 6);
-            drawTexturedModalRect(guiWidth + 146, guiHeight + 59, xSize + 12, 32, 16, 16);
-            drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 80, 40, 16);
-            drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 80, 40, 16);
-            drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 128, 40, 16);
+            drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);
+            drawTexturedModalRect(guiLeft + 146, guiTop + 59, xSize + 12, 32, 16, 16);
+            drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 80, 40, 16);
+            drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 80, 40, 16);
+            drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 128, 40, 16);
         }
-        drawTexturedModalRect(guiWidth + 123, guiHeight + 68, xSize, xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79, 11);
+        drawTexturedModalRect(guiLeft + 123, guiTop + 68, xSize, xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79, 11);
         trustedField.drawTextBox();
     }
 }

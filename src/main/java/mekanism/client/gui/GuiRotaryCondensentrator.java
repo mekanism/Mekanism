@@ -92,10 +92,10 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 36, displayInt, 4);
-        drawTexturedModalRect(guiWidth + 4, guiHeight + 4, 176, xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22, 18);
+        drawTexturedModalRect(guiLeft + 116, guiTop + 76, 176, 36, displayInt, 4);
+        drawTexturedModalRect(guiLeft + 4, guiTop + 4, 176, xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22, 18);
     }
 
     @Override

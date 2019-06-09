@@ -110,15 +110,15 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
         if (selectedType == null) {
-            drawTexturedModalRect(guiWidth + 136, guiHeight + 57, 176 + 14, 24, 12, 12);
+            drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, 24, 12, 12);
         } else {
-            drawTexturedModalRect(guiWidth + 136, guiHeight + 57, 176 + 14, xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69, 12);
+            drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69, 12);
         }
         int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
-        drawTexturedModalRect(guiWidth + 154, guiHeight + 26, 176, 28, 10, displayInt);
+        drawTexturedModalRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
         if (selectedType != null && tileEntity.getComponent().getUpgrades(selectedType) == 0) {
             selectedType = null;
         }
@@ -140,7 +140,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
                 yRender = 166 + 12;
             }
             GLSMHelper.INSTANCE.color(upgrade.getColor(), 1.0F, 2.5F);
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 0, yRender, 58, 12);
+            drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 0, yRender, 58, 12);
             GLSMHelper.INSTANCE.resetColor();
         }
     }

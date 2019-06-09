@@ -77,20 +77,18 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
     }
 
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
-        drawGuiContainerBackgroundLayer(guiWidth, guiHeight, xAxis, yAxis);
+        drawTexturedModalRect(guiLeft, guiTop);
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
+        drawGuiContainerBackgroundLayer(xAxis, yAxis);
 
-        guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiWidth, guiHeight));
+        guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiLeft, guiTop));
     }
 
     @Override

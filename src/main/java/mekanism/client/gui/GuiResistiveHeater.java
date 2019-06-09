@@ -58,10 +58,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
-        energyUsageField = new GuiTextField(0, fontRenderer, guiWidth + 49, guiHeight + 52, 66, 11);
+        energyUsageField = new GuiTextField(0, fontRenderer, guiLeft + 49, guiTop + 52, 66, 11);
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setEnableBackgroundDrawing(false);
         energyUsageField.setText(prevEnergyUsage);
@@ -77,8 +75,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 116, guiHeight + 51, xSize, xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61, 11);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 116, guiTop + 51, xSize, xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61, 11);
         energyUsageField.drawTextBox();
     }
 

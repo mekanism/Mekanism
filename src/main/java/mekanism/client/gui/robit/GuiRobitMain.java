@@ -59,15 +59,11 @@ public class GuiRobitMain extends GuiMekanism {
     @Override
     public void initGui() {
         super.initGui();
-
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-
         buttonList.clear();
-        buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, LangUtils.localize("gui.confirm")));
+        buttonList.add(confirmName = new GuiButton(0, guiLeft + 58, guiTop + 47, 60, 20, LangUtils.localize("gui.confirm")));
         confirmName.visible = displayNameChange;
 
-        nameChangeField = new GuiTextField(1, fontRenderer, guiWidth + 48, guiHeight + 21, 80, 12);
+        nameChangeField = new GuiTextField(1, fontRenderer, guiLeft + 48, guiTop + 21, 80, 12);
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused(true);
     }
@@ -117,20 +113,20 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 201, xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28, 18);
-        drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 201, 36, xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48, 18);
-        drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 201, 72, xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68, 18);
-        drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 201, 108, xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88, 18);
-        drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 201, 144, xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108, 18);
-        drawTexturedModalRect(guiWidth + 152, guiHeight + 54, 201, 180, xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72, 18);
-        drawTexturedModalRect(guiWidth + 6, guiHeight + 54, 201, 216, xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72, 18);
-        drawTexturedModalRect(guiWidth + 6, guiHeight + 16, 219, 36, xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34, 18);
-        drawTexturedModalRect(guiWidth + 6, guiHeight + 35, 219, 72, xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53, 18);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 179, guiTop + 10, 201, xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28, 18);
+        drawTexturedModalRect(guiLeft + 179, guiTop + 30, 201, 36, xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48, 18);
+        drawTexturedModalRect(guiLeft + 179, guiTop + 50, 201, 72, xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68, 18);
+        drawTexturedModalRect(guiLeft + 179, guiTop + 70, 201, 108, xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88, 18);
+        drawTexturedModalRect(guiLeft + 179, guiTop + 90, 201, 144, xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108, 18);
+        drawTexturedModalRect(guiLeft + 152, guiTop + 54, 201, 180, xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72, 18);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 54, 201, 216, xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72, 18);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 16, 219, 36, xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34, 18);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 35, 219, 72, xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53, 18);
         int displayInt = getScaledEnergyLevel(120);
-        drawTexturedModalRect(guiWidth + 28, guiHeight + 75, 0, 166, displayInt, 4);
+        drawTexturedModalRect(guiLeft + 28, guiTop + 75, 0, 166, displayInt, 4);
         if (displayNameChange) {
-            drawTexturedModalRect(guiWidth + 28, guiHeight + 17, 0, 166 + 4, 120, 54);
+            drawTexturedModalRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
             nameChangeField.drawTextBox();
         }
     }

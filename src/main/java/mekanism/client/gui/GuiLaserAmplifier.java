@@ -72,7 +72,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         minField.drawTextBox();
         maxField.drawTextBox();
         timerField.drawTextBox();
@@ -168,21 +168,18 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-
         String prevTime = timerField != null ? timerField.getText() : "";
-        timerField = new GuiTextField(0, fontRenderer, guiWidth + 96, guiHeight + 28, 36, 11);
+        timerField = new GuiTextField(0, fontRenderer, guiLeft + 96, guiTop + 28, 36, 11);
         timerField.setMaxStringLength(4);
         timerField.setText(prevTime);
 
         String prevMin = minField != null ? minField.getText() : "";
-        minField = new GuiTextField(1, fontRenderer, guiWidth + 96, guiHeight + 43, 72, 11);
+        minField = new GuiTextField(1, fontRenderer, guiLeft + 96, guiTop + 43, 72, 11);
         minField.setMaxStringLength(10);
         minField.setText(prevMin);
 
         String prevMax = maxField != null ? maxField.getText() : "";
-        maxField = new GuiTextField(2, fontRenderer, guiWidth + 96, guiHeight + 58, 72, 11);
+        maxField = new GuiTextField(2, fontRenderer, guiLeft + 96, guiTop + 58, 72, 11);
         maxField.setMaxStringLength(10);
         maxField.setText(prevMax);
     }

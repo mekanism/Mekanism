@@ -17,8 +17,8 @@ public abstract class GuiChemical<TILE extends TileEntityElectricBlock> extends 
     protected abstract void drawForegroundText();
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int guiWidth, int guiHeight, int xAxis, int yAxis) {
-        drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, tileEntity.getScaledEnergyLevel(52), 4);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        drawTexturedModalRect(guiLeft + 116, guiTop + 76, 176, 0, tileEntity.getScaledEnergyLevel(52), 4);
     }
 
     @Override
