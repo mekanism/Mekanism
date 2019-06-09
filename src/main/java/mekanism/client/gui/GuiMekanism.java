@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -172,6 +174,12 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         int textWidth = fontRenderer.getStringWidth(text);
         int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
         fontRenderer.drawString(text, centerX, y, color);
+    }
+
+    protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {
+        if (color != null) {
+            drawRect(x, y, x + 16, y + 16, MekanismRenderer.getColorARGB(color, alpha));
+        }
     }
 
     protected abstract ResourceLocation getGuiLocation();

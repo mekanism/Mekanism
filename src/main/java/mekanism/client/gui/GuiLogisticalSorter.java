@@ -15,7 +15,6 @@ import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
@@ -34,7 +33,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -438,13 +436,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                 }
             }
         }
-
-        if (tileEntity.color != null) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableLighting().enableRescaleNormal();
-            mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            drawTexturedRectFromIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
-            renderHelper.cleanup();
-        }
+        drawColorIcon(13, 137, tileEntity.color, 1);
 
         // Draw tooltips for buttons
         if (xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153) {

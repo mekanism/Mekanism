@@ -4,7 +4,6 @@ import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
@@ -20,7 +19,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -134,12 +132,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
             renderHelper.cleanup();
         }
-        if (filter.color != null) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableLighting().enableRescaleNormal();
-            mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
-            renderHelper.cleanup();
-        }
+        drawColorIcon(12, 44, filter.color, 1);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {

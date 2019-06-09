@@ -214,13 +214,15 @@ public class MekanismRenderer {
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
     }
 
+    //TODO: Remove/replace this as it is now only used for EnumColor.WHITE for the miner visual render,
+    // and we don't need to register all the different colors just for that.
     public static TextureAtlasSprite getColorIcon(EnumColor color) {
         return colors[color.ordinal()];
     }
 
-    //TODO: This is at 80% opacity should it be a param instead?
-    public static int getColorARGB(EnumColor color) {
-        int argb = 204 << 24;
+    public static int getColorARGB(EnumColor color, float alpha) {
+        //TODO: ensure that alpha is between 0 and 1
+        int argb = (int) (255 * alpha) << 24;
         argb |= color.rgbCode[0] << 16;
         argb |= color.rgbCode[1] << 8;
         argb |= color.rgbCode[2];

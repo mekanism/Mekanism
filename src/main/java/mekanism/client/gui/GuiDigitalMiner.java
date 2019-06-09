@@ -15,7 +15,6 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiVisualsTab;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
@@ -134,9 +133,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         fontRenderer.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
         if (!tileEntity.missingStack.isEmpty()) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting().enableRescaleNormal();
-            int color = MekanismRenderer.getColorARGB(EnumColor.DARK_RED);
-            drawGradientRect(144, 27, 160, 43, color, color);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
+            drawColorIcon(144, 27, EnumColor.DARK_RED, 0.8F);
             itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);
             renderHelper.cleanup();
         } else {
