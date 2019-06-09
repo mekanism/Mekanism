@@ -76,14 +76,10 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 14, 14, 14);
-        }
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         injectionRateField.drawTextBox();
     }

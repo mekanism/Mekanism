@@ -81,14 +81,10 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61) {
-            drawTexturedModalRect(guiWidth + 116, guiHeight + 51, xSize, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 116, guiHeight + 51, xSize, 11, 11, 11);
-        }
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawTexturedModalRect(guiWidth + 116, guiHeight + 51, xSize, xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61, 11);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         energyUsageField.drawTextBox();
     }

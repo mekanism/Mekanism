@@ -21,7 +21,7 @@ public abstract class GuiChemical<TILE extends TileEntityElectricBlock> extends 
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         int displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, displayInt, 4);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

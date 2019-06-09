@@ -87,40 +87,22 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         int xAxis = mouseX - guiWidth;
         int yAxis = mouseY - guiHeight;
         if (!tileEntity.autoMode) {
-            if (xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91) {
-                drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 176 + 62, 0, 16, 16);
-            } else {
-                drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 176 + 62, 16, 16, 16);
-            }
+            drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 238, xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91, 16);
         } else {
-            drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 176 + 62, 32, 16, 16);
+            drawTexturedModalRect(guiWidth + 44, guiHeight + 75, 238, 32, 16, 16);
         }
         if (!tileEntity.autoMode && tileEntity.isRecipe) {
             if (canEncode()) {
-                if (xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59) {
-                    drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 0, 14, 14);
-                } else {
-                    drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 14, 14, 14);
-                }
+                drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59, 14);
             } else {
                 drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 28, 14, 14);
             }
-
-            if (xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91) {
-                drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 176 + 14, 0, 16, 16);
-            } else {
-                drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 176 + 14, 16, 16, 16);
-            }
-
-            if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
-                drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 176 + 30, 0, 16, 16);
-            } else {
-                drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 176 + 30, 16, 16, 16);
-            }
+            drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 190, xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiWidth + 89, guiHeight + 75, 206, xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91, 16);
         } else {
             drawTexturedModalRect(guiWidth + 7, guiHeight + 45, 176, 28, 14, 14);
             drawTexturedModalRect(guiWidth + 71, guiHeight + 75, 176 + 14, 32, 16, 16);
@@ -128,17 +110,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         }
 
         if (tileEntity.formula != null) {
-            if (xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91) {
-                drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 176 + 46, 0, 16, 16);
-            } else {
-                drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 176 + 46, 16, 16, 16);
-            }
-
-            if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
-                drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 176 + 62, 48, 16, 16);
-            } else {
-                drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 176 + 62, 48 + 16, 16, 16);
-            }
+            drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 222, xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 238, 48, xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91, 16);
         } else {
             drawTexturedModalRect(guiWidth + 107, guiHeight + 75, 176 + 46, 32, 16, 16);
             drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 176 + 62, 48 + 32, 16, 16);

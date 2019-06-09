@@ -60,19 +60,15 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
         for (ReactorLogic type : ReactorLogic.values()) {
             GLSMHelper.INSTANCE.color(EnumColor.RED);
             drawTexturedModalRect(guiWidth + 24, guiHeight + 32 + (22 * type.ordinal()), 0, 166 + (type == tileEntity.logicType ? 22 : 0), 128, 22);
             GLSMHelper.INSTANCE.resetColor();
         }
-        if (xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30) {
-            drawTexturedModalRect(guiWidth + 23, guiHeight + 19, 176, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 23, guiHeight + 19, 176, 11, 11, 11);
-        }
+        drawTexturedModalRect(guiWidth + 23, guiHeight + 19, 176, xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30, 11);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 

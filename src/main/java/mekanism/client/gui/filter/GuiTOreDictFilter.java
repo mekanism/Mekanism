@@ -86,24 +86,12 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
-        }
-        if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
-            drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 0, 12, 12);
-        } else {
-            drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
-        }
-        if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
-            drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 11, 11, 11);
-        }
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+        drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 187, xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59, 12);
+        drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
         oreDictText.drawTextBox();
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }

@@ -102,24 +102,12 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
-        }
-        if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-            drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 14, 14, 14);
-        }
-        if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
-            drawTexturedModalRect(guiWidth + 15, guiHeight + 45, 176 + 37, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 15, guiHeight + 45, 176 + 37, 14, 14, 14);
-        }
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+        drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 11);
+        drawTexturedModalRect(guiWidth + 15, guiHeight + 45, 213, xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59, 14);
         if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
             int x = guiWidth + 12;

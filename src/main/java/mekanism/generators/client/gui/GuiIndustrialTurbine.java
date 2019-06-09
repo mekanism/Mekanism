@@ -92,7 +92,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         if (tileEntity.structure != null) {
             int displayInt = chooseByMode(tileEntity.structure.dumpMode, 142, 150, 158);
             drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);

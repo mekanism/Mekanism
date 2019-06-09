@@ -51,7 +51,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator> {
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         int displayInt = tileEntity.getScaledFuelLevel(52);
         drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176, 52 + 52 - displayInt, 4, displayInt);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

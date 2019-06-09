@@ -397,7 +397,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
         int xAxis = mouseX - (width - xSize) / 2;
@@ -432,36 +432,11 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
                 }
             }
         }
-
-        if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
-        }
-
-        if (xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78) {
-            drawTexturedModalRect(guiWidth + 39, guiHeight + 67, 176 + 11, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 39, guiHeight + 67, 176 + 11, 11, 11, 11);
-        }
-
-        if (xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103) {
-            drawTexturedModalRect(guiWidth + 39, guiHeight + 92, 176 + 11, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 39, guiHeight + 92, 176 + 11, 11, 11, 11);
-        }
-
-        if (xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128) {
-            drawTexturedModalRect(guiWidth + 39, guiHeight + 117, 176 + 11, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 39, guiHeight + 117, 176 + 11, 11, 11, 11);
-        }
-
-        if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
-            drawTexturedModalRect(guiWidth + 11, guiHeight + 141, 176 + 22, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 11, guiHeight + 141, 176 + 22, 14, 14, 14);
-        }
+        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+        drawTexturedModalRect(guiWidth + 39, guiHeight + 67, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78, 11);
+        drawTexturedModalRect(guiWidth + 39, guiHeight + 92, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103, 11);
+        drawTexturedModalRect(guiWidth + 39, guiHeight + 117, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128, 11);
+        drawTexturedModalRect(guiWidth + 11, guiHeight + 141, 198, xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155, 14);
 
         radiusField.drawTextBox();
         minField.drawTextBox();

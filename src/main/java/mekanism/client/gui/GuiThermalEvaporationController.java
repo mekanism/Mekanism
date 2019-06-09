@@ -76,7 +76,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         int displayInt = tileEntity.getScaledTempLevel(78);
         drawTexturedModalRect(guiWidth + 49, guiHeight + 64, 176, 59, displayInt, 8);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

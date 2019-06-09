@@ -132,29 +132,13 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176 + 36, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176 + 36, 11, 11, 11);
-        }
-        if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
-            drawTexturedModalRect(guiWidth + 31, guiHeight + 21, 176 + 24, 0, 12, 12);
-        } else {
-            drawTexturedModalRect(guiWidth + 31, guiHeight + 21, 176 + 24, 12, 12, 12);
-        }
-        if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
-            drawTexturedModalRect(guiWidth + 63, guiHeight + 21, 176 + 12, 0, 12, 12);
-        } else {
-            drawTexturedModalRect(guiWidth + 63, guiHeight + 21, 176 + 12, 12, 12, 12);
-        }
-        if (xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60) {
-            drawTexturedModalRect(guiWidth + 130, guiHeight + 48, 176, 0, 12, 12);
-        } else {
-            drawTexturedModalRect(guiWidth + 130, guiHeight + 48, 176, 12, 12, 12);
-        }
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 212, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+        drawTexturedModalRect(guiWidth + 31, guiHeight + 21, 200, xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33, 12);
+        drawTexturedModalRect(guiWidth + 63, guiHeight + 21, 188, xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33, 12);
+        drawTexturedModalRect(guiWidth + 130, guiHeight + 48, 176, xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60, 12);
         filterText.drawTextBox();
     }
 

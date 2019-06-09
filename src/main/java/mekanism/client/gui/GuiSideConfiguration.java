@@ -86,19 +86,11 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 14, 14, 14);
-        }
-        if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
-            drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 14, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 14, 14, 14, 14);
-        }
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 204, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
+        drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 190, xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20, 14);
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
@@ -108,11 +100,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
                 if (doColor) {
                     GLSMHelper.INSTANCE.color(data.color);
                 }
-                if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
-                    drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
-                } else {
-                    drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
-                }
+                drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14, 14);
                 if (doColor) {
                     GLSMHelper.INSTANCE.resetColor();
                 }

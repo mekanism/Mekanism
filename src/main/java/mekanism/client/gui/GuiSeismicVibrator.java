@@ -48,9 +48,7 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawDefaultTexturedModalRect();
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 

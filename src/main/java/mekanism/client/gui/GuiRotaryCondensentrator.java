@@ -96,17 +96,12 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int displayInt;
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        displayInt = tileEntity.getScaledEnergyLevel(52);
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        int displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 36, displayInt, 4);
-        if (xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22) {
-            drawTexturedModalRect(guiWidth + 4, guiHeight + 4, 176, 0, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 4, guiHeight + 4, 176, 18, 18, 18);
-        }
+        drawTexturedModalRect(guiWidth + 4, guiHeight + 4, 176, xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22, 18);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 

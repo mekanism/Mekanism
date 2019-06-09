@@ -115,7 +115,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
 
         drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

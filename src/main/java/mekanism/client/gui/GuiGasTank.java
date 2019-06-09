@@ -58,7 +58,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         int displayInt = chooseByMode(tileEntity.dumping, 10, 18, 26);
         drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
         if (tileEntity.gasTank.getGas() != null) {

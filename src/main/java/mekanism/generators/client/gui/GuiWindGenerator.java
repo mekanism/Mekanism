@@ -65,8 +65,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, tileEntity.getActive() ? 52 : 64, 12, 12);
+        drawTexturedModalRect(guiWidth, guiHeight);
+        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, 52, tileEntity.getActive(), 12);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 

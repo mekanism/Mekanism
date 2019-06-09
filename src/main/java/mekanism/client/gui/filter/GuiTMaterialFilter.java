@@ -87,19 +87,11 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
-        }
-        if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
-            drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 11, 11, 11);
-        }
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+        drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
         if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
             int x = guiWidth + 12;

@@ -44,9 +44,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawDefaultTexturedModalRect();
         int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
         if (scaledFluidLevel > 0) {
             displayGauge(7, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 0);

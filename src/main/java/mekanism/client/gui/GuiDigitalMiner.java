@@ -174,36 +174,15 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
+        drawTexturedModalRect(guiWidth, guiHeight);
         int xAxis = mouseX - guiWidth;
         int yAxis = mouseY - guiHeight;
         int displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 164, guiHeight + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
-
-        if (xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61) {
-            drawTexturedModalRect(guiWidth + 147, guiHeight + 47, 176 + 4, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 147, guiHeight + 47, 176 + 4, 14, 14, 14);
-        }
-
-        if (xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77) {
-            drawTexturedModalRect(guiWidth + 147, guiHeight + 63, 176 + 4 + 14, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 147, guiHeight + 63, 176 + 4 + 14, 14, 14, 14);
-        }
-
-        if (xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61) {
-            drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 4 + 28, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 4 + 28, 14, 14, 14);
-        }
-
-        if (xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77) {
-            drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 176 + 4 + 42, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 176 + 4 + 42, 14, 14, 14);
-        }
+        drawTexturedModalRect(guiWidth + 147, guiHeight + 47, 180, xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61, 14);
+        drawTexturedModalRect(guiWidth + 147, guiHeight + 63, 194, xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77, 14);
+        drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 208, xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61, 14);
+        drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 222, xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77, 14);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 

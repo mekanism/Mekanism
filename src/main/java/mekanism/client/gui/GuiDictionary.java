@@ -47,7 +47,7 @@ public class GuiDictionary extends GuiMekanism {
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         int xAxis = mouseX - guiWidth;
         int yAxis = mouseY - guiHeight;
         if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {

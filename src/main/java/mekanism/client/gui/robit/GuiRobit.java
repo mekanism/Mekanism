@@ -39,9 +39,9 @@ public abstract class GuiRobit extends GuiMekanism {
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
         boolean correctX = xAxis >= 179 && xAxis <= 197;
         drawRect(correctX, yAxis, guiWidth, guiHeight, 10, 0);
         drawRect(correctX, yAxis, guiWidth, guiHeight, 30, 36);

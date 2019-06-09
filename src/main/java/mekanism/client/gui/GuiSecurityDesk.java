@@ -199,17 +199,13 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
         //TODO: replace compare with uuid instead of clientOwner and player name
         if (tileEntity.frequency != null && tileEntity.clientOwner != null && mc.player.getName().equals(tileEntity.clientOwner)) {
             drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
-            if (xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75) {
-                drawTexturedModalRect(guiWidth + 146, guiHeight + 59, xSize + 12, 0, 16, 16);
-            } else {
-                drawTexturedModalRect(guiWidth + 146, guiHeight + 59, xSize + 12, 16, 16, 16);
-            }
+            drawTexturedModalRect(guiWidth + 146, guiHeight + 59, xSize + 12, xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75, 16);
             if (tileEntity.frequency.securityMode != SecurityMode.PUBLIC) {
                 if (xAxis >= 13 && xAxis <= 53 && yAxis >= 113 && yAxis <= 129) {
                     drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 48, 40, 16);
@@ -244,11 +240,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
             drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 80, 40, 16);
             drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 128, 40, 16);
         }
-        if (xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79) {
-            drawTexturedModalRect(guiWidth + 123, guiHeight + 68, xSize, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 123, guiHeight + 68, xSize, 11, 11, 11);
-        }
+        drawTexturedModalRect(guiWidth + 123, guiHeight + 68, xSize, xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79, 11);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         trustedField.drawTextBox();
     }

@@ -468,7 +468,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
 
         // Draw main gui background
         mc.renderEngine.bindTexture(getGuiLocation());
-        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiLeft, guiTop);
 
         // Draw scrollbar
         drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
@@ -514,23 +514,9 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         }
 
         // Draw gui buttons
-        if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
-            drawTexturedModalRect(guiLeft + 12, guiTop + 110, 176, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiLeft + 12, guiTop + 110, 176, 14, 14, 14);
-        }
-
-        if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
-            drawTexturedModalRect(guiLeft + 12, guiTop + 84, 176 + 14, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiLeft + 12, guiTop + 84, 176 + 14, 14, 14, 14);
-        }
-
-        if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
-            drawTexturedModalRect(guiLeft + 12, guiTop + 58, 176 + 28, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiLeft + 12, guiTop + 58, 176 + 28, 14, 14, 14);
-        }
+        drawTexturedModalRect(guiLeft + 12, guiTop + 110, 176, xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124, 14);
+        drawTexturedModalRect(guiLeft + 12, guiTop + 84, 190, xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98, 14);
+        drawTexturedModalRect(guiLeft + 12, guiTop + 58, 204, xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72, 14);
     }
 
     private void updateStackList(TOreDictFilter filter) {

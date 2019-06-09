@@ -122,70 +122,20 @@ public class GuiRobitMain extends GuiMekanism {
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png"));
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-
-        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 176 + 25, 0, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 176 + 25, 18, 18, 18);
-        }
-
-        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48) {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 176 + 25, 36, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 176 + 25, 54, 18, 18);
-        }
-
-        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68) {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 176 + 25, 72, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 176 + 25, 90, 18, 18);
-        }
-
-        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88) {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 108, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 126, 18, 18);
-        }
-
-        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108) {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 144, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 162, 18, 18);
-        }
-
-        if (xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72) {
-            drawTexturedModalRect(guiWidth + 152, guiHeight + 54, 176 + 25, 180, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 152, guiHeight + 54, 176 + 25, 198, 18, 18);
-        }
-
-        if (xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72) {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 54, 176 + 25, 216, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 54, 176 + 25, 234, 18, 18);
-        }
-
-        if (xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34) {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 16, 176 + 25 + 18, 36, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 16, 176 + 25 + 18, 54, 18, 18);
-        }
-
-        if (xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53) {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 35, 176 + 25 + 18, 72, 18, 18);
-        } else {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 35, 176 + 25 + 18, 90, 18, 18);
-        }
-
-        int displayInt;
-
-        displayInt = getScaledEnergyLevel(120);
+        drawTexturedModalRect(guiWidth, guiHeight);
+        int xAxis = mouseX - guiWidth;
+        int yAxis = mouseY - guiHeight;
+        drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 201, xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28, 18);
+        drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 201, 36, xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48, 18);
+        drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 201, 72, xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68, 18);
+        drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 201, 108, xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88, 18);
+        drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 201, 144, xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108, 18);
+        drawTexturedModalRect(guiWidth + 152, guiHeight + 54, 201, 180, xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72, 18);
+        drawTexturedModalRect(guiWidth + 6, guiHeight + 54, 201, 216, xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72, 18);
+        drawTexturedModalRect(guiWidth + 6, guiHeight + 16, 219, 36, xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34, 18);
+        drawTexturedModalRect(guiWidth + 6, guiHeight + 35, 219, 72, xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53, 18);
+        int displayInt = getScaledEnergyLevel(120);
         drawTexturedModalRect(guiWidth + 28, guiHeight + 75, 0, 166, displayInt, 4);
-
         if (displayNameChange) {
             drawTexturedModalRect(guiWidth + 28, guiHeight + 17, 0, 166 + 4, 120, 54);
             nameChangeField.drawTextBox();

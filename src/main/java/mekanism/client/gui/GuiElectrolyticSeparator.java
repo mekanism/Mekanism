@@ -98,7 +98,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        drawTexturedModalRect(guiWidth, guiHeight);
         int displayInt = chooseByMode(tileEntity.dumpLeft, 52, 60, 68);
         drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, displayInt, 8, 8);
 
