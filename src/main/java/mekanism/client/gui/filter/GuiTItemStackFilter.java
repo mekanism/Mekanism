@@ -136,11 +136,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                 sizeModeTooltip += " - " + LangUtils.localize("mekanism.gui.sizeModeConflict");
             }
             drawHoveringText(MekanismUtils.splitTooltip(sizeModeTooltip, ItemStack.EMPTY), xAxis, yAxis);
-        }
-        if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
+        } else if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
             drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
-        }
-        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
+        } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
             if (filter.color != null) {
                 drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
             } else {
@@ -180,8 +178,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 sendPacketToServer(isNew ? 4 : 0);
-            }
-            if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
+            } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
                 ItemStack stack = mc.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     filter.itemType = stack.copy();
@@ -190,12 +187,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                     filter.itemType = ItemStack.EMPTY;
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
-            if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {
+            } else if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 filter.sizeMode = !filter.sizeMode;
-            }
-            if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
+            } else if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 filter.allowDefault = !filter.allowDefault;
             }

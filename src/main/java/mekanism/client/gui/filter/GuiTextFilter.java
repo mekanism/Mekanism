@@ -100,8 +100,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
                 if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     sendPacketToServer(isNew ? 4 : 0);
-                }
-                if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
+                } else if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     tFilter.allowDefault = !tFilter.allowDefault;
                 }

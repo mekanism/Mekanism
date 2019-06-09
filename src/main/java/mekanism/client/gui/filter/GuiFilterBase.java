@@ -54,12 +54,10 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             sendPacketToServer(isNew ? 5 : 0);
-        }
-        if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
+        } else if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             filter.requireStack = !filter.requireStack;
-        }
-        if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
+        } else if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
             boolean doNull = false;
             ItemStack stack = mc.player.inventory.getItemStack();
             ItemStack toUse = ItemStack.EMPTY;

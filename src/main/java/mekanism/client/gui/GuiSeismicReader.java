@@ -37,7 +37,6 @@ public class GuiSeismicReader extends GuiScreen {
     public GuiSeismicReader(World world, Coord4D coord, ItemStack stack) {
         pos = new Coord4D(coord.x, Math.min(255, coord.y), coord.z, world.provider.getDimension());
         worldObj = world;
-
         itemStack = stack;
         calculate();
         currentLayer = Math.max(0, blockList.size() - 1);
@@ -152,16 +151,6 @@ public class GuiSeismicReader extends GuiScreen {
         fontRenderer.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
         GlStateManager.popMatrix();
         super.drawScreen(mouseX, mouseY, partialTick);
-    }
-
-    public String wrapString(String str, int index) {
-        String string = str;
-        for (int i = 0; i < string.length(); i++) {
-            if (i == index) {
-                string = string.substring(0, i) + "\n" + string.substring(i);
-            }
-        }
-        return string;
     }
 
     @Override

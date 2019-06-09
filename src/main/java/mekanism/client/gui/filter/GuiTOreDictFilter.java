@@ -56,8 +56,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
         int yAxis = mouseY - guiTop;
         if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
             drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
-        }
-        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
+        } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
             if (filter.color != null) {
                 drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
             } else {

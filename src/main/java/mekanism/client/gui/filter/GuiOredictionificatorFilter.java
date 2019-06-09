@@ -93,14 +93,11 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         int yAxis = mouseY - guiTop;
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
             drawHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
-        }
-        if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
+        } else if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
             drawHoveringText(LangUtils.localize("gui.nextItem"), xAxis, yAxis);
-        }
-        if (xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60) {
+        } else if (xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60) {
             drawHoveringText(LangUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
-        }
-        if (xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35) {
+        } else if (xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35) {
             if (!renderStack.isEmpty()) {
                 String name = ItemRegistryUtils.getMod(renderStack);
                 String extra = name.equals("null") ? "" : " (" + name + ")";
@@ -150,12 +147,10 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 sendPacketToServer(52);
-            }
-            if (xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60) {
+            } else if (xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 setText();
-            }
-            if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
+            } else if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 if (filter.filter != null) {
                     List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
@@ -166,8 +161,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                     }
                     updateRenderStack();
                 }
-            }
-            if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
+            } else if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 if (filter.filter != null) {
                     List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);

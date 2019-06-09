@@ -62,20 +62,15 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         int yAxis = mouseY - guiTop;
         if (xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91) {
             drawHoveringText(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
-        }
-        if (xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59) {
+        } else if (xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59) {
             drawHoveringText(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
-        }
-        if (xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91) {
+        } else if (xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91) {
             drawHoveringText(LangUtils.localize("gui.craftSingle"), xAxis, yAxis);
-        }
-        if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
+        } else if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
             drawHoveringText(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
-        }
-        if (xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91) {
+        } else if (xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91) {
             drawHoveringText(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
-        }
-        if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
+        } else if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
             drawHoveringText(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -121,7 +116,6 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         if (tileEntity.formula != null) {
             for (int i = 0; i < 9; i++) {
                 ItemStack stack = tileEntity.formula.input.get(i);
-
                 if (!stack.isEmpty()) {
                     Slot slot = inventorySlots.inventorySlots.get(i + 20);
                     if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {
@@ -167,9 +161,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         TileNetworkList data = TileNetworkList.withContents(2);
                         Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-                    }
-
-                    if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
+                    } else if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         TileNetworkList data = TileNetworkList.withContents(3);
                         Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
@@ -182,9 +174,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     TileNetworkList data = TileNetworkList.withContents(0);
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-                }
-
-                if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
+                } else if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     TileNetworkList data = TileNetworkList.withContents(5);
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));

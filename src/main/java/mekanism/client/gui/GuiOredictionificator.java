@@ -57,15 +57,12 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         ySize += 64;
     }
 
-    public int getScroll() {
+    private int getScroll() {
         return Math.max(Math.min((int) (scroll * 73), 73), 0);
     }
 
-    public int getFilterIndex() {
-        if (tileEntity.filters.size() <= 3) {
-            return 0;
-        }
-        return (int) ((tileEntity.filters.size() * scroll) - (3F / (float) tileEntity.filters.size()) * scroll);
+    private int getFilterIndex() {
+        return tileEntity.filters.size() <= 3 ? 0 : (int) (tileEntity.filters.size() * scroll - (3F / (float) tileEntity.filters.size()) * scroll);
     }
 
     @Override
@@ -140,8 +137,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                     int yStart = i * 22 + 18;
                     if (xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        Mekanism.packetHandler.sendToServer(
-                              new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
+                        Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1,
+                              getFilterIndex() + i, 0));
                     }
                 }
             }

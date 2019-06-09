@@ -90,7 +90,6 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
-
         guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiLeft, guiTop));
     }
 

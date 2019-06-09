@@ -151,8 +151,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
                 int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-            }
-            if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
+            } else if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
             }

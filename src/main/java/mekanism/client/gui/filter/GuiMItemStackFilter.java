@@ -87,8 +87,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         int yAxis = mouseY - guiTop;
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
-        }
-        if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
+        } else if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -109,8 +108,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 filter.fuzzy = !filter.fuzzy;
-            }
-            if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
+            } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
                 ItemStack stack = mc.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     if (stack.getItem() instanceof ItemBlock) {

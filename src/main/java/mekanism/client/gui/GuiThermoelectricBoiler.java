@@ -71,8 +71,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
             FluidStack waterStored = tileEntity.structure != null ? tileEntity.structure.waterStored : null;
             drawHoveringText(waterStored != null ? LangUtils.localizeFluidStack(waterStored) + ": " + waterStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
-        }
-        if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
+        } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
             FluidStack steamStored = tileEntity.structure != null ? tileEntity.structure.steamStored : null;
             drawHoveringText(steamStored != null ? LangUtils.localizeFluidStack(steamStored) + ": " + steamStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
         }

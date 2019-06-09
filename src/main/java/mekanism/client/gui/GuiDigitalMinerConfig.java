@@ -221,24 +221,16 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
-            }
-
-            if (xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78) {
+            } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 setRadius();
-            }
-
-            if (xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103) {
+            } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 setMinY();
-            }
-
-            if (xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128) {
+            } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 setMaxY();
-            }
-
-            if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
+            } else if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
                 TileNetworkList data = TileNetworkList.withContents(10);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

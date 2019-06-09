@@ -63,10 +63,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
     private Map<TModIDFilter, StackData> modIDStacks = new HashMap<>();
     // Buttons
     private final int BUTTON_NEW = 0;
-    /**
-     * True if the left mouse button was held down last time drawScreen was called.
-     */
-    private boolean wasClicking;
 
     public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tile) {
         super(tile, new ContainerNull(player, tile));
@@ -239,14 +235,14 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             }
 
             // Check for round robin button
-            if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
+            else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
                 final TileNetworkList data = TileNetworkList.withContents(2);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
 
             // Check for single item button
-            if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
+            else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
                 final TileNetworkList data = TileNetworkList.withContents(5);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -406,20 +402,13 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             } else {
                 drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
-        }
-
-        if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
+        } else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
-        }
-
-        if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
+        } else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
-        }
-
-        if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
+        } else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         }
-
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

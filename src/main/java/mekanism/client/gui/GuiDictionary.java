@@ -23,7 +23,7 @@ public class GuiDictionary extends GuiMekanism {
 
     public ItemStack itemType = ItemStack.EMPTY;
 
-    public GuiScrollList scrollList;
+    private final GuiScrollList scrollList;
 
     public GuiDictionary(InventoryPlayer inventory) {
         super(new ContainerDictionary(inventory));
@@ -58,11 +58,9 @@ public class GuiDictionary extends GuiMekanism {
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-
         if (button == 0) {
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 Slot hovering = null;
-
                 for (int i = 0; i < inventorySlots.inventorySlots.size(); i++) {
                     Slot slot = inventorySlots.inventorySlots.get(i);
                     if (isMouseOverSlot(slot, mouseX, mouseY)) {
@@ -85,7 +83,6 @@ public class GuiDictionary extends GuiMekanism {
 
             if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
                 ItemStack stack = mc.player.inventory.getItemStack();
-
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     itemType = stack.copy();
                     itemType.setCount(1);
@@ -94,7 +91,6 @@ public class GuiDictionary extends GuiMekanism {
                     itemType = ItemStack.EMPTY;
                     scrollList.setText(null);
                 }
-
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }

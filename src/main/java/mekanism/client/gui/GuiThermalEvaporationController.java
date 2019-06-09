@@ -46,12 +46,10 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.inputTank.getFluid();
             drawHoveringText(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + tileEntity.inputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
-        }
-        if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
+        } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.outputTank.getFluid();
             drawHoveringText(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + tileEntity.outputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
-        }
-        if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
+        } else if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
             drawHoveringText(getTemp(), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -62,9 +60,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
             return LangUtils.localize("gui.formed");
         } else if (tileEntity.controllerConflict) {
             return LangUtils.localize("gui.conflict");
-        } else {
-            return LangUtils.localize("gui.incomplete");
         }
+        return LangUtils.localize("gui.incomplete");
     }
 
     private String getTemp() {

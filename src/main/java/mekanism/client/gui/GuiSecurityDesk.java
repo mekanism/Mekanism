@@ -182,11 +182,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         }
         if (xAxis >= 13 && xAxis <= 53 && yAxis >= 113 && yAxis <= 129) {
             displayTooltip(LangUtils.localize("gui.publicMode"), xAxis, yAxis);
-        }
-        if (xAxis >= 54 && xAxis <= 94 && yAxis >= 113 && yAxis <= 129) {
+        } else if (xAxis >= 54 && xAxis <= 94 && yAxis >= 113 && yAxis <= 129) {
             displayTooltip(LangUtils.localize("gui.privateMode"), xAxis, yAxis);
-        }
-        if (xAxis >= 95 && xAxis <= 135 && yAxis >= 113 && yAxis <= 129) {
+        } else if (xAxis >= 95 && xAxis <= 135 && yAxis >= 113 && yAxis <= 129) {
             displayTooltip(LangUtils.localize("gui.trustedMode"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

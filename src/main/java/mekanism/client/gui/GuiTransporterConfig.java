@@ -92,8 +92,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
             } else {
                 drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
-        }
-        if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
+        } else if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
             drawHoveringText(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
