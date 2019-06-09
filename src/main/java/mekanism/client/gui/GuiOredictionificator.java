@@ -14,7 +14,6 @@ import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerOredictionificator;
@@ -95,12 +94,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 if (!renderStacks.containsKey(filter)) {
                     updateRenderStacks();
                 }
-                ItemStack stack = renderStacks.get(filter);
-                if (!stack.isEmpty()) {
-                    MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                    itemRender.renderItemAndEffectIntoGUI(stack, 13, yStart + 3);
-                    renderHelper.cleanup();
-                }
+                renderItem(renderStacks.get(filter), 13, yStart + 3);
                 fontRenderer.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
                 renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
             }

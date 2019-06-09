@@ -54,8 +54,7 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils
-                  .transYesNo(filter.requireStack), xAxis, yAxis);
+            drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -1,6 +1,5 @@
 package mekanism.client.gui.filter;
 
-import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
@@ -41,18 +40,6 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         super.initGui();
         if (isNew) {
             buttonList.get(1).enabled = false;
-        }
-    }
-
-    protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {
-        if (!stack.isEmpty()) {
-            //TODO: Is this try catch even needed, some places had it
-            try {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
-                renderHelper.cleanup();
-            } catch (Exception ignored) {
-            }
         }
     }
 

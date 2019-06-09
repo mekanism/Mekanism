@@ -15,7 +15,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
@@ -125,17 +124,10 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
 
                 if (!stack.isEmpty()) {
                     Slot slot = inventorySlots.inventorySlots.get(i + 20);
-                    MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
-
-                    int guiX = guiLeft + slot.xPos;
-                    int guiY = guiTop + slot.yPos;
                     if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {
-                        drawColorIcon(guiX, guiY, EnumColor.DARK_RED, 0.8F);
+                        drawColorIcon(guiLeft + slot.xPos, guiTop + slot.yPos, EnumColor.DARK_RED, 0.8F);
                     }
-
-                    renderHelper.enableGUIStandardItemLighting();
-                    itemRender.renderItemAndEffectIntoGUI(stack, guiX, guiY);
-                    renderHelper.cleanup();
+                    renderItem(stack, 144, 27);
                 }
             }
         }

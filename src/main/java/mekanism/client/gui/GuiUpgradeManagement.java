@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -104,9 +103,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(size).enableGUIStandardItemLighting();
-        itemRender.renderItemAndEffectIntoGUI(type.getStack(), scale ? (int) ((1F / size) * x) : x, scale ? (int) ((1F / size) * y) : y);
-        renderHelper.cleanup();
+        if (scale) {
+            renderItem(type.getStack(), (int) ((float) x / size), (int) ((float) y / size));
+        } else {
+            renderItem(type.getStack(), x, y);
+        }
     }
 
     @Override

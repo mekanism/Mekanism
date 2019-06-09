@@ -103,7 +103,7 @@ public class GuiSeismicReader extends GuiScreen {
                 if (i != 4) {
                     stackRenderHelper.translateX(1.5F).scale(0.8F);
                 }
-                stackRenderHelper.enableGUIStandardItemLighting();
+                stackRenderHelper.enableDepth().enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(stack, 0, 0);
                 stackRenderHelper.cleanup();
             }

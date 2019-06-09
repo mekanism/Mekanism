@@ -21,7 +21,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -87,14 +86,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
                 }
             }
         }
-        if (!renderStack.isEmpty()) {
-            try {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                itemRender.renderItemAndEffectIntoGUI(renderStack, 131, 14);
-                renderHelper.cleanup();
-            } catch (Exception ignored) {
-            }
-        }
+        renderItem(renderStack, 131, 14);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

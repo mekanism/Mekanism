@@ -14,7 +14,6 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
@@ -357,13 +356,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                 final int yStart = i * filterH + filterY;
                 if (filter instanceof TItemStackFilter) {
                     final TItemStackFilter itemFilter = (TItemStackFilter) filter;
-
-                    if (!itemFilter.itemType.isEmpty()) {
-                        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                        itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
-                        renderHelper.cleanup();
-                    }
-
+                    renderItem(itemFilter.itemType, 59, yStart + 3);
                     fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
                     fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof TOreDictFilter) {
@@ -371,47 +364,20 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
-
-                    ItemStack renderStack = oreDictStacks.get(filter).renderStack;
-                    if (!renderStack.isEmpty()) {
-                        try {
-                            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                            itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
-                            renderHelper.cleanup();
-                        } catch (final Exception ignored) {
-                        }
-                    }
-
+                    renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
                     fontRenderer.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
                     fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof TMaterialFilter) {
                     final TMaterialFilter itemFilter = (TMaterialFilter) filter;
-                    if (!itemFilter.getMaterialItem().isEmpty()) {
-                        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                        itemRender.renderItemAndEffectIntoGUI(itemFilter.getMaterialItem(), 59, yStart + 3);
-                        renderHelper.cleanup();
-                    }
-
+                    renderItem(itemFilter.getMaterialItem(), 59, yStart + 3);
                     fontRenderer.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
                     fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof TModIDFilter) {
                     final TModIDFilter modFilter = (TModIDFilter) filter;
-
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }
-
-                    ItemStack renderStack = modIDStacks.get(filter).renderStack;
-
-                    if (!renderStack.isEmpty()) {
-                        try {
-                            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-                            itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
-                            renderHelper.cleanup();
-                        } catch (final Exception ignored) {
-                        }
-                    }
-
+                    renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
                     fontRenderer.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
                     fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 }

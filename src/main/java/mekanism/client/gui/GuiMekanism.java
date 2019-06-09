@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -14,6 +16,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -172,6 +175,18 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {
         if (color != null) {
             drawRect(x, y, x + 16, y + 16, MekanismRenderer.getColorARGB(color, alpha));
+        }
+    }
+
+    protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {
+        if (!stack.isEmpty()) {
+            //TODO: Is this try catch even needed, some places had it
+            try {
+                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableDepth().enableGUIStandardItemLighting();
+                itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                renderHelper.cleanup();
+            } catch (Exception ignored) {
+            }
         }
     }
 

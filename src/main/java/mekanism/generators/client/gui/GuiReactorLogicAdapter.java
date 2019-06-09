@@ -5,7 +5,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
@@ -37,9 +36,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
         fontRenderer.drawString(text, (xSize / 2) - (fontRenderer.getStringWidth(text) / 2), 136, 0x404040);
         for (ReactorLogic type : ReactorLogic.values()) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGUIStandardItemLighting();
-            itemRender.renderItemAndEffectIntoGUI(type.getRenderStack(), 27, 35 + (22 * type.ordinal()));
-            renderHelper.cleanup();
+            renderItem(type.getRenderStack(), 27, 35 + (22 * type.ordinal()));
             fontRenderer.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34 + (22 * type.ordinal()), 0x404040);
         }
         int xAxis = mouseX - guiLeft;
