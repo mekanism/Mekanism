@@ -2,7 +2,7 @@ package mekanism.common.content.filter;
 
 import net.minecraft.item.ItemStack;
 
-public interface IMaterialFilter {
+public interface IMaterialFilter extends IFilter {
 
     ItemStack getMaterialItem();
 

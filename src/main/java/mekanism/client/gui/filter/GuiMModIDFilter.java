@@ -1,9 +1,7 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.miner.MModIDFilter;
@@ -13,17 +11,11 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigitalMiner> {
@@ -66,47 +58,6 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
             drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        super.mouseClicked(mouseX, mouseY, button);
-        text.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
-            if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
-            }
-            if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                setText();
-            }
-            if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                filter.requireStack = !filter.requireStack;
-            }
-            if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-                boolean doNull = false;
-                ItemStack stack = mc.player.inventory.getItemStack();
-                ItemStack toUse = ItemStack.EMPTY;
-                if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    if (stack.getItem() instanceof ItemBlock) {
-                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                            toUse = stack.copy();
-                            toUse.setCount(1);
-                        }
-                    }
-                } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    doNull = true;
-                }
-                if (!toUse.isEmpty() || doNull) {
-                    filter.replaceStack = toUse;
-                }
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
-        }
     }
 
     @Override

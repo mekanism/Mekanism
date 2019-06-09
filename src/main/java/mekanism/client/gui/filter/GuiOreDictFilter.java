@@ -15,10 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE extends TileEntityContainerBlock> extends GuiTextFilter<TILE> {
-
-    protected FILTER origFilter;
-    protected FILTER filter;
+public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE extends TileEntityContainerBlock> extends GuiTextFilter<FILTER, TILE> {
 
     protected GuiOreDictFilter(EntityPlayer player, TILE tile) {
         super(player, tile);

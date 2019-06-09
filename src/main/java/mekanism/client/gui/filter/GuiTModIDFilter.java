@@ -1,11 +1,8 @@
 package mekanism.client.gui.filter;
 
-import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismSounds;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TModIDFilter;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
@@ -14,14 +11,11 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogisticalSorter> {
@@ -68,41 +62,6 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        super.mouseClicked(mouseX, mouseY, button);
-        text.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (button == 0) {
-            if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
-            }
-            if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                setText();
-            }
-            if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                filter.allowDefault = !filter.allowDefault;
-            }
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
-            button = 2;
-        }
-        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
-            SoundHandler.playSound(MekanismSounds.DING);
-            if (button == 0) {
-                filter.color = TransporterUtils.increment(filter.color);
-            } else if (button == 1) {
-                filter.color = TransporterUtils.decrement(filter.color);
-            } else if (button == 2) {
-                filter.color = null;
-            }
-        }
     }
 
     @Override

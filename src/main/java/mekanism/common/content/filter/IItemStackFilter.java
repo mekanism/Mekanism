@@ -1,4 +1,4 @@
 package mekanism.common.content.filter;
 
-public interface IItemStackFilter {
+public interface IItemStackFilter extends IFilter {
 }
