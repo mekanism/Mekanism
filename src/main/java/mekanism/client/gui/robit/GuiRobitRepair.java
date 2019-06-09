@@ -83,8 +83,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
                 byte b0 = 67;
 
                 if (fontRenderer.getUnicodeFlag()) {
-                    drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, -16777216);
-                    drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, -12895429);
+                    drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, 0xFF000000);
+                    drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, 0xFF3B3B3B);
                 } else {
                     fontRenderer.drawString(s, i1, b0 + 1, l);
                     fontRenderer.drawString(s, i1 + 1, b0, l);

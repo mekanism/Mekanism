@@ -54,7 +54,7 @@ public class GuiDictionary extends GuiMekanism {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth();
             int x = guiWidth + 6;
             int y = guiHeight + 6;
-            drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
             renderHelper.cleanup();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

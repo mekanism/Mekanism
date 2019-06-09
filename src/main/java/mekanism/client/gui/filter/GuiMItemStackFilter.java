@@ -112,14 +112,14 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
             int x = guiWidth + 12;
             int y = guiHeight + 19;
-            drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
             renderHelper.cleanup();
         }
         if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
             int x = guiWidth + 149;
             int y = guiHeight + 19;
-            drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
             renderHelper.cleanup();
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
