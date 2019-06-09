@@ -22,7 +22,6 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
     private Map<KnownStates, Boolean> changedStates = new EnumMap<>(KnownStates.class);
     private boolean hasMatrix;
     private boolean colorSet;
-    private boolean colorMasked;
     private boolean glowEnabled;
     private float lightmapLastX;
     private float lightmapLastY;
@@ -42,10 +41,6 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
         if (glowEnabled) {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
             glowEnabled = false;
-        }
-        if (colorMasked) {
-            GlStateManager.colorMask(true, true, true, true);
-            colorMasked = false;
         }
         if (colorSet) {
             resetColor();
@@ -120,18 +115,6 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
 
     public MekanismRenderHelper enableGlow(@Nullable Fluid fluid) {
         return fluid == null ? this : enableGlow(fluid.getLuminosity());
-    }
-
-    //Color
-    public MekanismRenderHelper colorMask(boolean red, boolean green, boolean blue, boolean alpha) {
-        //If they are all being set to true, then we don't need the colorMasked boolean to be true
-        colorMasked = !red || !green || !blue || !alpha;
-        GlStateManager.colorMask(red, green, blue, alpha);
-        return this;
-    }
-
-    public MekanismRenderHelper colorMaskAlpha() {
-        return colorMask(true, true, true, false);
     }
 
     @Override

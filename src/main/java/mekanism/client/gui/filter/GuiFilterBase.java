@@ -1,7 +1,6 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.EnumColor;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -43,13 +42,11 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         }
     }
 
-    protected void drawRect(boolean doDraw) {
-        if (doDraw) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
-            int x = guiLeft + 149;
-            int y = guiTop + 19;
+    protected void drawRect(int xAxis, int yAxis, int xMin, int xMax, int yMin, int yMax) {
+        if (xAxis >= xMin && xAxis <= xMax && yAxis >= yMin && yAxis <= yMax) {
+            int x = guiLeft + xMin;
+            int y = guiTop + yMin;
             drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
-            renderHelper.cleanup();
         }
     }
 
