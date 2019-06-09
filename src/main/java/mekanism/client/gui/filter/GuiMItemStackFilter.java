@@ -98,31 +98,8 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
-        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 11);
+    protected void drawItemStackBackground(int guiWidth, int guiHeight, int xAxis, int yAxis) {
         drawTexturedModalRect(guiWidth + 15, guiHeight + 45, 213, xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59, 14);
-        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
-            int x = guiWidth + 12;
-            int y = guiHeight + 19;
-            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
-            renderHelper.cleanup();
-        }
-        if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
-            int x = guiWidth + 149;
-            int y = guiHeight + 19;
-            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
-            renderHelper.cleanup();
-        }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     @Override
@@ -133,29 +110,11 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
+                sendPacketToServer(isNew ? 5 : 0);
             }
             if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 filter.requireStack = !filter.requireStack;
-            }
-            if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                filter.fuzzy = !filter.fuzzy;
-            }
-            if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
-                ItemStack stack = mc.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    if (stack.getItem() instanceof ItemBlock) {
-                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                            filter.itemType = stack.copy();
-                            filter.itemType.setCount(1);
-                        }
-                    }
-                } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    filter.itemType = ItemStack.EMPTY;
-                }
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
             if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
                 boolean doNull = false;
@@ -173,6 +132,24 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 }
                 if (!toUse.isEmpty() || doNull) {
                     filter.replaceStack = toUse;
+                }
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            }
+            if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                filter.fuzzy = !filter.fuzzy;
+            }
+            if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
+                ItemStack stack = mc.player.inventory.getItemStack();
+                if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                    if (stack.getItem() instanceof ItemBlock) {
+                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
+                            filter.itemType = stack.copy();
+                            filter.itemType.setCount(1);
+                        }
+                    }
+                } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                    filter.itemType = ItemStack.EMPTY;
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }

@@ -83,26 +83,6 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
-        drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
-        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
-            int x = guiWidth + 12;
-            int y = guiHeight + 19;
-            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
-            renderHelper.cleanup();
-        }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    }
-
-    @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         int xAxis = mouseX - (width - xSize) / 2;
@@ -110,7 +90,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         if (button == 0) {
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
+                sendPacketToServer(isNew ? 4 : 0);
             }
             if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
                 ItemStack stack = mc.player.inventory.getItemStack();

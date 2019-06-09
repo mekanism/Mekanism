@@ -132,18 +132,17 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         text.mouseClicked(mouseX, mouseY, button);
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
-        boolean isMiner = tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter;
-        if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            sendPacketToServer(isNew ? (isMiner ? 5 : 4) : 0);
-        }
         if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             setText();
         }
-        if (isMiner) {
+        if (tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
             if (button == 0) {
                 MinerFilter mFilter = (MinerFilter) filter;
+                if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
+                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                    sendPacketToServer(isNew ? 5 : 0);
+                }
                 if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     mFilter.requireStack = !mFilter.requireStack;
@@ -171,6 +170,10 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
             TransporterFilter tFilter = (TransporterFilter) filter;
             if (button == 0) {
+                if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
+                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                    sendPacketToServer(isNew ? 4 : 0);
+                }
                 if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     tFilter.allowDefault = !tFilter.allowDefault;

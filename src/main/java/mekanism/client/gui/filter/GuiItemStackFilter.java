@@ -9,13 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityContainerBlock> extends GuiFilter<TILE> {
-
-    protected String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
-    protected boolean isNew = false;
-    protected FILTER origFilter;
-    protected FILTER filter;
-    protected int ticker;
+public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityContainerBlock> extends GuiTypeFilter<FILTER, TILE> {
 
     protected GuiItemStackFilter(EntityPlayer player, TILE tile) {
         super(player, tile);
@@ -23,18 +17,6 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE e
 
     @Override
     protected void sendPacketToServer(int guiID) {
-    }
-
-    @Override
-    public void initGui() {
-        super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        buttonList.clear();
-        addButtons(guiWidth, guiHeight);
-        if (isNew) {
-            buttonList.get(1).enabled = false;
-        }
     }
 
     @Override
