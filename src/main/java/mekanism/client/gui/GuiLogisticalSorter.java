@@ -45,11 +45,6 @@ import org.lwjgl.input.Mouse;
 @SideOnly(Side.CLIENT)
 public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSorter> {
 
-    // Scrollbar dimensions
-    private final int scrollX = 154;
-    private final int scrollY = 18;
-    private final int scrollW = 12;
-    private final int scrollH = 138;
     // Filter dimensions
     private final int filterX = 56;
     private final int filterY = 18;
@@ -421,7 +416,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 }
 
-                // Draw hovertext for sorting buttons
+                // Draw hover text for sorting buttons
                 final int arrowX = filterX + filterW - 12;
 
                 if (getFilterIndex() + i > 0) {
@@ -471,7 +466,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         drawTexturedModalRect(guiLeft, guiTop);
 
         // Draw scrollbar
-        drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
+        drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
         // Get mouse position relative to gui
         final int xAxis = mouseX - guiLeft;

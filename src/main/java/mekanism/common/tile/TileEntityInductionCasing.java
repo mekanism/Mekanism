@@ -136,6 +136,26 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         return structure != null ? structure.getStorageCap() : 0;
     }
 
+    public double getLastInput() {
+        return structure != null ? structure.getLastInput() : 0;
+    }
+
+    public double getLastOutput() {
+        return structure != null ? structure.getLastOutput() : 0;
+    }
+
+    public double getTransferCap() {
+        return structure != null ? structure.getTransferCap() : 0;
+    }
+
+    public int getCellCount() {
+        return structure != null ? structure.getCellCount() : 0;
+    }
+
+    public int getProviderCount() {
+        return structure != null ? structure.getProviderCount() : 0;
+    }
+
     @Override
     public String[] getMethods() {
         return methods;

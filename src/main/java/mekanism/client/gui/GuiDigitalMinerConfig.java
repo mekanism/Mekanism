@@ -43,11 +43,6 @@ import org.lwjgl.input.Mouse;
 @SideOnly(Side.CLIENT)
 public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMiner> {
 
-    // Scrollbar dimensions
-    private final int scrollX = 154;
-    private final int scrollY = 18;
-    private final int scrollW = 12;
-    private final int scrollH = 138;
     // Filter dimensions
     private final int filterX = 56;
     private final int filterY = 18;
@@ -398,7 +393,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight);
-        drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
+        drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;

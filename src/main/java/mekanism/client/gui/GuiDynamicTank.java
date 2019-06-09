@@ -9,6 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -25,17 +26,15 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
         fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
-        renderScaledText(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored)
-                                                                    + ":" : LangUtils.localize("gui.noFluid"), 53, 44, 0x00CD00, 74);
-        if (tileEntity.structure.fluidStored != null) {
-            fontRenderer.drawString(tileEntity.structure.fluidStored.amount + "mB", 53, 53, 0x00CD00);
+        FluidStack fluidStored = tileEntity.structure != null ? tileEntity.structure.fluidStored : null;
+        renderScaledText(fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + ":" : LangUtils.localize("gui.noFluid"), 53, 44, 0x00CD00, 74);
+        if (fluidStored != null) {
+            fontRenderer.drawString(fluidStored.amount + "mB", 53, 53, 0x00CD00);
         }
         int xAxis = mouseX - (width - xSize) / 2;
         int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-            drawHoveringText(tileEntity.structure.fluidStored != null
-                             ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB"
-                             : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            drawHoveringText(fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + ": " + fluidStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -46,7 +45,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
         mc.renderEngine.bindTexture(getGuiLocation());
         drawDefaultTexturedModalRect();
         int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
-        if (scaledFluidLevel > 0) {
+        if (scaledFluidLevel > 0 && tileEntity.structure != null) {
             displayGauge(7, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 0);
             displayGauge(23, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 1);
         }
