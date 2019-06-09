@@ -23,13 +23,13 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
         drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
         if (tileEntity instanceof TileEntityDigitalMiner) {
             drawTexturedModalRect(guiLeft + 148, guiTop + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 11);
-            drawRect(xAxis, yAxis);
+            drawRect(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
             drawTexturedModalRect(guiLeft + 11, guiTop + 64, 198, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
         }
         //Draw the itemstack specific background
         drawItemStackBackground(xAxis, yAxis);
 
-        drawRect(xAxis, yAxis);
+        drawRect(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35);
     }
 }

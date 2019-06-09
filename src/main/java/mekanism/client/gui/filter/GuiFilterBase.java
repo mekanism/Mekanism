@@ -43,8 +43,8 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         }
     }
 
-    protected void drawRect(int xAxis, int yAxis) {
-        if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
+    protected void drawRect(boolean doDraw) {
+        if (doDraw) {
             MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableLighting().disableDepth().colorMaskAlpha();
             int x = guiLeft + 149;
             int y = guiTop + 19;
