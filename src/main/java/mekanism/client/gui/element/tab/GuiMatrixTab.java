@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiMatrixTab extends GuiTabElement<TileEntityInductionCasing, MatrixTab> {
+public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, MatrixTab> {
 
     public GuiMatrixTab(IGuiWrapper gui, TileEntityInductionCasing tileEntityInductionCasing, MatrixTab type, int y, ResourceLocation def) {
         super(gui, tileEntityInductionCasing, type, y, def);

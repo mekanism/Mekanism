@@ -2,7 +2,7 @@ package mekanism.generators.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.tab.GuiTabElement;
+import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiTurbineTab extends GuiTabElement<TileEntityTurbineCasing, TurbineTab> {
+public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, TurbineTab> {
 
     public GuiTurbineTab(IGuiWrapper gui, TileEntityTurbineCasing tileEntityTurbineCasing, TurbineTab type, int y, ResourceLocation def) {
         super(gui, tileEntityTurbineCasing, type, y, def);

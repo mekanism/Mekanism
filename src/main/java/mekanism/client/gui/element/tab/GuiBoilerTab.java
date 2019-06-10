@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiBoilerTab extends GuiTabElement<TileEntityBoilerCasing, BoilerTab> {
+public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, BoilerTab> {
 
     public GuiBoilerTab(IGuiWrapper gui, TileEntityBoilerCasing tileEntityBoilerCasing, BoilerTab type, int y, ResourceLocation def) {
         super(gui, tileEntityBoilerCasing, type, y, def);

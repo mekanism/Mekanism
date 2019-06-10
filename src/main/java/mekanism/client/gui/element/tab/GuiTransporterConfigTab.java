@@ -2,7 +2,6 @@ package mekanism.client.gui.element.tab;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.tab.GuiTransporterConfigTab.TransporterConfigTab;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
@@ -14,38 +13,19 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiTransporterConfigTab extends GuiTabElement<TileEntity, TransporterConfigTab> {
+public class GuiTransporterConfigTab extends GuiTabElement<TileEntity> {
 
     public GuiTransporterConfigTab(IGuiWrapper gui, int y, TileEntity tile, ResourceLocation def) {
-        super(gui, tile, TransporterConfigTab.CONFIG, y, def);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTransporterConfigTab.png"), gui, def, tile, y);
     }
 
-    public enum TransporterConfigTab implements TabType {
-        CONFIG("GuiTransporterConfigTab.png", 51, "gui.configuration.transporter");
+    @Override
+    public void buttonClicked() {
+        Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 51));
+    }
 
-        private final String path;
-        private final int guiId;
-        private final String desc;
-
-        TransporterConfigTab(String s, int id, String s1) {
-            path = s;
-            guiId = id;
-            desc = s1;
-        }
-
-        @Override
-        public ResourceLocation getResource() {
-            return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, path);
-        }
-
-        @Override
-        public void openGui(TileEntity tile) {
-            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-        }
-
-        @Override
-        public String getDesc() {
-            return LangUtils.localize(desc);
-        }
+    @Override
+    public void displayForegroundTooltip(int xAxis, int yAxis) {
+        displayTooltip(LangUtils.localize("gui.configuration.transporter"), xAxis, yAxis);
     }
 }

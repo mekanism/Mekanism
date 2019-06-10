@@ -7,16 +7,18 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class GuiTabElement<TILE extends TileEntity, TAB extends Enum & TabType> extends GuiTileEntityElement<TILE> {
+public abstract class GuiTabElement<TILE extends TileEntity> extends GuiTileEntityElement<TILE> {
 
-    protected final TAB tabType;
     protected final int yPos;
 
-    public GuiTabElement(IGuiWrapper gui, TILE tile, TAB type, int y, ResourceLocation def) {
-        super(type.getResource(), gui, def, tile);
-        tabType = type;
+    public GuiTabElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, TILE tile, int y) {
+        super(resource, gui, def, tile);
         yPos = y;
     }
+
+    public abstract void displayForegroundTooltip(int xAxis, int yAxis);
+
+    public abstract void buttonClicked();
 
     @Override
     public Rectangle4i getBounds(int guiWidth, int guiHeight) {
@@ -29,24 +31,15 @@ public abstract class GuiTabElement<TILE extends TileEntity, TAB extends Enum & 
     }
 
     @Override
-    public void preMouseClicked(int xAxis, int yAxis, int button) {
-    }
-
-    @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            tabType.openGui(tileEntity);
+            buttonClicked();
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }
 
     @Override
-    public void renderForeground(int xAxis, int yAxis) {
-        mc.renderEngine.bindTexture(RESOURCE);
-        if (inBounds(xAxis, yAxis)) {
-            displayTooltip(tabType.getDesc(), xAxis, yAxis);
-        }
-        mc.renderEngine.bindTexture(defaultLocation);
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
     }
 
     @Override
@@ -54,6 +47,15 @@ public abstract class GuiTabElement<TILE extends TileEntity, TAB extends Enum & 
         mc.renderEngine.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth - 26, guiHeight + yPos, 0, 0, 26, 26);
         guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos + 4, 26, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
+
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        mc.renderEngine.bindTexture(RESOURCE);
+        if (inBounds(xAxis, yAxis)) {
+            displayForegroundTooltip(xAxis, yAxis);
+        }
         mc.renderEngine.bindTexture(defaultLocation);
     }
 }
