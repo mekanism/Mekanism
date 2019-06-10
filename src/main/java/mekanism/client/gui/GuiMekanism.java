@@ -70,10 +70,17 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        guiElements.forEach(element -> element.renderForeground(xAxis, yAxis));
+        //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
+        // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
+        // GL changes only get ran if it is not already the color we are assuming it is.
+        GLSMHelper.INSTANCE.resetColor();
+        guiElements.forEach(element -> {
+            element.renderForeground(xAxis, yAxis);
+            //Continue ensuring color is what we are assuming.
+            GLSMHelper.INSTANCE.resetColor();
+        });
     }
 
     protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {
@@ -90,7 +97,15 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiLeft, guiTop));
+        //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
+        // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
+        // GL changes only get ran if it is not already the color we are assuming it is.
+        GLSMHelper.INSTANCE.resetColor();
+        guiElements.forEach(element -> {
+            element.renderBackground(xAxis, yAxis, guiLeft, guiTop);
+            //Continue ensuring color is what we are assuming.
+            GLSMHelper.INSTANCE.resetColor();
+        });
     }
 
     @Override

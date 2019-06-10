@@ -63,12 +63,12 @@ public abstract class GuiGauge<T> extends GuiElement {
         mc.renderEngine.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, texX, texY, width, height);
         if (!dummy) {
-            renderScale(xAxis, yAxis, guiWidth, guiHeight);
+            renderScale(guiWidth, guiHeight);
         }
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
-    public void renderScale(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+    public void renderScale(int guiWidth, int guiHeight) {
         if (getScaledLevel() == 0 || getIcon() == null) {
             guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
             return;

@@ -36,14 +36,14 @@ public abstract class GuiRobit extends GuiMekanism {
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         boolean correctX = xAxis >= 179 && xAxis <= 197;
-        drawRect(correctX, yAxis, 10, 0);
-        drawRect(correctX, yAxis, 30, 36);
-        drawRect(correctX, yAxis, 50, 72);
-        drawRect(correctX, yAxis, 70, 108);
-        drawRect(correctX, yAxis, 90, 144);
+        drawPositionedRect(correctX, yAxis, 10, 0);
+        drawPositionedRect(correctX, yAxis, 30, 36);
+        drawPositionedRect(correctX, yAxis, 50, 72);
+        drawPositionedRect(correctX, yAxis, 70, 108);
+        drawPositionedRect(correctX, yAxis, 90, 144);
     }
 
-    private void drawRect(boolean correctX, int yAxis, int heightBonus, int textureY) {
+    private void drawPositionedRect(boolean correctX, int yAxis, int heightBonus, int textureY) {
         int yBonus = correctX && yAxis >= heightBonus && yAxis <= heightBonus + 18 ? 0 : 18;
         drawTexturedModalRect(guiLeft + 179, guiTop + heightBonus, 201, textureY + yBonus, 18, 18);
     }

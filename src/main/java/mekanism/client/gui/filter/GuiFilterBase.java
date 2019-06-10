@@ -46,7 +46,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         }
     }
 
-    protected void drawRect(int xAxis, int yAxis, int xMin, int xMax, int yMin, int yMax) {
+    protected void drawPositionedRect(int xAxis, int yAxis, int xMin, int xMax, int yMin, int yMax) {
         if (xAxis >= xMin && xAxis <= xMax && yAxis >= yMin && yAxis <= yMax) {
             int x = guiLeft + xMin;
             int y = guiTop + yMin;

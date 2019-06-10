@@ -70,7 +70,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
         if (tileEntity instanceof TileEntityDigitalMiner) {
             drawTexturedModalRect(guiLeft + 148, guiTop + 45, 199, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 14);
             text.drawTextBox();
-            drawRect(xAxis, yAxis, 149, 165, 19, 35);
+            drawPositionedRect(xAxis, yAxis, 149, 165, 19, 35);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
             drawTexturedModalRect(guiLeft + 11, guiTop + 64, 199, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
             text.drawTextBox();
