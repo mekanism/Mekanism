@@ -97,7 +97,7 @@ public class MekanismRenderHelper extends GLSMHelper<MekanismRenderHelper> {
 
     public MekanismRenderHelper enableGlow(int glow) {
         //Glow is needed when underground or in the dark. Initial thoughts were wrong
-        if (!glowEnabled && !FMLClientHandler.instance().hasOptifine()) {
+        if (!glowEnabled && !FMLClientHandler.instance().hasOptifine() && glow > 0) {
             lightmapLastX = OpenGlHelper.lastBrightnessX;
             lightmapLastY = OpenGlHelper.lastBrightnessY;
 
