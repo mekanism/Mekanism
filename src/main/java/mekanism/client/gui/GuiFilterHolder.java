@@ -25,8 +25,11 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 
+@SideOnly(Side.CLIENT)
 public abstract class GuiFilterHolder<TILE extends TileEntityContainerBlock, FILTER extends IFilter> extends GuiMekanismTile<TILE> {
 
     // Filter dimensions

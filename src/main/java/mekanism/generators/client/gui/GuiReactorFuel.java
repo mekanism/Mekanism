@@ -3,36 +3,30 @@ package mekanism.generators.client.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.gui.element.GuiHeatTab;
 import mekanism.generators.client.gui.element.GuiStatTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController> {
+public class GuiReactorFuel extends GuiReactorInfo {
 
     private GuiTextField injectionRateField;
 
@@ -73,7 +67,7 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         injectionRateField.drawTextBox();
     }
 
@@ -87,19 +81,6 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         injectionRateField.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (button == 0) {
-            if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));
-            }
-        }
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png");
     }
 
     @Override
@@ -107,10 +88,8 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
         if (!injectionRateField.isFocused() || i == Keyboard.KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (i == Keyboard.KEY_RETURN) {
-            if (injectionRateField.isFocused()) {
-                setInjection();
-            }
+        if (i == Keyboard.KEY_RETURN && injectionRateField.isFocused()) {
+            setInjection();
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
             injectionRateField.textboxKeyTyped(c, i);

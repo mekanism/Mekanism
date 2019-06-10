@@ -9,7 +9,10 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock> extends GuiMekanismTile<TILE> {
 
     protected GuiEmbeddedGaugeTile(TILE tile, Container container) {
