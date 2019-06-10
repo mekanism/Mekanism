@@ -88,7 +88,7 @@ public class BlockStateBasic extends ExtendedBlockState {
         TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, true, BlockStateUtils.NO_ROTATION, false, false, false),
         STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, true, BlockStateUtils.NO_ROTATION, false, false, false),
         DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", TileEntityDynamicTank::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
-        STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", TileEntityStructuralGlass::new, true, BlockStateUtils.NO_ROTATION, false, false, false, false, true, false),
+        STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", TileEntityStructuralGlass::new, true, BlockStateUtils.NO_ROTATION, false, false, false, false, false, false),
         DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false, true),
         COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
         TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
