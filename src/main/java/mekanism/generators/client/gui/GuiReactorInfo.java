@@ -18,8 +18,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorController> {
 
-    public GuiReactorInfo(TileEntityReactorController tileEntityReactorController, Container container) {
-        super(tileEntityReactorController, container);
+    public GuiReactorInfo(TileEntityReactorController tile, Container container) {
+        super(tile, container);
     }
 
     @Override

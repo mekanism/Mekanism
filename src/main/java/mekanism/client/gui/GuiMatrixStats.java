@@ -23,7 +23,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
     public GuiMatrixStats(InventoryPlayer inventory, TileEntityInductionCasing tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, 6, resource));
+        addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, resource));
         addGuiElement(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.STANDARD, this, resource, 6, 13));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override

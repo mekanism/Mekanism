@@ -24,7 +24,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
     public GuiTurbineStats(InventoryPlayer inventory, TileEntityTurbineCasing tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, 6, resource));
+        addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, resource));
         addGuiElement(new GuiEnergyInfo(() -> {
             double producing = tileEntity.structure == null ? 0 : tileEntity.structure.clientFlow * (MekanismConfig.current().general.maxEnergyPerSteam.val() / TurbineUpdateProtocol.MAX_BLADES) *
                                                                   Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());

@@ -15,8 +15,8 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.client.gui.element.GuiHeatTab;
-import mekanism.generators.client.gui.element.GuiStatTab;
+import mekanism.generators.client.gui.element.GuiReactorTab;
+import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -52,8 +52,8 @@ public class GuiReactorFuel extends GuiReactorInfo {
                 return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.SMALL_LEFT, this, resource, 99, 75));
-        addGuiElement(new GuiHeatTab(this, tileEntity, resource));
-        addGuiElement(new GuiStatTab(this, tileEntity, resource));
+        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
+        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
     }
 
     @Override

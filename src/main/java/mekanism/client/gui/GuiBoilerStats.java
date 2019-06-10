@@ -28,7 +28,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
     public GuiBoilerStats(InventoryPlayer inventory, TileEntityBoilerCasing tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, 6, resource));
+        addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, resource));
         addGuiElement(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.getLastEnvironmentLoss() * unit.intervalSize, false, unit);

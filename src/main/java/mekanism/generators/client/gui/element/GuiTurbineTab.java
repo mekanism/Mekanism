@@ -19,22 +19,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, TurbineTab> {
 
-    public GuiTurbineTab(IGuiWrapper gui, TileEntityTurbineCasing tileEntityTurbineCasing, TurbineTab type, int y, ResourceLocation def) {
-        super(gui, tileEntityTurbineCasing, type, y, def);
+    public GuiTurbineTab(IGuiWrapper gui, TileEntityTurbineCasing tile, TurbineTab type, ResourceLocation def) {
+        super(gui, tile, type, def);
     }
 
     public enum TurbineTab implements TabType {
         MAIN("GuiGasesTab.png", 6, "gui.main"),
         STAT("GuiStatsTab.png", 7, "gui.stats");
 
+        private final String description;
         private final String path;
         private final int guiId;
-        private final String desc;
 
-        TurbineTab(String s, int id, String s1) {
-            path = s;
+        TurbineTab(String path, int id, String desc) {
+            this.path = path;
             guiId = id;
-            desc = s1;
+            description = desc;
         }
 
         @Override
@@ -49,7 +49,12 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
 
         @Override
         public String getDesc() {
-            return LangUtils.localize(desc);
+            return LangUtils.localize(description);
+        }
+
+        @Override
+        public int getYPos() {
+            return 6;
         }
     }
 }

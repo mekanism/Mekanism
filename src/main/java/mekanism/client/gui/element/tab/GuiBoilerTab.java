@@ -17,22 +17,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, BoilerTab> {
 
-    public GuiBoilerTab(IGuiWrapper gui, TileEntityBoilerCasing tileEntityBoilerCasing, BoilerTab type, int y, ResourceLocation def) {
-        super(gui, tileEntityBoilerCasing, type, y, def);
+    public GuiBoilerTab(IGuiWrapper gui, TileEntityBoilerCasing tile, BoilerTab type, ResourceLocation def) {
+        super(gui, tile, type, def);
     }
 
     public enum BoilerTab implements TabType {
         MAIN("GuiGasesTab.png", 54, "gui.main"),
         STAT("GuiStatsTab.png", 55, "gui.stats");
 
+        private final String description;
         private final String path;
         private final int guiId;
-        private final String desc;
 
-        BoilerTab(String s, int id, String s1) {
-            path = s;
+        BoilerTab(String path, int id, String desc) {
+            this.path = path;
             guiId = id;
-            desc = s1;
+            description = desc;
         }
 
         @Override
@@ -47,7 +47,12 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
 
         @Override
         public String getDesc() {
-            return LangUtils.localize(desc);
+            return LangUtils.localize(description);
+        }
+
+        @Override
+        public int getYPos() {
+            return 6;
         }
     }
 }

@@ -27,7 +27,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
     public GuiThermoelectricBoiler(InventoryPlayer inventory, TileEntityBoilerCasing tile) {
         super(tile, new ContainerFilter(inventory, tile));
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, 6, resource));
+        addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, resource));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public String getTooltip() {

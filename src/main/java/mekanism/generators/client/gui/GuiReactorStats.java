@@ -9,8 +9,8 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.generators.client.gui.element.GuiFuelTab;
-import mekanism.generators.client.gui.element.GuiHeatTab;
+import mekanism.generators.client.gui.element.GuiReactorTab;
+import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -29,8 +29,8 @@ public class GuiReactorStats extends GuiReactorInfo {
               LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
               LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t")
                                                                     : new ArrayList<>(), this, resource));
-        addGuiElement(new GuiHeatTab(this, tileEntity, resource));
-        addGuiElement(new GuiFuelTab(this, tileEntity, resource));
+        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
+        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
     }
 
     @Override

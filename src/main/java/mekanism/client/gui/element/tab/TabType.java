@@ -13,4 +13,6 @@ public interface TabType {
     void openGui(TileEntity tile);
 
     String getDesc();
+
+    int getYPos();
 }

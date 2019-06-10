@@ -17,8 +17,8 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.generators.client.gui.element.GuiFuelTab;
-import mekanism.generators.client.gui.element.GuiStatTab;
+import mekanism.generators.client.gui.element.GuiReactorTab;
+import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -100,8 +100,8 @@ public class GuiReactorHeat extends GuiReactorInfo {
         addGuiElement(new GuiFluidGauge(() -> tileEntity.waterTank, Type.SMALL, this, resource, 115, 84));
         addGuiElement(new GuiFluidGauge(() -> tileEntity.steamTank, Type.SMALL, this, resource, 151, 84));
         addGuiElement(new GuiEnergyGauge(() -> tileEntity, Type.SMALL, this, resource, 115, 46));
-        addGuiElement(new GuiFuelTab(this, tileEntity, resource));
-        addGuiElement(new GuiStatTab(this, tileEntity, resource));
+        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
+        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
     }
 
     @Override

@@ -33,7 +33,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     public GuiIndustrialTurbine(InventoryPlayer inventory, TileEntityTurbineCasing tile) {
         super(tile, new ContainerFilter(inventory, tile));
         ResourceLocation resource = getGuiLocation();
-        addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, 6, resource));
+        addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 16));
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
