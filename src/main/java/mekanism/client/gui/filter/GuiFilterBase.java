@@ -1,11 +1,15 @@
 package mekanism.client.gui.filter;
 
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.MekanismSounds;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -47,6 +51,57 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             int x = guiLeft + xMin;
             int y = guiTop + yMin;
             drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
+        }
+    }
+
+    protected void transporterMouseClicked(int xAxis, int yAxis, int button, TransporterFilter filter) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
+            button = 2;
+        }
+        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
+            SoundHandler.playSound(MekanismSounds.DING);
+            if (button == 0) {
+                filter.color = TransporterUtils.increment(filter.color);
+            } else if (button == 1) {
+                filter.color = TransporterUtils.decrement(filter.color);
+            } else if (button == 2) {
+                filter.color = null;
+            }
+        }
+    }
+
+    protected void drawMinerForegroundLayer(int mouseX, int mouseY, ItemStack stack) {
+        if (filter instanceof MinerFilter) {
+            MinerFilter mFilter = (MinerFilter) filter;
+            renderItem(stack, 12, 19);
+            renderItem(mFilter.replaceStack, 149, 19);
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
+            if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
+                drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(mFilter.requireStack), xAxis, yAxis);
+            }
+        }
+    }
+
+    protected void drawTransporterForegroundLayer(int mouseX, int mouseY, @Nonnull ItemStack stack) {
+        if (filter instanceof TransporterFilter) {
+            TransporterFilter tFilter = (TransporterFilter) filter;
+            fontRenderer.drawString(LangUtils.transOnOff(tFilter.allowDefault), 24, 66, 0x404040);
+            renderItem(stack, 12, 19);
+            drawColorIcon(12, 44, tFilter.color, 1);
+            drawTransporterForegroundText(mouseX - guiLeft, mouseY - guiTop, tFilter);
+        }
+    }
+
+    protected void drawTransporterForegroundText(int xAxis, int yAxis, TransporterFilter filter) {
+        if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
+            drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
+        } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
+            if (filter.color != null) {
+                drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
+            } else {
+                drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
+            }
         }
     }
 

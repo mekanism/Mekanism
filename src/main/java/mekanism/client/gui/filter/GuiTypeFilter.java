@@ -31,4 +31,6 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
         }
         drawRect(xAxis, yAxis, 12, 28, 19, 35);
     }
+
+    protected abstract void drawForegroundLayer(int mouseX, int mouseY);
 }

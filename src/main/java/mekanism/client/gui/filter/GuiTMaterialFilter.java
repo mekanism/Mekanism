@@ -4,7 +4,6 @@ import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismSounds;
 import mekanism.common.content.transporter.TMaterialFilter;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
@@ -12,18 +11,12 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.TransporterUtils;
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileEntityLogisticalSorter> {
@@ -52,29 +45,11 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
-                                LangUtils.localize("gui.materialFilter"), 43, 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
-        fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
+    protected void drawForegroundLayer(int mouseX, int mouseY) {
         if (!filter.getMaterialItem().isEmpty()) {
             renderScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, 0x00CD00, 107);
-            renderItem(filter.getMaterialItem(), 12, 19);
         }
-        drawColorIcon(12, 44, filter.color, 1);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
-            drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
-        } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
-            if (filter.color != null) {
-                drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
-            } else {
-                drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
-            }
-        }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawTransporterForegroundLayer(mouseX, mouseY, filter.getMaterialItem());
     }
 
     @Override
@@ -87,36 +62,13 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 sendPacketToServer(isNew ? 4 : 0);
             } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
-                ItemStack stack = mc.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    if (stack.getItem() instanceof ItemBlock) {
-                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                            filter.setMaterialItem(stack.copy());
-                            filter.getMaterialItem().setCount(1);
-                        }
-                    }
-                } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    filter.setMaterialItem(ItemStack.EMPTY);
-                }
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                materialMouseClicked();
             } else if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 filter.allowDefault = !filter.allowDefault;
             }
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
-            button = 2;
-        }
-        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
-            SoundHandler.playSound(MekanismSounds.DING);
-            if (button == 0) {
-                filter.color = TransporterUtils.increment(filter.color);
-            } else if (button == 1) {
-                filter.color = TransporterUtils.decrement(filter.color);
-            } else if (button == 2) {
-                filter.color = null;
-            }
-        }
+        transporterMouseClicked(xAxis, yAxis, button, filter);
     }
 
     @Override

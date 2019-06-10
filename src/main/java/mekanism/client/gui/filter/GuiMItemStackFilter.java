@@ -74,14 +74,11 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
+    protected void drawForegroundLayer(int mouseX, int mouseY) {
         if (!filter.itemType.isEmpty()) {
             renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 107);
-            renderItem(filter.itemType, 12, 19);
         }
+        renderItem(filter.itemType, 12, 19);
         renderItem(filter.replaceStack, 149, 19);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
@@ -90,7 +87,6 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         } else if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
         }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override

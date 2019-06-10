@@ -127,7 +127,6 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         if (stackSwitch > 0) {
             stackSwitch--;
         }
-
         if (stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0) {
             stackSwitch = 20;
             if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {

@@ -2,7 +2,6 @@ package mekanism.client.gui.filter;
 
 import java.io.IOException;
 import mekanism.api.Coord4D;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MMaterialFilter;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
@@ -11,17 +10,11 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileEntityDigitalMiner> {
@@ -50,22 +43,11 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
-                                LangUtils.localize("gui.materialFilter"), 43, 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
+    protected void drawForegroundLayer(int mouseX, int mouseY) {
         if (!filter.getMaterialItem().isEmpty()) {
             renderScaledText(filter.getMaterialItem().getDisplayName(), 35, 41, 0x00CD00, 107);
-            renderItem(filter.getMaterialItem(), 12, 19);
         }
-        renderItem(filter.replaceStack, 149, 19);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
-        }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawMinerForegroundLayer(mouseX, mouseY, filter.getMaterialItem());
     }
 
     @Override
@@ -76,18 +58,7 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
             int yAxis = mouseY - guiTop;
             minerFilterClickCommon(xAxis, yAxis, filter);
             if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
-                ItemStack stack = mc.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    if (stack.getItem() instanceof ItemBlock) {
-                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                            filter.setMaterialItem(stack.copy());
-                            filter.getMaterialItem().setCount(1);
-                        }
-                    }
-                } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    filter.setMaterialItem(ItemStack.EMPTY);
-                }
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                materialMouseClicked();
             }
         }
     }

@@ -7,6 +7,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
+import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
@@ -60,5 +62,21 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
         updateStackList(name);
         filter.setModID(name);
         text.setText("");
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
+                                LangUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
+        fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+        renderScaledText(LangUtils.localize("gui.id") + ": " + filter.getModID(), 35, 32, 0x00CD00, 107);
+
+        if (tileEntity instanceof TileEntityDigitalMiner) {
+            drawMinerForegroundLayer(mouseX, mouseY, renderStack);
+        } else if (tileEntity instanceof TileEntityLogisticalSorter) {
+            drawTransporterForegroundLayer(mouseX, mouseY, renderStack);
+        }
+
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

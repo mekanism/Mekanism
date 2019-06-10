@@ -5,7 +5,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismSounds;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
@@ -15,7 +14,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -109,11 +107,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
-                                LangUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
+    protected void drawForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
         String sizeModeString = LangUtils.transOnOff(filter.sizeMode);
@@ -125,8 +119,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
         if (!filter.itemType.isEmpty()) {
             renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 89);
-            renderItem(filter.itemType, 12, 19);
         }
+        renderItem(filter.itemType, 12, 19);
         drawColorIcon(12, 44, filter.color, 1);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
@@ -136,16 +130,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                 sizeModeTooltip += " - " + LangUtils.localize("mekanism.gui.sizeModeConflict");
             }
             drawHoveringText(MekanismUtils.splitTooltip(sizeModeTooltip, ItemStack.EMPTY), xAxis, yAxis);
-        } else if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
-            drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
-        } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
-            if (filter.color != null) {
-                drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
-            } else {
-                drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
-            }
+        } else {
+            drawTransporterForegroundText(xAxis, yAxis, filter);
         }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
@@ -195,19 +182,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                 filter.allowDefault = !filter.allowDefault;
             }
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
-            button = 2;
-        }
-        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
-            SoundHandler.playSound(MekanismSounds.DING);
-            if (button == 0) {
-                filter.color = TransporterUtils.increment(filter.color);
-            } else if (button == 1) {
-                filter.color = TransporterUtils.decrement(filter.color);
-            } else if (button == 2) {
-                filter.color = null;
-            }
-        }
+        transporterMouseClicked(xAxis, yAxis, button, filter);
     }
 
     @Override

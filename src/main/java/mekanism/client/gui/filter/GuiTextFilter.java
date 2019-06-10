@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.MekanismSounds;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
@@ -12,14 +11,12 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEntityContainerBlock> extends GuiTextFilterBase<FILTER, TILE> {
@@ -105,19 +102,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
                     tFilter.allowDefault = !tFilter.allowDefault;
                 }
             }
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
-                button = 2;
-            }
-            if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
-                SoundHandler.playSound(MekanismSounds.DING);
-                if (button == 0) {
-                    tFilter.color = TransporterUtils.increment(tFilter.color);
-                } else if (button == 1) {
-                    tFilter.color = TransporterUtils.decrement(tFilter.color);
-                } else if (button == 2) {
-                    tFilter.color = null;
-                }
-            }
+            transporterMouseClicked(xAxis, yAxis, button, tFilter);
         }
     }
 }
