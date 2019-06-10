@@ -23,10 +23,9 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
     @Override
     public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.facing);
-        if (obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite())) {
-            return;
+        if (!obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite())) {
+            render(tileEntity.facing, tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
         }
-        render(tileEntity.facing, tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
     }
 
     public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z) {
@@ -70,9 +69,8 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
         GlStateManager.doPolygonOffset(-10, -10);
         renderHelper.enablePolygonOffset();
-        //TODO: Look into this because it gets cast to 1 due to division
-        float displayWidth = 1 - (2 / 16);
-        float displayHeight = 1 - (2 / 16);
+        float displayWidth = 1;
+        float displayHeight = 1;
         renderHelper.translate(x, y, z);
 
         switch (side) {
