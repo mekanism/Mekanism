@@ -1,6 +1,7 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.transporter.Finder.MaterialFinder;
@@ -82,13 +83,14 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
         return filter;
     }
 
+    @Nonnull
     @Override
     public ItemStack getMaterialItem() {
         return materialItem;
     }
 
     @Override
-    public void setMaterialItem(ItemStack stack) {
+    public void setMaterialItem(@Nonnull ItemStack stack) {
         materialItem = stack;
     }
 }

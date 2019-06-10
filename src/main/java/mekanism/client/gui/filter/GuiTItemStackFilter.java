@@ -63,7 +63,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
-            if (!filter.itemType.isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
+            if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
                 int min = Integer.parseInt(minField.getText());
                 int max = Integer.parseInt(maxField.getText());
                 if (max >= min && max <= 64) {
@@ -82,7 +82,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                     status = EnumColor.DARK_RED + "Max>64";
                     ticker = 20;
                 }
-            } else if (filter.itemType.isEmpty()) {
+            } else if (filter.getItemStack().isEmpty()) {
                 status = EnumColor.DARK_RED + "No item";
                 ticker = 20;
             } else if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
@@ -117,10 +117,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
         fontRenderer.drawString(sizeModeString, 141, 46, 0x404040);
         fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
-        if (!filter.itemType.isEmpty()) {
-            renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 89);
+        if (!filter.getItemStack().isEmpty()) {
+            renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, 0x00CD00, 89);
         }
-        renderItem(filter.itemType, 12, 19);
+        renderItem(filter.getItemStack(), 12, 19);
         drawColorIcon(12, 44, filter.color, 1);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
@@ -168,10 +168,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
                 ItemStack stack = mc.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    filter.itemType = stack.copy();
-                    filter.itemType.setCount(1);
+                    filter.setItemStack(stack.copy());
+                    filter.getItemStack().setCount(1);
                 } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    filter.itemType = ItemStack.EMPTY;
+                    filter.setItemStack(ItemStack.EMPTY);
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             } else if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {

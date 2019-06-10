@@ -960,7 +960,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             while (iter.hasNext()) {
                 MinerFilter filter = iter.next();
                 if (filter instanceof MItemStackFilter) {
-                    if (MekanismUtils.getID(((MItemStackFilter) filter).itemType) == id) {
+                    if (MekanismUtils.getID(((MItemStackFilter) filter).getItemStack()) == id) {
                         iter.remove();
                         return new Object[]{"Removed filter."};
                     }

@@ -56,7 +56,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
-            if (!filter.itemType.isEmpty()) {
+            if (!filter.getItemStack().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
                 } else {
@@ -75,10 +75,10 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
-        if (!filter.itemType.isEmpty()) {
-            renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 107);
+        if (!filter.getItemStack().isEmpty()) {
+            renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, 0x00CD00, 107);
         }
-        renderItem(filter.itemType, 12, 19);
+        renderItem(filter.getItemStack(), 12, 19);
         renderItem(filter.replaceStack, 149, 19);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
@@ -109,12 +109,12 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     if (stack.getItem() instanceof ItemBlock) {
                         if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                            filter.itemType = stack.copy();
-                            filter.itemType.setCount(1);
+                            filter.setItemStack(stack.copy());
+                            filter.getItemStack().setCount(1);
                         }
                     }
                 } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    filter.itemType = ItemStack.EMPTY;
+                    filter.setItemStack(ItemStack.EMPTY);
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }

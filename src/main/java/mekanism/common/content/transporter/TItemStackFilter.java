@@ -1,6 +1,7 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
@@ -17,7 +18,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     public int min;
     public int max;
 
-    public ItemStack itemType = ItemStack.EMPTY;
+    private ItemStack itemType = ItemStack.EMPTY;
 
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
@@ -110,5 +111,16 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
         filter.min = min;
         filter.max = max;
         return filter;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getItemStack() {
+        return itemType;
+    }
+
+    @Override
+    public void setItemStack(@Nonnull ItemStack stack) {
+        itemType = stack;
     }
 }
