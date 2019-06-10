@@ -4,25 +4,25 @@ import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -101,12 +101,12 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, chooseByMode(tileEntity.dumpRight, 52, 60, 68), 8, 8);
     }
 
-    private <T> T chooseByMode(TileEntityGasTank.GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption) {
-        if (dumping.equals(TileEntityGasTank.GasMode.IDLE)) {
+    private <T> T chooseByMode(GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption) {
+        if (dumping.equals(GasMode.IDLE)) {
             return idleOption;
-        } else if (dumping.equals(TileEntityGasTank.GasMode.DUMPING)) {
+        } else if (dumping.equals(GasMode.DUMPING)) {
             return dumpingOption;
-        } else if (dumping.equals(TileEntityGasTank.GasMode.DUMPING_EXCESS)) {
+        } else if (dumping.equals(GasMode.DUMPING_EXCESS)) {
             return dumpingExcessOption;
         }
         return idleOption; //should not happen;
