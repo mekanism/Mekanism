@@ -2,9 +2,9 @@ package mekanism.client.gui;
 
 import java.util.Collections;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFuelwoodHeater;
 import mekanism.common.tile.TileEntityFuelwoodHeater;

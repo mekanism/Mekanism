@@ -53,7 +53,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
             f_textures.setAccessible(true);
             m_updateStateVisibilityMap = OBJBakedModel.class.getDeclaredMethod("updateStateVisibilityMap", OBJState.class);
             m_updateStateVisibilityMap.setAccessible(true);
-        } catch (ReflectiveOperationException e){
+        } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Could not set up reflection helpers", e);
         }
     }

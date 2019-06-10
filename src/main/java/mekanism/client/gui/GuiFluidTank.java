@@ -1,11 +1,11 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
-import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.container.ContainerFluidTank;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.LangUtils;

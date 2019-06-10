@@ -6,7 +6,7 @@ import net.minecraft.util.EnumFacing;
 
 public class CapabilityWrapperManager<IMPL, WRAPPER> {
 
-    private Map<EnumFacing, WRAPPER> wrappers = new Reference2ObjectArrayMap<>(EnumFacing.values().length+1);
+    private Map<EnumFacing, WRAPPER> wrappers = new Reference2ObjectArrayMap<>(EnumFacing.values().length + 1);
     private Class<IMPL> typeClass;
     private Class<WRAPPER> wrapperClass;
 

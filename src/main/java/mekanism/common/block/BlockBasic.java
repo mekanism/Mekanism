@@ -273,7 +273,7 @@ public abstract class BlockBasic extends BlockTileDrops {
         if (type == null) {
             return defaultResistance;
         }
-        switch(type) {
+        switch (type) {
             case REFINED_OBSIDIAN:
                 return 2400F;
             case OSMIUM_BLOCK:
@@ -285,7 +285,7 @@ public abstract class BlockBasic extends BlockTileDrops {
             case THERMAL_EVAPORATION_BLOCK:
             case THERMAL_EVAPORATION_VALVE:
             case THERMAL_EVAPORATION_CONTROLLER:
-                  return 9F;
+                return 9F;
             default:
                 return defaultResistance;
         }
@@ -295,10 +295,9 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Deprecated
     public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
         BasicBlockType type = BasicBlockType.get(getBasicBlock(), blockState.getBlock().getMetaFromState(blockState));
-        if(type == BasicBlockType.REFINED_OBSIDIAN) {
+        if (type == BasicBlockType.REFINED_OBSIDIAN) {
             return 50.0F;
-        }
-        else if(type == BasicBlockType.OSMIUM_BLOCK) {
+        } else if (type == BasicBlockType.OSMIUM_BLOCK) {
             return 7.5F;
         }
         return blockHardness;

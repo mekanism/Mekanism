@@ -1,9 +1,9 @@
 package mekanism.client.gui;
 
 import java.util.Collections;
+import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
-import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.tile.TileEntityThermalEvaporationController;

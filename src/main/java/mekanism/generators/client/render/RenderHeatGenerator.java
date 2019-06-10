@@ -33,7 +33,7 @@ public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHea
                 GLSMHelper.INSTANCE.rotateY(270, 1);
                 break;
             case 5://EAST
-                GLSMHelper.INSTANCE.rotateY(90,  1);
+                GLSMHelper.INSTANCE.rotateY(90, 1);
                 break;
         }
 

@@ -440,7 +440,8 @@ public final class OreDictManager {
         DummyWorld dummyWorld = null;
         try {
             dummyWorld = new DummyWorld();
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
         InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
 

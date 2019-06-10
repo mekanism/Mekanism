@@ -50,7 +50,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.OreDictManager;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
@@ -454,7 +453,6 @@ public class Mekanism {
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.REDSTONE_TORCH), new ItemStack(Items.STICK), new ItemStack(Items.REDSTONE), 1);
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.CRAFTING_TABLE), new ItemStack(Blocks.PLANKS, 4));
         }
-
 
         if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.METALLURGIC_INFUSER)) {
             InfuseType carbon = InfuseRegistry.get("CARBON");
