@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
-import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;

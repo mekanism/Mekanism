@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiMatrixTab;
-import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
+import mekanism.client.gui.element.tab.GuiMatrixTab;
+import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.tile.TileEntityInductionCasing;

@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
 import java.util.Collections;
-import mekanism.client.gui.element.GuiBoilerTab;
-import mekanism.client.gui.element.GuiBoilerTab.BoilerTab;
+import mekanism.client.gui.element.tab.GuiBoilerTab;
+import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;

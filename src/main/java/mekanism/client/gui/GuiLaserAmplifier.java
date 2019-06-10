@@ -2,12 +2,12 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.element.GuiAmplifierTab;
-import mekanism.client.gui.element.GuiGauge.Type;
-import mekanism.client.gui.element.GuiNumberGauge;
-import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
+import mekanism.client.gui.element.tab.GuiAmplifierTab;
+import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.gui.element.gauge.GuiNumberGauge;
+import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;

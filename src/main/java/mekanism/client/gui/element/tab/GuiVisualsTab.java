@@ -1,24 +1,24 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.tab;
 
-import mekanism.api.Coord4D;
+import java.util.Arrays;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiTileEntityElement;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiSideConfigurationTab extends GuiTileEntityElement<TileEntity> {
+public class GuiVisualsTab extends GuiTileEntityElement<TileEntityDigitalMiner> {
 
-    public GuiSideConfigurationTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiConfigurationTab.png"), gui, def, tile);
+    public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile, ResourceLocation def) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiVisualsTab.png"), gui, def, tile);
     }
 
     @Override
@@ -43,7 +43,12 @@ public class GuiSideConfigurationTab extends GuiTileEntityElement<TileEntity> {
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            displayTooltip(LangUtils.localize("gui.configuration.side"), xAxis, yAxis);
+            if (tileEntity.getRadius() <= 64) {
+                displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
+            } else {
+                displayTooltips(Arrays.asList(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
+                      TextFormatting.RED.toString() + LangUtils.localize("mekanism.gui.visuals.toobig")), xAxis, yAxis);
+            }
         }
         mc.renderEngine.bindTexture(defaultLocation);
     }
@@ -55,7 +60,7 @@ public class GuiSideConfigurationTab extends GuiTileEntityElement<TileEntity> {
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 9));
+            tileEntity.clientRendering = !tileEntity.clientRendering;
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }

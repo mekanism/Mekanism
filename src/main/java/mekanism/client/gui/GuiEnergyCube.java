@@ -1,15 +1,15 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
-import mekanism.client.gui.element.GuiEnergyGauge;
+import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSecurityTab;
-import mekanism.client.gui.element.GuiSideConfigurationTab;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.gui.element.GuiTransporterConfigTab;
+import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.LangUtils;

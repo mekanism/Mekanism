@@ -1,4 +1,4 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.tab;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiTileEntityElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;

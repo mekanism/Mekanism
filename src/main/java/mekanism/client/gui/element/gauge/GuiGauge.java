@@ -1,9 +1,10 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.gauge;
 
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.GLSMHelper;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;

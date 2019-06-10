@@ -1,4 +1,4 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.gauge;
 
 import static java.lang.Math.min;
 

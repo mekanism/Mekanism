@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.container.ContainerLaserTractorBeam;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.util.LangUtils;

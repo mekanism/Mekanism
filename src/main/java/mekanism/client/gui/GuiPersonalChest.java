@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;

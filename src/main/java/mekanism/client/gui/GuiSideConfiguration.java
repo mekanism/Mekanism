@@ -8,7 +8,7 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.element.GuiConfigTypeTab;
+import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.client.render.GLSMHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;

@@ -1,11 +1,10 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.tab;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiBoilerTab.BoilerTab;
+import mekanism.client.gui.element.tab.GuiTransporterConfigTab.TransporterConfigTab;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
-import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -15,21 +14,20 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiBoilerTab extends GuiTabElement<TileEntityBoilerCasing, BoilerTab> {
+public class GuiTransporterConfigTab extends GuiTabElement<TileEntity, TransporterConfigTab> {
 
-    public GuiBoilerTab(IGuiWrapper gui, TileEntityBoilerCasing tileEntityBoilerCasing, BoilerTab type, int y, ResourceLocation def) {
-        super(gui, tileEntityBoilerCasing, type, y, def);
+    public GuiTransporterConfigTab(IGuiWrapper gui, int y, TileEntity tile, ResourceLocation def) {
+        super(gui, tile, TransporterConfigTab.CONFIG, y, def);
     }
 
-    public enum BoilerTab implements TabType {
-        MAIN("GuiGasesTab.png", 54, "gui.main"),
-        STAT("GuiStatsTab.png", 55, "gui.stats");
+    public enum TransporterConfigTab implements TabType {
+        CONFIG("GuiTransporterConfigTab.png", 51, "gui.configuration.transporter");
 
         private final String path;
         private final int guiId;
         private final String desc;
 
-        BoilerTab(String s, int id, String s1) {
+        TransporterConfigTab(String s, int id, String s1) {
             path = s;
             guiId = id;
             desc = s1;

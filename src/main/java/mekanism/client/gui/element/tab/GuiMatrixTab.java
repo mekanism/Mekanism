@@ -1,8 +1,8 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.tab;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
+import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityInductionCasing;
