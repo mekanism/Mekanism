@@ -12,7 +12,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.common.Mekanism;
@@ -260,7 +259,6 @@ public class MekanismRenderer {
         }
 
         FluidRenderer.resetDisplayInts();
-        RenderThermalEvaporationController.resetDisplayInts();
         RenderFluidTank.resetDisplayInts();
     }
 

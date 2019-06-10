@@ -26,9 +26,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
             data.width = tileEntity.structure.volWidth;
             data.fluidType = tileEntity.structure.fluidStored;
 
-            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
             if (data.location != null && data.height >= 1) {
+                bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                 MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
                 FluidRenderer.translateToOrigin(data.location);
                 renderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored);
