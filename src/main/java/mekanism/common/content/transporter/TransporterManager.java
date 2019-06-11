@@ -54,6 +54,12 @@ public class TransporterManager {
                 break;
             }
 
+            int max = handler.getSlotLimit(i);
+            //If no items are allowed in the slot, pass it up before checking anything about the items
+            if (max == 0) {
+                continue;
+            }
+
             // Make sure that the item is valid for the handler
             if (!handler.isItemValid(i, stack)) {
                 continue;
@@ -74,20 +80,8 @@ public class TransporterManager {
             // If the item stack is empty, we need to do a simulated insert since we can't tell if the stack
             // in question would be allowed in this slot. Otherwise, we depend on areItemsStackable to keep us
             // out of trouble
-            if (destCount == 0) {
-                // Simulate an insert;
-                if (ItemStack.areItemStacksEqual(handler.insertItem(i, stack, true), stack)) {
-                    // Insert will fail; bail
-                    continue;
-                }
-
-                // Set the destStack to match ours
-                inventoryInfo.stackSizes.set(i, 0);
-                destCount = 0;
-            }
-
-            int max = handler.getSlotLimit(i);
-            if (max == 0) {
+            else if (destCount == 0 && ItemStack.areItemStacksEqual(handler.insertItem(i, stack, true), stack)) {
+                // Insert will fail; bail
                 continue;
             }
 
@@ -98,8 +92,8 @@ public class TransporterManager {
                 count = mergedCount - max;
                 stack.setCount(count);
             } else {
-                // All items will fit!
-                inventoryInfo.stackSizes.set(i, count);
+                // All items will fit; set the destination count as the new combined amount
+                inventoryInfo.stackSizes.set(i, mergedCount);
                 if (count != originalCount) {
                     //Set the stack size back to what it was when we got it
                     stack.setCount(originalCount);
