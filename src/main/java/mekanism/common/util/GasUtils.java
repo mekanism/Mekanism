@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -10,6 +11,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -49,6 +51,15 @@ public final class GasUtils {
             return false;
         }
         return CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
+    }
+
+    public static void clearIfInvalid(GasTank tank, Predicate<Gas> isValid) {
+        if (MekanismConfig.current().general.voidInvalidGases.val()) {
+            Gas gas = tank.getGasType();
+            if (gas != null && !isValid.test(gas)) {
+                tank.setGas(null);
+            }
+        }
     }
 
     /**
