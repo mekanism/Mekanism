@@ -474,7 +474,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Nullable
     public GasStack getItemGas(ItemStack itemStack) {
         if (recipeType.getFuelType() == MachineFuelType.ADVANCED) {
-            return GasConversionHandler.getItemGas(itemStack, gasTank, recipeType.getTile()::isValidGas);
+            return GasConversionHandler.getItemGas(itemStack, gasTank, recipeType::isValidGas);
         }
         return null;
     }
@@ -749,6 +749,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             progress[i] = nbtTags.getInteger("progress" + i);
         }
         gasTank.read(nbtTags.getCompoundTag("gasTank"));
+        GasUtils.clearIfInvalid(gasTank, recipeType::isValidGas);
     }
 
     @Nonnull

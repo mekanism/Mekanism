@@ -249,6 +249,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         super.readFromNBT(nbtTags);
         gasTank.read(nbtTags.getCompoundTag("gasTank"));
         gasTank.setMaxGas(MAX_GAS);
+        GasUtils.clearIfInvalid(gasTank, this::isValidGas);
     }
 
     @Nonnull

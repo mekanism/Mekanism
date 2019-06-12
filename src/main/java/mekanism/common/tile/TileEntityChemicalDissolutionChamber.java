@@ -186,6 +186,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         operatingTicks = nbtTags.getInteger("operatingTicks");
         injectTank.read(nbtTags.getCompoundTag("injectTank"));
         outputTank.read(nbtTags.getCompoundTag("gasTank"));
+        GasUtils.clearIfInvalid(injectTank, this::isValidGas);
     }
 
     @Nonnull

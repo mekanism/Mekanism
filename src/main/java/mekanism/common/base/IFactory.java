@@ -191,6 +191,13 @@ public interface IFactory {
             return fuelType == MachineFuelType.ADVANCED;
         }
 
+        public boolean isValidGas(Gas gas) {
+            if (fuelType == MachineFuelType.ADVANCED) {
+                return getTile().isValidGas(gas);
+            }
+            return false;
+        }
+
         public boolean hasRecipe(ItemStack itemStack) {
             if (itemStack.isEmpty()) {
                 return false;

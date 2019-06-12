@@ -217,6 +217,9 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption destroyDisabledBlocks = new BooleanOption(this, "general", "DestroyDisabledBlocks", true,
           "If machine is disabled in config, do we set its block to air if it is found in world?");
 
+    public final BooleanOption voidInvalidGases = new BooleanOption(this, "general", "VoidInvalidGases", true,
+          "Should machines void the gas inside of them on load if there is no recipe using that gas.");
+
     public final IntOption digitalMinerMaxRadius = new IntOption(this, "general", "digitalMinerMaxRadius", 32,
           "Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability and/or performance. "
           + "We strongly recommend you leave it at the default value.)", 1, Integer.MAX_VALUE);
