@@ -159,7 +159,7 @@ tile.Transmitter.RestrictiveTransporter.name=限制傳送管道
 tile.Transmitter.DiversionTransporter.name=轉移傳送管道
 
 # Glow Panel
-item.GlowPanel.name=熒光板
+tile.GlowPanel.name=熒光板
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=基礎能量立方
@@ -233,18 +233,18 @@ gas.hydrogen=氫氣
 gas.oxygen=氧氣
 gas.water=水蒸氣
 gas.chlorine=氯
-gas.sulfurDioxideGas=二氧化硫
-gas.sulfurTrioxideGas=三氧化硫
-gas.sulfuricAcid=硫酸
-gas.hydrogenChloride=氯化氫
-gas.liquidOsmium=液態鋨
+gas.sulfurdioxide=二氧化硫
+gas.sulfurtrioxide=三氧化硫
+gas.sulfuricacid=硫酸
+gas.hydrogenchloride=氯化氫
+gas.liquidosmium=液態鋨
 gas.ethene=乙烯
 gas.sodium=鈉
 gas.brine=氣態鹽水
 gas.deuterium=氘
 gas.tritium=氚
 gas.lithium=鋰
-gas.fusionFuelDT=D-T燃料
+gas.fusionfuel=D-T燃料
 
 gas.iron=鐵漿液
 gas.gold=金漿液
@@ -269,21 +269,21 @@ gas.fuel=氣化燃油
 gas.oil=氣化石油
 
 # Fluids
-fluid.hydrogen=液態氫
-fluid.oxygen=液態氧
-fluid.chlorine=液態氯
-fluid.sulfurDioxideGas=液化二氧化硫
-fluid.sulfurTrioxideGas=液態三氧化硫
-fluid.sulfuricAcid=硫酸
-fluid.hydrogenChloride=液態氯化氫
+fluid.liquidhydrogen=液態氫
+fluid.liquidoxygen=液態氧
+fluid.liquidchlorine=液態氯
+fluid.liquidsulfurdioxide=液化二氧化硫
+fluid.liquidsulfurtrioxide=液態三氧化硫
+fluid.sulfuricacid=硫酸
+fluid.liquidhydrogenchloride=液態氯化氫
 fluid.brine=鹽水
-fluid.ethene=液態乙烯
-fluid.sodium=液態鈉
-fluid.heavyWater=重水
-fluid.lithium=液態鋰
-fluid.deuterium=液態氘
-fluid.tritium=液態氚
-fluid.fusionFuelDT=液態D-T燃料
+fluid.liquidethene=液態乙烯
+fluid.liquidsodium=液態鈉
+fluid.heavywater=重水
+fluid.liquidlithium=液態鋰
+fluid.liquiddeuterium=液態氘
+fluid.liquidtritium=液態氚
+fluid.liquidfusionfuel=液態D-T燃料
 
 # OreGas names
 oregas.iron=鐵礦

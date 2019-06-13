@@ -173,7 +173,7 @@ tile.Transmitter.RestrictiveTransporter.name=Trasportatore restrittivo
 tile.Transmitter.DiversionTransporter.name=Trasportatore diversivo
 
 # Glow Panel
-item.GlowPanel.name=Pannello risplendente
+tile.GlowPanel.name=Pannello risplendente
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Cubo di energia base
@@ -252,18 +252,18 @@ gas.hydrogen=Idrogeno
 gas.oxygen=Ossigeno
 gas.water=Vapore acqueo
 gas.chlorine=Cloro
-gas.sulfurDioxideGas=Diossido di zolfo
-gas.sulfurTrioxideGas=Triossido di zolfo
-gas.sulfuricAcid=Acido solforico
-gas.hydrogenChloride=Cloruro di idrogeno
-gas.liquidOsmium=Osmio liquido
+gas.sulfurdioxide=Diossido di zolfo
+gas.sulfurtrioxide=Triossido di zolfo
+gas.sulfuricacid=Acido solforico
+gas.hydrogenchloride=Cloruro di idrogeno
+gas.liquidosmium=Osmio liquido
 gas.ethene=Etilene
 gas.sodium=Sodio
 gas.brine=Salamoia gassosa
 gas.deuterium=Deuterio
 gas.tritium=Trizio
 gas.lithium=Litio
-gas.fusionFuelDT=Carburante D-T
+gas.fusionfuel=Carburante D-T
 
 gas.iron=Fanghiglia di ferro
 gas.gold=Fanghiglia d'oro
@@ -288,21 +288,21 @@ gas.fuel=Carburante vaporizato
 gas.oil=Petrolio vaporizato
 
 # Fluids
-fluid.hydrogen=Idrogeno liquido
-fluid.oxygen=Ossigeno liquido
-fluid.chlorine=Cloro liquido
-fluid.sulfurDioxideGas=Diossido di zolfo liquido
-fluid.sulfurTrioxideGas=Triossido di zolfo liquido
-fluid.sulfuricAcid=Acido solforico liquido
-fluid.hydrogenChloride=Cloruro di idrogeno liquido
+fluid.liquidhydrogen=Idrogeno liquido
+fluid.liquidoxygen=Ossigeno liquido
+fluid.liquidchlorine=Cloro liquido
+fluid.liquidsulfurdioxide=Diossido di zolfo liquido
+fluid.liquidsulfurtrioxide=Triossido di zolfo liquido
+fluid.sulfuricacid=Acido solforico liquido
+fluid.liquidhydrogenchloride=Cloruro di idrogeno liquido
 fluid.brine=Salamoia
-fluid.ethene=Etilene liquido
-fluid.sodium=Sodio liquido
-fluid.heavyWater=Acqua pesante
-fluid.lithium=Litio liquido
-fluid.deuterium=Deuterio liquido
-fluid.tritium=Trizio liquido
-fluid.fusionFuelDT=Carburante D-T liquido
+fluid.liquidethene=Etilene liquido
+fluid.liquidsodium=Sodio liquido
+fluid.heavywater=Acqua pesante
+fluid.liquidlithium=Litio liquido
+fluid.liquiddeuterium=Deuterio liquido
+fluid.liquidtritium=Trizio liquido
+fluid.liquidfusionfuel=Carburante D-T liquido
 
 # OreGas names
 oregas.iron=Ferro grezzo

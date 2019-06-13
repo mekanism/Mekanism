@@ -207,7 +207,7 @@ tile.Transmitter.EliteThermodynamicConductor.name=Conduíte Térmico Elite
 tile.Transmitter.UltimateThermodynamicConductor.name=Conduíte Térmico Final
 
 # Glow Panel
-item.GlowPanel.name=Painel Luminoso
+tile.GlowPanel.name=Painel Luminoso
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Cubo de Energia Básico
@@ -281,18 +281,18 @@ gas.hydrogen=Hidrogénio
 gas.oxygen=Oxigénio
 gas.water=Vapor de Água
 gas.chlorine=Cloro
-gas.sulfurDioxideGas=Dióxido de Enxofre
-gas.sulfurTrioxideGas=Trióxido de Enxofre
-gas.sulfuricAcid=Ácido Sulfúrico
-gas.hydrogenChloride=Cloreto de Hidrogénio
-gas.liquidOsmium=Ósmio Líquido
+gas.sulfurdioxide=Dióxido de Enxofre
+gas.sulfurtrioxide=Trióxido de Enxofre
+gas.sulfuricacid=Ácido Sulfúrico
+gas.hydrogenchloride=Cloreto de Hidrogénio
+gas.liquidosmium=Ósmio Líquido
 gas.ethene=Etileno
 gas.sodium=Sódio
 gas.brine=Salmoura Gasosa
 gas.deuterium=Deutério
 gas.tritium=Trítio
 gas.lithium=Lítio
-gas.fusionFuelDT=Combustível D-T
+gas.fusionfuel=Combustível D-T
 
 gas.iron=Polpa de Ferro
 gas.gold=Polpa de Ouro
@@ -317,21 +317,21 @@ gas.fuel=Combustível Vaporizado
 gas.oil=Óleo Vaporizado
 
 # Fluids
-fluid.hydrogen=Hidrogénio Líquido
-fluid.oxygen=Oxigénio Líquido
-fluid.chlorine=Cloro Líquido
-fluid.sulfurDioxideGas=Dióxido de Enxofre Líquido
-fluid.sulfurTrioxideGas=Trióxido de Enxofre Líquido
-fluid.sulfuricAcid=Ácido Sulfúrico Líquido
-fluid.hydrogenChloride=Cloreto de Hidrogénio Líquido
+fluid.liquidhydrogen=Hidrogénio Líquido
+fluid.liquidoxygen=Oxigénio Líquido
+fluid.liquidchlorine=Cloro Líquido
+fluid.liquidsulfurdioxide=Dióxido de Enxofre Líquido
+fluid.liquidsulfurtrioxide=Trióxido de Enxofre Líquido
+fluid.sulfuricacid=Ácido Sulfúrico Líquido
+fluid.liquidhydrogenchloride=Cloreto de Hidrogénio Líquido
 fluid.brine=Salmoura
-fluid.ethene=Etileno Líquido
-fluid.sodium=Sódio Líquido
-fluid.heavyWater=Água Pesada
-fluid.lithium=Lítio Líquido
-fluid.deuterium=Deutério Líquido
-fluid.tritium=Trítio Líquido
-fluid.fusionFuelDT=Combustível D-T Líquido
+fluid.liquidethene=Etileno Líquido
+fluid.liquidsodium=Sódio Líquido
+fluid.heavywater=Água Pesada
+fluid.liquidlithium=Lítio Líquido
+fluid.liquiddeuterium=Deutério Líquido
+fluid.liquidtritium=Trítio Líquido
+fluid.liquidfusionfuel=Combustível D-T Líquido
 fluid.steam=Vapor Aquecido
 
 # OreGas names

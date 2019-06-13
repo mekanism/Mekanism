@@ -204,7 +204,7 @@ tile.Transmitter.EliteThermodynamicConductor.name=Conducteur Thermodynamique Eli
 tile.Transmitter.UltimateThermodynamicConductor.name=Conducteur Thermodynamique Ultime
 
 # Glow Panel
-item.GlowPanel.name=Panneau lumineux
+tile.GlowPanel.name=Panneau lumineux
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Cube d'énergie basique
@@ -278,18 +278,18 @@ gas.hydrogen=Hydrogène
 gas.oxygen=Oxygène
 gas.water=Vapeur d'eau
 gas.chlorine=Chlore
-gas.sulfurDioxideGas=Dioxyde de souffre
-gas.sulfurTrioxideGas=Trioxyde de souffre
-gas.sulfuricAcid=Acide sulfurique gazeux
-gas.hydrogenChloride=Chlorure d'hydrogène gazeux
-gas.liquidOsmium=Osmium liquide
+gas.sulfurdioxide=Dioxyde de souffre
+gas.sulfurtrioxide=Trioxyde de souffre
+gas.sulfuricacid=Acide sulfurique gazeux
+gas.hydrogenchloride=Chlorure d'hydrogène gazeux
+gas.liquidosmium=Osmium liquide
 gas.ethene=Ethylène
 gas.sodium=Sodium gazeux
 gas.brine=Saumure gazeuse
 gas.deuterium=Deutérium
 gas.tritium=Tritium
 gas.lithium=Lithium
-gas.fusionFuelDT=Carburant D-T
+gas.fusionfuel=Carburant D-T
 
 gas.iron=Boue de fer
 gas.gold=Boue d'or
@@ -314,21 +314,21 @@ gas.fuel=Carburant vaporisé
 gas.oil=Pétrole vaporisé
 
 # Fluids
-fluid.hydrogen=Hydrogène liquide
-fluid.oxygen=Oxygène liquide
-fluid.chlorine=Chlore liquide
-fluid.sulfurDioxideGas=Dioxide de souffre liquide
-fluid.sulfurTrioxideGas=Trioxide de souffre liquide
-fluid.sulfuricAcid=Acide sulfurique
-fluid.hydrogenChloride=Chlorure d'hydrogène
+fluid.liquidhydrogen=Hydrogène liquide
+fluid.liquidoxygen=Oxygène liquide
+fluid.liquidchlorine=Chlore liquide
+fluid.liquidsulfurdioxide=Dioxide de souffre liquide
+fluid.liquidsulfurtrioxide=Trioxide de souffre liquide
+fluid.sulfuricacid=Acide sulfurique
+fluid.liquidhydrogenchloride=Chlorure d'hydrogène
 fluid.brine=Saumure
-fluid.ethene=Éthylène liquide
-fluid.sodium=Sodium liquide
-fluid.heavyWater=Eau lourde
-fluid.lithium=Lithium liquide
-fluid.deuterium=Deutérium liquide
-fluid.tritium=Tritium liquide
-fluid.fusionFuelDT=Carburant D-T liquide
+fluid.liquidethene=Éthylène liquide
+fluid.liquidsodium=Sodium liquide
+fluid.heavywater=Eau lourde
+fluid.liquidlithium=Lithium liquide
+fluid.liquiddeuterium=Deutérium liquide
+fluid.liquidtritium=Tritium liquide
+fluid.liquidfusionfuel=Carburant D-T liquide
 fluid.steam=Vapeur
 
 # OreGas names

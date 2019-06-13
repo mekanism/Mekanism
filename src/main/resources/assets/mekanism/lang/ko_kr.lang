@@ -85,7 +85,7 @@ tile.Transmitter.RestrictiveTransporter.name=제한적 수송기
 tile.Transmitter.DiversionTransporter.name=우회적 수송기
 
 # Glow Panel
-item.GlowPanel.name=발광 패널
+tile.GlowPanel.name=발광 패널
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=기본 에너지 큐브
@@ -156,11 +156,11 @@ gas.hydrogen=수소
 gas.oxygen=산소
 gas.water=증류수
 gas.chlorine=염소
-gas.sulfurDioxideGas=이산화 황
-gas.sulfurTrioxideGas=산산화 황
-gas.sulfuricAcid=황산
-gas.hydrogenChloride=염화 수소
-gas.liquidOsmium=액화 오스뮴
+gas.sulfurdioxide=이산화 황
+gas.sulfurtrioxide=산산화 황
+gas.sulfuricacid=황산
+gas.hydrogenchloride=염화 수소
+gas.liquidosmium=액화 오스뮴
 gas.ethene=에틸렌
 gas.sodium=나트륨
 gas.brine=기체 소금물
@@ -188,16 +188,16 @@ gas.fuel=증류 정제유
 gas.oil=증류 석유
 
 # Fluids
-fluid.hydrogen=액화 수소
-fluid.oxygen=액화 산소
-fluid.chlorine=액화 염소
-fluid.sulfurDioxideGas=액화 이산화황
-fluid.sulfurTrioxideGas=액화 삼산화황
-fluid.sulfuricAcid=액화 황산
-fluid.hydrogenChloride=액화 염화수소
+fluid.liquidhydrogen=액화 수소
+fluid.liquidoxygen=액화 산소
+fluid.liquidchlorine=액화 염소
+fluid.liquidsulfurdioxide=액화 이산화황
+fluid.liquidsulfurtrioxide=액화 삼산화황
+fluid.sulfuricacid=액화 황산
+fluid.liquidhydrogenchloride=액화 염화수소
 fluid.brine=소금물
-fluid.ethene=액화 에틸렌
-fluid.sodium=액화 나트륨
+fluid.liquidethene=액화 에틸렌
+fluid.liquidsodium=액화 나트륨
 
 # OreGas names
 oregas.iron=철 광석

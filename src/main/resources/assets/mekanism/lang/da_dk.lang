@@ -202,7 +202,7 @@ tile.Transmitter.EliteThermodynamicConductor.name=Elite Termodynamisk Leder
 tile.Transmitter.UltimateThermodynamicConductor.name=Ultimativ Thermodynamisk Leder
 
 # Glow Panel
-item.GlowPanel.name=Glødepanel
+tile.GlowPanel.name=Glødepanel
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Basal Energikube
@@ -276,18 +276,18 @@ gas.hydrogen=Brint
 gas.oxygen=Ilt
 gas.water=Vanddamp
 gas.chlorine=Klor
-gas.sulfurDioxideGas=Svovldioxid
-gas.sulfurTrioxideGas=Svovltrioxid
-gas.sulfuricAcid=Svovlsyre
-gas.hydrogenChloride=Hydrogenklorid
-gas.liquidOsmium=Flydende Osmium
+gas.sulfurdioxide=Svovldioxid
+gas.sulfurtrioxide=Svovltrioxid
+gas.sulfuricacid=Svovlsyre
+gas.hydrogenchloride=Hydrogenklorid
+gas.liquidosmium=Flydende Osmium
 gas.ethene=Ethen
 gas.sodium=Natrium
 gas.brine=Saltlage i Gasform
 gas.deuterium=Deuterium
 gas.tritium=Tritium
 gas.lithium=Lithium
-gas.fusionFuelDT=D-T Brændsel
+gas.fusionfuel=D-T Brændsel
 
 gas.iron=Jernslurry
 gas.gold=Guldslurry
@@ -312,21 +312,21 @@ gas.fuel=Fordampet Brændsel
 gas.oil=Fordampet Olie
 
 # Fluids
-fluid.hydrogen=Flydende Brint
-fluid.oxygen=Flydende Ilt
-fluid.chlorine=Flydende Klor
-fluid.sulfurDioxideGas=Flydende Svovldioxid
-fluid.sulfurTrioxideGas=Flydende Svovltrioxid
-fluid.sulfuricAcid=Flydende Svovlsyre
-fluid.hydrogenChloride=Flydende Hydrogenklorid
+fluid.liquidhydrogen=Flydende Brint
+fluid.liquidoxygen=Flydende Ilt
+fluid.liquidchlorine=Flydende Klor
+fluid.liquidsulfurdioxide=Flydende Svovldioxid
+fluid.liquidsulfurtrioxide=Flydende Svovltrioxid
+fluid.sulfuricacid=Flydende Svovlsyre
+fluid.liquidhydrogenchloride=Flydende Hydrogenklorid
 fluid.brine=Saltlage
-fluid.ethene=Flydende Ethen
-fluid.sodium=Flydende Natrium
-fluid.heavyWater=Tungtvand
-fluid.lithium=Flydende Lithium
-fluid.deuterium=Flydende Deuterium
-fluid.tritium=Flydende Tritium
-fluid.fusionFuelDT=Flydende D-T Brændsel
+fluid.liquidethene=Flydende Ethen
+fluid.liquidsodium=Flydende Natrium
+fluid.heavywater=Tungtvand
+fluid.liquidlithium=Flydende Lithium
+fluid.liquiddeuterium=Flydende Deuterium
+fluid.liquidtritium=Flydende Tritium
+fluid.liquidfusionfuel=Flydende D-T Brændsel
 fluid.steam=Damp
 
 # OreGas names

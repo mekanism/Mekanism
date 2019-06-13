@@ -207,7 +207,7 @@ tile.Transmitter.EliteThermodynamicConductor.name=Elitní Termodynamický Vodič
 tile.Transmitter.UltimateThermodynamicConductor.name=Ultimátní Termodynamický Vodič
 
 # Glow Panel
-item.GlowPanel.name=Svítící Panel
+tile.GlowPanel.name=Svítící Panel
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Základní Energetická Kostka
@@ -281,18 +281,18 @@ gas.hydrogen=Vodík
 gas.oxygen=Kyslík
 gas.water=Vodní Pára
 gas.chlorine=Chlor
-gas.sulfurDioxideGas=Oxid Siřičitý
-gas.sulfurTrioxideGas=Oxid Sírový
-gas.sulfuricAcid=Kyselina Sírová
-gas.hydrogenChloride=Chlorid Vodnatý
-gas.liquidOsmium=Tekuté Osmium
+gas.sulfurdioxide=Oxid Siřičitý
+gas.sulfurtrioxide=Oxid Sírový
+gas.sulfuricacid=Kyselina Sírová
+gas.hydrogenchloride=Chlorid Vodnatý
+gas.liquidosmium=Tekuté Osmium
 gas.ethene=Ethylen
 gas.sodium=Sodík
 gas.brine=Plynná Solanka
 gas.deuterium=Deutérium
 gas.tritium=Tritium
 gas.lithium=Lithium
-gas.fusionFuelDT=D-T Palivo
+gas.fusionfuel=D-T Palivo
 
 gas.iron=Železná Kaše
 gas.gold=Zlatá Kaše
@@ -317,21 +317,21 @@ gas.fuel=Vypařené Palivo
 gas.oil=Vypařený Olej
 
 # Fluids
-fluid.hydrogen=Tekutý Vodík
-fluid.oxygen=Tekutý Kyslík
-fluid.chlorine=Tekutý Chlor
-fluid.sulfurDioxideGas=Tekutý Oxid Siřičitý
-fluid.sulfurTrioxideGas=Tekutý Oxid Sirný
-fluid.sulfuricAcid=Tekutá Kyselina Sírová
-fluid.hydrogenChloride=Tekutý Chlorid Vodnatý
+fluid.liquidhydrogen=Tekutý Vodík
+fluid.liquidoxygen=Tekutý Kyslík
+fluid.liquidchlorine=Tekutý Chlor
+fluid.liquidsulfurdioxide=Tekutý Oxid Siřičitý
+fluid.liquidsulfurtrioxide=Tekutý Oxid Sirný
+fluid.sulfuricacid=Tekutá Kyselina Sírová
+fluid.liquidhydrogenchloride=Tekutý Chlorid Vodnatý
 fluid.brine=Solanka
-fluid.ethene=Tekutý Ethylen
-fluid.sodium=Tekutý Sodík
-fluid.heavyWater=Těžká Voda
-fluid.lithium=Tekuté Lithium
-fluid.deuterium=Tekuté Deutérium
-fluid.tritium=Tekuté Tritium
-fluid.fusionFuelDT=Tekuté D-T Palivo
+fluid.liquidethene=Tekutý Ethylen
+fluid.liquidsodium=Tekutý Sodík
+fluid.heavywater=Těžká Voda
+fluid.liquidlithium=Tekuté Lithium
+fluid.liquiddeuterium=Tekuté Deutérium
+fluid.liquidtritium=Tekuté Tritium
+fluid.liquidfusionfuel=Tekuté D-T Palivo
 fluid.steam=Pára
 
 # OreGas names

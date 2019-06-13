@@ -207,7 +207,7 @@ tile.Transmitter.EliteThermodynamicConductor.name=Thermodynamischer Eliteleiter
 tile.Transmitter.UltimateThermodynamicConductor.name=Ultimativer Thermodynamischer Leiter
 
 # Glow Panel
-item.GlowPanel.name=Leuchtplatte
+tile.GlowPanel.name=Leuchtplatte
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Basis-Energiewürfel
@@ -287,18 +287,18 @@ gas.hydrogen=Wasserstoff
 gas.oxygen=Sauerstoff
 gas.water=Wasserdampf
 gas.chlorine=Chlor
-gas.sulfurDioxideGas=Schwefeldioxid
-gas.sulfurTrioxideGas=Schwefeltrioxid
-gas.sulfuricAcid=Schwefelsäure
-gas.hydrogenChloride=Chlorwasserstoff
-gas.liquidOsmium=Flüssiges Osmium
+gas.sulfurdioxide=Schwefeldioxid
+gas.sulfurtrioxide=Schwefeltrioxid
+gas.sulfuricacid=Schwefelsäure
+gas.hydrogenchloride=Chlorwasserstoff
+gas.liquidosmium=Flüssiges Osmium
 gas.ethene=Ethylen
 gas.sodium=Natrium
 gas.brine=Gasförmiges Salzwasser
 gas.deuterium=Deuterium
 gas.tritium=Tritium
 gas.lithium=Lithium
-gas.fusionFuelDT=D-T-Treibstoff
+gas.fusionfuel=D-T-Treibstoff
 
 gas.iron=Eisenschlamm
 gas.gold=Goldschlamm
@@ -323,21 +323,21 @@ gas.fuel=Verdampftes Benzin
 gas.oil=Verdampftes Öl
 
 # Fluids
-fluid.hydrogen=Flüssiger Wasserstoff
-fluid.oxygen=Flüssiger Sauerstoff
-fluid.chlorine=Flüssiges Chlor
-fluid.sulfurDioxideGas=Flüssiges Schwefeldioxid
-fluid.sulfurTrioxideGas=Flüssiges Schwefeltrioxid
-fluid.sulfuricAcid=Flüssige Schwefelsäure
-fluid.hydrogenChloride=Flüssiger Chlorwasserstoff
+fluid.liquidhydrogen=Flüssiger Wasserstoff
+fluid.liquidoxygen=Flüssiger Sauerstoff
+fluid.liquidchlorine=Flüssiges Chlor
+fluid.liquidsulfurdioxide=Flüssiges Schwefeldioxid
+fluid.liquidsulfurtrioxide=Flüssiges Schwefeltrioxid
+fluid.sulfuricacid=Flüssige Schwefelsäure
+fluid.liquidhydrogenchloride=Flüssiger Chlorwasserstoff
 fluid.brine=Salzwasser
-fluid.ethene=Flüssigethylen
-fluid.sodium=Flüssignatrium
-fluid.heavyWater=Schweres Wasser
-fluid.lithium=Flüssiges Lithium
-fluid.deuterium=Flüssiges Deuterium
-fluid.tritium=Flüssiges Tritium
-fluid.fusionFuelDT=Flüssiger D-T-Treibstoff
+fluid.liquidethene=Flüssigethylen
+fluid.liquidsodium=Flüssignatrium
+fluid.heavywater=Schweres Wasser
+fluid.liquidlithium=Flüssiges Lithium
+fluid.liquiddeuterium=Flüssiges Deuterium
+fluid.liquidtritium=Flüssiges Tritium
+fluid.liquidfusionfuel=Flüssiger D-T-Treibstoff
 fluid.steam=Dampf
 
 # OreGas names

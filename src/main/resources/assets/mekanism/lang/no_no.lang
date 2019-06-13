@@ -128,7 +128,7 @@ tile.Transmitter.RestrictiveTransporter.name=Restriktiv Transporter
 tile.Transmitter.DiversionTransporter.name=Avlednings Transporter
 
 # Glow Panel
-item.GlowPanel.name=Gløde Panel
+tile.GlowPanel.name=Gløde Panel
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Enkel Energi Kube
@@ -202,18 +202,18 @@ gas.hydrogen=Hydrogen
 gas.oxygen=Oksygen
 gas.water=Vann Vapor
 gas.chlorine=Klor
-gas.sulfurDioxideGas=Svoveldioksid
-gas.sulfurTrioxideGas=Svoveltrioksyd
-gas.sulfuricAcid=Svovelsyre
-gas.hydrogenChloride=Hydrogenklorid
-gas.liquidOsmium=Flytende Osmium
+gas.sulfurdioxide=Svoveldioksid
+gas.sulfurtrioxide=Svoveltrioksyd
+gas.sulfuricacid=Svovelsyre
+gas.hydrogenchloride=Hydrogenklorid
+gas.liquidosmium=Flytende Osmium
 gas.ethene=Etylen
 gas.sodium=Natrium
 gas.brine=Brine i gassform
 gas.deuterium=Deuterium
 gas.tritium=Tritium
 gas.lithium=Lithium
-gas.fusionFuelDT=D-T Brensel
+gas.fusionfuel=D-T Brensel
 
 gas.iron=Jern Slurry
 gas.gold=Gull Slurry
@@ -238,21 +238,21 @@ gas.fuel=Fordampet Brensel
 gas.oil=Fordampet Olje
 
 # Fluids
-fluid.hydrogen=Flytende Hydrogen
-fluid.oxygen=Flytende Oksygen
-fluid.chlorine=Flytende Klor
-fluid.sulfurDioxideGas=Flytende Svoveldioksid
-fluid.sulfurTrioxideGas=Flytende Svoveltrioksyd
-fluid.sulfuricAcid=Flytende Svovelsyre
-fluid.hydrogenChloride=Flytende Hydrogenklorid
+fluid.liquidhydrogen=Flytende Hydrogen
+fluid.liquidoxygen=Flytende Oksygen
+fluid.liquidchlorine=Flytende Klor
+fluid.liquidsulfurdioxide=Flytende Svoveldioksid
+fluid.liquidsulfurtrioxide=Flytende Svoveltrioksyd
+fluid.sulfuricacid=Flytende Svovelsyre
+fluid.liquidhydrogenchloride=Flytende Hydrogenklorid
 fluid.brine=Saltlake
-fluid.ethene=Flytende Ethylen
-fluid.sodium=Flytende Natrium
-fluid.heavyWater=Tungtvann
-fluid.lithium=Flytende Lithium
-fluid.deuterium=Flytende Deuterium
-fluid.tritium=Flytende Tritium
-fluid.fusionFuelDT=Flytende D-T Brensel
+fluid.liquidethene=Flytende Ethylen
+fluid.liquidsodium=Flytende Natrium
+fluid.heavywater=Tungtvann
+fluid.liquidlithium=Flytende Lithium
+fluid.liquiddeuterium=Flytende Deuterium
+fluid.liquidtritium=Flytende Tritium
+fluid.liquidfusionfuel=Flytende D-T Brensel
 
 # OreGas names
 oregas.iron=Jern Malm
