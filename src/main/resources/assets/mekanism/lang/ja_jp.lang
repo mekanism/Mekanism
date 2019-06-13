@@ -210,7 +210,7 @@ tile.Transmitter.EliteThermodynamicConductor.name=精鋭サーモダイナミッ
 tile.Transmitter.UltimateThermodynamicConductor.name=究極サーモダイナミックコンダクター
 
 # Glow Panel
-item.GlowPanel.name=発光パネル
+tile.GlowPanel.name=発光パネル
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=基本エネルギーキューブ
@@ -299,18 +299,18 @@ gas.hydrogen=水素
 gas.oxygen=酸素
 gas.water=水蒸気
 gas.chlorine=塩素
-gas.sulfurDioxideGas=二酸化硫黄
-gas.sulfurTrioxideGas=三酸化硫黄
-gas.sulfuricAcid=硫酸
-gas.hydrogenChloride=塩化水素
-gas.liquidOsmium=オスミウム
+gas.sulfurdioxide=二酸化硫黄
+gas.sulfurtrioxide=三酸化硫黄
+gas.sulfuricacid=硫酸
+gas.hydrogenchloride=塩化水素
+gas.liquidosmium=オスミウム
 gas.ethene=エチレン
 gas.sodium=ナトリウム
 gas.brine=気化した鹹水
 gas.deuterium=重水素
 gas.tritium=三重水素
 gas.lithium=リチウム
-gas.fusionFuelDT=D-T 燃料
+gas.fusionfuel=D-T 燃料
 
 gas.iron=鉄の懸濁液
 gas.gold=金の懸濁液
@@ -335,21 +335,21 @@ gas.fuel=気化燃料
 gas.oil=気化油
 
 # Fluids
-fluid.hydrogen=液体水素
-fluid.oxygen=液体酸素
-fluid.chlorine=液体塩素
-fluid.sulfurDioxideGas=液体亜硫酸
-fluid.sulfurTrioxideGas=三酸化液体硫黄
-fluid.sulfuricAcid=液体硫酸
-fluid.hydrogenChloride=液体塩化水素
+fluid.liquidhydrogen=液体水素
+fluid.liquidoxygen=液体酸素
+fluid.liquidchlorine=液体塩素
+fluid.liquidsulfurdioxide=液体亜硫酸
+fluid.liquidsulfurtrioxide=三酸化液体硫黄
+fluid.sulfuricacid=液体硫酸
+fluid.liquidhydrogenchloride=液体塩化水素
 fluid.brine=塩水
-fluid.ethene=液体エチレン
-fluid.sodium=液体ナトリウム
-fluid.heavyWater=重水
-fluid.lithium=液体リチウム
-fluid.deuterium=液体重水素
-fluid.tritium=液体三重水素
-fluid.fusionFuelDT=液体 D-T 燃料
+fluid.liquidethene=液体エチレン
+fluid.liquidsodium=液体ナトリウム
+fluid.heavywater=重水
+fluid.liquidlithium=液体リチウム
+fluid.liquiddeuterium=液体重水素
+fluid.liquidtritium=液体三重水素
+fluid.liquidfusionfuel=液体 D-T 燃料
 fluid.steam=蒸気
 
 # OreGas names
@@ -414,6 +414,7 @@ mekanism.configgui.ctgy.machines=マシンの設定
 mekanism.configgui.ctgy.tier=ランクの設定
 mekanism.configgui.ctgy.usage=エネルギー使用率の設定
 mekanism.configgui.ctgy.client=クライアント設定
+mekanism.configgui.ctgy.storage=エネルギー容量設定
 
 # Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Mekanismとそのモジュールに関する基本的な設定
@@ -421,6 +422,7 @@ mekanism.configgui.ctgy.machines.tooltip=機械ごとの有効・無効化の設
 mekanism.configgui.ctgy.tier.tooltip=Mekanismのランクされた機械に対応する値の設定
 mekanism.configgui.ctgy.usage.tooltip=機械に関する設定とエネルギー使用量
 mekanism.configgui.ctgy.client.tooltip=Mekanismとそのモジュールにおけるクライアント設定
+mekanism.configgui.ctgy.storage.tooltip=機械の保有出来るエネルギー量の設定
 
 # Gui text
 gui.condensentrating=凝縮
@@ -493,6 +495,7 @@ gui.dynamicTank=ダイナミックタンク
 gui.industrialTurbine=工業用タービン
 gui.thermoelectricBoiler=ボイラー室
 gui.visuals=範囲表示
+mekanism.gui.visuals.toobig=表示するには大きすぎる半径です
 gui.noEject=搬出不能
 gui.undefined=未定義
 gui.owner=オーナー
@@ -507,6 +510,7 @@ gui.producing=生成
 gui.maxOutput=最大出力
 gui.storing=蓄電量
 gui.skyBlocked=空に面していません
+gui.noWind=送風がありません
 gui.using=使用中
 gui.needed=必要
 mekanism.gui.bufferfree=空きRF容量
@@ -542,6 +546,7 @@ gui.capacity=容量
 gui.unit=単位
 gui.temp=温度
 gui.usage=使用
+gui.transferred=移動済み
 gui.dissipated=発散
 gui.dissipated=温度変化
 gui.boilRate=沸騰量
@@ -577,6 +582,7 @@ gui.maxWaterOutput=最大水排出量
 gui.stockControl=インベントリ制御
 gui.allowDefault=デフォルトルートに設定
 gui.sizeMode=スタックモード
+mekanism.gui.sizeModeConflict=単一アイテムモードの為, 効果がありません
 
 gui.reactor.injectionRate=合成レート
 
@@ -612,6 +618,7 @@ gui.factory.Combining=抱合
 gui.factory.Purifying=精製
 gui.factory.Injecting=化学注入
 gui.factory.Infusing=冶金
+gui.factory.Sawing=製材
 
 gui.seismicReader.short=弾性波解析器
 gui.seismicReader.solids=固体
@@ -664,7 +671,11 @@ gui.password=パスワード
 
 mekanism.gui.logisticalSorter.default=デフォルト
 mekanism.gui.logisticalSorter.autoEject=自動
+mekanism.gui.logisticalSorter.autoEject.tooltip=接続されたインベントリに自動搬出します
 mekanism.gui.logisticalSorter.roundRobin=ラウンドロビン
+mekanism.gui.logisticalSorter.roundRobin.tooltip=接続された各インベントリに対して順に搬出します
+mekanism.gui.logisticalSorter.singleItem=単一アイテム
+mekanism.gui.logisticalSorter.singleItem.tooltip=スタック単位ではなく単一のアイテムを搬出します(ItemStackフィルターによる最小・最大値を上書きします)
 
 gui.teleporter.notReady=準備が出来ていません
 gui.teleporter.ready=準備完了
@@ -752,6 +763,7 @@ tooltip.diversionDesc=レッドストーン信号で制御可能
 tooltip.noGas=ガスは保存されていません
 tooltip.stored=保存ガス
 tooltip.channel=チャンネル
+tooltip.walkie_disabled=ボイスサーバーが無効です
 tooltip.mode=モード
 tooltip.efficiency=効率
 tooltip.modeToggle=モード切り替え:
@@ -1124,3 +1136,20 @@ mekanism.configgui.ctgy.tools.tools=道具のバランス
 mekanism.configgui.ctgy.tools.general.tooltip=MekanismToolsの基本設定
 mekanism.configgui.ctgy.tools.armor.tooltip=MekanismToolsの防具におけるパラメータの設定
 mekanism.configgui.ctgy.tools.tools.tooltip=MekanismToolsの道具におけるパラメータの設定
+
+cmd.mek.testrules.usage=ワールド設定をテスト用に設定します(Mobのスポーン・昼夜サイクル・天候の変化を無効にします)
+cmd.mek.testrules=モブのスポーン, 昼夜サイクル, 天候の変化を無効化しました
+cmd.mek.tp.usage=新規座標にテレポートし, 直前の座標をスタックリストに保存します
+cmd.mek.tp=(%d,%d,%d)にテレポートしました - スタックリストに直前の座標を保存しました
+cmd.mek.tp.missing.args=テレポートするには座標を指定する(x, y, z)の3つの値が必要です
+cmd.mek.tpop.usage=スタックリストからに最後に保存された座標に戻ります
+cmd.mek.tpop=(%d, %d, %d)に戻りました. %d個の位置情報がスタックリストに保存されています
+cmd.mek.tpop.empty.stack=スタックリストに保存された位置情報はありません
+cmd.mek.chunk.watch.usage=チャンクのロード・アンロードイベントのウォッチリストに呼び出し元チャンクを登録します
+cmd.mek.chunk.watch=チャンク(%d, %d)をウォッチリストに登録しました
+cmd.mek.chunk.unwatch.usage=チャンクのロード・アンロードイベントのウォッチリストから呼び出し元チャンクを削除します
+cmd.mek.chunk.unwatch=チャンク(%d, %d)をウォッチリストから削除しました
+cmd.mek.chunk.clear.usage=チャンクのロード・アンロードイベントのウォッチリストに登録されたすべてのチャンクを削除します
+cmd.mek.chunk.clear=%d個のチャンクをウォッチリストから削除しました
+cmd.mek.chunk.flush=%d個のチャンクをアンロードしました
+chat.mek.multiblockformed=マルチブロックが構築されました
