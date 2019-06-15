@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.MekanismUtils;
@@ -19,6 +18,7 @@ public class ModelEnergyCube extends ModelBase {
 
     public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayOn.png");
     public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayOff.png");
+    public static ResourceLocation BASE_OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube_OverlayBase.png");
     public ModelRenderer[] leds1;
     public ModelRenderer[] leds2;
     public ModelRenderer[] ports;
@@ -370,8 +370,8 @@ public class ModelEnergyCube extends ModelBase {
         }
 
         MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(1.001F, 1.005F, 1.001F).translateY(-0.0061F);
-        manager.bindTexture(RenderEnergyCube.resources.get(tier));
-        renderHelper.enableGlow();
+        manager.bindTexture(BASE_OVERLAY);
+        renderHelper.color(tier.getBaseTier().getColor());
 
         corner8.render(size);
         corner7.render(size);
@@ -394,7 +394,7 @@ public class ModelEnergyCube extends ModelBase {
         MekanismRenderHelper renderHelper = new MekanismRenderHelper();
         if (state == IOState.OUTPUT) {
             renderHelper.enableGlow();
-            renderer.bindTexture(RenderEnergyCube.resources.get(tier));
+            renderer.bindTexture(BASE_OVERLAY);
             ports[side.ordinal()].render(size);
         }
 

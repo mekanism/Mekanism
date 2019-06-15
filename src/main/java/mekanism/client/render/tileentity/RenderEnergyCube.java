@@ -1,14 +1,11 @@
 package mekanism.client.render.tileentity;
 
-import java.util.EnumMap;
-import java.util.Map;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -21,17 +18,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergyCube> {
 
-    public static Map<EnergyCubeTier, ResourceLocation> resources = new EnumMap<>(EnergyCubeTier.class);
     public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube.png");
     public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png");
-
-    static {
-        if (resources.isEmpty()) {
-            for (EnergyCubeTier tier : EnergyCubeTier.values()) {
-                resources.put(tier, MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.getBaseTier().getSimpleName() + ".png"));
-            }
-        }
-    }
 
     private ModelEnergyCube model = new ModelEnergyCube();
     private ModelEnergyCore core = new ModelEnergyCore();
