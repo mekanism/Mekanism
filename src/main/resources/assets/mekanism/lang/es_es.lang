@@ -18,17 +18,17 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Desemsanblador Atómico
 item.ElectricBow.name=Arco eléctrico
 item.EnrichedIron.name=Hierro enriquecido
-item.CompressedCarbon.name=Carbón Comprimido
-item.CompressedRedstone.name=Redstone Comprimido
-item.CompressedDiamond.name=Diamante Comprimido
-item.CompressedObsidian.name=Obsidiana Comprimida
+item.CompressedCarbon.name=Carbón comprimido
+item.CompressedRedstone.name=Redstone comprimido
+item.CompressedDiamond.name=Diamante comprimido
+item.CompressedObsidian.name=Obsidiana comprimida
 item.PortableTeleporter.name=Teletransportador portátil
 item.TeleportationCore.name=Núcleo de teletransportador
 item.Configurator.name=Configurador
 item.NetworkReader.name=Lector de red
 item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
-item.ScubaTank.name=Tanque de buceo
+item.ScubaTank.name=Botella de buceo
 item.GasMask.name=Máscara de gas
 item.Dictionary.name=Diccionario
 item.ElectrolyticCore.name=Núcleo de electrolíto
@@ -148,7 +148,7 @@ tile.MachineBlock2.ChemicalDissolutionChamber.name=Camara de disolución químic
 tile.MachineBlock2.ChemicalWasher.name=Lavadora química
 tile.MachineBlock2.ChemicalCrystallizer.name=Cristalizador químico
 tile.MachineBlock2.SeismicVibrator.name=Vibrador sísmico
-tile.MachineBlock2.PressurizedReactionChamber.name=Camara de reación presurizada
+tile.MachineBlock2.PressurizedReactionChamber.name=Cámara de reación presurizada
 tile.MachineBlock2.PressurizedReactionChamber.short.name=CRP
 tile.MachineBlock2.FluidicPlenisher.name=Liberador de fluidos
 tile.MachineBlock2.Laser.name=Láser
@@ -163,14 +163,14 @@ tile.MachineBlock3.ResistiveHeater.name=Calentador resistivo
 tile.MachineBlock3.FormulaicAssemblicator.name=Ensamblador de fórmulas
 tile.MachineBlock3.FuelwoodHeater.name=Calentador de leña
 
-# Plastic / Plastico
-tile.PlasticBlock.name=Bloque de plastico
-tile.SlickPlasticBlock.name=Bloque de plastico recubierto
-tile.GlowPlasticBlock.name=Bloque de plastico luminoso
-tile.ReinforcedPlasticBlock.name=Bloque de plastico reforzado
-tile.RoadPlasticBlock.name=Vara de Plastico
+# Plastic / Plástico
+tile.PlasticBlock.name=Bloque de plástico
+tile.SlickPlasticBlock.name=Bloque de plástico recubierto
+tile.GlowPlasticBlock.name=Bloque de plástico luminoso
+tile.ReinforcedPlasticBlock.name=Bloque de plástico reforzado
+tile.RoadPlasticBlock.name=Vara de plástico
 
-tile.PlasticFence.name=Valla de Plastico
+tile.PlasticFence.name=Valla de plástico
 
 # Infuse types / Tipos de infundidos
 infuse.carbon=Carbón
@@ -296,7 +296,7 @@ item.copperNugget.name=Pepita de cobre
 item.tinNugget.name=Pepita de estaño
 
 # Gasses
-gas.hydrogen=Hidrogeno
+gas.hydrogen=Hidrógeno
 gas.oxygen=Oxígeno
 gas.water=Vapor de agua
 gas.chlorine=Cloro
@@ -313,993 +313,517 @@ gas.tritium=Tritio
 gas.lithium=Litio
 gas.fusionfuel=Combustible D-T
 
-gas.iron=Espuma flotada de hierro
-gas.gold=Espuma flotada de oro
-gas.osmium=Espuma flotada de osmio
-gas.copper=Espuma flotada de cobre
-gas.tin=Espuma flotada de estaño
-gas.silver=Espuma flotada de plata
-gas.obsidian=Espuma flotada de obsidiana
-gas.lead=Espuma flotada de plomo
+gas.iron=Hierro lixiviado
+gas.gold=Oro lixiviado
+gas.osmium=Osmio lixiviado
+gas.copper=Cobre lixiviado
+gas.tin=Estaño lixiviado
+gas.silver=Plata lixiviada
+gas.obsidian=Obsidiana lixiviada
+gas.lead=Plomo lixiviado
 
-gas.cleanIron=Espuma flotada pura de hierro
-gas.cleanGold=Espuma flotada pura de oro
-gas.cleanOsmium=Espuma flotada pura de osmio
-gas.cleanCopper=Espuma flotada pura de cobre
-gas.cleanTin=Espuma flotada pura de estaño
-gas.cleanSilver=Espuma flotada pura de plata
-gas.cleanObsidian=Espuma flotada pura de obsidiana
-gas.cleanLead=Espuma flotada pura de plomo
+gas.cleanIron=Hierro lixiviado limpio
+gas.cleanGold=Oro lixiviado limpio
+gas.cleanOsmium=Osmio lixiviado limpio
+gas.cleanCopper=Cobre lixiviado limpio
+gas.cleanTin=Estaño lixiviado limpio
+gas.cleanSilver=Plata lixiviada limpia
+gas.cleanObsidian=Obsidiana lixiviada limpia
+gas.cleanLead=Plomo lixiviado limpio
 
-# BC Fuel Gases
+# BC Fuel Gases / Combustibles gaseosos
+gas.fuel=Combustible vaporizado
+gas.oil=Aceite vaporizado
 
-gas.fuel=Combustible Vaporizado
+# Fluids / Flidos
+fluid.liquidhydrogen=Hidrógeno líquido
+fluid.liquidoxygen=Oxígeno líquido
+fluid.liquidchlorine=Cloro líquido
+fluid.liquidsulfurdioxide=Dióxido de azufre líquido
+fluid.liquidsulfurtrioxide=Trioxido de azufre líquido
+fluid.sulfuricacid=Ácido sulfúrico líquido
+fluid.liquidhydrogenchloride=Cloruro de hidrógeno líquido
+fluid.brine=Salmuera líquida
+fluid.liquidethene=Etileno líquido
+fluid.liquidsodium=Sodio líquido
+fluid.heavywater=Agua pesada líquida
+fluid.liquidlithium=Litio líquido
+fluid.liquiddeuterium=Deuterio líquido
+fluid.liquidtritium=Tritio líquido
+fluid.liquidfusionfuel=Combustible D-T líquido
+fluid.steam=Vapor condensado
 
-gas.oil=Aceite Vaporizado
+# OreGas names / Nombres MineralGas
+oregas.iron=Mena de hierro
+oregas.gold=Mena de oro
+oregas.osmium=Mena de osmio
+oregas.copper=Mena de cobre
+oregas.tin=Mena de estaño
+oregas.silver=Mena de plata
+oregas.obsidian=Mena de obsidiana
+oregas.lead=Mena de plomo
 
-
-
-# Fluids
-
-fluid.liquidhydrogen=Hidrogeno Liquido
-
-fluid.liquidoxygen=Oxigeno Liquido
-
-fluid.liquidchlorine=Cloro Liquido
-
-fluid.liquidsulfurdioxide=Dioxido sulfuro Liquido
-
-fluid.liquidsulfurtrioxide=Trioxido de Sulfuro Liquido
-
-fluid.sulfuricacid=Acido Sulfurico Liquido
-
-fluid.liquidhydrogenchloride=Cloro Hidrogenizado Liquido
-
-fluid.brine=Salmuera Liquida
-
-fluid.liquidethene=Etileno Liquido
-
-fluid.liquidsodium=Sodio Liquido
-
-fluid.heavywater=Agua Pesada Liquida
-
-fluid.liquidlithium=Litio Liquido
-
-fluid.liquiddeuterium=Deuterio Liquido
-
-fluid.liquidtritium=Tritio Liquido
-
-fluid.liquidfusionfuel=Combustible D.T Liquido
-
-fluid.steam=Equilibrio Vapor liquido
-
-
-
-# OreGas names
-
-oregas.iron=Mena de Hierro
-
-oregas.gold=Mena de Oro
-
-oregas.osmium=Mena de Osmio
-
-oregas.copper=Mena de Cobre
-
-oregas.tin=Mena de Estaño
-
-oregas.silver=Mena de Plata
-
-oregas.obsidian=Mena de Obsidiana
-
-oregas.lead=Mena de Plomo
-
-
-
-# Tier names
-
-tier.Basic=Basico
-
+# Tier names / Nombres de niveles
+tier.Basic=Básico
 tier.Advanced=Avanzado
-
-tier.Elite=Elite
-
-tier.Ultimate=Ultimate
-
+tier.Elite=Élite
+tier.Ultimate=Ultimo
 tier.Creative=Creativo
 
-
-
-# Transmission types
-
-transmission.Energy=Energia
-
+# Transmission types / Tipos de transmisiones
+transmission.Energy=Energía
 transmission.Fluids=Fluidos
-
 transmission.Gases=Gases
-
 transmission.Items=Objetos
-
 transmission.Heat=Calor
 
-
-
-# Update handler text
-
-update.consider=Considere Actualizar la version
-
+# Update handler text / Texto para actualizaciones
+update.consider=Considere actualizar la versión
 update.newFeatures=Nuevas funciones
-
 update.visit=Visita
-
 update.toDownload=para descargar
+update.devBuild=Usando una versión en desarrollo
+update.outdated=Usando uno o dos módulos desactualizados
 
-update.devBuild=Usando una version en desarrollo
-
-update.outdated=usando uno o dos modulos desactualizados
-
-
-
-# Upgrades
-
-upgrade.energy=Energia
-
-upgrade.energy.desc=Mejora la eficiencia y capacidad energetica.
-
+# Upgrades / Mejoras
+upgrade.energy=Energía
+upgrade.energy.desc=Mejora la eficiencia y capacidad energética.
 upgrade.speed=Velocidad
-
-upgrade.speed.desc=Aumenta la velocidad de la maquina.
-
+upgrade.speed.desc=Aumenta la velocidad de la máquina.
 upgrade.filter=Filtro
-
-upgrade.filter.desc=Un filtro sirve para convertir el agua, en Agua pesada.
-
+upgrade.filter.desc=Un filtro sirve para convertir el agua, en agua pesada.
 upgrade.gas=Gas
-
-upgrade.gas.desc=Mejora la eficiencia con a la hora de usar Gases en las maquinas.
-
+upgrade.gas.desc=Mejora la eficiencia del uso de los gases en las máquinas.
 upgrade.muffling=Sonora
-
-upgrade.muffling.desc=Reduce el ruido emitido por las maquinas
-
+upgrade.muffling.desc=Reduce el ruido emitido por las máquinas.
 upgrade.anchor=Area
+upgrade.anchor.desc=Mantiene el area cargada (Chunk) para el funcionamiento de la máquina.
 
-upgrade.anchor.desc=Mantiene el area cargada (Chunk) para el funcionamiento de la maquina
-
-
-
-# Key description text
-
+# Key description text / Textos descriptivos
 mekanism.key.mode=Cambiar modo de Objetos
-
-mekanism.key.armorMode=Cambiar modo de Percheras
-
+mekanism.key.armorMode=Cambiar modo de Armadura
 mekanism.key.feetMode=Cambiar modo de Zapatos
-
 mekanism.key.voice=Voz
 
-
-
-# Entities
-
+# Entities / Entidades
 entity.Robit.name=Robit
+entity.BabySkeleton.name=Bebé esqueleto
 
-entity.BabySkeleton.name=Bebe Esqueleto
+# Config Gui / Configuración interfaz
+mekanism.configgui.ctgy.general=Configuración general
+mekanism.configgui.ctgy.machines=Configuración de máquinas
+mekanism.configgui.ctgy.tier=Configuración de nivel (Tiers)
+mekanism.configgui.ctgy.usage=Configuración de consumo energético
+mekanism.configgui.ctgy.client=Configuración de cliente (Usuario)
+mekanism.configgui.ctgy.storage=Configuración de almacenamiento de energía
 
-
-
-# Config Gui
-
-mekanism.configgui.ctgy.general=Configuraciones Generales
-
-mekanism.configgui.ctgy.machines=Configuraciones de Maquinas
-
-mekanism.configgui.ctgy.tier=Configuraciones de Tipo (Tiers)
-
-mekanism.configgui.ctgy.usage=Configuraciones de Consumo energetico
-
-mekanism.configgui.ctgy.client=Configuraciones de cliente (Usuario)
-
-
-
-# Config Tooltips
-
-mekanism.configgui.ctgy.general.tooltip=Configuraciones: Generales de Mekanism y todos sus modulos
-
-mekanism.configgui.ctgy.machines.tooltip=Configuraciones: Desactivar o Activar maquinas e objetos.
-
-mekanism.configgui.ctgy.tier.tooltip=Configuraciones: Las mejoras y sus valores.
-
-mekanism.configgui.ctgy.usage.tooltip=Configuraciones: Uso energetico de las maquinas.
-
-mekanism.configgui.ctgy.client.tooltip=Configuraciones: Cambios especificos de usuario (No para servidores) de Mekanism y todos sus modos.
-
-
+# Config Tooltips / Conf. descripcciones
+mekanism.configgui.ctgy.general.tooltip=Configuración general de Mekanism y sus módulos.
+mekanism.configgui.ctgy.machines.tooltip=Configuración para activar o desactivar máquinas y objetos.
+mekanism.configgui.ctgy.tier.tooltip=Configuración de mejoras y sus valores.
+mekanism.configgui.ctgy.usage.tooltip=Configuración de uso energetico de las máquinas.
+mekanism.configgui.ctgy.client.tooltip=Configuración de cambios especificos de usuario offline de Mekanism y sus módulos.
+mekanism.configgui.ctgy.storage.tooltip= Configuración de maquinaría y su capacidad máxima de almacenamiento de enegía.
 
 # Gui text / Textos de Interfaz
-
 gui.condensentrating=Condensante
-
 gui.decondensentrating=Descondensante
-
 gui.power=Energia
-
 gui.confirm=Confirmar
-
 gui.open=Abrir
-
 gui.allOK=Listo
-
 gui.none=Nada
-
 gui.new=Nuevo
-
 gui.edit=Editar
-
 gui.save=Guardar
-
 gui.output=Salida
-
 gui.delete=Borrar
-
 gui.status=Estado
-
-gui.autoEject=Sacar automatico
-
-gui.itemstack=Pila de objetos
-
-gui.oredict=OreDict
-
+gui.autoEject=Autoexplusar
+gui.itemstack=Motón de objetos
+gui.oredict=MineralDict
 gui.material=Material
-
-gui.out=Afuera
-
+gui.out=Fuera
 gui.noFluid=Sin fluido
-
-gui.empty=Vacio
-
+gui.empty=Vacío
 gui.volume=Volumen
-
 gui.start=Iniciar
-
 gui.stop=Detener
-
 gui.config=Configurar
-
 gui.teleport=Teletransportar
-
 gui.eject=Sacar
-
 gui.input=Entrada
-
-gui.strictInput=Entrada Espec.
-
+gui.strictInput=Entrada espec.
 gui.slots=Ranuras
-
 gui.state=Estado
-
 gui.on=Encendida
-
 gui.off=Apagada
-
 gui.filters=Filtros
-
 gui.filter=Filtro
-
 gui.idle=Reposo
-
 gui.data=Datos
-
-gui.newFilter=Nuevo Filtro
-
-gui.energy=Energia
-
+gui.newFilter=Nuevo filtro
+gui.energy=Energía
 gui.gas=Gas
-
 gui.dumping=Desechando
-
-gui.dumping_excess=Desechando Exceso
-
+gui.dumping_excess=Desechando exceso
 gui.modID=Mod ID
-
-gui.key=Boton
-
+gui.key=Botón
 gui.id=ID
-
 gui.finished=Terminado
-
-gui.well=Todo en orden!
-
+gui.well=¡Todo en orden!
 gui.upgrade=Actualizar
-
 gui.infinite=Infinito
-
 gui.min=Min
-
 gui.max=Max
-
 gui.delay=Retardo
-
 gui.noDelay=Sin retardo
-
 gui.fuel=Combustible
-
 gui.heat=Calor
-
 gui.formed=Armado
-
 gui.incomplete=Incompleto
-
-gui.inductionMatrix=Matriz de Induccion
-
-gui.matrixStats=Estadisticas de Matriz
-
-gui.turbineStats=Estadisticas de Turbina
-
-gui.boilerStats=Estadisticas de la Caldera
-
+gui.inductionMatrix=Matriz de inducción
+gui.matrixStats=Estadísticas de matriz
+gui.turbineStats=Estadísticas de turbina
+gui.boilerStats=Estadísticas de la caldera
 gui.main=Principal
-
 gui.outputting=Expulsando
-
 gui.receiving=Recibiendo
-
 gui.dimensions=Tamaño
-
 gui.constituents=Compuestos
-
-gui.cells=celulas
-
+gui.cells=células
 gui.providers=proveedores
-
 gui.structure=Estructura
-
-gui.dynamicTank=Tanque Dinamico
-
-gui.industrialTurbine=Turbina Industrial
-
-gui.thermoelectricBoiler=Caldera Termoelectrica
-
-gui.visuals=Graficos
-
-mekanism.gui.visuals.toobig=Radio demasiado grande para mostrarse!
-
+gui.dynamicTank=Tanque dinámico
+gui.industrialTurbine=Turbina industrial
+gui.thermoelectricBoiler=Caldera termoeléctrica
+gui.visuals=Gráficos
+mekanism.gui.visuals.toobig=Radio demasiado grande para mostrar datos
 gui.noEject=No se puede expulsar
-
 gui.undefined=Indefinido
-
 gui.owner=Dueño
-
 gui.public=Publica
-
 gui.private=Privada
-
 gui.add=Agregar
-
 gui.set=Conjunto
-
 gui.freq=Frequencia
-
 gui.security=Seguridad
-
-gui.index=Indice
-
+gui.index=Índice
 gui.producing=Produciendo
-
 gui.maxOutput=Max. Salida
-
 gui.storing=Almacenando
-
-gui.skyBlocked=Luz bloqueada!
-
-gui.noWind=Viento bloqueado!
-
+gui.skyBlocked=¡Luz bloqueada!
+gui.noWind=¡Viento bloqueado!
 gui.using=Usando
-
 gui.needed=Requiere
-
 mekanism.gui.bufferfree=Flujo libre
-
-mekanism.gui.insufficientbuffer=Flujo de energia insuficiente
-
+mekanism.gui.insufficientbuffer=Flujo de energía insuficiente
 gui.noRecipe=No hay receta
-
 gui.conflict=Conflicto
-
 gui.height=Altura
-
 gui.mult=Cantidad
-
 gui.chunk=Chunk
-
-gui.vibrating=Vibracion
-
+gui.vibrating=Vibración
 gui.abundancy=Abundancia
-
-gui.nextItem=Obj. Siguiente
-
-gui.lastItem=Ultimo Objeto
-
+gui.nextItem=Siguiente objeto
+gui.lastItem=Ultimo objeto
 gui.oreDictCompat=Compatible con OreDirect
-
-gui.toggleCooling=Mediciones de Enfriamiento
-
-gui.coolingMeasurements=Activar Enfriamiento
-
-gui.redstoneOutputMode=Señal de Redstone activada
-
+gui.toggleCooling=Mediciones de enfriamiento
+gui.coolingMeasurements=Activar enfriamiento
+gui.redstoneOutputMode=Señal de redstone activada
 gui.moveUp=Mover arriba
-
 gui.moveDown=Mover abajo
-
 gui.flowRate=Tasa de flujo
-
-gui.maxFlow=Flujo Maximo
-
-gui.tankVolume=Tamaño de Tanque
-
+gui.maxFlow=Flujo máximo
+gui.tankVolume=Tamaño de tanque
 gui.steamFlow=Flujo de vapor
-
-gui.production=Produccion
-
+gui.production=Producción
 gui.blades=Aspas
-
 gui.coils=Bobinas
-
 gui.dispersers=Dispensadores
-
 gui.vents=Ventilaciones
-
-gui.maxProduction=Producc. Maxima
-
+gui.maxProduction=Producc. máxima
 gui.limiting=Limitando
-
 gui.steamInput=Entrada de vapor
-
 gui.capacity=Capacidad
-
 gui.unit=Unidad
-
 gui.temp=Temperatura
-
 gui.usage=Uso
-
 gui.transferred=Transferido
-
 gui.dissipated=Disipado
-
-gui.boilRate=Tasa de Ebullicion
-
-gui.maxBoil=Ebullicion Maxima
-
-gui.maxWater=Agua al maximo
-
-gui.maxSteam=Vapor al maximo
-
+gui.boilRate=Tasa de ebullición
+gui.maxBoil=Ebullición máxima
+gui.maxWater=Agua al máximo
+gui.maxSteam=Vapor al máximo
 gui.heatTransfer=Flujo de vapor
-
 gui.superheaters=Supercalentador
-
-gui.boilCapacity=Capacidad de Ebullicion
-
-gui.encodeFormula=Formula codificada
-
-gui.autoModeToggle=Modo auto.
-
+gui.boilCapacity=Capacidad de ebullición
+gui.encodeFormula=Fórmula codificada
+gui.autoModeToggle=Modo automatico
 gui.craftSingle=Fabricar un objeto
-
 gui.craftAvailable=Fabricar objetos disponibles
-
 gui.fillEmpty=Llenar/Vaciar rejilla
-
 gui.noOwner=Sin dueño
-
 gui.securityOverride=Seguridad anulada
-
-gui.remove=Remover
-
+gui.remove=Borrar
 gui.trustedPlayers=Jugadores admitidos
-
-gui.publicMode=Modo Publico
-
-gui.privateMode=Modo Privado
-
+gui.publicMode=Modo público
+gui.privateMode=Modo privado
 gui.trustedMode=Modo de admitidos
-
-gui.securityOffline=Seguridad Desactivada.
-
-gui.noAccessDesc=Acceso Denegado
-
-gui.overridden=Anulado.
-
-gui.nowOwn=Ahora eres dueño de este objeto.
-
+gui.securityOffline=Seguridad desactivada.
+gui.noAccessDesc=Acceso denegado
+gui.overridden=Anulado
+gui.nowOwn=Ahora eres dueño de este objeto
 gui.frequency=Frequencia
-
 gui.mode=Modo
-
-gui.burnRate=Tasa de combustion
-
-gui.entityDetection=Deteccion de entidades
-
-gui.energyContents=Energia Contenida
-
-gui.redstoneOutput=Salidad de RedStone
-
+gui.burnRate=Tasa de combustión
+gui.entityDetection=Detección de entidades
+gui.energyContents=Energía contenida
+gui.redstoneOutput=Salidad de redStone
 gui.maxWaterOutput=Max. salida de agua
-
 gui.stockControl=Control de almacenaje
-
 gui.allowDefault=Permitir por defecto
-
 gui.sizeMode=Modo: Tamaño
-
-
+mekanism.gui.sizeModeConflict=no tiene ningún efecto, porque el modo de un objeto está activado.
 
 gui.reactor.injectionRate=Tasa de injeccion
 
-
-
 gui.upgrades=Mejoras
-
 gui.upgrades.supported=Compatibles
-
 gui.upgrades.noSelection=Nada seleccionado
-
 gui.upgrades.amount=Cantidad
-
 gui.upgrades.max=Max
-
 gui.upgrades.effect=Efecto
 
-
-
-gui.chemicalInfuser.short=Infusor Quimico
-
-gui.chemicalDissolutionChamber.short=Camara de Disorsion Quimica
-
-gui.thermalEvaporationController.short=Control de Evaporador Termi.
-
-
+gui.chemicalInfuser.short=Infusor químico
+gui.chemicalDissolutionChamber.short=Cámara de disorsión química
+gui.thermalEvaporationController.short=Control de evaporador term.
 
 gui.dictionary.noKey=Sin entrada
 
-
-
-gui.configuration=Configuracion
-
+gui.configuration=Configuración
 gui.configuration.side=Configurar lados
-
 gui.configuration.transporter=Configurar transporte
-
-gui.configuration.strictInput=Entrada Especifica
-
-
+gui.configuration.strictInput=Entrada específica
 
 gui.rotaryCondensentrator.toggleOperation=Cambiar modo
 
+gui.factory.secondaryEnergy=Energía secundaria
+gui.factory.autoSort=Auto-organizar
 
-
-gui.factory.secondaryEnergy=Energia secundaria
-
-gui.factory.autoSort=Auto-Organizar
-
-
-
-# Recipe types
-
-gui.factory.Smelting=Fundicion
-
+# Recipe types / Tipo de recetas
+gui.factory.Smelting=Fundir
 gui.factory.Enriching=Enriquecer
-
 gui.factory.Crushing=Triturar
-
 gui.factory.Compressing=Comprimir
-
 gui.factory.Combining=Combinar
-
 gui.factory.Purifying=Purificar
-
-gui.factory.Injecting=Injectar
-
+gui.factory.Injecting=Inyectar
 gui.factory.Infusing=Infundir
+gui.factory.Sawing=Aserrrar
 
-
-
-gui.seismicReader.short=Lecturas Sismicas
-
+gui.seismicReader.short=Lecturas sísmicas
 gui.seismicReader.solids=Solidos
-
 gui.seismicReader.fluids=Fluidos
-
-gui.seismicReader.reading=Leyendo..
-
-
+gui.seismicReader.reading=Leyendo...
 
 gui.filterSelect.title=Filtrar
 
-
-
 gui.oredictFilter=Filtrar OreDirect
-
 gui.oredictFilter.noKey=Sin entrada
+gui.oredictFilter.sameKey=Con entrada
 
-gui.oredictFilter.sameKey=Con Entrada
-
-
-
-gui.modIDFilter=Filtro por Mod ID
-
+gui.modIDFilter=Filtro de ID de mod
 gui.modIDFilter.noID=Sin ID
-
 gui.modIDFilter.sameID=Con ID
 
+gui.oredictionificatorFilter=Filtro Mineradiccionificador 
 
-
-gui.oredictionificatorFilter=Filtro Oredictionificator 
-
-
-
-gui.itemFilter=Filtrar Objetos
-
-gui.itemFilter.noItem=Sin Obj.
-
-gui.itemFilter.details=Detalle de Pila de objetos
-
+gui.itemFilter=Filtrar objetos
+gui.itemFilter.noItem=Sin obj.
+gui.itemFilter.details=Detalle de montón de objetos
 gui.itemFilter.min=Min.
-
 gui.itemFilter.max=Max.
 
-
-
-gui.materialFilter=Filtrar Materiales
-
+gui.materialFilter=Filtrar materiales
 gui.materialFilter.details=Usando materiales de
 
-
-
-gui.portableTeleporter=Transportador Portatil
-
-
+gui.portableTeleporter=Transportador portatil
 
 gui.robit=Robit
-
 gui.robit.smelting=Robit: Fundir
-
 gui.robit.inventory=Robit: Inventario
-
 gui.robit.crafting=Robit: Fabricar
-
-gui.robit.greeting=Hola! Yo soy 
-
+gui.robit.greeting=¡Hola! Yo soy 
 gui.robit.toggleFollow=Cambiar a modo: Seguir
-
 gui.robit.rename=Renombrar Robit
-
-gui.robit.teleport=Teletransportar a Casa
-
+gui.robit.teleport=Teletransportar a casa
 gui.robit.togglePickup=Cambiar al modo: Recolectar
-
 gui.robit.following=Siguiendo
-
 gui.robit.dropPickup=Recogiendo
-
 gui.robit.owner=Adueñado
 
-
-
-gui.password.setPassword=Seleccionar Contraseña
-
-gui.password.enterPassword=Ingresar Contraseña
-
+gui.password.setPassword=Seleccionar contraseña
+gui.password.enterPassword=Ingresar contraseña
 gui.password.fieldsEmpty=Campo(s) vacios
-
 gui.password.notMatching=No coinciden
-
-gui.password.identical=Identica
-
-gui.password.invalid=Invalida
-
+gui.password.identical=Idéntica
+gui.password.invalid=Inválida
 gui.password=Contraseña
 
-
-
 mekanism.gui.logisticalSorter.default=Por defecto
-
 mekanism.gui.logisticalSorter.autoEject=Auto
-
+mekanism.gui.logisticalSorter.autoEject.tooltip=Expulsa objetos automaticamente a inventarios conectados.
 mekanism.gui.logisticalSorter.roundRobin=RR
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Ciclos entre todos los inventarios conectados cuando se envian objetos.
+mekanism.gui.logisticalSorter.singleItem=Único
+mekanism.gui.logisticalSorter.singleItem.tooltip=Envia un único objeto en lugar de un montón cada ciclo (sobrescribe el min y max marcado en los filtros de montones de objetos).
 
-mekanism.gui.logisticalSorter.roundRobin.tooltip=Round-robin
-
-
-
-gui.teleporter.notReady=No lista!
-
-gui.teleporter.ready=Lista!
-
-gui.teleporter.noFrame=No hay modulo
-
-gui.teleporter.noLink=Sin coneccion
-
-gui.teleporter.exceeds=Coneciones > 2
-
-gui.teleporter.needsEnergy=Necesita Energia
-
-gui.teleporter.noAccess=No tienes acceso a este Teletransportador.
-
+gui.teleporter.notReady=¡No preparado!
+gui.teleporter.ready=¡Listo!
+gui.teleporter.noFrame=No hay módulo
+gui.teleporter.noLink=Sin conecsión
+gui.teleporter.exceeds=Conecsiones >2
+gui.teleporter.needsEnergy=Necesita energía
+gui.teleporter.noAccess=No tienes acceso a este teletransportador.
 gui.teleporter.noFreq=Sin frecuencia
-
-
 
 gui.entangloporter.noAccess=No tienes acceso a este Entangloporter.
 
-
-
 gui.digitalMinerConfig=Configuracion de Minero Digital
 
-
-
-gui.digitalMiner.autoPull=Auto expulsar
-
-gui.digitalMiner.replaceBlock=Remplazar Bloques
-
+gui.digitalMiner.autoPull=Autoexpulsar
+gui.digitalMiner.replaceBlock=Remplazar bloques
 gui.digitalMiner.reset=Reiniciar
-
-gui.digitalMiner.silkTouch=Toque de Seda
-
+gui.digitalMiner.silkTouch=Toque de seda
 gui.digitalMiner.pull=Absorver
-
 gui.digitalMiner.silk=Seda
-
 gui.digitalMiner.toMine=A minar
-
 gui.digitalMiner.running=En marcha
-
 gui.digitalMiner.inverse=Modo inverso
-
 gui.digitalMiner.requireReplace=Requiere remplazo
-
 gui.digitalMiner.fuzzyMode=Modo borroso
-
 gui.digitalMiner.missingBlock=Bloque requerido
-
-mekanism.gui.digitalMiner.capacity=Capacidad energetica
-
+mekanism.gui.digitalMiner.capacity=Capacidad energética
 mekanism.gui.digitalMiner.lowPower=Baja potencia
 
-
-
-# Recipe names
-
+# Recipe names / Nombre de recetas
 recipe.mekanismShaped=Conformado
-
 recipe.mekanismShapeless=Informe
 
-
-
-# Security types
-
-security.public=Publico
-
+# Security types / Tipos de seguridad
+security.public=Público
 security.private=Privado
+security.trusted=De confianza
 
-security.trusted=Estricto
-
-
-
-# Item and block tooltip text
-
+# Item and block tooltip text / Texto guía de objetos y bloques
 tooltip.configurator.configurate=Configurador
-
-tooltip.configurator.empty=Vacio
-
+tooltip.configurator.empty=Vacío
 tooltip.configurator.rotate=Rotar
-
-tooltip.configurator.wrench=Llave Inglesa
-
-tooltip.configurator.pumpReset=Reiniciar Calculo de Bomba Electrica
-
+tooltip.configurator.wrench=Llave inglesa
+tooltip.configurator.pumpReset=Reiniciar cálculo de bomba eléctrica
 tooltip.configurator.toggleDiverter=Modo desviador cambiado a
-
-tooltip.configurator.toggleMode=%s behavior bumped to
-
-tooltip.configurator.viewMode=Current %s behavior
-
+tooltip.configurator.toggleMode=%s comportamiento cambiado a
+tooltip.configurator.viewMode=Comportamiento %s actual
 tooltip.configurator.noLink=No conectado
-
 tooltip.configurator.linkMsg=Forzado a
-
 tooltip.configurator.dim=Tamaño
-
-tooltip.configurator.setLink=Seleccionar bloque de Enlace
-
-tooltip.configurator.plenisherReset=Reiniciar calculo de Prenadora
-
-tooltip.configurator.inductionPortMode=Toggled Induction Port transfer mode to
-
-tooltip.configurator.toggleColor=Color cambiado A
-
-tooltip.configurator.viewColor=Color Actual
-
-tooltip.configurator.reactorPortEject=Pasar el modo del Puerto de Reactor A
-
-tooltip.configurator.modeChange=Tipo de coneccion cambiado a
-
+tooltip.configurator.setLink=Seleccionar bloque de enlace
+tooltip.configurator.plenisherReset=Reiniciar cálculo del liberador de fluidos
+tooltip.configurator.inductionPortMode=Modo de transferencia seleccionado para el puerto de inducción a
+tooltip.configurator.toggleColor=Color cambiado a
+tooltip.configurator.viewColor=Color actual
+tooltip.configurator.reactorPortEject=Modo de salida seleccionada para el puerto del reactor a
+tooltip.configurator.modeChange=Tipo de conecsión cambiado a
 mekanism.pipe.connectiontype.normal=Normal
-
 mekanism.pipe.connectiontype.push=Expulsar
-
 mekanism.pipe.connectiontype.pull=Absorver
-
 mekanism.pipe.connectiontype.none=Nada
 
-
-
 tooltip.upgrade.speed=Velocidad
-
-tooltip.upgrade.energy=Energia
-
-
+tooltip.upgrade.energy=Energía
 
 tooltip.inventory=Inventario
-
-tooltip.storedEnergy=Energia Armacenada
-
+tooltip.storedEnergy=Energía almacenada
 tooltip.auth=Autenticado
-
 tooltip.locked=Cerrado
-
 tooltip.recipeType=Tipo de receta
-
 tooltip.hold=Sostenido
-
-tooltip.forDesc=para una descripcion
-
+tooltip.forDesc=para una descripción
 tooltip.forDetails=para detalles
-
 mekanism.tooltip.fireMode=Modo fuego: %s
-
 tooltip.capacity=Capacidad
-
-tooltip.pumpRate=Tasa de Bombeo
-
+tooltip.pumpRate=Tasa de bombeo
 tooltip.items=Objetos
-
 tooltip.blocks=Bloques
-
 tooltip.universal=Universal
-
 tooltip.fluids=Fluidos
-
 tooltip.gasses=Gases
-
-tooltip.capableTrans=Capaz de Transferir
-
-tooltip.restrictiveDesc=Solo disponible si no hay otros caminos disponibles
-
-tooltip.diversionDesc=Controlado por señal de RedStone
-
-tooltip.noGas=Sin gas Almacenado
-
+tooltip.capableTrans=Capaz de transferir
+tooltip.restrictiveDesc=Solo se usa si no hay otros caminos disponibles
+tooltip.diversionDesc=Controlado por señal de redstone
+tooltip.noGas=Sin gas almacenado
 tooltip.stored=Almacenado
-
-tooltip.channel=Canal 
-
+tooltip.channel=Canal
+tooltip.walkie_disabled=Sevidor de voz desactivado.
 tooltip.mode=Modo
-
 tooltip.efficiency=Eficiencia
-
 tooltip.modeToggle=Modo cambiado a
-
 tooltip.flowing=Fluyendo
-
 tooltip.yes=Si
-
 tooltip.no=No
-
 tooltip.name=Nombre
-
-tooltip.blockData=Datos de Bloque
-
+tooltip.blockData=Datos de bloque
 tooltip.block=Bloque
-
 tooltip.meta=Metadatos
-
 tooltip.tile=Azulejo
-
 tooltip.keysFound=Entrada(as) encontradas
-
-tooltip.noKey=Sin Entrada
-
+tooltip.noKey=Sin entrada
 tooltip.hp=HP
-
 mekanism.tooltip.configureState=Configurar Estado: %s
-
-tooltip.outputRate=Tasa de Salida
-
+tooltip.outputRate=Tasa de salida
 tooltip.insufficientFuel=Combustible insuficiente
-
-tooltip.readyForReaction=Listo para la Reaccion
-
+tooltip.readyForReaction=Listo para la reacción
 tooltip.speed=Velocidad
-
-tooltip.and=Y
-
+tooltip.and=y
 tooltip.heat=Calor
-
-tooltip.itemAmount=Cantidad de Objetos
-
+tooltip.itemAmount=Cantidad de objetos
 tooltip.invalid=Invalido
-
 tooltip.encoded=Codificado
-
 tooltip.ingredients=Ingredientes
+tooltip.conduction=Conducción
+tooltip.insulation=Aislamiento
+tooltip.heatCapacity=Capacidad calorífica
 
-tooltip.conduction=Conduccion
-
-tooltip.insulation=Insulacion
-
-tooltip.heatCapacity=Capacidad Calorifica
-
-
-
-mekanism.tooltip.portableTank.bucketMode=Modo Cubeta: %s
-
-
+mekanism.tooltip.portableTank.bucketMode=Modo cubeta: %s
 
 tooltip.disassembler.normal=Normal
-
 tooltip.disassembler.slow=Lento
-
-tooltip.disassembler.fast=Rapido
-
+tooltip.disassembler.fast=Rápido
 tooltip.disassembler.vein=Mena
-
 tooltip.disassembler.off=Apagado
 
-
-
-tooltip.configurationCard.got=Retrieved configuration data from %s
-
-tooltip.configurationCard.set=Injected configuration data of type %s
-
-tooltip.configurationCard.unequal=Unequal configuration data formats
-
-
+tooltip.configurationCard.got=Recibiendo datos de conf. de %s
+tooltip.configurationCard.set=Inyectando datos de conf. de tipo %s
+tooltip.configurationCard.unequal=Datos de conf. con formatos diferentes
 
 tooltip.balloon=Globo
 
-
-
 tooltip.jetpack.regular=A pulso
-
 tooltip.jetpack.hover=Mantenido
-
 tooltip.jetpack.disabled=Deshabilitado
 
-
-
 tooltip.freerunner.regular=A pulso
-
 tooltip.freerunner.disabled=Deshabilitado
 
-
-
 tooltip.flamethrower.combat=Combate
-
 tooltip.flamethrower.heat=Calor
-
 tooltip.flamethrower.inferno=Infierno
+mekanism.tooltip.flamethrower.modeBump=Lanzallamas en modo: %s
 
-mekanism.tooltip.flamethrower.modeBump=Lanzallamas Modo: %s
-
-
-
-tooltip.seismicReader.needsEnergy=Energia insuficiente para interpretar vibraciones.
-
-tooltip.seismicReader.noVibrations=Incapaz de detecar alguna vibracion
-
-tooltip.mekanism.SeismicReader=Dispositivo para leer las vibraciones y obtener informacion de las diferentes capas de el Sub-suelo.
+tooltip.seismicReader.needsEnergy=Energía insuficiente para interpretar vibraciones.
+tooltip.seismicReader.noVibrations=Incapaz de detecar alguna vibración
+tooltip.mekanism.SeismicReader=Dispositivo para leer las vibraciones y obtener información de las diferentes capas de el subsuelo.
 
 
 
