@@ -1,667 +1,335 @@
 ###########
-
 # MEKANISM
-
 ###########
 
-
-
 # Items / Objetos
-
-tile.ObsidianTNT.name=TNT de Obsidiana
-
-item.EnrichedAlloy.name=Aleacion enriquesida
-
-item.ReinforcedAlloy.name=Aleacion Reforzada
-
-item.AtomicAlloy.name=Aleacion atomica
-
-item.EnergyTablet.name=Tabla energetica
-
+tile.ObsidianTNT.name=Dinamita de obsidiana
+item.EnrichedAlloy.name=Aleación enriquecida
+item.ReinforcedAlloy.name=Aleación reforzada
+item.AtomicAlloy.name=Aleación atómica
+item.EnergyTablet.name=Tableta de energía
 item.SpeedUpgrade.name=Mejora de velocidad
-
-item.EnergyUpgrade.name=Mejora de energia
-
-item.FilterUpgrade.name=Mejora de filtracion
-
-item.MufflingUpgrade.name=Mejora Acustica
-
+item.EnergyUpgrade.name=Mejora de energía
+item.FilterUpgrade.name=Mejora de filtración
+item.MufflingUpgrade.name=Mejora Acústica
 item.GasUpgrade.name=Mejora de gas
-
-item.AnchorUpgrade.name=Mejora de radio
-
+item.AnchorUpgrade.name=Mejora de anclaje
 item.Robit.name=Robit
-
-item.AtomicDisassembler.name=Desemsanblador Atomico
-
-item.ElectricBow.name=Arco electrico
-
-item.EnrichedIron.name=Hierro enriquesido
-
-item.CompressedCarbon.name=Carbon Comprimido
-
+item.AtomicDisassembler.name=Desemsanblador Atómico
+item.ElectricBow.name=Arco eléctrico
+item.EnrichedIron.name=Hierro enriquecido
+item.CompressedCarbon.name=Carbón Comprimido
 item.CompressedRedstone.name=Redstone Comprimido
-
 item.CompressedDiamond.name=Diamante Comprimido
-
-item.CompressedObsidian.name=Obsidiana Comprimido
-
-item.PortableTeleporter.name=Teletransportador portatil
-
-item.TeleportationCore.name=Nucleo de teletransportador
-
+item.CompressedObsidian.name=Obsidiana Comprimida
+item.PortableTeleporter.name=Teletransportador portátil
+item.TeleportationCore.name=Núcleo de teletransportador
 item.Configurator.name=Configurador
-
-item.NetworkReader.name=Lector de conectores
-
+item.NetworkReader.name=Lector de red
 item.WalkieTalkie.name=Walkie-Talkie
-
 item.Jetpack.name=Jetpack
-
-item.ScubaTank.name=Tanque de oxygeno
-
-item.GasMask.name=Mascara de gas
-
+item.ScubaTank.name=Tanque de buceo
+item.GasMask.name=Máscara de gas
 item.Dictionary.name=Diccionario
-
-item.ElectrolyticCore.name=Nucleo de electrolito
-
-item.Sawdust.name=Serrin
-
+item.ElectrolyticCore.name=Núcleo de electrolíto
+item.Sawdust.name=Serrín
 item.Salt.name=Sal
-
 item.BrineBucket.name=Cubo de salmuera
-
-item.LithiumBucket.name=Cubo de Litio
-
+item.LithiumBucket.name=Cubo de litio
 item.HeavyWaterBucket.name=Cubo de agua pesada
-
-item.FreeRunners.name=Botas electronicas
-
+item.FreeRunners.name=Botas eléc. de corredor
 item.ArmoredJetpack.name=Jetpack reforzado
-
-item.ConfigurationCard.name=Tarjeta de configuracion
-
-item.SeismicReader.name=Lector sismico
-
-item.HDPEPellet.name=HDPE Pellet
-
-item.HDPERod.name=HDPE Rod
-
-item.HDPESheet.name=Trozo de Polieatileno
-
-item.PlaStick.name=Plastico
-
+item.ConfigurationCard.name=Tarjeta de configuración
+item.SeismicReader.name=Lector sísmico
+item.HDPEPellet.name=Pellet de HDPE
+item.HDPERod.name=Barra de HDPE
+item.HDPESheet.name=Lámina de HDPE
+item.PlaStick.name=Plástico
 item.Substrate.name=Sustrato
-
 item.Flamethrower.name=Lanzallamas
+item.GaugeDropper.name=Cuentagotas
+item.BioFuel.name=Biocombustible
+item.CraftingFormula.name=Fórmula de crafteo
 
-item.GaugeDropper.name=Gauge Dropper
+# Control Circuits / Circuitos de control
+item.BasicControlCircuit.name=Circuito Básico de con.
+item.AdvancedControlCircuit.name=Circuito Avanzado de con.
+item.EliteControlCircuit.name=Circuito Élite de Con.
+item.UltimateControlCircuit.name=Circuito Ultimo de Con.
 
-item.BioFuel.name=Bio. Combustible
+# Gas Tank / Tanques de gas
+tile.GasTankBasic.name=Tanque de gas Básico 
+tile.GasTankAdvanced.name=Tanque de gas Avanzado
+tile.GasTankElite.name=Tanque de gas Élite
+tile.GasTankUltimate.name=Tanque de gas Ultimo
+tile.GasTankCreative.name=Tanque de gas Creativo
 
-item.CraftingFormula.name=Formula de Crafteo
+# Fluid Tank / Tanques de fluidos
+tile.FluidTankBasic.name=Tanque de fluidos Básico
+tile.FluidTankAdvanced.name=Tanque de fluidos Avanzado
+tile.FluidTankElite.name=Tanque de fluidos Élite
+tile.FluidTankUltimate.name=Tanque de fluidos Ultimo
+tile.FluidTankCreative.name=Tanque de fluidos Creativo
 
+# Cardboard Box / Caja de cartón
+tile.CardboardBox.name=Caja de cartón
 
-
-# Control Circuits / Circuitos
-
-item.BasicControlCircuit.name=C. Circuito Basico
-
-item.AdvancedControlCircuit.name=C. Circuito Avanzado
-
-item.EliteControlCircuit.name=C. Circuito Elite
-
-item.UltimateControlCircuit.name=Ultimate Ultimate
-
-
-
-# Gas Tank / Tanques de Gas
-
-tile.GasTankBasic.name=Tanque de Gas Basico 
-
-tile.GasTankAdvanced.name=Tanque de Gas Avanzado
-
-tile.GasTankElite.name=Tanque de Gas Elite
-
-tile.GasTankUltimate.name=Tanque de Gas Ultimate
-
-tile.GasTankCreative.name=Tanque de Gas Creativo
-
-
-
-# Fluid Tank / Tanques de Fluidos
-
-tile.FluidTankBasic.name=Tanque de Fluidos Basico
-
-tile.FluidTankAdvanced.name=Tanque de Fluidos Avanzado
-
-tile.FluidTankElite.name=Tanque de Fluidos Elite
-
-tile.FluidTankUltimate.name=Tanque de Fluidos Ultimate
-
-tile.FluidTankCreative.name=Tanque de Fluidos Creativo
-
-
-
-# Cardboard Box / Caja de Carton
-
-tile.CardboardBox.name=Caja de Carton
-
-
-
-# Bounding Block
-
+# Bounding Block 
 tile.BoundingBlock.name=Bounding Block
 
-
-
 # Salt
+tile.SaltBlock.name=Bloque de sal
 
-tile.SaltBlock.name=Bloque de Sal
+# Basic Block / Bloques básicos
+tile.BasicBlock.OsmiumBlock.name=Bloque de osmio
+tile.BasicBlock.BronzeBlock.name=Bloque de bronce
+tile.BasicBlock.RefinedObsidian.name=Obsidiana refinada
+tile.BasicBlock.CharcoalBlock.name=Bloque de carbón
+tile.BasicBlock.RefinedGlowstone.name=Piedra luminosa refinada
+tile.BasicBlock.SteelBlock.name=Bloque de acero
+tile.BasicBlock.BinBasic.name=Compartimento Básico
+tile.BasicBlock.BinAdvanced.name=Compartimento Avanzado
+tile.BasicBlock.BinElite.name=Compartimiento Élite
+tile.BasicBlock.BinUltimate.name=Compartimento Ultimo
+tile.BasicBlock.BinCreative.name=Compartimento Creativo
+tile.BasicBlock.TeleporterFrame.name=Módulo de teletransportador
+tile.BasicBlock.SteelCasing.name=Carcasa de acero
+tile.BasicBlock.DynamicTank.name=Tanque dinámico
+tile.BasicBlock.StructuralGlass.name=Cristal estructural
+tile.BasicBlock.DynamicValve.name=Válvula de t. dinámico
+tile.BasicBlock.CopperBlock.name=Bloque de cobre
+tile.BasicBlock.TinBlock.name=Bloque de estaño
+tile.BasicBlock.ThermalEvaporationController.name=Controlador de evaporador térmico
+tile.BasicBlock.ThermalEvaporationValve.name=Válvula de eva. térmico
 
+# Basic Block 2 (second ID iteration) / Bloques básicos (segunda iteración de ID)
+tile.BasicBlock2.ThermalEvaporationBlock.name=Bloque de eva. térmico
+tile.BasicBlock2.InductionCasing.name=Carcasa de b. inducción
+tile.BasicBlock2.InductionPort.name=Puerto de b. inducción
+tile.BasicBlock2.InductionCellBasic.name=Célula de ind. Básica
+tile.BasicBlock2.InductionCellAdvanced.name=Célula de ind. Avanzada
+tile.BasicBlock2.InductionCellElite.name=Célula de ind. Élite
+tile.BasicBlock2.InductionCellUltimate.name=Célula de ind. Ultima
+tile.BasicBlock2.InductionProviderBasic.name=Proveedor de ind. Básico
+tile.BasicBlock2.InductionProviderAdvanced.name=Proveedor de ind. Avanzado
+tile.BasicBlock2.InductionProviderElite.name=Proveedor de ind. Élite
+tile.BasicBlock2.InductionProviderUltimate.name=Proveedor de ind. Ultimo
+tile.BasicBlock2.SuperheatingElement.name=Módulo de supercalentador
+tile.BasicBlock2.PressureDisperser.name=Disipador de presión
+tile.BasicBlock2.BoilerCasing.name=Carcasa de caldera
+tile.BasicBlock2.BoilerValve.name=Válvula de caldera
+tile.BasicBlock2.SecurityDesk.name=Mesa de seguridad
 
-
-# Basic Block / Bloques Basicos
-
-tile.BasicBlock.OsmiumBlock.name=Bloque de Osmio
-
-tile.BasicBlock.BronzeBlock.name=Bloque de Bronce
-
-tile.BasicBlock.RefinedObsidian.name=Obsidiana Refinada
-
-tile.BasicBlock.CharcoalBlock.name=Bloque de Carbon
-
-tile.BasicBlock.RefinedGlowstone.name=Piedra Luminosa Refinada
-
-tile.BasicBlock.SteelBlock.name=Bloque de Acero
-
-tile.BasicBlock.BinBasic.name=Compartimiento Basico
-
-tile.BasicBlock.BinAdvanced.name=Compartimiento Avanzado
-
-tile.BasicBlock.BinElite.name=Compartimiento Elite
-
-tile.BasicBlock.BinUltimate.name=Compartimiento Ultimate
-
-tile.BasicBlock.BinCreative.name=Compartimiento Creativo
-
-tile.BasicBlock.TeleporterFrame.name=Modulo de Teletransportador
-
-tile.BasicBlock.SteelCasing.name=Carcasa de Acero
-
-tile.BasicBlock.DynamicTank.name=Tanque Dinamico
-
-tile.BasicBlock.StructuralGlass.name=Vidrio Estructural
-
-tile.BasicBlock.DynamicValve.name=Valvula de T. Dinamico
-
-tile.BasicBlock.CopperBlock.name=Bloque de Cobre
-
-tile.BasicBlock.TinBlock.name=Bloque de Estaño
-
-tile.BasicBlock.ThermalEvaporationController.name=Controlador de Evaporador Termico
-
-tile.BasicBlock.ThermalEvaporationValve.name=Valvula de Eva. Termico
-
-
-
-# Basic Block 2 (second ID iteration)
-
-tile.BasicBlock2.ThermalEvaporationBlock.name=Bloque de Eva. Termico
-
-tile.BasicBlock2.InductionCasing.name=Carcasa de B.Induccion
-
-tile.BasicBlock2.InductionPort.name=Pueto de B. Induccion
-
-tile.BasicBlock2.InductionCellBasic.name=Celula de Ind. Basica
-
-tile.BasicBlock2.InductionCellAdvanced.name=Celula de Ind. Avanzada
-
-tile.BasicBlock2.InductionCellElite.name=Celula de Ind. Elite
-
-tile.BasicBlock2.InductionCellUltimate.name=Celula de Ind. Ultimate
-
-tile.BasicBlock2.InductionProviderBasic.name=Provedor de Ind. Basico
-
-tile.BasicBlock2.InductionProviderAdvanced.name=Provedor de Ind. Avanzada
-
-tile.BasicBlock2.InductionProviderElite.name=Provedor de Ind. Elite
-
-tile.BasicBlock2.InductionProviderUltimate.name=Provedor de Ind. Ultimate
-
-tile.BasicBlock2.SuperheatingElement.name=Modulo de Supercalentador
-
-tile.BasicBlock2.PressureDisperser.name=Disipador de Presion
-
-tile.BasicBlock2.BoilerCasing.name=Carcasa de Caldera
-
-tile.BasicBlock2.BoilerValve.name=Valvula de Cardera
-
-tile.BasicBlock2.SecurityDesk.name=Mesa de Seguridad
-
-
-
-# Machine Block
-
-tile.MachineBlock.EnrichmentChamber.name=Camara de Enriquecimiento
-
-tile.MachineBlock.OsmiumCompressor.name=Compresor de Osmio
-
+# Machine Block / Bloques de maquinas
+tile.MachineBlock.EnrichmentChamber.name=Cámara de enriquecimiento
+tile.MachineBlock.OsmiumCompressor.name=Compresor de osmio
 tile.MachineBlock.Combiner.name=Combinador
-
 tile.MachineBlock.Crusher.name=Trituradora
-
-tile.MachineBlock.Factory.name=Fabrica
-
-tile.MachineBlock.MetallurgicInfuser.name=Infusor Metalurgico
-
-tile.MachineBlock.PurificationChamber.name=Camara de Purificacion
-
-tile.MachineBlock.EnergizedSmelter.name=Horno Electrico
-
+tile.MachineBlock.Factory.name=Fábrica
+tile.MachineBlock.MetallurgicInfuser.name=Infusor metalúrgico
+tile.MachineBlock.PurificationChamber.name=Cámara de purificación
+tile.MachineBlock.EnergizedSmelter.name=Horno eléctrico
 tile.MachineBlock.Teleporter.name=Teletransportador
-
-tile.MachineBlock.ElectricPump.name=Bomba Electrica
-
-tile.MachineBlock.PersonalChest.name=Cofre Personal
-
-tile.MachineBlock.Chargepad.name=Panel de Carga
-
+tile.MachineBlock.ElectricPump.name=Bomba eléctrica
+tile.MachineBlock.PersonalChest.name=Cofre personal
+tile.MachineBlock.Chargepad.name=Panel de carga
 tile.MachineBlock.LogisticalSorter.name=Clasificador
+tile.MachineBlock.DigitalMiner.name=Minera digital
 
-tile.MachineBlock.DigitalMiner.name=Minera Digital
-
-
-
-# Machine Block 2 (second ID iteration)
-
-tile.MachineBlock2.RotaryCondensentrator.name=Condensador Giratorio
-
-tile.MachineBlock2.ChemicalOxidizer.name=Oxidador Quimico
-
-tile.MachineBlock2.ChemicalInfuser.name=Infusor Quimico
-
-tile.MachineBlock2.ChemicalCombiner.name=Combinador Quimico
-
-tile.MachineBlock2.ChemicalInjectionChamber.name=Injector Quimico
-
-tile.MachineBlock2.ElectrolyticSeparator.name=Separador de Electrolitos
-
-tile.MachineBlock2.PrecisionSawmill.name=Aserradero de Precison
-
-tile.MachineBlock2.ChemicalDissolutionChamber.name=Camara de Disorcion quimica
-
-tile.MachineBlock2.ChemicalWasher.name=Lavadora Quimica
-
-tile.MachineBlock2.ChemicalCrystallizer.name=Cristalizador Quimico
-
-tile.MachineBlock2.SeismicVibrator.name=Vibrador Sismico
-
-tile.MachineBlock2.PressurizedReactionChamber.name=Camara de Reacion de Presion
-
+# Machine Block 2 (second ID iteration) / Bloques de maquinas (segunda iteración de ID)
+tile.MachineBlock2.RotaryCondensentrator.name=Condensador giratorio
+tile.MachineBlock2.ChemicalOxidizer.name=Oxidador químico
+tile.MachineBlock2.ChemicalInfuser.name=Infusor químico
+tile.MachineBlock2.ChemicalCombiner.name=Combinador químico
+tile.MachineBlock2.ChemicalInjectionChamber.name=Inyector químico
+tile.MachineBlock2.ElectrolyticSeparator.name=Separador de electrolitos
+tile.MachineBlock2.PrecisionSawmill.name=Aserradero de precisión
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Camara de disolución química
+tile.MachineBlock2.ChemicalWasher.name=Lavadora química
+tile.MachineBlock2.ChemicalCrystallizer.name=Cristalizador químico
+tile.MachineBlock2.SeismicVibrator.name=Vibrador sísmico
+tile.MachineBlock2.PressurizedReactionChamber.name=Camara de reación presurizada
 tile.MachineBlock2.PressurizedReactionChamber.short.name=CRP
+tile.MachineBlock2.FluidicPlenisher.name=Liberador de fluidos
+tile.MachineBlock2.Laser.name=Láser
+tile.MachineBlock2.LaserAmplifier.name=Amplificador láser
+tile.MachineBlock2.LaserTractorBeam.name=Rayo tractor láser
 
-tile.MachineBlock2.FluidicPlenisher.name=Plenador de Fluidos
+# Machine Block 3 (third ID iteration) / Bloques de maquinas (tercera iteración de ID)
+tile.MachineBlock3.QuantumEntangloporter.name=Enredaportador cuántico
+tile.MachineBlock3.SolarNeutronActivator.name=Activador solar de neutrones
+tile.MachineBlock3.Oredictionificator.name=Mineradiccionificador
+tile.MachineBlock3.ResistiveHeater.name=Calentador resistivo
+tile.MachineBlock3.FormulaicAssemblicator.name=Ensamblador de fórmulas
+tile.MachineBlock3.FuelwoodHeater.name=Calentador de leña
 
-tile.MachineBlock2.Laser.name=Laser
-
-tile.MachineBlock2.LaserAmplifier.name=Amplificador Laser
-
-tile.MachineBlock2.LaserTractorBeam.name=Haz de Tractor Laser
-
-
-
-# Machine Block 3 (third ID iteration)
-
-tile.MachineBlock3.QuantumEntangloporter.name=Quantum Entangloporter
-
-tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
-
-tile.MachineBlock3.Oredictionificator.name=Oredictionificator
-
-tile.MachineBlock3.ResistiveHeater.name=Resistive Heater
-
-tile.MachineBlock3.FormulaicAssemblicator.name=Formulaic Assemblicator
-
-tile.MachineBlock3.FuelwoodHeater.name=Fuelwood Heater
-
-
-
-# Plastic
-
-tile.PlasticBlock.name=Bloque de Plastico
-
-tile.SlickPlasticBlock.name=Bloque de Plastico Manchado
-
-tile.GlowPlasticBlock.name=Bloque de Plastico Luminoso
-
-tile.ReinforcedPlasticBlock.name=Bloque de Plastico Reforzado
-
+# Plastic / Plastico
+tile.PlasticBlock.name=Bloque de plastico
+tile.SlickPlasticBlock.name=Bloque de plastico recubierto
+tile.GlowPlasticBlock.name=Bloque de plastico luminoso
+tile.ReinforcedPlasticBlock.name=Bloque de plastico reforzado
 tile.RoadPlasticBlock.name=Vara de Plastico
-
-
 
 tile.PlasticFence.name=Valla de Plastico
 
-
-
-# Infuse types
-
-infuse.carbon=Carbon
-
+# Infuse types / Tipos de infundidos
+infuse.carbon=Carbón
 infuse.tin=Estaño
-
 infuse.diamond=Diamante
-
 infuse.redstone=Redstone
-
 infuse.fungi=Hongos
-
 infuse.obsidian=Obsidiana
-
 infuse.bio=Biomasa
 
+# Ore Block / Bloques minerales
+tile.OreBlock.OsmiumOre.name=Mena de osmio
+tile.OreBlock.CopperOre.name=Mena de cobre
+tile.OreBlock.TinOre.name=Mena de estaño
 
+# Transmitters / Transmisores
+tile.Transmitter.BasicPressurizedTube.name=Tubería de gas Básica
+tile.Transmitter.AdvancedPressurizedTube.name=Tubería de gas Avanzada 
+tile.Transmitter.ElitePressurizedTube.name=Tubería de gas Élite
+tile.Transmitter.UltimatePressurizedTube.name=Tubería de gas Ultima
+tile.Transmitter.BasicUniversalCable.name=Cable eléctrico Básico
+tile.Transmitter.AdvancedUniversalCable.name=Cable eléctrico Avanzado
+tile.Transmitter.EliteUniversalCable.name=Cable eléctrico Élite
+tile.Transmitter.UltimateUniversalCable.name=Cable eléctrico Ultimo
+tile.Transmitter.BasicMechanicalPipe.name=Tubería de fluidos Básica
+tile.Transmitter.AdvancedMechanicalPipe.name=Tubería de fluidos Avanzada
+tile.Transmitter.EliteMechanicalPipe.name=Tubería de fluidos Élite
+tile.Transmitter.UltimateMechanicalPipe.name=Tubería de fluidos Ultima
+tile.Transmitter.BasicLogisticalTransporter.name=Tubería de obj. Básica
+tile.Transmitter.AdvancedLogisticalTransporter.name=Tubería de obj. Avanzada
+tile.Transmitter.EliteLogisticalTransporter.name=Tubería de obj. Élite
+tile.Transmitter.UltimateLogisticalTransporter.name=Tubería de obj. Ultima
+tile.Transmitter.RestrictiveTransporter.name=Tubería de obj. restrictiva
+tile.Transmitter.DiversionTransporter.name=Tubería de obj. de desviacion
+tile.Transmitter.BasicThermodynamicConductor.name=Conductor termodinámico Básico
+tile.Transmitter.AdvancedThermodynamicConductor.name=Conductor termodinámico Avanzado
+tile.Transmitter.EliteThermodynamicConductor.name=Conductor termodinámico Élite
+tile.Transmitter.UltimateThermodynamicConductor.name=Conductor termodinámico Ultimo
 
-# Ore Block
+# Glow Panel / Panel luminoso
+tile.GlowPanel.name=Panel luminoso
 
-tile.OreBlock.OsmiumOre.name=Mena de Osmio
+# Energy Cubes / Cubos de energía
+tile.EnergyCubeBasic.name=Cubo de energía Básico
+tile.EnergyCubeAdvanced.name=Cubo de energía Avanzado
+tile.EnergyCubeElite.name=Cubo de energía Élite
+tile.EnergyCubeUltimate.name=Cubo de energía Ultimo
+tile.EnergyCubeCreative.name=Cubo de energía Creativo
 
-tile.OreBlock.CopperOre.name=Mena de Cobre
-
-tile.OreBlock.TinOre.name=Mena de Estaño
-
-
-
-# Transmitters
-
-tile.Transmitter.BasicPressurizedTube.name=Tuberia de Gas Basica
-
-tile.Transmitter.AdvancedPressurizedTube.name=Tuberia de Gas Avanzada 
-
-tile.Transmitter.ElitePressurizedTube.name=Tuberia de Gas Elite
-
-tile.Transmitter.UltimatePressurizedTube.name=Tuberia de Gas Ultimate
-
-tile.Transmitter.BasicUniversalCable.name=Cable Electrico Basico
-
-tile.Transmitter.AdvancedUniversalCable.name=Cable Electrico Avanzado
-
-tile.Transmitter.EliteUniversalCable.name=Cable Electrico Elite
-
-tile.Transmitter.UltimateUniversalCable.name=Cable Electrico Ultimate
-
-tile.Transmitter.BasicMechanicalPipe.name=Tuberia de Fluidos Basica
-
-tile.Transmitter.AdvancedMechanicalPipe.name=Tuberia de Fluidos Avanzada
-
-tile.Transmitter.EliteMechanicalPipe.name=Tuberia de Fluidos Elite
-
-tile.Transmitter.UltimateMechanicalPipe.name=Tuberia de Fluidos Ultimate
-
-tile.Transmitter.BasicLogisticalTransporter.name=Tuberia de Obj. Basica
-
-tile.Transmitter.AdvancedLogisticalTransporter.name=Tuberia de Obj. Avanzada
-
-tile.Transmitter.EliteLogisticalTransporter.name=Tuberia de Obj. Elite
-
-tile.Transmitter.UltimateLogisticalTransporter.name=Tuberia de Obj. Ultimae
-
-tile.Transmitter.RestrictiveTransporter.name=Tuberia de Obj. Restrictiva
-
-tile.Transmitter.DiversionTransporter.name=Tuberia de Obj. de Desviacion
-
-tile.Transmitter.BasicThermodynamicConductor.name=Conductor Termodinamico Basico
-
-tile.Transmitter.AdvancedThermodynamicConductor.name=Conductor Termodinamico Avanzado
-
-tile.Transmitter.EliteThermodynamicConductor.name=Conductor Termodinamico Elite
-
-tile.Transmitter.UltimateThermodynamicConductor.name=Conductor Termodinamico Ultimate
-
-
-
-# Glow Panel
-
-tile.GlowPanel.name=Panel Luminoso
-
-
-
-# Energy Cubes
-
-tile.EnergyCubeBasic.name=Cubo de Energia Basico
-
-tile.EnergyCubeAdvanced.name=Cubo de Energia Avanzado
-
-tile.EnergyCubeElite.name=Cubo de Energia Elite
-
-tile.EnergyCubeUltimate.name=Cubo de Energia Ultimate
-
-tile.EnergyCubeCreative.name=Cubo de Energia Creativo
-
-
-
-# Tier Installers
-
-item.basicTierInstaller.name=Actualizador Basico
-
+# Tier Installers / Actualizadores
+item.basicTierInstaller.name=Actualizador Básico
 item.advancedTierInstaller.name=Actualizador Avanzado
-
-item.eliteTierInstaller.name=Actualizador Elite
-
-item.ultimateTierInstaller.name=Actualizador Ultimate
-
-
-
-# Dust
-
-item.ironDust.name=Polvo de Hierro
-
-item.goldDust.name=Polvo de Oro
-
-item.osmiumDust.name=Polvo de Osmio
-
-item.obsidianDust.name=Polvo de Obsidiana
-
-item.refinedobsidianDust.name=Polvo de Obs. Refinado
-
-item.diamondDust.name=Polvo de Diamante
-
-item.steelDust.name=Polvo de Acero
-
-item.copperDust.name=Polvo de Cobre
-
-item.tinDust.name=Polvo de Estaño
-
-item.silverDust.name=Polvo de Plata
-
-item.leadDust.name=Polvo de Plomo
-
-item.sulfurDust.name=Surfuro en Polvo
-
-item.lithiumDust.name=Litio en Polvo
-
-
-
-# Clumps
-
-item.ironClump.name=Masa de Hierro
-
-item.goldClump.name=Masa de Oro
-
-item.osmiumClump.name=Masa de Osmio
-
-item.copperClump.name=Masa de Cobre
-
-item.tinClump.name=Masa de Estaño
-
-item.silverClump.name=Masa de Plata
-
-item.leadClump.name=Masa de Plomo
-
-
-
-# Shards
-
-item.ironShard.name=Fragmentos de Hierro
-
-item.goldShard.name=Fragmentos de Oro
-
-item.osmiumShard.name=Fragmentos de Osmio
-
-item.copperShard.name=Fragmentos de Cobre
-
-item.tinShard.name=Fragmentos de Estaño
-
-item.silverShard.name=Fragmentos de Plata
-
-item.leadShard.name=Fragmentos de Plomo
-
-
-
-# Crystals
-
-item.ironCrystal.name=Hierro Cristalizado
-
-item.goldCrystal.name=Oro Cristalizado
-
-item.osmiumCrystal.name=Osmio Cristalizado
-
-item.copperCrystal.name=Cobre Cristalizado
-
-item.tinCrystal.name=Estaño Cristalizado
-
-item.silverCrystal.name=Plata Cristalizada
-
-item.leadCrystal.name=Plomo Cristalizado
-
-
-
-# Dirty Dust
-
-item.dirtyIronDust.name=Polvo de Hierro Mezquino
-
-item.dirtyGoldDust.name=Polvo de Oro Mezquino
-
-item.dirtyOsmiumDust.name=Polvo de Osmio Mezquino
-
-item.dirtyCopperDust.name=Polvo de Cobre Mezquino
-
-item.dirtyTinDust.name=Polvo de Estaño Mezquino
-
-item.dirtySilverDust.name=Polvo de Plata Mezquino
-
-item.dirtyLeadDust.name=Polvo de Plomo Mezquino
-
-
-
-# Ingots
-
-item.obsidianIngot.name=Lingote de Obsidiana Refinada
-
-item.osmiumIngot.name=Lingote de Osmio
-
-item.bronzeIngot.name=Lingote de Bronce
-
-item.glowstoneIngot.name=Lingote de Piedra Luminosa
-
-item.steelIngot.name=Lingote de Acero
-
-item.copperIngot.name=Lingote de Cobre
-
-item.tinIngot.name=Lingote de Estaño
-
-
-
-# Nuggets
-
-item.obsidianNugget.name=Pepitas de Obsidiana
-
-item.osmiumNugget.name=Pepitas de Osmio
-
-item.bronzeNugget.name=Pepitas de Bronce
-
-item.glowstoneNugget.name=Pepitas de Piedra Luminosa
-
-item.steelNugget.name=Pepitas de Acero
-
-item.copperNugget.name=Pepitas de Cobre
-
-item.tinNugget.name=Pepitas de Estaño
-
-
+item.eliteTierInstaller.name=Actualizador Élite
+item.ultimateTierInstaller.name=Actualizador Ultimo
+
+# Dust / Polvo
+item.ironDust.name=Polvo de hierro
+item.goldDust.name=Polvo de oro
+item.osmiumDust.name=Polvo de osmio
+item.obsidianDust.name=Polvo de obsidiana
+item.refinedobsidianDust.name=Polvo de obs. refinado
+item.diamondDust.name=Polvo de diamante
+item.steelDust.name=Polvo de acero
+item.copperDust.name=Polvo de cobre
+item.tinDust.name=Polvo de estaño
+item.silverDust.name=Polvo de plata
+item.leadDust.name=Polvo de plomo
+item.sulfurDust.name=Azufre en polvo
+item.lithiumDust.name=Litio en polvo
+
+# Clumps / Masas
+item.ironClump.name=Masa de hierro
+item.goldClump.name=Masa de oro
+item.osmiumClump.name=Masa de osmio
+item.copperClump.name=Masa de cobre
+item.tinClump.name=Masa de estaño
+item.silverClump.name=Masa de plata
+item.leadClump.name=Masa de plomo
+
+# Shards / Fragmentos
+item.ironShard.name=Fragmentos de hierro
+item.goldShard.name=Fragmentos de oro
+item.osmiumShard.name=Fragmentos de osmio
+item.copperShard.name=Fragmentos de cobre
+item.tinShard.name=Fragmentos de estaño
+item.silverShard.name=Fragmentos de plata
+item.leadShard.name=Fragmentos de plomo
+
+# Crystals / Cristales
+item.ironCrystal.name=Hierro cristalizado
+item.goldCrystal.name=Oro cristalizado
+item.osmiumCrystal.name=Osmio cristalizado
+item.copperCrystal.name=Cobre cristalizado
+item.tinCrystal.name=Estaño cristalizado
+item.silverCrystal.name=Plata cristalizada
+item.leadCrystal.name=Plomo cristalizado
+
+# Dirty Dust / Polvos impuros (con impurezas)
+item.dirtyIronDust.name=Polvo de hierro impuro
+item.dirtyGoldDust.name=Polvo de oro impuro
+item.dirtyOsmiumDust.name=Polvo de osmio impuro
+item.dirtyCopperDust.name=Polvo de cobre impuro
+item.dirtyTinDust.name=Polvo de estaño impuro
+item.dirtySilverDust.name=Polvo de plata impuro
+item.dirtyLeadDust.name=Polvo de plomo impuro
+
+# Ingots / Lingotes
+item.obsidianIngot.name=Lingote de obsidiana refinada
+item.osmiumIngot.name=Lingote de osmio
+item.bronzeIngot.name=Lingote de bronce
+item.glowstoneIngot.name=Lingote de piedra luminosa
+item.steelIngot.name=Lingote de acero
+item.copperIngot.name=Lingote de cobre
+item.tinIngot.name=Lingote de estaño
+
+# Nuggets / Pepitas
+item.obsidianNugget.name=Pepita de obsidiana
+item.osmiumNugget.name=Pepita de osmio
+item.bronzeNugget.name=Pepita de bronce
+item.glowstoneNugget.name=Pepita de piedra luminosa
+item.steelNugget.name=Pepita de acero
+item.copperNugget.name=Pepita de cobre
+item.tinNugget.name=Pepita de estaño
 
 # Gasses
-
 gas.hydrogen=Hidrogeno
-
-gas.oxygen=Oxigeno
-
-gas.water=Vapor de Agua
-
+gas.oxygen=Oxígeno
+gas.water=Vapor de agua
 gas.chlorine=Cloro
-
-gas.sulfurdioxide=Dioxido Sulfurico
-
-gas.sulfurtrioxide=Trioxido Sulfurico
-
-gas.sulfuricacid=Acido Sulfurico
-
-gas.hydrogenchloride=Cloro Hidrogenisado
-
-gas.liquidosmium=Osmio Loquido
-
+gas.sulfurdioxide=Dióxido de azufre
+gas.sulfurtrioxide=Trióxido de azufre
+gas.sulfuricacid=Ácido Sulfúrico
+gas.hydrogenchloride=Cloruro de hidrógeno
+gas.liquidosmium=Osmio líquido
 gas.ethene=Etileno
-
 gas.sodium=Sodio
-
-gas.brine=Gas de Salmuera
-
+gas.brine=Gas de salmuera
 gas.deuterium=Deuterio
-
 gas.tritium=Tritio
-
 gas.lithium=Litio
+gas.fusionfuel=Combustible D-T
 
-gas.fusionfuel=Combustible de D.T
+gas.iron=Espuma flotada de hierro
+gas.gold=Espuma flotada de oro
+gas.osmium=Espuma flotada de osmio
+gas.copper=Espuma flotada de cobre
+gas.tin=Espuma flotada de estaño
+gas.silver=Espuma flotada de plata
+gas.obsidian=Espuma flotada de obsidiana
+gas.lead=Espuma flotada de plomo
 
-
-
-gas.iron=Lechada de Hierro
-
-gas.gold=Lechada de Oro
-
-gas.osmium=Lechada de Osmio
-
-gas.copper=Lechada de Cobre
-
-gas.tin=Lechada de Estaño
-
-gas.silver=Lechada de Plata
-
-gas.obsidian=Lechada de Obsidiana
-
-gas.lead=Lechada de Plomo
-
-
-gas.cleanIron=Lechada de Hierro Pura
-
-gas.cleanGold=Lechada de Oro Pura
-
-gas.cleanOsmium=Lechada de Osmio Pura
-
-gas.cleanCopper=Lechada de Cobre Pura
-
-gas.cleanTin=Lechada de Estaño Pura
-
-gas.cleanSilver=Lechada de Plata Pura
-
-gas.cleanObsidian=Lechada de Obsidiana Pura
-
-gas.cleanLead=Lechada de Plomo Pura
-
-
+gas.cleanIron=Espuma flotada pura de hierro
+gas.cleanGold=Espuma flotada pura de oro
+gas.cleanOsmium=Espuma flotada pura de osmio
+gas.cleanCopper=Espuma flotada pura de cobre
+gas.cleanTin=Espuma flotada pura de estaño
+gas.cleanSilver=Espuma flotada pura de plata
+gas.cleanObsidian=Espuma flotada pura de obsidiana
+gas.cleanLead=Espuma flotada pura de plomo
 
 # BC Fuel Gases
 
