@@ -721,7 +721,7 @@ tooltip.configurator.configurate=Configurador
 tooltip.configurator.empty=Vacío
 tooltip.configurator.rotate=Rotar
 tooltip.configurator.wrench=Llave inglesa
-tooltip.configurator.pumpReset=Reiniciar cálculo de bomba eléctrica
+tooltip.configurator.pumpReset=Reiniciar cálculo de Bomba eléctrica
 tooltip.configurator.toggleDiverter=Modo desviador cambiado a
 tooltip.configurator.toggleMode=%s comportamiento cambiado a
 tooltip.configurator.viewMode=Comportamiento %s actual
@@ -729,7 +729,7 @@ tooltip.configurator.noLink=No conectado
 tooltip.configurator.linkMsg=Forzado a
 tooltip.configurator.dim=Tamaño
 tooltip.configurator.setLink=Seleccionar bloque de enlace
-tooltip.configurator.plenisherReset=Reiniciar cálculo del liberador de fluidos
+tooltip.configurator.plenisherReset=Reiniciar cálculo del Liberador de fluidos
 tooltip.configurator.inductionPortMode=Modo de transferencia seleccionado para el puerto de inducción a
 tooltip.configurator.toggleColor=Color cambiado a
 tooltip.configurator.viewColor=Color actual
@@ -825,683 +825,343 @@ tooltip.seismicReader.needsEnergy=Energía insuficiente para interpretar vibraci
 tooltip.seismicReader.noVibrations=Incapaz de detecar alguna vibración
 tooltip.mekanism.SeismicReader=Dispositivo para leer las vibraciones y obtener información de las diferentes capas de el subsuelo.
 
-
-
 tooltip.Bin=Capaz de almacenar grandes cantidades de un objeto.
-
 tooltip.TeleporterFrame=Bloque usado para formar la estructura de un telestransportador, permitiendo generar un portal.
-
-tooltip.SteelCasing=Una carcasa de acero, utilizada frecuentemente para construir maquinarias.
-
-tooltip.DynamicTank=La casrcasa utilizada para construir un taque de agua dinamico. Capaz de almacenar grandes cantidades de fluidos.
-
+tooltip.SteelCasing=Una carcasa de acero, utilizada frecuentemente para construir maquinaria.
+tooltip.DynamicTank=Casrcasa utilizada para construir un Taque de agua dinámico. Capaz de almacenar grandes cantidades de fluidos.
 tooltip.StructuralGlass=Cristal avanzado y reforzado, que puede formar parte de estructuras. (No desaparece al romperse)
+tooltip.DynamicValve=Válvula utilizada para Tanques de fluidos dinámicos, con la función de introducir y extraer fluidos mediante tuberías.
+tooltip.ThermalEvaporationController=Panel de control para la esctrutura de la Planta de evaporación térmica. (Solo se necesita colorcar uno por estructura)
+tooltip.ThermalEvaporationValve=Válvula para la estructura de la Planta de evaporación térmica. Con la funcion de introducir y extraer fluidos, mediante tuberias, así como calor.
+tooltip.ThermalEvaporationBlock=Una carcasa de aleación de cobre, para conformar la estructura de la Planta de evaporación térmica, capaz de trasportar calor necesario para el proceso.
+tooltip.InductionCasing=Un tipo de aislante eléctrico utilizado para construir la estructura de una Matriz de inducción.
+tooltip.InductionPort=Un puerto de entrada y salida electrica mediante cables, para ser utilizado en la estructura de una Matriz de inducción.
+tooltip.InductionCell=Un condensador de energía avanzado, capaz de almacenar cantidades masivas de energía en un bloque. Debe ser colocado dentro de la estructura de la Matriz de inducción para expandir la capacidad de almacenaje.
+tooltip.InductionProvider=Un avanzado y complejo sistema de refrigeración, transformación y conducción capaz de expandir la tasa de transferencia de energía de la Matriz de inducción.
+tooltip.SuperheatingElement=Diseño modular, un radiador peligroso capaz de generar cantidades masivas de calor a su alrededor.
+tooltip.PressureDisperser=Bloque con la función de dispersar el vapor en una estructura, debe colocarse de manera horizontal para funcionar adecuadamente.
+tooltip.BoilerCasing=Carcasa densa y resistente utilizada para construir Calderas termoeléctricas.
+tooltip.BoilerValve=Válvula para ser colocada en la estructura de una Caldera termoeléctrica, con la funcion de intruducir agua o energia para crear vapor.
+tooltip.SecurityDesk=Mando de control para manejar el sistema de seguridad de tu máquinaria.
 
-tooltip.DynamicValve=Valvula utilizada para Tanques de fluidos dinamicas, con la funcion de intrudocir y extraer fluidos, mediante tuberias.
-
-tooltip.ThermalEvaporationController=Panel de control para la esctrutura de la Planta de Evaporacion Termica. (Solo se necesita colorcar uno por estructura)
-
-tooltip.ThermalEvaporationValve=Valvula para la estructura de la Planta de Evaporacion Termica. Con la funcion de introducir y extraer fluidos, mediante tuberias.
-
-tooltip.ThermalEvaporationBlock=Una carcasa de aleacion de cobre, para conformar la estructura de la Planta de Evaporacon Termica, capaz de trasportar calor necesario para el proceso.
-
-tooltip.InductionCasing=Un tipo de aislante electrico utilizado para construir la estructura de una Matriz de Induccion.
-
-tooltip.InductionPort=Un puerto de entrada y salida electrica mediante cables, para ser utilizado en la estructura de una Matriz de Induccion.
-
-tooltip.InductionCell=Un condensador de energia avanzado, capaz de almacenar cantidades masivas de energia en un blque. Debe ser colocado dentro de la estructura de la matriz de induccion para expandir la capacidad de almacenaje.
-
-tooltip.InductionProvider=Un avanzado y complejo sistema de refrigeracion, transformacion y conduccion capaz de expandir la tasa de transferencia de energia de la Matriz de Induccion.
-
-tooltip.SuperheatingElement=Un modular, por lo cual peligroso radiador capaz de generar cantidades masivas de calor a su alrededor.
-
-tooltip.PressureDisperser=Bloque con la funcion de dispersar el vapor en una estructura, debe colocarse de manera horizontal para funcionar adecuadamente.
-
-tooltip.BoilerCasing=Una densa y resistente carcasa utilizada para construir Calderas Termoelectricas.
-
-tooltip.BoilerValve=Una valvula para ser colocada en la estructura de una Caldera Termoelectrica, con la funcion de intruducir Agua o energia para crear vapor.
-
-tooltip.SecurityDesk=Mando de control para manejar el sistema de seguridad de tu maquinaria.
-
-
-
-tooltip.EnrichmentChamber=Una maquina simple utilizada para enriquecer minerales en dos de sus contrapartes de polvo, así como para realizar muchas otras operaciones.
-
-tooltip.OsmiumCompressor=Una maquina bastante avanzada utilizada para comprimir osmio de su respectivos polvos para crear sus contrapartes de lingotes.
-
-tooltip.Combiner=Una maquina utilizada para combinar polvo y roca para crear su contraparte en mena.
-
-tooltip.Crusher=Una maquina utilizada para triturar lingotes en sus contrapartes de polvo, asi como para realizar muchas otras operaciones.
-
-tooltip.DigitalMiner=Un minero automatico altamente avanzado, basado en filtros, que puede extraer cualquier bloque que le indiques dentro de un radio de 32 bloques (máximo).
-
-tooltip.MetallurgicInfuser=Una maquina utilizada para infundir varios materiales en (general) metales para crear aleaciones metalicas y otros compuestos.
-
+tooltip.EnrichmentChamber=Una máquina simple utilizada para enriquecer minerales en dos de sus contrapartes de polvo, así como para realizar muchas otras operaciones.
+tooltip.OsmiumCompressor=Una máquina bastante avanzada utilizada para comprimir osmio de su respectivos polvos para crear sus contrapartes de lingotes.
+tooltip.Combiner=Una máquina utilizada para combinar polvo y roca para crear su contraparte en mena.
+tooltip.Crusher=Una máquina utilizada para triturar lingotes en sus contrapartes de polvo, asi como para realizar muchas otras operaciones.
+tooltip.DigitalMiner=Un minero automático altamente avanzado, basado en filtros, que puede extraer cualquier bloque que le indiques dentro de un radio de 32 bloques (máximo).
+tooltip.MetallurgicInfuser=Una máquina utilizada para infundir varios materiales en (general) metales para crear aleaciones metálicas y otros compuestos.
 tooltip.PurificationChamber=Una máquina avanzada capaz de procesar minerales en tres masas, que sirve como la etapa inicial del procesamiento de minerales al 300%.
-
-tooltip.EnergizedSmelter=Una maquina simple de fundicion, que trabaja con energia.
-
-tooltip.Teleporter=Una maquina capaz de teletransportar a jugadores, a otra posicion definida por otro Tenetransportador.
-
-tooltip.ElectricPump=Maquina capaz de extraer agua y bombearla atravez de tuverias.
-
-tooltip.PersonalChest=Un cofre personal, con 54 ranuras de almacenamiento, capaz de ser abierto desde el inventario.
-
+tooltip.EnergizedSmelter=Una máquina simple de fundicion, que trabaja con energía.
+tooltip.Teleporter=Una máquina capaz de teletransportar a jugadores a otra posición definida por otro Tenetransportador.
+tooltip.ElectricPump=Máquina capaz de extraer agua y bombearla atravez de tuberías.
+tooltip.PersonalChest=Un cofre personal, con 54 espacios de almacenamiento, capaz de ser abierto desde el inventario.
 tooltip.Chargepad=Un panel de carga universal, que puede ser alimentado por cualquier suplidor energetico de otros mods.
-
 tooltip.LogisticalSorter=Una máquina de clasificación avanzada basada en filtros que puede expulsar automáticamente artículos específicos de inventarios adyacentes y transportadores logísticos.
-
 tooltip.RotaryCondensentrator=Una maquina capaz de convertir Gases en sus respectivos fluidos, y viceversa.
-
 tooltip.ChemicalInjectionChamber=Una máquina de élite capaz de procesar minerales en cuatro fragmentos, sirviendo como la etapa inicial del procesamiento de minerales al 400%.
-
-tooltip.ElectrolyticSeparator=Una maquina capaz de producir la electrolicis para dividir los fluidos en gases.
-
-tooltip.PrecisionSawmill=Una máquina utilizada para procesar troncos y otros artículos a base de madera eficientemente, y obtener aserrin.
-
-tooltip.ChemicalDissolutionChamber=Una Maquina Ultimate para disolver quimicamente las impuresas de un material. Dejando una pasta de minerales limpia sin procesar.
-
-tooltip.ChemicalWasher=Una maquina Ultimate para limpiar la pasta de minerales sin procesar, y prepararla para su cristalizacion.
-
-tooltip.ChemicalCrystallizer=Una maquina Ultimate para cristalizar la pasta de minerales limpia.
-
-tooltip.ChemicalOxidizer=Una maquina capaz de llevar los materiales de estado Solido a Gaseoso.
-
-tooltip.ChemicalInfuser=Una maquina capaz de crear un Gas a base de mezclar otros dos gases.
-
-tooltip.SeismicVibrator=Una maquina capaz de causar vibraciones sismicas para obtener informacion sobre las diferentes capas de el subsuelo del terreno.
-
+tooltip.ElectrolyticSeparator=Una máquina capaz de producir la electrólisis para dividir las moléculas de fluidos en gases.
+tooltip.PrecisionSawmill=Una máquina utilizada para procesar troncos y otros artículos a base de madera eficientemente, y obtener serrín.
+tooltip.ChemicalDissolutionChamber=Una máquina Ultima para disolver quimicamente las impuresas de un material. Dejando una pasta de minerales limpia sin procesar.
+tooltip.ChemicalWasher=Una máquina Ultima para limpiar la pasta de minerales sin procesar, y prepararla para su cristalización.
+tooltip.ChemicalCrystallizer=Una máquina Ultima para cristalizar la pasta de minerales limpia.
+tooltip.ChemicalOxidizer=Una máquina capaz de llevar los materiales de estado solido a gaseoso.
+tooltip.ChemicalInfuser=Una máquina capaz de crear un gas a base de mezclar otros dos gases.
+tooltip.SeismicVibrator=Una máquina capaz de causar vibraciones sísmicas para obtener información sobre las diferentes capas de el subsuelo del terreno.
 tooltip.PressurizedReactionChamber=Una máquina avanzada que procesa una mezcla sólida, líquida y gaseosa y crea un producto tanto gaseoso como sólido.
-
 tooltip.FluidTank=Un tanque portatil y practico que permite almacenar grandes cantidades de liquidos, y puede ser utilizado de la misma manera que una cubeta.
-
 tooltip.FluidicPlenisher=Una máquina que es capaz de crear lagos enteros llenando los barrancos con fluidos.
-
 tooltip.Laser=Una forma avanzada de transferencia de energía lineal que utiliza un haz de luz extremadamente colimado.
-
 tooltip.LaserAmplifier=Un dispositivo que se puede utilizar para combinar, redirigir y amplificar los rayos láser, con la capacidad de controlar cuando liberar el rayo.
-
 tooltip.LaserTractorBeam=Un dispositivo utilizado para fusionar y redirigir los rayos láser. recolecta los bloques que encuentra en su camino.
-
-tooltip.SolarNeutronActivator=Capaz de utilizar la readiacion de neutrones de el sol, para crear varios isotopos.
-
+tooltip.SolarNeutronActivator=Capaz de utilizar la readiacion de neutrones de el sol, para crear varios isótopos.
 tooltip.Oredictionificator=Una máquina utilizada para unificar y traducir entre varios elementos y bloques utilizando el Diccionario de minerales.
-
 tooltip.Factory=Una máquina que sirve como una actualización a la maquinaria normal, permitiendo que se realicen múltiples operaciones de procesamiento a la vez.
-
 tooltip.ResistiveHeater=Resistencia en espiral, condensada, capaz de convertir energía eléctrica directamente en energía térmica.
-
 tooltip.FormulaicAssemblicator=Una máquina que usa energía para elaborar rápidamente artículos y bloques de Formulas de Crafteos. 
+tooltip.FuelwoodHeater=Una maquina capaz de generar grandes cantidades de energía térmica quemando objetos.
+tooltip.QuantumEntangloporter=Un dispositivo altamente avanzado capaz de transferir recursos a larga distancia... o entre dimensiones.
 
-tooltip.FuelwoodHeater=Una maquina capaz de generar grandes cantidades de energia termica quemando objetos.
-
-tooltip.QuantumEntangloporter=Un dispositivo altamente avanzado capaz de transferir recursos a larga distancia.. o entre dimensiones.
-
-
-
-tooltip.HeatGenerator=Un generador que convierte el calor en energia. (Lava, o materiales incendiables)
-
-tooltip.SolarGenerator=Un generador capaz de generar energia de la luz solar.
-
-tooltip.GasGenerator=Un generador que quema las moleculas de varios gases para producir energia.
-
-tooltip.BioGenerator=Un generador capaz de transformar material organico en energia.
-
+tooltip.HeatGenerator=Un generador que convierte el calor en energía. (Lava, o materiales incendiables)
+tooltip.SolarGenerator=Un generador capaz de producir energía de la luz solar.
+tooltip.GasGenerator=Un generador que quema las moléculas de varios gases para producir energía.
+tooltip.BioGenerator=Un generador capaz de transformar material orgánico en energía.
 tooltip.AdvancedSolarGenerator=Un generador solar avanzado, que absorbe y transforma la energia de el sol, de manera mas eficiente.
-
-tooltip.WindGenerator=Generador capaz de usar la fuerza de el viento para producir energia, su eficiencia aumenta con la altura.
-
-tooltip.TurbineRotor=Una barra de acero para sostener las aspas de una Turbina Industrial.
-
+tooltip.WindGenerator=Generador capaz de usar la fuerza de el viento para producir energía, su eficiencia aumenta con la altura.
+tooltip.TurbineRotor=Una barra de acero para sostener las aspas de una Turbina industrial.
 tooltip.RotationalComplex=Un conector que se coloca en el rotor de turbina más alto de una turbina industrial para transportar energía cinética a sus bobinas electromagnéticas.
+tooltip.ElectromagneticCoil=Un bloque que convierte la energía cinética de un Complejo de rotación en electricidad utilizable. Estos pueden colocarse en cualquier disposición por encima de su Complejo de rotación, siempre y cuando todos se toquen entre sí y con el complejo en sí.
+tooltip.TurbineCasing=Carcasa resistente a la presión para la Turbina industrial.
+tooltip.TurbineValve=Un tipo de carcasa que incluye un puerto de transferencia de energía y vapor para la Turbina industrial.
+tooltip.TurbineVent=Un tipo de carcasa con un respiradero integrado para la liberación de vapor. Estos deben colocarse en el nivel o por encima del Complejo de rotación de la Turbina industrial.
+tooltip.SaturatingCondenser=Un bloque que condensa el vapor procesado por una turbina industrial en agua reutilizable. Estos se pueden colocar en cualquier disposición por encima de su Turbina industrial.
 
-tooltip.ElectromagneticCoil=Un bloque que convierte la energía cinética de un Complejo de Rotación en electricidad utilizable. Estos pueden colocarse en cualquier disposición por encima de su Complejo de Rotación, siempre y cuando todos se toquen entre sí y con el complejo en sí.
+tooltip.ReactorGlass=Cristal reforzado utilizado para la estructura de un Reactor de fusión.
+tooltip.ReactorLaserFocusMatrix=Panel de vidrio de reactor que es capaz de absorber energía óptica y, por lo tanto, calentar el reactor de fusión.
+tooltip.ReactorController=Panel de control para el Reactor de fusión.
+tooltip.ReactorFrame=Bloque reforzado para la construcción de la estructura de un Reactor de fusión.
+tooltip.ReactorNeutronCapturePlate=Bloque que puede usarse tanto para bloquear la radiación del Reactor de fusión como para ayudar en la producción de Tritio.
+tooltip.ReactorPort=Bloque de armazón reforzado que es capaz de gestionar tanto la transferencia de gas como de energía del Reactor de fusión.
+tooltip.ReactorLogicAdapter=Un bloque que se puede utilizar para permitir el monitoreo básico de un reactor mediante señales de redstone.
 
-tooltip.TurbineCasing=Carcasa resistente a la presion para la Turbina Industrial.
-
-tooltip.TurbineValve=Un tipo de carcasa que incluye un puerto de transferencia de energia y vapor para la turbina industrial.
-
-tooltip.TurbineVent=Un tipo de carcasa con un respiradero integrado para la liberación de vapor. Estos deben colocarse en el nivel o por encima del Complejo de Rotación de la Turbina Industrial.
-
-tooltip.SaturatingCondenser=Un bloque que condensa el vapor procesado por una turbina industrial en agua reutilizable. Estos se pueden colocar en cualquier disposición por encima de su Turbina Industrial.
-
-
-
-tooltip.ReactorGlass=Cristal reforzado utilizado para la estructura de un Reactor de Fusion.
-
-tooltip.ReactorLaserFocusMatrix=Un panel de vidrio de reactor que es capaz de absorber energía óptica y, por lo tanto, calentar el reactor de fusión.
-
-tooltip.ReactorController=Un panel de control para el Reactor de Fusion.
-
-tooltip.ReactorFrame=Bloque reforzado para la construccion de la estructura de un Reactor de Fusion.
-
-tooltip.ReactorNeutronCapturePlate=Un bloque que puede usarse tanto para bloquear la radiación del Fusion Reactor como para ayudar en la producción de Tritio.
-
-tooltip.ReactorPort=Un bloque de armazón reforzado que es capaz de gestionar tanto la transferencia de gas como de energía del reactor de fusión.
-
-tooltip.ReactorLogicAdapter=Un bloque que se puede utilizar para permitir el monitoreo básico de un reactor mediante señal redstone.
-
-
-
-tooltip.OsmiumOre=Un fuerte material que puede ser encontrado a poca altura en el mundo, entre sus conocidos usos, esta como material de construcion de maquinarias.
-
-tooltip.CopperOre=Un material comun, que se utiliza para fabricar cables. Sus propiedades capaces de resistir altas temperaturas lo convierten en material esencial para la creacion de maquinaria avanzada.
-
+tooltip.OsmiumOre=Un material fuerte que puede ser encontrado en las profundidades del subsuelo, entre sus conocidos usos, está como material de construción de maquinaria.
+tooltip.CopperOre=Un material común, que se utiliza para fabricar cables. Sus propiedades térmicas de conductividad de calor y punto de fusión lo convierten en material esencial para la creación de maquinaria avanzada.
 tooltip.TinOre=Un material ligero, pero resistente. Menos comun que el Cobre.
 
-
-
 # Side data
-
 sideData.None=Nada
-
 sideData.Input=Entrada
-
 sideData.Output=Salida
-
-sideData.Energy=Energia
-
+sideData.Energy=Energía
 sideData.Gas=Gas
-
 sideData.Extra=Extra
-
 sideData.Infuse=Infusor
-
 sideData.Fluid=Fluido
-
 sideData.Fill=Llenar
-
 sideData.Empty=Vaciar
-
 sideData.Charge=Cargar
-
 sideData.Discharge=Descargar
 
-
-
 # Redstone control
-
 control.disabled=Deshabilitado
-
 control.high=Alto
-
 control.low=Bajo
-
 control.pulse=Pulso
-
 control.disabled.desc=Siempre activo
-
-control.high.desc=Señal de activacion
-
-control.low.desc=Sin señal de activacion
-
+control.high.desc=Señal de activación
+control.low.desc=Sin señal de activación
 control.pulse.desc=Solo activo despues de recibir la primera señal.
 
-
-
-# Container edit modes
-
+# Container edit modes / Modos de edición de contenedores
 fluidedit.both=Ambos
-
 fluidedit.fill=Llenar
-
 fluidedit.empty=Vaciar
 
-
-
-# Colors
-
+# Colors / Colores
 color.black=Negro
-
-color.darkBlue=Azul Oscuro
-
-color.darkGreen=Verde Oscuro
-
-color.darkAqua=Aqua Oscuro
-
-color.darkRed=Rojo Oscuro
-
+color.darkBlue=Azul oscuro
+color.darkGreen=Verde oscuro
+color.darkAqua=Aqua oscuro
+color.darkRed=Rojo oscuro
 color.purple=Purpura
-
 color.orange=Naranja
-
 color.grey=Gris
-
-color.darkGrey=Gris Oscuro
-
+color.darkGrey=Gris oscuro
 color.indigo=Indigo
-
-color.brightGreen=Verde Brillante
-
-color.aqua=Aqua
-
+color.brightGreen=Verde brillante
+color.aqua=Cian
 color.red=Rojo
-
 color.pink=Rosa
-
 color.yellow=Amarillo
-
 color.white=Blanco
-
 color.brown=Marron
-
-color.brightPink=Rosa Brillante
-
-
+color.brightPink=Rosa brillante
 
 # Dyes / Tintes
-
 dye.black=Negro
-
 dye.darkBlue=Azul
-
 dye.brown=Marron
-
-dye.darkGreen=Green
-
+dye.darkGreen=Verde
 dye.darkAqua=Cian
-
-dye.darkRed=Rojo Oscuro
-
+dye.darkRed=Rojo oscuro
 dye.purple=Purpura
-
 dye.orange=Naranja
-
-dye.grey=Gris Claro
-
-dye.darkGrey=Gris Oscuro
-
+dye.grey=Gris claro
+dye.darkGrey=Gris oscuro
 dye.indigo=Indigo
-
-dye.brightGreen=Verde Lima
-
-dye.aqua=Aqua
-
+dye.brightGreen=Verde lima
+dye.aqua=Cian
 dye.red=Rojo
-
-dye.brightPink=Rosa Claro
-
+dye.brightPink=Rosa claro
 dye.pink=Rosa
-
 dye.yellow=Amarillo
-
 dye.white=Blanco
 
-
-
-# Reactor Logic modes
-
+# Reactor Logic modes / Modos lógicos del reactor
 reactor.disabled=Deshabilitado
-
-reactor.disabled.desc=Sin emitir señal de RedStone
-
-reactor.ready=Listo para la ignicion.
-
-reactor.ready.desc=El reactor necesita la temperatura adecuada para iniciar la ignicion.
-
-reactor.capacity=Temperatura Alcanzada.
-
-reactor.capacity.desc=El nucleo del Reactor a alcanzado su maxima capacidad.
-
+reactor.disabled.desc=Sin emitir señal de redstone
+reactor.ready=Listo para la ignición.
+reactor.ready.desc=El reactor necesita la temperatura adecuada para iniciar la ignición.
+reactor.capacity=Temperatura alcanzada.
+reactor.capacity.desc=El núcleo del reactor ha alcanzado su máxima capacidad.
 reactor.depleted=Combustible insuficiente.
-
-reactor.depleted.desc=El reactor no tiene la cantidad de combustible para mantener la reaccion.
-
-
+reactor.depleted.desc=El reactor no tiene la cantidad de combustible suficiente para mantener la reacción.
 
 # Creative tab
-
 itemGroup.tabMekanism=Mekanism
 
-
-
 ############
-
 # GENERATORS
-
 ############
-
-
 
 # Items
-
 item.SolarPanel.name=Panel Solar
-
 item.Hohlraum.name=Cavidad
-
-item.TurbineBlade.name=Azpa de turbina
-
-
+item.TurbineBlade.name=Aspa de turbina
 
 # Generators
-
-tile.Generator.HeatGenerator.name=Generador de Calor
-
-tile.Generator.SolarGenerator.name=Generador Solar
-
-tile.Generator.GasGenerator.name=Generador de Gas
-
+tile.Generator.HeatGenerator.name=Generador de calor
+tile.Generator.SolarGenerator.name=Generador solar
+tile.Generator.GasGenerator.name=Generador de gas
 tile.Generator.BioGenerator.name=Bio-Generador
-
-tile.Generator.AdvancedSolarGenerator.name=Generador Solar Avanzado
-
+tile.Generator.AdvancedSolarGenerator.name=Generador solar avanzado
 tile.Generator.WindGenerator.name=Molino de viento
-
 tile.Generator.TurbineRotor.name=Rotor de turbina
+tile.Generator.RotationalComplex.name=Complejo de rotación
+tile.Generator.ElectromagneticCoil.name=Bobina electromagnética
+tile.Generator.TurbineCasing.name=Carcasa de turbina
+tile.Generator.TurbineValve.name=Válvula de turbina
+tile.Generator.TurbineVent.name=Ventilación de turbina
+tile.Generator.SaturatingCondenser.name=Condensador de saturación
 
-tile.Generator.RotationalComplex.name=Complejo de rotacion
-
-tile.Generator.ElectromagneticCoil.name=Bobina electromagnetica
-
-tile.Generator.TurbineCasing.name=Carcasa de Turbina
-
-tile.Generator.TurbineValve.name=Valvula de Turbina
-
-tile.Generator.TurbineVent.name=Ventilacion de Turbina
-
-tile.Generator.SaturatingCondenser.name=Condensador de Saturacion
-
-
-
-tile.Reactor.ReactorController.name=Controlador de Reactor
-
-tile.Reactor.ReactorFrame.name=Modulo de reactor
-
+tile.Reactor.ReactorController.name=Controlador de reactor
+tile.Reactor.ReactorFrame.name=Módulo de reactor
 tile.Reactor.ReactorNeutronCapturePlate.name=Placa de captura de neutrones
+tile.Reactor.ReactorPort.name=Puerto de reactor
+tile.Reactor.ReactorLogicAdapter.name=Adaptador lógico del reactor
 
-tile.Reactor.ReactorPort.name=Puerto de Reactor
+tile.ReactorGlass.ReactorGlass.name=Cristal de reactor
+tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matriz de enfoque láser
 
-tile.Reactor.ReactorLogicAdapter.name=Adaptador logico de reactor
-
-
-
-tile.ReactorGlass.ReactorGlass.name=Cristal de Reactor
-
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matriz de enfoque laser
-
-
-
-# Gui text
-
+# Gui text / Texto de interfaz
 gui.heatGenerator.fuel=Combustible
-
 gui.solarGenerator.sun=Sol
-
-gui.bioGenerator.bioFuel=Bio-Combustible
-
+gui.bioGenerator.bioFuel=Biocombustible
 gui.electrolyticSeparator.dump=Tirar
 
-
-
 gui.passive=Aire-refrigerado
-
 gui.active=Agua-refrigerada
 
-
-
-gui.minInject=Tasa Min. de injeccion
-
-gui.ignition=Temperatura de Ignicion
-
+gui.minInject=Tasa Min. de inyección
+gui.ignition=Temperatura de ignición
 gui.maxPlasma=Temperatura max. del plasma
-
-gui.maxCasing=Temperatura max de la carcasa
-
-gui.passiveGeneration=Generacion Pasiva
-
-gui.steamProduction=Produccion de Vapor
-
-
+gui.maxCasing=Temperatura max. de la carcasa
+gui.passiveGeneration=Generación pasiva
+gui.steamProduction=Producción de vapor
 
 # Config Gui
-
 mekanism.configgui.ctgy.generators.general=Opciones generales
-
 mekanism.configgui.ctgy.generators.generators=Opciones de generadores
-
-mekanism.configgui.ctgy.generators.generation=Opciones de generacion
-
+mekanism.configgui.ctgy.generators.generation=Opciones de generación
 
 # Config Tooltips
-
-mekanism.configgui.ctgy.generators.general.tooltip=Ajustes de configuración general de Generadores de Mekanism
-
+mekanism.configgui.ctgy.generators.general.tooltip=Ajustes de configuración general de generadores de Mekanism
 mekanism.configgui.ctgy.generators.generators.tooltip=Deshabilitar o habilitar generadores
-
-mekanism.configgui.ctgy.generators.generation.tooltip=Ajustes de la generacion de energia
-
-
+mekanism.configgui.ctgy.generators.generation.tooltip=Ajustes de la generación de energía
 
 #########
-
 # TOOLS
-
 #########
-
-
 
 # Vanilla Paxels
-
-item.WoodPaxel.name=Paxel de Madera
-
-item.StonePaxel.name=Paxel de Piedra
-
-item.IronPaxel.name=Paxel de Hierro
-
-item.DiamondPaxel.name=Paxel de Diamante
-
-item.GoldPaxel.name=Paxel de Oro
-
-
+item.WoodPaxel.name=Paxel de madera
+item.StonePaxel.name=Paxel de piedra
+item.IronPaxel.name=Paxel de hierro
+item.DiamondPaxel.name=Paxel de diamante
+item.GoldPaxel.name=Paxel de oro
 
 # Obsidian
-
-item.ObsidianHelmet.name=Casco de Obsidiana
-
-item.ObsidianChestplate.name=Pechera de Obsidiana
-
-item.ObsidianLeggings.name=Pantalones de Obsidiana
-
-item.ObsidianBoots.name=Botas de Obsidiana
-
-item.ObsidianPaxel.name=Paxel de Obsidiana
-
-item.ObsidianPickaxe.name=Pico de Obsidiana
-
-item.ObsidianAxe.name=Hacha de Obsidiana
-
-item.ObsidianShovel.name=Pala de Obsidiana
-
-item.ObsidianHoe.name=Azada de Obsidiana
-
-item.ObsidianSword.name=Espada de Obsidiana
-
-
+item.ObsidianHelmet.name=Casco de obsidiana
+item.ObsidianChestplate.name=Pechera de obsidiana
+item.ObsidianLeggings.name=Pantalones de obsidiana
+item.ObsidianBoots.name=Botas de obsidiana
+item.ObsidianPaxel.name=Paxel de obsidiana
+item.ObsidianPickaxe.name=Pico de obsidiana
+item.ObsidianAxe.name=Hacha de obsidiana
+item.ObsidianShovel.name=Pala de obsidiana
+item.ObsidianHoe.name=Azada de obsidiana
+item.ObsidianSword.name=Espada de obsidiana
 
 # Osmium
-
-item.OsmiumHelmet.name=Casco de Osmio
-
-item.OsmiumChestplate.name=Pechera de Osmio
-
-item.OsmiumLeggings.name=Pantalones de Osmio
-
-item.OsmiumBoots.name=Botas de Osmio
-
-item.OsmiumPaxel.name=Paxel de Osmio
-
-item.OsmiumPickaxe.name=Pico de Osmio
-
-item.OsmiumAxe.name=Hacha de Osmio
-
-item.OsmiumShovel.name=Pala de Osmio
-
-item.OsmiumHoe.name=Azada de Osmio
-
-item.OsmiumSword.name=Espada de Osmio
-
-
+item.OsmiumHelmet.name=Casco de osmio
+item.OsmiumChestplate.name=Pechera de osmio
+item.OsmiumLeggings.name=Pantalones de osmio
+item.OsmiumBoots.name=Botas de osmio
+item.OsmiumPaxel.name=Paxel de osmio
+item.OsmiumPickaxe.name=Pico de osmio
+item.OsmiumAxe.name=Hacha de osmio
+item.OsmiumShovel.name=Pala de osmio
+item.OsmiumHoe.name=Azada de osmio
+item.OsmiumSword.name=Espada de osmio
 
 # Bronze
-
-item.BronzeHelmet.name=Casco de Bronce
-
-item.BronzeChestplate.name=Pechera de Bronce
-
-item.BronzeLeggings.name=Pantalones de Bronce
-
-item.BronzeBoots.name=Botas de Bronce
-
-item.BronzePaxel.name=Paxel de Bronce
-
-item.BronzePickaxe.name=Pico de Bronce
-
-item.BronzeAxe.name=Hacha de Bronce
-
-item.BronzeShovel.name=Pala de Bronce
-
-item.BronzeHoe.name=Azada de Bronce
-
-item.BronzeSword.name=Espada de Bronce
-
-
+item.BronzeHelmet.name=Casco de bronce
+item.BronzeChestplate.name=Pechera de bronce
+item.BronzeLeggings.name=Pantalones de bronce
+item.BronzeBoots.name=Botas de bronce
+item.BronzePaxel.name=Paxel de bronce
+item.BronzePickaxe.name=Pico de bronce
+item.BronzeAxe.name=Hacha de bronce
+item.BronzeShovel.name=Pala de bronce
+item.BronzeHoe.name=Azada de bronce
+item.BronzeSword.name=Espada de bronce
 
 # Glow
-
-item.GlowstoneHelmet.name=Casco de Piedra Luminosa
-
-item.GlowstoneChestplate.name=Pechera de Piedra Luminosa
-
-item.GlowstoneLeggings.name=Pantalones de Piedra Luminosa
-
-item.GlowstoneBoots.name=Botas de Piedra Luminosa
-
-item.GlowstonePaxel.name=Paxel de Piedra Luminosa
-
-item.GlowstonePickaxe.name=Pico de Piedra Luminosa
-
-item.GlowstoneAxe.name=Hacha de Piedra Luminosa
-
-item.GlowstoneShovel.name=Pala de Piedra Luminosa
-
-item.GlowstoneHoe.name=Azada de Piedra Luminosa
-
-item.GlowstoneSword.name=Espada de Piedra Luminosa
-
-
+item.GlowstoneHelmet.name=Casco de piedra luminosa
+item.GlowstoneChestplate.name=Pechera de piedra luminosa
+item.GlowstoneLeggings.name=Pantalones de piedra luminosa
+item.GlowstoneBoots.name=Botas de piedra luminosa
+item.GlowstonePaxel.name=Paxel de piedra luminosa
+item.GlowstonePickaxe.name=Pico de piedra luminosa
+item.GlowstoneAxe.name=Hacha de piedra luminosa
+item.GlowstoneShovel.name=Pala de piedra luminosa
+item.GlowstoneHoe.name=Azada de piedra luminosa
+item.GlowstoneSword.name=Espada de piedra luminosa
 
 # Steel
-
-item.SteelHelmet.name=Casco de Acero
-
-item.SteelChestplate.name=Pechera de Acero
-
-item.SteelLeggings.name=Pantalones de Acero
-
-item.SteelBoots.name=Botas de Acero
-
-item.SteelPaxel.name=Paxel de Acero
-
-item.SteelPickaxe.name=Pico de Acero
-
-item.SteelAxe.name=Hacha de Acero
-
-item.SteelShovel.name=Pala de Acero
-
-item.SteelHoe.name=Azada de Acero
-
-item.SteelSword.name=Espada de Acero
-
-
+item.SteelHelmet.name=Casco de acero
+item.SteelChestplate.name=Pechera de acero
+item.SteelLeggings.name=Pantalones de acero
+item.SteelBoots.name=Botas de acero
+item.SteelPaxel.name=Paxel de acero
+item.SteelPickaxe.name=Pico de acero
+item.SteelAxe.name=Hacha de acero
+item.SteelShovel.name=Pala de acero
+item.SteelHoe.name=Azada de acero
+item.SteelSword.name=Espada de acero
 
 # Lapis Lazuli
-
-item.LapisLazuliHelmet.name=Casco de Lapizlasuli
-
-item.LapisLazuliChestplate.name=Pechera de Lapizlasuli
-
-item.LapisLazuliLeggings.name=Pantalones de Lapizlasuli
-
-item.LapisLazuliBoots.name=Botas de Lapizlasuli
-
-item.LapisLazuliPaxel.name=Paxel de Lapizlasuli
-
-item.LapisLazuliPickaxe.name=Pico de Lapizlasuli
-
-item.LapisLazuliAxe.name=Hacha de Lapizlasuli
-
-item.LapisLazuliShovel.name=Pala de Lapizlasuli
-
-item.LapisLazuliHoe.name=Azada de Lapizlasuli
-
-item.LapisLazuliSword.name=Espada de Lapizlasuli
-
-
+item.LapisLazuliHelmet.name=Casco de lapizlasuli
+item.LapisLazuliChestplate.name=Pechera de lapizlasuli
+item.LapisLazuliLeggings.name=Pantalones de lapizlasuli
+item.LapisLazuliBoots.name=Botas de lapizlasuli
+item.LapisLazuliPaxel.name=Paxel de lapizlasuli
+item.LapisLazuliPickaxe.name=Pico de lapizlasuli
+item.LapisLazuliAxe.name=Hacha de lapizlasuli
+item.LapisLazuliShovel.name=Pala de lapizlasuli
+item.LapisLazuliHoe.name=Azada de lapizlasuli
+item.LapisLazuliSword.name=Espada de lapizlasuli
 
 # Config Gui
-
 mekanism.configgui.ctgy.tools.general=Ajustes generales
-
-mekanism.configgui.ctgy.tools.armor=Balance de Armaduras
-
+mekanism.configgui.ctgy.tools.armor=Balance de armaduras
 mekanism.configgui.ctgy.tools.tools=Balance de herramientas
 
-
-
 # Config Tooltips
-
 mekanism.configgui.ctgy.tools.general.tooltip=Opciones de ajustes generales de Mekanism Tools
-
-mekanism.configgui.ctgy.tools.armor.tooltip=Ajustes de los valores de proteccion de las Armaduras
-
+mekanism.configgui.ctgy.tools.armor.tooltip=Ajustes de los valores de protección de las armaduras
 mekanism.configgui.ctgy.tools.tools.tooltip=Ajustes de valores y balance de las herramientas
 
-
-
 # Commands
-
 cmd.mek.usage=
-
 cmd.mek.debug.usage=
-
 cmd.mek.debug=
-
 cmd.mek.testrules.usage=Setup world rules for testing (no mob spawning, daylight cycle or weather)
-
 cmd.mek.testrules=Mob spawning, daylight cycle and weather disabled!
-
 cmd.mek.tp.usage=Teleport to new coordinates, saving last position on a stack
-
 cmd.mek.tp=Teleported to %d,%d,%d - saved last position on stack
-
 cmd.mek.tp.missing.args=Teleporting requires three coordinates: x, y, z
-
 cmd.mek.tpop.usage=Return to last position on stack
-
 cmd.mek.tpop=Returned to %d,%d,%d; %d positions on stack
-
 cmd.mek.tpop.empty.stack=No positions on stack
 
-
-
 cmd.mek.chunk.usage=
-
 cmd.mek.chunk.watch.usage=Add caller's chunk to watch list for loading/unloading events
-
 cmd.mek.chunk.watch=Chunk %d,%d added to watch list
-
 cmd.mek.chunk.unwatch.usage=Remove caller's chunk from watch list for chunk loading/unloading events
-
 cmd.mek.chunk.unwatch=Chunk %d,%d removed from watch list
-
 cmd.mek.chunk.clear.usage=Remove all chunks from watch list for chunk loading/unloading events
-
 cmd.mek.chunk.clear=%d chunks removed from watch list
-
 cmd.mek.chunk.flush=%d chunks unloaded
 
-
-
 #chat messages
-
-chat.mek.multiblockformed=Estructura Formada
+chat.mek.multiblockformed=Estructura formada
