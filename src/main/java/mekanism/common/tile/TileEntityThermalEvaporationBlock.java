@@ -9,6 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -78,8 +79,8 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
         if (!(this instanceof TileEntityThermalEvaporationController)) {
             for (EnumFacing side : EnumFacing.values()) {
                 BlockPos checkPos = pos.offset(side);
-                TileEntity check;
-                if (world.isBlockLoaded(checkPos) && (check = world.getTileEntity(checkPos)) instanceof TileEntityThermalEvaporationBlock) {
+                TileEntity check = MekanismUtils.getTileEntity(world, checkPos);
+                if (check instanceof TileEntityThermalEvaporationBlock) {
                     if (check instanceof TileEntityThermalEvaporationController) {
                         ((TileEntityThermalEvaporationController) check).refresh();
                         return;
@@ -161,19 +162,19 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
                     continue;
                 }
                 iterated.add(checkPos);
-                if (world.isBlockLoaded(checkPos)) {
-                    TileEntity te = world.getTileEntity(checkPos);
-                    if (te instanceof TileEntityThermalEvaporationController) {
-                        found = (TileEntityThermalEvaporationController) te;
-                        return;
-                    }
-                    if (te instanceof TileEntityThermalEvaporationBlock) {
-                        ((TileEntityThermalEvaporationBlock) te).attempted = true;
-                        for (EnumFacing side : EnumFacing.VALUES) {
-                            BlockPos coord = checkPos.offset(side);
-                            if (!iterated.contains(coord)) {
-                                checkQueue.addLast(coord);
-                            }
+
+                TileEntity te = MekanismUtils.getTileEntity(world, checkPos);
+                if (te instanceof TileEntityThermalEvaporationController) {
+                    found = (TileEntityThermalEvaporationController) te;
+                    return;
+                }
+
+                if (te instanceof TileEntityThermalEvaporationBlock) {
+                    ((TileEntityThermalEvaporationBlock) te).attempted = true;
+                    for (EnumFacing side : EnumFacing.VALUES) {
+                        BlockPos coord = checkPos.offset(side);
+                        if (!iterated.contains(coord)) {
+                            checkQueue.addLast(coord);
                         }
                     }
                 }

@@ -5,7 +5,6 @@ import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.Mekanism;
@@ -310,20 +309,16 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     public IAdvancedBoundingBlock getInv() {
-        if (!receivedCoords || !world.isBlockLoaded(mainPos)) {
-            return null;
-        }
-
         // Return the inventory/main tile; note that it's possible, esp. when chunks are
         // loading that the inventory/main tile has not yet loaded and thus is null.
-        TileEntity tile = new Coord4D(mainPos, world).getTileEntity(world);
+        final TileEntity tile = getMainTile();
         if (tile == null) {
             return null;
         }
         if (!(tile instanceof IAdvancedBoundingBlock)) {
             // On the off chance that another block got placed there (which seems only likely with corruption,
             // go ahead and log what we found.
-            Mekanism.logger.error("Found tile {} instead of an IAdvancedBoundingBlock, at {}. Multiblock cannot function", tile, mainPos);
+            Mekanism.logger.error("Found tile {} instead of an IAdvancedBoundingBlock, at {}. Multiblock cannot function", tile, getMainPos());
             //world.setBlockToAir(mainPos);
             return null;
         }
@@ -402,7 +397,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return super.hasCapability(capability, facing);
         }
-        return inv.hasOffsetCapability(capability, facing, pos.subtract(mainPos));
+        return inv.hasOffsetCapability(capability, facing, pos.subtract(getMainPos()));
     }
 
     @Override
@@ -414,6 +409,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return super.getCapability(capability, facing);
         }
-        return inv.getOffsetCapability(capability, facing, pos.subtract(mainPos));
+        return inv.getOffsetCapability(capability, facing, pos.subtract(getMainPos()));
     }
 }

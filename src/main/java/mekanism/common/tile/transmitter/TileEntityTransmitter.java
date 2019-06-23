@@ -13,6 +13,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -158,9 +159,9 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     private boolean recheckConnectionPrechecked(EnumFacing side) {
-        N network = getTransmitter().getTransmitterNetwork();
-        TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
+        final TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
         if (tileEntity instanceof TileEntityTransmitter) {
+            N network = getTransmitter().getTransmitterNetwork();
             TileEntityTransmitter other = (TileEntityTransmitter) tileEntity;
             //The other one should always have the same incompatible networks state as us
             // But just in case it doesn't just check the boolean

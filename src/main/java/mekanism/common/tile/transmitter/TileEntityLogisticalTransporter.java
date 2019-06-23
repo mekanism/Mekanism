@@ -125,22 +125,24 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
         // Attempt to pull
         for (EnumFacing side : getConnections(ConnectionType.PULL)) {
-            TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-            TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.getPullAmount());
+            final TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(side));
+            if (tile != null) {
+                TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.getPullAmount());
 
-            // There's a stack available to insert into the network...
-            if (!request.isEmpty()) {
-                TransitResponse response = TransporterUtils.insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
+                // There's a stack available to insert into the network...
+                if (!request.isEmpty()) {
+                    TransitResponse response = TransporterUtils.insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
 
-                // If the insert succeeded, remove the inserted count and try again for another 10 ticks
-                if (!response.isEmpty()) {
-                    response.getInvStack(tile, side.getOpposite()).use(response.getSendingAmount());
-                    delay = 10;
-                } else {
-                    // Insert failed; increment the backoff and calculate delay. Note that we cap retries
-                    // at a max of 40 ticks (2 seocnds), which would be 4 consecutive retries
-                    delayCount++;
-                    delay = Math.min(40, (int) Math.exp(delayCount));
+                    // If the insert succeeded, remove the inserted count and try again for another 10 ticks
+                    if (!response.isEmpty()) {
+                        response.getInvStack(tile, side.getOpposite()).use(response.getSendingAmount());
+                        delay = 10;
+                    } else {
+                        // Insert failed; increment the backoff and calculate delay. Note that we cap retries
+                        // at a max of 40 ticks (2 seocnds), which would be 4 consecutive retries
+                        delayCount++;
+                        delay = Math.min(40, (int) Math.exp(delayCount));
+                    }
                 }
             }
         }

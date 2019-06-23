@@ -130,7 +130,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         }
         for (EnumFacing side : EnumFacing.values()) {
             if (canConnectMutual(side)) {
-                TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
+                TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
                     && TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
                       getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity)) {
@@ -146,7 +146,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return false;
         }
         if (canConnectMutual(side)) {
-            TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
             if (isValidAcceptor(tileEntity, side)) {
                 if (cachedAcceptors[side.ordinal()] != tileEntity) {
                     cachedAcceptors[side.ordinal()] = tileEntity;
@@ -167,7 +167,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return false;
         }
         if (canConnectMutual(side)) {
-            TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
+            TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
             return CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
                    && TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
                   getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity);
@@ -254,11 +254,11 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public boolean canConnectMutual(EnumFacing side) {
-        BlockPos testPos = getPos().offset(side);
-        if (!world.isBlockLoaded(testPos) || !canConnect(side)) {
+        if (!canConnect(side)) {
             return false;
         }
-        TileEntity tile = getWorld().getTileEntity(testPos);
+        final BlockPos testPos = getPos().offset(side);
+        final TileEntity tile = MekanismUtils.getTileEntity(world, testPos);
         if (!CapabilityUtils.hasCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite())) {
             return true;
         }
