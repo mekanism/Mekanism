@@ -41,6 +41,9 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
      */
     public abstract boolean testEquality(INPUT other);
 
+    /**
+     * Checks if the two item stacks match (IGNORES AMOUNTS)
+     */
     public static boolean inputItemMatches(ItemStack container, ItemStack contained) {
         return ITEM_MATCHER_OVERRIDES.getOrDefault(container.getItem().getClass(), DEFAULT_MATCHER).test(container, contained);
     }
@@ -49,7 +52,7 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
         if (OreDictCache.getOreDictName(container).contains("treeSapling")) {
             return StackUtils.equalsWildcard(container, contained);
         }
-        return StackUtils.equalsWildcardWithNBT(container, contained) && container.getCount() >= contained.getCount();
+        return StackUtils.equalsWildcardWithNBT(container, contained);
     }
 
     @Override
