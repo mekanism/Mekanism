@@ -35,6 +35,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -409,6 +410,25 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
+        GeneratorType type = GeneratorType.get(state);
+        if (type != null) {
+            switch (type) {
+                case SOLAR_GENERATOR:
+                    return BlockFaceShape.UNDEFINED;
+                case ADVANCED_SOLAR_GENERATOR:
+                case WIND_GENERATOR:
+                    return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+                case TURBINE_ROTOR:
+                    return face != EnumFacing.UP && face != EnumFacing.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
+            }
+        }
+        return super.getBlockFaceShape(world, state, pos, face);
     }
 
     @SideOnly(Side.CLIENT)

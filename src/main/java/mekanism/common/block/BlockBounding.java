@@ -8,6 +8,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -199,6 +200,15 @@ public class BlockBounding extends Block {
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
+        //TODO: Add support so things like the center blocks of the digital miner can be marked as "solid"
+        // for now we have better overall accuracy if we just use undefined though
+        return BlockFaceShape.UNDEFINED;
     }
 
     @Override
