@@ -731,9 +731,10 @@ public abstract class BlockMachine extends BlockMekanismContainer {
                 case PERSONAL_CHEST:
                 case LOGISTICAL_SORTER:
                 case LASER:
+                    return BlockFaceShape.UNDEFINED;
                 case ELECTRIC_PUMP:
                 case FLUIDIC_PLENISHER:
-                    return BlockFaceShape.UNDEFINED;
+                    return face == EnumFacing.UP || face == EnumFacing.DOWN ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
                 case CHARGEPAD:
                     return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
                 case FLUID_TANK:
