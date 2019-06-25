@@ -132,7 +132,7 @@ public class TileComponentEjector implements ITileComponent {
         TransitRequest ejectMap = null;
         for (EnumFacing side : outputs) {
             if (ejectMap == null) {
-                ejectMap = getEjectItemMap();
+                ejectMap = getEjectItemMap(data);
                 if (ejectMap.isEmpty()) {
                     break;
                 }
@@ -148,19 +148,17 @@ public class TileComponentEjector implements ITileComponent {
 
             if (!response.isEmpty()) {
                 response.getInvStack(tileEntity, side).use();
-                ejectMap = null;
                 //Set map to null so next loop recalculates the eject map so that all sides get a chance to be ejected to
                 // assuming that there is still any left
-                //TODO: Optimize by making use() return if it used all that it expected to use
-                // This way it won't have to recheck
+                //TODO: Eventually make some way to just directly update the TransitRequest with remaining parts
+                ejectMap = null;
             }
         }
         tickDelay = 20;
     }
 
-    private TransitRequest getEjectItemMap() {
+    private TransitRequest getEjectItemMap(SideData data) {
         TransitRequest request = new TransitRequest();
-        SideData data = sideData.get(TransmissionType.ITEM);
         for (int index = 0; index < data.availableSlots.length; index++) {
             int slotID = data.availableSlots[index];
             ItemStack stack = tileEntity.getStackInSlot(slotID);
