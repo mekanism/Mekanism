@@ -139,7 +139,7 @@ public final class InventoryUtils {
 
     public static boolean assertItemHandler(String desc, TileEntity tileEntity, EnumFacing side) {
         if (!isItemHandler(tileEntity, side)) {
-            Mekanism.logger.warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!");
+            Mekanism.logger.warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!", new Exception());
             if (tileEntity == null) {
                 Mekanism.logger.warn(" - null tile");
             } else {
