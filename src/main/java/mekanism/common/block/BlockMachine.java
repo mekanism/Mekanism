@@ -54,6 +54,7 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.ParticleManager;
@@ -708,15 +709,38 @@ public abstract class BlockMachine extends BlockMekanismContainer {
     @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-        switch (type) {
-            case CHARGEPAD:
-            case PERSONAL_CHEST:
-                return false;
-            case FLUID_TANK:
-                return side == EnumFacing.UP || side == EnumFacing.DOWN;
-            default:
-                return true;
+        if (type != null) {
+            switch (type) {
+                case CHARGEPAD:
+                case PERSONAL_CHEST:
+                    return false;
+                case FLUID_TANK:
+                    return side == EnumFacing.UP || side == EnumFacing.DOWN;
+            }
         }
+        return true;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
+        MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
+        if (type != null) {
+            switch (type) {
+                case PERSONAL_CHEST:
+                case LOGISTICAL_SORTER:
+                case LASER:
+                case ELECTRIC_PUMP:
+                case FLUIDIC_PLENISHER:
+                    return BlockFaceShape.UNDEFINED;
+                case CHARGEPAD:
+                    return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+                case FLUID_TANK:
+                    return face != EnumFacing.UP && face != EnumFacing.DOWN ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
+            }
+        }
+        return super.getBlockFaceShape(world, state, pos, face);
     }
 
     public PropertyEnum<MachineType> getTypeProperty() {

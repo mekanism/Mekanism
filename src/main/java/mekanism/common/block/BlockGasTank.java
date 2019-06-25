@@ -20,6 +20,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -274,5 +275,12 @@ public class BlockGasTank extends BlockMekanismContainer {
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
+        return BlockFaceShape.UNDEFINED;
     }
 }
