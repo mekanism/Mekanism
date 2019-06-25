@@ -5,7 +5,6 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -45,7 +44,6 @@ public class TileComponentEjector implements ITileComponent {
     private EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
     private int tickDelay = 0;
     private Map<TransmissionType, SideData> sideData = new EnumMap<>(TransmissionType.class);
-    public Map<TransmissionType, int[]> trackers = new EnumMap<>(TransmissionType.class);
 
     public TileComponentEjector(TileEntityContainerBlock tile) {
         tileEntity = tile;
@@ -54,7 +52,6 @@ public class TileComponentEjector implements ITileComponent {
 
     public TileComponentEjector setOutputData(TransmissionType type, SideData data) {
         sideData.put(type, data);
-        trackers.put(type, new int[data.availableSlots.length]);
         return this;
     }
 
@@ -64,19 +61,6 @@ public class TileComponentEjector implements ITileComponent {
         inputColors = ejector.inputColors;
         tickDelay = ejector.tickDelay;
         sideData = ejector.sideData;
-    }
-
-    //TODO: Figure out if trackers can just be removed or what the goal of it was and reimplement if needed
-    private Set<EnumFacing> getTrackedOutputs(TransmissionType type, int index, Set<EnumFacing> dirs) {
-        Set<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
-        int tracker = trackers.get(type)[index];
-        for (int i = tracker + 1; i <= tracker + 6; i++) {
-            EnumFacing side = EnumFacing.byIndex(i % 6);
-            if (dirs.contains(side)) {
-                sides.add(side);
-            }
-        }
-        return sides;
     }
 
     @Override
@@ -220,13 +204,6 @@ public class TileComponentEjector implements ITileComponent {
         if (nbtTags.hasKey("ejectColor")) {
             outputColor = readColor(nbtTags.getInteger("ejectColor"));
         }
-        for (Entry<TransmissionType, SideData> entry : sideData.entrySet()) {
-            TransmissionType type = entry.getKey();
-            SideData data = entry.getValue();
-            for (int i = 0; i < data.availableSlots.length; i++) {
-                trackers.get(type)[i] = nbtTags.getInteger("tracker" + type.getTransmission() + i);
-            }
-        }
         for (int i = 0; i < 6; i++) {
             if (nbtTags.hasKey("inputColors" + i)) {
                 inputColors[i] = readColor(nbtTags.getInteger("inputColors" + i));
@@ -248,13 +225,6 @@ public class TileComponentEjector implements ITileComponent {
         nbtTags.setBoolean("strictInput", strictInput);
         if (outputColor != null) {
             nbtTags.setInteger("ejectColor", getColorIndex(outputColor));
-        }
-        for (Entry<TransmissionType, SideData> entry : sideData.entrySet()) {
-            TransmissionType type = entry.getKey();
-            SideData data = entry.getValue();
-            for (int i = 0; i < data.availableSlots.length; i++) {
-                nbtTags.setInteger("tracker" + type.getTransmission() + i, trackers.get(type)[i]);
-            }
         }
         for (int i = 0; i < 6; i++) {
             nbtTags.setInteger("inputColors" + i, getColorIndex(inputColors[i]));

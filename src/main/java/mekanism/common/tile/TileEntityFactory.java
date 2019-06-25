@@ -333,7 +333,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             //Append the "extra" slot to the available slots
             data.availableSlots = Arrays.copyOf(data.availableSlots, data.availableSlots.length + 1);
             data.availableSlots[data.availableSlots.length - 1] = 4;
-            ejectorComponent.trackers.put(TransmissionType.ITEM, Arrays.copyOf(ejectorComponent.trackers.get(TransmissionType.ITEM), data.availableSlots.length));
         }
 
         for (Upgrade upgrade : upgradeComponent.getSupportedTypes()) {
