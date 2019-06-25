@@ -152,7 +152,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     public void operate(PressurizedRecipe recipe) {
         recipe.operate(inventory, inputFluidTank, inputGasTank, outputGasTank);
         markDirty();
-        ejectorComponent.outputItems();
     }
 
     @Override

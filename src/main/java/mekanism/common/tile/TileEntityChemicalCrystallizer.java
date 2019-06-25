@@ -116,7 +116,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public void operate(CrystallizerRecipe recipe) {
         recipe.operate(inputTank, inventory);
         markDirty();
-        ejectorComponent.outputItems();
     }
 
     @Override

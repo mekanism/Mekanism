@@ -214,7 +214,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public void operate(MetallurgicInfuserRecipe recipe) {
         recipe.output(inventory, 2, 3, infuseStored);
         markDirty();
-        ejectorComponent.outputItems();
     }
 
     @Contract("null -> false")

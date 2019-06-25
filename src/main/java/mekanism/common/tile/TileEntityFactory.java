@@ -680,7 +680,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         }
 
         markDirty();
-        ejectorComponent.outputItems();
     }
 
     @Override
