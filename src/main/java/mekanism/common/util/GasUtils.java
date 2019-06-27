@@ -27,13 +27,10 @@ import net.minecraft.world.World;
 public final class GasUtils {
 
     public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<EnumFacing> sides) {
-        IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
-        for (EnumFacing orientation : sides) {
-            TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
-            if (CapabilityUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite())) {
-                acceptors[orientation.ordinal()] = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite());
-            }
-        }
+        final IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
+        EmitUtils.forEachSide(world, pos, sides, (tile, side) -> {
+            acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
+        });
         return acceptors;
     }
 
@@ -113,20 +110,21 @@ public final class GasUtils {
 
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
-        GasHandlerTarget target = new GasHandlerTarget(stack);
-        for (EnumFacing orientation : sides) {
-            TileEntity acceptor = from.getWorld().getTileEntity(from.getPos().offset(orientation));
-            if (acceptor == null) {
-                continue;
-            }
-            EnumFacing opposite = orientation.getOpposite();
-            if (CapabilityUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, opposite)) {
-                IGasHandler handler = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, opposite);
-                if (handler != null && handler.canReceiveGas(opposite, stack.getGas())) {
-                    target.addHandler(opposite, handler);
-                }
-            }
-        }
+        final GasHandlerTarget target = new GasHandlerTarget(stack);
+        EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
+
+            //Invert to get access side
+            final EnumFacing accessSide = side.getOpposite();
+
+            //Collect cap
+            CapabilityUtils.runIfCap(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide,
+                  (handler) -> {
+                      if (handler.canReceiveGas(accessSide, stack.getGas())) {
+                          target.addHandler(accessSide, handler);
+                      }
+                  });
+        });
+
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
             Set<GasHandlerTarget> targets = new HashSet<>();
