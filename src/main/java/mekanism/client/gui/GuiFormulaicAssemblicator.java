@@ -32,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 @SideOnly(Side.CLIENT)
 public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator> {
@@ -162,7 +161,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
 
                     int guiX = guiWidth + slot.xPos;
                     int guiY = guiHeight + slot.yPos;
-                    if (slot.getStack().isEmpty() || !ItemHandlerHelper.canItemStacksStack(slot.getStack(), stack)) {
+                    if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {
                         drawGradientRect(guiX, guiY, guiX + 16, guiY + 16, -2137456640, -2137456640);
                     }
 
