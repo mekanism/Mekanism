@@ -53,6 +53,7 @@ import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -1178,8 +1179,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side,
-          @Nonnull Vec3i offset) {
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Input
             if (offset.equals(new Vec3i(0, 1, 0))) {
@@ -1235,5 +1235,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             chunkSet = new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream().map(Chunk3D::getPos).collect(Collectors.toSet());
         }
         return chunkSet;
+    }
+
+    @Nonnull
+    @Override
+    public BlockFaceShape getOffsetBlockFaceShape(@Nonnull EnumFacing face, @Nonnull Vec3i offset) {
+        if (offset.equals(new Vec3i(0, 1, 0))) {
+            return BlockFaceShape.SOLID;
+        }
+        EnumFacing back = facing.getOpposite();
+        if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
+            return BlockFaceShape.SOLID;
+        }
+        return BlockFaceShape.UNDEFINED;
     }
 }

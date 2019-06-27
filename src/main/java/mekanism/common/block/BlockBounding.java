@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -206,8 +207,13 @@ public class BlockBounding extends Block {
     @Override
     @Deprecated
     public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
-        //TODO: Add support so things like the center blocks of the digital miner can be marked as "solid"
-        // for now we have better overall accuracy if we just use undefined though
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos != null) {
+            TileEntity tile = world.getTileEntity(mainPos);
+            if (tile instanceof IBoundingBlock) {
+                return ((IBoundingBlock) tile).getOffsetBlockFaceShape(face, pos.subtract(mainPos));
+            }
+        }
         return BlockFaceShape.UNDEFINED;
     }
 
