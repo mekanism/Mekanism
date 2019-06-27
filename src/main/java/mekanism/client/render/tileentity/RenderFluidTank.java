@@ -40,15 +40,15 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
         if (fluid != null && fluidScale > 0) {
             MekanismRenderHelper renderHelper = initHelper();
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            renderHelper.translate(x, y, z).enableGlow(fluid).color(fluid);
+            renderHelper.translate(x, y, z).enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
 
+            renderHelper.color(fluid, fluidScale);
             if (fluid.getFluid().isGaseous(fluid)) {
-                renderHelper.colorAlpha(Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();

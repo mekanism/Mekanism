@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GLSMHelper<HELPER extends GLSMHelper<HELPER>> {
 
     public final static GLSMHelper INSTANCE = new GLSMHelper();
+    private static float GAS_RENDER_BASE = 0.2F;
 
     /**
      * @return this cast to HELPER as to reduce unchecked cast warnings
@@ -172,19 +173,36 @@ public class GLSMHelper<HELPER extends GLSMHelper<HELPER>> {
         return color(red, green, blue, 1);
     }
 
+    private float getRed(int color) {
+        return (color >> 16 & 0xFF) / 255.0F;
+    }
+
+    private float getGreen(int color) {
+        return (color >> 8 & 0xFF) / 255.0F;
+    }
+
+    private float getBlue(int color) {
+        return (color & 0xFF) / 255.0F;
+    }
+
     public HELPER color3f(int color) {
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-        return color3f(red, green, blue);
+        return color3f(getRed(color), getGreen(color), getBlue(color));
     }
 
     public HELPER color(int color) {
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
         float alpha = (color >> 24 & 0xFF) / 255f;
-        return color(red, green, blue, alpha);
+        return color(getRed(color), getGreen(color), getBlue(color), alpha);
+    }
+
+    public HELPER color(@Nullable FluidStack fluid, float fluidScale) {
+        if (fluid == null || fluid.getFluid() == null) {
+            return get();
+        }
+        int color = fluid.getFluid().getColor(fluid);
+        if (fluid.getFluid().isGaseous(fluid)) {
+            return color(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + GAS_RENDER_BASE));
+        }
+        return color(color);
     }
 
     public HELPER color(@Nullable FluidStack fluid) {

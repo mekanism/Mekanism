@@ -120,7 +120,6 @@ public class GlowPanelModel extends OBJBakedModelBase {
     @Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType) {
-        //NOTE: Does not call cleanup as it is only being used for the wrapper methods and it doesn't create a matrix
         if (transformType == TransformType.GUI) {
             GLSMHelper.INSTANCE.rotateX(180, 1);
             ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());

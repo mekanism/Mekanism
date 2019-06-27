@@ -4,7 +4,6 @@ import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -25,7 +24,8 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
     public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null &&
             tileEntity.structure.upperRenderLocation != null) {
-            if (tileEntity.structure.waterStored != null && tileEntity.structure.waterStored.amount != 0) {
+            FluidStack waterStored = tileEntity.structure.waterStored;
+            if (waterStored != null && waterStored.amount != 0) {
                 RenderData data = new RenderData();
                 data.location = tileEntity.structure.renderLocation;
                 data.height = tileEntity.structure.upperRenderLocation.y - 1 - tileEntity.structure.renderLocation.y;
@@ -33,13 +33,12 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = WATER;
 
-                if (data.height >= 1 && tileEntity.structure.waterStored.getFluid() != null) {
+                if (data.height >= 1 && waterStored.getFluid() != null) {
                     bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
                     FluidRenderer.translateToOrigin(data.location);
-                    renderHelper.enableGlow(tileEntity.structure.waterStored).color(tileEntity.structure.waterStored);
-                    if (tileEntity.structure.waterStored.getFluid().isGaseous()) {
-                        renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.waterStored.amount / (float) tileEntity.clientWaterCapacity) + MekanismRenderer.GAS_RENDER_BASE));
+                    renderHelper.enableGlow(waterStored).color(waterStored, (float) waterStored.amount / (float) tileEntity.clientWaterCapacity);
+                    if (waterStored.getFluid().isGaseous(waterStored)) {
                         FluidRenderer.getTankDisplay(data).render();
                     } else {
                         FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
@@ -49,7 +48,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     for (ValveData valveData : tileEntity.valveViewing) {
                         MekanismRenderHelper valveRenderHelper = FluidRenderer.initHelper();
                         FluidRenderer.translateToOrigin(valveData.location);
-                        valveRenderHelper.enableGlow(tileEntity.structure.waterStored);
+                        valveRenderHelper.enableGlow(waterStored);
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
                         valveRenderHelper.cleanup();
                     }
@@ -68,10 +67,10 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
                     FluidRenderer.translateToOrigin(data.location);
-                    renderHelper.enableGlow(tileEntity.structure.steamStored).color(tileEntity.structure.steamStored);
+                    renderHelper.enableGlow(tileEntity.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
-                    renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity) + MekanismRenderer.GAS_RENDER_BASE));
+                    renderHelper.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity);
                     display.render();
                     renderHelper.cleanup();
                 }

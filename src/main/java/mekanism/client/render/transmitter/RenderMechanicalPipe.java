@@ -72,7 +72,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             renderHelper.translate(x, y, z);
 
-            boolean gas = fluid.isGaseous();
+            boolean gas = fluidStack == null ? fluid.isGaseous() : fluid.isGaseous(fluidStack);
             for (EnumFacing side : EnumFacing.VALUES) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
                     renderDisplayLists(getListAndRender(side, fluidStack), renderHelper, scale, gas);

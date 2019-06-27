@@ -41,15 +41,15 @@ public class RenderFluidTankItem {
         if (fluid != null && fluidScale > 0) {
             MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
             MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            fluidRenderHelper.translateAll(-0.5).enableGlow(fluid).color(fluid);
+            fluidRenderHelper.translateAll(-0.5).enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
 
+            fluidRenderHelper.color(fluid, fluidScale);
             if (fluid.getFluid().isGaseous(fluid)) {
-                fluidRenderHelper.colorAlpha(Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();

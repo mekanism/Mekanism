@@ -13,10 +13,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelDigitalMiner extends ModelBase {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils
-          .getResource(ResourceType.RENDER, "DigitalMiner_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils
-          .getResource(ResourceType.RENDER, "DigitalMiner_OverlayOff.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner_OverlayOn.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner_OverlayOff.png");
 
     ModelRenderer keyboard;
     ModelRenderer keyboardBottom;

@@ -4,7 +4,6 @@ import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -30,10 +29,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                 MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
                 FluidRenderer.translateToOrigin(data.location);
-                renderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored);
-                if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
-                    //TODO: Does the color alpha overwrite the color set based on fluid
-                    renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity) + MekanismRenderer.GAS_RENDER_BASE));
+                renderHelper.enableGlow(data.fluidType).color(data.fluidType, (float) data.fluidType.amount / (float) tileEntity.clientCapacity);
+                if (data.fluidType.getFluid().isGaseous(data.fluidType)) {
                     FluidRenderer.getTankDisplay(data).render();
                 } else {
                     FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();
@@ -44,7 +41,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 for (ValveData valveData : tileEntity.valveViewing) {
                     MekanismRenderHelper valveRenderHelper = FluidRenderer.initHelper();
                     FluidRenderer.translateToOrigin(valveData.location);
-                    valveRenderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored);
+                    valveRenderHelper.enableGlow(data.fluidType).color(data.fluidType);
                     FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
                     valveRenderHelper.cleanup();
                 }

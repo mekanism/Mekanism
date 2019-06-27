@@ -4,8 +4,6 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -58,17 +56,12 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                 if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
                     MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
                     FluidRenderer.translateToOrigin(data.location);
-                    //TODO: Does the color alpha overwrite the color set based on fluid
-                    renderHelper.enableGlow(tileEntity.structure.fluidStored).color(tileEntity.structure.fluidStored).colorAlpha(Math.min(1,
-                          ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure.getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
+                    renderHelper.enableGlow(tileEntity.structure.fluidStored)
+                          .color(tileEntity.structure.fluidStored, (float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure.getFluidCapacity());
                     FluidRenderer.getTankDisplay(data).render();
                     renderHelper.cleanup();
                 }
             }
         }
-    }
-
-    private int getStages(int height) {
-        return TankUpdateProtocol.FLUID_PER_TANK / 10;
     }
 }

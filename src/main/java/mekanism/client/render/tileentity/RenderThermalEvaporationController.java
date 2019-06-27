@@ -3,7 +3,6 @@ package mekanism.client.render.tileentity;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderHelper;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -26,13 +25,13 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
             FluidRenderer.translateToOrigin(data.location);
-            renderHelper.enableGlow(tileEntity.inputTank.getFluid()).color(tileEntity.inputTank.getFluid());
-            if (tileEntity.inputTank.getFluid().getFluid().isGaseous()) {
-                renderHelper.colorAlpha(Math.min(1, ((float) tileEntity.inputTank.getFluidAmount() / (float) tileEntity.getMaxFluid()) + MekanismRenderer.GAS_RENDER_BASE));
+            float fluidScale = (float) tileEntity.inputTank.getFluidAmount() / (float) tileEntity.getMaxFluid();
+            renderHelper.enableGlow(data.fluidType).color(data.fluidType, fluidScale);
+            if (data.fluidType.getFluid().isGaseous(data.fluidType)) {
                 FluidRenderer.getTankDisplay(data).render();
             } else {
                 //Render the proper height
-                FluidRenderer.getTankDisplay(data, Math.min((float) tileEntity.inputTank.getFluidAmount() / tileEntity.getMaxFluid(), 1)).render();
+                FluidRenderer.getTankDisplay(data, Math.min(1, fluidScale)).render();
             }
             renderHelper.cleanup();
         }

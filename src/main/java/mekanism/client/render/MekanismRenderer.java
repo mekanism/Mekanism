@@ -52,12 +52,9 @@ public class MekanismRenderer {
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite laserIcon;
-    public static float GAS_RENDER_BASE = 0.2F;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
-    public static int[] directionMap = new int[]{3, 0, 1, 2};
     private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
     public static TextureAtlasSprite missingIcon;
-    private static String[] simpleSides = new String[]{"Bottom", "Top", "Front", "Back", "Left", "Right"};
     private static TextureMap texMap = null;
 
     public static void init() {
