@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -64,7 +63,7 @@ public final class MinerVisualRenderer {
 
         toReturn.setBlockBounds(rel.x + 0.4, rel.y + 0.4, rel.z + 0.4, rel.x + 0.6, rel.y + 0.6, rel.z + 0.6);
         toReturn.baseBlock = Blocks.WATER;
-        toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
+        toReturn.setTexture(MekanismRenderer.whiteIcon);
 
         return toReturn;
     }

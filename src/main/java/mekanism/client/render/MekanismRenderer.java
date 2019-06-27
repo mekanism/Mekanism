@@ -48,10 +48,10 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer {
 
-    public static TextureAtlasSprite[] colors = new TextureAtlasSprite[256];
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite laserIcon;
+    public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
     public static TextureAtlasSprite missingIcon;
@@ -210,12 +210,6 @@ public class MekanismRenderer {
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
     }
 
-    //TODO: Remove/replace this as it is now only used for EnumColor.WHITE for the miner visual render,
-    // and we don't need to register all the different colors just for that.
-    public static TextureAtlasSprite getColorIcon(EnumColor color) {
-        return colors[color.ordinal()];
-    }
-
     public static int getColorARGB(EnumColor color, float alpha) {
         //TODO: ensure that alpha is between 0 and 1
         int argb = (int) (255 * alpha) << 24;
@@ -231,14 +225,11 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public void onStitch(TextureStitchEvent.Pre event) {
-        for (EnumColor color : EnumColor.values()) {
-            colors[color.ordinal()] = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_" + color.unlocalizedName));
-        }
-
         for (TransmissionType type : TransmissionType.values()) {
             overlays.put(type, event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay")));
         }
 
+        whiteIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_white"));
         energyIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
         heatIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
         laserIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
