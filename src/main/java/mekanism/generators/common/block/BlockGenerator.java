@@ -128,7 +128,7 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+            final TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
             if (tileEntity instanceof IMultiblock) {
                 ((IMultiblock<?>) tileEntity).doUpdate();
             }

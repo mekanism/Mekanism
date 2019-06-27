@@ -317,7 +317,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double injectEnergy(EnumFacing direction, double amount, double voltage) {
-        TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
+        TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(direction));
         if (tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite())) {
             return amount;
         }

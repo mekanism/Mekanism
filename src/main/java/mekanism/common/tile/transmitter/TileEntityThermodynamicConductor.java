@@ -15,6 +15,7 @@ import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -179,7 +180,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public IHeatTransfer getAdjacent(EnumFacing side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
-            TileEntity adj = getWorld().getTileEntity(getPos().offset(side));
+            TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
             if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
                 return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
             }
