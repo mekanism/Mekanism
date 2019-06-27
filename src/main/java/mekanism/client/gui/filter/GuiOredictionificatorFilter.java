@@ -222,7 +222,7 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
             if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 if (filter.filter != null) {
-                    List<ItemStack> ores = OreDictionary.getOres(filter.filter);
+                    List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
                     if (filter.index > 0) {
                         filter.index--;
                     } else {
@@ -234,7 +234,7 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
             if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 if (filter.filter != null) {
-                    List<ItemStack> ores = OreDictionary.getOres(filter.filter);
+                    List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
                     if (filter.index < ores.size() - 1) {
                         filter.index++;
                     } else {
@@ -256,7 +256,7 @@ public class GuiOredictionificatorFilter extends GuiMekanismTile<TileEntityOredi
             renderStack = ItemStack.EMPTY;
             return;
         }
-        List<ItemStack> stacks = OreDictionary.getOres(filter.filter);
+        List<ItemStack> stacks = OreDictionary.getOres(filter.filter, false);
         if (stacks.isEmpty()) {
             renderStack = ItemStack.EMPTY;
             return;

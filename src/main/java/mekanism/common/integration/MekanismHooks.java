@@ -221,7 +221,7 @@ public final class MekanismHooks {
     private void registerCyclicCombinerOreRecipe(String ore, int quantity, ItemStack extra, String outputName) {
         Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
         if (outputItem != null) {
-            for (ItemStack stack : OreDictionary.getOres(ore)) {
+            for (ItemStack stack : OreDictionary.getOres(ore, false)) {
                 RecipeHandler.addCombinerRecipe(StackUtils.size(stack, quantity), extra, new ItemStack(outputItem));
             }
         }
