@@ -512,6 +512,9 @@ public final class MekanismUtils {
      * @param pos   Position of the block
      */
     public static void updateBlock(World world, BlockPos pos) {
+        if(!world.isBlockLoaded(pos)) {
+            return;
+        }
         //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
         // This is because that is mainly used for rendering machine effects, but we need to run a render update
         // anyways here in case IActiveState#renderUpdate() is false and we just had the block rotate.
@@ -1071,6 +1074,20 @@ public final class MekanismUtils {
     public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
         return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
     }
+
+    /**
+     * Gets a tile entity if the location is loaded
+     * @param world - world
+     * @param pos - position
+     * @return tile entity if found, null if either not found or not loaded
+     */
+    public static TileEntity getTileEntity(World world, BlockPos pos) {
+        if(world != null && world.isBlockLoaded(pos)) {
+            return world.getTileEntity(pos);
+        }
+        return null;
+    }
+
 
     /**
      * Dismantles a block, dropping it and removing it from the world.

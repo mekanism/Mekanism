@@ -28,8 +28,8 @@ public class BlockBounding extends Block {
     @Nullable
     private static BlockPos getMainBlockPos(IBlockAccess world, BlockPos thisPos) {
         TileEntity te = world.getTileEntity(thisPos);
-        if (te instanceof TileEntityBoundingBlock && !thisPos.equals(((TileEntityBoundingBlock) te).mainPos)) {
-            return ((TileEntityBoundingBlock) te).mainPos;
+        if (te instanceof TileEntityBoundingBlock && !thisPos.equals(((TileEntityBoundingBlock) te).getMainPos())) {
+            return ((TileEntityBoundingBlock) te).getMainPos();
         }
         return null;
     }

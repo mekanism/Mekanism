@@ -136,7 +136,7 @@ public class MekanismGenerators implements IModule {
         FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.current().general.ETHENE_BURN_TIME.val(),
               MekanismConfig.current().general.FROM_H2.val() + MekanismConfig.current().generators.bioGeneration.val() * 2 * MekanismConfig.current().general.ETHENE_BURN_TIME.val());
 
-        for (ItemStack ore : OreDictionary.getOres("dustGold")) {
+        for (ItemStack ore : OreDictionary.getOres("dustGold", false)) {
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, StackUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
         }
     }

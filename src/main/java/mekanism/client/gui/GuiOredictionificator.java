@@ -197,7 +197,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 renderStacks.put(filter, ItemStack.EMPTY);
                 continue;
             }
-            List<ItemStack> stacks = OreDictionary.getOres(filter.filter);
+            List<ItemStack> stacks = OreDictionary.getOres(filter.filter, false);
             if (stacks.isEmpty()) {
                 renderStacks.put(filter, ItemStack.EMPTY);
                 continue;

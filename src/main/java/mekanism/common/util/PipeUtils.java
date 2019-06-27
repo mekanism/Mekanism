@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.common.base.target.FluidHandlerTarget;
@@ -46,15 +47,10 @@ public final class PipeUtils {
      * @return array of IFluidHandlers
      */
     public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world) {
-        IFluidHandler[] acceptors = new IFluidHandler[]{null, null, null, null, null, null};
-
-        for (EnumFacing orientation : EnumFacing.VALUES) {
-            TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
-            if (CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite())) {
-                IFluidHandler handler = CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite());
-                acceptors[orientation.ordinal()] = handler;
-            }
-        }
+        final IFluidHandler[] acceptors = new IFluidHandler[]{null, null, null, null, null, null};
+        EmitUtils.forEachSide(world, pos, EnumSet.allOf(EnumFacing.class), (tile, side) -> {
+            acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+        });
         return acceptors;
     }
 
@@ -73,20 +69,21 @@ public final class PipeUtils {
         }
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
-        FluidHandlerTarget target = new FluidHandlerTarget(stack);
-        for (EnumFacing orientation : sides) {
-            TileEntity acceptor = from.getWorld().getTileEntity(from.getPos().offset(orientation));
-            if (acceptor == null) {
-                continue;
-            }
-            EnumFacing opposite = orientation.getOpposite();
-            if (CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite)) {
-                IFluidHandler handler = CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite);
-                if (handler != null && canFill(handler, stack)) {
-                    target.addHandler(opposite, handler);
-                }
-            }
-        }
+        final FluidHandlerTarget target = new FluidHandlerTarget(stack);
+        EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
+
+            //Insert to access side
+            final EnumFacing accessSide = side.getOpposite();
+
+            //Collect cap
+            CapabilityUtils.runIfCap(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide,
+                  (handler) -> {
+                      if (canFill(handler, stack)) {
+                          target.addHandler(accessSide, handler);
+                      }
+                  });
+        });
+
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
             Set<FluidHandlerTarget> targets = new HashSet<>();

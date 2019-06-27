@@ -21,6 +21,22 @@ public final class CapabilityUtils {
         return provider.getCapability(cap, side);
     }
 
+    /**
+     * Runs an action on a capability if it exists
+     *
+     * @param provider - provider hosting the capability
+     * @param cap      - capability type
+     * @param side     - side to access
+     * @param action   - handler for completing the action on the capability
+     * @param <T>      - type to return
+     */
+    public static <T> void runIfCap(ICapabilityProvider provider, Capability<T> cap, EnumFacing side, Consumer<T> action) {
+        final T capability = getCapability(provider, cap, side);
+        if (capability != null) {
+            action.accept(capability);
+        }
+    }
+
     public static <T> OptionalCapability withCapability(ICapabilityProvider provider, Capability<T> cap, EnumFacing side, Consumer<T> consumer) {
         return new OptionalCapability(provider).orElseWith(cap, side, consumer);
     }

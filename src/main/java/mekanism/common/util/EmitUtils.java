@@ -1,11 +1,16 @@
 package mekanism.common.util;
 
 import java.util.Set;
+import java.util.function.BiConsumer;
 import mekanism.common.base.SplitInfo;
 import mekanism.common.base.SplitInfo.DoubleSplitInfo;
 import mekanism.common.base.SplitInfo.IntegerSplitInfo;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.target.Target;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class EmitUtils {
 
@@ -69,5 +74,30 @@ public class EmitUtils {
      */
     public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets, double amountToSplit) {
         return sendToAcceptors(availableTargets, totalTargets, new DoubleSplitInfo(amountToSplit, totalTargets), amountToSplit);
+    }
+
+    /**
+     * Simple helper to loop over each side of the block and complete an action for each tile found
+     *
+     * @param world  - world to access
+     * @param center - location to center search on
+     * @param sides  - sides to search
+     * @param action - action to complete
+     */
+    public static void forEachSide(World world, BlockPos center, Iterable<EnumFacing> sides, BiConsumer<TileEntity, EnumFacing> action) {
+        if (sides != null) {
+            //Loop provided sides
+            for (EnumFacing side : sides) {
+                //Validate we have a block loaded in world, prevents ghost chunk loading
+                final BlockPos pos = center.offset(side);
+                if (world.isBlockLoaded(pos)) {
+                    //Get tile and provide if not null
+                    final TileEntity tileEntity = world.getTileEntity(pos);
+                    if (tileEntity != null) {
+                        action.accept(tileEntity, side);
+                    }
+                }
+            }
+        }
     }
 }

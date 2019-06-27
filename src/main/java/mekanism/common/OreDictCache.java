@@ -64,7 +64,7 @@ public final class OreDictCache {
 
         List<ItemStack> stacks = new ArrayList<>();
         for (String key : keys) {
-            for (ItemStack stack : OreDictionary.getOres(key)) {
+            for (ItemStack stack : OreDictionary.getOres(key, false)) {
                 ItemStack toAdd = stack.copy();
                 if (!stacks.contains(stack) && (!forceBlock || toAdd.getItem() instanceof ItemBlock)) {
                     stacks.add(stack.copy());
@@ -81,7 +81,7 @@ public final class OreDictCache {
         }
         List<ItemStack> stacks = new ArrayList<>();
         for (String key : OreDictionary.getOreNames()) {
-            for (ItemStack stack : OreDictionary.getOres(key)) {
+            for (ItemStack stack : OreDictionary.getOres(key, false)) {
                 ItemStack toAdd = stack.copy();
                 String s = ItemRegistryUtils.getMod(toAdd);
                 if (!stacks.contains(stack) && toAdd.getItem() instanceof ItemBlock) {

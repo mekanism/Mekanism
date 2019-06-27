@@ -194,7 +194,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         }
 
         for (String key : keys) {
-            for (ItemStack stack : OreDictionary.getOres(key)) {
+            for (ItemStack stack : OreDictionary.getOres(key, false)) {
                 ItemStack toAdd = stack.copy();
                 if (!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock) {
                     iterStacks.add(stack.copy());

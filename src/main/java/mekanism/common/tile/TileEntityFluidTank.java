@@ -431,8 +431,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     @Override
     public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        TileEntity tile = world.getTileEntity(getPos().offset(EnumFacing.DOWN));
-        if (from == EnumFacing.DOWN && world != null) {
+        TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(EnumFacing.DOWN));
+        if (from == EnumFacing.DOWN) {
             if (isActive && !(tile instanceof TileEntityFluidTank)) {
                 return false;
             }

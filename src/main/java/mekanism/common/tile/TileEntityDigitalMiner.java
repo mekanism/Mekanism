@@ -448,8 +448,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     public TileEntity getEjectInv() {
-        EnumFacing side = facing.getOpposite();
-        return world.getTileEntity(getPos().up().offset(side, 2));
+        final EnumFacing side = facing.getOpposite();
+        final BlockPos pos = getPos().up().offset(side, 2);
+        if(world.isBlockLoaded(pos)) {
+            return world.getTileEntity(pos);
+        }
+        return null;
     }
 
     public void add(List<ItemStack> stacks) {
@@ -876,8 +880,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     public TileEntity getEjectTile() {
-        EnumFacing side = facing.getOpposite();
-        return world.getTileEntity(getPos().up().offset(side));
+        final EnumFacing side = facing.getOpposite();
+        final BlockPos pos = getPos().up().offset(side);
+        if(world.isBlockLoaded(pos)) {
+            return world.getTileEntity(pos);
+        }
+        return null;
     }
 
     @Override
