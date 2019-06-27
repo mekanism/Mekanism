@@ -899,14 +899,14 @@ public final class MekanismUtils {
     }
 
     /**
-     * Finds the output of a defined InventoryCrafting grid.
+     * Finds the output of a brute forced repairing action
      *
      * @param inv   - InventoryCrafting to check
      * @param world - world reference
      *
      * @return output ItemStack
      */
-    public static ItemStack findMatchingRecipe(InventoryCrafting inv, World world) {
+    public static ItemStack findRepairRecipe(InventoryCrafting inv, World world) {
         NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             if (!inv.getStackInSlot(i).isEmpty()) {
@@ -932,8 +932,7 @@ public final class MekanismUtils {
             int solve = Math.max(0, theItem.getMaxDamage() - value);
             return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
         }
-        IRecipe potentialResult = CraftingManager.findMatchingRecipe(inv, world);
-        return potentialResult != null ? potentialResult.getRecipeOutput() : ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     /**

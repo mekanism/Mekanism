@@ -29,6 +29,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -36,6 +38,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile {
+
+    private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
     public InventoryCrafting dummyInv = MekanismUtils.getDummyCraftingInv();
 
@@ -59,6 +63,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     public int pulseOperations;
 
     public RecipeFormula formula;
+    private IRecipe cachedRecipe;
+    private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
@@ -178,16 +184,36 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     public void markDirty() {
         super.markDirty();
 
+        recalculateRecipe();
+    }
+
+    private void recalculateRecipe() {
         if (world != null && !world.isRemote) {
             if (formula == null) {
                 for (int i = 0; i < 9; i++) {
                     dummyInv.setInventorySlotContents(i, inventory.get(27 + i));
                 }
-                lastOutputStack = MekanismUtils.findMatchingRecipe(dummyInv, world);
+
+                lastRemainingItems = EMPTY_LIST;
+
+                if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, world)) {
+                    cachedRecipe = CraftingManager.findMatchingRecipe(dummyInv, world);
+                }
+                if (cachedRecipe != null) {
+                    lastOutputStack = cachedRecipe.getCraftingResult(dummyInv);
+                    lastRemainingItems = cachedRecipe.getRemainingItems(dummyInv);
+                } else {
+                    lastOutputStack = MekanismUtils.findRepairRecipe(dummyInv, world);
+                }
                 isRecipe = !lastOutputStack.isEmpty();
             } else {
                 isRecipe = formula.matches(world, inventory, 27);
-                lastOutputStack = isRecipe ? formula.recipe.getRecipeOutput() : ItemStack.EMPTY;
+                if (isRecipe) {
+                    lastOutputStack = formula.recipe.getCraftingResult(dummyInv);
+                    lastRemainingItems = formula.recipe.getRemainingItems(dummyInv);
+                } else {
+                    lastOutputStack = ItemStack.EMPTY;
+                }
             }
             needsOrganize = true;
         }
@@ -197,11 +223,17 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
         for (int i = 0; i < 9; i++) {
             dummyInv.setInventorySlotContents(i, inventory.get(27 + i));
         }
+        recalculateRecipe();
 
         ItemStack output = lastOutputStack;
 
-        if (!output.isEmpty() && tryMoveToOutput(output, false)) {
+        if (!output.isEmpty() && tryMoveToOutput(output, false) && (lastRemainingItems.isEmpty() || lastRemainingItems.stream().allMatch(it->it.isEmpty() || tryMoveToOutput(it, false)))) {
             tryMoveToOutput(output, true);
+            for (ItemStack remainingItem : lastRemainingItems) {
+                if (!remainingItem.isEmpty()) {
+                    tryMoveToOutput(remainingItem, true);
+                }
+            }
 
             for (int i = 27; i <= 35; i++) {
                 if (!inventory.get(i).isEmpty()) {
