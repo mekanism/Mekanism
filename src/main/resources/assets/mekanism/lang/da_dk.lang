@@ -377,6 +377,7 @@ upgrade.muffling.desc=Reducérer støj genereret af maskineri.
 mekanism.key.mode=Ændr Genstandsmodus
 mekanism.key.armorMode=Ændr Armormodus
 mekanism.key.voice=Stemme
+mekanism.key.extendedMining=Udvidet åreudvikling
 
 # Entities
 entity.Robit.name=Robit

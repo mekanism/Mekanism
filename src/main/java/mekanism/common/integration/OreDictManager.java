@@ -31,6 +31,8 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -390,6 +392,15 @@ public final class OreDictManager {
             if (ore.getItemDamage() == 0 || ore.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
                 RecipeHandler.addCrusherRecipe(new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE), new ItemStack(MekanismItems.BioFuel, 2));
             }
+        }
+
+        for(ItemStack coal : OreDictionary.getOres("blockCharcoal", false)) {
+            RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
+                    new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
+        }
+
+        for(ItemStack sulfur : OreDictionary.getOres("sulphur", false)) {
+            RecipeHandler.addEnrichmentChamberRecipe(sulfur, new ItemStack(Items.GUNPOWDER));
         }
     }
 

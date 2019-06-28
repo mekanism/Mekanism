@@ -404,6 +404,7 @@ mekanism.key.mode=Item Mode Switch
 mekanism.key.armorMode=Armor Mode Switch
 mekanism.key.feetMode=Feet Mode Switch
 mekanism.key.voice=Voice
+mekanism.key.extendedMining=Extended vein mining
 
 # Entities
 entity.Robit.name=Robit

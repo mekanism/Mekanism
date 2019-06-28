@@ -10,6 +10,7 @@ public class KeySync {
 
     public static int ASCEND = 0;
     public static int DESCEND = 1;
+    public static int EXTENDEDMINING = 2;
 
     public Map<EntityPlayer, KeySet> keys = new HashMap<>();
 

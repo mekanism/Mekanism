@@ -51,7 +51,7 @@ public abstract class MekKeyHandler {
     public void keyTick() {
         for (int i = 0; i < keyBindings.length; i++) {
             KeyBinding keyBinding = keyBindings[i];
-            boolean state = keyBinding.isPressed();
+            boolean state = keyBinding.isKeyDown();
             boolean lastState = keyDown.get(i);
 
             if (state != lastState || (state && repeatings.get(i))) {

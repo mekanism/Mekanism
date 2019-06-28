@@ -404,6 +404,7 @@ mekanism.key.mode=Cambiar modo de Objetos
 mekanism.key.armorMode=Cambiar modo de Armadura
 mekanism.key.feetMode=Cambiar modo de Zapatos
 mekanism.key.voice=Voz
+mekanism.key.extendedMining=Minería de Mena extendidas
 
 # Entities / Entidades
 entity.Robit.name=Robit

@@ -379,6 +379,7 @@ upgrade.muffling.desc=Reduit le bruit généré par la machine.
 mekanism.key.mode=Bascule de mode d'éléments
 mekanism.key.armorMode=Bascule de mode d'armure
 mekanism.key.voice=Voix
+mekanism.key.extendedMining=Extraction de veine étendus
 
 # Entities
 entity.Robit.name=Robit

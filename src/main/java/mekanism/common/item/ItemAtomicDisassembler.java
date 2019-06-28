@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.MekanismKeyHandler;
+import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
@@ -128,8 +130,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     isOre = true;
                 }
             }
-            if (getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode) {
-                Set<Coord4D> found = new Finder(player, stack, new Coord4D(pos, player.world), raytrace).calc();
+            boolean extended = Mekanism.keyMap.has(player, KeySync.EXTENDEDMINING);
+            if (getMode(itemstack) == 3 && (isOre && !player.capabilities.isCreativeMode || extended)) {
+                Set<Coord4D> found = new Finder(player, stack, new Coord4D(pos, player.world), raytrace, extended ? 10 : -1).calc();
                 for (Coord4D coord : found) {
                     if (coord.equals(orig) || getEnergy(itemstack) < (MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getEfficiency(itemstack))) {
                         continue;
@@ -139,7 +142,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
                     player.world.setBlockToAir(coord.getPos());
                     block2.breakBlock(player.world, coord.getPos(), state);
-                    block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
+                    if(!player.capabilities.isCreativeMode) {
+                        block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
+                    }
                     setEnergy(itemstack, getEnergy(itemstack) - (MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getEfficiency(itemstack)));
                 }
             }
@@ -348,8 +353,13 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         private final RayTraceResult rayTraceResult;
         private final Block startBlock;
         private final boolean isWood;
+        private final int maxRange;
 
         public Finder(EntityPlayer p, ItemStack s, Coord4D loc, RayTraceResult traceResult) {
+            this(p, s, loc, traceResult, -1);
+        }
+
+        public Finder(EntityPlayer p, ItemStack s, Coord4D loc, RayTraceResult traceResult, int range) {
             player = p;
             world = p.world;
             stack = s;
@@ -357,6 +367,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             startBlock = loc.getBlock(world);
             rayTraceResult = traceResult;
             isWood = OreDictCache.getOreDictName(stack).contains("logWood");
+            maxRange = range;
         }
 
         public void loop(Coord4D pointer) {
@@ -366,6 +377,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             found.add(pointer);
             for (EnumFacing side : EnumFacing.VALUES) {
                 Coord4D coord = pointer.offset(side);
+                if(maxRange > 0 && location.distanceTo(coord) > maxRange) {
+                    continue;
+                }
                 ItemStack blockStack = coord.getBlock(world).getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), player);
                 if (coord.exists(world) && checkID(coord.getBlock(world)) &&
                     (ItemHandlerHelper.canItemStacksStack(stack, blockStack) || (coord.getBlock(world) == startBlock && isWood && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4))) {

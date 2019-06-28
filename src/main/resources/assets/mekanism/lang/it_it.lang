@@ -350,6 +350,7 @@ upgrade.gas.desc=Aumenta l'efficienza dei !nmacchinari che vanno a gas.
 mekanism.key.mode=Scambia modalità oggetto
 mekanism.key.armorMode=Scambia modalità armatura
 mekanism.key.voice=Voce
+mekanism.key.extendedMining=Estrazione di filone estese
 
 # Entities
 entity.Robit.name=Robit
