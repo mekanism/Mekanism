@@ -387,7 +387,7 @@ upgrade.muffling.desc=Verringert den von Maschinen produzierten Schall.
 # Key description text
 mekanism.key.mode=Item Modus wechsel
 mekanism.key.armorMode=Rüstungs Modus wechsel
-mekanism.key.armorMode=Fuß Modus wechsel
+mekanism.key.feetMode=Fuß Modus wechsel
 mekanism.key.voice=Stimme
 mekanism.key.extendedMining=Erweitertes vein mining
 
