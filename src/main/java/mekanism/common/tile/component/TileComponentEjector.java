@@ -136,6 +136,10 @@ public class TileComponentEjector implements ITileComponent {
                 }
             }
             TileEntity tile = MekanismUtils.getTileEntity(tileEntity.getWorld(), tileEntity.getPos().offset(side));
+            if (tile == null) {
+                //If the spot is not loaded just skip trying to eject to it
+                continue;
+            }
             ILogisticalTransporter capability = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite());
             TransitResponse response;
             if (capability == null) {
