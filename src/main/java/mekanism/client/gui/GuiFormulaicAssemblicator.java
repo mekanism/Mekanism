@@ -118,10 +118,12 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                 ItemStack stack = tileEntity.formula.input.get(i);
                 if (!stack.isEmpty()) {
                     Slot slot = inventorySlots.inventorySlots.get(i + 20);
+                    int guiX = guiLeft + slot.xPos;
+                    int guiY = guiTop + slot.yPos;
                     if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {
-                        drawColorIcon(guiLeft + slot.xPos, guiTop + slot.yPos, EnumColor.DARK_RED, 0.8F);
+                        drawColorIcon(guiX, guiY, EnumColor.DARK_RED, 0.8F);
                     }
-                    renderItem(stack, 144, 27);
+                    renderItem(stack, guiX, guiY);
                 }
             }
         }
