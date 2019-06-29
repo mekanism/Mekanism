@@ -93,6 +93,9 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
+        //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
+        // it in an unexpected state.
+        GLSMHelper.INSTANCE.resetColor();
         drawTexturedModalRect(guiLeft, guiTop);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
