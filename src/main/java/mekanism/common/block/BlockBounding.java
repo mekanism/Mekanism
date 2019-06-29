@@ -2,12 +2,14 @@ package mekanism.common.block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -199,6 +201,20 @@ public class BlockBounding extends Block {
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos != null) {
+            TileEntity tile = world.getTileEntity(mainPos);
+            if (tile instanceof IBoundingBlock) {
+                return ((IBoundingBlock) tile).getOffsetBlockFaceShape(face, pos.subtract(mainPos));
+            }
+        }
+        return BlockFaceShape.UNDEFINED;
     }
 
     @Override

@@ -15,11 +15,13 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -211,5 +213,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         return ChargeUtils.canBeDischarged(stack);
+    }
+
+    @Nonnull
+    @Override
+    public BlockFaceShape getOffsetBlockFaceShape(@Nonnull EnumFacing face, @Nonnull Vec3i offset) {
+        return BlockFaceShape.SOLID;
     }
 }
