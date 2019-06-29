@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
@@ -31,7 +30,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -137,8 +135,7 @@ public class TileComponentEjector implements ITileComponent {
                     break;
                 }
             }
-            BlockPos offsetPos = tileEntity.getPos().offset(side);
-            TileEntity tile = tileEntity.getWorld().isBlockLoaded(offsetPos) ? tileEntity.getWorld().getTileEntity(offsetPos) : null;
+            TileEntity tile = MekanismUtils.getTileEntity(tileEntity.getWorld(), tileEntity.getPos().offset(side));
             ILogisticalTransporter capability = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite());
             TransitResponse response;
             if (capability == null) {
