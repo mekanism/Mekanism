@@ -107,7 +107,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
         if (s == null) {
             return ItemStack.EMPTY;
         }
-        List<ItemStack> ores = OreDictionary.getOres(s);
+        List<ItemStack> ores = OreDictionary.getOres(s, false);
         for (OredictionificatorFilter filter : filters) {
             if (filter.filter.equals(s)) {
                 if (ores.size() - 1 >= filter.index) {

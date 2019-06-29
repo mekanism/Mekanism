@@ -17,20 +17,30 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 
+/**
+ * Multi-block used by wind turbines, solar panels, and other machines
+ */
 public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork {
 
-    public BlockPos mainPos = BlockPos.ORIGIN;
+    private BlockPos mainPos = BlockPos.ORIGIN;
 
     public boolean receivedCoords;
 
     public int prevPower;
 
     public void setMainLocation(BlockPos pos) {
-        receivedCoords = true;
+        receivedCoords = pos != null;
         if (!world.isRemote) {
             mainPos = pos;
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
+    }
+
+    public BlockPos getMainPos() {
+        if (mainPos == null) {
+            mainPos = BlockPos.ORIGIN;
+        }
+        return mainPos;
     }
 
     @Override
@@ -41,10 +51,18 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         }
     }
 
+    public TileEntity getMainTile() {
+        if (receivedCoords && world.isBlockLoaded(getMainPos())) {
+            return world.getTileEntity(getMainPos());
+        }
+        return null;
+    }
+
     public void onNeighborChange(Block block) {
-        TileEntity tile = world.getTileEntity(mainPos);
+        final TileEntity tile = getMainTile();
         if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) tile;
+
+            final TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) tile;
             int power = world.getRedstonePowerFromNeighbors(getPos());
             if (prevPower != power) {
                 if (power > 0) {
@@ -69,9 +87,10 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         if (world.isRemote) {
             mainPos = new BlockPos(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
             prevPower = dataStream.readInt();
+            receivedCoords = dataStream.readBoolean();
         }
     }
-
+    
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
@@ -84,9 +103,9 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setInteger("mainX", mainPos.getX());
-        nbtTags.setInteger("mainY", mainPos.getY());
-        nbtTags.setInteger("mainZ", mainPos.getZ());
+        nbtTags.setInteger("mainX", getMainPos().getX());
+        nbtTags.setInteger("mainY", getMainPos().getY());
+        nbtTags.setInteger("mainZ", getMainPos().getZ());
         nbtTags.setInteger("prevPower", prevPower);
         nbtTags.setBoolean("receivedCoords", receivedCoords);
         return nbtTags;
@@ -94,10 +113,11 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(mainPos.getX());
-        data.add(mainPos.getY());
-        data.add(mainPos.getZ());
+        data.add(getMainPos().getX());
+        data.add(getMainPos().getY());
+        data.add(getMainPos().getZ());
         data.add(prevPower);
+        data.add(receivedCoords);
         return data;
     }
 
