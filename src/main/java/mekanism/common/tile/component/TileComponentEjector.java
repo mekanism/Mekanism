@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -127,7 +128,6 @@ public class TileComponentEjector implements ITileComponent {
         if (data == null || !getEjecting(TransmissionType.ITEM)) {
             return;
         }
-        Coord4D tileCoord = Coord4D.get(tileEntity);
         Set<EnumFacing> outputs = getOutputSides(TransmissionType.ITEM, data);
         TransitRequest ejectMap = null;
         for (EnumFacing side : outputs) {
@@ -137,7 +137,8 @@ public class TileComponentEjector implements ITileComponent {
                     break;
                 }
             }
-            TileEntity tile = tileCoord.offset(side).getTileEntity(tileEntity.getWorld());
+            BlockPos offsetPos = tileEntity.getPos().offset(side);
+            TileEntity tile = tileEntity.getWorld().isBlockLoaded(offsetPos) ? tileEntity.getWorld().getTileEntity(offsetPos) : null;
             ILogisticalTransporter capability = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite());
             TransitResponse response;
             if (capability == null) {
