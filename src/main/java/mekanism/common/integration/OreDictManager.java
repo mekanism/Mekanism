@@ -394,12 +394,27 @@ public final class OreDictManager {
             }
         }
 
-        for(ItemStack coal : OreDictionary.getOres("blockCharcoal", false)) {
+        for (ItemStack coal : OreDictionary.getOres("blockCoal", false)) {
             RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
                     new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
         }
 
-        for(ItemStack sulfur : OreDictionary.getOres("sulphur", false)) {
+        for (ItemStack coal : OreDictionary.getOres("blockCharcoal", false)) {
+            RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
+                    new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
+        }
+
+        for (ItemStack coal : OreDictionary.getOres("dustCoal", false)) {
+            RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
+                    new ItemStack(MekanismItems.OtherDust, 1, 3), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
+        }
+
+        for (ItemStack coal : OreDictionary.getOres("dustCharcoal", false)) {
+            RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
+                    new ItemStack(MekanismItems.OtherDust, 1, 3), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
+        }
+
+        for (ItemStack sulfur : OreDictionary.getOres("sulphur", false)) {
             RecipeHandler.addEnrichmentChamberRecipe(sulfur, new ItemStack(Items.GUNPOWDER));
         }
     }
