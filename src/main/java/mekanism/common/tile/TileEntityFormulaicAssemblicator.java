@@ -40,6 +40,15 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
+    public static final int SLOT_UPGRADE = 0;
+    public static final int SLOT_ENERGY = 1;
+    public static final int SLOT_FORMULA = 2;
+    public static final int SLOT_INPUT_FIRST = 3;
+    public static final int SLOT_INPUT_LAST = 20;
+    public static final int SLOT_OUTPUT_FIRST = 21;
+    public static final int SLOT_OUTPUT_LAST = 26;
+    public static final int SLOT_CRAFT_MATRIX_FIRST = 27;
+    public static final int SLOT_CRAFT_MATRIX_LAST = 35;
 
     public InventoryCrafting dummyInv = MekanismUtils.getDummyCraftingInv();
 
@@ -82,17 +91,17 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-                                                                                                             20}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[]{21, 22, 23, 24, 25, 26}));
-        configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{1}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[]{SLOT_INPUT_FIRST, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+                                                                                                             SLOT_INPUT_LAST}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[]{SLOT_OUTPUT_FIRST, 22, 23, 24, 25, SLOT_OUTPUT_LAST}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[]{SLOT_ENERGY}));
 
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{0, 0, 0, 3, 1, 2});
         configComponent.setInputConfig(TransmissionType.ENERGY);
 
         inventory = NonNullList.withSize(36, ItemStack.EMPTY);
 
-        upgradeComponent = new TileComponentUpgrade(this, 0);
+        upgradeComponent = new TileComponentUpgrade(this, SLOT_UPGRADE);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
@@ -108,14 +117,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
                 needsOrganize = false;
                 organizeStock();
             }
-            ChargeUtils.discharge(1, this);
+            ChargeUtils.discharge(SLOT_ENERGY, this);
             if (controlType != RedstoneControl.PULSE) {
                 pulseOperations = 0;
             } else if (MekanismUtils.canFunction(this)) {
                 pulseOperations++;
             }
             RecipeFormula prev = formula;
-            ItemStack formulaStack = inventory.get(2);
+            ItemStack formulaStack = inventory.get(SLOT_FORMULA);
             if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
                 if (formula == null || lastFormulaStack != formulaStack) {
                     loadFormula();
@@ -161,7 +170,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     }
 
     public void loadFormula() {
-        ItemStack formulaStack = inventory.get(2);
+        ItemStack formulaStack = inventory.get(SLOT_FORMULA);
         ItemCraftingFormula formulaItem = (ItemCraftingFormula) formulaStack.getItem();
         if (formulaItem.getInventory(formulaStack) != null && !formulaItem.isInvalid(formulaStack)) {
             RecipeFormula recipe = new RecipeFormula(world, formulaItem.getInventory(formulaStack));
@@ -191,7 +200,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
         if (world != null && !world.isRemote) {
             if (formula == null) {
                 for (int i = 0; i < 9; i++) {
-                    dummyInv.setInventorySlotContents(i, inventory.get(27 + i));
+                    dummyInv.setInventorySlotContents(i, inventory.get(SLOT_CRAFT_MATRIX_FIRST + i));
                 }
 
                 lastRemainingItems = EMPTY_LIST;
@@ -207,7 +216,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
                 }
                 isRecipe = !lastOutputStack.isEmpty();
             } else {
-                isRecipe = formula.matches(world, inventory, 27);
+                isRecipe = formula.matches(world, inventory, SLOT_CRAFT_MATRIX_FIRST);
                 if (isRecipe) {
                     lastOutputStack = formula.recipe.getCraftingResult(dummyInv);
                     lastRemainingItems = formula.recipe.getRemainingItems(dummyInv);
@@ -221,7 +230,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     private boolean doSingleCraft() {
         for (int i = 0; i < 9; i++) {
-            dummyInv.setInventorySlotContents(i, inventory.get(27 + i));
+            dummyInv.setInventorySlotContents(i, inventory.get(SLOT_CRAFT_MATRIX_FIRST + i));
         }
         recalculateRecipe();
 
@@ -234,7 +243,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
                 }
             }
 
-            for (int i = 27; i <= 35; i++) {
+            for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
                 ItemStack stack = inventory.get(i);
                 if (!stack.isEmpty()) {
                     ItemStack copy = stack.copy();
@@ -266,7 +275,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     private boolean craftSingle() {
         if (formula != null) {
             boolean canOperate = true;
-            if (!formula.matches(world, inventory, 27)) {
+            if (!formula.matches(world, inventory, SLOT_CRAFT_MATRIX_FIRST)) {
                 canOperate = moveItemsToGrid();
             }
             if (canOperate) {
@@ -280,9 +289,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     private boolean moveItemsToGrid() {
         boolean ret = true;
-        for (int i = 27; i <= 35; i++) {
+        for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
             ItemStack recipeStack = inventory.get(i);
-            if (formula.isIngredientInPos(world, recipeStack, i - 27)) {
+            if (formula.isIngredientInPos(world, recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)) {
                 continue;
             }
             if (!recipeStack.isEmpty()) {
@@ -294,10 +303,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
                 }
             } else {
                 boolean found = false;
-                for (int j = 20; j >= 3; j--) {
+                for (int j = SLOT_INPUT_LAST; j >= SLOT_INPUT_FIRST; j--) {
                     //The stack stored in the stock inventory
                     ItemStack stockStack = inventory.get(j);
-                    if (!stockStack.isEmpty() && formula.isIngredientInPos(world, stockStack, i - 27)) {
+                    if (!stockStack.isEmpty() && formula.isIngredientInPos(world, stockStack, i - SLOT_CRAFT_MATRIX_FIRST)) {
                         inventory.set(i, StackUtils.size(stockStack, 1));
                         stockStack.shrink(1);
                         markDirty();
@@ -319,9 +328,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     }
 
     private void moveItemsToInput(boolean forcePush) {
-        for (int i = 27; i <= 35; i++) {
+        for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
             ItemStack recipeStack = inventory.get(i);
-            if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(world, recipeStack, i - 27)))) {
+            if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(world, recipeStack, i - SLOT_CRAFT_MATRIX_FIRST)))) {
                 inventory.set(i, tryMoveToInput(recipeStack));
             }
         }
@@ -349,8 +358,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     }
 
     private void organizeStock() {
-        for (int j = 3; j <= 20; j++) {
-            for (int i = 20; i > j; i--) {
+        for (int j = SLOT_INPUT_FIRST; j <= SLOT_INPUT_LAST; j++) {
+            for (int i = SLOT_INPUT_LAST; i > j; i--) {
                 ItemStack stockStack = inventory.get(i);
                 if (!stockStack.isEmpty()) {
                     ItemStack compareStack = inventory.get(j);
@@ -375,7 +384,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     private ItemStack tryMoveToInput(ItemStack stack) {
         stack = stack.copy();
-        for (int i = 3; i <= 20; i++) {
+        for (int i = SLOT_INPUT_FIRST; i <= SLOT_INPUT_LAST; i++) {
             ItemStack stockStack = inventory.get(i);
             if (stockStack.isEmpty()) {
                 inventory.set(i, stack);
@@ -394,7 +403,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     private boolean tryMoveToOutput(ItemStack stack, boolean doMove) {
         stack = stack.copy();
-        for (int i = 21; i <= 26; i++) {
+        for (int i = SLOT_OUTPUT_FIRST; i <= SLOT_OUTPUT_LAST; i++) {
             ItemStack outputStack = inventory.get(i);
             if (outputStack.isEmpty()) {
                 if (doMove) {
@@ -416,11 +425,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     }
 
     private void encodeFormula() {
-        ItemStack formulaStack = inventory.get(2);
+        ItemStack formulaStack = inventory.get(SLOT_FORMULA);
         if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
             ItemCraftingFormula item = (ItemCraftingFormula) formulaStack.getItem();
             if (item.getInventory(formulaStack) == null) {
-                RecipeFormula formula = new RecipeFormula(world, inventory, 27);
+                RecipeFormula formula = new RecipeFormula(world, inventory, SLOT_CRAFT_MATRIX_FIRST);
                 if (formula.isValidFormula(world)) {
                     item.setInventory(formulaStack, formula.input);
                     markDirty();
@@ -442,16 +451,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
-        if (slotID == 1) {
+        if (slotID == SLOT_ENERGY) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         }
-        return slotID >= 21 && slotID <= 26;
+        return slotID >= SLOT_OUTPUT_FIRST && slotID <= SLOT_OUTPUT_LAST;
 
     }
 
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID >= 3 && slotID <= 20) {
+        if (slotID >= SLOT_INPUT_FIRST && slotID <= SLOT_INPUT_LAST) {
             if (formula == null) {
                 return true;
             }
@@ -459,7 +468,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
             if (indices.size() > 0) {
                 if (stockControl) {
                     int filled = 0;
-                    for (int i = 3; i < 20; i++) {
+                    for (int i = SLOT_INPUT_FIRST; i < SLOT_INPUT_LAST; i++) {
                         ItemStack slotStack = inventory.get(i);
                         if (!slotStack.isEmpty()) {
                             if (formula.isIngredientInPos(world, slotStack, indices.get(0))) {
@@ -471,7 +480,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
                 }
                 return true;
             }
-        } else if (slotID == 1) {
+        } else if (slotID == SLOT_ENERGY) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
         return false;
