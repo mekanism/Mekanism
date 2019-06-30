@@ -110,6 +110,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!world.isRemote) {
+            checkFormula();
+            recalculateRecipe();
+        }
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
         if (!world.isRemote) {
@@ -123,20 +132,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
             } else if (MekanismUtils.canFunction(this)) {
                 pulseOperations++;
             }
-            RecipeFormula prev = formula;
-            ItemStack formulaStack = inventory.get(SLOT_FORMULA);
-            if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
-                if (formula == null || lastFormulaStack != formulaStack) {
-                    loadFormula();
-                }
-            } else {
-                formula = null;
-            }
-            if (prev != formula) {
-                needsFormulaUpdate = true;
-            }
-
-            lastFormulaStack = formulaStack;
+            checkFormula();
             if (autoMode && formula == null) {
                 toggleAutoMode();
             }
@@ -167,6 +163,23 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
                 operatingTicks = 0;
             }
         }
+    }
+
+    private void checkFormula() {
+        RecipeFormula prev = formula;
+        ItemStack formulaStack = inventory.get(SLOT_FORMULA);
+        if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
+            if (formula == null || lastFormulaStack != formulaStack) {
+                loadFormula();
+            }
+        } else {
+            formula = null;
+        }
+        if (prev != formula) {
+            needsFormulaUpdate = true;
+        }
+
+        lastFormulaStack = formulaStack;
     }
 
     public void loadFormula() {
