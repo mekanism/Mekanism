@@ -89,7 +89,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
             // changing this would dramatically affect a lot of setups with Fusion reactors which can take
             // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
             // rain checks.
-            boolean seesSun = world.isDaytime() && world.canSeeSky(getPos().up(4)) && !world.provider.isNether();
+            boolean seesSun = world.isDaytime() && world.canSeeSky(getPos().up()) && !world.provider.isNether();
             if (needsRainCheck) {
                 seesSun &= !(world.isRaining() || world.isThundering());
             }
