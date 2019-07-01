@@ -88,45 +88,48 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             if (MekanismUtils.canFunction(this) && delayTicks == 0) {
                 TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
                 TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(world);
-                boolean sentItems = false;
-                int min = 0;
+                //If there is no tile to pull from or the push to, skip doing any checks
+                if (back != null && front != null) {
+                    boolean sentItems = false;
+                    int min = 0;
 
-                outer:
-                for (TransporterFilter filter : filters) {
-                    for (StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.getSlotCount() >= 0; ) {
-                        InvStack invStack = filter.getStackFromInventory(search, singleItem);
-                        if (invStack == null) {
-                            break;
-                        }
-                        ItemStack itemStack = invStack.getStack();
-                        if (filter.canFilter(itemStack, !singleItem)) {
-                            if (!singleItem && filter instanceof TItemStackFilter) {
-                                TItemStackFilter itemFilter = (TItemStackFilter) filter;
-                                if (itemFilter.sizeMode) {
-                                    min = itemFilter.min;
-                                }
+                    outer:
+                    for (TransporterFilter filter : filters) {
+                        for (StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.getSlotCount() >= 0; ) {
+                            InvStack invStack = filter.getStackFromInventory(search, singleItem);
+                            if (invStack == null) {
+                                break;
                             }
+                            ItemStack itemStack = invStack.getStack();
+                            if (filter.canFilter(itemStack, !singleItem)) {
+                                if (!singleItem && filter instanceof TItemStackFilter) {
+                                    TItemStackFilter itemFilter = (TItemStackFilter) filter;
+                                    if (itemFilter.sizeMode) {
+                                        min = itemFilter.min;
+                                    }
+                                }
 
-                            TransitRequest request = TransitRequest.getFromStack(itemStack);
-                            TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
-                            if (!response.isEmpty()) {
-                                invStack.use(response.getSendingAmount());
-                                back.markDirty();
-                                setActive(true);
-                                sentItems = true;
-                                break outer;
+                                TransitRequest request = TransitRequest.getFromStack(itemStack);
+                                TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
+                                if (!response.isEmpty()) {
+                                    invStack.use(response.getSendingAmount());
+                                    back.markDirty();
+                                    setActive(true);
+                                    sentItems = true;
+                                    break outer;
+                                }
                             }
                         }
                     }
-                }
 
-                if (!sentItems && autoEject) {
-                    TransitRequest request = TransitRequest.buildInventoryMap(back, facing.getOpposite(), singleItem ? 1 : 64, new StrictFilterFinder());
-                    TransitResponse response = emitItemToTransporter(front, request, color, 0);
-                    if (!response.isEmpty()) {
-                        response.getInvStack(back, facing).use(response.getSendingAmount());
-                        back.markDirty();
-                        setActive(true);
+                    if (!sentItems && autoEject) {
+                        TransitRequest request = TransitRequest.buildInventoryMap(back, facing.getOpposite(), singleItem ? 1 : 64, new StrictFilterFinder());
+                        TransitResponse response = emitItemToTransporter(front, request, color, 0);
+                        if (!response.isEmpty()) {
+                            response.getInvStack(back, facing).use(response.getSendingAmount());
+                            back.markDirty();
+                            setActive(true);
+                        }
                     }
                 }
 
