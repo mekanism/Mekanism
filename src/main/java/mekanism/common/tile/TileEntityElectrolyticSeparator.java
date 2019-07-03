@@ -365,13 +365,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluid != null && Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
     }
 
     @Override
@@ -380,11 +380,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (resource != null && Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(resource.getFluid())) {
-            return fluidTank.fill(resource, doFill);
-        }
-        return 0;
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return fluidTank.fill(resource, doFill);
     }
 
     @Override

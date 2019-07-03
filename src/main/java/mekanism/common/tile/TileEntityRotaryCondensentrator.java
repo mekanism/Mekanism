@@ -277,7 +277,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
         if (canFill(from, resource)) {
             return fluidTank.fill(resource, doFill);
         }
@@ -285,22 +285,23 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()) {
-            return drain(from, resource.amount, doDrain);
-        }
-        return null;
+    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
+        return drain(from, resource.amount, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluid != null && mode == 1 && from == MekanismUtils.getRight(facing) &&
-               (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+        return fluidTank.drain(maxDrain, doDrain);
+    }
+
+    @Override
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return mode == 0 && from == MekanismUtils.getRight(facing);
+        return mode == 0 && from == MekanismUtils.getRight(facing) && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
     }
 
     @Override
@@ -314,14 +315,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public FluidTankInfo[] getAllTanks() {
         return new FluidTankInfo[]{fluidTank.getInfo()};
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (canDrain(from, null)) {
-            return fluidTank.drain(maxDrain, doDrain);
-        }
-        return null;
     }
 
     @Override

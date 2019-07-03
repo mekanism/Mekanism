@@ -3,19 +3,16 @@ package mekanism.common.content.entangloporter;
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
-import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 public class InventoryFrequency extends Frequency {
@@ -95,20 +92,8 @@ public class InventoryFrequency extends Frequency {
     public void write(TileNetworkList data) {
         super.write(data);
         data.add(storedEnergy);
-        if (storedFluid.getFluid() != null) {
-            data.add(true);
-            data.add(FluidRegistry.getFluidName(storedFluid.getFluid()));
-            data.add(storedFluid.getFluidAmount());
-        } else {
-            data.add(false);
-        }
-        if (storedGas.getGas() != null) {
-            data.add(true);
-            data.add(storedGas.getGasType().getID());
-            data.add(storedGas.getStored());
-        } else {
-            data.add(false);
-        }
+        TileUtils.addTankData(data, storedFluid);
+        TileUtils.addTankData(data, storedGas);
         data.add(temperature);
     }
 
@@ -118,16 +103,8 @@ public class InventoryFrequency extends Frequency {
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
         storedEnergy = dataStream.readDouble();
-        if (dataStream.readBoolean()) {
-            storedFluid.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
-        } else {
-            storedFluid.setFluid(null);
-        }
-        if (dataStream.readBoolean()) {
-            storedGas.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
-        } else {
-            storedGas.setGas(null);
-        }
+        TileUtils.readTankData(dataStream, storedFluid);
+        TileUtils.readTankData(dataStream, storedGas);
         temperature = dataStream.readDouble();
     }
 }

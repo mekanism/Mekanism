@@ -96,32 +96,23 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (resource != null && resource.getFluid() == FluidRegistry.WATER && getReactor() != null && !fluidEject) {
-            return getReactor().getWaterTank().fill(resource, doFill);
-        }
-        return 0;
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return getReactor().getWaterTank().fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (resource != null && resource.getFluid() == FluidRegistry.getFluid("steam") && getReactor() != null) {
-            getReactor().getSteamTank().drain(resource.amount, doDrain);
-        }
-        return null;
+    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
+        return drain(from, resource.amount, doDrain);
     }
 
     @Override
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (getReactor() != null) {
-            return getReactor().getSteamTank().drain(maxDrain, doDrain);
-        }
-        return null;
+        return getReactor().getSteamTank().drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return getReactor() != null && fluid != null && fluid.getFluid().equals(FluidRegistry.WATER) && !fluidEject;
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        return getReactor() != null && fluid.getFluid().equals(FluidRegistry.WATER) && !fluidEject;
     }
 
     @Override

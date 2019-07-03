@@ -42,6 +42,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -363,30 +364,24 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        return !hasFrequency() ? 0 : frequency.storedFluid.fill(resource, doFill);
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return frequency.storedFluid.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (hasFrequency() && resource != null && resource.isFluidEqual(frequency.storedFluid.getFluid())) {
-            return frequency.storedFluid.drain(resource.amount, doDrain);
-        }
-        return null;
+    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
+        return drain(from, resource.amount, doDrain);
     }
 
     @Override
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (hasFrequency()) {
-            return frequency.storedFluid.drain(maxDrain, doDrain);
-        }
-        return null;
+        return frequency.storedFluid.drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT) {
-            return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
+            return FluidContainerUtils.canFill(frequency.storedFluid.getFluid(), fluid);
         }
         return false;
     }
@@ -394,7 +389,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT) {
-            return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
+            return FluidContainerUtils.canDrain(frequency.storedFluid.getFluid(), fluid);
         }
         return false;
     }
@@ -580,9 +575,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (configComponent.isCapabilityDisabled(capability, side, facing)) {
             return true;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            //TODO: Figure out if checking ioState even needed
-            return side != null && (!hasFrequency() || configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OFF);
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
+                   capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return side != null && (!hasFrequency() || configComponent.isCapabilityDisabled(capability, side, facing));
         }
         return super.isCapabilityDisabled(capability, side);
     }

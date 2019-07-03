@@ -76,8 +76,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                 TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
                 double canDraw = tier.getCableCapacity();
                 for (EnumFacing side : sides) {
-                    if (connectedOutputters[side.ordinal()] != null) {
-                        TileEntity outputter = connectedOutputters[side.ordinal()];
+                    TileEntity outputter = connectedOutputters[side.ordinal()];
+                    if (outputter != null) {
                         //pre declare some variables for inline assignment & checks
                         IStrictEnergyStorage strictStorage;
                         ITeslaProducer teslaProducer;//do not assign anything to this here, or classloader issues may happen

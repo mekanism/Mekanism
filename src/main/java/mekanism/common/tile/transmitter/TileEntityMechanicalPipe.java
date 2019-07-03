@@ -54,13 +54,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             updateShare();
             IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(getPos(), getWorld());
             for (EnumFacing side : getConnections(ConnectionType.PULL)) {
-                if (connectedAcceptors[side.ordinal()] != null) {
-                    IFluidHandler container = connectedAcceptors[side.ordinal()];
-                    if (container != null) {
-                        FluidStack received = container.drain(getAvailablePull(), false);
-                        if (received != null && received.amount != 0 && takeFluid(received, false) == received.amount) {
-                            container.drain(takeFluid(received, true), true);
-                        }
+                IFluidHandler container = connectedAcceptors[side.ordinal()];
+                if (container != null) {
+                    FluidStack received = container.drain(getAvailablePull(), false);
+                    if (received != null && received.amount != 0 && takeFluid(received, false) == received.amount) {
+                        container.drain(takeFluid(received, true), true);
                     }
                 }
             }
@@ -195,11 +193,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (getConnectionType(from) == ConnectionType.NORMAL) {
-            return takeFluid(resource, doFill);
-        }
-        return 0;
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return takeFluid(resource, doFill);
     }
 
     @Override
@@ -208,12 +203,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         return getConnectionType(from) == ConnectionType.NORMAL;
     }
 

@@ -11,6 +11,7 @@ import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -80,35 +81,22 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (structure != null && structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1) {
-            return waterTank.fill(resource, doFill);
-        }
-        return 0;
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return waterTank.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
-            if (structure.steamStored != null) {
-                if (resource != null && resource.getFluid() == structure.steamStored.getFluid()) {
-                    return steamTank.drain(resource.amount, doDrain);
-                }
-            }
-        }
-        return null;
+    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
+        return drain(from, resource.amount, doDrain);
     }
 
     @Override
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
-            return steamTank.drain(maxDrain, doDrain);
-        }
-        return null;
+        return steamTank.drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1;
         }
@@ -118,7 +106,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
-            return structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1;
+            return structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1 && FluidContainerUtils.canDrain(structure.steamStored, fluid);
         }
         return false;
     }

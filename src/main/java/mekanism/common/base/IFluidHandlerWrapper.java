@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
@@ -7,14 +8,29 @@ import net.minecraftforge.fluids.FluidTankInfo;
 
 public interface IFluidHandlerWrapper {
 
-    int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill);
+    //TODO: Contracts and stuff
 
-    FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain);
+    /**
+     * It is assumed that canFill is checked before calling this method
+     */
+    int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill);
 
+    /**
+     * It is assumed that canDrain is checked before calling this method
+     */
+    FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain);
+
+    /**
+     * It is assumed that canDrain (with a null fluidstack) is checked before calling this method
+     */
     FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain);
 
-    boolean canFill(EnumFacing from, @Nullable FluidStack fluid);
+    //TODO: Go through and ensure this is checked against being null before this gets called
+    boolean canFill(EnumFacing from, @Nonnull FluidStack fluid);
 
+    /**
+     * null fluid needs to have amounts end up getting specified for draining rather than using the drain with a null stack
+     */
     boolean canDrain(EnumFacing from, @Nullable FluidStack fluid);
 
     FluidTankInfo[] getTankInfo(EnumFacing from);

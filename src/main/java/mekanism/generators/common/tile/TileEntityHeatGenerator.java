@@ -245,11 +245,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (resource != null && resource.getFluid() == FluidRegistry.LAVA && from != facing) {
-            return lavaTank.fill(resource, doFill);
-        }
-        return 0;
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return lavaTank.fill(resource, doFill);
     }
 
     @Override
@@ -258,13 +255,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluid != null && fluid.getFluid().equals(FluidRegistry.LAVA) && from != facing;
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        return fluid.getFluid().equals(FluidRegistry.LAVA) && from != facing;
     }
 
     @Override
