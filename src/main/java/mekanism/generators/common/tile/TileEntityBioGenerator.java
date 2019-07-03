@@ -197,29 +197,23 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
-        if (FluidRegistry.isFluidRegistered("bioethanol") && from != facing) {
-            if (resource.getFluid() == FluidRegistry.getFluid("bioethanol")) {
-                int fuelTransfer;
-                int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
-                int attemptTransfer = resource.amount;
-                if (attemptTransfer <= fuelNeeded) {
-                    fuelTransfer = attemptTransfer;
-                } else {
-                    fuelTransfer = fuelNeeded;
-                }
-                if (doFill) {
-                    bioFuelSlot.setFluid(bioFuelSlot.fluidStored + fuelTransfer);
-                }
-                return fuelTransfer;
-            }
+        int fuelTransfer;
+        int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
+        int attemptTransfer = resource.amount;
+        if (attemptTransfer <= fuelNeeded) {
+            fuelTransfer = attemptTransfer;
+        } else {
+            fuelTransfer = fuelNeeded;
         }
-        return 0;
+        if (doFill) {
+            bioFuelSlot.setFluid(bioFuelSlot.fluidStored + fuelTransfer);
+        }
+        return fuelTransfer;
     }
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        //TODO
-        return fluid.getFluid().equals(FluidRegistry.getFluid("bioethanol"));
+        return from != facing && fluid.getFluid() == FluidRegistry.getFluid("bioethanol");
     }
 
     @Override

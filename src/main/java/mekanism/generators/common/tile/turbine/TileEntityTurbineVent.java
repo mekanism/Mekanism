@@ -51,14 +51,13 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     @Override
     @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        //TODO: Is this supposed to be implemented
+        //TODO: Implement this as it appears to be missing
         return null;
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        //TODO: Why is this sometimes not true if it can never actually drain
-        return fluid == null || fluid.getFluid().equals(FluidRegistry.WATER);
+        return fluid == null || fluid.getFluid() == FluidRegistry.WATER;
     }
 
     @Override

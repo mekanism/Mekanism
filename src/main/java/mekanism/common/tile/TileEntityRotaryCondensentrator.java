@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -146,9 +147,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     }
 
-    public boolean isValidFluid(FluidStack f) {
-        return f != null && GasRegistry.getGas(f.getFluid()) != null;
+    public boolean isValidFluid(@Nonnull Fluid f) {
+        return GasRegistry.getGas(f) != null;
+    }
 
+    public boolean isValidFluid(FluidStack f) {
+        return f != null && isValidFluid(f.getFluid());
     }
 
     @Override
@@ -289,7 +293,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
+        return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(fluid) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override

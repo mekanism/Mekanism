@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -92,7 +93,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
-            return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1;
+            return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1 && fluid.getFluid() == FluidRegistry.WATER;
         }
         return false;
     }

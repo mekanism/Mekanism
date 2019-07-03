@@ -395,22 +395,18 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (tier == FluidTankTier.CREATIVE) {
             return resource.amount;
         }
-        if (canFill(from, resource)) {
-            int filled = fluidTank.fill(resource, doFill);
-            if (filled < resource.amount && !isActive) {
-                filled += pushUp(PipeUtils.copy(resource, resource.amount - filled), doFill);
-            }
-            if (filled > 0 && from == EnumFacing.UP) {
-                if (valve == 0) {
-                    needsPacket = true;
-                }
-                valve = 20;
-                valveFluid = new FluidStack(resource, 1);
-            }
-            return filled;
+        int filled = fluidTank.fill(resource, doFill);
+        if (filled < resource.amount && !isActive) {
+            filled += pushUp(PipeUtils.copy(resource, resource.amount - filled), doFill);
         }
-
-        return 0;
+        if (filled > 0 && from == EnumFacing.UP) {
+            if (valve == 0) {
+                needsPacket = true;
+            }
+            valve = 20;
+            valveFluid = new FluidStack(resource, 1);
+        }
+        return filled;
     }
 
     @Override
