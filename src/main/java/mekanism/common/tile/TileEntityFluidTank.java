@@ -418,28 +418,21 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(EnumFacing.DOWN));
-        if (from == EnumFacing.DOWN) {
-            if (isActive && !(tile instanceof TileEntityFluidTank)) {
-                return false;
-            }
+        if (from == EnumFacing.DOWN && isActive && !(tile instanceof TileEntityFluidTank)) {
+            return false;
         }
         if (tier == FluidTankTier.CREATIVE) {
             return true;
         }
-
         if (isActive && tile instanceof TileEntityFluidTank) { // Only fill if tanks underneath have same fluid.
-            return (fluidTank.getFluid() == null && ((TileEntityFluidTank) tile).canFill(EnumFacing.UP, fluid)) ||
-                   (fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid));
+            return fluidTank.getFluid() == null ? ((TileEntityFluidTank) tile).canFill(EnumFacing.UP, fluid) : fluidTank.getFluid().isFluidEqual(fluid);
         }
         return FluidContainerUtils.canFill(fluidTank.getFluid(), fluid);
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        if (fluidTank != null && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid)) {
-            return !(isActive && from == EnumFacing.DOWN);
-        }
-        return false;
+        return fluidTank != null && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid) && !isActive || from != EnumFacing.DOWN;
     }
 
     @Override
