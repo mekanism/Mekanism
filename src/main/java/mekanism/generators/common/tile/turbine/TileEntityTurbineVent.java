@@ -31,11 +31,9 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
             FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, structure.flowRemaining);
             for (EnumFacing side : EnumFacing.VALUES) {
                 TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
-                if (CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
-                    IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-                    if (PipeUtils.canFill(handler, fluidStack)) {
-                        structure.flowRemaining -= handler.fill(fluidStack, true);
-                    }
+                IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+                if (handler != null && PipeUtils.canFill(handler, fluidStack)) {
+                    structure.flowRemaining -= handler.fill(fluidStack, true);
                 }
             }
         }
@@ -52,23 +50,10 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     }
 
     @Override
-    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
+    @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+        //TODO: Is this supposed to be implemented
         return null;
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        return false;
     }
 
     @Override

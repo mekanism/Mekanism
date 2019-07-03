@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -365,28 +364,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return false;
-    }
-
-    @Override
     public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
         return fluidTank.fill(resource, doFill);
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
     }
 
     @Override

@@ -57,11 +57,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return drain(from, resource.amount, doDrain);
-    }
-
-    @Override
+    @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         return fluidTank.drain(maxDrain, doDrain);
     }
@@ -73,8 +69,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) &&
-               FluidContainerUtils.canDrain(structure.fluidStored, fluid);
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && FluidContainerUtils.canDrain(structure.fluidStored, fluid);
     }
 
     @Nonnull

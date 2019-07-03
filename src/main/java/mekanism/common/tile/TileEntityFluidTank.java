@@ -414,11 +414,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return drain(from, resource.amount, doDrain);
-    }
-
-    @Override
+    @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         return fluidTank.drain(maxDrain, tier != FluidTankTier.CREATIVE && doDrain);
     }

@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -289,23 +288,8 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         return from == EnumFacing.UP && fluid.getFluid().equals(FluidRegistry.WATER);
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return false;
     }
 
     @Override

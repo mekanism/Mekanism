@@ -8,7 +8,6 @@ import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
@@ -321,25 +320,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         if (fluid.getFluid().equals(FluidRegistry.getFluid("steam"))) {
             return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
         }
-        return false;
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 

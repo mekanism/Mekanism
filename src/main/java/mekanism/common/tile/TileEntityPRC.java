@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
@@ -254,26 +253,11 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
         if (data.hasSlot(0)) {
             return FluidContainerUtils.canFill(inputFluidTank.getFluid(), fluid);
         }
-        return false;
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 

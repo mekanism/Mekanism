@@ -278,18 +278,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
-        if (canFill(from, resource)) {
-            return fluidTank.fill(resource, doFill);
-        }
-        return 0;
+        return fluidTank.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return drain(from, resource.amount, doDrain);
-    }
-
-    @Override
+    @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         return fluidTank.drain(maxDrain, doDrain);
     }

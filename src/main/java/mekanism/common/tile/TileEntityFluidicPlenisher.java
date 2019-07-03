@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -337,28 +336,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
     public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
         return fluidTank.fill(resource, true);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         return from == EnumFacing.UP && fluid.getFluid().canBePlacedInWorld();
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return false;
     }
 
     @Override

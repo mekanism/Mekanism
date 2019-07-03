@@ -2,7 +2,6 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
@@ -218,24 +217,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, @Nonnull FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         //TODO
         return fluid.getFluid().equals(FluidRegistry.getFluid("bioethanol"));
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return false;
     }
 
     @Override
