@@ -1,13 +1,13 @@
 package mekanism.generators.common.tile.turbine;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -29,13 +29,12 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
         super.onUpdate();
         if (structure != null && structure.flowRemaining > 0) {
             FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, structure.flowRemaining);
-            for (EnumFacing side : EnumFacing.VALUES) {
-                TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
+            EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(EnumFacing.class), (tile, side) -> {
                 IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
                 if (handler != null && PipeUtils.canFill(handler, fluidStack)) {
                     structure.flowRemaining -= handler.fill(fluidStack, true);
                 }
-            }
+            });
         }
     }
 
@@ -59,7 +58,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         //TODO: Why is this sometimes not true if it can never actually drain
-        return fluid != null && fluid.getFluid().equals(FluidRegistry.WATER);
+        return fluid == null || fluid.getFluid().equals(FluidRegistry.WATER);
     }
 
     @Override

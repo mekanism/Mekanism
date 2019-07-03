@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -19,6 +20,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -82,15 +84,14 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
             CableUtils.emit(this);
             if (fluidEject && getReactor() != null && getReactor().getSteamTank().getFluid() != null) {
                 IFluidTank tank = getReactor().getSteamTank();
-                for (EnumFacing side : EnumFacing.values()) {
-                    TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
-                    if (tile != null && !(tile instanceof TileEntityReactorPort) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
+                EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(EnumFacing.class), (tile, side) -> {
+                    if (!(tile instanceof TileEntityReactorPort)) {
                         IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-                        if (PipeUtils.canFill(handler, tank.getFluid())) {
+                        if (handler != null && PipeUtils.canFill(handler, tank.getFluid())) {
                             tank.drain(handler.fill(tank.getFluid(), true), true);
                         }
                     }
-                }
+                });
             }
         }
     }

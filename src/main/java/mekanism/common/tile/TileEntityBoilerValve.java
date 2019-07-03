@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -11,10 +11,10 @@ import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,19 +41,17 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
         if (!world.isRemote) {
             if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
                 if (structure.steamStored != null && structure.steamStored.amount > 0) {
-                    for (EnumFacing side : EnumFacing.values()) {
-                        TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
-                        if (tile != null && !(tile instanceof TileEntityBoilerValve) &&
-                            CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
+                    EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(EnumFacing.class), (tile, side) -> {
+                        if (!(tile instanceof TileEntityBoilerValve)) {
                             IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-                            if (PipeUtils.canFill(handler, structure.steamStored)) {
+                            if (handler != null && PipeUtils.canFill(handler, structure.steamStored)) {
                                 structure.steamStored.amount -= handler.fill(structure.steamStored, true);
                                 if (structure.steamStored.amount <= 0) {
                                     structure.steamStored = null;
                                 }
                             }
                         }
-                    }
+                    });
                 }
                 int newRedstoneLevel = getRedstoneLevel();
                 if (newRedstoneLevel != currentRedstoneLevel) {
