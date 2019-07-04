@@ -27,7 +27,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (structure != null && structure.flowRemaining > 0) {
+        if (!world.isRemote && structure != null && structure.flowRemaining > 0) {
             FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, structure.flowRemaining);
             EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(EnumFacing.class), (tile, side) -> {
                 IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
@@ -51,13 +51,20 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     @Override
     @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        //TODO: Implement this as it appears to be missing
-        return null;
+        int amount = Math.min(maxDrain, structure.flowRemaining);
+        if (amount <= 0) {
+            return null;
+        }
+        FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, amount);
+        if (doDrain) {
+            structure.flowRemaining -= amount;
+        }
+        return fluidStack;
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluid == null || fluid.getFluid() == FluidRegistry.WATER;
+        return structure != null && (fluid == null || fluid.getFluid() == FluidRegistry.WATER);
     }
 
     @Override

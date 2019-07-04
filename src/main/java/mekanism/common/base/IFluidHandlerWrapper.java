@@ -8,8 +8,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 
 public interface IFluidHandlerWrapper {
 
-    //TODO: Contracts and stuff
-
     /**
      * It is assumed that canFill is checked before calling this method
      */
@@ -33,7 +31,6 @@ public interface IFluidHandlerWrapper {
         return null;
     }
 
-    //TODO: Go through and ensure this is checked against being null before this gets called
     default boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         return false;
     }
