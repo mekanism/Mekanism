@@ -60,6 +60,18 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         slotPosMap.put(5, new GuiPos(96, 49));
     }
 
+    private boolean overAutoEject(int xAxis, int yAxis) {
+        return xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20;
+    }
+
+    private boolean overBackButton(int xAxis, int yAxis) {
+        return xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20;
+    }
+
+    private boolean overSide(int xAxis, int yAxis, int x, int y) {
+        return xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14;
+    }
+
     public TransmissionType getTopTransmission() {
         return configurable.getConfig().getTransmissions().get(0);
     }
@@ -82,8 +94,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 204, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
-        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 190, xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20, 14);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 204, overBackButton(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 190, overAutoEject(xAxis, yAxis), 14);
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
@@ -93,7 +105,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
                 if (doColor) {
                     GLSMHelper.INSTANCE.color(data.color);
                 }
-                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14, 14);
+                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, overSide(xAxis, yAxis, x, y), 14);
                 if (doColor) {
                     GLSMHelper.INSTANCE.resetColor();
                 }
@@ -116,16 +128,13 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (int i = 0; i < slotPosMap.size(); i++) {
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
+            GuiPos slotPos = slotPosMap.get(i);
             SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
-            if (data != TileComponentConfig.EMPTY) {
-                if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
-                    drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
-                }
+            if (data != TileComponentConfig.EMPTY && overSide(xAxis, yAxis, slotPos.xPos, slotPos.yPos)) {
+                drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
             }
         }
-        if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
+        if (overAutoEject(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -147,11 +156,11 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         int yAxis = mouseY - guiTop;
         TileEntity tile = (TileEntity) configurable;
         if (button == 0) {
-            if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
+            if (overBackButton(xAxis, yAxis)) {
                 int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-            } else if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
+            } else if (overAutoEject(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
             }
@@ -160,9 +169,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             button = 2;
         }
         for (int i = 0; i < slotPosMap.size(); i++) {
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
-            if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
+            GuiPos slotPos = slotPosMap.get(i);
+            if (overSide(xAxis, yAxis, slotPos.xPos, slotPos.yPos)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, currentType));
             }

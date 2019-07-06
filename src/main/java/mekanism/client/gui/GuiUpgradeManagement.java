@@ -39,6 +39,18 @@ public class GuiUpgradeManagement extends GuiMekanism {
         tileEntity = tile;
     }
 
+    private boolean overUpgradeType(int xAxis, int yAxis, int xPos, int yPos) {
+        return xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12;
+    }
+
+    private boolean overBackButton(int xAxis, int yAxis) {
+        return xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20;
+    }
+
+    private boolean overRemove(int xAxis, int yAxis) {
+        return xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69;
+    }
+
     @Override
     public void updateScreen() {
         super.updateScreen();
@@ -87,7 +99,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             int yPos = 7 + (i * 12);
             fontRenderer.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
-            if (xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12) {
+            if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
                 drawHoveringText(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
             }
         }
@@ -112,11 +124,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, overBackButton(xAxis, yAxis), 14);
         if (selectedType == null) {
             drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, 24, 12, 12);
         } else {
-            drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69, 12);
+            drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, overRemove(xAxis, yAxis), 12);
         }
         int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
@@ -135,7 +147,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             int yRender;
             if (upgrade == selectedType) {
                 yRender = 166 + 24;
-            } else if (xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12) {
+            } else if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
                 yRender = 166;
             } else {
                 yRender = 166 + 12;
@@ -198,12 +210,12 @@ public class GuiUpgradeManagement extends GuiMekanism {
                 } else {
                     scroll = 0;
                 }
-            } else if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
+            } else if (overBackButton(xAxis, yAxis)) {
                 int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
             }
-            if (selectedType != null && xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69) {
+            if (selectedType != null && overRemove(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
             }
@@ -211,7 +223,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             for (Upgrade upgrade : getCurrentUpgrades()) {
                 int xPos = 25;
                 int yPos = 7 + (counter++ * 12);
-                if (xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12) {
+                if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
                     selectedType = upgrade;
                     break;
                 }

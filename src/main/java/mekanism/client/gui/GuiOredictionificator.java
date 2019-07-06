@@ -57,6 +57,10 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         ySize += 64;
     }
 
+    private boolean overFilter(int xAxis, int yAxis, int yStart) {
+        return xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22;
+    }
+
     private int getScroll() {
         return Math.max(Math.min((int) (scroll * 73), 73), 0);
     }
@@ -87,10 +91,10 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex() + i);
-                int yStart = i * 22 + 18;
                 if (!renderStacks.containsKey(filter)) {
                     updateRenderStacks();
                 }
+                int yStart = i * 22 + 18;
                 renderItem(renderStacks.get(filter), 13, yStart + 3);
                 fontRenderer.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
                 renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
@@ -105,7 +109,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
-                boolean mouseOver = xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22;
+                boolean mouseOver = overFilter(xAxis, yAxis, yStart);
                 if (mouseOver) {
                     GLSMHelper.INSTANCE.color(EnumColor.GREY, 3.0F);
                 }
@@ -133,13 +137,9 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
             }
 
             for (int i = 0; i < 3; i++) {
-                if (tileEntity.filters.get(getFilterIndex() + i) != null) {
-                    int yStart = i * 22 + 18;
-                    if (xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22) {
-                        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1,
-                              getFilterIndex() + i, 0));
-                    }
+                if (tileEntity.filters.get(getFilterIndex() + i) != null && overFilter(xAxis, yAxis, i * 22 + 18)) {
+                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                    Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
                 }
             }
         }

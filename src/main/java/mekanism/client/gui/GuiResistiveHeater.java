@@ -55,6 +55,10 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         }, this, resource));
     }
 
+    private boolean overCheckbox(int xAxis, int yAxis) {
+        return xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61;
+    }
+
     @Override
     public void initGui() {
         super.initGui();
@@ -76,7 +80,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 116, guiTop + 51, xSize, xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61, 11);
+        drawTexturedModalRect(guiLeft + 116, guiTop + 51, xSize, overCheckbox(xAxis, yAxis), 11);
         energyUsageField.drawTextBox();
     }
 
@@ -99,13 +103,9 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         energyUsageField.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
-            if (xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61) {
-                setEnergyUsage();
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
+        if (button == 0 && overCheckbox(mouseX - guiLeft, mouseY - guiTop)) {
+            setEnergyUsage();
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }
 

@@ -75,6 +75,10 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         }, ProgressBar.LARGE_LEFT, this, resource, 62, 38));
     }
 
+    private boolean overToggle(int xAxis, int yAxis) {
+        return xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22;
+    }
+
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
@@ -84,7 +88,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         int yAxis = mouseY - guiTop;
         if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
-        } else if (xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22) {
+        } else if (overToggle(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -94,20 +98,16 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiLeft + 116, guiTop + 76, 176, 36, displayInt, 4);
-        drawTexturedModalRect(guiLeft + 4, guiTop + 4, 176, xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22, 18);
+        drawTexturedModalRect(guiLeft + 4, guiTop + 4, 176, overToggle(xAxis, yAxis), 18);
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
-            if (xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22) {
-                TileNetworkList data = TileNetworkList.withContents(0);
-                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
+        if (button == 0 && overToggle(mouseX - guiLeft, mouseY - guiTop)) {
+            TileNetworkList data = TileNetworkList.withContents(0);
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }
 

@@ -22,9 +22,13 @@ public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorCo
         super(tile, container);
     }
 
+    private boolean overBackButton(int xAxis, int yAxis) {
+        return xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20;
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, overBackButton(xAxis, yAxis), 14);
     }
 
     @Override
@@ -32,11 +36,9 @@ public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorCo
         super.mouseClicked(mouseX, mouseY, button);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (button == 0) {
-            if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));
-            }
+        if (button == 0 && overBackButton(xAxis, yAxis)) {
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));
         }
     }
 

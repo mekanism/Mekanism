@@ -47,6 +47,30 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
     }
 
+    private boolean overAutoEject(int xAxis, int yAxis) {
+        return xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124;
+    }
+
+    private boolean overRoundRobin(int xAxis, int yAxis) {
+        return xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98;
+    }
+
+    private boolean overSingleItem(int xAxis, int yAxis) {
+        return xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72;
+    }
+
+    private boolean overColor(int xAxis, int yAxis) {
+        return xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153;
+    }
+
+    private boolean overUpArrow(int xAxis, int yAxis, int arrowX, int yStart) {
+        return xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20;
+    }
+
+    private boolean overDownArrow(int xAxis, int yAxis, int arrowX, int yStart) {
+        return xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27;
+    }
+
     @Override
     protected HashList<TransporterFilter> getFilters() {
         return tileEntity.filters;
@@ -80,19 +104,15 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                     if (xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH) {
                         //Check for sorting button
                         int arrowX = filterX + filterW - 12;
-                        if (index > 0) {
-                            if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20) {
-                                //Process up button click
-                                sendDataFromClick(TileNetworkList.withContents(3, index), SoundEvents.UI_BUTTON_CLICK);
-                                return;
-                            }
+                        if (index > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
+                            //Process up button click
+                            sendDataFromClick(TileNetworkList.withContents(3, index), SoundEvents.UI_BUTTON_CLICK);
+                            return;
                         }
-                        if (index < tileEntity.filters.size() - 1) {
-                            if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
-                                //Process down button click
-                                sendDataFromClick(TileNetworkList.withContents(4, index), SoundEvents.UI_BUTTON_CLICK);
-                                return;
-                            }
+                        if (index < tileEntity.filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
+                            //Process down button click
+                            sendDataFromClick(TileNetworkList.withContents(4, index), SoundEvents.UI_BUTTON_CLICK);
+                            return;
                         }
                         if (filter instanceof IItemStackFilter) {
                             sendPacket(SorterGuiPacket.SERVER_INDEX, 1, index, SoundEvents.UI_BUTTON_CLICK);
@@ -107,13 +127,13 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                 }
             }
 
-            if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
+            if (overAutoEject(xAxis, yAxis)) {
                 //Auto eject button
                 sendDataFromClick(TileNetworkList.withContents(1), SoundEvents.UI_BUTTON_CLICK);
-            } else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
+            } else if (overRoundRobin(xAxis, yAxis)) {
                 //Round robin button
                 sendDataFromClick(TileNetworkList.withContents(2), SoundEvents.UI_BUTTON_CLICK);
-            } else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
+            } else if (overSingleItem(xAxis, yAxis)) {
                 //Single item button
                 sendDataFromClick(TileNetworkList.withContents(5), SoundEvents.UI_BUTTON_CLICK);
             }
@@ -124,7 +144,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         }
 
         // Check for default colour button
-        if (xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153) {
+        if (overColor(xAxis, yAxis)) {
             sendDataFromClick(TileNetworkList.withContents(0, mouseBtn), MekanismSounds.DING);
         }
     }
@@ -211,32 +231,28 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                 // Draw hover text for sorting buttons
                 int arrowX = filterX + filterW - 12;
 
-                if (getFilterIndex() + i > 0) {
-                    if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20) {
-                        drawHoveringText(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
-                    }
+                if (getFilterIndex() + i > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
+                    drawHoveringText(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
                 }
-                if (getFilterIndex() + i < tileEntity.filters.size() - 1) {
-                    if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
-                        drawHoveringText(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
-                    }
+                if (getFilterIndex() + i < tileEntity.filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
+                    drawHoveringText(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
                 }
             }
         }
         drawColorIcon(13, 137, tileEntity.color, 1);
 
         // Draw tooltips for buttons
-        if (xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153) {
+        if (overColor(xAxis, yAxis)) {
             if (tileEntity.color != null) {
                 drawHoveringText(tileEntity.color.getColoredName(), xAxis, yAxis);
             } else {
                 drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
-        } else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
+        } else if (overAutoEject(xAxis, yAxis)) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
-        } else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
+        } else if (overRoundRobin(xAxis, yAxis)) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
-        } else if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
+        } else if (overSingleItem(xAxis, yAxis)) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -246,8 +262,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         // Draw gui buttons
-        drawTexturedModalRect(guiLeft + 12, guiTop + 110, 176, xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124, 14);
-        drawTexturedModalRect(guiLeft + 12, guiTop + 84, 190, xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98, 14);
-        drawTexturedModalRect(guiLeft + 12, guiTop + 58, 204, xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72, 14);
+        drawTexturedModalRect(guiLeft + 12, guiTop + 110, 176, overAutoEject(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 12, guiTop + 84, 190, overRoundRobin(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 12, guiTop + 58, 204, overSingleItem(xAxis, yAxis), 14);
     }
 }

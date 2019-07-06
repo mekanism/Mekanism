@@ -65,6 +65,22 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         ySize += 64;
     }
 
+    private boolean overAutoEject(int xAxis, int yAxis) {
+        return xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61;
+    }
+
+    private boolean overAutoPull(int xAxis, int yAxis) {
+        return xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77;
+    }
+
+    private boolean overReset(int xAxis, int yAxis) {
+        return xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61;
+    }
+
+    private boolean overSilk(int xAxis, int yAxis) {
+        return xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77;
+    }
+
     @Override
     public void initGui() {
         super.initGui();
@@ -141,9 +157,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         int yAxis = mouseY - guiTop;
         if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
-        } else if (xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61) {
+        } else if (overAutoEject(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
-        } else if (xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77) {
+        } else if (overAutoPull(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
         } else if (xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43) {
             if (!tileEntity.missingStack.isEmpty()) {
@@ -151,9 +167,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
             } else {
                 drawHoveringText(LangUtils.localize("gui.well"), xAxis, yAxis);
             }
-        } else if (xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61) {
+        } else if (overReset(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
-        } else if (xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77) {
+        } else if (overSilk(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -163,14 +179,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiLeft + 164, guiTop + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
-        boolean xBounds1 = xAxis >= 147 && xAxis <= 161;
-        boolean xBounds2 = xAxis >= 131 && xAxis <= 145;
-        boolean yBounds1 = yAxis >= 47 && yAxis <= 61;
-        boolean yBounds2 = yAxis >= 63 && yAxis <= 77;
-        drawTexturedModalRect(guiLeft + 147, guiTop + 47, 180, xBounds1 && yBounds1, 14);
-        drawTexturedModalRect(guiLeft + 147, guiTop + 63, 194, xBounds1 && yBounds2, 14);
-        drawTexturedModalRect(guiLeft + 131, guiTop + 47, 208, xBounds2 && yBounds1, 14);
-        drawTexturedModalRect(guiLeft + 131, guiTop + 63, 222, xBounds2 && yBounds2, 14);
+        drawTexturedModalRect(guiLeft + 147, guiTop + 47, 180, overAutoEject(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 147, guiTop + 63, 194, overAutoPull(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 131, guiTop + 47, 208, overReset(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 131, guiTop + 63, 222, overSilk(xAxis, yAxis), 14);
     }
 
     @Override
@@ -179,19 +191,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         if (button == 0) {
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
-            if (xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61) {
+            if (overAutoEject(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(0);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-            } else if (xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77) {
+            } else if (overAutoPull(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(1);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-            } else if (xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61) {
+            } else if (overReset(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(5);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-            } else if (xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77) {
+            } else if (overSilk(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(9);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));

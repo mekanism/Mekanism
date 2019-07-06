@@ -10,6 +10,7 @@ import mekanism.client.gui.GuiSideConfiguration.GuiPos;
 import mekanism.client.render.GLSMHelper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
@@ -47,16 +48,32 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         slotPosMap.put(5, new GuiPos(69, 49));
     }
 
+    private boolean overColor(int xAxis, int yAxis) {
+        return xAxis >= 122 && xAxis <= 138 && yAxis >= 49 && yAxis <= 65;
+    }
+
+    private boolean overStrictInput(int xAxis, int yAxis) {
+        return xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20;
+    }
+
+    private boolean overBackButton(int xAxis, int yAxis) {
+        return xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20;
+    }
+
+    private boolean overSide(int xAxis, int yAxis, int x, int y) {
+        return xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14;
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 190, xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20, 14);
-        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 204, xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20, 14);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 190, overBackButton(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 204, overStrictInput(xAxis, yAxis), 14);
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
             if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY) {
                 GLSMHelper.INSTANCE.color(configurable.getEjector().getInputColor(EnumFacing.byIndex(i)));
-                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14, 14);
+                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, overSide(xAxis, yAxis, x, y), 14);
                 GLSMHelper.INSTANCE.resetColor();
             } else {
                 drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 28, 14, 14);
@@ -76,23 +93,20 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (int i = 0; i < slotPosMap.size(); i++) {
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
+            GuiPos slotPos = slotPosMap.get(i);
             EnumColor color = configurable.getEjector().getInputColor(EnumFacing.byIndex(i));
-            if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i))
-                != TileComponentConfig.EMPTY) {
-                if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
-                    drawHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
-                }
+            SideData data = configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i));
+            if (data != TileComponentConfig.EMPTY && overSide(xAxis, yAxis, slotPos.xPos, slotPos.yPos)) {
+                drawHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
             }
         }
-        if (xAxis >= 122 && xAxis <= 138 && yAxis >= 49 && yAxis <= 65) {
+        if (overColor(xAxis, yAxis)) {
             if (configurable.getEjector().getOutputColor() != null) {
                 drawHoveringText(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
             } else {
                 drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
-        } else if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
+        } else if (overStrictInput(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -105,12 +119,11 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         int yAxis = mouseY - guiTop;
         TileEntity tile = (TileEntity) configurable;
         if (button == 0) {
-            if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
+            if (overBackButton(xAxis, yAxis)) {
                 int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-            }
-            if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
+            } else if (overStrictInput(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));
             }
@@ -118,14 +131,13 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
             button = 2;
         }
-        if (xAxis >= 122 && xAxis <= 138 && yAxis >= 49 && yAxis <= 65) {
+        if (overColor(xAxis, yAxis)) {
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button, 0, null));
         }
         for (int i = 0; i < slotPosMap.size(); i++) {
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
-            if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
+            GuiPos slotPos = slotPosMap.get(i);
+            if (overSide(xAxis, yAxis, slotPos.xPos, slotPos.yPos)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i, null));
             }

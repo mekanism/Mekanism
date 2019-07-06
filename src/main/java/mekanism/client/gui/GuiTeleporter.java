@@ -120,6 +120,10 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         ySize = 175;
     }
 
+    private boolean overCheckbox(int xAxis, int yAxis) {
+        return xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114;
+    }
+
     @Override
     public void initGui() {
         super.initGui();
@@ -217,9 +221,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         updateButtons();
         frequencyField.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
-            if (xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114) {
+            if (overCheckbox(mouseX - guiLeft, mouseY - guiTop)) {
                 setFrequency(frequencyField.getText());
                 frequencyField.setText("");
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -311,7 +313,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114, 11);
+        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, overCheckbox(xAxis, yAxis), 11);
         int y = getFrequency() == null ? 94 : getStatus() == 2 ? 22 : getStatus() == 3 ? 40 : getStatus() == 4 ? 58 : 76;
         drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
         frequencyField.drawTextBox();

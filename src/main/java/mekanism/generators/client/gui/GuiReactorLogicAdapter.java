@@ -28,6 +28,14 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         super(tile, new ContainerNull(inventory.player, tile));
     }
 
+    private boolean overCooling(int xAxis, int yAxis) {
+        return xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30;
+    }
+
+    private boolean overType(int xAxis, int yAxis, ReactorLogic type) {
+        return xAxis >= 24 && xAxis <= 152 && yAxis >= 32 + (22 * type.ordinal()) && yAxis <= 32 + 22 + (22 * type.ordinal());
+    }
+
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
@@ -42,11 +50,11 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (ReactorLogic type : ReactorLogic.values()) {
-            if (xAxis >= 24 && xAxis <= 152 && yAxis >= 32 + (22 * type.ordinal()) && yAxis <= 32 + 22 + (22 * type.ordinal())) {
+            if (overType(xAxis, yAxis, type)) {
                 displayTooltips(MekanismUtils.splitTooltip(type.getDescription(), ItemStack.EMPTY), xAxis, yAxis);
             }
         }
-        if (xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30) {
+        if (overCooling(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -59,7 +67,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             drawTexturedModalRect(guiLeft + 24, guiTop + 32 + (22 * type.ordinal()), 0, 166 + (type == tileEntity.logicType ? 22 : 0), 128, 22);
             GLSMHelper.INSTANCE.resetColor();
         }
-        drawTexturedModalRect(guiLeft + 23, guiTop + 19, 176, xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30, 11);
+        drawTexturedModalRect(guiLeft + 23, guiTop + 19, 176, overCooling(xAxis, yAxis), 11);
     }
 
     @Override
@@ -68,20 +76,18 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         if (button == 0) {
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
-            if (xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30) {
+            if (overCooling(xAxis, yAxis)) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 TileNetworkList data = TileNetworkList.withContents(0);
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 return;
             }
             for (ReactorLogic type : ReactorLogic.values()) {
-                if (xAxis >= 24 && xAxis <= 152 && yAxis >= 32 + (22 * type.ordinal()) && yAxis <= 32 + 22 + (22 * type.ordinal())) {
-                    if (type != tileEntity.logicType) {
-                        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        TileNetworkList data = TileNetworkList.withContents(1, type.ordinal());
-                        Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-                        return;
-                    }
+                if (overType(xAxis, yAxis, type) && type != tileEntity.logicType) {
+                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                    TileNetworkList data = TileNetworkList.withContents(1, type.ordinal());
+                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+                    return;
                 }
             }
         }

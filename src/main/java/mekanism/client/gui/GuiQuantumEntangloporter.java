@@ -54,6 +54,10 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         ySize += 64;
     }
 
+    private boolean overCheckbox(int xAxis, int yAxis) {
+        return xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114;
+    }
+
     @Override
     public void initGui() {
         super.initGui();
@@ -128,14 +132,10 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
         frequencyField.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
-            if (xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114) {
-                setFrequency(frequencyField.getText());
-                frequencyField.setText("");
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
+        if (button == 0 && overCheckbox(mouseX - guiLeft, mouseY - guiTop)) {
+            setFrequency(frequencyField.getText());
+            frequencyField.setText("");
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }
 
@@ -206,7 +206,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114, 11);
+        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, overCheckbox(xAxis, yAxis), 11);
         frequencyField.drawTextBox();
     }
 }
