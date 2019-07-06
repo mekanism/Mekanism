@@ -54,23 +54,47 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         ySize += 64;
     }
 
+    private boolean overFillEmpty(int xAxis, int yAxis) {
+        return xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91;
+    }
+
+    private boolean overEncodeFormula(int xAxis, int yAxis) {
+        return xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59;
+    }
+
+    private boolean overCraftSingle(int xAxis, int yAxis) {
+        return xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91;
+    }
+
+    private boolean overCraftAvailable(int xAxis, int yAxis) {
+        return xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91;
+    }
+
+    private boolean overAutoMode(int xAxis, int yAxis) {
+        return xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91;
+    }
+
+    private boolean overStockControl(int xAxis, int yAxis) {
+        return xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91;
+    }
+
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91) {
+        if (overFillEmpty(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
-        } else if (xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59) {
+        } else if (overEncodeFormula(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
-        } else if (xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91) {
+        } else if (overCraftSingle(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.craftSingle"), xAxis, yAxis);
-        } else if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
+        } else if (overCraftAvailable(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
-        } else if (xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91) {
+        } else if (overAutoMode(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
-        } else if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
+        } else if (overStockControl(xAxis, yAxis)) {
             drawHoveringText(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -79,18 +103,18 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         if (!tileEntity.autoMode) {
-            drawTexturedModalRect(guiLeft + 44, guiTop + 75, 238, xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiLeft + 44, guiTop + 75, 238, overFillEmpty(xAxis, yAxis), 16);
         } else {
             drawTexturedModalRect(guiLeft + 44, guiTop + 75, 238, 32, 16, 16);
         }
         if (!tileEntity.autoMode && tileEntity.isRecipe) {
             if (canEncode()) {
-                drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59, 14);
+                drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, overEncodeFormula(xAxis, yAxis), 14);
             } else {
                 drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, 28, 14, 14);
             }
-            drawTexturedModalRect(guiLeft + 71, guiTop + 75, 190, xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91, 16);
-            drawTexturedModalRect(guiLeft + 89, guiTop + 75, 206, xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiLeft + 71, guiTop + 75, 190, overCraftSingle(xAxis, yAxis), 16);
+            drawTexturedModalRect(guiLeft + 89, guiTop + 75, 206, overCraftAvailable(xAxis, yAxis), 16);
         } else {
             drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, 28, 14, 14);
             drawTexturedModalRect(guiLeft + 71, guiTop + 75, 176 + 14, 32, 16, 16);
@@ -98,8 +122,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         }
 
         if (tileEntity.formula != null) {
-            drawTexturedModalRect(guiLeft + 107, guiTop + 75, 222, xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91, 16);
-            drawTexturedModalRect(guiLeft + 26, guiTop + 75, 238, 48, xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91, 16);
+            drawTexturedModalRect(guiLeft + 107, guiTop + 75, 222, overAutoMode(xAxis, yAxis), 16);
+            drawTexturedModalRect(guiLeft + 26, guiTop + 75, 238, 48, overStockControl(xAxis, yAxis), 16);
         } else {
             drawTexturedModalRect(guiLeft + 107, guiTop + 75, 176 + 46, 32, 16, 16);
             drawTexturedModalRect(guiLeft + 26, guiTop + 75, 176 + 62, 48 + 32, 16, 16);
@@ -133,7 +157,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         if (tileEntity.formula != null) {
             return false;
         }
-        ItemStack formulaStack = tileEntity.inventory.get(2);
+        ItemStack formulaStack = tileEntity.inventory.get(TileEntityFormulaicAssemblicator.SLOT_FORMULA);
         return !formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula && ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) == null;
     }
 
@@ -144,7 +168,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             if (!tileEntity.autoMode) {
-                if (xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91) {
+                if (overFillEmpty(xAxis, yAxis)) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     TileNetworkList data = TileNetworkList.withContents(4);
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
@@ -152,18 +176,18 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
 
                 if (tileEntity.isRecipe) {
                     if (canEncode()) {
-                        if (xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59) {
+                        if (overEncodeFormula(xAxis, yAxis)) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                             TileNetworkList data = TileNetworkList.withContents(1);
                             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                         }
                     }
 
-                    if (xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91) {
+                    if (overCraftSingle(xAxis, yAxis)) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         TileNetworkList data = TileNetworkList.withContents(2);
                         Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-                    } else if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
+                    } else if (overCraftAvailable(xAxis, yAxis)) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         TileNetworkList data = TileNetworkList.withContents(3);
                         Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
@@ -172,11 +196,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
             }
 
             if (tileEntity.formula != null) {
-                if (xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91) {
+                if (overAutoMode(xAxis, yAxis)) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     TileNetworkList data = TileNetworkList.withContents(0);
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-                } else if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
+                } else if (overStockControl(xAxis, yAxis)) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     TileNetworkList data = TileNetworkList.withContents(5);
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
