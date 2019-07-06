@@ -21,6 +21,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
@@ -86,7 +87,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
-    public static int[] EJECT_INV;
     public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
     public HashList<MinerFilter> filters = new HashList<>();
@@ -262,12 +262,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                 TileEntity ejectInv = getEjectInv();
                 TileEntity ejectTile = getEjectTile();
                 if (ejectInv != null && ejectTile != null) {
+                    ILogisticalTransporter capability = CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
                     TransitResponse response;
-                    if (CapabilityUtils.hasCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite())) {
-                        response = TransporterUtils.insert(ejectTile, CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()),
-                              ejectMap, null, true, 0);
-                    } else {
+                    if (capability == null) {
                         response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, facing.getOpposite(), false);
+                    } else {
+                        response = TransporterUtils.insert(ejectTile, capability, ejectMap, null, true, 0);
                     }
                     if (!response.isEmpty()) {
                         response.getInvStack(ejectTile, facing.getOpposite()).use();
@@ -402,13 +402,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         TransitRequest request = new TransitRequest();
         for (int i = 27 - 1; i >= 0; i--) {
             ItemStack stack = inventory.get(i);
-            if (!stack.isEmpty()) {
-                if (isReplaceStack(stack)) {
-                    continue;
-                }
-                if (!request.hasType(stack)) {
-                    request.addItem(stack, i);
-                }
+            if (!stack.isEmpty() && !isReplaceStack(stack)) {
+                request.addItem(stack, i);
             }
         }
         return request;

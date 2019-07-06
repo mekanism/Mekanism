@@ -4,9 +4,11 @@ import java.util.function.Consumer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.Contract;
 
 public final class CapabilityUtils {
 
+    @Contract("null, _, _ -> false; _, null, _ -> false")
     public static boolean hasCapability(ICapabilityProvider provider, Capability<?> cap, EnumFacing side) {
         if (provider == null || cap == null) {
             return false;
@@ -14,6 +16,7 @@ public final class CapabilityUtils {
         return provider.hasCapability(cap, side);
     }
 
+    @Contract("null, _, _ -> null; _, null, _ -> null")
     public static <T> T getCapability(ICapabilityProvider provider, Capability<T> cap, EnumFacing side) {
         if (provider == null || cap == null) {
             return null;

@@ -150,7 +150,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
                             if (pulseOperations > 0) {
                                 pulseOperations--;
                             }
-                            ejectorComponent.outputItems();
                         }
                     } else if (getEnergy() >= energyPerTick) {
                         operatingTicks++;

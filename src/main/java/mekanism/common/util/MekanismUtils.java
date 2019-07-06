@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
@@ -1080,6 +1081,7 @@ public final class MekanismUtils {
      * @param pos - position
      * @return tile entity if found, null if either not found or not loaded
      */
+    @Nullable
     public static TileEntity getTileEntity(World world, BlockPos pos) {
         if(world != null && world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
