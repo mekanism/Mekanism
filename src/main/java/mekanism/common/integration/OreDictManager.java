@@ -27,6 +27,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
@@ -488,7 +489,8 @@ public final class OreDictManager {
 
     private static void addSawmillLog(InventoryCrafting tempCrafting, ItemStack log, DummyWorld world) {
         tempCrafting.setInventorySlotContents(0, log);
-        ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, world);
+        IRecipe matchingRecipe = CraftingManager.findMatchingRecipe(tempCrafting, world);
+        ItemStack resultEntry = matchingRecipe != null ? matchingRecipe.getRecipeOutput() : ItemStack.EMPTY;
 
         if (!resultEntry.isEmpty()) {
             RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6), new ItemStack(MekanismItems.Sawdust),
