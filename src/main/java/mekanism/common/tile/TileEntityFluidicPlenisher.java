@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -337,34 +336,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.UP) {
-            return drain(from, resource.amount, doDrain);
-        }
-        return null;
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return fluidTank.fill(resource, doFill);
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (from == EnumFacing.UP && resource != null && resource.getFluid().canBePlacedInWorld()) {
-            return fluidTank.fill(resource, true);
-        }
-        return 0;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return from == EnumFacing.UP && fluid != null && fluid.getFluid().canBePlacedInWorld();
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return false;
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        return from == EnumFacing.UP && fluid.getFluid().canBePlacedInWorld();
     }
 
     @Override
@@ -372,9 +350,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         activeNodes.clear();
         usedNodes.clear();
         finishedCalc = false;
-        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
-                                                   LangUtils.localize("tooltip.configurator.plenisherReset")));
-
+        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
         return EnumActionResult.SUCCESS;
     }
 

@@ -79,13 +79,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
             updateShare();
             IGasHandler[] connectedAcceptors = GasUtils.getConnectedAcceptors(getPos(), getWorld());
             for (EnumFacing side : getConnections(ConnectionType.PULL)) {
-                if (connectedAcceptors[side.ordinal()] != null) {
-                    IGasHandler container = connectedAcceptors[side.ordinal()];
-                    if (container != null) {
-                        GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), false);
-                        if (received != null && received.amount != 0 && takeGas(received, false) == received.amount) {
-                            container.drawGas(side.getOpposite(), takeGas(received, true), true);
-                        }
+                IGasHandler container = connectedAcceptors[side.ordinal()];
+                if (container != null) {
+                    GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), false);
+                    if (received != null && received.amount != 0 && takeGas(received, false) == received.amount) {
+                        container.drawGas(side.getOpposite(), takeGas(received, true), true);
                     }
                 }
             }

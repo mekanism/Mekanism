@@ -8,6 +8,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
@@ -43,39 +44,28 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
         TileEntityThermalEvaporationController controller = getController();
         return controller == null ? 0 : controller.inputTank.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        TileEntityThermalEvaporationController controller = getController();
-        if (controller != null && resource != null && resource.isFluidEqual(controller.outputTank.getFluid())) {
-            return controller.outputTank.drain(resource.amount, doDrain);
-        }
-        return null;
-    }
-
-    @Override
+    @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         TileEntityThermalEvaporationController controller = getController();
-        if (controller != null) {
-            return controller.outputTank.drain(maxDrain, doDrain);
-        }
-        return null;
+        return controller == null ? null : controller.outputTank.drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller != null && fluid != null && controller.hasRecipe(fluid.getFluid());
+        return controller != null && controller.hasRecipe(fluid.getFluid());
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller != null && controller.outputTank.getFluidAmount() > 0;
+        return controller != null && controller.outputTank.getFluidAmount() > 0 && FluidContainerUtils.canDrain(controller.outputTank.getFluid(), fluid);
     }
 
     @Override

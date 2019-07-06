@@ -1,5 +1,7 @@
 package mekanism.common.util;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -17,6 +19,14 @@ public final class FluidContainerUtils {
 
     public static boolean isFluidContainer(ItemStack stack) {
         return !stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+    }
+
+    public static boolean canDrain(@Nullable FluidStack tankFluid, @Nullable FluidStack drainFluid) {
+        return tankFluid != null && (drainFluid == null || tankFluid.isFluidEqual(drainFluid));
+    }
+
+    public static boolean canFill(@Nullable FluidStack tankFluid, @Nonnull FluidStack fillFluid) {
+        return tankFluid == null || tankFluid.isFluidEqual(fillFluid);
     }
 
     public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainerBlock tile, int slotID) {
