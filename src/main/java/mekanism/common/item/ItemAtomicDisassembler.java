@@ -132,7 +132,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             }
             boolean extended = Mekanism.keyMap.has(player, KeySync.EXTENDEDMINING);
             if (getMode(itemstack) == 3 && (isOre && !player.capabilities.isCreativeMode || extended)) {
-                Set<Coord4D> found = new Finder(player, stack, new Coord4D(pos, player.world), raytrace, extended ? 10 : -1).calc();
+                Set<Coord4D> found = new Finder(player, stack, new Coord4D(pos, player.world), raytrace, extended ?
+                      MekanismConfig.current().general.DISASSEMBLER_RANGE.val() : -1).calc();
                 for (Coord4D coord : found) {
                     if (coord.equals(orig) || getEnergy(itemstack) < (MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getEfficiency(itemstack))) {
                         continue;
@@ -354,10 +355,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         private final Block startBlock;
         private final boolean isWood;
         private final int maxRange;
-
-        public Finder(EntityPlayer p, ItemStack s, Coord4D loc, RayTraceResult traceResult) {
-            this(p, s, loc, traceResult, -1);
-        }
+        private final int maxCount;
 
         public Finder(EntityPlayer p, ItemStack s, Coord4D loc, RayTraceResult traceResult, int range) {
             player = p;
@@ -368,10 +366,11 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             rayTraceResult = traceResult;
             isWood = OreDictCache.getOreDictName(stack).contains("logWood");
             maxRange = range;
+            maxCount = MekanismConfig.current().general.DISASSEMBLER_COUNT.val() - 1;
         }
 
         public void loop(Coord4D pointer) {
-            if (found.contains(pointer) || found.size() > 128) {
+            if (found.contains(pointer) || found.size() > maxCount) {
                 return;
             }
             found.add(pointer);

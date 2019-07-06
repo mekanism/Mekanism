@@ -108,6 +108,12 @@ public class GeneralConfig extends BaseConfig {
     public final IntOption DISASSEMBLER_USAGE = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
           "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)");
 
+    public final IntOption DISASSEMBLER_RANGE = new IntOption(this, "general", "DisassemblerMiningRange", 10,
+            "The Range of the Atimic Disassembler Extended Vein Mining.");
+
+    public final IntOption DISASSEMBLER_COUNT = new IntOption(this, "general", "DisassemblerMiningCount", 128,
+            "The max Atomic Disassember Vein Mining Block Count.");
+
     public final IntOption VOICE_PORT = new IntOption(this, "general", "VoicePort", 36123,
           "TCP port for the Voice server to listen on.", 1, 65535);
 
