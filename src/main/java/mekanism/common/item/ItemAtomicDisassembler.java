@@ -130,7 +130,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     isOre = true;
                 }
             }
-            boolean extended = Mekanism.keyMap.has(player, KeySync.EXTENDEDMINING);
+            boolean extended = MekanismConfig.current().general.DISASSEMBER_EXTENDED.val() && Mekanism.keyMap.has(player, KeySync.EXTENDEDMINING);
             if (getMode(itemstack) == 3 && (isOre && !player.capabilities.isCreativeMode || extended)) {
                 Set<Coord4D> found = new Finder(player, stack, new Coord4D(pos, player.world), raytrace, extended ?
                       MekanismConfig.current().general.DISASSEMBLER_RANGE.val() : -1).calc();

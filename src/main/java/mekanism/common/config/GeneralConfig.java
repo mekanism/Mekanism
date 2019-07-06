@@ -114,6 +114,9 @@ public class GeneralConfig extends BaseConfig {
     public final IntOption DISASSEMBLER_COUNT = new IntOption(this, "general", "DisassemblerMiningCount", 128,
             "The max Atomic Disassember Vein Mining Block Count.");
 
+    public final BooleanOption DISASSEMBER_EXTENDED = new BooleanOption(this, "general", "DisassemblerExtendedMining", true,
+            "Enable Extended Vein Mining.");
+
     public final IntOption VOICE_PORT = new IntOption(this, "general", "VoicePort", 36123,
           "TCP port for the Voice server to listen on.", 1, 65535);
 
