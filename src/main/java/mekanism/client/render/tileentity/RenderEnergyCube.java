@@ -36,7 +36,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         switch (tileEntity.facing) {
             case DOWN:
                 GlStateManager.rotate(90, -1, 0, 0);
@@ -66,7 +66,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
+            GlStateManager.translate((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
             bindTexture(coreTexture);
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
             GlStateManager.disableAlpha();
@@ -79,7 +79,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
             GLSMHelper.color(tileEntity.tier.getBaseTier());
-            GlStateManager.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            GlStateManager.translate(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             GlStateManager.rotate(4 * ticks, 0, 1, 0);
             GlStateManager.rotate(36F + 4 * ticks, 0, 1, 1);
             core.render(0.0625F);

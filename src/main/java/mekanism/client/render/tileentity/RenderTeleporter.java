@@ -40,7 +40,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
             GLSMHelper.color(EnumColor.PURPLE, 0.75F);
 
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate(x, y, z);
+            GlStateManager.translate((float) x, (float) y, (float) z);
             Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
             int type = 0;
             IBlockState s = obj.getBlockState(tileEntity.getWorld());

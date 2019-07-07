@@ -18,7 +18,7 @@ public class RenderRotaryCondensentrator extends TileEntitySpecialRenderer<TileE
     @Override
     public void render(TileEntityRotaryCondensentrator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RotaryCondensentrator.png"));
         GLSMHelper.rotate(tileEntity.facing, 0, 180, 90, 270);
         GlStateManager.rotate(180, 0, 0, 1);

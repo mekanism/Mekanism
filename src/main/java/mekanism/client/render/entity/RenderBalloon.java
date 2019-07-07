@@ -52,7 +52,7 @@ public class RenderBalloon extends Render<EntityBalloon> {
 
     public void render(EnumColor color, double x, double y, double z) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        GlStateManager.translate((float) x, (float) y, (float) z);
         GlStateManager.rotate(180, 1, 0, 0);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
         model.render(0.0625F, color);

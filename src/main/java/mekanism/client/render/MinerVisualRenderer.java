@@ -26,7 +26,7 @@ public final class MinerVisualRenderer {
 
     public static void render(TileEntityDigitalMiner miner) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
+        GlStateManager.translate((float) getX(miner.getPos().getX()), (float) getY(miner.getPos().getY()), (float) getZ(miner.getPos().getZ()));
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();

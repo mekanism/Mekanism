@@ -78,13 +78,13 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             for (TransporterStack stack : getReducedTransit(inTransit)) {
                 entityItem.setItem(stack.itemStack);
                 float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
-                double xShifted = x + pos[0];
-                double yShifted = y + pos[1];
-                double zShifted = z + pos[2];
+                float xShifted = (float) x + pos[0];
+                float yShifted = (float) y + pos[1];
+                float zShifted = (float) z + pos[2];
 
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(xShifted, yShifted, zShifted);
-                GlStateManager.scale(0.75, 0.75, 0.75);
+                GlStateManager.scale(0.75F, 0.75F, 0.75F);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
                 GlStateManager.popMatrix();
 
@@ -124,9 +124,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     GLSMHelper.colorAlpha(0.8F);
                     bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                    GlStateManager.translate(x, y, z);
-                    GlStateManager.scale(0.5, 0.5, 0.5);
-                    GlStateManager.translate(0.5, 0.5, 0.5);
+                    GlStateManager.translate((float) x, (float) y, (float) z);
+                    GlStateManager.scale(0.5F, 0.5F, 0.5F);
+                    GlStateManager.translate(0.5F, 0.5F, 0.5F);
 
                     int display = getOverlayDisplay(pos.sideHit, mode).display;
                     GlStateManager.callList(display);

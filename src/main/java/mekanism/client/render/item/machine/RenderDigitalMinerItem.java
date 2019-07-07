@@ -26,7 +26,7 @@ public class RenderDigitalMinerItem {
         } else if (transformType != TransformType.GUI) {
             GlStateManager.rotate(90, 0, 1, 0);
         }
-        GlStateManager.translate(0.35, 0.1, 0);
+        GlStateManager.translate(0.35F, 0.1F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
         digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine, true);
         GlStateManager.popMatrix();

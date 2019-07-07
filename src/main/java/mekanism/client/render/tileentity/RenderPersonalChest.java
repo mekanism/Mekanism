@@ -18,7 +18,7 @@ public class RenderPersonalChest extends TileEntitySpecialRenderer<TileEntityPer
     @Override
     public void render(TileEntityPersonalChest tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y + 1, z);
+        GlStateManager.translate((float) x, (float) y + 1F, (float) z);
         GlStateManager.rotate(90, 0, 1, 0);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
 

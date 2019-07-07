@@ -29,7 +29,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
     public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
         BlockRendererDispatcher renderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y + 0.5, z);
+        GlStateManager.translate((float) x, (float) y + 0.5F, (float) z);
 
         if (entityobsidiantnt.fuse - partialTicks + 1.0F < 10.0F) {
             float f = 1.0F - (entityobsidiantnt.fuse - partialTicks + 1.0F) / 10.0F;

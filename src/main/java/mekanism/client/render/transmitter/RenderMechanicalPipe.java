@@ -77,20 +77,20 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             }
 
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate(x, y, z);
+            GlStateManager.translate((float) x, (float) y, (float) z);
 
             boolean gas = fluidStack == null ? fluid.isGaseous() : fluid.isGaseous(fluidStack);
             for (EnumFacing side : EnumFacing.VALUES) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
                     renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
-                    GlStateManager.translate(0.5, 0.5, 0.5);
+                    GlStateManager.translate(0.5F, 0.5F, 0.5F);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder worldRenderer = tessellator.getBuffer();
                     if (renderFluidInOut(worldRenderer, side, pipe)) {
                         tessellator.draw();
                     }
-                    GlStateManager.translate(-0.5, -0.5, -0.5);
+                    GlStateManager.translate(-0.5F, -0.5F, -0.5F);
                 }
             }
             renderDisplayLists(getListAndRender(null, fluidStack), scale, gas);

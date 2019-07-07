@@ -51,7 +51,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate(x, y, z);
+            GlStateManager.translate((float) x, (float) y, (float) z);
             GlowInfo glowInfo = GLSMHelper.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
@@ -83,7 +83,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate(x, y, z);
+            GlStateManager.translate((float) x, (float) y, (float) z);
             GlowInfo glowInfo = GLSMHelper.enableGlow(valveFluid);
             GLSMHelper.color(valveFluid);
             DisplayInteger[] valveList = getValveRender(valveFluid);

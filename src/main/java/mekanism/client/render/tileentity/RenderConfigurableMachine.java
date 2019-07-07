@@ -67,7 +67,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
                             GLSMHelper.color(data.color, 0.6F);
                             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                            GlStateManager.translate(x, y, z);
+                            GlStateManager.translate((float) x, (float) y, (float) z);
                             int display = getOverlayDisplay(pos.sideHit, type).display;
                             GlStateManager.callList(display);
                             GLSMHelper.resetColor();

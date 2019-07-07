@@ -25,7 +25,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
     public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.isBurning()) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(x + 0.5, y - 1.5, z + 0.5);
+            GlStateManager.translate((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
             GlStateManager.shadeModel(GL11.GL_SMOOTH);

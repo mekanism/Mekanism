@@ -51,7 +51,7 @@ public class RenderFluidTankItem {
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
             MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate(-0.5, -0.5, -0.5);
+            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
             GlowInfo glowInfo = GLSMHelper.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);

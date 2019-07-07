@@ -22,7 +22,7 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuffer();
-        GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
+        GlStateManager.translate((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
 
         for (EnumFacing side : EnumFacing.VALUES) {
             renderSide(worldRenderer, side, transmitter);

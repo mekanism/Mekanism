@@ -44,7 +44,7 @@ public class RenderFlame extends Render<EntityFlame> {
 
         bindTexture(getEntityTexture(entity));
 
-        GlStateManager.translate(x, y, z);
+        GlStateManager.translate((float) x, (float) y, (float) z);
         GlStateManager.rotate((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0, 1, 0);
         GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0, 0, 1);
 

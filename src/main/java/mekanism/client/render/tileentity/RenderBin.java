@@ -36,18 +36,18 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             GlStateManager.pushMatrix();
             switch (facing) {
                 case NORTH:
-                    GlStateManager.translate(x + 0.73, y + 0.83, z - 0.0001);
+                    GlStateManager.translate((float) x + 0.73F, (float) y + 0.83F, (float) z - 0.0001F);
                     break;
                 case SOUTH:
-                    GlStateManager.translate(x + 0.27, y + 0.83, z + 1.0001);
+                    GlStateManager.translate((float) x + 0.27F, (float) y + 0.83F, (float) z + 1.0001F);
                     GlStateManager.rotate(180, 0, 1, 0);
                     break;
                 case WEST:
-                    GlStateManager.translate(x - 0.0001, y + 0.83, z + 0.27);
+                    GlStateManager.translate((float) x - 0.0001F, (float) y + 0.83F, (float) z + 0.27F);
                     GlStateManager.rotate(90, 0, 1, 0);
                     break;
                 case EAST:
-                    GlStateManager.translate(x + 1.0001, y + 0.83, z + 0.73);
+                    GlStateManager.translate((float) x + 1.0001F, (float) y + 0.83F, (float) z + 0.73F);
                     GlStateManager.rotate(-90, 0, 1, 0);
                     break;
                 default:
@@ -73,7 +73,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
         GlStateManager.enablePolygonOffset();
         float displayWidth = 1;
         float displayHeight = 1;
-        GlStateManager.translate(x, y, z);
+        GlStateManager.translate((float) x, (float) y, (float) z);
 
         switch (side) {
             case SOUTH:

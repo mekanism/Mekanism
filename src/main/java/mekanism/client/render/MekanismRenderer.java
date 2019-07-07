@@ -201,7 +201,7 @@ public class MekanismRenderer {
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(object.minX, object.minY, object.minZ);
+        GlStateManager.translate((float) object.minX, (float) object.minY, (float) object.minZ);
         RenderResizableCuboid.INSTANCE.renderCube(object);
         GlStateManager.popMatrix();
     }

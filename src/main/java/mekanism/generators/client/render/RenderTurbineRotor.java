@@ -45,7 +45,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
 
         if (tileEntity.getHousedBlades() > 0) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(x + 0.5, y - 1, z + 0.5);
+            GlStateManager.translate((float) x + 0.5F, (float) y - 1F, (float) z + 0.5F);
             GlStateManager.rotate(tileEntity.rotationLower, 0, 1, 0);
             model.render(0.0625F, baseIndex);
             GlStateManager.popMatrix();
@@ -53,7 +53,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
 
         if (tileEntity.getHousedBlades() == 2) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(x + 0.5, y - 0.5, z + 0.5);
+            GlStateManager.translate((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
             GlStateManager.rotate(tileEntity.rotationUpper, 0, 1, 0);
             model.render(0.0625F, baseIndex + 1);
             GlStateManager.popMatrix();
