@@ -68,7 +68,7 @@ public class TileComponentConfig implements ITileComponent {
         SideConfig config = getConfig(type);
         EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
 
-        for (EnumFacing sideToCheck : EnumFacing.values()) {
+        for (EnumFacing sideToCheck : EnumFacing.VALUES) {
             if (config.get(translatedFacings[sideToCheck.ordinal()]) == dataIndex) {
                 ret.add(sideToCheck);
             }

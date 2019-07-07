@@ -129,7 +129,7 @@ public final class CableUtils {
                 //Fake that we have one target given we know that no sides will overlap
                 // This allows us to have slightly better performance
                 EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-                for (EnumFacing side : EnumFacing.values()) {
+                for (EnumFacing side : EnumFacing.VALUES) {
                     if (emitter.sideIsOutput(side)) {
                         TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
                         //If it can accept energy or it is a cable

@@ -55,7 +55,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
         GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine, false);
 
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             bindTexture(baseTexture);
             model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, tileEntity.tier, rendererDispatcher.renderEngine);
         }
