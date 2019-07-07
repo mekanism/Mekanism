@@ -16,8 +16,6 @@ import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -68,11 +66,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (scale > 0.01 && fluid != null) {
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();
-            GlStateManager.enableBlend();
             GlStateManager.disableLighting();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlStateManager.disableBlend();
-            //TODO: Should this blend be removed or does the blend func actually do something here
             GlowInfo glowInfo;
             if (fluidStack != null) {
                 glowInfo = GLSMHelper.enableGlow(fluidStack);
