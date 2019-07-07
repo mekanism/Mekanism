@@ -18,6 +18,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GLSMHelper {
 
+    public static final GlowInfo NO_GLOW = new GlowInfo(0, 0, false);
+
     public static void rotate(EnumFacing facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
@@ -32,53 +34,6 @@ public class GLSMHelper {
             case EAST:
                 GlStateManager.rotate(east, 0, 1, 0);
                 break;
-        }
-    }
-
-    public static final GlowInfo NO_GLOW = new GlowInfo(0, 0, false);
-
-    @Nonnull
-    public static GlowInfo enableGlow() {
-        return enableGlow(15);
-    }
-
-    @Nonnull
-    public static GlowInfo enableGlow(int glow) {
-        if (!FMLClientHandler.instance().hasOptifine() && glow > 0) {
-            GlowInfo info = new GlowInfo(OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY, true);
-            float glowStrength = (glow / 15F) * 240F;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
-            return info;
-        }
-        return NO_GLOW;
-    }
-
-    @Nonnull
-    public static GlowInfo enableGlow(@Nullable FluidStack fluid) {
-        return fluid == null ? NO_GLOW : enableGlow(fluid.getFluid().getLuminosity(fluid));
-    }
-
-    @Nonnull
-    public static GlowInfo enableGlow(@Nullable Fluid fluid) {
-        return fluid == null ? NO_GLOW : enableGlow(fluid.getLuminosity());
-    }
-
-    public static void disableGlow(@Nonnull GlowInfo info) {
-        if (info.glowEnabled) {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, info.lightmapLastX, info.lightmapLastY);
-        }
-    }
-
-    public static class GlowInfo {
-
-        private final boolean glowEnabled;
-        private final float lightmapLastX;
-        private final float lightmapLastY;
-
-        public GlowInfo(float lightmapLastX, float lightmapLastY, boolean glowEnabled) {
-            this.lightmapLastX = lightmapLastX;
-            this.lightmapLastY = lightmapLastY;
-            this.glowEnabled = glowEnabled;
         }
     }
 
@@ -154,6 +109,53 @@ public class GLSMHelper {
     public static void color(@Nullable EnumColor color, float alpha, float multiplier) {
         if (color != null) {
             GlStateManager.color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+        }
+    }
+
+    //Glow
+
+    @Nonnull
+    public static GlowInfo enableGlow() {
+        return enableGlow(15);
+    }
+
+    @Nonnull
+    public static GlowInfo enableGlow(int glow) {
+        if (!FMLClientHandler.instance().hasOptifine() && glow > 0) {
+            GlowInfo info = new GlowInfo(OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY, true);
+            float glowStrength = (glow / 15F) * 240F;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
+            return info;
+        }
+        return NO_GLOW;
+    }
+
+    @Nonnull
+    public static GlowInfo enableGlow(@Nullable FluidStack fluid) {
+        return fluid == null ? NO_GLOW : enableGlow(fluid.getFluid().getLuminosity(fluid));
+    }
+
+    @Nonnull
+    public static GlowInfo enableGlow(@Nullable Fluid fluid) {
+        return fluid == null ? NO_GLOW : enableGlow(fluid.getLuminosity());
+    }
+
+    public static void disableGlow(@Nonnull GlowInfo info) {
+        if (info.glowEnabled) {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, info.lightmapLastX, info.lightmapLastY);
+        }
+    }
+
+    public static class GlowInfo {
+
+        private final boolean glowEnabled;
+        private final float lightmapLastX;
+        private final float lightmapLastY;
+
+        public GlowInfo(float lightmapLastX, float lightmapLastY, boolean glowEnabled) {
+            this.lightmapLastX = lightmapLastX;
+            this.lightmapLastY = lightmapLastY;
+            this.glowEnabled = glowEnabled;
         }
     }
 }
