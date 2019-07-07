@@ -3,10 +3,14 @@ package mekanism.client.render.tileentity;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -35,22 +39,40 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
                 if (data.height >= 1 && waterStored.getFluid() != null) {
                     bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                    MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableCull();
+                    GlStateManager.enableBlend();
+                    GlStateManager.disableLighting();
+                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-                    renderHelper.enableGlow(waterStored).color(waterStored, (float) waterStored.amount / (float) tileEntity.clientWaterCapacity);
+                    GlowInfo glowInfo = GLSMHelper.enableGlow(waterStored);
+                    GLSMHelper.color(waterStored, (float) waterStored.amount / (float) tileEntity.clientWaterCapacity);
                     if (waterStored.getFluid().isGaseous(waterStored)) {
                         FluidRenderer.getTankDisplay(data).render();
                     } else {
                         FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
                     }
-                    renderHelper.cleanup();
+                    GLSMHelper.resetColor();
+                    GLSMHelper.disableGlow(glowInfo);
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.disableCull();
+                    GlStateManager.popMatrix();
 
                     for (ValveData valveData : tileEntity.valveViewing) {
-                        MekanismRenderHelper valveRenderHelper = FluidRenderer.initHelper();
+                        GlStateManager.pushMatrix();
+                        GlStateManager.enableCull();
+                        GlStateManager.enableBlend();
+                        GlStateManager.disableLighting();
+                        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                         FluidRenderer.translateToOrigin(valveData.location);
-                        valveRenderHelper.enableGlow(waterStored);
+                        GlowInfo valveGlowInfo = GLSMHelper.enableGlow(waterStored);
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
-                        valveRenderHelper.cleanup();
+                        GLSMHelper.disableGlow(valveGlowInfo);
+                        GlStateManager.enableLighting();
+                        GlStateManager.disableBlend();
+                        GlStateManager.disableCull();
+                        GlStateManager.popMatrix();
                     }
                 }
             }
@@ -65,14 +87,23 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
                 if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null) {
                     bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                    MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableCull();
+                    GlStateManager.enableBlend();
+                    GlStateManager.disableLighting();
+                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-                    renderHelper.enableGlow(tileEntity.structure.steamStored);
+                    GlowInfo glowInfo = GLSMHelper.enableGlow(tileEntity.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
-                    renderHelper.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity);
+                    GLSMHelper.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity);
                     display.render();
-                    renderHelper.cleanup();
+                    GLSMHelper.resetColor();
+                    GLSMHelper.disableGlow(glowInfo);
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.disableCull();
+                    GlStateManager.popMatrix();
                 }
             }
         }

@@ -4,7 +4,8 @@ import javax.annotation.Nonnull;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
@@ -13,11 +14,14 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
@@ -29,11 +33,14 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
-        MekanismRenderHelper cubeRenderHelper = new MekanismRenderHelper(true);
+        GlStateManager.pushMatrix();
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.translate(0, -1.0F, 0);
-        cubeRenderHelper.enableBlendPreset();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
@@ -41,24 +48,37 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
             energyCube.renderSide(0.0625F, side, side == EnumFacing.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getMinecraft().renderEngine);
         }
-        cubeRenderHelper.cleanup();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
 
         double energy = ItemDataUtils.getDouble(stack, "energyStored");
 
         if (energy / tier.getMaxEnergy() > 0.1) {
-            MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
+            GlStateManager.pushMatrix();
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
-            coreRenderHelper.enableBlendPreset().enableGlow();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlowInfo glowInfo = GLSMHelper.enableGlow();
 
-            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true);
+            //Begin core color
+            GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            coreColorRenderHelper.color(tier.getBaseTier());
+            GLSMHelper.color(tier.getBaseTier());
             GlStateManager.translate(0, Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
             GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
             GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);
             core.render(0.0625F);
-            coreColorRenderHelper.cleanup();
-            coreRenderHelper.cleanup();
+            GLSMHelper.resetColor();
+            GlStateManager.popMatrix();
+            //End core color
+
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.popMatrix();
         }
     }
 

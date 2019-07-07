@@ -93,7 +93,7 @@ public abstract class GuiGauge<T> extends GuiElement {
             for (int i = 0; i < number; i++) {
                 guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
             }
-            GLSMHelper.INSTANCE.resetColor();
+            GLSMHelper.resetColor();
             start += 16;
             if (scale == 0) {
                 break;

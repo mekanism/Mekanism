@@ -4,17 +4,21 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergyCube> {
@@ -27,7 +31,11 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
     @Override
     public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset();
+        GlStateManager.pushMatrix();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         switch (tileEntity.facing) {
             case DOWN:
@@ -60,24 +68,37 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, tileEntity.tier, rendererDispatcher.renderEngine);
         }
 
-        renderHelper.cleanup();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
-            MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
+            GlStateManager.pushMatrix();
             GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
-            coreRenderHelper.enableBlendPreset().enableGlow();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlowInfo glowInfo = GLSMHelper.enableGlow();
 
+            //Begin core color
             float ticks = MekanismClient.ticksPassed + partialTick;
-            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true);
+            GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            coreColorRenderHelper.color(tileEntity.tier.getBaseTier());
+            GLSMHelper.color(tileEntity.tier.getBaseTier());
             GlStateManager.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             GlStateManager.rotate(4 * ticks, 0, 1, 0);
             GlStateManager.rotate(36F + 4 * ticks, 0, 1, 1);
             core.render(0.0625F);
-            coreColorRenderHelper.cleanup();
-            coreRenderHelper.cleanup();
+            GLSMHelper.resetColor();
+            GlStateManager.popMatrix();
+            //End core color
+
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.popMatrix();
         }
 
         MekanismRenderer.machineRenderer().render(tileEntity, x, y, z, partialTick, destroyStage, alpha);

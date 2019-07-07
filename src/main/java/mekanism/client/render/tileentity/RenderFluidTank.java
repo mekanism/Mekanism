@@ -1,7 +1,8 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -9,12 +10,15 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTank> {
@@ -39,38 +43,59 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 
     public void render(FluidTankTier tier, FluidStack fluid, float fluidScale, boolean active, FluidStack valveFluid, double x, double y, double z) {
         if (fluid != null && fluidScale > 0) {
-            MekanismRenderHelper renderHelper = initHelper();
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate(x, y, z);
-            renderHelper.enableGlow(fluid);
+            GlowInfo glowInfo = GLSMHelper.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
 
-            renderHelper.color(fluid, fluidScale);
+            GLSMHelper.color(fluid, fluidScale);
             if (fluid.getFluid().isGaseous(fluid)) {
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
-            renderHelper.cleanup();
+            GLSMHelper.resetColor();
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
 
         if (valveFluid != null && !valveFluid.getFluid().isGaseous(valveFluid)) {
-            MekanismRenderHelper renderHelper = initHelper();
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate(x, y, z);
-            renderHelper.enableGlow(valveFluid).color(valveFluid);
+            GlowInfo glowInfo = GLSMHelper.enableGlow(valveFluid);
+            GLSMHelper.color(valveFluid);
             DisplayInteger[] valveList = getValveRender(valveFluid);
             valveList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
-            renderHelper.cleanup();
+            GLSMHelper.resetColor();
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
-    }
-
-    private MekanismRenderHelper initHelper() {
-        return new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
     }
 
     private DisplayInteger[] getValveRender(FluidStack fluid) {

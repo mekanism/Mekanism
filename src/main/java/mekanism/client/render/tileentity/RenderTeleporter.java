@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -13,10 +14,13 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
+import org.lwjgl.opengl.GL11;
 
 public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTeleporter> {
 
@@ -25,7 +29,15 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
     @Override
     public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.shouldRender) {
-            MekanismRenderHelper renderHelper = initHelper().color(EnumColor.PURPLE, 0.75F);
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
+            GlowInfo glowInfo = GLSMHelper.enableGlow();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GLSMHelper.color(EnumColor.PURPLE, 0.75F);
 
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate(x, y, z);
@@ -38,12 +50,15 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
             int display = getOverlayDisplay(type).display;
             GlStateManager.callList(display);
-            renderHelper.cleanup();
-        }
-    }
 
-    private MekanismRenderHelper initHelper() {
-        return new MekanismRenderHelper(true).enableCull().disableLighting().enableGlow().enableBlendPreset();
+            GLSMHelper.resetColor();
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
+        }
     }
 
     private DisplayInteger getOverlayDisplay(Integer type) {

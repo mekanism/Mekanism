@@ -89,9 +89,9 @@ public class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<REC
     public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas) {
         if (gas != null) {
             mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            GLSMHelper.INSTANCE.color(gas);
+            GLSMHelper.color(gas);
             drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, gas.getGas().getSprite(), sizeX, sizeY);
-            GLSMHelper.INSTANCE.resetColor();
+            GLSMHelper.resetColor();
         }
     }
 }

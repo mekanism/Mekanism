@@ -1,11 +1,14 @@
 package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -31,7 +34,13 @@ public class RenderFlame extends Render<EntityFlame> {
         float alpha = (entity.ticksExisted + partialTick) / (float) EntityFlame.LIFESPAN;
         float size = (float) Math.pow(2 * alpha, 2);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGlow().enableBlendPreset().colorAlpha(1 - alpha);
+        GlStateManager.pushMatrix();
+        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GLSMHelper.colorAlpha(1 - alpha);
 
         bindTexture(getEntityTexture(entity));
 
@@ -49,7 +58,7 @@ public class RenderFlame extends Render<EntityFlame> {
         float f5 = (float) (5 + i * 10) / 32F;
         float scale = 0.05625F * (0.8F + size);
 
-        renderHelper.enableRescaleNormal();
+        GlStateManager.enableRescaleNormal();
         GlStateManager.rotate(45, 1, 0, 0);
         GlStateManager.scale(scale, scale, scale);
         GlStateManager.translate(-4F, 0, 0);
@@ -65,7 +74,12 @@ public class RenderFlame extends Render<EntityFlame> {
             worldrenderer.pos(-8.0D, 2.0D, 0.0D).tex((double) f2, (double) f5).endVertex();
             tessellator.draw();
         }
-        renderHelper.cleanup();
+        GlStateManager.disableRescaleNormal();
+        GLSMHelper.resetColor();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GLSMHelper.disableGlow(glowInfo);
+        GlStateManager.popMatrix();
     }
 
     @Override

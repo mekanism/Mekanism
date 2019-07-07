@@ -2,7 +2,8 @@ package mekanism.generators.client.render;
 
 import java.util.EnumMap;
 import java.util.Map;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -30,11 +31,20 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
     @Override
     public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.bioFuelSlot.fluidStored > 0) {
-            MekanismRenderHelper renderHelper = initHelper().enableGlow();
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.enableBlend();
+            GlStateManager.disableLighting();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlowInfo glowInfo = GLSMHelper.enableGlow();
             GlStateManager.translate(x, y, z);
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages - 1)].render();
-            renderHelper.cleanup();
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.enableLighting();
+            GlStateManager.disableBlend();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
 
         GlStateManager.pushMatrix();
@@ -120,11 +130,5 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 
         energyDisplays.put(side, displays);
         return displays;
-    }
-
-    private MekanismRenderHelper initHelper() {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().enableBlend().disableLighting();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        return renderHelper;
     }
 }

@@ -2,8 +2,12 @@ package mekanism.client.render.tileentity;
 
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -23,17 +27,27 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
             data.width = 2;
             data.fluidType = tileEntity.inputTank.getFluid();
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.enableBlend();
+            GlStateManager.disableLighting();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             FluidRenderer.translateToOrigin(data.location);
             float fluidScale = (float) tileEntity.inputTank.getFluidAmount() / (float) tileEntity.getMaxFluid();
-            renderHelper.enableGlow(data.fluidType).color(data.fluidType, fluidScale);
+            GlowInfo glowInfo = GLSMHelper.enableGlow(data.fluidType);
+            GLSMHelper.color(data.fluidType, fluidScale);
             if (data.fluidType.getFluid().isGaseous(data.fluidType)) {
                 FluidRenderer.getTankDisplay(data).render();
             } else {
                 //Render the proper height
                 FluidRenderer.getTankDisplay(data, Math.min(1, fluidScale)).render();
             }
-            renderHelper.cleanup();
+            GLSMHelper.resetColor();
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.enableLighting();
+            GlStateManager.disableBlend();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
     }
 }

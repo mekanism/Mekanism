@@ -8,11 +8,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -75,11 +75,11 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
         // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
         // GL changes only get ran if it is not already the color we are assuming it is.
-        GLSMHelper.INSTANCE.resetColor();
+        GLSMHelper.resetColor();
         guiElements.forEach(element -> {
             element.renderForeground(xAxis, yAxis);
             //Continue ensuring color is what we are assuming.
-            GLSMHelper.INSTANCE.resetColor();
+            GLSMHelper.resetColor();
         });
     }
 
@@ -95,7 +95,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         mc.renderEngine.bindTexture(getGuiLocation());
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
-        GLSMHelper.INSTANCE.resetColor();
+        GLSMHelper.resetColor();
         drawTexturedModalRect(guiLeft, guiTop);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
@@ -103,11 +103,11 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
         // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
         // GL changes only get ran if it is not already the color we are assuming it is.
-        GLSMHelper.INSTANCE.resetColor();
+        GLSMHelper.resetColor();
         guiElements.forEach(element -> {
             element.renderBackground(xAxis, yAxis, guiLeft, guiTop);
             //Continue ensuring color is what we are assuming.
-            GLSMHelper.INSTANCE.resetColor();
+            GLSMHelper.resetColor();
         });
     }
 
@@ -203,12 +203,16 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         if (!stack.isEmpty()) {
             //TODO: Is this try catch even needed, some places had it
             try {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableDepth().enableGUIStandardItemLighting();
+                GlStateManager.pushMatrix();
+                GlStateManager.enableDepth();
+                RenderHelper.enableGUIStandardItemLighting();
                 if (scale != 1) {
                     GlStateManager.scale(scale, scale, scale);
                 }
                 itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
-                renderHelper.cleanup();
+                RenderHelper.disableStandardItemLighting();
+                GlStateManager.disableDepth();
+                GlStateManager.popMatrix();
             } catch (Exception ignored) {
             }
         }

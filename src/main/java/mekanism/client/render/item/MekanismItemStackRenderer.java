@@ -1,7 +1,6 @@
 package mekanism.client.render.item;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
 import net.minecraft.client.Minecraft;
@@ -51,7 +50,7 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
         GlStateManager.rotate(180, 0, 1, 0);
 
@@ -60,14 +59,16 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         //
 
         //TODO: Make this use helper for lighting and then disable it after bindTexture?
-        renderHelper.enableLighting();
+        GlStateManager.enableLighting();
         GlStateManager.enableLight(0);
         GlStateManager.enableLight(1);
         GlStateManager.enableColorMaterial();
         GlStateManager.colorMaterial(1032, 5634);
-        renderHelper.enableCull();
+        GlStateManager.enableCull();
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        renderHelper.cleanup();
+        GlStateManager.disableCull();
+        GlStateManager.disableLighting();
+        GlStateManager.popMatrix();
 
         MekanismRenderer.resumeRenderer(tessellator, renderState);
     }

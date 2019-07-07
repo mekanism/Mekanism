@@ -111,11 +111,11 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 int yStart = i * 22 + 18;
                 boolean mouseOver = overFilter(xAxis, yAxis, yStart);
                 if (mouseOver) {
-                    GLSMHelper.INSTANCE.color(EnumColor.GREY, 3.0F);
+                    GLSMHelper.color(EnumColor.GREY, 3.0F);
                 }
                 drawTexturedModalRect(guiLeft + 10, guiTop + yStart, 0, 230, 142, 22);
                 if (mouseOver) {
-                    GLSMHelper.INSTANCE.resetColor();
+                    GLSMHelper.resetColor();
                 }
             }
         }

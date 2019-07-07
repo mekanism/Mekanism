@@ -1,10 +1,13 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelChemicalDissolutionChamber extends ModelBase {
@@ -227,7 +230,10 @@ public class ModelChemicalDissolutionChamber extends ModelBase {
     }
 
     public void render(float size) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
         support2.render(size);
         vat5.render(size);
@@ -260,7 +266,8 @@ public class ModelChemicalDissolutionChamber extends ModelBase {
         portToggle1.render(size);
         portToggle2.render(size);
 
-        renderHelper.cleanup();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -5,14 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
+import org.lwjgl.opengl.GL11;
 
 public final class MinerVisualRenderer {
 
@@ -21,12 +25,23 @@ public final class MinerVisualRenderer {
     private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 
     public static void render(TileEntityDigitalMiner miner) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.pushMatrix();
         GlStateManager.translate(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
-        renderHelper.enableBlendPreset().enableGlow().enableCull().colorAlpha(0.8F);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlStateManager.enableCull();
+        GLSMHelper.colorAlpha(0.8F);
         mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         getList(new MinerRenderData(miner)).render();
-        renderHelper.cleanup();
+        GLSMHelper.resetColor();
+        GlStateManager.disableCull();
+        GLSMHelper.disableGlow(glowInfo);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
     }
 
     private static DisplayInteger getList(MinerRenderData data) {

@@ -42,7 +42,7 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
 
     @Override
     protected void applyRenderColor() {
-        GLSMHelper.INSTANCE.color(dummy ? dummyType : infoHandler.getTank().getFluid());
+        GLSMHelper.color(dummy ? dummyType : infoHandler.getTank().getFluid());
     }
 
     @Override

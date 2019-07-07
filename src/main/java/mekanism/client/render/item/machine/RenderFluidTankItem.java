@@ -3,7 +3,8 @@ package mekanism.client.render.item.machine;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -13,6 +14,8 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
@@ -20,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderFluidTankItem {
@@ -38,23 +42,36 @@ public class RenderFluidTankItem {
 
         GlStateManager.pushMatrix();
         if (fluid != null && fluidScale > 0) {
-            MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+
             MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate(-0.5, -0.5, -0.5);
-            fluidRenderHelper.enableGlow(fluid);
+            GlowInfo glowInfo = GLSMHelper.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
 
-            fluidRenderHelper.color(fluid, fluidScale);
+            GLSMHelper.color(fluid, fluidScale);
             if (fluid.getFluid().isGaseous(fluid)) {
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
-            fluidRenderHelper.cleanup();
+            GLSMHelper.resetColor();
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
 
         GlStateManager.translate(0, -0.9F, 0);

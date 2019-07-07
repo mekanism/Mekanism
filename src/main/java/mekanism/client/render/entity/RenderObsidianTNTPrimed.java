@@ -1,7 +1,7 @@
 package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.entity.EntityObsidianTNT;
 import net.minecraft.client.Minecraft;
@@ -28,7 +28,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
     @Override
     public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
         BlockRendererDispatcher renderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.pushMatrix();
         GlStateManager.translate(x, y + 0.5, z);
 
         if (entityobsidiantnt.fuse - partialTicks + 1.0F < 10.0F) {
@@ -47,16 +47,23 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
         GlStateManager.translate(0, 0, 1.0F);
 
         if (entityobsidiantnt.fuse / 5 % 2 == 0) {
-            renderHelper.disableTexture2D().disableLighting().enableBlend();
+            GlStateManager.disableTexture2D();
+            GlStateManager.disableLighting();
+            GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.DST_ALPHA);
-            renderHelper.colorAlpha(f3);
+            GLSMHelper.colorAlpha(f3);
             GlStateManager.doPolygonOffset(-3.0F, -3.0F);
-            renderHelper.enablePolygonOffset();
+            GlStateManager.enablePolygonOffset();
             renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), 1.0F);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
+            GlStateManager.disablePolygonOffset();
+            GLSMHelper.resetColor();
+            GlStateManager.disableBlend();
+            GlStateManager.enableLighting();
+            GlStateManager.enableTexture2D();
         }
 
-        renderHelper.cleanup();
+        GlStateManager.popMatrix();
     }
 
     @Override

@@ -63,9 +63,9 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         for (ReactorLogic type : ReactorLogic.values()) {
-            GLSMHelper.INSTANCE.color(EnumColor.RED);
+            GLSMHelper.color(EnumColor.RED);
             drawTexturedModalRect(guiLeft + 24, guiTop + 32 + (22 * type.ordinal()), 0, 166 + (type == tileEntity.logicType ? 22 : 0), 128, 22);
-            GLSMHelper.INSTANCE.resetColor();
+            GLSMHelper.resetColor();
         }
         drawTexturedModalRect(guiLeft + 23, guiTop + 19, 176, overCooling(xAxis, yAxis), 11);
     }

@@ -3,9 +3,13 @@ package mekanism.generators.client.render;
 import mekanism.api.Coord4D;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -54,12 +58,21 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                 bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
                 if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
-                    MekanismRenderHelper renderHelper = FluidRenderer.initHelper();
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableCull();
+                    GlStateManager.enableBlend();
+                    GlStateManager.disableLighting();
+                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-                    renderHelper.enableGlow(tileEntity.structure.fluidStored)
-                          .color(tileEntity.structure.fluidStored, (float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure.getFluidCapacity());
+                    GlowInfo glowInfo = GLSMHelper.enableGlow(tileEntity.structure.fluidStored);
+                    GLSMHelper.color(tileEntity.structure.fluidStored, (float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure.getFluidCapacity());
                     FluidRenderer.getTankDisplay(data).render();
-                    renderHelper.cleanup();
+                    GLSMHelper.resetColor();
+                    GLSMHelper.disableGlow(glowInfo);
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.disableCull();
+                    GlStateManager.popMatrix();
                 }
             }
         }

@@ -99,9 +99,9 @@ public class GuiGasGauge extends GuiGauge<Gas> {
     @Override
     protected void applyRenderColor() {
         if (dummy) {
-            GLSMHelper.INSTANCE.color(dummyType);
+            GLSMHelper.color(dummyType);
         } else {
-            GLSMHelper.INSTANCE.color(infoHandler.getTank().getGas());
+            GLSMHelper.color(infoHandler.getTank().getGas());
         }
     }
 

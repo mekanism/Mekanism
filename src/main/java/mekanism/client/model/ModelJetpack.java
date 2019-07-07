@@ -1,10 +1,15 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelJetpack extends ModelBase {
@@ -182,7 +187,7 @@ public class ModelJetpack extends ModelBase {
         Packdoodad3.render(size);
         Bottomthruster.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
+        GlowInfo glowInfo = GLSMHelper.enableGlow();
         Packcore.render(size);
 
         light1.render(size);
@@ -191,12 +196,23 @@ public class ModelJetpack extends ModelBase {
         Packcore.render(size);
 
         //Wing blades need some more special stuff
-        renderHelper.addMatrix().enableBlendPreset().enableCull().colorAlpha(0.2F);
+        GlStateManager.pushMatrix();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.enableCull();
+        GLSMHelper.colorAlpha(0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
-        renderHelper.cleanup();
+        GLSMHelper.resetColor();
+        GlStateManager.disableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
+        GLSMHelper.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

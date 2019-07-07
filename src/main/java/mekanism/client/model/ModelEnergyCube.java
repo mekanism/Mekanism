@@ -1,6 +1,7 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.common.SideData.IOState;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.MekanismUtils;
@@ -370,11 +371,11 @@ public class ModelEnergyCube extends ModelBase {
             corner1.render(size);
         }
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.pushMatrix();
         GlStateManager.scale(1.001F, 1.005F, 1.001F);
         GlStateManager.translate(0, -0.0061F, 0);
         manager.bindTexture(BASE_OVERLAY);
-        renderHelper.color(tier.getBaseTier().getColor());
+        GLSMHelper.color(tier.getBaseTier().getColor());
 
         corner8.render(size);
         corner7.render(size);
@@ -385,7 +386,8 @@ public class ModelEnergyCube extends ModelBase {
         corner2.render(size);
         corner1.render(size);
 
-        renderHelper.cleanup();
+        GLSMHelper.resetColor();
+        GlStateManager.popMatrix();
     }
 
     public void renderSide(float size, EnumFacing side, IOState state, EnergyCubeTier tier, TextureManager renderer) {
@@ -394,19 +396,20 @@ public class ModelEnergyCube extends ModelBase {
             ports[side.ordinal()].render(size);
         }
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper();
+        GlowInfo glowInfo;
         if (state == IOState.OUTPUT) {
-            renderHelper.enableGlow();
+            glowInfo = GLSMHelper.enableGlow();
             renderer.bindTexture(BASE_OVERLAY);
             ports[side.ordinal()].render(size);
+        } else {
+            glowInfo = GLSMHelper.NO_GLOW;
         }
 
         renderer.bindTexture(state == IOState.OUTPUT ? OVERLAY_ON : OVERLAY_OFF);
 
         leds1[side.ordinal()].render(size);
         leds2[side.ordinal()].render(size);
-
-        renderHelper.cleanup();
+        GLSMHelper.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

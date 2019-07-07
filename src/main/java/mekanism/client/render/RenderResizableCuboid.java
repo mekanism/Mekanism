@@ -160,9 +160,9 @@ public class RenderResizableCuboid {
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder wr = tess.getBuffer();
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableAlpha();
+        GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        renderHelper.disableLighting();
+        GlStateManager.disableLighting();
 
         wr.begin(GL11.GL_QUADS, shadeTypes.vertexFormat);
 
@@ -174,7 +174,8 @@ public class RenderResizableCuboid {
 
         tess.draw();
 
-        renderHelper.cleanup();
+        GlStateManager.enableLighting();
+        GlStateManager.disableAlpha();
         GlStateManager.enableFog();
     }
 

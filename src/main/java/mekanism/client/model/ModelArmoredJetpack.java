@@ -1,9 +1,13 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import org.lwjgl.opengl.GL11;
 
 public class ModelArmoredJetpack extends ModelBase {
 
@@ -237,14 +241,24 @@ public class ModelArmoredJetpack extends ModelBase {
         Packdoodad3.render(size);
         Bottomthruster.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset().enableGlow().enableCull().colorAlpha(0.2F);
+        GlStateManager.pushMatrix();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlStateManager.enableCull();
+        GLSMHelper.colorAlpha(0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
-        renderHelper.cleanup();
+        GLSMHelper.resetColor();
+        GlStateManager.disableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
 
-        renderHelper.enableGlow();//No matrix so we can reuse a cleaned up render helper
         light1.render(size);
         light2.render(size);
         light3.render(size);
@@ -255,8 +269,7 @@ public class ModelArmoredJetpack extends ModelBase {
 
         Rightlight.render(size);
         Leftlight.render(size);
-        renderHelper.cleanup();
-        //TODO: Pushing into a matrix and then cleaning it up just feels weird, look into if there is a bit better of a way
+        GLSMHelper.disableGlow(glowInfo);
 
         Chestplate.render(size);
         Leftguardtop.render(size);

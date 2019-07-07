@@ -1,11 +1,15 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelFluidTank extends ModelBase {
@@ -95,12 +99,18 @@ public class ModelFluidTank extends ModelBase {
         PoleRF.render(size);
         Top.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset().color(tier.getBaseTier());
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GLSMHelper.color(tier.getBaseTier());
         FrontGlass.render(size);
         BackGlass.render(size);
         RightGlass.render(size);
         LeftGlass.render(size);
-        renderHelper.cleanup();
+        GLSMHelper.resetColor();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

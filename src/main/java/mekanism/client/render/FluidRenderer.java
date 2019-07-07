@@ -8,8 +8,6 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -29,12 +27,6 @@ public final class FluidRenderer {
 
     public static int getStages(RenderData data) {
         return data.height * BLOCK_STAGES;
-    }
-
-    public static MekanismRenderHelper initHelper() {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableCull().enableBlend().disableLighting();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        return renderHelper;
     }
 
     public static DisplayInteger getTankDisplay(RenderData data) {

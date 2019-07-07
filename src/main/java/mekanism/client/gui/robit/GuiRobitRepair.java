@@ -3,11 +3,11 @@ package mekanism.client.gui.robit;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerRepair;
@@ -58,7 +58,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().disableLighting();
+        GlStateManager.disableLighting();
         fontRenderer.drawString(LangUtils.localize("container.repair"), 60, 6, 0x404040);
 
         if (repairContainer.maximumCost > 0) {
@@ -91,7 +91,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
                 fontRenderer.drawString(s, i1, b0, k);
             }
         }
-        renderHelper.cleanup();
+        GlStateManager.enableLighting();
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -118,9 +118,9 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
         super.drawScreen(mouseX, mouseY, partialTick);
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().disableLighting();
+        GlStateManager.disableLighting();
         itemNameField.drawTextBox();
-        renderHelper.cleanup();
+        GlStateManager.enableLighting();
     }
 
     @Override

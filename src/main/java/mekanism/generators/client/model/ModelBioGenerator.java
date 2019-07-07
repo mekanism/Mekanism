@@ -1,8 +1,11 @@
 package mekanism.generators.client.model;
 
-import mekanism.client.render.MekanismRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import org.lwjgl.opengl.GL11;
 
 public class ModelBioGenerator extends ModelBase {
 
@@ -62,9 +65,13 @@ public class ModelBioGenerator extends ModelBase {
         back.render(size);
         bar.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         glass.render(size);
-        renderHelper.cleanup();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

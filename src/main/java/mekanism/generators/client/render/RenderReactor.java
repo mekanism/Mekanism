@@ -3,14 +3,18 @@ package mekanism.generators.client.render;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorController> {
@@ -20,11 +24,15 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
     @Override
     public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.isBurning()) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+            GlStateManager.pushMatrix();
             GlStateManager.translate(x + 0.5, y - 1.5, z + 0.5);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
-            renderHelper.enableBlendPreset().enableGlow();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlowInfo glowInfo = GLSMHelper.enableGlow();
 
             long scaledTemp = Math.round(tileEntity.getPlasmaTemp() / 1E8);
             float ticks = MekanismClient.ticksPassed + partialTick;
@@ -37,18 +45,22 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             scale = 1 - 0.9 * Math.sin(Math.toRadians(ticks * 4 * scaledTemp + 90F));
             renderPart(EnumColor.ORANGE, scale, ticks, scaledTemp, 5, -3, -35, 106);
 
-            renderHelper.cleanup();
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.popMatrix();
         }
     }
 
     private void renderPart(EnumColor color, double scale, float ticks, long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
         float ticksScaledTemp = ticks * scaledTemp;
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, scale);
-        renderHelper.color(color);
+        GLSMHelper.color(color);
         GlStateManager.rotate(ticksScaledTemp * mult1 + shift1, 0, 1, 0);
         GlStateManager.rotate(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
         core.render(0.0625F);
-        renderHelper.cleanup();
+        GLSMHelper.resetColor();
+        GlStateManager.popMatrix();
     }
 }

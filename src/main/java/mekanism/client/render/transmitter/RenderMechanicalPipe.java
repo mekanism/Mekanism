@@ -3,7 +3,8 @@ package mekanism.client.render.transmitter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -15,6 +16,8 @@ import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -63,11 +66,20 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
         float scale = Math.min(pipe.currentScale, 1);
         if (scale > 0.01 && fluid != null) {
-            MekanismRenderHelper renderHelper = initHelper().disableBlend();
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.enableBlend();
+            GlStateManager.disableLighting();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.disableBlend();
+            //TODO: Should this blend be removed or does the blend func actually do something here
+            GlowInfo glowInfo;
             if (fluidStack != null) {
-                renderHelper.enableGlow(fluidStack).color(fluidStack);
+                glowInfo = GLSMHelper.enableGlow(fluidStack);
+                GLSMHelper.color(fluidStack);
             } else {
-                renderHelper.enableGlow(fluid).color(fluid);
+                glowInfo = GLSMHelper.enableGlow(fluid);
+                GLSMHelper.color(fluid);
             }
 
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -76,7 +88,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             boolean gas = fluidStack == null ? fluid.isGaseous() : fluid.isGaseous(fluidStack);
             for (EnumFacing side : EnumFacing.VALUES) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
-                    renderDisplayLists(getListAndRender(side, fluidStack), renderHelper, scale, gas);
+                    renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
                     GlStateManager.translate(0.5, 0.5, 0.5);
                     Tessellator tessellator = Tessellator.getInstance();
@@ -87,16 +99,21 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     GlStateManager.translate(-0.5, -0.5, -0.5);
                 }
             }
-            renderDisplayLists(getListAndRender(null, fluidStack), renderHelper, scale, gas);
-            renderHelper.cleanup();
+            renderDisplayLists(getListAndRender(null, fluidStack), scale, gas);
+            GLSMHelper.resetColor();
+            GLSMHelper.disableGlow(glowInfo);
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
     }
 
-    private void renderDisplayLists(DisplayInteger[] displayLists, MekanismRenderHelper renderHelper, float scale, boolean gas) {
+    private void renderDisplayLists(DisplayInteger[] displayLists, float scale, boolean gas) {
         if (displayLists != null) {
             if (gas) {
-                renderHelper.colorAlpha(scale);
+                GLSMHelper.colorAlpha(scale);
                 displayLists[stages - 1].render();
+                GLSMHelper.resetColor();
             } else {
                 displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
             }

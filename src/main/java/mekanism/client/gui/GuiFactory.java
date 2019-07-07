@@ -93,9 +93,9 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
             if (tileEntity.getScaledGasLevel(160) > 0) {
                 GasStack gas = tileEntity.gasTank.getGas();
                 if (gas != null) {
-                    GLSMHelper.INSTANCE.color(gas);
+                    GLSMHelper.color(gas);
                     displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, gas.getGas().getSprite());
-                    GLSMHelper.INSTANCE.resetColor();
+                    GLSMHelper.resetColor();
                 }
             }
         } else if (tileEntity.getRecipeType() == RecipeType.INFUSING) {

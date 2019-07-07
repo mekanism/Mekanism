@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -86,7 +85,8 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
     @Override
     public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlend().enableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.enableAlpha();
         drawGas(minecraft, xPosition, yPosition, gasStack);
         if (overlay != null) {
             GlStateManager.pushMatrix();
@@ -94,7 +94,8 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
             overlay.draw(minecraft, xPosition, yPosition);
             GlStateManager.popMatrix();
         }
-        renderHelper.cleanup();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableBlend();
     }
 
     private void drawGas(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
@@ -115,7 +116,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, Gas gas, int scaledAmount,
           TextureAtlasSprite sprite) {
         minecraft.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        GLSMHelper.INSTANCE.color(gas);
+        GLSMHelper.color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;
         final int xRemainder = tiledWidth - (xTileCount * TEX_WIDTH);
@@ -138,7 +139,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
                 }
             }
         }
-        GLSMHelper.INSTANCE.resetColor();
+        GLSMHelper.resetColor();
     }
 
     @Override

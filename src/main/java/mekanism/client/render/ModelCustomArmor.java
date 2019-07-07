@@ -6,6 +6,7 @@ import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
@@ -163,9 +164,9 @@ public class ModelCustomArmor extends ModelBiped {
             }
 
             setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
+            GlowInfo glowInfo = GLSMHelper.enableGlow();
             super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-            renderHelper.cleanup();
+            GLSMHelper.disableGlow(glowInfo);
         }
     }
 

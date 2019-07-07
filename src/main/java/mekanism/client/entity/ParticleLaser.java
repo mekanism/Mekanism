@@ -1,7 +1,8 @@
 package mekanism.client.entity;
 
 import mekanism.api.Pos3D;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -39,7 +40,9 @@ public class ParticleLaser extends Particle {
         Tessellator tessellator = Tessellator.getInstance();
         tessellator.draw();
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).disableCull().enableGlow();
+        GlStateManager.pushMatrix();
+        GlStateManager.disableCull();
+        GlowInfo glowInfo = GLSMHelper.enableGlow();
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
         float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
         float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - interpPosZ);
@@ -90,7 +93,9 @@ public class ParticleLaser extends Particle {
               .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
         tessellator.draw();
 
-        renderHelper.cleanup();
+        GLSMHelper.disableGlow(glowInfo);
+        GlStateManager.enableCull();
+        GlStateManager.popMatrix();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
     }
 

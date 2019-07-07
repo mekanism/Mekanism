@@ -4,7 +4,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -14,6 +15,8 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -27,6 +30,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntitySpecialRenderer<S> {
@@ -52,21 +56,33 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                     if (bp.equals(configurable.getPos())) {
                         SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
                         if (data != TileComponentConfig.EMPTY) {
-                            MekanismRenderHelper renderHelper = initHelper().color(data.color, 0.6F);
+                            GlStateManager.pushMatrix();
+                            GlStateManager.enableCull();
+                            GlStateManager.disableLighting();
+                            GlowInfo glowInfo = GLSMHelper.enableGlow();
+                            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+                            GlStateManager.disableAlpha();
+                            GlStateManager.enableBlend();
+                            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+
+                            GLSMHelper.color(data.color, 0.6F);
                             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                             GlStateManager.translate(x, y, z);
                             int display = getOverlayDisplay(pos.sideHit, type).display;
                             GlStateManager.callList(display);
-                            renderHelper.cleanup();
+                            GLSMHelper.resetColor();
+
+                            GlStateManager.disableBlend();
+                            GlStateManager.enableAlpha();
+                            GLSMHelper.disableGlow(glowInfo);
+                            GlStateManager.enableLighting();
+                            GlStateManager.disableCull();
+                            GlStateManager.popMatrix();
                         }
                     }
                 }
             }
         }
-    }
-
-    private MekanismRenderHelper initHelper() {
-        return new MekanismRenderHelper(true).enableCull().disableLighting().enableGlow().enableBlendPreset();
     }
 
     private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type) {

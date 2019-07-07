@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import mekanism.api.Coord4D;
 import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -13,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -61,21 +61,21 @@ public class GuiSeismicReader extends GuiScreen {
         // Draws the up button
         boolean upIntersects = upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1));
         if (upIntersects) {
-            GLSMHelper.INSTANCE.color3f(0.5F, 0.5F, 1);
+            GLSMHelper.color3f(0.5F, 0.5F, 1);
         }
         drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
         if (upIntersects) {
-            GLSMHelper.INSTANCE.resetColor();
+            GLSMHelper.resetColor();
         }
 
         // Draws the down button
         boolean downIntersects = downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1));
         if (downIntersects) {
-            GLSMHelper.INSTANCE.color3f(0.5F, 0.5F, 1);
+            GLSMHelper.color3f(0.5F, 0.5F, 1);
         }
         drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
         if (downIntersects) {
-            GLSMHelper.INSTANCE.resetColor();
+            GLSMHelper.resetColor();
         }
 
         // Fix the overlapping if > 100
@@ -96,7 +96,7 @@ public class GuiSeismicReader extends GuiScreen {
             int layer = currentLayer + (i - 5);
             if (0 <= layer && layer < blockList.size()) {
                 ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
-                MekanismRenderHelper stackRenderHelper = new MekanismRenderHelper(true);
+                GlStateManager.pushMatrix();
                 GlStateManager.translate(centralX - 2, centralY - i * 16 + (22 * 2), 0);
                 if (i < 4) {
                     GlStateManager.translate(0.2F, 2.5F, 0);
@@ -105,9 +105,12 @@ public class GuiSeismicReader extends GuiScreen {
                     GlStateManager.translate(1.5F, 0, 0);
                     GlStateManager.scale(0.8F, 0.8F, 0.8F);
                 }
-                stackRenderHelper.enableDepth().enableGUIStandardItemLighting();
+                GlStateManager.enableDepth();
+                RenderHelper.enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(stack, 0, 0);
-                stackRenderHelper.cleanup();
+                RenderHelper.disableStandardItemLighting();
+                GlStateManager.disableDepth();
+                GlStateManager.popMatrix();
             }
         }
 

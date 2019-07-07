@@ -1,10 +1,15 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelGasMask extends ModelBase {
@@ -238,12 +243,17 @@ public class ModelGasMask extends ModelBase {
         pipecornerBR.render(size);
         pipecornerBL.render(size);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableGlow();
+        GlowInfo glowInfo = GLSMHelper.enableGlow();
         lightL.render(size);
         lightR.render(size);
 
         //Glass needs more settings
-        renderHelper.enableBlendPreset().colorAlpha(0.3F).enableCull();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GLSMHelper.colorAlpha(0.3F);
+        GlStateManager.enableCull();
 
         glasstop.render(size);
         glassfront.render(size);
@@ -252,7 +262,11 @@ public class ModelGasMask extends ModelBase {
         glassbackR.render(size);
         glassbackL.render(size);
 
-        renderHelper.cleanup();
+        GlStateManager.disableCull();
+        GLSMHelper.resetColor();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GLSMHelper.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

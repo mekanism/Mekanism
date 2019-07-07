@@ -30,7 +30,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock
             return;
         }
         int start = 0;
-        GLSMHelper.INSTANCE.color(fluid);
+        GLSMHelper.color(fluid);
         TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
         mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         while (true) {
@@ -48,7 +48,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock
                 break;
             }
         }
-        GLSMHelper.INSTANCE.resetColor();
+        GLSMHelper.resetColor();
         mc.renderEngine.bindTexture(getGaugeResource());
         drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 176, side == 0 ? 0 : 54, 16, 54);
     }

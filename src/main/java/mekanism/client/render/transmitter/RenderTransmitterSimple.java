@@ -1,9 +1,12 @@
 package mekanism.client.render.transmitter;
 
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumFacing;
 
@@ -12,7 +15,11 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
     protected abstract void renderSide(BufferBuilder renderer, EnumFacing side, T transmitter);
 
     protected void render(T transmitter, double x, double y, double z, int glow) {
-        MekanismRenderHelper renderHelper = initHelper();
+        GlStateManager.pushMatrix();
+        GlStateManager.enableCull();
+        GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuffer();
         GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
@@ -21,8 +28,12 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
             renderSide(worldRenderer, side, transmitter);
         }
 
-        renderHelper.enableGlow(glow);
+        GlowInfo glowInfo = GLSMHelper.enableGlow(glow);
         tessellator.draw();
-        renderHelper.cleanup();
+        GLSMHelper.disableGlow(glowInfo);
+        GlStateManager.enableLighting();
+        GlStateManager.disableBlend();
+        GlStateManager.disableCull();
+        GlStateManager.popMatrix();
     }
 }

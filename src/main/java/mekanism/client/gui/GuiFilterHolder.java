@@ -141,19 +141,19 @@ public abstract class GuiFilterHolder<TILE extends TileEntityContainerBlock, FIL
             if (filter != null) {
                 // Change colour based on filter type
                 if (filter instanceof IItemStackFilter) {
-                    GLSMHelper.INSTANCE.color(EnumColor.INDIGO, 1.0F, 2.5F);
+                    GLSMHelper.color(EnumColor.INDIGO, 1.0F, 2.5F);
                 } else if (filter instanceof IOreDictFilter) {
-                    GLSMHelper.INSTANCE.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
+                    GLSMHelper.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
                 } else if (filter instanceof IMaterialFilter) {
-                    GLSMHelper.INSTANCE.color(EnumColor.PURPLE, 1.0F, 4F);
+                    GLSMHelper.color(EnumColor.PURPLE, 1.0F, 4F);
                 } else if (filter instanceof IModIDFilter) {
-                    GLSMHelper.INSTANCE.color(EnumColor.PINK, 1.0F, 2.5F);
+                    GLSMHelper.color(EnumColor.PINK, 1.0F, 2.5F);
                 }
                 int yStart = i * filterH + filterY;
                 // Flag for mouse over this filter
                 boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
                 drawTexturedModalRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
-                GLSMHelper.INSTANCE.resetColor();
+                GLSMHelper.resetColor();
 
                 // Draw sort buttons
                 int arrowX = filterX + filterW - 12;

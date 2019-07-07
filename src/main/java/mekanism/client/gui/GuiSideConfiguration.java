@@ -103,11 +103,11 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             if (data != TileComponentConfig.EMPTY) {
                 boolean doColor = data.color != EnumColor.GREY;
                 if (doColor) {
-                    GLSMHelper.INSTANCE.color(data.color);
+                    GLSMHelper.color(data.color);
                 }
                 drawTexturedModalRect(guiLeft + x, guiTop + y, 176, overSide(xAxis, yAxis, x, y), 14);
                 if (doColor) {
-                    GLSMHelper.INSTANCE.resetColor();
+                    GLSMHelper.resetColor();
                 }
             } else {
                 drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 28, 14, 14);

@@ -3,12 +3,16 @@ package mekanism.client.gui.element;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderHelper;
+import mekanism.client.render.GLSMHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiGraph extends GuiElement {
@@ -109,11 +113,16 @@ public class GuiGraph extends GuiElement {
             int displays = (relativeHeight - 1) / 10 + ((relativeHeight - 1) % 10 > 0 ? 1 : 0);
 
             for (int iter = 0; iter < displays; iter++) {
-                MekanismRenderHelper renderHelper = new MekanismRenderHelper().enableBlendPreset();
-                renderHelper.colorAlpha(0.2F + (0.8F * ((float) i / (float) graphData.size())));
+                GlStateManager.shadeModel(GL11.GL_SMOOTH);
+                GlStateManager.disableAlpha();
+                GlStateManager.enableBlend();
+                GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                GLSMHelper.colorAlpha(0.2F + (0.8F * ((float) i / (float) graphData.size())));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
-                renderHelper.cleanup();
+                GLSMHelper.resetColor();
+                GlStateManager.disableBlend();
+                GlStateManager.enableAlpha();
             }
         }
     }

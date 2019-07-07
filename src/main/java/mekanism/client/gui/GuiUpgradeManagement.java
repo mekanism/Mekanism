@@ -152,9 +152,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
             } else {
                 yRender = 166 + 12;
             }
-            GLSMHelper.INSTANCE.color(upgrade.getColor(), 1.0F, 2.5F);
+            GLSMHelper.color(upgrade.getColor(), 1.0F, 2.5F);
             drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 0, yRender, 58, 12);
-            GLSMHelper.INSTANCE.resetColor();
+            GLSMHelper.resetColor();
         }
     }
 
