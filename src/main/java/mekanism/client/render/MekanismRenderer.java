@@ -211,7 +211,11 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(EnumColor color, float alpha) {
-        //TODO: ensure that alpha is between 0 and 1
+        if (alpha < 0) {
+            alpha = 0;
+        } else if (alpha > 1) {
+            alpha = 1;
+        }
         int argb = (int) (255 * alpha) << 24;
         argb |= color.rgbCode[0] << 16;
         argb |= color.rgbCode[1] << 8;
