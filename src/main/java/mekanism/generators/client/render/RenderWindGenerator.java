@@ -15,9 +15,10 @@ public class RenderWindGenerator extends TileEntitySpecialRenderer<TileEntityWin
     @Override
     public void render(TileEntityWindGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));
-        GLSMHelper.INSTANCE.rotate(tileEntity.facing).rotateZ(180, 1);
+        GLSMHelper.rotate(tileEntity.facing);
+        GlStateManager.rotate(180, 0, 0, 1);
         double angle = tileEntity.getAngle();
         if (tileEntity.getActive()) {
             angle = (tileEntity.getAngle() + ((tileEntity.getPos().getY() + 4F) / TileEntityWindGenerator.SPEED_SCALED) * partialTick) % 360;

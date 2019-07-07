@@ -2,7 +2,6 @@ package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelDigitalMiner;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -21,13 +20,13 @@ public class RenderDigitalMinerItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.rotateZ(180, 1);
+        GlStateManager.rotate(180, 0, 0, 1);
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            GLSMHelper.INSTANCE.rotateY(-90, 1);
+            GlStateManager.rotate(-90, 0, 1, 0);
         } else if (transformType != TransformType.GUI) {
-            GLSMHelper.INSTANCE.rotateY(90, 1);
+            GlStateManager.rotate(90, 0, 1, 0);
         }
-        GLSMHelper.INSTANCE.translateXY(0.35, 0.1);
+        GlStateManager.translate(0.35, 0.1, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
         digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine, true);
         GlStateManager.popMatrix();

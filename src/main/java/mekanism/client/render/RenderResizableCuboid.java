@@ -129,7 +129,7 @@ public class RenderResizableCuboid {
      */
     public void renderCubeFromCentre(Model3D cuboid) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translate(-cuboid.sizeX() / 2D, -cuboid.sizeY() / 2D, -cuboid.sizeZ() / 2D);
+        GlStateManager.translate(-cuboid.sizeX() / 2D, -cuboid.sizeY() / 2D, -cuboid.sizeZ() / 2D);
         renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
         GlStateManager.popMatrix();
     }

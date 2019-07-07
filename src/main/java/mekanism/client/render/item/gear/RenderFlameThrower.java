@@ -2,7 +2,6 @@ package mekanism.client.render.item.gear;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFlamethrower;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
@@ -27,24 +26,30 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.rotateZ(160, 1);
+        GlStateManager.rotate(160, 0, 0, 1);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Flamethrower.png"));
-        GLSMHelper.INSTANCE.translateY(-1.0F).rotateY(135, 1).rotateZ(-20, 1);
+        GlStateManager.translate(0, -1.0F, 0);
+        GlStateManager.rotate(135, 0, 1, 0);
+        GlStateManager.rotate(-20, 0, 0, 1);
 
         if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_RIGHT_HAND
             || transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                GLSMHelper.INSTANCE.rotateY(55, 1);
+                GlStateManager.rotate(55, 0, 1, 0);
             } else if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                GLSMHelper.INSTANCE.rotateY(-160, 1).rotateX(30, 1);
+                GlStateManager.rotate(-160, 0, 1, 0);
+                GlStateManager.rotate(30, 1, 0, 0);
             } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
-                GLSMHelper.INSTANCE.translateY(0.7F).rotateY(75, 1);
+                GlStateManager.translate(0, 0.7F, 0);
+                GlStateManager.rotate(75, 0, 1, 0);
             } else {//if(type == TransformType.THIRD_PERSON_LEFT_HAND)
-                GLSMHelper.INSTANCE.translateXY(-0.5F, 0.7F);
+                GlStateManager.translate(-0.5F, 0.7F, 0);
             }
-            GLSMHelper.INSTANCE.scale(2.5F).translateYZ(-1.0F, -0.5F);
+            GlStateManager.scale(2.5F, 2.5F, 2.5F);
+            GlStateManager.translate(0, -1.0F, -0.5F);
         } else if (transformType == TransformType.GUI) {
-            GLSMHelper.INSTANCE.translateX(-0.6F).rotateY(45, 1);
+            GlStateManager.translate(-0.6F, 0, 0);
+            GlStateManager.rotate(45, 0, 1, 0);
         }
         flamethrower.render(0.0625F);
         GlStateManager.popMatrix();

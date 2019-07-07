@@ -3,7 +3,6 @@ package mekanism.client.render.entity;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelBalloon;
-import mekanism.client.render.GLSMHelper;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -53,7 +52,8 @@ public class RenderBalloon extends Render<EntityBalloon> {
 
     public void render(EnumColor color, double x, double y, double z) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translate(x, y, z).rotateX(180, 1);
+        GlStateManager.translate(x, y, z);
+        GlStateManager.rotate(180, 1, 0, 0);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
         model.render(0.0625F, color);
         GlStateManager.popMatrix();

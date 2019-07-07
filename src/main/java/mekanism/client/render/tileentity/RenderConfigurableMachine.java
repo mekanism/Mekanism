@@ -54,7 +54,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                         if (data != TileComponentConfig.EMPTY) {
                             MekanismRenderHelper renderHelper = initHelper().color(data.color, 0.6F);
                             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                            renderHelper.translate(x, y, z);
+                            GlStateManager.translate(x, y, z);
                             int display = getOverlayDisplay(pos.sideHit, type).display;
                             GlStateManager.callList(display);
                             renderHelper.cleanup();

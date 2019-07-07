@@ -1,7 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.api.Coord4D;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.LangUtils;
@@ -38,16 +37,19 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             GlStateManager.pushMatrix();
             switch (facing) {
                 case NORTH:
-                    GLSMHelper.INSTANCE.translate(x + 0.73, y + 0.83, z - 0.0001);
+                    GlStateManager.translate(x + 0.73, y + 0.83, z - 0.0001);
                     break;
                 case SOUTH:
-                    GLSMHelper.INSTANCE.translate(x + 0.27, y + 0.83, z + 1.0001).rotateY(180, 1);
+                    GlStateManager.translate(x + 0.27, y + 0.83, z + 1.0001);
+                    GlStateManager.rotate(180, 0, 1, 0);
                     break;
                 case WEST:
-                    GLSMHelper.INSTANCE.translate(x - 0.0001, y + 0.83, z + 0.27).rotateY(90, 1);
+                    GlStateManager.translate(x - 0.0001, y + 0.83, z + 0.27);
+                    GlStateManager.rotate(90, 0, 1, 0);
                     break;
                 case EAST:
-                    GLSMHelper.INSTANCE.translate(x + 1.0001, y + 0.83, z + 0.73).rotateY(-90, 1);
+                    GlStateManager.translate(x + 1.0001, y + 0.83, z + 0.73);
+                    GlStateManager.rotate(-90, 0, 1, 0);
                     break;
                 default:
                     break;
@@ -55,7 +57,8 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
 
             float scale = 0.03125F;
             float scaler = 0.9F;
-            GLSMHelper.INSTANCE.scale(scale * scaler, scale * scaler, -0.0001F).rotateZ(180, 1);
+            GlStateManager.scale(scale * scaler, scale * scaler, -0.0001F);
+            GlStateManager.rotate(180, 0, 0, 1);
             renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
             GlStateManager.popMatrix();
         }
@@ -71,24 +74,33 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
         renderHelper.enablePolygonOffset();
         float displayWidth = 1;
         float displayHeight = 1;
-        renderHelper.translate(x, y, z);
+        GlStateManager.translate(x, y, z);
 
         switch (side) {
             case SOUTH:
-                renderHelper.translateY(1).rotateY(0, 1).rotateX(90, 1);
+                GlStateManager.translate(0, 1, 0);
+                GlStateManager.rotate(0, 0, 1, 0);
+                GlStateManager.rotate(90, 1, 0, 0);
                 break;
             case NORTH:
-                renderHelper.translateAll(1).rotateY(180, 1).rotateX(90, 1);
+                GlStateManager.translate(1, 1, 1);
+                GlStateManager.rotate(180, 0, 1, 0);
+                GlStateManager.rotate(90, 1, 0, 0);
                 break;
             case EAST:
-                renderHelper.translateYZ(1, 1).rotateY(90, 1).rotateX(90, 1);
+                GlStateManager.translate(0, 1, 1);
+                GlStateManager.rotate(90, 0, 1, 0);
+                GlStateManager.rotate(90, 1, 0, 0);
                 break;
             case WEST:
-                renderHelper.translateXY(1, 1).rotateY(-90, 1).rotateX(90, 1);
+                GlStateManager.translate(1, 1, 0);
+                GlStateManager.rotate(-90, 0, 1, 0);
+                GlStateManager.rotate(90, 1, 0, 0);
                 break;
         }
 
-        renderHelper.translate(displayWidth / 2, 1F, displayHeight / 2).rotateX(-90, 1);
+        GlStateManager.translate(displayWidth / 2, 1F, displayHeight / 2);
+        GlStateManager.rotate(-90, 1, 0, 0);
 
         FontRenderer fontRenderer = getFontRenderer();
 
@@ -101,7 +113,8 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             scale = Math.min(scale, maxScale);
         }
 
-        renderHelper.scale(scale, -scale, scale).disableDepthMask();
+        GlStateManager.scale(scale, -scale, scale);
+        renderHelper.disableDepthMask();
         int realHeight = (int) Math.floor(displayHeight / scale);
         int realWidth = (int) Math.floor(displayWidth / scale);
         int offsetX = (realWidth - requiredWidth) / 2;

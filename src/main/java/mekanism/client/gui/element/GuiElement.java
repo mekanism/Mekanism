@@ -3,7 +3,6 @@ package mekanism.client.gui.element;
 import java.awt.Rectangle;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.GLSMHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -70,7 +69,7 @@ public abstract class GuiElement {
             float yAdd = 4 - (scale * 8) / 2F;
 
             GlStateManager.pushMatrix();
-            GLSMHelper.INSTANCE.scale(scale);
+            GlStateManager.scale(scale, scale, scale);
             getFontRenderer().drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }

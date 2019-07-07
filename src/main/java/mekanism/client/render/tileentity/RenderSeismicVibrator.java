@@ -18,9 +18,10 @@ public class RenderSeismicVibrator extends TileEntitySpecialRenderer<TileEntityS
     @Override
     public void render(TileEntitySeismicVibrator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
-        GLSMHelper.INSTANCE.rotate(tileEntity.facing).rotateZ(180, 1);
+        GLSMHelper.rotate(tileEntity.facing);
+        GlStateManager.rotate(180, 0, 0, 1);
         float actualRate = (float) Math.sin((tileEntity.clientPiston + (tileEntity.isActive ? partialTick : 0)) / 5F);
         model.renderWithPiston(Math.max(0, actualRate), 0.0625F);
         GlStateManager.popMatrix();

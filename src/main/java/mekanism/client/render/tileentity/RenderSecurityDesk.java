@@ -18,9 +18,10 @@ public class RenderSecurityDesk extends TileEntitySpecialRenderer<TileEntitySecu
     @Override
     public void render(TileEntitySecurityDesk tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk.png"));
-        GLSMHelper.INSTANCE.rotate(tileEntity.facing).rotateZ(180, 1);
+        GLSMHelper.rotate(tileEntity.facing);
+        GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F, rendererDispatcher.renderEngine);
         GlStateManager.popMatrix();
     }

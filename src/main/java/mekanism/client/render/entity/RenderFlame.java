@@ -35,9 +35,9 @@ public class RenderFlame extends Render<EntityFlame> {
 
         bindTexture(getEntityTexture(entity));
 
-        renderHelper.translate(x, y, z);
-        renderHelper.rotateY((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 1);
-        renderHelper.rotateZ(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 1);
+        GlStateManager.translate(x, y, z);
+        GlStateManager.rotate((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0, 1, 0);
+        GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0, 0, 1);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldrenderer = tessellator.getBuffer();
@@ -49,10 +49,13 @@ public class RenderFlame extends Render<EntityFlame> {
         float f5 = (float) (5 + i * 10) / 32F;
         float scale = 0.05625F * (0.8F + size);
 
-        renderHelper.enableRescaleNormal().rotateX(45, 1).scale(scale).translateX(-4F);
+        renderHelper.enableRescaleNormal();
+        GlStateManager.rotate(45, 1, 0, 0);
+        GlStateManager.scale(scale, scale, scale);
+        GlStateManager.translate(-4F, 0, 0);
 
         for (int j = 0; j < 4; j++) {
-            renderHelper.rotateX(90, 1);
+            GlStateManager.rotate(90, 1, 0, 0);
             GlStateManager.glNormal3f(0.0F, 0.0F, scale);
 
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);

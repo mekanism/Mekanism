@@ -1,7 +1,6 @@
 package mekanism.client.render.item.machine;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -19,7 +18,10 @@ public class RenderPersonalChestItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.rotateY(180, 1).translateAll(-0.5F).translateYZ(1.0F, 1.0F).scale(1.0F, -1F, -1F);
+        GlStateManager.rotate(180, 0, 1, 0);
+        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+        GlStateManager.translate(0, 1.0F, 1.0F);
+        GlStateManager.scale(1.0F, -1F, -1F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
         personalChest.renderAll();
         GlStateManager.popMatrix();

@@ -9,6 +9,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -26,29 +27,32 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 
     @Override
     public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset().translate(x + 0.5, y + 1.5, z + 0.5);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableBlendPreset();
+        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         switch (tileEntity.facing) {
             case DOWN:
-                renderHelper.rotateX(90, -1).translateYZ(1.0F, -1.0F);
+                GlStateManager.rotate(90, -1, 0, 0);
+                GlStateManager.translate(0, 1.0F, -1.0F);
                 break;
             case UP:
-                renderHelper.rotateX(90, 1).translateYZ(1.0F, 1.0F);
+                GlStateManager.rotate(90, 1, 0, 0);
+                GlStateManager.translate(0, 1.0F, 1.0F);
                 break;
             case NORTH:
-                renderHelper.rotateY(0, 1);
+                GlStateManager.rotate(0, 0, 1, 0);
                 break;
             case SOUTH:
-                renderHelper.rotateY(180, 1);
+                GlStateManager.rotate(180, 0, 1, 0);
                 break;
             case WEST:
-                renderHelper.rotateY(90, 1);
+                GlStateManager.rotate(90, 0, 1, 0);
                 break;
             case EAST:
-                renderHelper.rotateY(270, 1);
+                GlStateManager.rotate(270, 0, 1, 0);
                 break;
         }
 
-        renderHelper.rotateZ(180, 1);
+        GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine, false);
 
         for (EnumFacing side : EnumFacing.values()) {
@@ -59,13 +63,18 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
         renderHelper.cleanup();
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
-            MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y + 0.5, z + 0.5);
+            MekanismRenderHelper coreRenderHelper = new MekanismRenderHelper(true);
+            GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
             bindTexture(coreTexture);
             coreRenderHelper.enableBlendPreset().enableGlow();
 
             float ticks = MekanismClient.ticksPassed + partialTick;
-            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true).scale(0.4F).color(tileEntity.tier.getBaseTier())
-                  .translateY(Math.sin(Math.toRadians(3 * ticks)) / 7).rotateY(4 * ticks, 1).rotateYZ(36F + 4 * ticks, 1, 1);
+            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true);
+            GlStateManager.scale(0.4F, 0.4F, 0.4F);
+            coreColorRenderHelper.color(tileEntity.tier.getBaseTier());
+            GlStateManager.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            GlStateManager.rotate(4 * ticks, 0, 1, 0);
+            GlStateManager.rotate(36F + 4 * ticks, 0, 1, 1);
             core.render(0.0625F);
             coreColorRenderHelper.cleanup();
             coreRenderHelper.cleanup();

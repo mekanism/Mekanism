@@ -7,6 +7,7 @@ import mekanism.client.render.MekanismRenderHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,7 +20,8 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
     @Override
     public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.isBurning()) {
-            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translate(x + 0.5, y - 1.5, z + 0.5);
+            MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+            GlStateManager.translate(x + 0.5, y - 1.5, z + 0.5);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
             renderHelper.enableBlendPreset().enableGlow();
@@ -41,8 +43,11 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
 
     private void renderPart(EnumColor color, double scale, float ticks, long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
         float ticksScaledTemp = ticks * scaledTemp;
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(scale).color(color)
-              .rotateY(ticksScaledTemp * mult1 + shift1, 1).rotateYZ(ticksScaledTemp * mult2 + shift2, 1, 1);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.scale(scale, scale, scale);
+        renderHelper.color(color);
+        GlStateManager.rotate(ticksScaledTemp * mult1 + shift1, 0, 1, 0);
+        GlStateManager.rotate(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
         core.render(0.0625F);
         renderHelper.cleanup();
     }

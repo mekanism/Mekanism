@@ -12,6 +12,7 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -28,7 +29,11 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
-        MekanismRenderHelper cubeRenderHelper = new MekanismRenderHelper(true).rotateZ(180, 1).rotateY(180, 1).translateY(-1.0F).enableBlendPreset();
+        MekanismRenderHelper cubeRenderHelper = new MekanismRenderHelper(true);
+        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotate(180, 0, 1, 0);
+        GlStateManager.translate(0, -1.0F, 0);
+        cubeRenderHelper.enableBlendPreset();
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
@@ -45,9 +50,12 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
             coreRenderHelper.enableBlendPreset().enableGlow();
 
-            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true)
-                  .scale(0.4F).color(tier.getBaseTier()).translateY(Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7)
-                  .rotateY(MekanismClient.ticksPassed * 4, 1).rotateYZ(36F + MekanismClient.ticksPassed * 4, 1, 1);
+            MekanismRenderHelper coreColorRenderHelper = new MekanismRenderHelper(true);
+            GlStateManager.scale(0.4F, 0.4F, 0.4F);
+            coreColorRenderHelper.color(tier.getBaseTier());
+            GlStateManager.translate(0, Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
+            GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
+            GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);
             core.render(0.0625F);
             coreColorRenderHelper.cleanup();
             coreRenderHelper.cleanup();

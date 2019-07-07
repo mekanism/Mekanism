@@ -7,6 +7,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -369,7 +370,9 @@ public class ModelEnergyCube extends ModelBase {
             corner1.render(size);
         }
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).scale(1.001F, 1.005F, 1.001F).translateY(-0.0061F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.scale(1.001F, 1.005F, 1.001F);
+        GlStateManager.translate(0, -0.0061F, 0);
         manager.bindTexture(BASE_OVERLAY);
         renderHelper.color(tier.getBaseTier().getColor());
 

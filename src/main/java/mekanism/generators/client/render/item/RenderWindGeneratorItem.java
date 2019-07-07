@@ -1,7 +1,6 @@
 package mekanism.generators.client.render.item;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -20,22 +19,25 @@ public class RenderWindGeneratorItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.rotateZ(180, 1);
+        GlStateManager.rotate(180, 0, 0, 1);
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            GLSMHelper.INSTANCE.rotateY(180, 1).translateY(0.4F);
+            GlStateManager.rotate(180, 0, 1, 0);
+            GlStateManager.translate(0, 0.4F, 0);
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                GLSMHelper.INSTANCE.rotateY(-45, 1);
+                GlStateManager.rotate(-45, 0, 1, 0);
             } else {
-                GLSMHelper.INSTANCE.rotateY(45, 1);
+                GlStateManager.rotate(45, 0, 1, 0);
             }
-            GLSMHelper.INSTANCE.rotateX(50, 1).scale(2.0F).translateY(-0.4F);
+            GlStateManager.rotate(50, 1, 0, 0);
+            GlStateManager.scale(2.0F, 2.0F, 2.0F);
+            GlStateManager.translate(0, -0.4F, 0);
         } else {
             if (transformType == TransformType.GUI) {
-                GLSMHelper.INSTANCE.rotateY(90, 1);
+                GlStateManager.rotate(90, 0, 1, 0);
             } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                GLSMHelper.INSTANCE.rotateY(180, 1);
+                GlStateManager.rotate(180, 0, 1, 0);
             }
-            GLSMHelper.INSTANCE.translateY(0.4F);
+            GlStateManager.translate(0, 0.4F, 0);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));

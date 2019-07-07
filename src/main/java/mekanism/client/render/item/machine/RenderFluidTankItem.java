@@ -3,7 +3,6 @@ package mekanism.client.render.item.machine;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -41,7 +40,8 @@ public class RenderFluidTankItem {
         if (fluid != null && fluidScale > 0) {
             MekanismRenderHelper fluidRenderHelper = new MekanismRenderHelper(true).enableCull().disableLighting().enableBlendPreset();
             MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            fluidRenderHelper.translateAll(-0.5).enableGlow(fluid);
+            GlStateManager.translate(-0.5, -0.5, -0.5);
+            fluidRenderHelper.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
@@ -57,7 +57,8 @@ public class RenderFluidTankItem {
             fluidRenderHelper.cleanup();
         }
 
-        GLSMHelper.INSTANCE.translateY(-0.9F).scale(0.9F, 0.8F, 0.9F);
+        GlStateManager.translate(0, -0.9F, 0);
+        GlStateManager.scale(0.9F, 0.8F, 0.9F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
         fluidTank.render(0.073F, tier);
         GlStateManager.popMatrix();

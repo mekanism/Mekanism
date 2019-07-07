@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -80,13 +79,15 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 double zShifted = z + pos[2];
 
                 GlStateManager.pushMatrix();
-                GLSMHelper.INSTANCE.translate(xShifted, yShifted, zShifted).scale(0.75);
+                GlStateManager.translate(xShifted, yShifted, zShifted);
+                GlStateManager.scale(0.75, 0.75, 0.75);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
                 GlStateManager.popMatrix();
 
                 if (stack.color != null) {
                     bindTexture(transporterBox);
-                    MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGlow().disableCull().color(stack.color).translate(xShifted, yShifted, zShifted);
+                    MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableGlow().disableCull().color(stack.color);
+                    GlStateManager.translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
                     renderHelper.cleanup();
                 }
@@ -106,7 +107,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     MekanismRenderHelper renderHelper = pushTransporter();
                     renderHelper.colorAlpha(0.8F);
                     bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                    renderHelper.translate(x, y, z).scale(0.5).translateAll(0.5);
+                    GlStateManager.translate(x, y, z);
+                    GlStateManager.scale(0.5, 0.5, 0.5);
+                    GlStateManager.translate(0.5, 0.5, 0.5);
 
                     int display = getOverlayDisplay(pos.sideHit, mode).display;
                     GlStateManager.callList(display);

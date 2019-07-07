@@ -2,7 +2,6 @@ package mekanism.generators.client.render;
 
 import java.util.EnumMap;
 import java.util.Map;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -32,32 +31,32 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
     public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.bioFuelSlot.fluidStored > 0) {
             MekanismRenderHelper renderHelper = initHelper().enableGlow();
-            renderHelper.translate(x, y, z);
+            GlStateManager.translate(x, y, z);
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages - 1)].render();
             renderHelper.cleanup();
         }
 
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
-        switch (tileEntity.facing.ordinal()) {
-            case 2://NORTH
-                GLSMHelper.INSTANCE.rotateY(180, 1);
+        switch (tileEntity.facing) {
+            case NORTH:
+                GlStateManager.rotate(180, 0, 1, 0);
                 break;
-            case 3://SOUTH
-                GLSMHelper.INSTANCE.rotateY(0, 1);
+            case SOUTH:
+                GlStateManager.rotate(0, 0, 1, 0);
                 break;
-            case 4://WEST
-                GLSMHelper.INSTANCE.rotateY(270, 1);
+            case WEST:
+                GlStateManager.rotate(270, 0, 1, 0);
                 break;
-            case 5://EAST
-                GLSMHelper.INSTANCE.rotateY(90, 1);
+            case EAST:
+                GlStateManager.rotate(90, 0, 1, 0);
                 break;
         }
 
-        GLSMHelper.INSTANCE.rotateZ(180, 1);
+        GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F);
         GlStateManager.popMatrix();
     }

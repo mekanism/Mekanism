@@ -62,7 +62,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
             GlStateManager.pushMatrix();
-            GLSMHelper.INSTANCE.scale(scale);
+            GlStateManager.scale(scale, scale, scale);
             fontRenderer.drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }
@@ -205,7 +205,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
             try {
                 MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).enableDepth().enableGUIStandardItemLighting();
                 if (scale != 1) {
-                    renderHelper.scale(scale);
+                    GlStateManager.scale(scale, scale, scale);
                 }
                 itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 renderHelper.cleanup();

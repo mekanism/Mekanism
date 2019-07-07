@@ -1,7 +1,6 @@
 package mekanism.client.render.item;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
@@ -32,16 +31,16 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
     protected void renderWithTransform(@Nonnull ItemStack stack) {
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
-            GLSMHelper.INSTANCE.rotateY(180, 1);
+            GlStateManager.rotate(180, 0, 1, 0);
         }
 
         renderBlockSpecific(stack, transformType);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
-                GLSMHelper.INSTANCE.rotateY(90, 1);
+                GlStateManager.rotate(90, 0, 1, 0);
             } else {
-                GLSMHelper.INSTANCE.rotateY(180, 1);
+                GlStateManager.rotate(180, 0, 1, 0);
             }
             renderItemSpecific(stack, transformType);
         }
@@ -52,7 +51,9 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true).translateAll(0.5F).rotateY(180, 1);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.translate(0.5F, 0.5F, 0.5F);
+        GlStateManager.rotate(180, 0, 1, 0);
 
         //
         renderWithTransform(stack);

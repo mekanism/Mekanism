@@ -9,6 +9,7 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
@@ -20,8 +21,9 @@ public final class MinerVisualRenderer {
     private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 
     public static void render(TileEntityDigitalMiner miner) {
-        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true)
-              .translate(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ())).enableBlendPreset().enableGlow().enableCull().colorAlpha(0.8F);
+        MekanismRenderHelper renderHelper = new MekanismRenderHelper(true);
+        GlStateManager.translate(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
+        renderHelper.enableBlendPreset().enableGlow().enableCull().colorAlpha(0.8F);
         mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         getList(new MinerRenderData(miner)).render();
         renderHelper.cleanup();

@@ -2,7 +2,6 @@ package mekanism.client.render.item.gear;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
@@ -27,7 +26,10 @@ public class RenderScubaTank extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.rotateZ(180, 1).rotateY(90, -1).scale(1.6F).translateXY(0.2F, -0.5F);
+        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotate(90, 0, -1, 0);
+        GlStateManager.scale(1.6F, 1.6F, 1.6F);
+        GlStateManager.translate(0.2F, -0.5F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
         scubaTank.render(0.0625F);
         GlStateManager.popMatrix();

@@ -1,7 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelDigitalMiner;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -19,24 +18,28 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer<TileEntityDigi
     @Override
     public void render(TileEntityDigitalMiner tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
-        switch (tileEntity.facing.ordinal()) {
-            case 2:
-                GLSMHelper.INSTANCE.rotateY(0, 1).translateZ(-1.0F);
+        switch (tileEntity.facing) {
+            case NORTH:
+                GlStateManager.rotate(0, 0, 1, 0);
+                GlStateManager.translate(0, 0, -1.0F);
                 break;
-            case 3:
-                GLSMHelper.INSTANCE.rotateY(180, 1).translateZ(-1.0F);
+            case SOUTH:
+                GlStateManager.rotate(180, 0, 1, 0);
+                GlStateManager.translate(0, 0, -1.0F);
                 break;
-            case 4:
-                GLSMHelper.INSTANCE.rotateY(90, 1).translateZ(-1.0F);
+            case WEST:
+                GlStateManager.rotate(90, 0, 1, 0);
+                GlStateManager.translate(0, 0, -1.0F);
                 break;
-            case 5:
-                GLSMHelper.INSTANCE.rotateY(270, 1).translateZ(-1.0F);
+            case EAST:
+                GlStateManager.rotate(270, 0, 1, 0);
+                GlStateManager.translate(0, 0, -1.0F);
                 break;
         }
 
-        GLSMHelper.INSTANCE.rotateZ(180, 1);
+        GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine, true);
         GlStateManager.popMatrix();
 

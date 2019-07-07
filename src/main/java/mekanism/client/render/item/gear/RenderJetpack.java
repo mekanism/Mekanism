@@ -2,7 +2,6 @@ package mekanism.client.render.item.gear;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelJetpack;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
@@ -27,7 +26,9 @@ public class RenderJetpack extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GLSMHelper.INSTANCE.rotateZ(180, 1).rotateY(90, -1).translateXY(0.2F, -0.35F);
+        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotate(90, 0, -1, 0);
+        GlStateManager.translate(0.2F, -0.35F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
         jetpack.render(0.0625F);
         GlStateManager.popMatrix();

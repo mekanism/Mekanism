@@ -90,7 +90,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         drawGas(minecraft, xPosition, yPosition, gasStack);
         if (overlay != null) {
             GlStateManager.pushMatrix();
-            GLSMHelper.INSTANCE.translateZ(200);
+            GlStateManager.translate(0, 0, 200);
             overlay.draw(minecraft, xPosition, yPosition);
             GlStateManager.popMatrix();
         }
