@@ -195,11 +195,11 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         return super.getCapability(capability, facing);
     }
 
-    public void setFacing(short direction) {
+    public void setFacing(@Nonnull EnumFacing direction) {
         if (canSetFacing(direction)) {
-            facing = EnumFacing.byIndex(direction);
+            facing = direction;
         }
-        if (!(facing == clientFacing || world.isRemote)) {
+        if (facing != clientFacing && !world.isRemote) {
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
             clientFacing = facing;
@@ -213,7 +213,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
      *
      * @return if the block's orientation can be changed
      */
-    public boolean canSetFacing(int facing) {
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return true;
     }
 

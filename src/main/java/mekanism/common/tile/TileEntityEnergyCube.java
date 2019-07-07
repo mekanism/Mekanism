@@ -138,7 +138,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     }
 
     @Override
-    public boolean canSetFacing(int side) {
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return true;
     }
 

@@ -422,7 +422,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     }
 
     @Override
-    public boolean canSetFacing(int facing) {
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return true;
     }
 
