@@ -51,20 +51,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
         GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
-        switch (tileEntity.facing) {
-            case NORTH:
-                GlStateManager.rotate(180, 0, 1, 0);
-                break;
-            case SOUTH:
-                GlStateManager.rotate(0, 0, 1, 0);
-                break;
-            case WEST:
-                GlStateManager.rotate(270, 0, 1, 0);
-                break;
-            case EAST:
-                GlStateManager.rotate(90, 0, 1, 0);
-                break;
-        }
+        GLSMHelper.rotate(tileEntity.facing, 180, 0, 270, 90);
 
         GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F);

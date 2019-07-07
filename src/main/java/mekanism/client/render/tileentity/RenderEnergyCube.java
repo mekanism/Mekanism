@@ -46,17 +46,9 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
                 GlStateManager.rotate(90, 1, 0, 0);
                 GlStateManager.translate(0, 1.0F, 1.0F);
                 break;
-            case NORTH:
-                GlStateManager.rotate(0, 0, 1, 0);
-                break;
-            case SOUTH:
-                GlStateManager.rotate(180, 0, 1, 0);
-                break;
-            case WEST:
-                GlStateManager.rotate(90, 0, 1, 0);
-                break;
-            case EAST:
-                GlStateManager.rotate(270, 0, 1, 0);
+            default:
+                //Otherwise use the helper method for handling different face options because it is one of them
+                GLSMHelper.rotate(tileEntity.facing, 0, 180, 90, 270);
                 break;
         }
 

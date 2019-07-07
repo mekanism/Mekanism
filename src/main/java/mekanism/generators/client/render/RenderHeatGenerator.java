@@ -1,5 +1,6 @@
 package mekanism.generators.client.render;
 
+import mekanism.client.render.GLSMHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHeatGenerator;
@@ -20,21 +21,7 @@ public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHea
         GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
 
-        //All facings in D-U-N-S-W-E order
-        switch (tileEntity.facing) {
-            case NORTH:
-                GlStateManager.rotate(180, 0, 1, 0);
-                break;
-            case SOUTH:
-                GlStateManager.rotate(0, 0, 1, 0);
-                break;
-            case WEST:
-                GlStateManager.rotate(270, 0, 1, 0);
-                break;
-            case EAST:
-                GlStateManager.rotate(90, 0, 1, 0);
-                break;
-        }
+        GLSMHelper.rotate(tileEntity.facing, 180, 0, 270, 90);
 
         GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F, tileEntity.getActive(), rendererDispatcher.renderEngine);

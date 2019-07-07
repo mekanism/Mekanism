@@ -1,5 +1,6 @@
 package mekanism.client.render.tileentity;
 
+import mekanism.client.render.GLSMHelper;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -21,20 +22,15 @@ public class RenderPersonalChest extends TileEntitySpecialRenderer<TileEntityPer
         GlStateManager.rotate(90, 0, 1, 0);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
 
+        GLSMHelper.rotate(tileEntity.facing, 270, 90, 0, 180);
         switch (tileEntity.facing) {
             case NORTH:
-                GlStateManager.rotate(270, 0, 1, 0);
                 GlStateManager.translate(1.0F, 0, 0);
                 break;
             case SOUTH:
-                GlStateManager.rotate(90, 0, 1, 0);
                 GlStateManager.translate(0, 0, -1.0F);
                 break;
-            case WEST:
-                GlStateManager.rotate(0, 0, 1, 0);
-                break;
             case EAST:
-                GlStateManager.rotate(180, 0, 1, 0);
                 GlStateManager.translate(1.0F, 0, -1.0F);
                 break;
         }

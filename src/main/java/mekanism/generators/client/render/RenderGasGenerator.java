@@ -1,5 +1,6 @@
 package mekanism.generators.client.render;
 
+import mekanism.client.render.GLSMHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelGasGenerator;
@@ -20,20 +21,7 @@ public class RenderGasGenerator extends TileEntitySpecialRenderer<TileEntityGasG
         GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 
-        switch (tileEntity.facing) {
-            case NORTH:
-                GlStateManager.rotate(90, 0, 1, 0);
-                break;
-            case SOUTH:
-                GlStateManager.rotate(270, 0, 1, 0);
-                break;
-            case WEST:
-                GlStateManager.rotate(180, 0, 1, 0);
-                break;
-            case EAST:
-                GlStateManager.rotate(0, 0, 1, 0);
-                break;
-        }
+        GLSMHelper.rotate(tileEntity.facing, 90, 270, 180, 0);
 
         GlStateManager.rotate(180, 0, 1, 1);
         GlStateManager.rotate(90, -1, 0, 0);

@@ -17,7 +17,7 @@ public class RenderWindGenerator extends TileEntitySpecialRenderer<TileEntityWin
         GlStateManager.pushMatrix();
         GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));
-        GLSMHelper.rotate(tileEntity.facing);
+        GLSMHelper.rotate(tileEntity.facing, 0, 180, 90, 270);
         GlStateManager.rotate(180, 0, 0, 1);
         double angle = tileEntity.getAngle();
         if (tileEntity.getActive()) {

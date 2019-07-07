@@ -16,22 +16,21 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GLSMHelper<HELPER extends GLSMHelper<HELPER>> {
+public class GLSMHelper {
 
-    //TODO: Figure out why a few things don't use this and if they should be instead
-    public static void rotate(EnumFacing facing) {
-        switch (facing) /*TODO: switch the enum*/ {
+    public static void rotate(EnumFacing facing, float north, float south, float west, float east) {
+        switch (facing) {
             case NORTH:
-                GlStateManager.rotate(0, 0, 1, 0);
+                GlStateManager.rotate(north, 0, 1, 0);
                 break;
             case SOUTH:
-                GlStateManager.rotate(180, 0, 1, 0);
+                GlStateManager.rotate(south, 0, 1, 0);
                 break;
             case WEST:
-                GlStateManager.rotate(90, 0, 1, 0);
+                GlStateManager.rotate(west, 0, 1, 0);
                 break;
             case EAST:
-                GlStateManager.rotate(270, 0, 1, 0);
+                GlStateManager.rotate(east, 0, 1, 0);
                 break;
         }
     }
@@ -45,13 +44,10 @@ public class GLSMHelper<HELPER extends GLSMHelper<HELPER>> {
 
     @Nonnull
     public static GlowInfo enableGlow(int glow) {
-        //Glow is needed when underground or in the dark. Initial thoughts were wrong
         if (!FMLClientHandler.instance().hasOptifine() && glow > 0) {
             GlowInfo info = new GlowInfo(OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY, true);
-
-            float glowRatioX = Math.min((glow / 15F) * 240F + info.lightmapLastX, 240);
-            float glowRatioY = Math.min((glow / 15F) * 240F + info.lightmapLastY, 240);
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);
+            float glowStrength = (glow / 15F) * 240F;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
             return info;
         }
         return NO_GLOW;
