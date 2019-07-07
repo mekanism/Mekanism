@@ -26,7 +26,7 @@ public final class LangUtils {
     }
 
     public static String localizeFluidStack(FluidStack fluidStack) {
-        return (fluidStack == null || fluidStack.getFluid() == null) ? null : fluidStack.getFluid().getLocalizedName(fluidStack);
+        return fluidStack == null ? null : fluidStack.getFluid().getLocalizedName(fluidStack);
     }
 
     /**

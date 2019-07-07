@@ -482,7 +482,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     public void setFluidStack(FluidStack fluidStack, Object... data) {
         if (data[0] instanceof ItemStack) {
             ItemStack itemStack = (ItemStack) data[0];
-            if (fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null) {
+            if (fluidStack == null || fluidStack.amount == 0) {
                 ItemDataUtils.removeData(itemStack, "fluidTank");
             } else {
                 ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));

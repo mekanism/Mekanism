@@ -55,7 +55,7 @@ public class GLSMHelper {
 
     @Nonnull
     public static GlowInfo enableGlow(@Nullable FluidStack fluid) {
-        return fluid == null || fluid.getFluid() == null ? NO_GLOW : enableGlow(fluid.getFluid().getLuminosity(fluid));
+        return fluid == null ? NO_GLOW : enableGlow(fluid.getFluid().getLuminosity(fluid));
     }
 
     @Nonnull
@@ -104,14 +104,13 @@ public class GLSMHelper {
     }
 
     public static void color(@Nullable FluidStack fluid, float fluidScale) {
-        if (fluid == null || fluid.getFluid() == null) {
-            return;
-        }
-        int color = fluid.getFluid().getColor(fluid);
-        if (fluid.getFluid().isGaseous(fluid)) {
-            GlStateManager.color(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
-        } else {
-            color(color);
+        if (fluid != null) {
+            int color = fluid.getFluid().getColor(fluid);
+            if (fluid.getFluid().isGaseous(fluid)) {
+                GlStateManager.color(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+            } else {
+                color(color);
+            }
         }
     }
 

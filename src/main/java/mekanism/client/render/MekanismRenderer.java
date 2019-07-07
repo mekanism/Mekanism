@@ -114,7 +114,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getFluidTexture(FluidStack fluidStack, FluidType type) {
-        if (fluidStack == null || fluidStack.getFluid() == null || type == null) {
+        if (fluidStack == null || type == null) {
             return missingIcon;
         }
 
