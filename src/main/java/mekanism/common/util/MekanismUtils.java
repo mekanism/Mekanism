@@ -56,8 +56,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -513,7 +511,7 @@ public final class MekanismUtils {
      * @param pos   Position of the block
      */
     public static void updateBlock(World world, BlockPos pos) {
-        if(!world.isBlockLoaded(pos)) {
+        if (!world.isBlockLoaded(pos)) {
             return;
         }
         //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
@@ -1077,13 +1075,15 @@ public final class MekanismUtils {
 
     /**
      * Gets a tile entity if the location is loaded
+     *
      * @param world - world
-     * @param pos - position
+     * @param pos   - position
+     *
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
     public static TileEntity getTileEntity(World world, BlockPos pos) {
-        if(world != null && world.isBlockLoaded(pos)) {
+        if (world != null && world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }
         return null;

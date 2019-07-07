@@ -446,7 +446,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public TileEntity getEjectInv() {
         final EnumFacing side = facing.getOpposite();
         final BlockPos pos = getPos().up().offset(side, 2);
-        if(world.isBlockLoaded(pos)) {
+        if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }
         return null;
@@ -878,7 +878,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public TileEntity getEjectTile() {
         final EnumFacing side = facing.getOpposite();
         final BlockPos pos = getPos().up().offset(side);
-        if(world.isBlockLoaded(pos)) {
+        if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }
         return null;
