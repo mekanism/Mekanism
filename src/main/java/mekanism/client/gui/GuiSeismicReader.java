@@ -61,7 +61,7 @@ public class GuiSeismicReader extends GuiScreen {
         // Draws the up button
         boolean upIntersects = upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1));
         if (upIntersects) {
-            GLSMHelper.color3f(0.5F, 0.5F, 1);
+            GlStateManager.color(0.5F, 0.5F, 1);
         }
         drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
         if (upIntersects) {
@@ -71,7 +71,7 @@ public class GuiSeismicReader extends GuiScreen {
         // Draws the down button
         boolean downIntersects = downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1));
         if (downIntersects) {
-            GLSMHelper.color3f(0.5F, 0.5F, 1);
+            GlStateManager.color(0.5F, 0.5F, 1);
         }
         drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
         if (downIntersects) {

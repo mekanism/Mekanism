@@ -252,7 +252,7 @@ public class ModelGasMask extends ModelBase {
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GLSMHelper.colorAlpha(0.3F);
+        GlStateManager.color(1, 1, 1, 0.3F);
         GlStateManager.enableCull();
 
         glasstop.render(size);

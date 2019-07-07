@@ -33,7 +33,7 @@ public final class MinerVisualRenderer {
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlowInfo glowInfo = GLSMHelper.enableGlow();
         GlStateManager.enableCull();
-        GLSMHelper.colorAlpha(0.8F);
+        GlStateManager.color(1, 1, 1, 0.8F);
         mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         getList(new MinerRenderData(miner)).render();
         GLSMHelper.resetColor();

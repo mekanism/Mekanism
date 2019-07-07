@@ -122,7 +122,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlStateManager.disableAlpha();
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-                    GLSMHelper.colorAlpha(0.8F);
+                    GlStateManager.color(1, 1, 1, 0.8F);
                     bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.translate((float) x, (float) y, (float) z);
                     GlStateManager.scale(0.5F, 0.5F, 0.5F);

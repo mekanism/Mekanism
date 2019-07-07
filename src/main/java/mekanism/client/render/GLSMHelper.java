@@ -82,22 +82,9 @@ public class GLSMHelper {
         }
     }
 
-    //TODO: Better description saying that resetColor needs to be called
     //Color
     public static void resetColor() {
-        color(1, 1, 1, 1);
-    }
-
-    public static void color(float red, float green, float blue, float alpha) {
-        GlStateManager.color(red, green, blue, alpha);
-    }
-
-    public static void colorAlpha(float alpha) {
-        color(1, 1, 1, alpha);
-    }
-
-    public static void color3f(float red, float green, float blue) {
-        color(red, green, blue, 1);
+        GlStateManager.color(1, 1, 1, 1);
     }
 
     private static float getRed(int color) {
@@ -112,13 +99,8 @@ public class GLSMHelper {
         return (color & 0xFF) / 255.0F;
     }
 
-    public static void color3f(int color) {
-        color3f(getRed(color), getGreen(color), getBlue(color));
-    }
-
     public static void color(int color) {
-        float alpha = (color >> 24 & 0xFF) / 255f;
-        color(getRed(color), getGreen(color), getBlue(color), alpha);
+        GlStateManager.color(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
     }
 
     public static void color(@Nullable FluidStack fluid, float fluidScale) {
@@ -127,7 +109,7 @@ public class GLSMHelper {
         }
         int color = fluid.getFluid().getColor(fluid);
         if (fluid.getFluid().isGaseous(fluid)) {
-            color(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+            GlStateManager.color(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
         } else {
             color(color);
         }
@@ -153,7 +135,8 @@ public class GLSMHelper {
 
     public static void color(@Nullable Gas gas) {
         if (gas != null) {
-            color3f(gas.getTint());
+            int color = gas.getTint();
+            GlStateManager.color(getRed(color), getGreen(color), getBlue(color));
         }
     }
 
@@ -171,7 +154,7 @@ public class GLSMHelper {
 
     public static void color(@Nullable EnumColor color, float alpha, float multiplier) {
         if (color != null) {
-            color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+            GlStateManager.color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
         }
     }
 }

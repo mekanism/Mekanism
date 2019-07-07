@@ -51,7 +51,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
             GlStateManager.disableLighting();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.DST_ALPHA);
-            GLSMHelper.colorAlpha(f3);
+            GlStateManager.color(1, 1, 1, f3);
             GlStateManager.doPolygonOffset(-3.0F, -3.0F);
             GlStateManager.enablePolygonOffset();
             renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), 1.0F);

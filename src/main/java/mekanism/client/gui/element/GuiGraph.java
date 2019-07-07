@@ -117,7 +117,7 @@ public class GuiGraph extends GuiElement {
                 GlStateManager.disableAlpha();
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-                GLSMHelper.colorAlpha(0.2F + (0.8F * ((float) i / (float) graphData.size())));
+                GlStateManager.color(1, 1, 1, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
                 GLSMHelper.resetColor();
