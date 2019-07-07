@@ -91,58 +91,58 @@ public final class FluidRenderer {
 
         switch (data.side) {
             case DOWN:
-                toReturn.minX = .3;
-                toReturn.minY = 1 + .01;
-                toReturn.minZ = .3;
+                toReturn.minX = 0.3;
+                toReturn.minY = 1.01;
+                toReturn.minZ = 0.3;
 
-                toReturn.maxX = .7;
-                toReturn.maxY = 1.4 + .1;
-                toReturn.maxZ = .7;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 1.5;
+                toReturn.maxZ = 0.7;
                 break;
             case UP:
-                toReturn.minX = .3;
-                toReturn.minY = -data.height - .01;
-                toReturn.minZ = .3;
+                toReturn.minX = 0.3;
+                toReturn.minY = -data.height - 0.01;
+                toReturn.minZ = 0.3;
 
-                toReturn.maxX = .7;
-                toReturn.maxY = -.01;
-                toReturn.maxZ = .7;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = -0.01;
+                toReturn.maxZ = 0.7;
                 break;
             case NORTH:
-                toReturn.minX = .3;
-                toReturn.minY = -getValveFluidHeight(data) + .01;
-                toReturn.minZ = 1 + .02;
+                toReturn.minX = 0.3;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 1.02;
 
-                toReturn.maxX = .7;
-                toReturn.maxY = .7;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 0.7;
                 toReturn.maxZ = 1.4;
                 break;
             case SOUTH:
-                toReturn.minX = .3;
-                toReturn.minY = -getValveFluidHeight(data) + .01;
-                toReturn.minZ = -.4;
+                toReturn.minX = 0.3;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = -0.4;
 
-                toReturn.maxX = .7;
-                toReturn.maxY = .7;
-                toReturn.maxZ = -.02;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = -0.02;
                 break;
             case WEST:
-                toReturn.minX = 1 + .02;
-                toReturn.minY = -getValveFluidHeight(data) + .01;
-                toReturn.minZ = .3;
+                toReturn.minX = 1.02;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 0.3;
 
                 toReturn.maxX = 1.4;
-                toReturn.maxY = .7;
-                toReturn.maxZ = .7;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = 0.7;
                 break;
             case EAST:
-                toReturn.minX = -.4;
-                toReturn.minY = -getValveFluidHeight(data) + .01;
-                toReturn.minZ = .3;
+                toReturn.minX = -0.4;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 0.3;
 
-                toReturn.maxX = -.02;
-                toReturn.maxY = .7;
-                toReturn.maxZ = .7;
+                toReturn.maxX = -0.02;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = 0.7;
                 break;
             default:
                 break;
