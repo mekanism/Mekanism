@@ -105,7 +105,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         }
 
         switch (side) {
-            case DOWN: {
+            case DOWN:
                 toReturn.minY = -.01;
                 toReturn.maxY = -.001;
 
@@ -114,8 +114,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxX = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case UP: {
+            case UP:
                 toReturn.minY = 1.001;
                 toReturn.maxY = 1.01;
 
@@ -124,8 +123,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxX = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case NORTH: {
+            case NORTH:
                 toReturn.minZ = -.01;
                 toReturn.maxZ = -.001;
 
@@ -134,8 +132,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxX = 1;
                 toReturn.maxY = 1;
                 break;
-            }
-            case SOUTH: {
+            case SOUTH:
                 toReturn.minZ = 1.001;
                 toReturn.maxZ = 1.01;
 
@@ -144,8 +141,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxX = 1;
                 toReturn.maxY = 1;
                 break;
-            }
-            case WEST: {
+            case WEST:
                 toReturn.minX = -.01;
                 toReturn.maxX = -.001;
 
@@ -154,8 +150,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxY = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case EAST: {
+            case EAST:
                 toReturn.minX = 1.001;
                 toReturn.maxX = 1.01;
 
@@ -164,7 +159,6 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxY = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
         }
 
         MekanismRenderer.renderObject(toReturn);

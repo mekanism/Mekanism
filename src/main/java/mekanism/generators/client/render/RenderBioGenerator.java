@@ -74,38 +74,34 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
             displays[i] = DisplayInteger.createAndStart();
 
             switch (side) {
-                case NORTH: {
+                case NORTH:
                     model3D.minZ = 0.5;
                     model3D.maxZ = 0.875;
 
                     model3D.minX = 0.1875;
                     model3D.maxX = 0.8215;
                     break;
-                }
-                case SOUTH: {
+                case SOUTH:
                     model3D.minZ = 0.125;
                     model3D.maxZ = 0.5;
 
                     model3D.minX = 0.1875;
                     model3D.maxX = 0.8215;
                     break;
-                }
-                case WEST: {
+                case WEST:
                     model3D.minX = 0.5;
                     model3D.maxX = 0.875;
 
                     model3D.minZ = 0.1875;
                     model3D.maxZ = 0.8215;
                     break;
-                }
-                case EAST: {
+                case EAST:
                     model3D.minX = 0.125;
                     model3D.maxX = 0.5;
 
                     model3D.minZ = 0.1875;
                     model3D.maxZ = 0.8215;
                     break;
-                }
             }
 
             model3D.minY = 0.4375 + 0.001;  //prevent z fighting at low fuel levels

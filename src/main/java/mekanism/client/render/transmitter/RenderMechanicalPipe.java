@@ -148,7 +148,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             displays[i] = DisplayInteger.createAndStart();
 
             switch (sideOrdinal) {
-                case 6: {
+                case 6:
                     toReturn.minX = 0.25 + offset;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.25 + offset;
@@ -157,8 +157,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 0.75 - offset;
                     break;
-                }
-                case 0: {
+                case 0:
                     toReturn.minX = 0.5 - (((float) i / (float) stages) * height) / 2;
                     toReturn.minY = 0.0;
                     toReturn.minZ = 0.5 - (((float) i / (float) stages) * height) / 2;
@@ -167,8 +166,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset;
                     toReturn.maxZ = 0.5 + (((float) i / (float) stages) * height) / 2;
                     break;
-                }
-                case 1: {
+                case 1:
                     toReturn.minX = 0.5 - (((float) i / (float) stages) * height) / 2;
                     toReturn.minY = 0.25 - offset + ((float) i / (float) stages) * height;
                     toReturn.minZ = 0.5 - (((float) i / (float) stages) * height) / 2;
@@ -177,8 +175,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 1.0;
                     toReturn.maxZ = 0.5 + (((float) i / (float) stages) * height) / 2;
                     break;
-                }
-                case 2: {
+                case 2:
                     toReturn.minX = 0.25 + offset;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.0;
@@ -187,8 +184,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 0.25 + offset;
                     break;
-                }
-                case 3: {
+                case 3:
                     toReturn.minX = 0.25 + offset;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.75 - offset;
@@ -197,8 +193,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 1.0;
                     break;
-                }
-                case 4: {
+                case 4:
                     toReturn.minX = 0.0;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.25 + offset;
@@ -207,8 +202,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 0.75 - offset;
                     break;
-                }
-                case 5: {
+                case 5:
                     toReturn.minX = 0.75 - offset;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.25 + offset;
@@ -217,7 +211,6 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 0.75 - offset;
                     break;
-                }
             }
 
             MekanismRenderer.renderObject(toReturn);

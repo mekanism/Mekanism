@@ -75,7 +75,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
         cachedOverlays.put(type, display);
 
         switch (type) {
-            case 0: {
+            case 0:
                 toReturn.minY = 1;
                 toReturn.maxY = 3;
 
@@ -84,8 +84,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
                 toReturn.maxX = 0.54;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case 1: {
+            case 1:
                 toReturn.minY = 1;
                 toReturn.maxY = 3;
 
@@ -94,7 +93,6 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
                 toReturn.maxX = 1;
                 toReturn.maxZ = 0.54;
                 break;
-            }
         }
 
         MekanismRenderer.renderObject(toReturn);

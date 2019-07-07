@@ -90,7 +90,7 @@ public final class FluidRenderer {
         cachedValveFluids.put(data, display);
 
         switch (data.side) {
-            case DOWN: {
+            case DOWN:
                 toReturn.minX = .3;
                 toReturn.minY = 1 + .01;
                 toReturn.minZ = .3;
@@ -99,8 +99,7 @@ public final class FluidRenderer {
                 toReturn.maxY = 1.4 + .1;
                 toReturn.maxZ = .7;
                 break;
-            }
-            case UP: {
+            case UP:
                 toReturn.minX = .3;
                 toReturn.minY = -data.height - .01;
                 toReturn.minZ = .3;
@@ -109,8 +108,7 @@ public final class FluidRenderer {
                 toReturn.maxY = -.01;
                 toReturn.maxZ = .7;
                 break;
-            }
-            case NORTH: {
+            case NORTH:
                 toReturn.minX = .3;
                 toReturn.minY = -getValveFluidHeight(data) + .01;
                 toReturn.minZ = 1 + .02;
@@ -119,8 +117,7 @@ public final class FluidRenderer {
                 toReturn.maxY = .7;
                 toReturn.maxZ = 1.4;
                 break;
-            }
-            case SOUTH: {
+            case SOUTH:
                 toReturn.minX = .3;
                 toReturn.minY = -getValveFluidHeight(data) + .01;
                 toReturn.minZ = -.4;
@@ -129,8 +126,7 @@ public final class FluidRenderer {
                 toReturn.maxY = .7;
                 toReturn.maxZ = -.02;
                 break;
-            }
-            case WEST: {
+            case WEST:
                 toReturn.minX = 1 + .02;
                 toReturn.minY = -getValveFluidHeight(data) + .01;
                 toReturn.minZ = .3;
@@ -139,8 +135,7 @@ public final class FluidRenderer {
                 toReturn.maxY = .7;
                 toReturn.maxZ = .7;
                 break;
-            }
-            case EAST: {
+            case EAST:
                 toReturn.minX = -.4;
                 toReturn.minY = -getValveFluidHeight(data) + .01;
                 toReturn.minZ = .3;
@@ -149,10 +144,8 @@ public final class FluidRenderer {
                 toReturn.maxY = .7;
                 toReturn.maxZ = .7;
                 break;
-            }
-            default: {
+            default:
                 break;
-            }
         }
 
         if (data.fluidType.getFluid().getFlowing(data.fluidType) != null) {
