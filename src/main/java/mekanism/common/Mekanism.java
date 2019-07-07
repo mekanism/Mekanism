@@ -776,12 +776,6 @@ public class Mekanism {
         proxy.loadConfiguration();
         proxy.onConfigSync(false);
 
-        if (config.getAbsolutePath().contains("voltz")) {
-            logger.info("Detected Voltz in root directory - hello, fellow user!");
-        } else if (config.getAbsolutePath().contains("tekkit")) {
-            logger.info("Detected Tekkit in root directory - hello, fellow user!");
-        }
-
         MinecraftForge.EVENT_BUS.register(MekanismItems.GasMask);
         MinecraftForge.EVENT_BUS.register(MekanismItems.FreeRunners);
 
