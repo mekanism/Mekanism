@@ -7,6 +7,7 @@ import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.EnumOption;
 import mekanism.common.config.options.IntOption;
 import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
 
@@ -188,7 +189,11 @@ public class GeneralConfig extends BaseConfig {
           "Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter.");
 
     public final DoubleOption quantumEntangloporterEnergyTransfer = new DoubleOption(this, "general", "QuantumEntangloporterEnergyTransfer", 16000000D,
-          "Maximum buffer of an Entangoloporter frequency.");
+          "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency.", 0, Double.MAX_VALUE).setRequiresWorldRestart(true);
+
+    public final IntOption quantumEntangloporterFluidBuffer = new IntOption(this, "general", "quantumEntangloporterFluidBuffer", GasTankTier.ULTIMATE.getBaseStorage(), "Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.", 0, Integer.MAX_VALUE).setRequiresWorldRestart(true);
+
+    public final IntOption quantumEntangloporterGasBuffer = new IntOption(this, "general", "quantumEntangloporterGasBuffer", GasTankTier.ULTIMATE.getBaseStorage(), "Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.", 0, Integer.MAX_VALUE).setRequiresWorldRestart(true);
 
     public final BooleanOption blacklistIC2 = new BooleanOption(this, "general", "BlacklistIC2Power", false,
           "Disables IC2 power integration. Requires world restart (server-side option in SMP).");

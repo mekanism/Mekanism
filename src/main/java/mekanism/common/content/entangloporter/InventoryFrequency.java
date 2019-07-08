@@ -2,8 +2,10 @@ package mekanism.common.content.entangloporter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
+import java.util.function.Supplier;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasTank;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
@@ -18,6 +20,8 @@ import net.minecraftforge.fluids.FluidTank;
 public class InventoryFrequency extends Frequency {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
+    private static final Supplier<FluidTank> FLUID_TANK_SUPPLIER = ()->new FluidTank(MekanismConfig.current().general.quantumEntangloporterFluidBuffer.val());
+    private static final Supplier<GasTank> GAS_TANK_SUPPLIER = ()->new GasTank(MekanismConfig.current().general.quantumEntangloporterGasBuffer.val());
 
     public double storedEnergy;
     public FluidTank storedFluid;
@@ -27,8 +31,8 @@ public class InventoryFrequency extends Frequency {
 
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
-        storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
-        storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
+        storedFluid = FLUID_TANK_SUPPLIER.get();
+        storedGas = GAS_TANK_SUPPLIER.get();
     }
 
     public InventoryFrequency(NBTTagCompound nbtTags) {
@@ -65,8 +69,8 @@ public class InventoryFrequency extends Frequency {
     @Override
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
-        storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
-        storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
+        storedFluid = FLUID_TANK_SUPPLIER.get();
+        storedGas = GAS_TANK_SUPPLIER.get();
         storedEnergy = nbtTags.getDouble("storedEnergy");
 
         if (nbtTags.hasKey("storedFluid")) {
@@ -74,6 +78,7 @@ public class InventoryFrequency extends Frequency {
         }
         if (nbtTags.hasKey("storedGas")) {
             storedGas.read(nbtTags.getCompoundTag("storedGas"));
+            storedGas.setMaxGas(MekanismConfig.current().general.quantumEntangloporterGasBuffer.val());
         }
 
         NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);

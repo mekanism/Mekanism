@@ -222,6 +222,7 @@ public class GasTank implements GasTankInfo {
                 stored = null;
             }
         }
+        //todo: this is weird, remove in v10?
         if (nbtTags.hasKey("maxGas") && nbtTags.getInteger("maxGas") != 0) {
             maxGas = nbtTags.getInteger("maxGas");
         }
