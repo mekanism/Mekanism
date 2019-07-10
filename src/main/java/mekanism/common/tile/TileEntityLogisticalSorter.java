@@ -89,7 +89,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                 TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
                 TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(world);
                 //If there is no tile to pull from or the push to, skip doing any checks
-                if (back != null && front != null) {
+                if (InventoryUtils.isItemHandler(back, facing) && front != null) {
                     boolean sentItems = false;
                     int min = 0;
 
