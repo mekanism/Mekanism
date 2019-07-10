@@ -258,21 +258,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
             for (int i = SLOT_CRAFT_MATRIX_FIRST; i <= SLOT_CRAFT_MATRIX_LAST; i++) {
                 ItemStack stack = inventory.get(i);
                 if (!stack.isEmpty()) {
-                    ItemStack copy = stack.copy();
                     stack.shrink(1);
-                    if (stack.getCount() == 0 && copy.getItem().hasContainerItem(copy)) {
-                        ItemStack container = copy.getItem().getContainerItem(copy);
-                        if (!container.isEmpty() && container.isItemStackDamageable() && container.getItemDamage() > container.getMaxDamage()) {
-                            container = ItemStack.EMPTY;
-                        }
-                        if (!container.isEmpty()) {
-                            boolean move = tryMoveToOutput(container.copy(), false);
-                            if (move) {
-                                tryMoveToOutput(container.copy(), true);
-                            }
-                            inventory.set(i, move ? ItemStack.EMPTY : container.copy());
-                        }
-                    }
                 }
             }
             if (formula != null) {
