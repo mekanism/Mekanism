@@ -49,26 +49,30 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SoundHandler {
 
+    //TODO: Figure out if this should keep track of UUID instead
     private static IdentityHashMap<EntityPlayer, Boolean> jetpackSounds = new IdentityHashMap<>();
     private static IdentityHashMap<EntityPlayer, Boolean> gasmaskSounds = new IdentityHashMap<>();
+    private static IdentityHashMap<EntityPlayer, Boolean> flamethrowerSounds = new IdentityHashMap<>();
 
     private static Map<Long, ISound> soundMap = new HashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
 
-    public static void startSound(EntityPlayer player, String soundName) {
-        ISound soundToPlay = null;
-
+    public static void startSound(@Nullable EntityPlayer player, String soundName) {
+        if (player == null) {
+            return;
+        }
         if (soundName.equals("jetpack") && !jetpackSounds.containsKey(player)) {
             jetpackSounds.put(player, true);
-            soundToPlay = new JetpackSound(player);
-        }
-        if (soundName.equals("gasmask") && !gasmaskSounds.containsKey(player)) {
+            playSound(new JetpackSound(player));
+        } else if (soundName.equals("gasmask") && !gasmaskSounds.containsKey(player)) {
             gasmaskSounds.put(player, true);
-            soundToPlay = new GasMaskSound(player);
-        }
-
-        if (soundToPlay != null) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(soundToPlay);
+            playSound(new GasMaskSound(player));
+        } else if (soundName.equals("flamethrower") && !flamethrowerSounds.containsKey(player)) {
+            flamethrowerSounds.put(player, true);
+            //TODO: Evaluate at some point if there is a better way to do this
+            // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
+            playSound(new FlamethrowerSound.Active(player));
+            playSound(new FlamethrowerSound.Idle(player));
         }
     }
 

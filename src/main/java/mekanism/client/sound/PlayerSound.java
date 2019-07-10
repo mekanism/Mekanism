@@ -1,5 +1,6 @@
 package mekanism.client.sound;
 
+import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSound;
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class PlayerSound extends PositionedSound implements ITickableSound {
 
+    @Nonnull
     protected EntityPlayer player;
 
     private float fadeUpStep = 0.1f;
@@ -19,7 +21,7 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
 
     private boolean donePlaying = false;
 
-    public PlayerSound(EntityPlayer player, ResourceLocation sound) {
+    public PlayerSound(@Nonnull EntityPlayer player, ResourceLocation sound) {
         super(sound, SoundCategory.PLAYERS);
         this.player = player;
         this.repeat = true;

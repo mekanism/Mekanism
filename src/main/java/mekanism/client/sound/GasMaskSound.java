@@ -1,5 +1,6 @@
 package mekanism.client.sound;
 
+import javax.annotation.Nonnull;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemGasMask;
@@ -13,7 +14,7 @@ public class GasMaskSound extends PlayerSound {
 
     private static final ResourceLocation SOUND = new ResourceLocation(Mekanism.MODID, "item.gasMask");
 
-    public GasMaskSound(EntityPlayer player) {
+    public GasMaskSound(@Nonnull EntityPlayer player) {
         super(player, SOUND);
     }
 
