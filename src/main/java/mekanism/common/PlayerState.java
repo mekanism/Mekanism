@@ -139,6 +139,13 @@ public class PlayerState {
             activeFlamethrowers.add(uuid); // Off -> on
         }
 
+        //TODO: Fix it not enabling the idle sound when changing to a flame thrower for the first time
+        // The reason this happens is because alreadyActive is false, and isActive is false as well.
+        // Realistically, we want to remove the isActive check below as a sound plays for idle as well,
+        // and instead have this stuff run when a player is HOLDING a flame thrower. We do however, want
+        // the activeFlamethrowers set to continue working as it does so this would require a bit larger
+        // of a change and I am leaving it be for now as it is not a major bug.
+
         // If something changed and we're in a remote world, take appropriate action
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
