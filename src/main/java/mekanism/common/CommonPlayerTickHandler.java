@@ -37,8 +37,8 @@ public class CommonPlayerTickHandler {
     }
 
     public static boolean isGasMaskOn(EntityPlayer player) {
-        ItemStack tank = player.inventory.armorInventory.get(2);
-        ItemStack mask = player.inventory.armorInventory.get(3);
+        ItemStack tank = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        ItemStack mask = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (!tank.isEmpty() && !mask.isEmpty()) {
             if (tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask) {
                 ItemScubaTank scubaTank = (ItemScubaTank) tank.getItem();
@@ -131,18 +131,20 @@ public class CommonPlayerTickHandler {
     }
 
     public boolean isJetpackOn(EntityPlayer player) {
-        ItemStack stack = player.inventory.armorInventory.get(2);
-        if (!stack.isEmpty() && !(player.isCreative() || player.isSpectator())) {
-            if (stack.getItem() instanceof ItemJetpack) {
-                ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-                if (jetpack.getGas(stack) != null) {
-                    if (Mekanism.keyMap.has(player, KeySync.ASCEND) && jetpack.getMode(stack) == JetpackMode.NORMAL) {
-                        return true;
-                    } else if (jetpack.getMode(stack) == JetpackMode.HOVER) {
-                        if ((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) ||
-                            (Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND))) {
-                            return !isOnGround(player);
-                        } else if (Mekanism.keyMap.has(player, KeySync.DESCEND)) {
+        if (!player.isCreative() && !player.isSpectator()) {
+            ItemStack chest = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {
+                ItemJetpack jetpack = (ItemJetpack) chest.getItem();
+                if (jetpack.getGas(chest) != null) {
+                    JetpackMode mode = jetpack.getMode(chest);
+                    if (mode == JetpackMode.NORMAL) {
+                        return Mekanism.keyMap.has(player, KeySync.ASCEND);
+                    } else if (mode == JetpackMode.HOVER) {
+                        boolean ascending = Mekanism.keyMap.has(player, KeySync.ASCEND);
+                        boolean descending = Mekanism.keyMap.has(player, KeySync.DESCEND);
+                        //if ((!ascending && !descending) || (ascending && descending) || descending)
+                        //Simplifies to
+                        if (!ascending || descending) {
                             return !isOnGround(player);
                         }
                         return true;

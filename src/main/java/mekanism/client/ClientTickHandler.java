@@ -20,7 +20,6 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
-import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
@@ -67,21 +66,20 @@ public class ClientTickHandler {
         if (player != mc.player) {
             return Mekanism.playerState.isJetpackOn(player);
         }
-
-        ItemStack stack = player.inventory.armorInventory.get(2);
-
-        if (!stack.isEmpty() && !(player.isCreative() || player.isSpectator())) {
-            if (stack.getItem() instanceof ItemJetpack) {
-                ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-
-                if (jetpack.getGas(stack) != null) {
-                    if (mc.gameSettings.keyBindJump.isKeyDown() && jetpack.getMode(stack) == JetpackMode.NORMAL && mc.currentScreen == null) {
-                        return true;
-                    } else if (jetpack.getMode(stack) == JetpackMode.HOVER) {
-                        if ((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) ||
-                            (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null) {
-                            return !CommonPlayerTickHandler.isOnGround(player);
-                        } else if (mc.gameSettings.keyBindSneak.isKeyDown() && mc.currentScreen == null) {
+        if (!player.isCreative() && !player.isSpectator()) {
+            ItemStack chest = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {
+                ItemJetpack jetpack = (ItemJetpack) chest.getItem();
+                if (jetpack.getGas(chest) != null) {
+                    JetpackMode mode = jetpack.getMode(chest);
+                    if (mode == JetpackMode.NORMAL) {
+                        return mc.currentScreen == null && mc.gameSettings.keyBindJump.isKeyDown();
+                    } else if (mode == JetpackMode.HOVER) {
+                        boolean ascending = mc.gameSettings.keyBindJump.isKeyDown();
+                        boolean descending = mc.gameSettings.keyBindSneak.isKeyDown();
+                        //if ((!ascending && !descending) || (ascending && descending) || mc.currentScreen != null || (descending && mc.currentScreen == null))
+                        //Simplifies to
+                        if (!ascending || descending || mc.currentScreen != null) {
                             return !CommonPlayerTickHandler.isOnGround(player);
                         }
                         return true;
@@ -96,17 +94,7 @@ public class ClientTickHandler {
         if (player != mc.player) {
             return Mekanism.playerState.isGasmaskOn(player);
         }
-        ItemStack tank = player.inventory.armorInventory.get(2);
-        ItemStack mask = player.inventory.armorInventory.get(3);
-        if (!tank.isEmpty() && !mask.isEmpty()) {
-            if (tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask) {
-                ItemScubaTank scubaTank = (ItemScubaTank) tank.getItem();
-                if (scubaTank.getGas(tank) != null) {
-                    return scubaTank.getFlowing(tank);
-                }
-            }
-        }
-        return false;
+        return CommonPlayerTickHandler.isGasMaskOn(player);
     }
 
     public static boolean isFreeRunnerOn(EntityPlayer player) {
@@ -134,9 +122,9 @@ public class ClientTickHandler {
     }
 
     public static boolean hasFlamethrower(EntityPlayer player) {
-        if (!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower) {
-            ItemFlamethrower flamethrower = (ItemFlamethrower) player.inventory.getCurrentItem().getItem();
-            return flamethrower.getGas(player.inventory.getCurrentItem()) != null;
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower) {
+            return ((ItemFlamethrower) currentItem.getItem()).getGas(currentItem) != null;
         }
         return false;
     }
