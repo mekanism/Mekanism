@@ -133,6 +133,10 @@ public class PlayerState {
     // ----------------------
 
     public void setFlamethrowerState(UUID uuid, boolean isActive, boolean isLocal) {
+        setFlamethrowerState(uuid, isActive, isActive, isLocal);
+    }
+
+    public void setFlamethrowerState(UUID uuid, boolean hasFlameThrower, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeFlamethrowers.contains(uuid);
         boolean changed = alreadyActive != isActive;
         if (alreadyActive && !isActive) {
@@ -141,22 +145,29 @@ public class PlayerState {
             activeFlamethrowers.add(uuid); // Off -> on
         }
 
-        //TODO: Fix it not enabling the idle sound when changing to a flame thrower for the first time
-        // The reason this happens is because alreadyActive is false, and isActive is false as well.
-        // Realistically, we want to remove the isActive check below as a sound plays for idle as well,
-        // and instead have this stuff run when a player is HOLDING a flame thrower. We do however, want
-        // the activeFlamethrowers set to continue working as it does so this would require a bit larger
-        // of a change and I am leaving it be for now as it is not a major bug.
+        if (world.isRemote) {
+            boolean startSound;
+            // If something changed and we're in a remote world, take appropriate action
+            if (changed) {
+                // If the player is the "local" player, we need to tell the server the state has changed
+                if (isLocal) {
+                    Mekanism.packetHandler.sendToServer(FlamethrowerDataMessage.UPDATE(uuid, isActive));
+                }
 
-        // If something changed and we're in a remote world, take appropriate action
-        if (changed && world.isRemote) {
-            // If the player is the "local" player, we need to tell the server the state has changed
-            if (isLocal) {
-                Mekanism.packetHandler.sendToServer(FlamethrowerDataMessage.UPDATE(uuid, isActive));
+                // Start a sound playing if the person is now using a flamethrower
+                startSound = isActive;
+            } else {
+                //Start the sound if it isn't already active, and still isn't, but has a flame thrower
+                // This allows us to catch and start playing the idle sound
+                startSound = !isActive && hasFlameThrower;
+                //TODO: Currently this only happens for the local player as "having" a flame thrower is not
+                // synced from server to client. This is not that big a deal.
+                //Note: If they just continue to hold (but not use) a flame thrower it "will" continue having this
+                // attempt to start the sound. The uuid is checked before a sound is actually queued, however
+                // we may want to make it so that the world.getPlayerEntityByUUID is not used until we know that
+                // a player object is not needed.
             }
-
-            // Start a sound playing if the person is now using a flamethrower
-            if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
+            if (startSound && MekanismConfig.current().client.enablePlayerSounds.val()) {
                 SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), SoundType.FLAMETHROWER);
             }
         }

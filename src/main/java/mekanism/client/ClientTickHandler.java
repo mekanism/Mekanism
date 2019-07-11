@@ -193,7 +193,7 @@ public class ClientTickHandler {
             // kicks off sounds as necessary
             Mekanism.playerState.setJetpackState(playerUUID, isJetpackActive(mc.player), true);
             Mekanism.playerState.setGasmaskState(playerUUID, isGasMaskOn(mc.player), true);
-            Mekanism.playerState.setFlamethrowerState(playerUUID, isFlamethrowerOn(mc.player), true);
+            Mekanism.playerState.setFlamethrowerState(playerUUID, hasFlamethrower(mc.player), isFlamethrowerOn(mc.player), true);
 
             for (Iterator<Entry<EntityPlayer, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
                 Entry<EntityPlayer, TeleportData> entry = iter.next();
