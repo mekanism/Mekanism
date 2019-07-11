@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -71,31 +72,36 @@ public class SoundHandler {
         flamethrowerSounds.remove(uuid);
     }
 
-    public static void startSound(@Nullable EntityPlayer player, SoundType soundType) {
-        if (player == null) {
-            return;
-        }
-        UUID uuid = player.getUniqueID();
+    public static void startSound(@Nonnull World world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
         switch (soundType) {
             case JETPACK:
                 if (!jetpackSounds.contains(uuid)) {
-                    jetpackSounds.add(uuid);
-                    playSound(new JetpackSound(player));
+                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    if (player != null) {
+                        jetpackSounds.add(uuid);
+                        playSound(new JetpackSound(player));
+                    }
                 }
                 break;
             case GAS_MASK:
                 if (!gasmaskSounds.contains(uuid)) {
-                    gasmaskSounds.add(uuid);
-                    playSound(new GasMaskSound(player));
+                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    if (player != null) {
+                        gasmaskSounds.add(uuid);
+                        playSound(new GasMaskSound(player));
+                    }
                 }
                 break;
             case FLAMETHROWER:
                 if (!flamethrowerSounds.contains(uuid)) {
-                    flamethrowerSounds.add(uuid);
-                    //TODO: Evaluate at some point if there is a better way to do this
-                    // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
-                    playSound(new FlamethrowerSound.Active(player));
-                    playSound(new FlamethrowerSound.Idle(player));
+                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    if (player != null) {
+                        flamethrowerSounds.add(uuid);
+                        //TODO: Evaluate at some point if there is a better way to do this
+                        // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
+                        playSound(new FlamethrowerSound.Active(player));
+                        playSound(new FlamethrowerSound.Idle(player));
+                    }
                 }
                 break;
         }

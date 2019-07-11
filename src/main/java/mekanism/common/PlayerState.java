@@ -64,7 +64,7 @@ public class PlayerState {
 
             // Start a sound playing if the person is now flying
             if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), SoundType.JETPACK);
+                SoundHandler.startSound(world, uuid, SoundType.JETPACK);
             }
         }
     }
@@ -107,7 +107,7 @@ public class PlayerState {
 
             // Start a sound playing if the person is now using a gasmask
             if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), SoundType.GAS_MASK);
+                SoundHandler.startSound(world, uuid, SoundType.GAS_MASK);
             }
         }
     }
@@ -159,16 +159,16 @@ public class PlayerState {
             } else {
                 //Start the sound if it isn't already active, and still isn't, but has a flame thrower
                 // This allows us to catch and start playing the idle sound
-                startSound = !isActive && hasFlameThrower;
                 //TODO: Currently this only happens for the local player as "having" a flame thrower is not
-                // synced from server to client. This is not that big a deal.
+                // synced from server to client. This is not that big a deal, though may be something we want
+                // to look into eventually
+                startSound = !isActive && hasFlameThrower;
                 //Note: If they just continue to hold (but not use) a flame thrower it "will" continue having this
-                // attempt to start the sound. The uuid is checked before a sound is actually queued, however
-                // we may want to make it so that the world.getPlayerEntityByUUID is not used until we know that
-                // a player object is not needed.
+                // attempt to start the sound. This is not a major deal as the uuid gets checked before attempting
+                // to retrieve the player or actually creating a new sound object.
             }
             if (startSound && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), SoundType.FLAMETHROWER);
+                SoundHandler.startSound(world, uuid, SoundType.FLAMETHROWER);
             }
         }
     }
