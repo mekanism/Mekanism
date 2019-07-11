@@ -1,11 +1,14 @@
 package mekanism.client.sound;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
@@ -49,30 +52,52 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SoundHandler {
 
-    //TODO: Figure out if this should keep track of UUID instead
-    private static IdentityHashMap<EntityPlayer, Boolean> jetpackSounds = new IdentityHashMap<>();
-    private static IdentityHashMap<EntityPlayer, Boolean> gasmaskSounds = new IdentityHashMap<>();
-    private static IdentityHashMap<EntityPlayer, Boolean> flamethrowerSounds = new IdentityHashMap<>();
+    private static Set<UUID> jetpackSounds = new HashSet<>();
+    private static Set<UUID> gasmaskSounds = new HashSet<>();
+    private static Set<UUID> flamethrowerSounds = new HashSet<>();
 
     private static Map<Long, ISound> soundMap = new HashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
 
-    public static void startSound(@Nullable EntityPlayer player, String soundName) {
+    public static void clearPlayerSounds() {
+        jetpackSounds.clear();
+        gasmaskSounds.clear();
+        flamethrowerSounds.clear();
+    }
+
+    public static void clearPlayerSounds(UUID uuid) {
+        jetpackSounds.remove(uuid);
+        gasmaskSounds.remove(uuid);
+        flamethrowerSounds.remove(uuid);
+    }
+
+    public static void startSound(@Nullable EntityPlayer player, SoundType soundType) {
         if (player == null) {
             return;
         }
-        if (soundName.equals("jetpack") && !jetpackSounds.containsKey(player)) {
-            jetpackSounds.put(player, true);
-            playSound(new JetpackSound(player));
-        } else if (soundName.equals("gasmask") && !gasmaskSounds.containsKey(player)) {
-            gasmaskSounds.put(player, true);
-            playSound(new GasMaskSound(player));
-        } else if (soundName.equals("flamethrower") && !flamethrowerSounds.containsKey(player)) {
-            flamethrowerSounds.put(player, true);
-            //TODO: Evaluate at some point if there is a better way to do this
-            // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
-            playSound(new FlamethrowerSound.Active(player));
-            playSound(new FlamethrowerSound.Idle(player));
+        UUID uuid = player.getUniqueID();
+        switch (soundType) {
+            case JETPACK:
+                if (!jetpackSounds.contains(uuid)) {
+                    jetpackSounds.add(uuid);
+                    playSound(new JetpackSound(player));
+                }
+                break;
+            case GAS_MASK:
+                if (!gasmaskSounds.contains(uuid)) {
+                    gasmaskSounds.add(uuid);
+                    playSound(new GasMaskSound(player));
+                }
+                break;
+            case FLAMETHROWER:
+                if (!flamethrowerSounds.contains(uuid)) {
+                    flamethrowerSounds.add(uuid);
+                    //TODO: Evaluate at some point if there is a better way to do this
+                    // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
+                    playSound(new FlamethrowerSound.Active(player));
+                    playSound(new FlamethrowerSound.Idle(player));
+                }
+                break;
         }
     }
 

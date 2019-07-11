@@ -22,7 +22,7 @@ public class FlamethrowerSound extends PlayerSound {
     }
 
     @Override
-    public boolean shouldPlaySound() {
+    public boolean shouldPlaySound(@Nonnull EntityPlayer player) {
         if (!ClientTickHandler.hasFlamethrower(player)) {
             return false;
         }

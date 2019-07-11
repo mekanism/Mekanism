@@ -3,10 +3,10 @@ package mekanism.common;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
-import mekanism.common.network.PacketFlamethrowerData.FlamethrowerPacket;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,12 +24,14 @@ public class PlayerState {
         activeJetpacks.clear();
         activeGasmasks.clear();
         activeFlamethrowers.clear();
+        SoundHandler.clearPlayerSounds();
     }
 
-    public void clearPlayer(EntityPlayer p) {
-        activeJetpacks.remove(p.getUniqueID());
-        activeGasmasks.remove(p.getUniqueID());
-        activeFlamethrowers.remove(p.getUniqueID());
+    public void clearPlayer(UUID uuid) {
+        activeJetpacks.remove(uuid);
+        activeGasmasks.remove(uuid);
+        activeFlamethrowers.remove(uuid);
+        SoundHandler.clearPlayerSounds(uuid);
     }
 
     public void init(World world) {
@@ -62,7 +64,7 @@ public class PlayerState {
 
             // Start a sound playing if the person is now flying
             if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "jetpack");
+                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), SoundType.JETPACK);
             }
         }
     }
@@ -105,7 +107,7 @@ public class PlayerState {
 
             // Start a sound playing if the person is now using a gasmask
             if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "gasmask");
+                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), SoundType.GAS_MASK);
             }
         }
     }
@@ -150,18 +152,28 @@ public class PlayerState {
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, null, uuid, isActive));
+                Mekanism.packetHandler.sendToServer(FlamethrowerDataMessage.UPDATE(uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a flamethrower
             if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "flamethrower");
+                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), SoundType.FLAMETHROWER);
             }
         }
     }
 
     public boolean isFlamethrowerOn(EntityPlayer p) {
         return activeFlamethrowers.contains(p.getUniqueID());
+    }
+
+    public Set<UUID> getActiveFlamethrowers() {
+        return activeFlamethrowers;
+    }
+
+    public void setActiveFlamethrowers(Set<UUID> newActiveFlamethrowers) {
+        for (UUID activeUser : newActiveFlamethrowers) {
+            setFlamethrowerState(activeUser, true, false);
+        }
     }
 
 }

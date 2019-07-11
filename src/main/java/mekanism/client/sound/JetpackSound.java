@@ -18,7 +18,7 @@ public class JetpackSound extends PlayerSound {
     }
 
     @Override
-    public boolean shouldPlaySound() {
+    public boolean shouldPlaySound(@Nonnull EntityPlayer player) {
         return ClientTickHandler.isJetpackActive(player);
     }
 }
