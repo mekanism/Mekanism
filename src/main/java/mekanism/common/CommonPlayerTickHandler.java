@@ -52,7 +52,8 @@ public class CommonPlayerTickHandler {
 
     public static boolean isFlamethrowerOn(EntityPlayer player) {
         if (Mekanism.playerState.isFlamethrowerOn(player)) {
-            return !player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower;
+            ItemStack currentItem = player.inventory.getCurrentItem();
+            return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower;
         }
         return false;
     }
@@ -74,19 +75,22 @@ public class CommonPlayerTickHandler {
 
         if (isFlamethrowerOn(player)) {
             player.world.spawnEntity(new EntityFlame(player));
-            if (!(player.isCreative() || player.isSpectator())) {
-                ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).useGas(player.inventory.getCurrentItem());
+            if (!player.isCreative() && !player.isSpectator()) {
+                ItemStack currentItem = player.inventory.getCurrentItem();
+                ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem);
             }
         }
 
         if (isJetpackOn(player)) {
             ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-            if (jetpack.getMode(stack) == JetpackMode.NORMAL) {
+            JetpackMode mode = jetpack.getMode(stack);
+            if (mode == JetpackMode.NORMAL) {
                 player.motionY = Math.min(player.motionY + 0.15D, 0.5D);
-            } else if (jetpack.getMode(stack) == JetpackMode.HOVER) {
-                if ((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) || (
-                      Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND))) {
+            } else if (mode == JetpackMode.HOVER) {
+                boolean ascending = Mekanism.keyMap.has(player, KeySync.ASCEND);
+                boolean descending = Mekanism.keyMap.has(player, KeySync.DESCEND);
+                if ((!ascending && !descending) || (ascending && descending)) {
                     if (player.motionY > 0) {
                         player.motionY = Math.max(player.motionY - 0.15D, 0);
                     } else if (player.motionY < 0) {
@@ -94,12 +98,10 @@ public class CommonPlayerTickHandler {
                             player.motionY = Math.min(player.motionY + 0.15D, 0);
                         }
                     }
-                } else if (Mekanism.keyMap.has(player, KeySync.ASCEND)) {
+                } else if (ascending) {
                     player.motionY = Math.min(player.motionY + 0.15D, 0.2D);
-                } else if (Mekanism.keyMap.has(player, KeySync.DESCEND)) {
-                    if (!isOnGround(player)) {
-                        player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
-                    }
+                } else if (!isOnGround(player)) {
+                    player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
                 }
             }
             player.fallDistance = 0.0F;
@@ -119,11 +121,9 @@ public class CommonPlayerTickHandler {
                 player.setAir(player.getAir() + received.amount);
             }
             if (player.getAir() == max) {
-                for (Object obj : player.getActivePotionEffects()) {
-                    if (obj instanceof PotionEffect) {
-                        for (int i = 0; i < 9; i++) {
-                            ((PotionEffect) obj).onUpdate(player);
-                        }
+                for (PotionEffect effect : player.getActivePotionEffects()) {
+                    for (int i = 0; i < 9; i++) {
+                        effect.onUpdate(player);
                     }
                 }
             }
