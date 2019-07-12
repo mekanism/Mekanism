@@ -1,5 +1,7 @@
 package mekanism.api.gas;
 
+import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -11,6 +13,8 @@ import net.minecraft.nbt.NBTTagCompound;
 public class GasStack {
 
     public int amount;
+
+    @Nonnull
     private Gas type;
 
     /**
@@ -20,7 +24,7 @@ public class GasStack {
      * @param quantity - amount of gas to be referenced in this GasStack
      */
     public GasStack(int id, int quantity) {
-        type = GasRegistry.getGas(id);
+        type = Objects.requireNonNull(GasRegistry.getGas(id));
         amount = quantity;
     }
 
@@ -30,8 +34,8 @@ public class GasStack {
      * @param gas      - gas type of the stack
      * @param quantity - amount of gas to be referenced in this GasStack
      */
-    public GasStack(Gas gas, int quantity) {
-        type = gas;
+    public GasStack(@Nonnull Gas gas, int quantity) {
+        type = Objects.requireNonNull(gas);
         amount = quantity;
     }
 
