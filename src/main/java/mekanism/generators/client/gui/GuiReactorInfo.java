@@ -3,13 +3,13 @@ package mekanism.generators.client.gui;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,26 +18,24 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorController> {
 
+    private GuiButtonImageMek backButton;
+
     public GuiReactorInfo(TileEntityReactorController tile, Container container) {
         super(tile, container);
     }
 
-    private boolean overBackButton(int xAxis, int yAxis) {
-        return xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20;
+    @Override
+    public void initGui() {
+        super.initGui();
+        buttonList.clear();
+        backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation());
+        buttonList.add(backButton);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, 0, overBackButton(xAxis, yAxis), 14);
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (button == 0 && overBackButton(xAxis, yAxis)) {
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        if (guibutton.id == backButton.id) {
             Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));
         }
     }

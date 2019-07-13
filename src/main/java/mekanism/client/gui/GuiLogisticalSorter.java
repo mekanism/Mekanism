@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
@@ -20,6 +21,7 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +39,10 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSorter, TransporterFilter> {
 
+    private GuiButtonImageMek singleItemButton;
+    private GuiButtonImageMek roundRobinButton;
+    private GuiButtonImageMek autoEjectButton;
+
     public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tile) {
         super(tile, new ContainerNull(player, tile));
 
@@ -45,18 +51,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
-    }
-
-    private boolean overAutoEject(int xAxis, int yAxis) {
-        return xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124;
-    }
-
-    private boolean overRoundRobin(int xAxis, int yAxis) {
-        return xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98;
-    }
-
-    private boolean overSingleItem(int xAxis, int yAxis) {
-        return xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72;
     }
 
     private boolean overColor(int xAxis, int yAxis) {
@@ -126,17 +120,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                     }
                 }
             }
-
-            if (overAutoEject(xAxis, yAxis)) {
-                //Auto eject button
-                sendDataFromClick(TileNetworkList.withContents(1), SoundEvents.UI_BUTTON_CLICK);
-            } else if (overRoundRobin(xAxis, yAxis)) {
-                //Round robin button
-                sendDataFromClick(TileNetworkList.withContents(2), SoundEvents.UI_BUTTON_CLICK);
-            } else if (overSingleItem(xAxis, yAxis)) {
-                //Single item button
-                sendDataFromClick(TileNetworkList.withContents(5), SoundEvents.UI_BUTTON_CLICK);
-            }
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && mouseBtn == 0) {
@@ -167,6 +150,14 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         // Add buttons to gui
         buttonList.clear();
         buttonList.add(new GuiButton(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
+
+        singleItemButton = new GuiButtonImageMek(1, guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation());
+        roundRobinButton = new GuiButtonImageMek(2, guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation());
+        autoEjectButton = new GuiButtonImageMek(3, guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation());
+
+        buttonList.add(singleItemButton);
+        buttonList.add(roundRobinButton);
+        buttonList.add(autoEjectButton);
     }
 
     @Override
@@ -174,6 +165,12 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         super.actionPerformed(guibutton);
         if (guibutton.id == BUTTON_NEW) {
             sendPacket(SorterGuiPacket.SERVER, 4, 0, null);
+        } else if (guibutton.id == singleItemButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(5)));
+        } else if (guibutton.id == roundRobinButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(2)));
+        } else if (guibutton.id == autoEjectButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(1)));
         }
     }
 
@@ -248,22 +245,13 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
             } else {
                 drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
-        } else if (overAutoEject(xAxis, yAxis)) {
+        } else if (autoEjectButton.isMouseOver()) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
-        } else if (overRoundRobin(xAxis, yAxis)) {
+        } else if (roundRobinButton.isMouseOver()) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
-        } else if (overSingleItem(xAxis, yAxis)) {
+        } else if (singleItemButton.isMouseOver()) {
             drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        // Draw gui buttons
-        drawTexturedModalRect(guiLeft + 12, guiTop + 110, 176, 0, overAutoEject(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 12, guiTop + 84, 190, 0, overRoundRobin(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 12, guiTop + 58, 204, 0, overSingleItem(xAxis, yAxis), 14);
     }
 }
