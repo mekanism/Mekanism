@@ -34,8 +34,6 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
         GlStateManager.pushMatrix();
-        GlStateManager.rotate(180, 0, 0, 1);
-        GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.translate(0, -1.0F, 0);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlpha();

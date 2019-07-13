@@ -54,26 +54,20 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     }
                     GLSMHelper.resetColor();
                     GLSMHelper.disableGlow(glowInfo);
-                    GlStateManager.enableLighting();
-                    GlStateManager.disableBlend();
-                    GlStateManager.disableCull();
                     GlStateManager.popMatrix();
 
                     for (ValveData valveData : tileEntity.valveViewing) {
                         GlStateManager.pushMatrix();
-                        GlStateManager.enableCull();
-                        GlStateManager.enableBlend();
-                        GlStateManager.disableLighting();
                         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                         FluidRenderer.translateToOrigin(valveData.location);
                         GlowInfo valveGlowInfo = GLSMHelper.enableGlow(waterStored);
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
                         GLSMHelper.disableGlow(valveGlowInfo);
-                        GlStateManager.enableLighting();
-                        GlStateManager.disableBlend();
-                        GlStateManager.disableCull();
                         GlStateManager.popMatrix();
                     }
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.disableCull();
                 }
             }
 

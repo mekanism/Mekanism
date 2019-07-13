@@ -112,18 +112,18 @@ public class GuiGraph extends GuiElement {
 
             int displays = (relativeHeight - 1) / 10 + ((relativeHeight - 1) % 10 > 0 ? 1 : 0);
 
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             for (int iter = 0; iter < displays; iter++) {
-                GlStateManager.shadeModel(GL11.GL_SMOOTH);
-                GlStateManager.disableAlpha();
-                GlStateManager.enableBlend();
-                GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                 GlStateManager.color(1, 1, 1, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
-                GLSMHelper.resetColor();
-                GlStateManager.disableBlend();
-                GlStateManager.enableAlpha();
             }
+            GLSMHelper.resetColor();
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
         }
     }
 
