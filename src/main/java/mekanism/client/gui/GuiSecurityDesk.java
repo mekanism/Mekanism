@@ -75,25 +75,23 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     public void updateButtons() {
-        if (tileEntity.ownerUUID == null) {
-            return;
-        }
-        List<String> text = new ArrayList<>();
-        if (tileEntity.frequency != null) {
-            for (String s : tileEntity.frequency.trusted) {
-                text.add(s);
+        if (tileEntity.ownerUUID != null) {
+            List<String> text = new ArrayList<>();
+            if (tileEntity.frequency != null) {
+                for (String s : tileEntity.frequency.trusted) {
+                    text.add(s);
+                }
             }
+            scrollList.setText(text);
+            removeButton.enabled = scrollList.hasSelection();
         }
-        scrollList.setText(text);
-        removeButton.enabled = scrollList.hasSelection();
 
-        if (tileEntity.frequency != null) {
-            boolean ownerMatches = tileEntity.ownerUUID.equals(mc.player.getUniqueID());
-            publicButton.enabled = ownerMatches && tileEntity.frequency.securityMode != SecurityMode.PUBLIC;
-            privateButton.enabled = ownerMatches && tileEntity.frequency.securityMode != SecurityMode.PRIVATE;
-            trustedButton.enabled = ownerMatches && tileEntity.frequency.securityMode != SecurityMode.TRUSTED;
-            checkboxButton.enabled = ownerMatches;
-            overrideButton.enabled = ownerMatches;
+        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(mc.player.getUniqueID())) {
+            publicButton.enabled = tileEntity.frequency.securityMode != SecurityMode.PUBLIC;
+            privateButton.enabled = tileEntity.frequency.securityMode != SecurityMode.PRIVATE;
+            trustedButton.enabled = tileEntity.frequency.securityMode != SecurityMode.TRUSTED;
+            checkboxButton.enabled = true;
+            overrideButton.enabled = true;
         } else {
             publicButton.enabled = false;
             privateButton.enabled = false;
