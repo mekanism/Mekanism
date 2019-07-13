@@ -233,7 +233,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                 }
             }
         }
-        drawColorIcon(13, 137, tileEntity.color, 1);
 
         // Draw tooltips for buttons
         if (colorButton.isMouseOver()) {

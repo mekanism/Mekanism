@@ -107,7 +107,6 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         renderScaledText(text, 53, 17, 0x00CD00, 70);
         fontRenderer.drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
         fontRenderer.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
-        //drawColorIcon(122, 49, configurable.getEjector().getOutputColor(), 1);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (int i = 0; i < slotPosMap.size(); i++) {
