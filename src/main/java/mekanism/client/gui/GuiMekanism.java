@@ -9,6 +9,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -201,7 +202,6 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
 
     protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
         if (!stack.isEmpty()) {
-            //TODO: Is this try catch even needed, some places had it
             try {
                 GlStateManager.pushMatrix();
                 GlStateManager.enableDepth();
@@ -213,7 +213,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
                 RenderHelper.disableStandardItemLighting();
                 GlStateManager.disableDepth();
                 GlStateManager.popMatrix();
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
         }
     }
