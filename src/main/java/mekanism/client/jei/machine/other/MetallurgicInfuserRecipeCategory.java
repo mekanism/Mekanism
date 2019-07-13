@@ -1,5 +1,6 @@
 package mekanism.client.jei.machine.other;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -21,6 +22,8 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class MetallurgicInfuserRecipeCategory<WRAPPER extends MetallurgicInfuserRecipeWrapper<MetallurgicInfuserRecipe>> extends BaseRecipeCategory<WRAPPER> {
 
@@ -30,7 +33,7 @@ public class MetallurgicInfuserRecipeCategory<WRAPPER extends MetallurgicInfuser
     }
 
     public static List<ItemStack> getInfuseStacks(InfuseType type) {
-        return InfuseRegistry.getObjectMap().entrySet().stream().filter(obj -> obj.getValue().type == type).map(Entry::getKey).collect(Collectors.toList());
+        return InfuseRegistry.getInfuseObjects().stream().filter(obj -> obj.getLeft().type == type).map(Pair::getRight).flatMap(it-> Arrays.stream(it.getMatchingStacks())).collect(Collectors.toList());
     }
 
     @Override

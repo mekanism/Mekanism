@@ -3,7 +3,10 @@ package mekanism.common.integration;
 import ic2.api.recipe.Recipes;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import javax.annotation.Nonnull;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseObject;
@@ -37,6 +40,7 @@ import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.OreIngredient;
 
 @EventBusSubscriber(modid = Mekanism.MODID)
 public final class OreDictManager {
@@ -103,10 +107,9 @@ public final class OreDictManager {
         }
 
         for (ItemStack dust : OreDictionary.getOres("dustRefinedObsidian", false)) {
-            dust = StackUtils.size(dust, 1);
-            RecipeHandler.addOsmiumCompressorRecipe(dust, new ItemStack(MekanismItems.Ingot, 1, 0));
-            RecipeHandler.addEnrichmentChamberRecipe(dust, new ItemStack(MekanismItems.CompressedObsidian));
-            InfuseRegistry.registerInfuseObject(dust, new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 10));
+            RecipeHandler.addOsmiumCompressorRecipe(StackUtils.size(dust, 1), new ItemStack(MekanismItems.Ingot, 1, 0));
+            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(dust, 1), new ItemStack(MekanismItems.CompressedObsidian));
+            InfuseRegistry.registerInfuseObject(new OreIngredient("dustRefinedObsidian"), new InfuseObject(Objects.requireNonNull(InfuseRegistry.get("OBSIDIAN")), 10));
         }
 
         for (Resource resource : Resource.values()) {
@@ -132,7 +135,10 @@ public final class OreDictManager {
                 RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
                 RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride,
                       new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
-                RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas(resource.getName()), 1000));
+                Gas oreGas = GasRegistry.getGas(resource.getName().toLowerCase(Locale.ROOT));
+                if (oreGas != null) {
+                    RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1),new GasStack(oreGas, 1000));
+                }
             }
 
             for (ItemStack ingot : OreDictionary.getOres("ingot" + resource.getName(), false)) {
@@ -296,7 +302,7 @@ public final class OreDictManager {
             }
         }
 
-        InfuseType tinInfuseType = InfuseRegistry.get("TIN");
+        InfuseType tinInfuseType = Objects.requireNonNull(InfuseRegistry.get("TIN"));
         for (ItemStack ingot : OreDictionary.getOres("ingotCopper", false)) {
             RecipeHandler.addMetallurgicInfuserRecipe(tinInfuseType, 10, StackUtils.size(ingot, 3),
                   new ItemStack(MekanismItems.Ingot, 4, 2));
@@ -391,20 +397,16 @@ public final class OreDictManager {
             RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(dust, 1), new GasStack(MekanismFluids.Lithium, 100));
         }
 
-        InfuseType diamondInfuseType = InfuseRegistry.get("DIAMOND");
+        InfuseType diamondInfuseType = Objects.requireNonNull(InfuseRegistry.get("DIAMOND"));
         for (ItemStack dust : OreDictionary.getOres("dustObsidian", false)) {
             RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 4), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.OBSIDIAN));
             RecipeHandler.addMetallurgicInfuserRecipe(diamondInfuseType, 10, StackUtils.size(dust, 1),
                   new ItemStack(MekanismItems.OtherDust, 1, 5));
         }
 
-        for (ItemStack dust : OreDictionary.getOres("dustDiamond", false)) {
-            InfuseRegistry.registerInfuseObject(StackUtils.size(dust, 1), new InfuseObject(diamondInfuseType, 10));
-        }
+        InfuseRegistry.registerInfuseObject(new OreIngredient("dustDiamond"), new InfuseObject(diamondInfuseType, 10));
 
-        for (ItemStack dust : OreDictionary.getOres("dustTin", false)) {
-            InfuseRegistry.registerInfuseObject(StackUtils.size(dust, 1), new InfuseObject(tinInfuseType, 10));
-        }
+        InfuseRegistry.registerInfuseObject(new OreIngredient("dustTin"), new InfuseObject(tinInfuseType, 10));
 
         for (ItemStack sapling : OreDictionary.getOres("treeSapling", false)) {
             if (sapling.getItemDamage() == 0 || sapling.getItemDamage() == OreDictionary.WILDCARD_VALUE) {

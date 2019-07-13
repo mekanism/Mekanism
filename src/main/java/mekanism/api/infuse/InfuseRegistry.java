@@ -1,10 +1,14 @@
 package mekanism.api.infuse;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraft.item.crafting.Ingredient;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Use this class to add a new object that registers as an infuse object.
@@ -14,14 +18,15 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class InfuseRegistry {
 
     /**
-     * The (private) map of ItemStacks and their related InfuseObjects.
-     */
-    private static Map<ItemStack, InfuseObject> infuseObjects = new HashMap<>();
-
-    /**
      * The (private) map of infuse names and their corresponding InfuseTypes.
      */
-    private static Map<String, InfuseType> infuseTypes = new HashMap<>();
+    private static final Map<String, InfuseType> infuseTypes = new HashMap<>();
+
+    private static final Map<String, InfuseType> infuseTypesImmutable = Collections.unmodifiableMap(infuseTypes);
+
+    private static final List<Pair<InfuseObject, Ingredient>> infuseObjects = new ArrayList<>();
+
+    private static final Collection<Pair<InfuseObject, Ingredient>> infuseObjectsImmutable = Collections.unmodifiableCollection(infuseObjects);
 
     /**
      * Registers an InfuseType into the registry. Call this in PreInit!
@@ -65,14 +70,15 @@ public class InfuseRegistry {
      * Metallurgic Infuser's buffer of infuse.  The item's stack size will be decremented when it is placed in the Metallurgic Infuser's infuse slot, and the machine can
      * accept the type and amount of infuse stored in the object.
      *
-     * @param itemStack    - stack the infuse object is linked to -- stack size is ignored
+     * @param ingredient   - ingredient the infuse object is linked to
      * @param infuseObject - the infuse object with the type and amount data
      */
-    public static void registerInfuseObject(ItemStack itemStack, InfuseObject infuseObject) {
-        if (getObject(itemStack) != null) {
-            return;
+    public static void registerInfuseObject(Ingredient ingredient, InfuseObject infuseObject) {
+        //noinspection ConstantConditions
+        if (infuseObject.type == null || infuseObject.stored <= 0){
+            throw new IllegalArgumentException("Bad infuseObject");
         }
-        infuseObjects.put(itemStack, infuseObject);
+        infuseObjects.add(Pair.of(infuseObject, ingredient));
     }
 
     /**
@@ -83,21 +89,12 @@ public class InfuseRegistry {
      * @return the ItemStack's InfuseObject
      */
     public static InfuseObject getObject(ItemStack itemStack) {
-        for (Entry<ItemStack, InfuseObject> obj : infuseObjects.entrySet()) {
-            if (ItemHandlerHelper.canItemStacksStack(obj.getKey(), itemStack)) {
-                return obj.getValue();
+        for (Pair<InfuseObject, Ingredient> obj : infuseObjects) {
+            if (obj.getRight().apply(itemStack)) {
+                return obj.getLeft();
             }
         }
         return null;
-    }
-
-    /**
-     * Gets the private map for InfuseObjects.
-     *
-     * @return private InfuseObject map
-     */
-    public static Map<ItemStack, InfuseObject> getObjectMap() {
-        return infuseObjects;
     }
 
     /**
@@ -106,6 +103,10 @@ public class InfuseRegistry {
      * @return private InfuseType map
      */
     public static Map<String, InfuseType> getInfuseMap() {
-        return infuseTypes;
+        return infuseTypesImmutable;
+    }
+
+    public static Collection<Pair<InfuseObject, Ingredient>> getInfuseObjects() {
+        return Collections.unmodifiableCollection(infuseObjectsImmutable);
     }
 }
