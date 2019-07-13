@@ -42,7 +42,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
-        if (scaledFluidLevel > 0 && tileEntity.structure != null) {
+        if (scaledFluidLevel > 0) {
             displayGauge(7, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 0);
             displayGauge(23, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 1);
         }

@@ -142,9 +142,6 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityliving, ItemStack itemstack) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        if (tileEntity == null) {
-            return;
-        }
         EnumFacing change = EnumFacing.SOUTH;
         if (tileEntity.canSetFacing(EnumFacing.DOWN) && tileEntity.canSetFacing(EnumFacing.UP)) {
             int height = Math.round(entityliving.rotationPitch);
