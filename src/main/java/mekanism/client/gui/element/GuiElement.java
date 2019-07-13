@@ -3,6 +3,7 @@ package mekanism.client.gui.element;
 import java.awt.Rectangle;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -73,6 +74,8 @@ public abstract class GuiElement {
             getFontRenderer().drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }
+        //Make sure the color does not leak from having drawn the string
+        MekanismRenderer.resetColor();
     }
 
     public FontRenderer getFontRenderer() {

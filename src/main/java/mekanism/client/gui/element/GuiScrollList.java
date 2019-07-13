@@ -130,6 +130,8 @@ public class GuiScrollList extends GuiElement {
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
+        //TODO: For some reason the entire gui scroll list element gets its color shifted when GuiScreen#drawHoveringText is being drawn
+        // Resetting the color here does not seem to do anything to help fix this
         if (!textEntries.isEmpty()) {
             for (int i = 0; i < size; i++) {
                 int index = getScrollIndex() + i;
