@@ -3,8 +3,8 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Set;
 import mekanism.api.Coord4D;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
@@ -15,9 +15,9 @@ import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,6 +26,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiUpgradeManagement extends GuiMekanism {
 
+    private GuiButtonImageMek backButton;
+    private GuiButtonImageMek removeButton;
     private IUpgradeTile tileEntity;
     private Upgrade selectedType;
     private boolean isDragging = false;
@@ -39,16 +41,31 @@ public class GuiUpgradeManagement extends GuiMekanism {
         tileEntity = tile;
     }
 
+    @Override
+    public void initGui() {
+        super.initGui();
+        buttonList.clear();
+        backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation());
+        removeButton = new GuiButtonImageMek(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation());
+        updateEnabledButtons();
+        buttonList.add(backButton);
+        buttonList.add(removeButton);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        TileEntity tile = (TileEntity) tileEntity;
+        if (guibutton.id == backButton.id) {
+            int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
+            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+        } else if (guibutton.id == removeButton.id) {
+            Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
+        }
+    }
+
     private boolean overUpgradeType(int xAxis, int yAxis, int xPos, int yPos) {
         return xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12;
-    }
-
-    private boolean overBackButton(int xAxis, int yAxis) {
-        return xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20;
-    }
-
-    private boolean overRemove(int xAxis, int yAxis) {
-        return xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69;
     }
 
     @Override
@@ -60,6 +77,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
             delay = 0;
             supportedIndex = ++supportedIndex % tileEntity.getComponent().getSupportedTypes().size();
         }
+        updateEnabledButtons();
+    }
+
+    private void updateEnabledButtons() {
+        removeButton.enabled = selectedType != null;
     }
 
     @Override
@@ -124,12 +146,6 @@ public class GuiUpgradeManagement extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, 0, overBackButton(xAxis, yAxis), 14);
-        if (selectedType == null) {
-            drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, 24, 12, 12);
-        } else {
-            drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, 0, overRemove(xAxis, yAxis), 12);
-        }
         int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
         if (selectedType != null && tileEntity.getComponent().getUpgrades(selectedType) == 0) {
@@ -199,10 +215,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        TileEntity tile = (TileEntity) tileEntity;
         if (button == 0) {
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             if (xAxis >= 84 && xAxis <= 88 && yAxis >= getScroll() + 8 && yAxis <= getScroll() + 8 + 4) {
                 if (getCurrentUpgrades().size() > 4) {
                     dragOffset = yAxis - (getScroll() + 8);
@@ -210,14 +225,6 @@ public class GuiUpgradeManagement extends GuiMekanism {
                 } else {
                     scroll = 0;
                 }
-            } else if (overBackButton(xAxis, yAxis)) {
-                int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-            }
-            if (selectedType != null && overRemove(xAxis, yAxis)) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
             }
             int counter = 0;
             for (Upgrade upgrade : getCurrentUpgrades()) {

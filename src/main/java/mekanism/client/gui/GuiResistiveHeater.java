@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.TileNetworkList;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -12,7 +13,6 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
@@ -23,9 +23,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,6 +35,7 @@ import org.lwjgl.input.Keyboard;
 public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater> {
 
     private GuiTextField energyUsageField;
+    private GuiButtonImageMek checkboxButton;
 
     public GuiResistiveHeater(InventoryPlayer inventory, TileEntityResistiveHeater tile) {
         super(tile, new ContainerResistiveHeater(inventory, tile));
@@ -55,19 +56,27 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         }, this, resource));
     }
 
-    private boolean overCheckbox(int xAxis, int yAxis) {
-        return xAxis >= 116 && xAxis <= 126 && yAxis >= 51 && yAxis <= 61;
-    }
-
     @Override
     public void initGui() {
         super.initGui();
+        buttonList.clear();
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
         energyUsageField = new GuiTextField(0, fontRenderer, guiLeft + 49, guiTop + 52, 66, 11);
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setEnableBackgroundDrawing(false);
         energyUsageField.setText(prevEnergyUsage);
+        checkboxButton = new GuiButtonImageMek(1, guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation());
+        buttonList.add(checkboxButton);
     }
+
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        if (guibutton.id == checkboxButton.id) {
+            setEnergyUsage();
+        }
+    }
+
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
@@ -80,7 +89,6 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 116, guiTop + 51, xSize, 0, overCheckbox(xAxis, yAxis), 11);
         energyUsageField.drawTextBox();
     }
 
@@ -103,10 +111,6 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         energyUsageField.mouseClicked(mouseX, mouseY, button);
-        if (button == 0 && overCheckbox(mouseX - guiLeft, mouseY - guiTop)) {
-            setEnergyUsage();
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-        }
     }
 
     @Override

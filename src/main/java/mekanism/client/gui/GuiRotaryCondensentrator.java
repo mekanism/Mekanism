@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -16,7 +17,6 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -24,14 +24,16 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator> {
+
+    private GuiButtonImageMek toggleButton;
 
     public GuiRotaryCondensentrator(InventoryPlayer inventory, TileEntityRotaryCondensentrator tile) {
         super(tile, new ContainerRotaryCondensentrator(inventory, tile));
@@ -75,8 +77,20 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         }, ProgressBar.LARGE_LEFT, this, resource, 62, 38));
     }
 
-    private boolean overToggle(int xAxis, int yAxis) {
-        return xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22;
+    @Override
+    public void initGui() {
+        super.initGui();
+        buttonList.clear();
+        toggleButton = new GuiButtonImageMek(0, guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation());
+        buttonList.add(toggleButton);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        if (guibutton.id == toggleButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(0)));
+        }
     }
 
     @Override
@@ -86,10 +100,10 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
                                                      : LangUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
-            drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
-        } else if (overToggle(xAxis, yAxis)) {
+        if (toggleButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
+        } else if (xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80) {
+            drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -98,17 +112,6 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiLeft + 116, guiTop + 76, 176, 36, displayInt, 4);
-        drawTexturedModalRect(guiLeft + 4, guiTop + 4, 176, 0, overToggle(xAxis, yAxis), 18);
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (button == 0 && overToggle(mouseX - guiLeft, mouseY - guiTop)) {
-            TileNetworkList data = TileNetworkList.withContents(0);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-        }
     }
 
     @Override
