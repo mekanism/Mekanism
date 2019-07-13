@@ -3,8 +3,8 @@ package mekanism.generators.client.render;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -32,7 +32,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             GlStateManager.disableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlowInfo glowInfo = GLSMHelper.enableGlow();
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
             long scaledTemp = Math.round(tileEntity.getPlasmaTemp() / 1E8);
             float ticks = MekanismClient.ticksPassed + partialTick;
@@ -45,7 +45,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
             scale = 1 - 0.9 * Math.sin(Math.toRadians(ticks * 4 * scaledTemp + 90F));
             renderPart(EnumColor.ORANGE, scale, ticks, scaledTemp, 5, -3, -35, 106);
 
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
             GlStateManager.popMatrix();
@@ -56,11 +56,11 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
         float ticksScaledTemp = ticks * scaledTemp;
         GlStateManager.pushMatrix();
         GlStateManager.scale((float) scale, (float) scale, (float) scale);
-        GLSMHelper.color(color);
+        MekanismRenderer.color(color);
         GlStateManager.rotate(ticksScaledTemp * mult1 + shift1, 0, 1, 0);
         GlStateManager.rotate(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
         core.render(0.0625F);
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         GlStateManager.popMatrix();
     }
 }

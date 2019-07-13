@@ -13,7 +13,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFactory.MachineFuelType;
@@ -93,9 +93,9 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
             if (tileEntity.getScaledGasLevel(160) > 0) {
                 GasStack gas = tileEntity.gasTank.getGas();
                 if (gas != null) {
-                    GLSMHelper.color(gas);
+                    MekanismRenderer.color(gas);
                     displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, gas.getGas().getSprite());
-                    GLSMHelper.resetColor();
+                    MekanismRenderer.resetColor();
                 }
             }
         } else if (tileEntity.getRecipeType() == RecipeType.INFUSING) {

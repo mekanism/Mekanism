@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -243,7 +243,7 @@ public class ModelGasMask extends ModelBase {
         pipecornerBR.render(size);
         pipecornerBL.render(size);
 
-        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         lightL.render(size);
         lightR.render(size);
 
@@ -263,10 +263,10 @@ public class ModelGasMask extends ModelBase {
         glassbackL.render(size);
 
         GlStateManager.disableCull();
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
-        GLSMHelper.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

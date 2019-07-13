@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import mekanism.api.Coord4D;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -65,7 +65,7 @@ public class GuiSeismicReader extends GuiScreen {
         }
         drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
         if (upIntersects) {
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
         }
 
         // Draws the down button
@@ -75,7 +75,7 @@ public class GuiSeismicReader extends GuiScreen {
         }
         drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
         if (downIntersects) {
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
         }
 
         // Fix the overlapping if > 100

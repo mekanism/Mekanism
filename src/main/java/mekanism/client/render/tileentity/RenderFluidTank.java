@@ -1,11 +1,10 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
@@ -48,20 +47,20 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             glChanged = enableGL();
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate((float) x, (float) y, (float) z);
-            GlowInfo glowInfo = GLSMHelper.enableGlow(fluid);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
-            GLSMHelper.color(fluid, fluidScale);
+            MekanismRenderer.color(fluid, fluidScale);
             if (fluid.getFluid().isGaseous(fluid)) {
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
-            GLSMHelper.resetColor();
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.resetColor();
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.popMatrix();
         }
 
@@ -70,12 +69,12 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
             glChanged = enableGL();
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate((float) x, (float) y, (float) z);
-            GlowInfo glowInfo = GLSMHelper.enableGlow(valveFluid);
-            GLSMHelper.color(valveFluid);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow(valveFluid);
+            MekanismRenderer.color(valveFluid);
             DisplayInteger[] valveList = getValveRender(valveFluid);
             valveList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
-            GLSMHelper.resetColor();
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.resetColor();
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.popMatrix();
         }
 

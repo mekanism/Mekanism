@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -116,7 +116,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, Gas gas, int scaledAmount,
           TextureAtlasSprite sprite) {
         minecraft.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        GLSMHelper.color(gas);
+        MekanismRenderer.color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;
         final int xRemainder = tiledWidth - (xTileCount * TEX_WIDTH);
@@ -139,7 +139,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
                 }
             }
         }
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
     }
 
     @Override

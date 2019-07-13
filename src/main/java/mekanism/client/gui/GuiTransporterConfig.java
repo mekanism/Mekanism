@@ -7,7 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -72,9 +72,9 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
             if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY) {
-                GLSMHelper.color(configurable.getEjector().getInputColor(EnumFacing.byIndex(i)));
+                MekanismRenderer.color(configurable.getEjector().getInputColor(EnumFacing.byIndex(i)));
                 drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 0, overSide(xAxis, yAxis, x, y), 14);
-                GLSMHelper.resetColor();
+                MekanismRenderer.resetColor();
             } else {
                 drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 28, 14, 14);
             }

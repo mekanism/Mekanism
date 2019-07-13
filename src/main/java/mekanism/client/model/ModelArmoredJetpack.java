@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -246,14 +246,14 @@ public class ModelArmoredJetpack extends ModelBase {
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         GlStateManager.enableCull();
         GlStateManager.color(1, 1, 1, 0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         GlStateManager.disableCull();
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
@@ -269,7 +269,7 @@ public class ModelArmoredJetpack extends ModelBase {
 
         Rightlight.render(size);
         Leftlight.render(size);
-        GLSMHelper.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);
 
         Chestplate.render(size);
         Leftguardtop.render(size);

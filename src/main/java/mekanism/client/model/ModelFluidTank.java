@@ -1,6 +1,6 @@
 package mekanism.client.model;
 
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -103,12 +103,12 @@ public class ModelFluidTank extends ModelBase {
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GLSMHelper.color(tier.getBaseTier());
+        MekanismRenderer.color(tier.getBaseTier());
         FrontGlass.render(size);
         BackGlass.render(size);
         RightGlass.render(size);
         LeftGlass.render(size);
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
     }

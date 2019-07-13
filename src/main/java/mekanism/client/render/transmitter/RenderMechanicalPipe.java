@@ -3,11 +3,10 @@ package mekanism.client.render.transmitter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
@@ -69,11 +68,11 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             GlStateManager.disableLighting();
             GlowInfo glowInfo;
             if (fluidStack != null) {
-                glowInfo = GLSMHelper.enableGlow(fluidStack);
-                GLSMHelper.color(fluidStack);
+                glowInfo = MekanismRenderer.enableGlow(fluidStack);
+                MekanismRenderer.color(fluidStack);
             } else {
-                glowInfo = GLSMHelper.enableGlow(fluid);
-                GLSMHelper.color(fluid);
+                glowInfo = MekanismRenderer.enableGlow(fluid);
+                MekanismRenderer.color(fluid);
             }
 
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -94,8 +93,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 }
             }
             renderDisplayLists(getListAndRender(null, fluidStack), scale, gas);
-            GLSMHelper.resetColor();
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.resetColor();
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.enableLighting();
             GlStateManager.disableCull();
             GlStateManager.popMatrix();
@@ -107,7 +106,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             if (gas) {
                 GlStateManager.color(1, 1, 1, scale);
                 displayLists[stages - 1].render();
-                GLSMHelper.resetColor();
+                MekanismRenderer.resetColor();
             } else {
                 displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
             }

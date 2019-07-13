@@ -4,7 +4,7 @@ import java.io.IOException;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
@@ -63,10 +63,10 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         for (ReactorLogic type : ReactorLogic.values()) {
-            GLSMHelper.color(EnumColor.RED);
+            MekanismRenderer.color(EnumColor.RED);
             drawTexturedModalRect(guiLeft + 24, guiTop + 32 + (22 * type.ordinal()), 0, 166 + (type == tileEntity.logicType ? 22 : 0), 128, 22);
-            GLSMHelper.resetColor();
         }
+        MekanismRenderer.resetColor();
         drawTexturedModalRect(guiLeft + 23, guiTop + 19, 176, 0, overCooling(xAxis, yAxis), 11);
     }
 

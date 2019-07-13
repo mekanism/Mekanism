@@ -2,10 +2,9 @@ package mekanism.generators.client.render;
 
 import java.util.EnumMap;
 import java.util.Map;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -36,11 +35,11 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
             GlStateManager.enableBlend();
             GlStateManager.disableLighting();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlowInfo glowInfo = GLSMHelper.enableGlow();
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
             GlStateManager.translate((float) x, (float) y, (float) z);
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages - 1)].render();
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.enableLighting();
             GlStateManager.disableBlend();
             GlStateManager.disableCull();
@@ -51,7 +50,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
-        GLSMHelper.rotate(tileEntity.facing, 180, 0, 270, 90);
+        MekanismRenderer.rotate(tileEntity.facing, 180, 0, 270, 90);
 
         GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F);

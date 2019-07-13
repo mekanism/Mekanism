@@ -6,7 +6,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.Mekanism;
@@ -42,7 +41,7 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
 
     @Override
     protected void applyRenderColor() {
-        GLSMHelper.color(dummy ? dummyType : infoHandler.getTank().getFluid());
+        MekanismRenderer.color(dummy ? dummyType : infoHandler.getTank().getFluid());
     }
 
     @Override

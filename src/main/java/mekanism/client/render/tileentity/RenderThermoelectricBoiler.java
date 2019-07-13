@@ -3,9 +3,9 @@ package mekanism.client.render.tileentity;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.GlStateManager;
@@ -45,24 +45,24 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     GlStateManager.disableLighting();
                     GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-                    GlowInfo glowInfo = GLSMHelper.enableGlow(waterStored);
-                    GLSMHelper.color(waterStored, (float) waterStored.amount / (float) tileEntity.clientWaterCapacity);
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
+                    MekanismRenderer.color(waterStored, (float) waterStored.amount / (float) tileEntity.clientWaterCapacity);
                     if (waterStored.getFluid().isGaseous(waterStored)) {
                         FluidRenderer.getTankDisplay(data).render();
                     } else {
                         FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
                     }
-                    GLSMHelper.resetColor();
-                    GLSMHelper.disableGlow(glowInfo);
+                    MekanismRenderer.resetColor();
+                    MekanismRenderer.disableGlow(glowInfo);
                     GlStateManager.popMatrix();
 
                     for (ValveData valveData : tileEntity.valveViewing) {
                         GlStateManager.pushMatrix();
                         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                         FluidRenderer.translateToOrigin(valveData.location);
-                        GlowInfo valveGlowInfo = GLSMHelper.enableGlow(waterStored);
+                        GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(waterStored);
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
-                        GLSMHelper.disableGlow(valveGlowInfo);
+                        MekanismRenderer.disableGlow(valveGlowInfo);
                         GlStateManager.popMatrix();
                     }
                     GlStateManager.enableLighting();
@@ -87,13 +87,13 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     GlStateManager.disableLighting();
                     GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-                    GlowInfo glowInfo = GLSMHelper.enableGlow(tileEntity.structure.steamStored);
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tileEntity.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
-                    GLSMHelper.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity);
+                    MekanismRenderer.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity);
                     display.render();
-                    GLSMHelper.resetColor();
-                    GLSMHelper.disableGlow(glowInfo);
+                    MekanismRenderer.resetColor();
+                    MekanismRenderer.disableGlow(glowInfo);
                     GlStateManager.enableLighting();
                     GlStateManager.disableBlend();
                     GlStateManager.disableCull();

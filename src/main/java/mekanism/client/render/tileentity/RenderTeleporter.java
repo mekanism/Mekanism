@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
@@ -32,12 +31,12 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();
             GlStateManager.disableLighting();
-            GlowInfo glowInfo = GLSMHelper.enableGlow();
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
             GlStateManager.disableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-            GLSMHelper.color(EnumColor.PURPLE, 0.75F);
+            MekanismRenderer.color(EnumColor.PURPLE, 0.75F);
 
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate((float) x, (float) y, (float) z);
@@ -51,10 +50,10 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
             int display = getOverlayDisplay(type).display;
             GlStateManager.callList(display);
 
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.enableLighting();
             GlStateManager.disableCull();
             GlStateManager.popMatrix();

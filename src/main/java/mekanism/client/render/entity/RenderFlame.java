@@ -1,8 +1,8 @@
 package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -35,7 +35,7 @@ public class RenderFlame extends Render<EntityFlame> {
         float size = (float) Math.pow(2 * alpha, 2);
 
         GlStateManager.pushMatrix();
-        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
@@ -75,10 +75,10 @@ public class RenderFlame extends Render<EntityFlame> {
             tessellator.draw();
         }
         GlStateManager.disableRescaleNormal();
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
-        GLSMHelper.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.popMatrix();
     }
 

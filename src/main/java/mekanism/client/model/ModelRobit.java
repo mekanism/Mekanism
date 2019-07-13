@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -145,11 +145,11 @@ public class ModelRobit extends ModelBase {
         righthand.render(f5);
         lefthand.render(f5);
 
-        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         backLight.render(f5);
         eyeRight.render(f5);
         eyeLeft.render(f5);
-        GLSMHelper.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.popMatrix();
     }
 

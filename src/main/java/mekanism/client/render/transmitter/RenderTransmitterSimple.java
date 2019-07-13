@@ -1,7 +1,7 @@
 package mekanism.client.render.transmitter;
 
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,9 +28,9 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
             renderSide(worldRenderer, side, transmitter);
         }
 
-        GlowInfo glowInfo = GLSMHelper.enableGlow(glow);
+        GlowInfo glowInfo = MekanismRenderer.enableGlow(glow);
         tessellator.draw();
-        GLSMHelper.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.disableCull();

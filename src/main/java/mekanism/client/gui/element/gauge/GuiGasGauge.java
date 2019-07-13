@@ -8,7 +8,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
@@ -99,9 +99,9 @@ public class GuiGasGauge extends GuiGauge<Gas> {
     @Override
     protected void applyRenderColor() {
         if (dummy) {
-            GLSMHelper.color(dummyType);
+            MekanismRenderer.color(dummyType);
         } else {
-            GLSMHelper.color(infoHandler.getTank().getGas());
+            MekanismRenderer.color(infoHandler.getTank().getGas());
         }
     }
 

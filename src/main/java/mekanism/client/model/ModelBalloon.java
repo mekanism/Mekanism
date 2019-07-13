@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
 import mekanism.api.EnumColor;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -55,7 +55,7 @@ public class ModelBalloon extends ModelBase {
 
     public void render(float size, EnumColor color) {
         GlStateManager.pushMatrix();
-        GLSMHelper.color(color);
+        MekanismRenderer.color(color);
         GlStateManager.scale(1.5F, 1.5F, 1.5F);
         GlStateManager.translate(0, -0.07F, 0);
 
@@ -64,7 +64,7 @@ public class ModelBalloon extends ModelBase {
         Balloon3.render(size);
         Balloonnub.render(size);
 
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();

@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.render.GLSMHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
@@ -76,11 +75,11 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
         // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
         // GL changes only get ran if it is not already the color we are assuming it is.
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         guiElements.forEach(element -> {
             element.renderForeground(xAxis, yAxis);
             //Continue ensuring color is what we are assuming.
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
         });
     }
 
@@ -96,7 +95,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         mc.renderEngine.bindTexture(getGuiLocation());
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         drawTexturedModalRect(guiLeft, guiTop);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
@@ -104,11 +103,11 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
         // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
         // GL changes only get ran if it is not already the color we are assuming it is.
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         guiElements.forEach(element -> {
             element.renderBackground(xAxis, yAxis, guiLeft, guiTop);
             //Continue ensuring color is what we are assuming.
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
         });
     }
 

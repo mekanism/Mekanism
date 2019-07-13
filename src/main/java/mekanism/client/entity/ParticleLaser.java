@@ -1,9 +1,8 @@
 package mekanism.client.entity;
 
 import mekanism.api.Pos3D;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -70,10 +69,10 @@ public class ParticleLaser extends Particle {
         float vMin = particleTexture.getInterpolatedV(0);
         float vMax = particleTexture.getInterpolatedV(16);
         GlStateManager.disableCull();
-        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 45);
         drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 90);
-        GLSMHelper.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.enableCull();
     }
 

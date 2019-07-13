@@ -10,7 +10,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -141,19 +141,19 @@ public abstract class GuiFilterHolder<TILE extends TileEntityContainerBlock, FIL
             if (filter != null) {
                 // Change colour based on filter type
                 if (filter instanceof IItemStackFilter) {
-                    GLSMHelper.color(EnumColor.INDIGO, 1.0F, 2.5F);
+                    MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
                 } else if (filter instanceof IOreDictFilter) {
-                    GLSMHelper.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
+                    MekanismRenderer.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
                 } else if (filter instanceof IMaterialFilter) {
-                    GLSMHelper.color(EnumColor.PURPLE, 1.0F, 4F);
+                    MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
                 } else if (filter instanceof IModIDFilter) {
-                    GLSMHelper.color(EnumColor.PINK, 1.0F, 2.5F);
+                    MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
                 }
                 int yStart = i * filterH + filterY;
                 // Flag for mouse over this filter
                 boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
                 drawTexturedModalRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
-                GLSMHelper.resetColor();
+                MekanismRenderer.resetColor();
 
                 // Draw sort buttons
                 int arrowX = filterX + filterW - 12;

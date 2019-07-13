@@ -3,11 +3,10 @@ package mekanism.client.render.item.machine;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.tier.FluidTankTier;
@@ -52,21 +51,21 @@ public class RenderFluidTankItem {
 
             MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-            GlowInfo glowInfo = GLSMHelper.enableGlow(fluid);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
 
-            GLSMHelper.color(fluid, fluidScale);
+            MekanismRenderer.color(fluid, fluidScale);
             if (fluid.getFluid().isGaseous(fluid)) {
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
-            GLSMHelper.resetColor();
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.resetColor();
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
             GlStateManager.enableLighting();

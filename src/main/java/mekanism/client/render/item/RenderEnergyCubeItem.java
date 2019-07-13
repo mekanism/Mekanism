@@ -4,9 +4,8 @@ import javax.annotation.Nonnull;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITierItem;
@@ -59,21 +58,21 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             GlStateManager.disableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlowInfo glowInfo = GLSMHelper.enableGlow();
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
             //Begin core color
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GLSMHelper.color(tier.getBaseTier());
+            MekanismRenderer.color(tier.getBaseTier());
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
             GlStateManager.rotate(4 * MekanismClient.ticksPassed, 0, 1, 0);
             GlStateManager.rotate(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
             core.render(0.0625F);
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
             GlStateManager.popMatrix();
             //End core color
 
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
             GlStateManager.popMatrix();

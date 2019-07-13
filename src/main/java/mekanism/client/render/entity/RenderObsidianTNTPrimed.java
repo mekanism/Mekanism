@@ -1,7 +1,7 @@
 package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.entity.EntityObsidianTNT;
 import net.minecraft.client.Minecraft;
@@ -57,7 +57,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
             renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), 1.0F);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
             GlStateManager.disablePolygonOffset();
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
             GlStateManager.disableBlend();
             GlStateManager.enableLighting();
             GlStateManager.enableTexture2D();

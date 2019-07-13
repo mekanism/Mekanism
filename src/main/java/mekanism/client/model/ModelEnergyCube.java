@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.SideData.IOState;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.MekanismUtils;
@@ -375,7 +375,7 @@ public class ModelEnergyCube extends ModelBase {
         GlStateManager.scale(1.001F, 1.005F, 1.001F);
         GlStateManager.translate(0, -0.0061F, 0);
         manager.bindTexture(BASE_OVERLAY);
-        GLSMHelper.color(tier.getBaseTier().getColor());
+        MekanismRenderer.color(tier.getBaseTier().getColor());
 
         corner8.render(size);
         corner7.render(size);
@@ -386,7 +386,7 @@ public class ModelEnergyCube extends ModelBase {
         corner2.render(size);
         corner1.render(size);
 
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         GlStateManager.popMatrix();
     }
 
@@ -398,18 +398,18 @@ public class ModelEnergyCube extends ModelBase {
 
         GlowInfo glowInfo;
         if (state == IOState.OUTPUT) {
-            glowInfo = GLSMHelper.enableGlow();
+            glowInfo = MekanismRenderer.enableGlow();
             renderer.bindTexture(BASE_OVERLAY);
             ports[side.ordinal()].render(size);
         } else {
-            glowInfo = GLSMHelper.NO_GLOW;
+            glowInfo = MekanismRenderer.NO_GLOW;
         }
 
         renderer.bindTexture(state == IOState.OUTPUT ? OVERLAY_ON : OVERLAY_OFF);
 
         leds1[side.ordinal()].render(size);
         leds2[side.ordinal()].render(size);
-        GLSMHelper.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

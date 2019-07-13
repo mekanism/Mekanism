@@ -9,7 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -103,11 +103,11 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             if (data != TileComponentConfig.EMPTY) {
                 boolean doColor = data.color != EnumColor.GREY;
                 if (doColor) {
-                    GLSMHelper.color(data.color);
+                    MekanismRenderer.color(data.color);
                 }
                 drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 0, overSide(xAxis, yAxis, x, y), 14);
                 if (doColor) {
-                    GLSMHelper.resetColor();
+                    MekanismRenderer.resetColor();
                 }
             } else {
                 drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 28, 14, 14);

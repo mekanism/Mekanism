@@ -10,10 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transporter.TransporterStack;
@@ -91,14 +90,14 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 if (stack.color != null) {
                     bindTexture(transporterBox);
                     GlStateManager.pushMatrix();
-                    GlowInfo glowInfo = GLSMHelper.enableGlow();
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow();
                     GlStateManager.disableCull();
-                    GLSMHelper.color(stack.color);
+                    MekanismRenderer.color(stack.color);
                     GlStateManager.translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
-                    GLSMHelper.resetColor();
+                    MekanismRenderer.resetColor();
                     GlStateManager.enableCull();
-                    GLSMHelper.disableGlow(glowInfo);
+                    MekanismRenderer.disableGlow(glowInfo);
                     GlStateManager.popMatrix();
                 }
             }
@@ -117,7 +116,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlStateManager.pushMatrix();
                     GlStateManager.enableCull();
                     GlStateManager.disableLighting();
-                    GlowInfo glowInfo = GLSMHelper.enableGlow();
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow();
                     GlStateManager.shadeModel(GL11.GL_SMOOTH);
                     GlStateManager.disableAlpha();
                     GlStateManager.enableBlend();
@@ -131,10 +130,10 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     int display = getOverlayDisplay(pos.sideHit, mode).display;
                     GlStateManager.callList(display);
 
-                    GLSMHelper.resetColor();
+                    MekanismRenderer.resetColor();
                     GlStateManager.disableBlend();
                     GlStateManager.enableAlpha();
-                    GLSMHelper.disableGlow(glowInfo);
+                    MekanismRenderer.disableGlow(glowInfo);
                     GlStateManager.enableLighting();
                     GlStateManager.disableCull();
                     GlStateManager.popMatrix();

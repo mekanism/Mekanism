@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -187,7 +187,7 @@ public class ModelJetpack extends ModelBase {
         Packdoodad3.render(size);
         Bottomthruster.render(size);
 
-        GlowInfo glowInfo = GLSMHelper.enableGlow();
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         Packcore.render(size);
 
         light1.render(size);
@@ -207,12 +207,12 @@ public class ModelJetpack extends ModelBase {
         WingbladeL.render(size);
         WingbladeR.render(size);
 
-        GLSMHelper.resetColor();
+        MekanismRenderer.resetColor();
         GlStateManager.disableCull();
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.popMatrix();
-        GLSMHelper.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -3,7 +3,7 @@ package mekanism.client.gui.element;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.GLSMHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
@@ -121,7 +121,7 @@ public class GuiGraph extends GuiElement {
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
             }
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
         }

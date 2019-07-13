@@ -4,10 +4,9 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -59,22 +58,22 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                             GlStateManager.pushMatrix();
                             GlStateManager.enableCull();
                             GlStateManager.disableLighting();
-                            GlowInfo glowInfo = GLSMHelper.enableGlow();
+                            GlowInfo glowInfo = MekanismRenderer.enableGlow();
                             GlStateManager.shadeModel(GL11.GL_SMOOTH);
                             GlStateManager.disableAlpha();
                             GlStateManager.enableBlend();
                             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-                            GLSMHelper.color(data.color, 0.6F);
+                            MekanismRenderer.color(data.color, 0.6F);
                             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                             GlStateManager.translate((float) x, (float) y, (float) z);
                             int display = getOverlayDisplay(pos.sideHit, type).display;
                             GlStateManager.callList(display);
-                            GLSMHelper.resetColor();
+                            MekanismRenderer.resetColor();
 
                             GlStateManager.disableBlend();
                             GlStateManager.enableAlpha();
-                            GLSMHelper.disableGlow(glowInfo);
+                            MekanismRenderer.disableGlow(glowInfo);
                             GlStateManager.enableLighting();
                             GlStateManager.disableCull();
                             GlStateManager.popMatrix();

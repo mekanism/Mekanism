@@ -4,9 +4,8 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.GLSMHelper;
-import mekanism.client.render.GLSMHelper.GlowInfo;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -48,7 +47,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
                 break;
             default:
                 //Otherwise use the helper method for handling different face options because it is one of them
-                GLSMHelper.rotate(tileEntity.facing, 0, 180, 90, 270);
+                MekanismRenderer.rotate(tileEntity.facing, 0, 180, 90, 270);
                 break;
         }
 
@@ -72,22 +71,22 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
             GlStateManager.disableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlowInfo glowInfo = GLSMHelper.enableGlow();
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
             //Begin core color
             float ticks = MekanismClient.ticksPassed + partialTick;
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GLSMHelper.color(tileEntity.tier.getBaseTier());
+            MekanismRenderer.color(tileEntity.tier.getBaseTier());
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             GlStateManager.rotate(4 * ticks, 0, 1, 0);
             GlStateManager.rotate(36F + 4 * ticks, 0, 1, 1);
             core.render(0.0625F);
-            GLSMHelper.resetColor();
+            MekanismRenderer.resetColor();
             GlStateManager.popMatrix();
             //End core color
 
-            GLSMHelper.disableGlow(glowInfo);
+            MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
             GlStateManager.popMatrix();
