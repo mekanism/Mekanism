@@ -28,7 +28,7 @@ public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorCo
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, overBackButton(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, 0, overBackButton(xAxis, yAxis), 14);
     }
 
     @Override

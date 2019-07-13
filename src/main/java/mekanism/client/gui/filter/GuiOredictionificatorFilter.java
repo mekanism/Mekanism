@@ -109,10 +109,10 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 212, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiLeft + 31, guiTop + 21, 200, xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33, 12);
-        drawTexturedModalRect(guiLeft + 63, guiTop + 21, 188, xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33, 12);
-        drawTexturedModalRect(guiLeft + 130, guiTop + 48, 176, xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60, 12);
+        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 212, 0, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+        drawTexturedModalRect(guiLeft + 31, guiTop + 21, 200, 0, xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33, 12);
+        drawTexturedModalRect(guiLeft + 63, guiTop + 21, 188, 0, xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33, 12);
+        drawTexturedModalRect(guiLeft + 130, guiTop + 48, 176, 0, xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60, 12);
         text.drawTextBox();
     }
 

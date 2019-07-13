@@ -206,7 +206,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, overCheckbox(xAxis, yAxis), 11);
+        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, 0, overCheckbox(xAxis, yAxis), 11);
         frequencyField.drawTextBox();
     }
 }

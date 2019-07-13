@@ -114,7 +114,7 @@ public class GuiRobitMain extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 179, guiTop + 10, 201, xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28, 18);
+        drawTexturedModalRect(guiLeft + 179, guiTop + 10, 201, 0, xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28, 18);
         drawTexturedModalRect(guiLeft + 179, guiTop + 30, 201, 36, xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48, 18);
         drawTexturedModalRect(guiLeft + 179, guiTop + 50, 201, 72, xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68, 18);
         drawTexturedModalRect(guiLeft + 179, guiTop + 70, 201, 108, xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88, 18);

@@ -67,7 +67,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             drawTexturedModalRect(guiLeft + 24, guiTop + 32 + (22 * type.ordinal()), 0, 166 + (type == tileEntity.logicType ? 22 : 0), 128, 22);
             GLSMHelper.resetColor();
         }
-        drawTexturedModalRect(guiLeft + 23, guiTop + 19, 176, overCooling(xAxis, yAxis), 11);
+        drawTexturedModalRect(guiLeft + 23, guiTop + 19, 176, 0, overCooling(xAxis, yAxis), 11);
     }
 
     @Override

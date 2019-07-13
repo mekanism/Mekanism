@@ -101,18 +101,18 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         if (!tileEntity.autoMode) {
-            drawTexturedModalRect(guiLeft + 44, guiTop + 75, 238, overFillEmpty(xAxis, yAxis), 16);
+            drawTexturedModalRect(guiLeft + 44, guiTop + 75, 238, 0, overFillEmpty(xAxis, yAxis), 16);
         } else {
             drawTexturedModalRect(guiLeft + 44, guiTop + 75, 238, 32, 16, 16);
         }
         if (!tileEntity.autoMode && tileEntity.isRecipe) {
             if (canEncode()) {
-                drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, overEncodeFormula(xAxis, yAxis), 14);
+                drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, 0, overEncodeFormula(xAxis, yAxis), 14);
             } else {
                 drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, 28, 14, 14);
             }
-            drawTexturedModalRect(guiLeft + 71, guiTop + 75, 190, overCraftSingle(xAxis, yAxis), 16);
-            drawTexturedModalRect(guiLeft + 89, guiTop + 75, 206, overCraftAvailable(xAxis, yAxis), 16);
+            drawTexturedModalRect(guiLeft + 71, guiTop + 75, 190, 0, overCraftSingle(xAxis, yAxis), 16);
+            drawTexturedModalRect(guiLeft + 89, guiTop + 75, 206, 0, overCraftAvailable(xAxis, yAxis), 16);
         } else {
             drawTexturedModalRect(guiLeft + 7, guiTop + 45, 176, 28, 14, 14);
             drawTexturedModalRect(guiLeft + 71, guiTop + 75, 176 + 14, 32, 16, 16);
@@ -120,7 +120,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         }
 
         if (tileEntity.formula != null) {
-            drawTexturedModalRect(guiLeft + 107, guiTop + 75, 222, overAutoMode(xAxis, yAxis), 16);
+            drawTexturedModalRect(guiLeft + 107, guiTop + 75, 222, 0, overAutoMode(xAxis, yAxis), 16);
             drawTexturedModalRect(guiLeft + 26, guiTop + 75, 238, 48, overStockControl(xAxis, yAxis), 16);
         } else {
             drawTexturedModalRect(guiLeft + 107, guiTop + 75, 176 + 46, 32, 16, 16);

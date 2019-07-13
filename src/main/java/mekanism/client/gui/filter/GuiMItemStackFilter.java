@@ -91,7 +91,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void drawItemStackBackground(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 15, guiTop + 45, 213, xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59, 14);
+        drawTexturedModalRect(guiLeft + 15, guiTop + 45, 213, 0, xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59, 14);
     }
 
     @Override

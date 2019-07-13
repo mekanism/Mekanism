@@ -94,8 +94,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 204, overBackButton(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 190, overAutoEject(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 204, 0, overBackButton(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 190, 0, overAutoEject(xAxis, yAxis), 14);
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
@@ -105,7 +105,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
                 if (doColor) {
                     GLSMHelper.color(data.color);
                 }
-                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, overSide(xAxis, yAxis, x, y), 14);
+                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 0, overSide(xAxis, yAxis, x, y), 14);
                 if (doColor) {
                     GLSMHelper.resetColor();
                 }

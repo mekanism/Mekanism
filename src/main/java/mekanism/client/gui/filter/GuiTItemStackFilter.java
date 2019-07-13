@@ -144,7 +144,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void drawItemStackBackground(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 128, guiTop + 44, 187, xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55, 11);
+        drawTexturedModalRect(guiLeft + 128, guiTop + 44, 187, 0, xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55, 11);
         minField.drawTextBox();
         maxField.drawTextBox();
     }

@@ -80,7 +80,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 116, guiTop + 51, xSize, overCheckbox(xAxis, yAxis), 11);
+        drawTexturedModalRect(guiLeft + 116, guiTop + 51, xSize, 0, overCheckbox(xAxis, yAxis), 11);
         energyUsageField.drawTextBox();
     }
 

@@ -313,7 +313,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, overCheckbox(xAxis, yAxis), 11);
+        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, 0, overCheckbox(xAxis, yAxis), 11);
         int y = getFrequency() == null ? 94 : getStatus() == 2 ? 22 : getStatus() == 3 ? 40 : getStatus() == 4 ? 58 : 76;
         drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
         frequencyField.drawTextBox();

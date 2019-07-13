@@ -218,11 +218,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiLeft + 39, guiTop + 67, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78, 11);
-        drawTexturedModalRect(guiLeft + 39, guiTop + 92, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103, 11);
-        drawTexturedModalRect(guiLeft + 39, guiTop + 117, 187, xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128, 11);
-        drawTexturedModalRect(guiLeft + 11, guiTop + 141, 198, xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155, 14);
+        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, 0, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
+        drawTexturedModalRect(guiLeft + 39, guiTop + 67, 187, 0, xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78, 11);
+        drawTexturedModalRect(guiLeft + 39, guiTop + 92, 187, 0, xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103, 11);
+        drawTexturedModalRect(guiLeft + 39, guiTop + 117, 187, 0, xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128, 11);
+        drawTexturedModalRect(guiLeft + 11, guiTop + 141, 198, 0, xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155, 14);
 
         radiusField.drawTextBox();
         minField.drawTextBox();

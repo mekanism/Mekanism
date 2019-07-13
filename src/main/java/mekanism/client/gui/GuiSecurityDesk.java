@@ -205,7 +205,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         //TODO: replace compare with uuid instead of clientOwner and player name
         if (tileEntity.frequency != null && tileEntity.clientOwner != null && mc.player.getName().equals(tileEntity.clientOwner)) {
             drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
-            drawTexturedModalRect(guiLeft + 146, guiTop + 59, xSize + 12, overOverride(xAxis, yAxis), 16);
+            drawTexturedModalRect(guiLeft + 146, guiTop + 59, xSize + 12, 0, overOverride(xAxis, yAxis), 16);
             if (tileEntity.frequency.securityMode != SecurityMode.PUBLIC) {
                 if (overPublic(xAxis, yAxis)) {
                     drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 48, 40, 16);
@@ -240,7 +240,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
             drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 80, 40, 16);
             drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 128, 40, 16);
         }
-        drawTexturedModalRect(guiLeft + 123, guiTop + 68, xSize, overCheckbox(xAxis, yAxis), 11);
+        drawTexturedModalRect(guiLeft + 123, guiTop + 68, xSize, 0, overCheckbox(xAxis, yAxis), 11);
         trustedField.drawTextBox();
     }
 }

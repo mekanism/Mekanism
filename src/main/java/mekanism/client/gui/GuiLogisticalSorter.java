@@ -262,8 +262,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         // Draw gui buttons
-        drawTexturedModalRect(guiLeft + 12, guiTop + 110, 176, overAutoEject(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 12, guiTop + 84, 190, overRoundRobin(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 12, guiTop + 58, 204, overSingleItem(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 12, guiTop + 110, 176, 0, overAutoEject(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 12, guiTop + 84, 190, 0, overRoundRobin(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 12, guiTop + 58, 204, 0, overSingleItem(xAxis, yAxis), 14);
     }
 }

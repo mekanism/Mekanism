@@ -38,7 +38,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityContainerBlock> ext
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, inBounds(xAxis, yAxis), 11);
+        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, 0, inBounds(xAxis, yAxis), 11);
     }
 
     @Override

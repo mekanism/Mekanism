@@ -179,10 +179,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         int displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiLeft + 164, guiTop + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
-        drawTexturedModalRect(guiLeft + 147, guiTop + 47, 180, overAutoEject(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 147, guiTop + 63, 194, overAutoPull(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 131, guiTop + 47, 208, overReset(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 131, guiTop + 63, 222, overSilk(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 147, guiTop + 47, 180, 0, overAutoEject(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 147, guiTop + 63, 194, 0, overAutoPull(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 131, guiTop + 47, 208, 0, overReset(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 131, guiTop + 63, 222, 0, overSilk(xAxis, yAxis), 14);
     }
 
     @Override

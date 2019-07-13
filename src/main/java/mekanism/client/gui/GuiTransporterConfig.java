@@ -66,14 +66,14 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 190, overBackButton(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 204, overStrictInput(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 190, 0, overBackButton(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 204, 0, overStrictInput(xAxis, yAxis), 14);
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
             if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY) {
                 GLSMHelper.color(configurable.getEjector().getInputColor(EnumFacing.byIndex(i)));
-                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, overSide(xAxis, yAxis, x, y), 14);
+                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 0, overSide(xAxis, yAxis, x, y), 14);
                 GLSMHelper.resetColor();
             } else {
                 drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 28, 14, 14);

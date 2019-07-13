@@ -124,11 +124,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, overBackButton(xAxis, yAxis), 14);
+        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, 0, overBackButton(xAxis, yAxis), 14);
         if (selectedType == null) {
             drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, 24, 12, 12);
         } else {
-            drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, overRemove(xAxis, yAxis), 12);
+            drawTexturedModalRect(guiLeft + 136, guiTop + 57, 176 + 14, 0, overRemove(xAxis, yAxis), 12);
         }
         int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);

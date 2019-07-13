@@ -222,10 +222,6 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
     }
 
-    protected void drawTexturedModalRect(int x, int y, int textureX, boolean inBounds, int size) {
-        drawTexturedModalRect(x, y, textureX, 0, inBounds, size);
-    }
-
     protected void drawTexturedModalRect(int x, int y, int textureX, int textureY, boolean inBounds, int size) {
         drawTexturedModalRect(x, y, textureX, inBounds ? textureY : textureY + size, size, size);
     }
