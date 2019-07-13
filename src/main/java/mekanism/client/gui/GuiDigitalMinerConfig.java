@@ -116,11 +116,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 sendPacket(MinerGuiPacket.SERVER, 4, 0, SoundEvents.UI_BUTTON_CLICK);
             } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78) {
-                setRadius(true);
+                setRadius();
             } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103) {
-                setMinY(true);
+                setMinY();
             } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128) {
-                setMaxY(true);
+                setMaxY();
             } else if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
                 sendDataFromClick(TileNetworkList.withContents(10), SoundEvents.UI_BUTTON_CLICK);
             }
@@ -236,11 +236,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         }
         if (i == Keyboard.KEY_RETURN) {
             if (radiusField.isFocused()) {
-                setRadius(false);
+                setRadius();
             } else if (minField.isFocused()) {
-                setMinY(false);
+                setMinY();
             } else if (maxField.isFocused()) {
-                setMaxY(false);
+                setMaxY();
             }
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
@@ -250,26 +250,26 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         }
     }
 
-    private void setRadius(boolean playSound) {
+    private void setRadius() {
         if (!radiusField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
-            sendDataFromClick(TileNetworkList.withContents(6, toUse), playSound ? SoundEvents.UI_BUTTON_CLICK : null);
+            sendDataFromClick(TileNetworkList.withContents(6, toUse), SoundEvents.UI_BUTTON_CLICK);
             radiusField.setText("");
         }
     }
 
-    private void setMinY(boolean playSound) {
+    private void setMinY() {
         if (!minField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
-            sendDataFromClick(TileNetworkList.withContents(7, toUse), playSound ? SoundEvents.UI_BUTTON_CLICK : null);
+            sendDataFromClick(TileNetworkList.withContents(7, toUse), SoundEvents.UI_BUTTON_CLICK);
             minField.setText("");
         }
     }
 
-    private void setMaxY(boolean playSound) {
+    private void setMaxY() {
         if (!maxField.getText().isEmpty()) {
             int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
-            sendDataFromClick(TileNetworkList.withContents(8, toUse), playSound ? SoundEvents.UI_BUTTON_CLICK : null);
+            sendDataFromClick(TileNetworkList.withContents(8, toUse), SoundEvents.UI_BUTTON_CLICK);
             maxField.setText("");
         }
     }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.render.MekanismRenderer;
@@ -232,11 +232,9 @@ public abstract class GuiFilterHolder<TILE extends TileEntityContainerBlock, FIL
         modIDStacks.get(filter).stackIndex = -1;
     }
 
-    protected void sendDataFromClick(TileNetworkList data, @Nullable SoundEvent sound) {
+    protected void sendDataFromClick(TileNetworkList data, @Nonnull SoundEvent sound) {
         Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-        if (sound != null) {
-            SoundHandler.playSound(sound);
-        }
+        SoundHandler.playSound(sound);
     }
 
     private void setNextRenderStack(StackData data) {
