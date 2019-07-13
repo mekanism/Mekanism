@@ -5,13 +5,13 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiColorButton;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismSounds;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -42,6 +42,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
     private GuiButtonImageMek singleItemButton;
     private GuiButtonImageMek roundRobinButton;
     private GuiButtonImageMek autoEjectButton;
+    private GuiColorButton colorButton;
 
     public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tile) {
         super(tile, new ContainerNull(player, tile));
@@ -51,10 +52,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
-    }
-
-    private boolean overColor(int xAxis, int yAxis) {
-        return xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153;
     }
 
     private boolean overUpArrow(int xAxis, int yAxis, int arrowX, int yStart) {
@@ -100,12 +97,12 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                         int arrowX = filterX + filterW - 12;
                         if (index > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
                             //Process up button click
-                            sendDataFromClick(TileNetworkList.withContents(3, index), SoundEvents.UI_BUTTON_CLICK);
+                            sendDataFromClick(TileNetworkList.withContents(3, index));
                             return;
                         }
                         if (index < tileEntity.filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
                             //Process down button click
-                            sendDataFromClick(TileNetworkList.withContents(4, index), SoundEvents.UI_BUTTON_CLICK);
+                            sendDataFromClick(TileNetworkList.withContents(4, index));
                             return;
                         }
                         if (filter instanceof IItemStackFilter) {
@@ -122,13 +119,9 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
             }
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && mouseBtn == 0) {
-            mouseBtn = 2;
-        }
-
         // Check for default colour button
-        if (overColor(xAxis, yAxis)) {
-            sendDataFromClick(TileNetworkList.withContents(0, mouseBtn), MekanismSounds.DING);
+        if (colorButton.isMouseOver() && mouseBtn == 1) {
+            sendDataFromClick(TileNetworkList.withContents(0, 1));
         }
     }
 
@@ -154,10 +147,12 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         singleItemButton = new GuiButtonImageMek(1, guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation());
         roundRobinButton = new GuiButtonImageMek(2, guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation());
         autoEjectButton = new GuiButtonImageMek(3, guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation());
+        colorButton = new GuiColorButton(4, guiLeft + 13, guiTop + 137, 16, 16, () -> tileEntity.color);
 
         buttonList.add(singleItemButton);
         buttonList.add(roundRobinButton);
         buttonList.add(autoEjectButton);
+        buttonList.add(colorButton);
     }
 
     @Override
@@ -171,6 +166,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(2)));
         } else if (guibutton.id == autoEjectButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(1)));
+        } else if (guibutton.id == colorButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(0, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0)));
         }
     }
 
@@ -239,7 +236,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         drawColorIcon(13, 137, tileEntity.color, 1);
 
         // Draw tooltips for buttons
-        if (overColor(xAxis, yAxis)) {
+        if (colorButton.isMouseOver()) {
             if (tileEntity.color != null) {
                 drawHoveringText(tileEntity.color.getColoredName(), xAxis, yAxis);
             } else {

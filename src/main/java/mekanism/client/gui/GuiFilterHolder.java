@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.render.MekanismRenderer;
@@ -24,7 +23,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
@@ -232,9 +230,9 @@ public abstract class GuiFilterHolder<TILE extends TileEntityContainerBlock, FIL
         modIDStacks.get(filter).stackIndex = -1;
     }
 
-    protected void sendDataFromClick(TileNetworkList data, @Nonnull SoundEvent sound) {
+    protected void sendDataFromClick(TileNetworkList data) {
         Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-        SoundHandler.playSound(sound);
+        SoundHandler.playSound(net.minecraft.init.SoundEvents.UI_BUTTON_CLICK);
     }
 
     private void setNextRenderStack(StackData data) {

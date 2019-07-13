@@ -7,6 +7,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
+import mekanism.client.gui.button.GuiColorButton;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -21,6 +23,7 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
@@ -35,6 +38,9 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private ISideConfiguration configurable;
+    private GuiButtonImageMek backButton;
+    private GuiButtonImageMek strictInputButton;
+    private GuiColorButton colorButton;
 
     public GuiTransporterConfig(EntityPlayer player, ISideConfiguration tile) {
         super((TileEntityContainerBlock) tile, new ContainerNull(player, (TileEntityContainerBlock) tile));
@@ -48,16 +54,30 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         slotPosMap.put(5, new GuiPos(69, 49));
     }
 
-    private boolean overColor(int xAxis, int yAxis) {
-        return xAxis >= 122 && xAxis <= 138 && yAxis >= 49 && yAxis <= 65;
+    @Override
+    public void initGui() {
+        super.initGui();
+        buttonList.clear();
+        backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation());
+        strictInputButton = new GuiButtonImageMek(1, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation());
+        colorButton = new GuiColorButton(2, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor());
+        buttonList.add(backButton);
+        buttonList.add(strictInputButton);
+        buttonList.add(colorButton);
     }
 
-    private boolean overStrictInput(int xAxis, int yAxis) {
-        return xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20;
-    }
-
-    private boolean overBackButton(int xAxis, int yAxis) {
-        return xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20;
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        TileEntity tile = (TileEntity) configurable;
+        if (guibutton.id == backButton.id) {
+            int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
+            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+        } else if (guibutton.id == strictInputButton.id) {
+            Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));
+        } else if (guibutton.id == colorButton.id) {
+            Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0, 0, null));
+        }
     }
 
     private boolean overSide(int xAxis, int yAxis, int x, int y) {
@@ -66,8 +86,6 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 190, 0, overBackButton(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 204, 0, overStrictInput(xAxis, yAxis), 14);
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
@@ -89,7 +107,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         renderScaledText(text, 53, 17, 0x00CD00, 70);
         fontRenderer.drawString(LangUtils.localize("gui.input"), 48, 81, 0x787878);
         fontRenderer.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
-        drawColorIcon(122, 49, configurable.getEjector().getOutputColor(), 1);
+        //drawColorIcon(122, 49, configurable.getEjector().getOutputColor(), 1);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (int i = 0; i < slotPosMap.size(); i++) {
@@ -100,14 +118,14 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
                 drawHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
             }
         }
-        if (overColor(xAxis, yAxis)) {
+        if (strictInputButton.isMouseOver()) {
+            drawHoveringText(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
+        } else if (colorButton.isMouseOver()) {
             if (configurable.getEjector().getOutputColor() != null) {
                 drawHoveringText(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
             } else {
                 drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
-        } else if (overStrictInput(xAxis, yAxis)) {
-            drawHoveringText(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -118,22 +136,13 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         TileEntity tile = (TileEntity) configurable;
-        if (button == 0) {
-            if (overBackButton(xAxis, yAxis)) {
-                int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-            } else if (overStrictInput(xAxis, yAxis)) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));
-            }
+        if (colorButton.isMouseOver() && button == 1) {
+            //Allow going backwards
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), 1, 0, null));
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
             button = 2;
-        }
-        if (overColor(xAxis, yAxis)) {
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button, 0, null));
         }
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos slotPos = slotPosMap.get(i);

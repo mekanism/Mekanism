@@ -8,6 +8,7 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
@@ -23,6 +24,7 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
@@ -39,6 +41,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     private ISideConfiguration configurable;
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
+    private GuiButtonImageMek backButton;
+    private GuiButtonImageMek autoEjectButton;
 
     public GuiSideConfiguration(EntityPlayer player, ISideConfiguration tile) {
         super((TileEntityContainerBlock) tile, new ContainerNull(player, (TileEntityContainerBlock) tile));
@@ -60,12 +64,26 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         slotPosMap.put(5, new GuiPos(96, 49));
     }
 
-    private boolean overAutoEject(int xAxis, int yAxis) {
-        return xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20;
+    @Override
+    public void initGui() {
+        super.initGui();
+        buttonList.clear();
+        backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation());
+        autoEjectButton = new GuiButtonImageMek(1, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation());
+        buttonList.add(backButton);
+        buttonList.add(autoEjectButton);
     }
 
-    private boolean overBackButton(int xAxis, int yAxis) {
-        return xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20;
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        TileEntity tile = (TileEntity) configurable;
+        if (guibutton.id == backButton.id) {
+            int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
+            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+        } else if (guibutton.id == autoEjectButton.id) {
+            Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
+        }
     }
 
     private boolean overSide(int xAxis, int yAxis, int x, int y) {
@@ -94,8 +112,6 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 6, guiTop + 6, 204, 0, overBackButton(xAxis, yAxis), 14);
-        drawTexturedModalRect(guiLeft + 156, guiTop + 6, 190, 0, overAutoEject(xAxis, yAxis), 14);
         for (int i = 0; i < slotPosMap.size(); i++) {
             int x = slotPosMap.get(i).xPos;
             int y = slotPosMap.get(i).yPos;
@@ -134,7 +150,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
                 drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
             }
         }
-        if (overAutoEject(xAxis, yAxis)) {
+        if (autoEjectButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -155,16 +171,6 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         TileEntity tile = (TileEntity) configurable;
-        if (button == 0) {
-            if (overBackButton(xAxis, yAxis)) {
-                int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-            } else if (overAutoEject(xAxis, yAxis)) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
-            }
-        }
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
             button = 2;
         }

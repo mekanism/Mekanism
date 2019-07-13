@@ -89,14 +89,14 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                         if (index > 0) {
                             if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20) {
                                 //Process up button click
-                                sendDataFromClick(TileNetworkList.withContents(11, index), SoundEvents.UI_BUTTON_CLICK);
+                                sendDataFromClick(TileNetworkList.withContents(11, index));
                                 return;
                             }
                         }
                         if (index < tileEntity.filters.size() - 1) {
                             if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
                                 //Process down button click
-                                sendDataFromClick(TileNetworkList.withContents(12, index), SoundEvents.UI_BUTTON_CLICK);
+                                sendDataFromClick(TileNetworkList.withContents(12, index));
                                 return;
                             }
                         }
@@ -122,7 +122,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
             } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128) {
                 setMaxY();
             } else if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
-                sendDataFromClick(TileNetworkList.withContents(10), SoundEvents.UI_BUTTON_CLICK);
+                sendDataFromClick(TileNetworkList.withContents(10));
             }
         }
     }
@@ -253,7 +253,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private void setRadius() {
         if (!radiusField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
-            sendDataFromClick(TileNetworkList.withContents(6, toUse), SoundEvents.UI_BUTTON_CLICK);
+            sendDataFromClick(TileNetworkList.withContents(6, toUse));
             radiusField.setText("");
         }
     }
@@ -261,7 +261,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private void setMinY() {
         if (!minField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
-            sendDataFromClick(TileNetworkList.withContents(7, toUse), SoundEvents.UI_BUTTON_CLICK);
+            sendDataFromClick(TileNetworkList.withContents(7, toUse));
             minField.setText("");
         }
     }
@@ -269,7 +269,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private void setMaxY() {
         if (!maxField.getText().isEmpty()) {
             int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
-            sendDataFromClick(TileNetworkList.withContents(8, toUse), SoundEvents.UI_BUTTON_CLICK);
+            sendDataFromClick(TileNetworkList.withContents(8, toUse));
             maxField.setText("");
         }
     }
