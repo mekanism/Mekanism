@@ -47,7 +47,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
         renderScaledText(LangUtils.localize("gui.gas") + ": " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName()
                                                                                                      : LangUtils.localize("gui.none")), 45, 49, 0x404040, 112);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-        String name = chooseByMode(tileEntity.dumping, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
+        String name = LangUtils.localize(tileEntity.dumping.getLangKey());
         fontRenderer.drawString(name, 156 - fontRenderer.getStringWidth(name), 73, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -55,7 +55,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        int displayInt = chooseByMode(tileEntity.dumping, 10, 18, 26);
+        int displayInt = GasMode.chooseByMode(tileEntity.dumping, 10, 18, 26);
         drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, displayInt, 8, 8);
         if (tileEntity.gasTank.getGas() != null) {
             int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
@@ -78,16 +78,5 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
     @Override
     protected ResourceLocation getGuiLocation() {
         return MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png");
-    }
-
-    private <T> T chooseByMode(GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption) {
-        if (dumping.equals(GasMode.IDLE)) {
-            return idleOption;
-        } else if (dumping.equals(GasMode.DUMPING)) {
-            return dumpingOption;
-        } else if (dumping.equals(GasMode.DUMPING_EXCESS)) {
-            return dumpingExcessOption;
-        }
-        return idleOption; //should not happen;
     }
 }

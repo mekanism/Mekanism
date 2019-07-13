@@ -76,7 +76,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             renderScaledText(LangUtils.localize("gui.flowRate") + ": " + tileEntity.structure.clientFlow + " mB/t", 53, 35, 0x00CD00, 106);
             renderScaledText(LangUtils.localize("gui.capacity") + ": " + tileEntity.structure.getFluidCapacity() + " mB", 53, 44, 0x00CD00, 106);
             renderScaledText(LangUtils.localize("gui.maxFlow") + ": " + rate + " mB/t", 53, 53, 0x00CD00, 106);
-            String name = chooseByMode(tileEntity.structure.dumpMode, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
+            String name = LangUtils.localize(tileEntity.structure.dumpMode.getLangKey());
             renderScaledText(name, 156 - (int) (fontRenderer.getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040, 66);
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
@@ -92,7 +92,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         if (tileEntity.structure != null) {
-            int displayInt = chooseByMode(tileEntity.structure.dumpMode, 142, 150, 158);
+            int displayInt = GasMode.chooseByMode(tileEntity.structure.dumpMode, 142, 150, 158);
             drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, displayInt, 8, 8);
             int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
             if (scaledFluidLevel > 0) {
@@ -122,16 +122,5 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     @Override
     protected ResourceLocation getGuiLocation() {
         return MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png");
-    }
-
-    private <T> T chooseByMode(GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption) {
-        if (dumping.equals(GasMode.IDLE)) {
-            return idleOption;
-        } else if (dumping.equals(GasMode.DUMPING)) {
-            return dumpingOption;
-        } else if (dumping.equals(GasMode.DUMPING_EXCESS)) {
-            return dumpingExcessOption;
-        }
-        return idleOption; //should not happen;
     }
 }

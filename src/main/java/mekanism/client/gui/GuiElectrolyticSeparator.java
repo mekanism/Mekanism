@@ -86,9 +86,9 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(tileEntity.getName(), 45, 6, 0x404040);
-        String name = chooseByMode(tileEntity.dumpLeft, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
+        String name = LangUtils.localize(tileEntity.dumpLeft.getLangKey());
         renderScaledText(name, 21, 73, 0x404040, 66);
-        name = chooseByMode(tileEntity.dumpRight, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
+        name = LangUtils.localize(tileEntity.dumpRight.getLangKey());
         renderScaledText(name, 156 - (int) (fontRenderer.getStringWidth(name) * getNeededScale(name, 66)), 73, 0x404040, 66);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -96,19 +96,8 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         //Left
-        drawTexturedModalRect(guiLeft + 8, guiTop + 73, 176, chooseByMode(tileEntity.dumpLeft, 52, 60, 68), 8, 8);
+        drawTexturedModalRect(guiLeft + 8, guiTop + 73, 176, GasMode.chooseByMode(tileEntity.dumpLeft, 52, 60, 68), 8, 8);
         //Right
-        drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, chooseByMode(tileEntity.dumpRight, 52, 60, 68), 8, 8);
-    }
-
-    private <T> T chooseByMode(GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption) {
-        if (dumping.equals(GasMode.IDLE)) {
-            return idleOption;
-        } else if (dumping.equals(GasMode.DUMPING)) {
-            return dumpingOption;
-        } else if (dumping.equals(GasMode.DUMPING_EXCESS)) {
-            return dumpingExcessOption;
-        }
-        return idleOption; //should not happen;
+        drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, GasMode.chooseByMode(tileEntity.dumpRight, 52, 60, 68), 8, 8);
     }
 }
