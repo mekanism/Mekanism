@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonImageFixed;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -26,7 +26,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -39,10 +38,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     private GuiButton startButton;
     private GuiButton stopButton;
     private GuiButton configButton;
-    private GuiButtonImage resetButton;
-    private GuiButtonImage silkTouchButton;
-    private GuiButtonImage autoEjectButton;
-    private GuiButtonImage autoPullButton;
+    private GuiButtonImageMek resetButton;
+    private GuiButtonImageMek silkTouchButton;
+    private GuiButtonImageMek autoEjectButton;
+    private GuiButtonImageMek autoPullButton;
 
     public GuiDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tile) {
         super(tile, new ContainerDigitalMiner(inventory, tile));
@@ -74,22 +73,14 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         super.initGui();
         buttonList.clear();
         startButton = new GuiButton(0, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start"));
-        if (tileEntity.searcher.state != State.IDLE && tileEntity.running) {
-            startButton.enabled = false;
-        }
         stopButton = new GuiButton(1, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop"));
-        if (tileEntity.searcher.state == State.IDLE || !tileEntity.running) {
-            stopButton.enabled = false;
-        }
         configButton = new GuiButton(2, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config"));
-        if (tileEntity.searcher.state != State.IDLE) {
-            configButton.enabled = false;
-        }
+        resetButton = new GuiButtonImageMek(3, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation());
+        silkTouchButton = new GuiButtonImageMek(4, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation());
+        autoEjectButton = new GuiButtonImageMek(5, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation());
+        autoPullButton = new GuiButtonImageMek(6, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation());
 
-        resetButton = new GuiButtonImageFixed(3, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation());
-        silkTouchButton = new GuiButtonImageFixed(4, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation());
-        autoEjectButton = new GuiButtonImageFixed(5, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation());
-        autoPullButton = new GuiButtonImageFixed(6, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation());
+        updateEnabledButtons();
 
         buttonList.add(startButton);
         buttonList.add(stopButton);
@@ -103,19 +94,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
+        if (guibutton.id == startButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3)));
-        } else if (guibutton.id == 1) {
+        } else if (guibutton.id == stopButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(4)));
-        } else if (guibutton.id == 2) {
+        } else if (guibutton.id == configButton.id) {
             Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
-        } else if (guibutton.id == 3) {
+        } else if (guibutton.id == resetButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(5)));
-        } else if (guibutton.id == 4) {
+        } else if (guibutton.id == silkTouchButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(9)));
-        } else if (guibutton.id == 5) {
+        } else if (guibutton.id == autoEjectButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(0)));
-        } else if (guibutton.id == 6) {
+        } else if (guibutton.id == autoPullButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(1)));
         }
     }
@@ -123,6 +114,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     @Override
     public void updateScreen() {
         super.updateScreen();
+        updateEnabledButtons();
+    }
+
+    private void updateEnabledButtons() {
         startButton.enabled = tileEntity.searcher.state == State.IDLE || !tileEntity.running;
         stopButton.enabled = tileEntity.searcher.state != State.IDLE && tileEntity.running;
         configButton.enabled = tileEntity.searcher.state == State.IDLE;
