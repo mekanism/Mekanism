@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.gui.element.GuiScrollList;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -19,7 +19,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -31,6 +30,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private static final int MAX_LENGTH = 24;
     private GuiButton removeButton;
+    private GuiButtonImageMek publicButton;
+    private GuiButtonImageMek privateButton;
+    private GuiButtonImageMek trustedButton;
+    private GuiButtonImageMek checkboxButton;
+    private GuiButtonImageMek overrideButton;
     private GuiScrollList scrollList;
     private GuiTextField trustedField;
 
@@ -38,26 +42,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         super(tile, new ContainerSecurityDesk(inventory, tile));
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 4));
         ySize += 64;
-    }
-
-    private boolean overCheckbox(int xAxis, int yAxis) {
-        return xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79;
-    }
-
-    private boolean overOverride(int xAxis, int yAxis) {
-        return xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75;
-    }
-
-    private boolean overPublic(int xAxis, int yAxis) {
-        return xAxis >= 13 && xAxis <= 53 && yAxis >= 113 && yAxis <= 129;
-    }
-
-    private boolean overPrivate(int xAxis, int yAxis) {
-        return xAxis >= 54 && xAxis <= 94 && yAxis >= 113 && yAxis <= 129;
-    }
-
-    private boolean overTrusted(int xAxis, int yAxis) {
-        return xAxis >= 95 && xAxis <= 135 && yAxis >= 113 && yAxis <= 129;
     }
 
     @Override
@@ -68,8 +52,18 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         trustedField = new GuiTextField(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
+        publicButton = new GuiButtonImageMek(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation());
+        privateButton = new GuiButtonImageMek(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation());
+        trustedButton = new GuiButtonImageMek(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation());
+        checkboxButton = new GuiButtonImageMek(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation());
+        overrideButton = new GuiButtonImageMek(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation());
         updateButtons();
         buttonList.add(removeButton);
+        buttonList.add(publicButton);
+        buttonList.add(privateButton);
+        buttonList.add(trustedButton);
+        buttonList.add(checkboxButton);
+        buttonList.add(overrideButton);
     }
 
     public void addTrusted(String trusted) {
@@ -81,7 +75,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     public void updateButtons() {
-        if (tileEntity.clientOwner == null) {
+        if (tileEntity.ownerUUID == null) {
             return;
         }
         List<String> text = new ArrayList<>();
@@ -92,6 +86,21 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         }
         scrollList.setText(text);
         removeButton.enabled = scrollList.hasSelection();
+
+        if (tileEntity.frequency != null) {
+            boolean ownerMatches = tileEntity.ownerUUID.equals(mc.player.getUniqueID());
+            publicButton.enabled = ownerMatches && tileEntity.frequency.securityMode != SecurityMode.PUBLIC;
+            privateButton.enabled = ownerMatches && tileEntity.frequency.securityMode != SecurityMode.PRIVATE;
+            trustedButton.enabled = ownerMatches && tileEntity.frequency.securityMode != SecurityMode.TRUSTED;
+            checkboxButton.enabled = ownerMatches;
+            overrideButton.enabled = ownerMatches;
+        } else {
+            publicButton.enabled = false;
+            privateButton.enabled = false;
+            trustedButton.enabled = false;
+            checkboxButton.enabled = false;
+            overrideButton.enabled = false;
+        }
     }
 
     @Override
@@ -106,33 +115,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
         trustedField.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            //TODO: replace compare with uuid instead of clientOwner and player name
-            if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.clientOwner.equals(mc.player.getName())) {
-                TileNetworkList data = new TileNetworkList();
-                int xAxis = mouseX - guiLeft;
-                int yAxis = mouseY - guiTop;
-                if (overCheckbox(xAxis, yAxis)) {
-                    addTrusted(trustedField.getText());
-                    trustedField.setText("");
-                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                } else if (overOverride(xAxis, yAxis)) {
-                    data.add(2);
-                } else if (tileEntity.frequency.securityMode != SecurityMode.PUBLIC && overPublic(xAxis, yAxis)) {
-                    data.add(3);
-                    data.add(0);
-                } else if (tileEntity.frequency.securityMode != SecurityMode.PRIVATE && overPrivate(xAxis, yAxis)) {
-                    data.add(3);
-                    data.add(1);
-                } else if (tileEntity.frequency.securityMode != SecurityMode.TRUSTED && overTrusted(xAxis, yAxis)) {
-                    data.add(3);
-                    data.add(2);
-                }
-                if (!data.isEmpty()) {
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-                }
-            }
-        }
     }
 
     @Override
@@ -160,13 +142,24 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
+        if (guibutton.id == removeButton.id) {
             int selection = scrollList.getSelection();
             if (tileEntity.frequency != null && selection != -1) {
                 TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 scrollList.clearSelection();
             }
+        } else if (guibutton.id == publicButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3, 0)));
+        } else if (guibutton.id == privateButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3, 1)));
+        } else if (guibutton.id == trustedButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3, 2)));
+        } else if (guibutton.id == checkboxButton.id) {
+            addTrusted(trustedField.getText());
+            trustedField.setText("");
+        } else if (guibutton.id == overrideButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(2)));
         }
         updateButtons();
     }
@@ -187,14 +180,13 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         renderScaledText(LangUtils.localize("gui.add") + ":", 13, 70, 0x404040, 20);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (tileEntity.frequency != null && overOverride(xAxis, yAxis)) {
+        if (tileEntity.frequency != null && overrideButton.isMouseOver()) {
             displayTooltip(LangUtils.localize("gui.securityOverride") + ": " + LangUtils.transOnOff(tileEntity.frequency.override), xAxis, yAxis);
-        }
-        if (overPublic(xAxis, yAxis)) {
+        } else if (publicButton.isMouseOver()) {
             displayTooltip(LangUtils.localize("gui.publicMode"), xAxis, yAxis);
-        } else if (overPrivate(xAxis, yAxis)) {
+        } else if (privateButton.isMouseOver()) {
             displayTooltip(LangUtils.localize("gui.privateMode"), xAxis, yAxis);
-        } else if (overTrusted(xAxis, yAxis)) {
+        } else if (trustedButton.isMouseOver()) {
             displayTooltip(LangUtils.localize("gui.trustedMode"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -202,45 +194,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        //TODO: replace compare with uuid instead of clientOwner and player name
-        if (tileEntity.frequency != null && tileEntity.clientOwner != null && mc.player.getName().equals(tileEntity.clientOwner)) {
+        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(mc.player.getUniqueID())) {
             drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
-            drawTexturedModalRect(guiLeft + 146, guiTop + 59, xSize + 12, 0, overOverride(xAxis, yAxis), 16);
-            if (tileEntity.frequency.securityMode != SecurityMode.PUBLIC) {
-                if (overPublic(xAxis, yAxis)) {
-                    drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 48, 40, 16);
-                } else {
-                    drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 64, 40, 16);
-                }
-            } else {
-                drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 80, 40, 16);
-            }
-            if (tileEntity.frequency.securityMode != SecurityMode.PRIVATE) {
-                if (overPrivate(xAxis, yAxis)) {
-                    drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 48, 40, 16);
-                } else {
-                    drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 64, 40, 16);
-                }
-            } else {
-                drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 80, 40, 16);
-            }
-            if (tileEntity.frequency.securityMode != SecurityMode.TRUSTED) {
-                if (overTrusted(xAxis, yAxis)) {
-                    drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 96, 40, 16);
-                } else {
-                    drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 112, 40, 16);
-                }
-            } else {
-                drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 128, 40, 16);
-            }
         } else {
             drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);
-            drawTexturedModalRect(guiLeft + 146, guiTop + 59, xSize + 12, 32, 16, 16);
-            drawTexturedModalRect(guiLeft + 13, guiTop + 113, xSize, 80, 40, 16);
-            drawTexturedModalRect(guiLeft + 54, guiTop + 113, xSize + 40, 80, 40, 16);
-            drawTexturedModalRect(guiLeft + 95, guiTop + 113, xSize, 128, 40, 16);
         }
-        drawTexturedModalRect(guiLeft + 123, guiTop + 68, xSize, 0, overCheckbox(xAxis, yAxis), 11);
         trustedField.drawTextBox();
     }
 }

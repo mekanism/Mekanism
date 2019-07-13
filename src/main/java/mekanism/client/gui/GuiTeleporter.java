@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -17,7 +18,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -36,7 +36,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -55,6 +54,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     private GuiButton setButton;
     private GuiButton deleteButton;
     private GuiButton teleportButton;
+    private GuiButtonImageMek checkboxButton;
     private GuiScrollList scrollList;
     private GuiTextField frequencyField;
     private boolean privateMode;
@@ -120,10 +120,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         ySize = 175;
     }
 
-    private boolean overCheckbox(int xAxis, int yAxis) {
-        return xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114;
-    }
-
     @Override
     public void initGui() {
         super.initGui();
@@ -138,11 +134,13 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         frequencyField = new GuiTextField(5, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
+        checkboxButton = new GuiButtonImageMek(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation());
         updateButtons();
         buttonList.add(publicButton);
         buttonList.add(privateButton);
         buttonList.add(setButton);
         buttonList.add(deleteButton);
+        buttonList.add(checkboxButton);
         if (!itemStack.isEmpty()) {
             buttonList.add(teleportButton);
             if (!isInit) {
@@ -220,13 +218,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
         frequencyField.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            if (overCheckbox(mouseX - guiLeft, mouseY - guiTop)) {
-                setFrequency(frequencyField.getText());
-                frequencyField.setText("");
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
-        }
     }
 
     @Override
@@ -254,17 +245,17 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
+        if (guibutton.id == publicButton.id) {
             privateMode = false;
-        } else if (guibutton.id == 1) {
+        } else if (guibutton.id == privateButton.id) {
             privateMode = true;
-        } else if (guibutton.id == 2) {
+        } else if (guibutton.id == setButton.id) {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
                 setFrequency(freq.name);
             }
-        } else if (guibutton.id == 3) {
+        } else if (guibutton.id == deleteButton.id) {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
@@ -282,6 +273,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
                 mc.setIngameFocus();
                 ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
             }
+        } else if (guibutton.id == checkboxButton.id) {
+            setFrequency(frequencyField.getText());
+            frequencyField.setText("");
         }
         updateButtons();
     }
@@ -313,7 +307,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 137, guiTop + 103, xSize, 0, overCheckbox(xAxis, yAxis), 11);
         int y = getFrequency() == null ? 94 : getStatus() == 2 ? 22 : getStatus() == 3 ? 40 : getStatus() == 4 ? 58 : 76;
         drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
         frequencyField.drawTextBox();
