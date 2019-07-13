@@ -3,11 +3,11 @@ package mekanism.client.render.transmitter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
@@ -15,6 +15,7 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
@@ -74,7 +75,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             entityItem.world = transporter.getWorld();
 
             float partial = partialTick * transporter.tier.getSpeed();
-            for (TransporterStack stack : getReducedTransit(inTransit)) {
+            Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
+            for (TransporterStack stack : reducedTransit) {
                 entityItem.setItem(stack.itemStack);
                 float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
                 float xShifted = (float) x + pos[0];
@@ -147,21 +149,16 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     /**
-     * Shrink the in transit list as much as possible. Don't try to render things that are in the same spot with the same color
+     * Shrink the in transit list as much as possible. Don't try to render things of the same type that are in the same spot with the same color, ignoring stack size
      */
     private Collection<TransporterStack> getReducedTransit(Collection<TransporterStack> inTransit) {
         Collection<TransporterStack> reducedTransit = new ArrayList<>();
-        //TODO: Should this check stack type also. Not sure if it really matters.
-        Set<Integer> progresses = new HashSet<>();
-        Set<EnumColor> colors = EnumSet.noneOf(EnumColor.class);
+        Set<TransportInformation> information = new HashSet<>();
         for (TransporterStack stack : inTransit) {
-            if (stack == null || progresses.contains(stack.progress) || (stack.color != null && colors.contains(stack.color))) {
-                continue;
-            }
-            reducedTransit.add(stack);
-            progresses.add(stack.progress);
-            if (stack.color != null) {
-                colors.add(stack.color);
+            if (stack != null && !stack.itemStack.isEmpty() && information.add(new TransportInformation(stack))) {
+                //Ensure the stack is valid AND we did not already have information matching the stack
+                //We use add to check if it already contained the value, so that we only have to query the set once
+                reducedTransit.add(stack);
             }
         }
         return reducedTransit;
@@ -260,5 +257,42 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         MekanismRenderer.renderObject(toReturn);
         DisplayInteger.endList();
         return display;
+    }
+
+    private class TransportInformation {
+
+        @Nullable
+        private final EnumColor color;
+        private final HashedItem item;
+        private final int progress;
+
+        private TransportInformation(TransporterStack transporterStack) {
+            this.progress = transporterStack.progress;
+            this.color = transporterStack.color;
+            this.item = new HashedItem(transporterStack.itemStack);
+        }
+
+        @Override
+        public int hashCode() {
+            int code = 1;
+            code = 31 * code + progress;
+            code = 31 * code + item.hashCode();
+            if (color != null) {
+                code = 31 * code + color.hashCode();
+            }
+            return code;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof TransportInformation) {
+                TransportInformation other = (TransportInformation) obj;
+                return progress == other.progress && color == other.color && item.equals(other.item);
+            }
+            return false;
+        }
     }
 }
