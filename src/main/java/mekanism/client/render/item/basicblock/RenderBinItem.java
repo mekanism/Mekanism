@@ -16,7 +16,7 @@ public class RenderBinItem {
         ItemBlockBasic itemBasic = (ItemBlockBasic) stack.getItem();
         InventoryBin inv = new InventoryBin(stack);
         binRenderer.render(EnumFacing.NORTH, inv.getItemType(), inv.getItemCount(), false, -0.5, -0.5, -0.5);
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);

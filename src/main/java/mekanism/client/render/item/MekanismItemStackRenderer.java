@@ -3,11 +3,9 @@ package mekanism.client.render.item;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -49,27 +47,13 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
     public void renderByItem(@Nonnull ItemStack stack) {
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
-
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
         GlStateManager.rotate(180, 0, 1, 0);
 
-        //
         renderWithTransform(stack);
-        //
 
-        //TODO: Make this use helper for lighting and then disable it after bindTexture?
-        GlStateManager.enableLighting();
-        GlStateManager.enableLight(0);
-        GlStateManager.enableLight(1);
-        GlStateManager.enableColorMaterial();
-        GlStateManager.colorMaterial(1032, 5634);
-        GlStateManager.enableCull();
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        GlStateManager.disableCull();
-        GlStateManager.disableLighting();
         GlStateManager.popMatrix();
-
         MekanismRenderer.resumeRenderer(tessellator, renderState);
     }
 }
