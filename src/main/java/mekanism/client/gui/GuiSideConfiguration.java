@@ -6,11 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiSideDataButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -41,8 +40,10 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     private ISideConfiguration configurable;
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
+    private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
     private GuiButton backButton;
     private GuiButton autoEjectButton;
+    private int buttonID = 0;
 
     public GuiSideConfiguration(EntityPlayer player, ISideConfiguration tile) {
         super((TileEntityContainerBlock) tile, new ContainerNull(player, (TileEntityContainerBlock) tile));
@@ -68,8 +69,16 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
-        buttonList.add(autoEjectButton = new GuiButtonDisableableImage(1, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttonList.add(autoEjectButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+        for (int i = 0; i < slotPosMap.size(); i++) {
+            GuiPos guiPos = slotPosMap.get(i);
+            EnumFacing facing = EnumFacing.byIndex(i);
+            GuiSideDataButton button = new GuiSideDataButton(buttonID++, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
+                  () -> configurable.getConfig().getOutput(currentType, facing), () -> configurable.getConfig().getOutput(currentType, facing).color);
+            buttonList.add(button);
+            sideDataButtons.add(button);
+        }
     }
 
     @Override
@@ -81,11 +90,15 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
         } else if (guibutton.id == autoEjectButton.id) {
             Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
+        } else {
+            for (GuiSideDataButton button : sideDataButtons) {
+                if (guibutton.id == button.id) {
+                    Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile),
+                          Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0, button.getSlotPosMapIndex(), currentType));
+                    break;
+                }
+            }
         }
-    }
-
-    private boolean overSide(int xAxis, int yAxis, int x, int y) {
-        return xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14;
     }
 
     public TransmissionType getTopTransmission() {
@@ -109,27 +122,6 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
-            SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
-            if (data != TileComponentConfig.EMPTY) {
-                boolean doColor = data.color != EnumColor.GREY;
-                if (doColor) {
-                    MekanismRenderer.color(data.color);
-                }
-                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 0, overSide(xAxis, yAxis, x, y), 14);
-                if (doColor) {
-                    MekanismRenderer.resetColor();
-                }
-            } else {
-                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 28, 14, 14);
-            }
-        }
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = currentType.localize() + " " + LangUtils.localize("gui.config");
         fontRenderer.drawString(title, (xSize / 2) - (fontRenderer.getStringWidth(title) / 2), 5, 0x404040);
@@ -141,11 +133,13 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         fontRenderer.drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            GuiPos slotPos = slotPosMap.get(i);
-            SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
-            if (data != TileComponentConfig.EMPTY && overSide(xAxis, yAxis, slotPos.xPos, slotPos.yPos)) {
-                drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+        for (GuiSideDataButton button : sideDataButtons) {
+            if (button.isMouseOver()) {
+                SideData data = button.getSideData();
+                if (data != TileComponentConfig.EMPTY) {
+                    drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+                }
+                break;
             }
         }
         if (autoEjectButton.isMouseOver()) {
@@ -166,17 +160,14 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        TileEntity tile = (TileEntity) configurable;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
-            button = 2;
-        }
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            GuiPos slotPos = slotPosMap.get(i);
-            if (overSide(xAxis, yAxis, slotPos.xPos, slotPos.yPos)) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, currentType));
+        if (button == 1) {
+            //Handle right clicking the side data buttons
+            for (GuiSideDataButton sideDataButton : sideDataButtons) {
+                if (sideDataButton.isMouseOver()) {
+                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                    Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get((TileEntity) configurable), 1, sideDataButton.getSlotPosMapIndex(), currentType));
+                    break;
+                }
             }
         }
     }

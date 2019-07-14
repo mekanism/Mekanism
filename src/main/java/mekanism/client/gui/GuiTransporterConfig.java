@@ -1,15 +1,17 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
-import mekanism.client.gui.button.GuiColorButton;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.gui.button.GuiColorButton;
+import mekanism.client.gui.button.GuiSideDataButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -38,9 +40,11 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private ISideConfiguration configurable;
+    private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
     private GuiButton backButton;
     private GuiButton strictInputButton;
     private GuiButton colorButton;
+    private int buttonID = 0;
 
     public GuiTransporterConfig(EntityPlayer player, ISideConfiguration tile) {
         super((TileEntityContainerBlock) tile, new ContainerNull(player, (TileEntityContainerBlock) tile));
@@ -58,9 +62,17 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
-        buttonList.add(strictInputButton = new GuiButtonDisableableImage(1, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
-        buttonList.add(colorButton = new GuiColorButton(2, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+        buttonList.add(strictInputButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttonList.add(colorButton = new GuiColorButton(buttonID++, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor()));
+        for (int i = 0; i < slotPosMap.size(); i++) {
+            GuiPos guiPos = slotPosMap.get(i);
+            EnumFacing facing = EnumFacing.byIndex(i);
+            GuiSideDataButton button = new GuiSideDataButton(buttonID++, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
+                  () -> configurable.getConfig().getOutput(TransmissionType.ITEM, facing), () -> configurable.getEjector().getInputColor(facing));
+            buttonList.add(button);
+            sideDataButtons.add(button);
+        }
     }
 
     @Override
@@ -74,26 +86,19 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
             Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));
         } else if (guibutton.id == colorButton.id) {
             Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0, 0, null));
+        } else {
+            for (GuiSideDataButton button : sideDataButtons) {
+                if (guibutton.id == button.id) {
+                    Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile),
+                          Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0, button.getSlotPosMapIndex(), null));
+                    break;
+                }
+            }
         }
     }
 
     private boolean overSide(int xAxis, int yAxis, int x, int y) {
         return xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14;
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
-            if (configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY) {
-                MekanismRenderer.color(configurable.getEjector().getInputColor(EnumFacing.byIndex(i)));
-                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 0, overSide(xAxis, yAxis, x, y), 14);
-                MekanismRenderer.resetColor();
-            } else {
-                drawTexturedModalRect(guiLeft + x, guiTop + y, 176, 28, 14, 14);
-            }
-        }
     }
 
     @Override
@@ -106,12 +111,14 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         fontRenderer.drawString(LangUtils.localize("gui.output"), 114, 68, 0x787878);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            GuiPos slotPos = slotPosMap.get(i);
-            EnumColor color = configurable.getEjector().getInputColor(EnumFacing.byIndex(i));
-            SideData data = configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i));
-            if (data != TileComponentConfig.EMPTY && overSide(xAxis, yAxis, slotPos.xPos, slotPos.yPos)) {
-                drawHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
+        for (GuiSideDataButton button : sideDataButtons) {
+            if (button.isMouseOver()) {
+                SideData data = button.getSideData();
+                if (data != TileComponentConfig.EMPTY) {
+                    EnumColor color = button.getColor();
+                    drawHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
+                }
+                break;
             }
         }
         if (strictInputButton.isMouseOver()) {
@@ -129,22 +136,21 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        TileEntity tile = (TileEntity) configurable;
-        if (colorButton.isMouseOver() && button == 1) {
-            //Allow going backwards
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), 1, 0, null));
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
-            button = 2;
-        }
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            GuiPos slotPos = slotPosMap.get(i);
-            if (overSide(xAxis, yAxis, slotPos.xPos, slotPos.yPos)) {
+        if (button == 1) {
+            TileEntity tile = (TileEntity) configurable;
+            if (colorButton.isMouseOver()) {
+                //Allow going backwards
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i, null));
+                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), 1, 0, null));
+            } else {
+                //Handle right clicking the side data buttons
+                for (GuiSideDataButton sideDataButton : sideDataButtons) {
+                    if (sideDataButton.isMouseOver()) {
+                        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                        Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), 1, sideDataButton.getSlotPosMapIndex(), null));
+                        break;
+                    }
+                }
             }
         }
     }

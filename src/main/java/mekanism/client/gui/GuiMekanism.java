@@ -96,7 +96,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
-        drawTexturedModalRect(guiLeft, guiTop);
+        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
@@ -216,14 +216,6 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
         }
-    }
-
-    protected void drawTexturedModalRect(int x, int y) {
-        drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-    }
-
-    protected void drawTexturedModalRect(int x, int y, int textureX, int textureY, boolean inBounds, int size) {
-        drawTexturedModalRect(x, y, textureX, inBounds ? textureY : textureY + size, size, size);
     }
 
     protected abstract ResourceLocation getGuiLocation();
