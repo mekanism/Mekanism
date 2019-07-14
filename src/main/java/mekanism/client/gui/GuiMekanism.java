@@ -133,11 +133,15 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     @Override
     public void displayTooltip(String s, int x, int y) {
         drawHoveringText(s, x, y);
+        //Fix unwanted lighting changes made by drawHoveringText
+        RenderHelper.disableStandardItemLighting();
     }
 
     @Override
     public void displayTooltips(List<String> list, int xAxis, int yAxis) {
         drawHoveringText(list, xAxis, yAxis);
+        //Fix unwanted lighting changes made by drawHoveringText
+        RenderHelper.disableStandardItemLighting();
     }
 
     @Override

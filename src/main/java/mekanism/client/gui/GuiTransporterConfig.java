@@ -97,10 +97,6 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         }
     }
 
-    private boolean overSide(int xAxis, int yAxis, int x, int y) {
-        return xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14;
-    }
-
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String text = LangUtils.localize("gui.configuration.transporter");
