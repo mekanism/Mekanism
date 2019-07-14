@@ -4,11 +4,12 @@ import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
+import mekanism.api.infuse.InfusionContainer;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 
-public class InfuseStorage implements ISustainedData {
+public class InfuseStorage implements ISustainedData, InfusionContainer {
 
     private InfuseType type;
 

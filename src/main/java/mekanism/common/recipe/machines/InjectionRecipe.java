@@ -4,7 +4,7 @@ import mekanism.api.gas.Gas;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
-
+//itemstackgasrecipe
 public class InjectionRecipe extends AdvancedMachineRecipe<InjectionRecipe> {
 
     public InjectionRecipe(AdvancedMachineInput input, ItemStackOutput output) {

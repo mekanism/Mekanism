@@ -4,7 +4,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.outputs.GasOutput;
-
+//ChemicalInfuserRecipe
 public class ChemicalInfuserRecipe extends MachineRecipe<ChemicalPairInput, GasOutput, ChemicalInfuserRecipe> {
 
     public ChemicalInfuserRecipe(ChemicalPairInput input, GasOutput output) {

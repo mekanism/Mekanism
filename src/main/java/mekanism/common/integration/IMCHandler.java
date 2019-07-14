@@ -32,8 +32,8 @@ public class IMCHandler {
 
                 for (Recipe<?, ?, ?> type : Recipe.values()) {
                     if (message.equalsIgnoreCase(type.getRecipeName() + "Recipe")) {
-                        handleRecipe(type, msg, delete);
-                        found = true;
+                        //handleRecipe(type, msg, delete);
+                        //found = true;
                         break;
                     }
                 }
@@ -44,7 +44,7 @@ public class IMCHandler {
         }
     }
 
-    private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
+    /*private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
     void handleRecipe(Recipe<INPUT, OUTPUT, RECIPE> type, IMCMessage msg, boolean delete) {
         INPUT input = type.createInput(msg.getNBTValue());
         if (input != null && input.isValid()) {
@@ -63,5 +63,5 @@ public class IMCHandler {
         } else {
             Mekanism.logger.error(msg.getSender() + " attempted to " + (delete ? "remove" : "add") + " recipe of type " + type.getRecipeName() + " with an invalid input.");
         }
-    }
+    }*/
 }

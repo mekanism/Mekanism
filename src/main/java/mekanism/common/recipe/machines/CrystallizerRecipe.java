@@ -6,7 +6,7 @@ import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
+//ChemicalCrystallizerRecipe
 public class CrystallizerRecipe extends MachineRecipe<GasInput, ItemStackOutput, CrystallizerRecipe> {
 
     public CrystallizerRecipe(GasInput input, ItemStackOutput output) {

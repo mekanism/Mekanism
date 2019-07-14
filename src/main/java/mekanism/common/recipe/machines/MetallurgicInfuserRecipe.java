@@ -5,7 +5,7 @@ import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
+//metallurgicinfuserrecipe
 public class MetallurgicInfuserRecipe extends MachineRecipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe> {
 
     public MetallurgicInfuserRecipe(InfusionInput input, ItemStackOutput output) {

@@ -6,7 +6,7 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.outputs.GasOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
+//ChemicalDissolutionRecipe
 public class DissolutionRecipe extends MachineRecipe<ItemStackInput, GasOutput, DissolutionRecipe> {
 
     public DissolutionRecipe(ItemStackInput input, GasOutput output) {

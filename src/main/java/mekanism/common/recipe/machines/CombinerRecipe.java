@@ -4,7 +4,7 @@ import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-
+//CombinerRecipe
 public class CombinerRecipe extends DoubleMachineRecipe<CombinerRecipe> {
 
     public CombinerRecipe(DoubleMachineInput input, ItemStackOutput output) {

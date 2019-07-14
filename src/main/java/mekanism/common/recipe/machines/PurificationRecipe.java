@@ -4,7 +4,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
-
+//ItemStackGasToItemStackRecipe
 public class PurificationRecipe extends AdvancedMachineRecipe<PurificationRecipe> {
 
     public PurificationRecipe(AdvancedMachineInput input, ItemStackOutput output) {

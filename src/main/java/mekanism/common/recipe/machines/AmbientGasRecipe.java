@@ -4,7 +4,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.outputs.GasOutput;
-
+/*ambientgasRecipe*/
 public class AmbientGasRecipe extends MachineRecipe<IntegerInput, GasOutput, AmbientGasRecipe> {
 
     public AmbientGasRecipe(IntegerInput input, GasOutput output) {

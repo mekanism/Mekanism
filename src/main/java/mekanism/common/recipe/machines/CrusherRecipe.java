@@ -3,7 +3,7 @@ package mekanism.common.recipe.machines;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
-
+//Itemstack2ItemStack
 public class CrusherRecipe extends BasicMachineRecipe<CrusherRecipe> {
 
     public CrusherRecipe(ItemStackInput input, ItemStackOutput output) {

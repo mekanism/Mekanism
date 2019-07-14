@@ -4,7 +4,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
-
+//itemstackgasrecipe
 public class OsmiumCompressorRecipe extends AdvancedMachineRecipe<OsmiumCompressorRecipe> {
 
     public OsmiumCompressorRecipe(AdvancedMachineInput input, ItemStackOutput output) {

@@ -74,15 +74,7 @@ public final class RecipeHandler {
 
     public static <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
     void removeRecipe(@Nonnull Recipe<INPUT, OUTPUT, RECIPE> recipeMap, @Nonnull RECIPE recipe) {
-        List<INPUT> toRemove = new ArrayList<>();
-        for (INPUT iterInput : recipeMap.get().keySet()) {
-            if (iterInput.testEquality(recipe.getInput())) {
-                toRemove.add(iterInput);
-            }
-        }
-        for (INPUT iterInput : toRemove) {
-            recipeMap.get().remove(iterInput);
-        }
+        throw new RuntimeException("Unimplemented");
     }
 
     /**
@@ -363,7 +355,7 @@ public final class RecipeHandler {
      * @return ChanceRecipe
      */
     @Nullable
-    public static <RECIPE extends ChanceMachineRecipe<RECIPE>> RECIPE getChanceRecipe(@Nonnull ItemStackInput input, @Nonnull Map<ItemStackInput, RECIPE> recipes) {
+    public static <RECIPE extends ChanceMachineRecipe<RECIPE>> RECIPE getChanceRecipe(@Nonnull ItemStackInput input, @Nonnull List<RECIPE> recipes) {
         return getRecipe(input, recipes);
     }
 
@@ -377,15 +369,15 @@ public final class RecipeHandler {
      */
     @Nullable
     public static <INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>>
-    RECIPE getRecipe(@Nonnull INPUT input, @Nonnull Map<INPUT, RECIPE> recipes) {
+    RECIPE getRecipe(@Nonnull INPUT input, @Nonnull List<RECIPE> recipes) {
         if (input.isValid()) {
-            RECIPE recipe = recipes.get(input);
-            if (recipe == null && input instanceof IWildInput) {
+            RECIPE recipe = recipes.stream().filter(it->it.getInput().test(input)).findFirst().orElse(null);
+            /*if (recipe == null && input instanceof IWildInput) {todo: handle this in the input itself
                 //noinspection unchecked
                 IWildInput<INPUT> wildInput = (IWildInput<INPUT>) input;
                 recipe = recipes.get(wildInput.wildCopy());
-            }
-            return recipe == null ? null : recipe.copy();
+            }*/
+            return recipe == null ? null : recipe.copy();//todo copy can be put in the stream chain (if its even needed?)
         }
         return null;
     }
@@ -452,11 +444,7 @@ public final class RecipeHandler {
 
     public static boolean isInPressurizedRecipe(@Nonnull ItemStack stack) {
         if (!stack.isEmpty()) {
-            for (PressurizedInput key : Recipe.PRESSURIZED_REACTION_CHAMBER.get().keySet()) {
-                if (key.containsType(stack)) {
-                    return true;
-                }
-            }
+            return  Recipe.PRESSURIZED_REACTION_CHAMBER.get().stream().anyMatch(it->it.getInput().containsType(stack));
         }
         return false;
     }
@@ -530,7 +518,7 @@ public final class RecipeHandler {
             return values;
         }
 
-        private final HashMap<INPUT, RECIPE> recipes = new HashMap<>();
+        private final List<RECIPE> recipes = new ArrayList<>();
         private final String recipeName;
         @Nonnull
         private final String jeiCategory;
@@ -555,7 +543,7 @@ public final class RecipeHandler {
         }
 
         public void put(@Nonnull RECIPE recipe) {
-            recipes.put(recipe.getInput(), recipe);
+            recipes.add(recipe);
         }
 
         public void remove(@Nonnull RECIPE recipe) {
@@ -601,18 +589,18 @@ public final class RecipeHandler {
 
         public boolean containsRecipe(ItemStack input) {
             //TODO: Support other input types
-            for (Entry<INPUT, RECIPE> entry : recipes.entrySet()) {
-                if (entry.getKey() instanceof ItemStackInput) {
-                    ItemStack stack = ((ItemStackInput) entry.getKey()).ingredient;
+            for (RECIPE entry : recipes) {
+                if (entry.getInput() instanceof ItemStackInput) {
+                    ItemStack stack = ((ItemStackInput) entry.getInput()).ingredient;
                     if (StackUtils.equalsWildcard(stack, input)) {
                         return true;
                     }
-                } else if (entry.getKey() instanceof FluidInput) {
-                    if (((FluidInput) entry.getKey()).ingredient.isFluidEqual(input)) {
+                } else if (entry.getInput() instanceof FluidInput) {
+                    if (((FluidInput) entry.getInput()).ingredient.isFluidEqual(input)) {
                         return true;
                     }
-                } else if (entry.getKey() instanceof AdvancedMachineInput) {
-                    ItemStack stack = ((AdvancedMachineInput) entry.getKey()).itemStack;
+                } else if (entry.getInput() instanceof AdvancedMachineInput) {
+                    ItemStack stack = ((AdvancedMachineInput) entry.getInput()).itemStack;
                     if (StackUtils.equalsWildcard(stack, input)) {
                         return true;
                     }
@@ -623,9 +611,9 @@ public final class RecipeHandler {
 
         public boolean containsRecipe(Fluid input) {
             //TODO: Support other input types
-            for (Entry<INPUT, RECIPE> entry : recipes.entrySet()) {
-                if (entry.getKey() instanceof FluidInput) {
-                    if (((FluidInput) entry.getKey()).ingredient.getFluid() == input) {
+            for (RECIPE entry : recipes) {
+                if (entry.getInput() instanceof FluidInput) {
+                    if (((FluidInput) entry.getInput()).ingredient.getFluid() == input) {
                         return true;
                     }
                 }
@@ -635,12 +623,12 @@ public final class RecipeHandler {
 
         public boolean containsRecipe(Gas input) {
             //TODO: Support other input types
-            for (Entry<INPUT, RECIPE> entry : recipes.entrySet()) {
+            for (RECIPE entry : recipes) {
                 Gas toCheck = null;
-                if (entry.getKey() instanceof GasInput) {
-                    toCheck = ((GasInput) entry.getKey()).ingredient.getGas();
-                } else if (entry.getKey() instanceof AdvancedMachineInput) {
-                    toCheck = ((AdvancedMachineInput) entry.getKey()).gasType;
+                if (entry.getInput() instanceof GasInput) {
+                    toCheck = ((GasInput) entry.getInput()).ingredient.getGas();
+                } else if (entry.getInput() instanceof AdvancedMachineInput) {
+                    toCheck = ((AdvancedMachineInput) entry.getInput()).gasType;
                 }
                 if (toCheck == input) {
                     return true;
@@ -653,9 +641,8 @@ public final class RecipeHandler {
             return recipeClass;
         }
 
-        // N.B. Must return a HashMap, not Map as Unidict expects the stronger type
         @Nonnull
-        public HashMap<INPUT, RECIPE> get() {
+        public List<RECIPE> get() {
             return recipes;
         }
     }

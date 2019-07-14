@@ -6,7 +6,7 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.outputs.GasOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
+//itemstack2gasrecipe
 public class OxidationRecipe extends MachineRecipe<ItemStackInput, GasOutput, OxidationRecipe> {
 
     public OxidationRecipe(ItemStackInput input, GasOutput output) {
