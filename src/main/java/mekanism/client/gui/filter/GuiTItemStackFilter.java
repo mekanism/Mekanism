@@ -136,7 +136,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             if (tileEntity.singleItem && filter.sizeMode) {
                 sizeModeTooltip += " - " + LangUtils.localize("mekanism.gui.sizeModeConflict");
             }
-            drawHoveringText(MekanismUtils.splitTooltip(sizeModeTooltip, ItemStack.EMPTY), xAxis, yAxis);
+            displayTooltips(MekanismUtils.splitTooltip(sizeModeTooltip, ItemStack.EMPTY), xAxis, yAxis);
         }
     }
 

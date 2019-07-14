@@ -81,7 +81,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-                drawHoveringText(tileEntity.structure.fluidStored != null
+                displayTooltip(tileEntity.structure.fluidStored != null
                                  ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB"
                                  : LangUtils.localize("gui.empty"), xAxis, yAxis);
             }

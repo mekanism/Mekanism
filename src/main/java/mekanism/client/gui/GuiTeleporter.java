@@ -291,9 +291,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         int yAxis = mouseY - guiTop;
         if (xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24) {
             if (getFrequency() == null) {
-                drawHoveringText(EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);
+                displayTooltip(EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);
             } else {
-                drawHoveringText(getStatusDisplay(), xAxis, yAxis);
+                displayTooltip(getStatusDisplay(), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

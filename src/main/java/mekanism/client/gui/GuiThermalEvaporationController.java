@@ -45,12 +45,12 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.inputTank.getFluid();
-            drawHoveringText(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + tileEntity.inputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            displayTooltip(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + tileEntity.inputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
         } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
             FluidStack fluid = tileEntity.outputTank.getFluid();
-            drawHoveringText(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + tileEntity.outputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            displayTooltip(fluid != null ? LangUtils.localizeFluidStack(fluid) + ": " + tileEntity.outputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
         } else if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
-            drawHoveringText(getTemp(), xAxis, yAxis);
+            displayTooltip(getTemp(), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -120,7 +120,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             fontRenderer.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
             if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
-                drawHoveringText(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
+                displayTooltips(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
             }
         }
 

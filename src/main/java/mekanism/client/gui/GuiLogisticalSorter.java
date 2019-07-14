@@ -220,10 +220,10 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
                 int arrowX = filterX + filterW - 12;
 
                 if (getFilterIndex() + i > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
-                    drawHoveringText(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
+                    displayTooltip(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
                 }
                 if (getFilterIndex() + i < tileEntity.filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
-                    drawHoveringText(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
+                    displayTooltip(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
                 }
             }
         }
@@ -231,16 +231,16 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         // Draw tooltips for buttons
         if (colorButton.isMouseOver()) {
             if (tileEntity.color != null) {
-                drawHoveringText(tileEntity.color.getColoredName(), xAxis, yAxis);
+                displayTooltip(tileEntity.color.getColoredName(), xAxis, yAxis);
             } else {
-                drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
+                displayTooltip(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
         } else if (autoEjectButton.isMouseOver()) {
-            drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
+            displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         } else if (roundRobinButton.isMouseOver()) {
-            drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
+            displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         } else if (singleItemButton.isMouseOver()) {
-            drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
+            displayTooltips(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

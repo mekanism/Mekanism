@@ -81,7 +81,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
             }
         }
         if (coolingButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -112,18 +112,18 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
                 SideData data = button.getSideData();
                 if (data != TileComponentConfig.EMPTY) {
                     EnumColor color = button.getColor();
-                    drawHoveringText(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
+                    displayTooltip(color != null ? color.getColoredName() : LangUtils.localize("gui.none"), xAxis, yAxis);
                 }
                 break;
             }
         }
         if (strictInputButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
         } else if (colorButton.isMouseOver()) {
             if (configurable.getEjector().getOutputColor() != null) {
-                drawHoveringText(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
+                displayTooltip(configurable.getEjector().getOutputColor().getColoredName(), xAxis, yAxis);
             } else {
-                drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
+                displayTooltip(LangUtils.localize("gui.none"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

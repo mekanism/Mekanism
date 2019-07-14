@@ -90,9 +90,9 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (replaceButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
         } else if (fuzzyButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
         }
     }
 

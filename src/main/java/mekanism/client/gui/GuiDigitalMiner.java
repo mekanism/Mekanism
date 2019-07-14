@@ -146,20 +146,20 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (autoEjectButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
         } else if (autoPullButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
         } else if (resetButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
         } else if (silkTouchButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
         } else if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
-            drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
+            displayTooltip(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         } else if (xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43) {
             if (!tileEntity.missingStack.isEmpty()) {
-                drawHoveringText(LangUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
+                displayTooltip(LangUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
             } else {
-                drawHoveringText(LangUtils.localize("gui.well"), xAxis, yAxis);
+                displayTooltip(LangUtils.localize("gui.well"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -140,15 +140,15 @@ public class GuiRobitMain extends GuiMekanism {
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {
-            drawHoveringText(MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), xAxis, yAxis);
+            displayTooltip(MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), xAxis, yAxis);
         } else if (followButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
         } else if (renameButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.robit.rename"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.robit.rename"), xAxis, yAxis);
         } else if (teleportHomeButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.robit.teleport"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.robit.teleport"), xAxis, yAxis);
         } else if (pickupButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -137,13 +137,13 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             if (button.isMouseOver()) {
                 SideData data = button.getSideData();
                 if (data != TileComponentConfig.EMPTY) {
-                    drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+                    displayTooltip(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
                 }
                 break;
             }
         }
         if (autoEjectButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

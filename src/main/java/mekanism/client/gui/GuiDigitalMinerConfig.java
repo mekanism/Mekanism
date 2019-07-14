@@ -218,7 +218,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
             }
         }
         if (inverseButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.inverse"), mouseX - guiLeft, mouseY - guiTop);
+            displayTooltip(LangUtils.localize("gui.digitalMiner.inverse"), mouseX - guiLeft, mouseY - guiTop);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -112,17 +112,17 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (fillEmptyButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
         } else if (encodeFormulaButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
         } else if (craftSingleButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.craftSingle"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.craftSingle"), xAxis, yAxis);
         } else if (craftAvailableButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
         } else if (autoModeButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
         } else if (stockControlButton.isMouseOver()) {
-            drawHoveringText(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

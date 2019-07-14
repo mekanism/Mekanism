@@ -34,7 +34,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> 
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-            drawHoveringText(fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + ": " + fluidStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
+            displayTooltip(fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + ": " + fluidStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
