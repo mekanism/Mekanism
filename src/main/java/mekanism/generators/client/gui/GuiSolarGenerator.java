@@ -41,7 +41,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator>
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 20, guiTop + 37, 176, 52, tileEntity.canSeeSun(), 12);
+        drawTexturedModalRect(guiLeft + 20, guiTop + 37, 176, tileEntity.canSeeSun() ? 52 : 64, 12, 12);
     }
 
     @Override
