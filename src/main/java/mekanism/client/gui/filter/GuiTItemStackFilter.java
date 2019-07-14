@@ -3,6 +3,8 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiColorButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TItemStackFilter;
@@ -29,6 +31,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     private GuiTextField minField;
     private GuiTextField maxField;
+    private GuiButtonImageMek sizeButton;
 
     public GuiTItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tile, int index) {
         super(player, tile);
@@ -44,8 +47,12 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        buttonList.add(new GuiButton(0, guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttonList.add(new GuiButton(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(saveButton = new GuiButton(0, guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
+        buttonList.add(deleteButton = new GuiButton(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(defaultButton = new GuiButtonImageMek(3, guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation()));
+        buttonList.add(sizeButton = new GuiButtonImageMek(4, guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttonList.add(colorButton = new GuiColorButton(5, 12, 44, 16, 16, () -> filter.color));
     }
 
     @Override
@@ -62,7 +69,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
+        if (guibutton.id == saveButton.id) {
             if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
                 int min = Integer.parseInt(minField.getText());
                 int max = Integer.parseInt(maxField.getText());
@@ -89,9 +96,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                 status = EnumColor.DARK_RED + "Max/min";
                 ticker = 20;
             }
-        } else if (guibutton.id == 1) {
-            Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(0);
+        } else if (guibutton.id == sizeButton.id) {
+            filter.sizeMode = !filter.sizeMode;
+        } else {
+            actionPerformedTransporter(guibutton, filter);
         }
     }
 
@@ -124,7 +132,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         drawColorIcon(12, 44, filter.color, 1);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {
+        if (sizeButton.isMouseOver()) {
             String sizeModeTooltip = LangUtils.localize("gui.sizeMode");
             if (tileEntity.singleItem && filter.sizeMode) {
                 sizeModeTooltip += " - " + LangUtils.localize("mekanism.gui.sizeModeConflict");
@@ -144,7 +152,6 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void drawItemStackBackground(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 128, guiTop + 44, 187, 0, xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55, 11);
         minField.drawTextBox();
         maxField.drawTextBox();
     }
@@ -159,30 +166,18 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         super.mouseClicked(mouseX, mouseY, button);
         minField.mouseClicked(mouseX, mouseY, button);
         maxField.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (button == 0) {
-            if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                sendPacketToServer(isNew ? 4 : 0);
-            } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
-                ItemStack stack = mc.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    filter.setItemStack(stack.copy());
-                    filter.getItemStack().setCount(1);
-                } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    filter.setItemStack(ItemStack.EMPTY);
-                }
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            } else if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                filter.sizeMode = !filter.sizeMode;
-            } else if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                filter.allowDefault = !filter.allowDefault;
+        if (button == 0 && overTypeInput(mouseX - guiLeft, mouseY - guiTop)) {
+            ItemStack stack = mc.player.inventory.getItemStack();
+            if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                filter.setItemStack(stack.copy());
+                filter.getItemStack().setCount(1);
+            } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                filter.setItemStack(ItemStack.EMPTY);
             }
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+        } else {
+            transporterMouseClicked(button, filter);
         }
-        transporterMouseClicked(xAxis, yAxis, button, filter);
     }
 
     @Override

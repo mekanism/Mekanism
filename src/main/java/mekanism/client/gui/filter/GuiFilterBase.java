@@ -2,8 +2,9 @@ package mekanism.client.gui.filter;
 
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiColorButton;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.MekanismSounds;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
@@ -11,6 +12,7 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -30,6 +32,13 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected boolean isNew;
     protected int ticker;
 
+    protected GuiButton saveButton;
+    protected GuiButton deleteButton;
+    protected GuiButtonImageMek backButton;
+    protected GuiButtonImageMek replaceButton;
+    protected GuiButtonImageMek defaultButton;
+    protected GuiColorButton colorButton;
+
     protected GuiFilterBase(TILE tile, Container container) {
         super(tile, container);
     }
@@ -42,31 +51,14 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     public void initGui() {
         super.initGui();
         if (isNew) {
-            buttonList.get(1).enabled = false;
+            deleteButton.enabled = false;
         }
     }
 
-    protected void drawPositionedRect(int xAxis, int yAxis, int xMin, int xMax, int yMin, int yMax) {
-        if (xAxis >= xMin && xAxis <= xMax && yAxis >= yMin && yAxis <= yMax) {
-            int x = guiLeft + xMin;
-            int y = guiTop + yMin;
-            drawRect(x, y, x + 16, y + 16, 0x80FFFFFF);
-        }
-    }
-
-    protected void transporterMouseClicked(int xAxis, int yAxis, int button, TransporterFilter filter) {
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
-            button = 2;
-        }
-        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
-            SoundHandler.playSound(MekanismSounds.DING);
-            if (button == 0) {
-                filter.color = TransporterUtils.increment(filter.color);
-            } else if (button == 1) {
-                filter.color = TransporterUtils.decrement(filter.color);
-            } else if (button == 2) {
-                filter.color = null;
-            }
+    protected void transporterMouseClicked(int button, TransporterFilter filter) {
+        if (button == 1 && colorButton.isMouseOver()) {
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            filter.color = TransporterUtils.decrement(filter.color);
         }
     }
 
@@ -75,10 +67,8 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             MinerFilter mFilter = (MinerFilter) filter;
             renderItem(stack, 12, 19);
             renderItem(mFilter.replaceStack, 149, 19);
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
-            if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-                drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(mFilter.requireStack), xAxis, yAxis);
+            if (replaceButton.isMouseOver()) {
+                drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(mFilter.requireStack), mouseX - guiLeft, mouseY - guiTop);
             }
         }
     }
@@ -94,9 +84,9 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     }
 
     protected void drawTransporterForegroundText(int xAxis, int yAxis, TransporterFilter filter) {
-        if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
+        if (defaultButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
-        } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
+        } else if (colorButton.isMouseOver()) {
             if (filter.color != null) {
                 drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
             } else {
@@ -105,14 +95,34 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         }
     }
 
-    protected void minerFilterClickCommon(int xAxis, int yAxis, MinerFilter filter) {
-        if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+    protected void actionPerformedMinerCommon(GuiButton guibutton, MinerFilter filter) {
+        if (guibutton.id == backButton.id) {
             sendPacketToServer(isNew ? 5 : 0);
-        } else if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+        } else if (guibutton.id == replaceButton.id) {
             filter.requireStack = !filter.requireStack;
-        } else if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
+        }
+    }
+
+    protected void actionPerformedTransporter(GuiButton guibutton, TransporterFilter filter) {
+        if (guibutton.id == backButton.id) {
+            sendPacketToServer(isNew ? 4 : 0);
+        } else if (guibutton.id == defaultButton.id) {
+            filter.allowDefault = !filter.allowDefault;
+        } else if (guibutton.id == colorButton.id) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                filter.color = null;
+            } else {
+                filter.color = TransporterUtils.increment(filter.color);
+            }
+        }
+    }
+
+    protected boolean overReplaceOutput(int xAxis, int yAxis) {
+        return xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35;
+    }
+
+    protected void minerFilterClickCommon(int xAxis, int yAxis, MinerFilter filter) {
+        if (overReplaceOutput(xAxis, yAxis)) {
             boolean doNull = false;
             ItemStack stack = mc.player.inventory.getItemStack();
             ItemStack toUse = ItemStack.EMPTY;

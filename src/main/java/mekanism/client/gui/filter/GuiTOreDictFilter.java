@@ -1,6 +1,8 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.Coord4D;
+import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiColorButton;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TOreDictFilter;
@@ -34,8 +36,12 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
 
     @Override
     protected void addButtons() {
-        buttonList.add(new GuiButton(0, guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttonList.add(new GuiButton(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(saveButton = new GuiButton(0, guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
+        buttonList.add(deleteButton = new GuiButton(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(defaultButton = new GuiButtonImageMek(3, guiLeft + 11, guiTop + 64, 11, 11, 199, 11, -11, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonImageMek(4, guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation()));
+        buttonList.add(colorButton = new GuiColorButton(5, 12, 44, 16, 16, () -> filter.color));
     }
 
     @Override

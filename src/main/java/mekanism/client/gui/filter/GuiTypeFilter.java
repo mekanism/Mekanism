@@ -18,18 +18,20 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
     protected void drawItemStackBackground(int xAxis, int yAxis) {
     }
 
+    protected boolean overTypeInput(int xAxis, int yAxis) {
+        return xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35;
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, 0, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        if (tileEntity instanceof TileEntityDigitalMiner) {
-            drawTexturedModalRect(guiLeft + 148, guiTop + 45, 199, 0, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 14);
-            drawItemStackBackground(xAxis, yAxis);
-            drawPositionedRect(xAxis, yAxis, 149, 165, 19, 35);
+        if (tileEntity instanceof TileEntityDigitalMiner && overReplaceOutput(xAxis, yAxis)) {
+            drawRect(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
-            drawTexturedModalRect(guiLeft + 11, guiTop + 64, 198, 0, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
             drawItemStackBackground(xAxis, yAxis);
         }
-        drawPositionedRect(xAxis, yAxis, 12, 28, 19, 35);
+        if (overTypeInput(xAxis, yAxis)) {
+            drawRect(guiLeft + 12, guiTop + 19, guiLeft + 28, guiTop + 35, 0x80FFFFFF);
+        }
     }
 
     protected abstract void drawForegroundLayer(int mouseX, int mouseY);

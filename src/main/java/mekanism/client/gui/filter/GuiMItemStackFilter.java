@@ -3,6 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MItemStackFilter;
@@ -29,6 +30,8 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, TileEntityDigitalMiner> {
 
+    private GuiButtonImageMek fuzzyButton;
+
     public GuiMItemStackFilter(EntityPlayer player, TileEntityDigitalMiner tile, int index) {
         super(player, tile);
         origFilter = (MItemStackFilter) tileEntity.filters.get(index);
@@ -43,8 +46,11 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        buttonList.add(new GuiButton(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttonList.add(new GuiButton(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(saveButton = new GuiButton(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
+        buttonList.add(deleteButton = new GuiButton(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(replaceButton = new GuiButtonImageMek(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
+        buttonList.add(fuzzyButton = new GuiButtonImageMek(4, guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation()));
     }
 
     @Override
@@ -55,7 +61,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
+        if (guibutton.id == saveButton.id) {
             if (!filter.getItemStack().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
@@ -67,9 +73,10 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                 status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
                 ticker = 20;
             }
-        } else if (guibutton.id == 1) {
-            Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-            sendPacketToServer(0);
+        } else if (guibutton.id == fuzzyButton.id) {
+            filter.fuzzy = !filter.fuzzy;
+        } else {
+            actionPerformedMinerCommon(guibutton, filter);
         }
     }
 
@@ -82,16 +89,11 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         renderItem(filter.replaceStack, 149, 19);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
-        if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
+        if (replaceButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
-        } else if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
+        } else if (fuzzyButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
         }
-    }
-
-    @Override
-    protected void drawItemStackBackground(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 15, guiTop + 45, 213, 0, xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59, 14);
     }
 
     @Override
@@ -100,11 +102,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         if (button == 0) {
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
-            minerFilterClickCommon(xAxis, yAxis, filter);
-            if (xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                filter.fuzzy = !filter.fuzzy;
-            } else if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
+            if (overTypeInput(xAxis, yAxis)) {
                 ItemStack stack = mc.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     if (stack.getItem() instanceof ItemBlock) {
@@ -117,6 +115,8 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
                     filter.setItemStack(ItemStack.EMPTY);
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            } else {
+                minerFilterClickCommon(xAxis, yAxis, filter);
             }
         }
     }

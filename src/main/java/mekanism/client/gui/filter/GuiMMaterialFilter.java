@@ -2,6 +2,7 @@ package mekanism.client.gui.filter;
 
 import java.io.IOException;
 import mekanism.api.Coord4D;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MMaterialFilter;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
@@ -33,8 +34,10 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
 
     @Override
     protected void addButtons() {
-        buttonList.add(new GuiButton(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttonList.add(new GuiButton(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(saveButton = new GuiButton(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
+        buttonList.add(deleteButton = new GuiButton(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(replaceButton = new GuiButtonImageMek(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
     }
 
     @Override
@@ -56,9 +59,10 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
         if (button == 0) {
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
-            minerFilterClickCommon(xAxis, yAxis, filter);
-            if (xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35) {
+            if (overTypeInput(xAxis, yAxis)) {
                 materialMouseClicked();
+            } else {
+                minerFilterClickCommon(xAxis, yAxis, filter);
             }
         }
     }

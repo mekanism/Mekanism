@@ -29,13 +29,7 @@ public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
-            sendPacketToServer(1);
-        } else if (guibutton.id == 1) {
-            sendPacketToServer(2);
-        } else if (guibutton.id == 2) {
-            sendPacketToServer(3);
-        } else if (guibutton.id == 3) {
+        if (guibutton.id == modIDButton.id) {
             sendPacketToServer(5);
         }
     }

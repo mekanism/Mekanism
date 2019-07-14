@@ -1,9 +1,14 @@
 package mekanism.client.gui.filter;
 
+import java.io.IOException;
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IItemStackFilter;
+import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,6 +27,15 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE e
             ticker--;
         } else {
             status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
+        }
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        if (guibutton.id == deleteButton.id) {
+            Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
+            sendPacketToServer(0);
         }
     }
 

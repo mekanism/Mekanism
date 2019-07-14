@@ -3,7 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import java.util.List;
 import mekanism.api.EnumColor;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
@@ -11,9 +11,9 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,6 +24,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     protected List<ItemStack> iterStacks;
     protected int stackSwitch;
     protected int stackIndex;
+    protected GuiButtonImageMek checkboxButton;
 
     protected GuiTextFilter(EntityPlayer player, TILE tile) {
         super(player, tile);
@@ -65,15 +66,23 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, 0, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiLeft + 131, guiTop + 47, 187, 0, xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59, 12);
+        text.drawTextBox();
         if (tileEntity instanceof TileEntityDigitalMiner) {
-            drawTexturedModalRect(guiLeft + 148, guiTop + 45, 199, 0, xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59, 14);
-            text.drawTextBox();
-            drawPositionedRect(xAxis, yAxis, 149, 165, 19, 35);
-        } else if (tileEntity instanceof TileEntityLogisticalSorter) {
-            drawTexturedModalRect(guiLeft + 11, guiTop + 64, 199, 0, xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75, 11);
-            text.drawTextBox();
+            if (overReplaceOutput(xAxis, yAxis)) {
+                drawRect(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
+            }
+        }
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        if (guibutton.id == checkboxButton.id) {
+            setText();
+        } else if (tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
+            actionPerformedMinerCommon(guibutton, (MinerFilter) filter);
+        } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
+            actionPerformedTransporter(guibutton, (TransporterFilter) filter);
         }
     }
 
@@ -81,28 +90,10 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            setText();
-        }
-        if (tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
-            if (button == 0) {
-                minerFilterClickCommon(xAxis, yAxis, (MinerFilter) filter);
-            }
+        if (button == 0 && tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
+            minerFilterClickCommon(mouseX - guiLeft, mouseY - guiTop, (MinerFilter) filter);
         } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
-            TransporterFilter tFilter = (TransporterFilter) filter;
-            if (button == 0) {
-                if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                    sendPacketToServer(isNew ? 4 : 0);
-                } else if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
-                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                    tFilter.allowDefault = !tFilter.allowDefault;
-                }
-            }
-            transporterMouseClicked(xAxis, yAxis, button, tFilter);
+            transporterMouseClicked(button, (TransporterFilter) filter);
         }
     }
 }

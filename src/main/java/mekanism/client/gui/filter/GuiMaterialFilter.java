@@ -6,8 +6,12 @@ import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IMaterialFilter;
+import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
+import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
@@ -31,7 +35,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
+        if (guibutton.id == saveButton.id) {
             if (!filter.getMaterialItem().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
@@ -43,9 +47,13 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
                 status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
                 ticker = 20;
             }
-        } else if (guibutton.id == 1) {
+        } else if (guibutton.id == deleteButton.id) {
             Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(0);
+        } else if (tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
+            actionPerformedMinerCommon(guibutton, (MinerFilter) filter);
+        } else if (tileEntity instanceof TileEntityLogisticalSorter && filter instanceof TransporterFilter) {
+            actionPerformedTransporter(guibutton, (TransporterFilter) filter);
         }
     }
 

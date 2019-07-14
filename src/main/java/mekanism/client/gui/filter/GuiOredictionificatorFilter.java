@@ -3,7 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import java.util.List;
 import mekanism.api.Coord4D;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
@@ -18,7 +18,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,6 +26,13 @@ import net.minecraftforge.oredict.OreDictionary;
 
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator> {
+
+    private GuiButton saveButton;
+    private GuiButton deleteButton;
+    private GuiButtonImageMek backButton;
+    private GuiButtonImageMek prevButton;
+    private GuiButtonImageMek nextButton;
+    private GuiButtonImageMek checkboxButton;
 
     public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tile, int index) {
         super(tile, new ContainerFilter(player.inventory, tile));
@@ -43,8 +49,12 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        buttonList.add(new GuiButton(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
-        buttonList.add(new GuiButton(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(saveButton = new GuiButton(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
+        buttonList.add(deleteButton = new GuiButton(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation()));
+        buttonList.add(prevButton = new GuiButtonImageMek(3, guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation()));
+        buttonList.add(nextButton = new GuiButtonImageMek(4, guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonImageMek(5, guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation()));
     }
 
     @Override
@@ -65,8 +75,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     public void updateButtons() {
-        buttonList.get(0).enabled = filter.filter != null && !filter.filter.isEmpty();
-        buttonList.get(1).enabled = !isNew;
+        saveButton.enabled = filter.filter != null && !filter.filter.isEmpty();
+        deleteButton.enabled = !isNew;
     }
 
     @Override
@@ -109,17 +119,14 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 212, 0, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiLeft + 31, guiTop + 21, 200, 0, xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33, 12);
-        drawTexturedModalRect(guiLeft + 63, guiTop + 21, 188, 0, xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33, 12);
-        drawTexturedModalRect(guiLeft + 130, guiTop + 48, 176, 0, xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60, 12);
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         text.drawTextBox();
     }
 
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
+        if (guibutton.id == saveButton.id) {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -131,9 +138,33 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 }
                 sendPacketToServer(52);
             }
-        } else if (guibutton.id == 1) {
+        } else if (guibutton.id == deleteButton.id) {
             Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(52);
+        } else if (guibutton.id == backButton.id) {
+            sendPacketToServer(52);
+        } else if (guibutton.id == prevButton.id) {
+            if (filter.filter != null) {
+                List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
+                if (filter.index > 0) {
+                    filter.index--;
+                } else {
+                    filter.index = ores.size() - 1;
+                }
+                updateRenderStack();
+            }
+        } else if (guibutton.id == nextButton.id) {
+            if (filter.filter != null) {
+                List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
+                if (filter.index < ores.size() - 1) {
+                    filter.index++;
+                } else {
+                    filter.index = 0;
+                }
+                updateRenderStack();
+            }
+        } else if (guibutton.id == checkboxButton.id) {
+            setText();
         }
     }
 
@@ -141,39 +172,6 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
-            if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                sendPacketToServer(52);
-            } else if (xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                setText();
-            } else if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                if (filter.filter != null) {
-                    List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
-                    if (filter.index > 0) {
-                        filter.index--;
-                    } else {
-                        filter.index = ores.size() - 1;
-                    }
-                    updateRenderStack();
-                }
-            } else if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                if (filter.filter != null) {
-                    List<ItemStack> ores = OreDictionary.getOres(filter.filter, false);
-                    if (filter.index < ores.size() - 1) {
-                        filter.index++;
-                    } else {
-                        filter.index = 0;
-                    }
-                    updateRenderStack();
-                }
-            }
-        }
     }
 
     @Override
