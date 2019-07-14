@@ -41,7 +41,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
         buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
         buttonList.add(defaultButton = new GuiButtonImageMek(3, guiLeft + 11, guiTop + 64, 11, 11, 199, 11, -11, getGuiLocation()));
         buttonList.add(checkboxButton = new GuiButtonImageMek(4, guiLeft + 131, guiTop + 47, 12, 12, 187, 12, -12, getGuiLocation()));
-        buttonList.add(colorButton = new GuiColorButton(5, 12, 44, 16, 16, () -> filter.color));
+        buttonList.add(colorButton = new GuiColorButton(5, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color));
     }
 
     @Override

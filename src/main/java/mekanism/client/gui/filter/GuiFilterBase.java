@@ -78,7 +78,6 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             TransporterFilter tFilter = (TransporterFilter) filter;
             fontRenderer.drawString(LangUtils.transOnOff(tFilter.allowDefault), 24, 66, 0x404040);
             renderItem(stack, 12, 19);
-            drawColorIcon(12, 44, tFilter.color, 1);
             drawTransporterForegroundText(mouseX - guiLeft, mouseY - guiTop, tFilter);
         }
     }

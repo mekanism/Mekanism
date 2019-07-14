@@ -75,6 +75,16 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        if (tileEntity instanceof TileEntityDigitalMiner) {
+            drawMinerForegroundLayer(mouseX, mouseY, renderStack);
+        } else if (tileEntity instanceof TileEntityLogisticalSorter) {
+            drawTransporterForegroundLayer(mouseX, mouseY, renderStack);
+        }
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+
+    @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == checkboxButton.id) {

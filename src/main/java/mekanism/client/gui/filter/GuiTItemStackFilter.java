@@ -51,8 +51,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         buttonList.add(deleteButton = new GuiButton(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
         buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
         buttonList.add(defaultButton = new GuiButtonImageMek(3, guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation()));
-        buttonList.add(sizeButton = new GuiButtonImageMek(4, guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation()));
-        buttonList.add(colorButton = new GuiColorButton(5, 12, 44, 16, 16, () -> filter.color));
+        buttonList.add(colorButton = new GuiColorButton(4, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color));
+        buttonList.add(sizeButton = new GuiButtonImageMek(5, guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation()));
     }
 
     @Override
@@ -124,12 +124,11 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         }
 
         fontRenderer.drawString(sizeModeString, 141, 46, 0x404040);
-        fontRenderer.drawString(LangUtils.transOnOff(filter.allowDefault), 24, 66, 0x404040);
+        drawTransporterForegroundLayer(mouseX, mouseY, filter.getItemStack());
         if (!filter.getItemStack().isEmpty()) {
             renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, 0x00CD00, 89);
         }
-        renderItem(filter.getItemStack(), 12, 19);
-        drawColorIcon(12, 44, filter.color, 1);
+
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (sizeButton.isMouseOver()) {
@@ -138,8 +137,6 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                 sizeModeTooltip += " - " + LangUtils.localize("mekanism.gui.sizeModeConflict");
             }
             drawHoveringText(MekanismUtils.splitTooltip(sizeModeTooltip, ItemStack.EMPTY), xAxis, yAxis);
-        } else {
-            drawTransporterForegroundText(xAxis, yAxis, filter);
         }
     }
 
