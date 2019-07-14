@@ -376,6 +376,7 @@ public class ModelEnergyCube extends ModelBase {
         GlStateManager.translate(0, -0.0061F, 0);
         manager.bindTexture(BASE_OVERLAY);
         MekanismRenderer.color(tier.getBaseTier().getColor());
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
         corner8.render(size);
         corner7.render(size);
@@ -386,6 +387,7 @@ public class ModelEnergyCube extends ModelBase {
         corner2.render(size);
         corner1.render(size);
 
+        MekanismRenderer.disableGlow(glowInfo);
         MekanismRenderer.resetColor();
         GlStateManager.popMatrix();
     }
