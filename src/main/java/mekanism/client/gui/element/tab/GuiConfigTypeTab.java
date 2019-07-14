@@ -61,25 +61,23 @@ public class GuiConfigTypeTab extends GuiElement {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        if (!visible) {
-            return;
+        if (visible) {
+            mc.renderEngine.bindTexture(RESOURCE);
+            guiObj.drawTexturedRect(guiWidth + getLeftBound(false) - 4, guiHeight + yPos, 0, left ? 0 : 26, 26, 26);
+            guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos + 4, 26, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
+            mc.renderEngine.bindTexture(defaultLocation);
         }
-        mc.renderEngine.bindTexture(RESOURCE);
-        guiObj.drawTexturedRect(guiWidth + getLeftBound(false) - 4, guiHeight + yPos, 0, left ? 0 : 26, 26, 26);
-        guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos + 4, 26, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
-        mc.renderEngine.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        if (!visible) {
-            return;
+        if (visible) {
+            mc.renderEngine.bindTexture(RESOURCE);
+            if (inBounds(xAxis, yAxis)) {
+                displayTooltip(transmission.localize(), xAxis, yAxis);
+            }
+            mc.renderEngine.bindTexture(defaultLocation);
         }
-        mc.renderEngine.bindTexture(RESOURCE);
-        if (inBounds(xAxis, yAxis)) {
-            displayTooltip(transmission.localize(), xAxis, yAxis);
-        }
-        mc.renderEngine.bindTexture(defaultLocation);
     }
 
     public int getLeftBound(boolean adjust) {
@@ -96,10 +94,7 @@ public class GuiConfigTypeTab extends GuiElement {
 
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (!visible) {
-            return;
-        }
-        if (button == 0 && inBounds(xAxis, yAxis)) {
+        if (visible && button == 0 && inBounds(xAxis, yAxis)) {
             ((GuiSideConfiguration) guiObj).setCurrentType(transmission);
             ((GuiSideConfiguration) guiObj).updateTabs();
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -77,6 +77,7 @@ public abstract class GuiGauge<T> extends GuiElement {
         int scale = getScaledLevel();
         int start = 0;
 
+        applyRenderColor();
         while (scale > 0) {
             int renderRemaining;
             if (scale > 16) {
@@ -88,18 +89,15 @@ public abstract class GuiGauge<T> extends GuiElement {
             }
 
             mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
-            applyRenderColor();
             for (int i = 0; i < number; i++) {
                 guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
             }
-            MekanismRenderer.resetColor();
             start += 16;
             if (scale == 0) {
                 break;
             }
         }
-
+        MekanismRenderer.resetColor();
         mc.renderEngine.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
     }
@@ -109,7 +107,7 @@ public abstract class GuiGauge<T> extends GuiElement {
         if (xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1) {
             ItemStack stack = mc.player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
-                if (guiObj instanceof GuiMekanismTile && ((GuiMekanismTile) guiObj).getTileEntity() != null) {
+                if (guiObj instanceof GuiMekanismTile) {
                     TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
                     if (tile instanceof ISideConfiguration && getTransmission() != null) {
                         SideData data = null;

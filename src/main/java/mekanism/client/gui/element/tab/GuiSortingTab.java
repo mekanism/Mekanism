@@ -3,6 +3,7 @@ package mekanism.client.gui.element.tab;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTileEntityElement;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -48,6 +49,7 @@ public class GuiSortingTab extends GuiTileEntityElement<TileEntityFactory> {
             displayTooltip(LangUtils.localize("gui.factory.autoSort"), xAxis, yAxis);
         }
         mc.renderEngine.bindTexture(defaultLocation);
+        MekanismRenderer.resetColor();
     }
 
     @Override

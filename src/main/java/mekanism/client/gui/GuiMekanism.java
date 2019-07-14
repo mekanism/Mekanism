@@ -76,11 +76,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
         // GL changes only get ran if it is not already the color we are assuming it is.
         MekanismRenderer.resetColor();
-        guiElements.forEach(element -> {
-            element.renderForeground(xAxis, yAxis);
-            //Continue ensuring color is what we are assuming.
-            MekanismRenderer.resetColor();
-        });
+        guiElements.forEach(element -> element.renderForeground(xAxis, yAxis));
     }
 
     protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {
@@ -104,11 +100,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
         // GL changes only get ran if it is not already the color we are assuming it is.
         MekanismRenderer.resetColor();
-        guiElements.forEach(element -> {
-            element.renderBackground(xAxis, yAxis, guiLeft, guiTop);
-            //Continue ensuring color is what we are assuming.
-            MekanismRenderer.resetColor();
-        });
+        guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiLeft, guiTop));
     }
 
     @Override

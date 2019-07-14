@@ -45,8 +45,7 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            String text = LangUtils.localize("gui.redstoneOutput") + ": ";
-            displayTooltip(text + tileEntity.outputMode.getName(), xAxis, yAxis);
+            displayTooltip(LangUtils.localize("gui.redstoneOutput") + ": " + tileEntity.outputMode.getName(), xAxis, yAxis);
         }
         mc.renderEngine.bindTexture(defaultLocation);
     }
