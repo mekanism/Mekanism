@@ -129,6 +129,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityContainerBlock, FIL
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         // Draw scrollbar
         drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 

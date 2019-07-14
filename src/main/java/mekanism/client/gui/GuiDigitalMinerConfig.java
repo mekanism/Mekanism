@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -229,6 +230,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         radiusField.drawTextBox();
         minField.drawTextBox();
         maxField.drawTextBox();
+        MekanismRenderer.resetColor();
     }
 
     @Override

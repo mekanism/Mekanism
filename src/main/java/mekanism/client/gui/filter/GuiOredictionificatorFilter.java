@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
@@ -121,6 +122,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         text.drawTextBox();
+        MekanismRenderer.resetColor();
     }
 
     @Override

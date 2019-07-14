@@ -75,6 +75,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
         // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
         // GL changes only get ran if it is not already the color we are assuming it is.
+        // This is called here as, all extenders of GuiMekanism that overwrite this method call super on it at the end of their
+        // implementation, and almost all have the color get changed at one point or another due to drawing text
         MekanismRenderer.resetColor();
         guiElements.forEach(element -> element.renderForeground(xAxis, yAxis));
     }
@@ -88,18 +90,14 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
+        mc.renderEngine.bindTexture(getGuiLocation());
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
-        // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
-        // GL changes only get ran if it is not already the color we are assuming it is.
-        MekanismRenderer.resetColor();
         guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiLeft, guiTop));
     }
 
@@ -188,6 +186,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {
         if (color != null) {
             drawRect(x, y, x + 16, y + 16, MekanismRenderer.getColorARGB(color, alpha));
+            MekanismRenderer.resetColor();
         }
     }
 

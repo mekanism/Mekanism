@@ -91,6 +91,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tileEntity.structure != null) {
             int displayInt = GasMode.chooseByMode(tileEntity.structure.dumpMode, 142, 150, 158);
             drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, displayInt, 8, 8);

@@ -144,6 +144,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
         if (selectedType != null && tileEntity.getComponent().getUpgrades(selectedType) == 0) {

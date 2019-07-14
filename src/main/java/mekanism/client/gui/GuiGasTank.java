@@ -55,6 +55,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = GasMode.chooseByMode(tileEntity.dumping, 10, 18, 26);
         drawTexturedModalRect(guiLeft + 160, guiTop + 73, 176, displayInt, 8, 8);
         if (tileEntity.gasTank.getGas() != null) {

@@ -1,5 +1,6 @@
 package mekanism.client.gui.filter;
 
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -24,6 +25,7 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tileEntity instanceof TileEntityDigitalMiner && overReplaceOutput(xAxis, yAxis)) {
             drawRect(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
         } else if (tileEntity instanceof TileEntityLogisticalSorter) {
@@ -32,6 +34,7 @@ public abstract class GuiTypeFilter<FILTER extends IFilter, TILE extends TileEnt
         if (overTypeInput(xAxis, yAxis)) {
             drawRect(guiLeft + 12, guiTop + 19, guiLeft + 28, guiTop + 35, 0x80FFFFFF);
         }
+        MekanismRenderer.resetColor();
     }
 
     protected abstract void drawForegroundLayer(int mouseX, int mouseY);

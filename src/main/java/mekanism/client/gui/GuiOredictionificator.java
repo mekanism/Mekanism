@@ -105,6 +105,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232, 0, 12, 15);
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {

@@ -18,6 +18,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -301,9 +302,11 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int y = getFrequency() == null ? 94 : getStatus() == 2 ? 22 : getStatus() == 3 ? 40 : getStatus() == 4 ? 58 : 76;
         drawTexturedModalRect(guiLeft + 6, guiTop + 6, 176, y, 18, 18);
         frequencyField.drawTextBox();
+        MekanismRenderer.resetColor();
     }
 
     public String getStatusDisplay() {

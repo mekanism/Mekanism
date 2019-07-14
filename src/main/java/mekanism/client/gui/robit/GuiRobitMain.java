@@ -3,6 +3,7 @@ package mekanism.client.gui.robit;
 import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitMain;
@@ -155,10 +156,12 @@ public class GuiRobitMain extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         drawTexturedModalRect(guiLeft + 28, guiTop + 75, 0, 166, getScaledEnergyLevel(120), 4);
         if (displayNameChange) {
             drawTexturedModalRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
             nameChangeField.drawTextBox();
+            MekanismRenderer.resetColor();
         }
     }
 

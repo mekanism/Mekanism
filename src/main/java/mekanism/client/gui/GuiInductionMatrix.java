@@ -46,6 +46,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tileEntity.getScaledEnergyLevel(58) > 0) {
             displayGauge(7, 14, tileEntity.getScaledEnergyLevel(58), 0);
             displayGauge(23, 14, tileEntity.getScaledEnergyLevel(58), 1);
