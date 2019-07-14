@@ -2,8 +2,6 @@ package mekanism.client.gui.filter;
 
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
-import mekanism.client.gui.button.GuiButtonImageMek;
-import mekanism.client.gui.button.GuiColorButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -34,10 +32,10 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
 
     protected GuiButton saveButton;
     protected GuiButton deleteButton;
-    protected GuiButtonImageMek backButton;
-    protected GuiButtonImageMek replaceButton;
-    protected GuiButtonImageMek defaultButton;
-    protected GuiColorButton colorButton;
+    protected GuiButton backButton;
+    protected GuiButton replaceButton;
+    protected GuiButton defaultButton;
+    protected GuiButton colorButton;
 
     protected GuiFilterBase(TILE tile, Container container) {
         super(tile, container);

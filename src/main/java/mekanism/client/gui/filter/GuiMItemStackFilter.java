@@ -3,7 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.content.miner.MItemStackFilter;
@@ -30,7 +30,7 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, TileEntityDigitalMiner> {
 
-    private GuiButtonImageMek fuzzyButton;
+    private GuiButton fuzzyButton;
 
     public GuiMItemStackFilter(EntityPlayer player, TileEntityDigitalMiner tile, int index) {
         super(player, tile);
@@ -48,9 +48,9 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     protected void addButtons() {
         buttonList.add(saveButton = new GuiButton(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
         buttonList.add(deleteButton = new GuiButton(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
-        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
-        buttonList.add(replaceButton = new GuiButtonImageMek(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
-        buttonList.add(fuzzyButton = new GuiButtonImageMek(4, guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(replaceButton = new GuiButtonDisableableImage(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
+        buttonList.add(fuzzyButton = new GuiButtonDisableableImage(4, guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation()));
     }
 
     @Override

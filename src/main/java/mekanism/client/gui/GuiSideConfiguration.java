@@ -8,7 +8,7 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
@@ -41,8 +41,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     private ISideConfiguration configurable;
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
-    private GuiButtonImageMek backButton;
-    private GuiButtonImageMek autoEjectButton;
+    private GuiButton backButton;
+    private GuiButton autoEjectButton;
 
     public GuiSideConfiguration(EntityPlayer player, ISideConfiguration tile) {
         super((TileEntityContainerBlock) tile, new ContainerNull(player, (TileEntityContainerBlock) tile));
@@ -68,8 +68,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
-        buttonList.add(autoEjectButton = new GuiButtonImageMek(1, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttonList.add(autoEjectButton = new GuiButtonDisableableImage(1, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
     }
 
     @Override

@@ -3,7 +3,6 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import java.util.List;
 import mekanism.api.EnumColor;
-import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
@@ -24,7 +23,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     protected List<ItemStack> iterStacks;
     protected int stackSwitch;
     protected int stackIndex;
-    protected GuiButtonImageMek checkboxButton;
+    protected GuiButton checkboxButton;
 
     protected GuiTextFilter(EntityPlayer player, TILE tile) {
         super(player, tile);

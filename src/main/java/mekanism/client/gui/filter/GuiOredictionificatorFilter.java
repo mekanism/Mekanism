@@ -3,7 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import java.util.List;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
@@ -29,10 +29,10 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     private GuiButton saveButton;
     private GuiButton deleteButton;
-    private GuiButtonImageMek backButton;
-    private GuiButtonImageMek prevButton;
-    private GuiButtonImageMek nextButton;
-    private GuiButtonImageMek checkboxButton;
+    private GuiButton backButton;
+    private GuiButton prevButton;
+    private GuiButton nextButton;
+    private GuiButton checkboxButton;
 
     public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tile, int index) {
         super(tile, new ContainerFilter(player.inventory, tile));
@@ -51,10 +51,10 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     protected void addButtons() {
         buttonList.add(saveButton = new GuiButton(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
         buttonList.add(deleteButton = new GuiButton(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
-        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation()));
-        buttonList.add(prevButton = new GuiButtonImageMek(3, guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation()));
-        buttonList.add(nextButton = new GuiButtonImageMek(4, guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation()));
-        buttonList.add(checkboxButton = new GuiButtonImageMek(5, guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation()));
+        buttonList.add(prevButton = new GuiButtonDisableableImage(3, guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation()));
+        buttonList.add(nextButton = new GuiButtonDisableableImage(4, guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation()));
     }
 
     @Override

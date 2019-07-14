@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -38,10 +38,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     private GuiButton startButton;
     private GuiButton stopButton;
     private GuiButton configButton;
-    private GuiButtonImageMek resetButton;
-    private GuiButtonImageMek silkTouchButton;
-    private GuiButtonImageMek autoEjectButton;
-    private GuiButtonImageMek autoPullButton;
+    private GuiButton resetButton;
+    private GuiButton silkTouchButton;
+    private GuiButton autoEjectButton;
+    private GuiButton autoPullButton;
 
     public GuiDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tile) {
         super(tile, new ContainerDigitalMiner(inventory, tile));
@@ -75,10 +75,10 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
         buttonList.add(startButton = new GuiButton(0, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start")));
         buttonList.add(stopButton = new GuiButton(1, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop")));
         buttonList.add(configButton = new GuiButton(2, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config")));
-        buttonList.add(resetButton = new GuiButtonImageMek(3, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation()));
-        buttonList.add(silkTouchButton = new GuiButtonImageMek(4, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation()));
-        buttonList.add(autoEjectButton = new GuiButtonImageMek(5, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation()));
-        buttonList.add(autoPullButton = new GuiButtonImageMek(6, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation()));
+        buttonList.add(resetButton = new GuiButtonDisableableImage(3, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation()));
+        buttonList.add(silkTouchButton = new GuiButtonDisableableImage(4, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation()));
+        buttonList.add(autoEjectButton = new GuiButtonDisableableImage(5, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation()));
+        buttonList.add(autoPullButton = new GuiButtonDisableableImage(6, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation()));
         updateEnabledButtons();
     }
 

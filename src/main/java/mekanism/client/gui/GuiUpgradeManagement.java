@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -26,8 +26,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiUpgradeManagement extends GuiMekanism {
 
-    private GuiButtonImageMek backButton;
-    private GuiButtonImageMek removeButton;
+    private GuiButton backButton;
+    private GuiButton removeButton;
     private IUpgradeTile tileEntity;
     private Upgrade selectedType;
     private boolean isDragging = false;
@@ -45,8 +45,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
-        buttonList.add(removeButton = new GuiButtonImageMek(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
+        buttonList.add(removeButton = new GuiButtonDisableableImage(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation()));
         updateEnabledButtons();
     }
 

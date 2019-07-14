@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiPowerBar;
@@ -35,7 +35,7 @@ import org.lwjgl.input.Keyboard;
 public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater> {
 
     private GuiTextField energyUsageField;
-    private GuiButtonImageMek checkboxButton;
+    private GuiButton checkboxButton;
 
     public GuiResistiveHeater(InventoryPlayer inventory, TileEntityResistiveHeater tile) {
         super(tile, new ContainerResistiveHeater(inventory, tile));
@@ -65,7 +65,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setEnableBackgroundDrawing(false);
         energyUsageField.setText(prevEnergyUsage);
-        buttonList.add(checkboxButton = new GuiButtonImageMek(1, guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonDisableableImage(1, guiLeft + 116, guiTop + 51, 11, 11, xSize, 11, -11, getGuiLocation()));
     }
 
     @Override

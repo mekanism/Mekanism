@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
@@ -30,11 +30,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private static final int MAX_LENGTH = 24;
     private GuiButton removeButton;
-    private GuiButtonImageMek publicButton;
-    private GuiButtonImageMek privateButton;
-    private GuiButtonImageMek trustedButton;
-    private GuiButtonImageMek checkboxButton;
-    private GuiButtonImageMek overrideButton;
+    private GuiButton publicButton;
+    private GuiButton privateButton;
+    private GuiButton trustedButton;
+    private GuiButton checkboxButton;
+    private GuiButton overrideButton;
     private GuiScrollList scrollList;
     private GuiTextField trustedField;
 
@@ -52,11 +52,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         trustedField = new GuiTextField(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
-        buttonList.add(publicButton = new GuiButtonImageMek(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation()));
-        buttonList.add(privateButton = new GuiButtonImageMek(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation()));
-        buttonList.add(trustedButton = new GuiButtonImageMek(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation()));
-        buttonList.add(checkboxButton = new GuiButtonImageMek(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation()));
-        buttonList.add(overrideButton = new GuiButtonImageMek(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation()));
+        buttonList.add(publicButton = new GuiButtonDisableableImage(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation()));
+        buttonList.add(privateButton = new GuiButtonDisableableImage(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation()));
+        buttonList.add(trustedButton = new GuiButtonDisableableImage(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttonList.add(overrideButton = new GuiButtonDisableableImage(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation()));
         updateButtons();
     }
 

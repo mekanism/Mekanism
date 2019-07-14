@@ -8,7 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -54,7 +54,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     private GuiButton setButton;
     private GuiButton deleteButton;
     private GuiButton teleportButton;
-    private GuiButtonImageMek checkboxButton;
+    private GuiButton checkboxButton;
     private GuiScrollList scrollList;
     private GuiTextField frequencyField;
     private boolean privateMode;
@@ -134,7 +134,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         frequencyField = new GuiTextField(5, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        buttonList.add(checkboxButton = new GuiButtonImageMek(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonDisableableImage(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
         updateButtons();
         if (!itemStack.isEmpty()) {
             if (!isInit) {

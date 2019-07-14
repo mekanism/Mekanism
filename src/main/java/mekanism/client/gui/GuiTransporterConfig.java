@@ -8,7 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
 import mekanism.client.gui.button.GuiColorButton;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -38,9 +38,9 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private ISideConfiguration configurable;
-    private GuiButtonImageMek backButton;
-    private GuiButtonImageMek strictInputButton;
-    private GuiColorButton colorButton;
+    private GuiButton backButton;
+    private GuiButton strictInputButton;
+    private GuiButton colorButton;
 
     public GuiTransporterConfig(EntityPlayer player, ISideConfiguration tile) {
         super((TileEntityContainerBlock) tile, new ContainerNull(player, (TileEntityContainerBlock) tile));
@@ -58,8 +58,8 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
-        buttonList.add(strictInputButton = new GuiButtonImageMek(1, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+        buttonList.add(strictInputButton = new GuiButtonDisableableImage(1, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
         buttonList.add(colorButton = new GuiColorButton(2, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor()));
     }
 

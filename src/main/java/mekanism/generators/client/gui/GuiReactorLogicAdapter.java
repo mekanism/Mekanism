@@ -6,7 +6,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -27,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter> {
 
     private List<GuiReactorLogicButton> typeButtons = new ArrayList<>();
-    private GuiButtonImageMek coolingButton;
+    private GuiButton coolingButton;
     private int buttonID = 0;
 
     public GuiReactorLogicAdapter(InventoryPlayer inventory, final TileEntityReactorLogicAdapter tile) {
@@ -38,7 +38,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(coolingButton = new GuiButtonImageMek(buttonID++, guiLeft + 23, guiTop + 19, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(coolingButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 23, guiTop + 19, 11, 11, 176, 11, -11, getGuiLocation()));
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
             GuiReactorLogicButton button = new GuiReactorLogicButton(buttonID++, guiLeft + 24, guiTop + 32 + typeShift, type, tileEntity, getGuiLocation());

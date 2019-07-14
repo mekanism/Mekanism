@@ -2,7 +2,7 @@ package mekanism.client.gui.filter;
 
 import java.io.IOException;
 import mekanism.api.Coord4D;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiColorButton;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TMaterialFilter;
@@ -37,8 +37,8 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
     protected void addButtons() {
         buttonList.add(saveButton = new GuiButton(0, guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
         buttonList.add(deleteButton = new GuiButton(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
-        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
-        buttonList.add(defaultButton = new GuiButtonImageMek(3, guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(defaultButton = new GuiButtonDisableableImage(3, guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation()));
         buttonList.add(colorButton = new GuiColorButton(4, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color));
     }
 

@@ -2,7 +2,7 @@ package mekanism.client.gui.robit;
 
 import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketRobit;
@@ -19,11 +19,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class GuiRobit extends GuiMekanism {
 
     protected final EntityRobit robit;
-    private GuiButtonImageMek mainButton;
-    private GuiButtonImageMek craftingButton;
-    private GuiButtonImageMek inventoryButton;
-    private GuiButtonImageMek smeltingButton;
-    private GuiButtonImageMek repairButton;
+    private GuiButton mainButton;
+    private GuiButton craftingButton;
+    private GuiButton inventoryButton;
+    private GuiButton smeltingButton;
+    private GuiButton repairButton;
 
     protected GuiRobit(EntityRobit robit, Container container) {
         super(container);
@@ -35,11 +35,11 @@ public abstract class GuiRobit extends GuiMekanism {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(mainButton = new GuiButtonImageMek(0, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
-        buttonList.add(craftingButton = new GuiButtonImageMek(1, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
-        buttonList.add(inventoryButton = new GuiButtonImageMek(2, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
-        buttonList.add(smeltingButton = new GuiButtonImageMek(3, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
-        buttonList.add(repairButton = new GuiButtonImageMek(4, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
+        buttonList.add(mainButton = new GuiButtonDisableableImage(0, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
+        buttonList.add(craftingButton = new GuiButtonDisableableImage(1, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
+        buttonList.add(inventoryButton = new GuiButtonDisableableImage(2, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
+        buttonList.add(smeltingButton = new GuiButtonDisableableImage(3, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
+        buttonList.add(repairButton = new GuiButtonDisableableImage(4, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
     }
 
     @Override

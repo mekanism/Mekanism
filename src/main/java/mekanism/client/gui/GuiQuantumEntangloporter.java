@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
@@ -35,7 +35,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     private GuiButton privateButton;
     private GuiButton setButton;
     private GuiButton deleteButton;
-    private GuiButtonImageMek checkboxButton;
+    private GuiButton checkboxButton;
     private GuiScrollList scrollList;
     private GuiTextField frequencyField;
     private boolean privateMode;
@@ -65,7 +65,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         frequencyField = new GuiTextField(4, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        buttonList.add(checkboxButton = new GuiButtonImageMek(5, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
         updateButtons();
     }
 

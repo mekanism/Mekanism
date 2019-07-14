@@ -3,7 +3,7 @@ package mekanism.generators.client.gui;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.MekanismUtils;
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorController> {
 
-    private GuiButtonImageMek backButton;
+    private GuiButton backButton;
 
     public GuiReactorInfo(TileEntityReactorController tile, Container container) {
         super(tile, container);
@@ -28,7 +28,7 @@ public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorCo
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
     }
 
     @Override

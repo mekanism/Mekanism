@@ -2,7 +2,7 @@ package mekanism.client.gui.robit;
 
 import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitMain;
@@ -27,15 +27,15 @@ public class GuiRobitMain extends GuiMekanism {
     private boolean displayNameChange;
     private GuiTextField nameChangeField;
     private GuiButton confirmName;
-    private GuiButtonImageMek teleportHomeButton;
-    private GuiButtonImageMek pickupButton;
-    private GuiButtonImageMek renameButton;
-    private GuiButtonImageMek followButton;
-    private GuiButtonImageMek mainButton;
-    private GuiButtonImageMek craftingButton;
-    private GuiButtonImageMek inventoryButton;
-    private GuiButtonImageMek smeltingButton;
-    private GuiButtonImageMek repairButton;
+    private GuiButton teleportHomeButton;
+    private GuiButton pickupButton;
+    private GuiButton renameButton;
+    private GuiButton followButton;
+    private GuiButton mainButton;
+    private GuiButton craftingButton;
+    private GuiButton inventoryButton;
+    private GuiButton smeltingButton;
+    private GuiButton repairButton;
 
     public GuiRobitMain(InventoryPlayer inventory, EntityRobit entity) {
         super(new ContainerRobitMain(inventory, entity));
@@ -98,15 +98,15 @@ public class GuiRobitMain extends GuiMekanism {
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused(true);
 
-        buttonList.add(teleportHomeButton = new GuiButtonImageMek(2, guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation()));
-        buttonList.add(pickupButton = new GuiButtonImageMek(3, guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation()));
-        buttonList.add(renameButton = new GuiButtonImageMek(4, guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation()));
-        buttonList.add(followButton = new GuiButtonImageMek(5, guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation()));
-        buttonList.add(mainButton = new GuiButtonImageMek(6, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
-        buttonList.add(craftingButton = new GuiButtonImageMek(7, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
-        buttonList.add(inventoryButton = new GuiButtonImageMek(8, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
-        buttonList.add(smeltingButton = new GuiButtonImageMek(9, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
-        buttonList.add(repairButton = new GuiButtonImageMek(10, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
+        buttonList.add(teleportHomeButton = new GuiButtonDisableableImage(2, guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation()));
+        buttonList.add(pickupButton = new GuiButtonDisableableImage(3, guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation()));
+        buttonList.add(renameButton = new GuiButtonDisableableImage(4, guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation()));
+        buttonList.add(followButton = new GuiButtonDisableableImage(5, guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation()));
+        buttonList.add(mainButton = new GuiButtonDisableableImage(6, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
+        buttonList.add(craftingButton = new GuiButtonDisableableImage(7, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
+        buttonList.add(inventoryButton = new GuiButtonDisableableImage(8, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
+        buttonList.add(smeltingButton = new GuiButtonDisableableImage(9, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
+        buttonList.add(repairButton = new GuiButtonDisableableImage(10, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
     }
 
     @Override

@@ -3,7 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.button.GuiColorButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -31,7 +31,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     private GuiTextField minField;
     private GuiTextField maxField;
-    private GuiButtonImageMek sizeButton;
+    private GuiButton sizeButton;
 
     public GuiTItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tile, int index) {
         super(player, tile);
@@ -49,10 +49,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     protected void addButtons() {
         buttonList.add(saveButton = new GuiButton(0, guiLeft + 47, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
         buttonList.add(deleteButton = new GuiButton(1, guiLeft + 109, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
-        buttonList.add(backButton = new GuiButtonImageMek(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
-        buttonList.add(defaultButton = new GuiButtonImageMek(3, guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation()));
+        buttonList.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(defaultButton = new GuiButtonDisableableImage(3, guiLeft + 11, guiTop + 64, 11, 11, 198, 11, -11, getGuiLocation()));
         buttonList.add(colorButton = new GuiColorButton(4, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color));
-        buttonList.add(sizeButton = new GuiButtonImageMek(5, guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttonList.add(sizeButton = new GuiButtonDisableableImage(5, guiLeft + 128, guiTop + 44, 11, 11, 187, 11, -11, getGuiLocation()));
     }
 
     @Override

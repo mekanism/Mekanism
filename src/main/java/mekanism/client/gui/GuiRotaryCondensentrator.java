@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiButtonImageMek;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator> {
 
-    private GuiButtonImageMek toggleButton;
+    private GuiButton toggleButton;
 
     public GuiRotaryCondensentrator(InventoryPlayer inventory, TileEntityRotaryCondensentrator tile) {
         super(tile, new ContainerRotaryCondensentrator(inventory, tile));
@@ -81,7 +81,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(toggleButton = new GuiButtonImageMek(0, guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation()));
+        buttonList.add(toggleButton = new GuiButtonDisableableImage(0, guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation()));
     }
 
     @Override
