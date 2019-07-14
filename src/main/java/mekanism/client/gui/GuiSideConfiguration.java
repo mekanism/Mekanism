@@ -68,10 +68,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation());
-        autoEjectButton = new GuiButtonImageMek(1, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation());
-        buttonList.add(backButton);
-        buttonList.add(autoEjectButton);
+        buttonList.add(backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttonList.add(autoEjectButton = new GuiButtonImageMek(1, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
     }
 
     @Override

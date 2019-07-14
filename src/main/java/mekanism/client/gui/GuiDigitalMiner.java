@@ -72,23 +72,14 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        startButton = new GuiButton(0, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start"));
-        stopButton = new GuiButton(1, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop"));
-        configButton = new GuiButton(2, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config"));
-        resetButton = new GuiButtonImageMek(3, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation());
-        silkTouchButton = new GuiButtonImageMek(4, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation());
-        autoEjectButton = new GuiButtonImageMek(5, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation());
-        autoPullButton = new GuiButtonImageMek(6, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation());
-
+        buttonList.add(startButton = new GuiButton(0, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start")));
+        buttonList.add(stopButton = new GuiButton(1, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop")));
+        buttonList.add(configButton = new GuiButton(2, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config")));
+        buttonList.add(resetButton = new GuiButtonImageMek(3, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation()));
+        buttonList.add(silkTouchButton = new GuiButtonImageMek(4, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation()));
+        buttonList.add(autoEjectButton = new GuiButtonImageMek(5, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation()));
+        buttonList.add(autoPullButton = new GuiButtonImageMek(6, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation()));
         updateEnabledButtons();
-
-        buttonList.add(startButton);
-        buttonList.add(stopButton);
-        buttonList.add(configButton);
-        buttonList.add(resetButton);
-        buttonList.add(silkTouchButton);
-        buttonList.add(autoEjectButton);
-        buttonList.add(autoPullButton);
     }
 
     @Override

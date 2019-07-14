@@ -143,16 +143,10 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         // Add buttons to gui
         buttonList.clear();
         buttonList.add(new GuiButton(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
-
-        singleItemButton = new GuiButtonImageMek(1, guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation());
-        roundRobinButton = new GuiButtonImageMek(2, guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation());
-        autoEjectButton = new GuiButtonImageMek(3, guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation());
-        colorButton = new GuiColorButton(4, guiLeft + 13, guiTop + 137, 16, 16, () -> tileEntity.color);
-
-        buttonList.add(singleItemButton);
-        buttonList.add(roundRobinButton);
-        buttonList.add(autoEjectButton);
-        buttonList.add(colorButton);
+        buttonList.add(singleItemButton = new GuiButtonImageMek(1, guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttonList.add(roundRobinButton = new GuiButtonImageMek(2, guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation()));
+        buttonList.add(autoEjectButton = new GuiButtonImageMek(3, guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation()));
+        buttonList.add(colorButton = new GuiColorButton(4, guiLeft + 13, guiTop + 137, 16, 16, () -> tileEntity.color));
     }
 
     @Override

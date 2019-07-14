@@ -63,21 +63,13 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        encodeFormulaButton = new GuiButtonImageMek(0, guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation());
-        stockControlButton = new GuiButtonImageMek(1, guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation());
-        fillEmptyButton = new GuiButtonImageMek(2, guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation());
-        craftSingleButton = new GuiButtonImageMek(3, guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation());
-        craftAvailableButton = new GuiButtonImageMek(4, guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation());
-        autoModeButton = new GuiButtonImageMek(5, guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation());
-
+        buttonList.add(encodeFormulaButton = new GuiButtonImageMek(0, guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation()));
+        buttonList.add(stockControlButton = new GuiButtonImageMek(1, guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation()));
+        buttonList.add(fillEmptyButton = new GuiButtonImageMek(2, guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation()));
+        buttonList.add(craftSingleButton = new GuiButtonImageMek(3, guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation()));
+        buttonList.add(craftAvailableButton = new GuiButtonImageMek(4, guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation()));
+        buttonList.add(autoModeButton = new GuiButtonImageMek(5, guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation()));
         updateEnabledButtons();
-
-        buttonList.add(encodeFormulaButton);
-        buttonList.add(stockControlButton);
-        buttonList.add(fillEmptyButton);
-        buttonList.add(craftSingleButton);
-        buttonList.add(craftAvailableButton);
-        buttonList.add(autoModeButton);
     }
 
     @Override

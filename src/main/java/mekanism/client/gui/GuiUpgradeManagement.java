@@ -45,11 +45,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation());
-        removeButton = new GuiButtonImageMek(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation());
+        buttonList.add(backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
+        buttonList.add(removeButton = new GuiButtonImageMek(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation()));
         updateEnabledButtons();
-        buttonList.add(backButton);
-        buttonList.add(removeButton);
     }
 
     @Override

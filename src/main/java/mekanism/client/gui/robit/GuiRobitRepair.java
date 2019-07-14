@@ -106,7 +106,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    protected void extraClickListeners(int mouseX, int mouseY, int button) {
+    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+        super.mouseClicked(mouseX, mouseY, button);
         itemNameField.mouseClicked(mouseX, mouseY, button);
     }
 

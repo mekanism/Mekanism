@@ -2,7 +2,7 @@ package mekanism.client.gui.robit;
 
 import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.button.GuiButtonImageMek;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitMain;
@@ -14,7 +14,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,6 +27,15 @@ public class GuiRobitMain extends GuiMekanism {
     private boolean displayNameChange;
     private GuiTextField nameChangeField;
     private GuiButton confirmName;
+    private GuiButtonImageMek teleportHomeButton;
+    private GuiButtonImageMek pickupButton;
+    private GuiButtonImageMek renameButton;
+    private GuiButtonImageMek followButton;
+    private GuiButtonImageMek mainButton;
+    private GuiButtonImageMek craftingButton;
+    private GuiButtonImageMek inventoryButton;
+    private GuiButtonImageMek smeltingButton;
+    private GuiButtonImageMek repairButton;
 
     public GuiRobitMain(InventoryPlayer inventory, EntityRobit entity) {
         super(new ContainerRobitMain(inventory, entity));
@@ -51,8 +59,31 @@ public class GuiRobitMain extends GuiMekanism {
 
     @Override
     protected void actionPerformed(GuiButton guibutton) {
-        if (guibutton.id == 0) {
+        if (guibutton.id == confirmName.id) {
             changeName();
+        } else if (guibutton.id == teleportHomeButton.id) {
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GO_HOME, robit.getEntityId(), 0, null));
+            mc.displayGuiScreen(null);
+        } else if (guibutton.id == pickupButton.id) {
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.DROP_PICKUP, robit.getEntityId(), 0, null));
+        } else if (guibutton.id == renameButton.id) {
+            toggleNameChange();
+        } else if (guibutton.id == followButton.id) {
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.FOLLOW, robit.getEntityId(), 0, null));
+        } else if (guibutton.id == mainButton.id) {
+            //Clicking main button doesn't do anything while already on the main GUI
+        } else if (guibutton.id == craftingButton.id) {
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 1, robit.getEntityId(), null));
+            mc.player.openGui(Mekanism.instance, 22, mc.world, robit.getEntityId(), 0, 0);
+        } else if (guibutton.id == inventoryButton.id) {
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 2, robit.getEntityId(), null));
+            mc.player.openGui(Mekanism.instance, 23, mc.world, robit.getEntityId(), 0, 0);
+        } else if (guibutton.id == smeltingButton.id) {
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 3, robit.getEntityId(), null));
+            mc.player.openGui(Mekanism.instance, 24, mc.world, robit.getEntityId(), 0, 0);
+        } else if (guibutton.id == repairButton.id) {
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 4, robit.getEntityId(), null));
+            mc.player.openGui(Mekanism.instance, 25, mc.world, robit.getEntityId(), 0, 0);
         }
     }
 
@@ -66,6 +97,16 @@ public class GuiRobitMain extends GuiMekanism {
         nameChangeField = new GuiTextField(1, fontRenderer, guiLeft + 48, guiTop + 21, 80, 12);
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused(true);
+
+        buttonList.add(teleportHomeButton = new GuiButtonImageMek(2, guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation()));
+        buttonList.add(pickupButton = new GuiButtonImageMek(3, guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation()));
+        buttonList.add(renameButton = new GuiButtonImageMek(4, guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation()));
+        buttonList.add(followButton = new GuiButtonImageMek(5, guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation()));
+        buttonList.add(mainButton = new GuiButtonImageMek(6, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
+        buttonList.add(craftingButton = new GuiButtonImageMek(7, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
+        buttonList.add(inventoryButton = new GuiButtonImageMek(8, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
+        buttonList.add(smeltingButton = new GuiButtonImageMek(9, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
+        buttonList.add(repairButton = new GuiButtonImageMek(10, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
     }
 
     @Override
@@ -100,13 +141,13 @@ public class GuiRobitMain extends GuiMekanism {
         int yAxis = mouseY - guiTop;
         if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), xAxis, yAxis);
-        } else if (xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72) {
+        } else if (followButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
-        } else if (xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72) {
+        } else if (renameButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.robit.rename"), xAxis, yAxis);
-        } else if (xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34) {
+        } else if (teleportHomeButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.robit.teleport"), xAxis, yAxis);
-        } else if (xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53) {
+        } else if (pickupButton.isMouseOver()) {
             drawHoveringText(LangUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -114,17 +155,7 @@ public class GuiRobitMain extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        drawTexturedModalRect(guiLeft + 179, guiTop + 10, 201, 0, xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28, 18);
-        drawTexturedModalRect(guiLeft + 179, guiTop + 30, 201, 36, xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48, 18);
-        drawTexturedModalRect(guiLeft + 179, guiTop + 50, 201, 72, xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68, 18);
-        drawTexturedModalRect(guiLeft + 179, guiTop + 70, 201, 108, xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88, 18);
-        drawTexturedModalRect(guiLeft + 179, guiTop + 90, 201, 144, xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108, 18);
-        drawTexturedModalRect(guiLeft + 152, guiTop + 54, 201, 180, xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72, 18);
-        drawTexturedModalRect(guiLeft + 6, guiTop + 54, 201, 216, xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72, 18);
-        drawTexturedModalRect(guiLeft + 6, guiTop + 16, 219, 36, xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34, 18);
-        drawTexturedModalRect(guiLeft + 6, guiTop + 35, 219, 72, xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53, 18);
-        int displayInt = getScaledEnergyLevel(120);
-        drawTexturedModalRect(guiLeft + 28, guiTop + 75, 0, 166, displayInt, 4);
+        drawTexturedModalRect(guiLeft + 28, guiTop + 75, 0, 166, getScaledEnergyLevel(120), 4);
         if (displayNameChange) {
             drawTexturedModalRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
             nameChangeField.drawTextBox();
@@ -145,43 +176,6 @@ public class GuiRobitMain extends GuiMekanism {
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         nameChangeField.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            int xAxis = mouseX - guiLeft;
-            int yAxis = mouseY - guiTop;
-
-            if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            } else if (xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 1, robit.getEntityId(), null));
-                mc.player.openGui(Mekanism.instance, 22, mc.world, robit.getEntityId(), 0, 0);
-            } else if (xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 2, robit.getEntityId(), null));
-                mc.player.openGui(Mekanism.instance, 23, mc.world, robit.getEntityId(), 0, 0);
-            } else if (xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 3, robit.getEntityId(), null));
-                mc.player.openGui(Mekanism.instance, 24, mc.world, robit.getEntityId(), 0, 0);
-            } else if (xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 4, robit.getEntityId(), null));
-                mc.player.openGui(Mekanism.instance, 25, mc.world, robit.getEntityId(), 0, 0);
-            } else if (xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.FOLLOW, robit.getEntityId(), 0, null));
-            } else if (xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                toggleNameChange();
-            } else if (xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GO_HOME, robit.getEntityId(), 0, null));
-                mc.displayGuiScreen(null);
-            } else if (xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.DROP_PICKUP, robit.getEntityId(), 0, null));
-            }
-        }
     }
 
     @Override

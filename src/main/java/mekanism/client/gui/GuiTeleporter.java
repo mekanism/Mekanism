@@ -124,25 +124,19 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        publicButton = new GuiButton(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public"));
-        privateButton = new GuiButton(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private"));
-        setButton = new GuiButton(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set"));
-        deleteButton = new GuiButton(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete"));
+        buttonList.add(publicButton = new GuiButton(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public")));
+        buttonList.add(privateButton = new GuiButton(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private")));
+        buttonList.add(setButton = new GuiButton(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set")));
+        buttonList.add(deleteButton = new GuiButton(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete")));
         if (!itemStack.isEmpty()) {
-            teleportButton = new GuiButton(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport"));
+            buttonList.add(teleportButton = new GuiButton(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport")));
         }
         frequencyField = new GuiTextField(5, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        checkboxButton = new GuiButtonImageMek(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation());
+        buttonList.add(checkboxButton = new GuiButtonImageMek(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
         updateButtons();
-        buttonList.add(publicButton);
-        buttonList.add(privateButton);
-        buttonList.add(setButton);
-        buttonList.add(deleteButton);
-        buttonList.add(checkboxButton);
         if (!itemStack.isEmpty()) {
-            buttonList.add(teleportButton);
             if (!isInit) {
                 Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
             } else {

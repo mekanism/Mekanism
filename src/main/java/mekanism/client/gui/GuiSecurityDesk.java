@@ -48,22 +48,16 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        removeButton = new GuiButton(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove"));
+        buttonList.add(removeButton = new GuiButton(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove")));
         trustedField = new GuiTextField(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
-        publicButton = new GuiButtonImageMek(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation());
-        privateButton = new GuiButtonImageMek(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation());
-        trustedButton = new GuiButtonImageMek(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation());
-        checkboxButton = new GuiButtonImageMek(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation());
-        overrideButton = new GuiButtonImageMek(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation());
+        buttonList.add(publicButton = new GuiButtonImageMek(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation()));
+        buttonList.add(privateButton = new GuiButtonImageMek(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation()));
+        buttonList.add(trustedButton = new GuiButtonImageMek(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonImageMek(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttonList.add(overrideButton = new GuiButtonImageMek(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation()));
         updateButtons();
-        buttonList.add(removeButton);
-        buttonList.add(publicButton);
-        buttonList.add(privateButton);
-        buttonList.add(trustedButton);
-        buttonList.add(checkboxButton);
-        buttonList.add(overrideButton);
     }
 
     public void addTrusted(String trusted) {

@@ -58,12 +58,9 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation());
-        strictInputButton = new GuiButtonImageMek(1, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation());
-        colorButton = new GuiColorButton(2, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor());
-        buttonList.add(backButton);
-        buttonList.add(strictInputButton);
-        buttonList.add(colorButton);
+        buttonList.add(backButton = new GuiButtonImageMek(0, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+        buttonList.add(strictInputButton = new GuiButtonImageMek(1, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttonList.add(colorButton = new GuiColorButton(2, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor()));
     }
 
     @Override
