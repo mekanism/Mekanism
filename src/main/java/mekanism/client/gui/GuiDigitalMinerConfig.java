@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
@@ -17,6 +18,7 @@ import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +39,12 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private GuiTextField radiusField;
     private GuiTextField minField;
     private GuiTextField maxField;
+    private GuiButton newFilterButton;
+    private GuiButton backButton;
+    private GuiButton setRadiButton;
+    private GuiButton setMinButton;
+    private GuiButton setMaxButton;
+    private GuiButton inverseButton;
 
     public GuiDigitalMinerConfig(EntityPlayer player, TileEntityDigitalMiner tile) {
         super(tile, new ContainerNull(player, tile));
@@ -50,7 +58,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     @Override
     public void updateScreen() {
         super.updateScreen();
-
         radiusField.updateCursorCounter();
         minField.updateCursorCounter();
         maxField.updateCursorCounter();
@@ -112,18 +119,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                     }
                 }
             }
-
-            if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
-                sendPacket(MinerGuiPacket.SERVER, 4, 0, SoundEvents.UI_BUTTON_CLICK);
-            } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78) {
-                setRadius();
-            } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103) {
-                setMinY();
-            } else if (xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128) {
-                setMaxY();
-            } else if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
-                sendDataFromClick(TileNetworkList.withContents(10));
-            }
         }
     }
 
@@ -143,7 +138,12 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(new GuiButton(0, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(newFilterButton = new GuiButton(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(backButton = new GuiButtonDisableableImage(1, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttonList.add(setRadiButton = new GuiButtonDisableableImage(2, guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttonList.add(setMinButton = new GuiButtonDisableableImage(3, guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttonList.add(setMaxButton = new GuiButtonDisableableImage(4, guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttonList.add(inverseButton = new GuiButtonDisableableImage(5, guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation()));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
         String prevMin = minField != null ? minField.getText() : "";
@@ -165,8 +165,18 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == BUTTON_NEW) {
+        if (guibutton.id == newFilterButton.id) {
             sendPacket(MinerGuiPacket.SERVER, 5, 0, null);
+        } else if (guibutton.id == backButton.id) {
+            sendPacket(MinerGuiPacket.SERVER, 4, 0, null);
+        } else if (guibutton.id == setRadiButton.id) {
+            setRadius();
+        } else if (guibutton.id == setMinButton.id) {
+            setMinY();
+        } else if (guibutton.id == setMaxButton.id) {
+            setMaxY();
+        } else if (guibutton.id == inverseButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(10)));
         }
     }
 
@@ -207,10 +217,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
                 }
             }
         }
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
-        if (xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155) {
-            drawHoveringText(LangUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
+        if (inverseButton.isMouseOver()) {
+            drawHoveringText(LangUtils.localize("gui.digitalMiner.inverse"), mouseX - guiLeft, mouseY - guiTop);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -218,12 +226,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedModalRect(guiLeft + 5, guiTop + 5, 176, 0, xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16, 11);
-        drawTexturedModalRect(guiLeft + 39, guiTop + 67, 187, 0, xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78, 11);
-        drawTexturedModalRect(guiLeft + 39, guiTop + 92, 187, 0, xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103, 11);
-        drawTexturedModalRect(guiLeft + 39, guiTop + 117, 187, 0, xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128, 11);
-        drawTexturedModalRect(guiLeft + 11, guiTop + 141, 198, 0, xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155, 14);
-
         radiusField.drawTextBox();
         minField.drawTextBox();
         maxField.drawTextBox();
@@ -253,7 +255,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private void setRadius() {
         if (!radiusField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
-            sendDataFromClick(TileNetworkList.withContents(6, toUse));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(6, toUse)));
             radiusField.setText("");
         }
     }
@@ -261,7 +263,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private void setMinY() {
         if (!minField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
-            sendDataFromClick(TileNetworkList.withContents(7, toUse));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(7, toUse)));
             minField.setText("");
         }
     }
@@ -269,7 +271,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private void setMaxY() {
         if (!maxField.getText().isEmpty()) {
             int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
-            sendDataFromClick(TileNetworkList.withContents(8, toUse));
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(8, toUse)));
             maxField.setText("");
         }
     }
