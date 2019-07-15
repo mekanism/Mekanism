@@ -16,7 +16,7 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChemicalInfuserRecipe implements BiPredicate<@NonNull GasStack, @NonNull GasStack>, OutputDefinition<@NonNull GasStack> {
+public class ChemicalInfuserRecipe implements BiPredicate<@NonNull GasStack, @NonNull GasStack> {
 
     @NonNull
     private final GasStackIngredient leftInput;
@@ -53,7 +53,6 @@ public class ChemicalInfuserRecipe implements BiPredicate<@NonNull GasStack, @No
         return rightInput;
     }
 
-    @Override
     public Collection<GasStack> getOutputDefinition() {
         return Collections.singleton(new GasStack(outputGas, outputGasAmount));
     }

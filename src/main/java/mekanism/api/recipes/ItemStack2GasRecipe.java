@@ -18,7 +18,7 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStack2GasRecipe implements Predicate<@NonNull ItemStack>, OutputDefinition<@NonNull GasStack> {
+public class ItemStack2GasRecipe implements Predicate<@NonNull ItemStack> {
 
     private final Ingredient input;
 
@@ -44,8 +44,7 @@ public class ItemStack2GasRecipe implements Predicate<@NonNull ItemStack>, Outpu
         return new GasStack(this.outputGas, this.outputGasAmount);
     }
 
-    @Override
-    public Collection<GasStack> getOutputDefinition() {
-        return Collections.singleton(new GasStack(this.outputGas, this.outputGasAmount));
+    public GasStack getOutputDefinition() {
+        return new GasStack(this.outputGas, this.outputGasAmount);
     }
 }

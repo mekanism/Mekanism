@@ -3,6 +3,7 @@ package mekanism.api.recipes.outputs;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -33,7 +34,11 @@ public class OreDictSupplier implements Supplier<ItemStack> {
         return stacks.length > 0 ? stacks[0].copy() : ItemStack.EMPTY;
     }
 
-    public Collection<ItemStack> getPossibleOutputs() {
+    public List<ItemStack> getPossibleOutputs() {
         return Arrays.asList(oreIngredient.getMatchingStacks());
+    }
+
+    public String getOredictName() {
+        return oredictName;
     }
 }

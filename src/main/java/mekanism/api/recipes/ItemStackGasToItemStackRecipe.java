@@ -22,7 +22,7 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemStack, @NonNull GasStack>, OutputDefinition<ItemStack> {
+public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemStack, @NonNull GasStack> {
 
     private final Ingredient itemInput;
 
@@ -53,7 +53,6 @@ public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemS
         return itemInput.apply(itemStack) && gasInput.test(gasStack);
     }
 
-    @Override
     public @NonNull Collection<@NonNull ItemStack> getOutputDefinition() {
         return Collections.singleton(outputDefinition);
     }

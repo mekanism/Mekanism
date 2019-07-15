@@ -1,5 +1,7 @@
 package mekanism.api.recipes;
 
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -12,7 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 
-public class PressurizedReactionRecipe implements OutputDefinition<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> {
+public class PressurizedReactionRecipe {
 
     private final Ingredient inputSolid;
     private final FluidStackIngredient inputFluid;
@@ -22,6 +24,7 @@ public class PressurizedReactionRecipe implements OutputDefinition<@NonNull Pair
     private final double energyRequired;
     private final int duration;
     private final ItemStack outputDefinition;
+    protected GasStack gasOutputDefinition;
 
     public PressurizedReactionRecipe(Ingredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient gasInput, Gas outputGas, int outputGasAmount, double energyRequired, int duration, ItemStack outputDefinition) {
         this.inputSolid = inputSolid;
@@ -32,6 +35,7 @@ public class PressurizedReactionRecipe implements OutputDefinition<@NonNull Pair
         this.energyRequired = energyRequired;
         this.duration = duration;
         this.outputDefinition = outputDefinition;
+        this.gasOutputDefinition = new GasStack(this.outputGas, this.outputGasAmount);
     }
 
     public Ingredient getInputSolid() {
@@ -58,13 +62,12 @@ public class PressurizedReactionRecipe implements OutputDefinition<@NonNull Pair
         return this.inputSolid.apply(solid) && this.inputFluid.test(liquid) && this.gasInput.test(gas);
     }
 
-    @Override
-    public @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> getOutputDefinition() {
-        return Pair.of(this.outputDefinition, new GasStack(this.outputGas, this.outputGasAmount));
+    public @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> getOutputDefinition() {
+        return Pair.of(Collections.singletonList(this.outputDefinition), this.gasOutputDefinition);
     }
 
     public @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
-        return Pair.of(this.outputDefinition.copy(), new GasStack(this.outputGas, this.outputGasAmount));
+        return Pair.of(this.outputDefinition.copy(), this.gasOutputDefinition.copy());
     }
 
     public static class PressurizedReactionRecipeOre extends PressurizedReactionRecipe {
@@ -77,13 +80,13 @@ public class PressurizedReactionRecipe implements OutputDefinition<@NonNull Pair
         }
 
         @Override
-        public @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> getOutputDefinition() {
-            return Pair.of(this.outputSupplier.get(), new GasStack(this.outputGas, this.outputGasAmount));
+        public @NonNull Pair<List<@NonNull ItemStack>, @NonNull GasStack> getOutputDefinition() {
+            return Pair.of(this.outputSupplier.getPossibleOutputs(), gasOutputDefinition);
         }
 
         @Override
         public @NonNull Pair<@NonNull ItemStack, @NonNull GasStack> getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
-            return this.getOutputDefinition();
+            return Pair.of(this.outputSupplier.get(), this.gasOutputDefinition.copy());
         }
     }
 }

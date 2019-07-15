@@ -2,6 +2,7 @@ package mekanism.api.recipes;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -18,7 +19,7 @@ import net.minecraft.item.crafting.Ingredient;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ItemStack2ItemStackRecipe implements Predicate<@NonNull ItemStack>, OutputDefinition<@NonNull ItemStack> {
+public class ItemStack2ItemStackRecipe implements Predicate<@NonNull ItemStack> {
 
     private final Ingredient mainInput;
 
@@ -65,7 +66,7 @@ public class ItemStack2ItemStackRecipe implements Predicate<@NonNull ItemStack>,
         }
 
         @Override
-        public Collection<ItemStack> getOutputDefinition() {
+        public List<ItemStack> getOutputDefinition() {
             return this.outputSupplier.getPossibleOutputs();
         }
     }

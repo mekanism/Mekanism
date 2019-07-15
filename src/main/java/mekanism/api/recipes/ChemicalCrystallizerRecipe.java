@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-public class ChemicalCrystallizerRecipe implements Predicate<@NonNull GasStack>, OutputDefinition<@NonNull ItemStack> {
+public class ChemicalCrystallizerRecipe implements Predicate<@NonNull GasStack>{
 
     private final GasStackIngredient input;
 
@@ -33,7 +33,6 @@ public class ChemicalCrystallizerRecipe implements Predicate<@NonNull GasStack>,
         return outputRepresentation.copy();
     }
 
-    @Override
     public Collection<ItemStack> getOutputDefinition() {
         return Collections.singleton(outputRepresentation);
     }
