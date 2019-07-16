@@ -1,5 +1,6 @@
 package mekanism.common.tile.transmitter;
 
+import buildcraft.api.mj.IMjPassiveProvider;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
@@ -20,6 +21,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.buildcraft.MjCableIntegration;
+import mekanism.common.integration.buildcraft.MjIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaCableIntegration;
@@ -53,6 +56,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     public EnergyStack buffer = new EnergyStack(0);
     private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager<>(getClass(), TeslaCableIntegration.class);
     private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(), ForgeEnergyCableIntegration.class);
+    private CapabilityWrapperManager mjManager = new CapabilityWrapperManager<>(getClass(), MjCableIntegration.class);
 
     @Override
     public BaseTier getBaseTier() {
@@ -84,6 +88,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                         IStrictEnergyStorage strictStorage;
                         ITeslaProducer teslaProducer;//do not assign anything to this here, or classloader issues may happen
                         IEnergyStorage forgeStorage;
+                        IMjPassiveProvider mjProvider;//do not assign anything to this here, or classloader issues may happen
                         if (CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite())
                             && (strictStorage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite())) != null) {
                             double received = Math.min(strictStorage.getEnergy(), canDraw);
@@ -112,6 +117,12 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                                 toDraw -= takeEnergy(toDraw, true);
                             }
                             rfProvider.extractEnergy(side.getOpposite(), MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_RF.val()), false);
+                        } else if (MekanismUtils.useMj() && (mjProvider = CapabilityUtils.getCapability(outputter, Capabilities.MJ_PROVIDER_CAPABILITY, side.getOpposite())) != null) {
+                            double toDraw = MjIntegration.fromMj(mjProvider.extractPower(0, MjIntegration.toMj(canDraw), true));
+                            if (toDraw > 0) {
+                                toDraw -= takeEnergy(toDraw, true);
+                            }
+                            mjProvider.extractPower(0, MjIntegration.toMj(toDraw), false);
                         } else if (MekanismUtils.useIC2()) {
                             IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
                             if (tile instanceof IEnergySource) {
@@ -325,7 +336,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-               || capability == Capabilities.TESLA_CONSUMER_CAPABILITY || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
+               || capability == Capabilities.TESLA_CONSUMER_CAPABILITY || capability == CapabilityEnergy.ENERGY
+               || capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
@@ -336,6 +348,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             return (T) teslaManager.getWrapper(this, facing);
         } else if (capability == CapabilityEnergy.ENERGY) {
             return (T) forgeEnergyManager.getWrapper(this, facing);
+        }
+        if (capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY) {
+            return (T) mjManager.getWrapper(this, facing);
         }
         return super.getCapability(capability, facing);
     }

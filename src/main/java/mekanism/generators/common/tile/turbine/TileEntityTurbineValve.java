@@ -17,6 +17,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.buildcraft.MjIntegration;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
@@ -44,6 +45,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     public TurbineFluidTank fluidTank;
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
+    private CapabilityWrapperManager<IEnergyWrapper, MjIntegration> mjManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, MjIntegration.class);
     private int currentRedstoneLevel;
 
     public TileEntityTurbineValve() {
@@ -367,7 +369,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
                 || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.TESLA_HOLDER_CAPABILITY
-                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing)) || capability == CapabilityEnergy.ENERGY) {
+                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing)) || capability == CapabilityEnergy.ENERGY
+                || capability == Capabilities.MJ_READABLE_CAPABILITY || ((capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY) && sideIsOutput(facing))) {
                 return true;
             }
         }
@@ -385,6 +388,9 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 return (T) teslaManager.getWrapper(this, facing);
             } else if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
+            }
+            if (capability == Capabilities.MJ_READABLE_CAPABILITY || ((capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY) && sideIsOutput(facing))) {
+                return (T) mjManager.getWrapper(this, facing);
             }
         }
         return super.getCapability(capability, side);

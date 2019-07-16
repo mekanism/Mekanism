@@ -97,6 +97,12 @@ public class GeneralConfig extends BaseConfig {
     public final DoubleOption TO_FORGE = new DoubleOption(this, "general", "ForgeToJoules", 0.4D,
           "Conversion multiplier from Joules to Forge Energy (Joules * ForgeToJoules = FE)");
 
+    public final DoubleOption FROM_MJ = new DoubleOption(this, "general", "MjToJoules", 25D,
+          "Conversion multiplier from Mj to Joules (Joules * MjToJoules = Mj)");
+
+    public final DoubleOption TO_MJ = new DoubleOption(this, "general", "JoulesToMj", 0.04D,
+          "Conversion multiplier from Joules to Mj (Mj * JoulesToMj = Joules)");
+
     public final DoubleOption FROM_H2 = new DoubleOption(this, "general", "HydrogenEnergyDensity", 200D,
           "How much energy is produced per mB of Hydrogen, also affects Electrolytic Separator usage, Ethylene burn rate and Gas generator energy capacity.");
 
@@ -240,6 +246,9 @@ public class GeneralConfig extends BaseConfig {
 
     public final BooleanOption blacklistForge = new BooleanOption(this, "general", "BlacklistForgePower", false,
           "Disables Forge Energy (FE,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).");
+
+    public final BooleanOption blacklistMj = new BooleanOption(this, "general", "BlacklistMjPower", false,
+          "Disables BuildCraft Mj power integration. Requires world restart (server-side option in SMP).");
 
     public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType", EnergyType.RF,
           "Displayed energy type in Mekanism GUIs.");

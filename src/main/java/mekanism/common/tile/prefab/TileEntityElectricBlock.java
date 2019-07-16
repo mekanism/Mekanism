@@ -13,6 +13,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.buildcraft.MjIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CapabilityUtils;
@@ -46,6 +47,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     private boolean ic2Registered = false;
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
+    private CapabilityWrapperManager<IEnergyWrapper, MjIntegration> mjManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, MjIntegration.class);
 
     /**
      * The base of all blocks that deal with electricity. It has a facing state, initialized state, and a current amount of stored energy.
@@ -359,7 +361,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
-        return isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side) || super.hasCapability(capability, side);
+        return isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side) || isMj(capability, side) || super.hasCapability(capability, side);
     }
 
     @Override
@@ -372,6 +374,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
             return (T) getTeslaEnergyWrapper(side);
         } else if (capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
+        } else if (isMj(capability, side)) {
+            return (T) getMjWrapper(side);
         }
         return super.getCapability(capability, side);
     }
@@ -385,12 +389,28 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(side));
     }
 
+    protected boolean isMj(@Nonnull Capability capability, EnumFacing side) {
+        if (capability == Capabilities.MJ_READABLE_CAPABILITY) {
+            return true;
+        }
+        boolean capIsReceiver = capability == Capabilities.MJ_CONNECTOR_CAPABILITY || capability == Capabilities.MJ_RECEIVER_CAPABILITY;
+        if (capIsReceiver && sideIsConsumer(side)) {
+            return true;
+        }
+        boolean capIsProvider = capability == Capabilities.MJ_CONNECTOR_CAPABILITY || capability == Capabilities.MJ_PROVIDER_CAPABILITY;
+        return capIsProvider && sideIsOutput(side);
+    }
+
     protected ForgeEnergyIntegration getForgeEnergyWrapper(EnumFacing side) {
         return forgeEnergyManager.getWrapper(this, side);
     }
 
     protected TeslaIntegration getTeslaEnergyWrapper(EnumFacing side) {
         return teslaManager.getWrapper(this, side);
+    }
+
+    protected MjIntegration getMjWrapper(EnumFacing side) {
+        return mjManager.getWrapper(this, side);
     }
 
     @Override

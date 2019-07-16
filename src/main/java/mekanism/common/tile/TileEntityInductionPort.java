@@ -21,6 +21,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.buildcraft.MjIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CableUtils;
@@ -61,6 +62,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public boolean mode;
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
+    private CapabilityWrapperManager<IEnergyWrapper, MjIntegration> mjManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, MjIntegration.class);
 
     public TileEntityInductionPort() {
         super("InductionPort");
@@ -382,7 +384,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
                || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY
-               || capability == CapabilityEnergy.ENERGY || isTesla(capability, facing) || super.hasCapability(capability, facing);
+               || capability == CapabilityEnergy.ENERGY || isTesla(capability, facing) || isMj(capability, facing)
+               || super.hasCapability(capability, facing);
     }
 
     @Override
@@ -397,12 +400,27 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         if (capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
         }
+        if (isMj(capability, facing)) {
+            return (T) mjManager.getWrapper(this, facing);
+        }
         return super.getCapability(capability, facing);
     }
 
     private boolean isTesla(@Nonnull Capability capability, EnumFacing side) {
         return capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(side))
                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(side));
+    }
+
+    private boolean isMj(@Nonnull Capability capability, EnumFacing side) {
+        if (capability == Capabilities.MJ_READABLE_CAPABILITY) {
+            return true;
+        }
+        boolean capIsReceiver = capability == Capabilities.MJ_CONNECTOR_CAPABILITY || capability == Capabilities.MJ_RECEIVER_CAPABILITY;
+        if (capIsReceiver && sideIsConsumer(side)) {
+            return true;
+        }
+        boolean capIsProvider = capability == Capabilities.MJ_CONNECTOR_CAPABILITY || capability == Capabilities.MJ_PROVIDER_CAPABILITY;
+        return capIsProvider && sideIsOutput(side);
     }
 
     @Nonnull

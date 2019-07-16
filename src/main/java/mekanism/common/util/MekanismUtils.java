@@ -845,6 +845,15 @@ public final class MekanismUtils {
     }
 
     /**
+     * Whether or not Mj power should be used.
+     *
+     * @return if Mj power should be used
+     */
+    public static boolean useMj() {
+        return Mekanism.hooks.BuildCraftLoaded && !MekanismConfig.current().general.blacklistMj.val();
+    }
+
+    /**
      * Gets a clean view of a coordinate value without the dimension ID.
      *
      * @param obj - coordinate to check

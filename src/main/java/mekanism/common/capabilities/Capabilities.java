@@ -1,5 +1,9 @@
 package mekanism.common.capabilities;
 
+import buildcraft.api.mj.IMjConnector;
+import buildcraft.api.mj.IMjPassiveProvider;
+import buildcraft.api.mj.IMjReadable;
+import buildcraft.api.mj.IMjReceiver;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
@@ -86,6 +90,18 @@ public class Capabilities {
 
     @CapabilityInject(ITeslaHolder.class)
     public static Capability<ITeslaHolder> TESLA_HOLDER_CAPABILITY = null;
+
+    @CapabilityInject(IMjReceiver.class)
+    public static Capability<IMjReceiver> MJ_RECEIVER_CAPABILITY = null;
+
+    @CapabilityInject(IMjPassiveProvider.class)
+    public static Capability<IMjPassiveProvider> MJ_PROVIDER_CAPABILITY = null;
+
+    @CapabilityInject(IMjReadable.class)
+    public static Capability<IMjReadable> MJ_READABLE_CAPABILITY = null;
+
+    @CapabilityInject(IMjConnector.class)
+    public static Capability<IMjConnector> MJ_CONNECTOR_CAPABILITY = null;
 
     public static void registerCapabilities() {
         DefaultStrictEnergyStorage.register();

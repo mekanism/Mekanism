@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import buildcraft.api.mj.IMjReceiver;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
@@ -9,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.buildcraft.MjIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CapabilityUtils;
@@ -40,6 +42,8 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
             wrapper = fromCapability(tileEntity, CapabilityEnergy.ENERGY, side, ForgeAcceptor::new);
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             wrapper = new RFAcceptor((IEnergyReceiver) tileEntity);
+        } else if (MekanismUtils.useMj() && CapabilityUtils.hasCapability(tileEntity, Capabilities.MJ_RECEIVER_CAPABILITY, side)) {
+            wrapper = fromCapability(tileEntity, Capabilities.MJ_RECEIVER_CAPABILITY, side, MjAcceptor::new);
         } else if (MekanismUtils.useIC2()) {
             IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
             if (tile instanceof IEnergySink) {
@@ -55,7 +59,8 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
     /**
      * Note: It is assumed that a check for hasCapability was already ran.
      */
-    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability, EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
+    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability,
+          EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
         T acceptor = CapabilityUtils.getCapability(tileEntity, capability, side);
         if (acceptor != null) {
             return makeAcceptor.apply(acceptor);
@@ -205,7 +210,31 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public boolean needsEnergy(EnumFacing side) {
-            return acceptor.receiveEnergy(1, true) > 0;
+            return acceptor.canReceive();
+        }
+    }
+
+    public static class MjAcceptor extends EnergyAcceptorWrapper {
+
+        private IMjReceiver receiver;
+
+        public MjAcceptor(IMjReceiver receiver) {
+            this.receiver = receiver;
+        }
+
+        @Override
+        public boolean needsEnergy(EnumFacing side) {
+            return receiver.getPowerRequested() > 0;
+        }
+
+        @Override
+        public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+            return MjIntegration.fromMj(receiver.receivePower(MjIntegration.toMj(amount), simulate));
+        }
+
+        @Override
+        public boolean canReceiveEnergy(EnumFacing side) {
+            return receiver.canReceive();
         }
     }
 }
