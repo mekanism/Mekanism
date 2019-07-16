@@ -446,7 +446,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public TileEntity getEjectInv() {
         final EnumFacing side = facing.getOpposite();
         final BlockPos pos = getPos().up().offset(side, 2);
-        if(world.isBlockLoaded(pos)) {
+        if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }
         return null;
@@ -848,8 +848,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean canSetFacing(int side) {
-        return side != 0 && side != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
     @Override
@@ -878,7 +878,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public TileEntity getEjectTile() {
         final EnumFacing side = facing.getOpposite();
         final BlockPos pos = getPos().up().offset(side);
-        if(world.isBlockLoaded(pos)) {
+        if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }
         return null;
@@ -960,7 +960,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             while (iter.hasNext()) {
                 MinerFilter filter = iter.next();
                 if (filter instanceof MItemStackFilter) {
-                    if (MekanismUtils.getID(((MItemStackFilter) filter).itemType) == id) {
+                    if (MekanismUtils.getID(((MItemStackFilter) filter).getItemStack()) == id) {
                         iter.remove();
                         return new Object[]{"Removed filter."};
                     }

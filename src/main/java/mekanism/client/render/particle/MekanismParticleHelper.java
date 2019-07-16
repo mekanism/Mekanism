@@ -54,28 +54,25 @@ public class MekanismParticleHelper {
             double particleY = (double) blockY + world.rand.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY - OFFSET_1) + OFFSET_2 + axisalignedbb.minY;
             double particleZ = (double) blockZ + world.rand.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ - OFFSET_1) + OFFSET_2 + axisalignedbb.minZ;
 
-            if (side == EnumFacing.DOWN) {
-                particleY = (double) blockY + axisalignedbb.minY - OFFSET_2;
-            }
-
-            if (side == EnumFacing.UP) {
-                particleY = (double) blockY + axisalignedbb.maxY + OFFSET_2;
-            }
-
-            if (side == EnumFacing.NORTH) {
-                particleZ = (double) blockZ + axisalignedbb.minZ - OFFSET_2;
-            }
-
-            if (side == EnumFacing.SOUTH) {
-                particleZ = (double) blockZ + axisalignedbb.maxZ + OFFSET_2;
-            }
-
-            if (side == EnumFacing.WEST) {
-                particleX = (double) blockX + axisalignedbb.minX - OFFSET_2;
-            }
-
-            if (side == EnumFacing.EAST) {
-                particleX = (double) blockX + axisalignedbb.maxX + OFFSET_2;
+            switch (side) {
+                case DOWN:
+                    particleY = (double) blockY + axisalignedbb.minY - OFFSET_2;
+                    break;
+                case UP:
+                    particleY = (double) blockY + axisalignedbb.maxY + OFFSET_2;
+                    break;
+                case NORTH:
+                    particleZ = (double) blockZ + axisalignedbb.minZ - OFFSET_2;
+                    break;
+                case SOUTH:
+                    particleZ = (double) blockZ + axisalignedbb.maxZ + OFFSET_2;
+                    break;
+                case WEST:
+                    particleX = (double) blockX + axisalignedbb.minX - OFFSET_2;
+                    break;
+                case EAST:
+                    particleX = (double) blockX + axisalignedbb.maxX + OFFSET_2;
+                    break;
             }
 
             manager.addEffect(new TieredParticleDigging(world, particleX, particleY, particleZ, 0, 0, 0, iblockstate, color)

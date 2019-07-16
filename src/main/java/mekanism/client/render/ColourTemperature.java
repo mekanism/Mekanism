@@ -2,8 +2,6 @@ package mekanism.client.render;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.HashMap;
-import java.util.Map;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.ColourRGBA;
 

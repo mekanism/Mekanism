@@ -3,37 +3,31 @@ package mekanism.generators.client.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.client.gui.element.GuiHeatTab;
-import mekanism.generators.client.gui.element.GuiStatTab;
+import mekanism.generators.client.gui.element.GuiReactorTab;
+import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController> {
+public class GuiReactorFuel extends GuiReactorInfo {
 
     private GuiTextField injectionRateField;
 
@@ -59,8 +53,8 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
                 return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.SMALL_LEFT, this, resource, 99, 75));
-        addGuiElement(new GuiHeatTab(this, tileEntity, resource));
-        addGuiElement(new GuiStatTab(this, tileEntity, resource));
+        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
+        addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
     }
 
     @Override
@@ -73,21 +67,10 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 14, 14, 14);
-        }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         injectionRateField.drawTextBox();
+        MekanismRenderer.resetColor();
     }
 
     @Override
@@ -100,19 +83,6 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         injectionRateField.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (button == 0) {
-            if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));
-            }
-        }
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png");
     }
 
     @Override
@@ -120,10 +90,8 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
         if (!injectionRateField.isFocused() || i == Keyboard.KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (i == Keyboard.KEY_RETURN) {
-            if (injectionRateField.isFocused()) {
-                setInjection();
-            }
+        if (i == Keyboard.KEY_RETURN && injectionRateField.isFocused()) {
+            setInjection();
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
             injectionRateField.textboxKeyTyped(c, i);
@@ -143,10 +111,8 @@ public class GuiReactorFuel extends GuiMekanismTile<TileEntityReactorController>
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
-        injectionRateField = new GuiTextField(0, fontRenderer, guiWidth + 98, guiHeight + 115, 26, 11);
+        injectionRateField = new GuiTextField(0, fontRenderer, guiLeft + 98, guiTop + 115, 26, 11);
         injectionRateField.setMaxStringLength(2);
         injectionRateField.setText(prevRad);
     }

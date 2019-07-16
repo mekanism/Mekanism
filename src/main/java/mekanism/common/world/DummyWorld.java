@@ -39,9 +39,9 @@ public class DummyWorld extends World {
         return false;
     }
 
-    public static class DummyWorldInfo extends WorldInfo{}
+    public static class DummyWorldInfo extends WorldInfo {}
 
-    public static class DummySaveHandler implements ISaveHandler{
+    public static class DummySaveHandler implements ISaveHandler {
 
         @Nullable
         @Override

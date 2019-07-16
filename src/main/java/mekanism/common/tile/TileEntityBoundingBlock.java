@@ -90,7 +90,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
             receivedCoords = dataStream.readBoolean();
         }
     }
-    
+
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);

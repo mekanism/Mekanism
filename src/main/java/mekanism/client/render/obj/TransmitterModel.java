@@ -248,7 +248,7 @@ public class TransmitterModel extends OBJBakedModelBase {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
 
-                for (EnumFacing side : EnumFacing.values()) {
+                for (EnumFacing side : EnumFacing.VALUES) {
                     visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
                 }
 

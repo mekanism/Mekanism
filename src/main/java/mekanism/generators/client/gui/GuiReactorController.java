@@ -9,16 +9,14 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.client.gui.element.GuiFuelTab;
-import mekanism.generators.client.gui.element.GuiHeatTab;
-import mekanism.generators.client.gui.element.GuiStatTab;
+import mekanism.generators.client.gui.element.GuiReactorTab;
+import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorController extends GuiMekanismTile<TileEntityReactorController> {
@@ -32,9 +30,9 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
                   LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t")
                                                                         : new ArrayList<>(), this, resource));
             addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 79, 38));
-            addGuiElement(new GuiHeatTab(this, tileEntity, resource));
-            addGuiElement(new GuiFuelTab(this, tileEntity, resource));
-            addGuiElement(new GuiStatTab(this, tileEntity, resource));
+            addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
+            addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
+            addGuiElement(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
         }
     }
 
@@ -47,16 +45,6 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
             fontRenderer.drawString(LangUtils.localize("gui.incomplete"), 8, 16, 0x404040);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     @Override

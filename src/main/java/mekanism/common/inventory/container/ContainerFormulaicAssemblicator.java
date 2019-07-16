@@ -1,5 +1,11 @@
 package mekanism.common.inventory.container;
 
+import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_CRAFT_MATRIX_FIRST;
+import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_ENERGY;
+import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_FORMULA;
+import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_INPUT_FIRST;
+import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_OUTPUT_FIRST;
+
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
@@ -13,16 +19,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_UPGRADE;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_ENERGY;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_FORMULA;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_INPUT_FIRST;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_INPUT_LAST;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_OUTPUT_FIRST;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_OUTPUT_LAST;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_CRAFT_MATRIX_FIRST;
-import static mekanism.common.tile.TileEntityFormulaicAssemblicator.SLOT_CRAFT_MATRIX_LAST;
 
 public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntityFormulaicAssemblicator> {
 

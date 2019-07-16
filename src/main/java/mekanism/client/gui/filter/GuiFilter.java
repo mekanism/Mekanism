@@ -19,7 +19,14 @@ public abstract class GuiFilter<TILE extends TileEntityContainerBlock> extends G
         super(tile, new ContainerFilter(player.inventory, tile));
     }
 
-    protected abstract void addButtons(int guiWidth, int guiHeight);
+    protected abstract void addButtons();
 
     protected abstract void sendPacketToServer(int guiID);
+
+    @Override
+    public void initGui() {
+        super.initGui();
+        buttonList.clear();
+        addButtons();
+    }
 }

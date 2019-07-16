@@ -20,11 +20,8 @@ public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer<Tile
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
-
-        MekanismRenderer.glRotateForFacing(tileEntity);
-
-        GlStateManager.rotate(180, 0F, 0F, 1F);
-
+        MekanismRenderer.rotate(tileEntity.facing, 0, 180, 90, 270);
+        GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F);
         GlStateManager.popMatrix();
     }

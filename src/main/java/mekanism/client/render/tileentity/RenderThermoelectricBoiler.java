@@ -1,120 +1,105 @@
 package mekanism.client.render.tileentity;
 
-import java.util.HashMap;
-import java.util.Map;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEntityBoilerCasing> {
-
-    private static Map<RenderData, DisplayInteger[]> cachedLowerFluids = new HashMap<>();
-    private static Map<RenderData, DisplayInteger> cachedUpperFluids = new HashMap<>();
-    private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 
     private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
     private FluidStack WATER = new FluidStack(FluidRegistry.WATER, 1);
 
     @Override
     public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null
-            && tileEntity.structure.renderLocation != null && tileEntity.structure.upperRenderLocation != null) {
-            if (tileEntity.structure.waterStored != null && tileEntity.structure.waterStored.amount != 0) {
+        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null &&
+            tileEntity.structure.upperRenderLocation != null) {
+            FluidStack waterStored = tileEntity.structure.waterStored;
+            if (waterStored != null && waterStored.amount != 0) {
                 RenderData data = new RenderData();
-
                 data.location = tileEntity.structure.renderLocation;
                 data.height = tileEntity.structure.upperRenderLocation.y - 1 - tileEntity.structure.renderLocation.y;
                 data.length = tileEntity.structure.volLength;
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = WATER;
 
-                bindTexture(MekanismRenderer.getBlocksTexture());
-
-                if (data.height >= 1 && tileEntity.structure.waterStored.getFluid() != null) {
-                    FluidRenderer.push();
-
+                if (data.height >= 1 && waterStored.getFluid() != null) {
+                    bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableCull();
+                    GlStateManager.enableBlend();
+                    GlStateManager.disableLighting();
+                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-
-                    MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.waterStored);
-
-                    if (tileEntity.structure.waterStored.getFluid().isGaseous()) {
-                        GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.waterStored.amount / (float) tileEntity.clientWaterCapacity)
-                                                               + MekanismRenderer.GAS_RENDER_BASE));
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
+                    MekanismRenderer.color(waterStored, (float) waterStored.amount / (float) tileEntity.clientWaterCapacity);
+                    if (waterStored.getFluid().isGaseous(waterStored)) {
                         FluidRenderer.getTankDisplay(data).render();
                     } else {
                         FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
                     }
-
-                    MekanismRenderer.glowOff();
                     MekanismRenderer.resetColor();
-
-                    FluidRenderer.pop();
+                    MekanismRenderer.disableGlow(glowInfo);
+                    GlStateManager.popMatrix();
 
                     for (ValveData valveData : tileEntity.valveViewing) {
-                        FluidRenderer.push();
-
+                        GlStateManager.pushMatrix();
+                        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                         FluidRenderer.translateToOrigin(valveData.location);
-
-                        MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
-
+                        GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(waterStored);
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
-
-                        MekanismRenderer.glowOff();
-                        MekanismRenderer.resetColor();
-
-                        FluidRenderer.pop();
+                        MekanismRenderer.disableGlow(valveGlowInfo);
+                        GlStateManager.popMatrix();
                     }
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.disableCull();
                 }
             }
 
             if (tileEntity.structure.steamStored != null && tileEntity.structure.steamStored.amount > 0) {
                 RenderData data = new RenderData();
-
                 data.location = tileEntity.structure.upperRenderLocation;
                 data.height = tileEntity.structure.renderLocation.y + tileEntity.structure.volHeight - 2 - tileEntity.structure.upperRenderLocation.y;
                 data.length = tileEntity.structure.volLength;
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = STEAM;
 
-                bindTexture(MekanismRenderer.getBlocksTexture());
-
                 if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null) {
-                    FluidRenderer.push();
-
+                    bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableCull();
+                    GlStateManager.enableBlend();
+                    GlStateManager.disableLighting();
+                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-
-                    MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.steamStored);
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tileEntity.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
-
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity)
-                                                           + MekanismRenderer.GAS_RENDER_BASE));
+                    MekanismRenderer.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity);
                     display.render();
-
-                    MekanismRenderer.glowOff();
                     MekanismRenderer.resetColor();
-
-                    FluidRenderer.pop();
+                    MekanismRenderer.disableGlow(glowInfo);
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.disableCull();
+                    GlStateManager.popMatrix();
                 }
             }
         }
-    }
-
-    private int getStages(int height) {
-        return height * (TankUpdateProtocol.FLUID_PER_TANK / 10);
     }
 }

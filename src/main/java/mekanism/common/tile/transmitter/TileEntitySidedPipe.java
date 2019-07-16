@@ -128,7 +128,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return connections;
         }
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             if (canConnectMutual(side)) {
                 TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
@@ -182,7 +182,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return connections;
         }
 
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             if (canConnectMutual(side)) {
                 Coord4D coord = new Coord4D(getPos(), getWorld()).offset(side);
                 if (!getWorld().isRemote && !coord.exists(getWorld())) {
@@ -218,7 +218,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<AxisAlignedBB> getCollisionBoxes() {
         List<AxisAlignedBB> list = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             int ord = side.ordinal();
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
@@ -233,7 +233,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<AxisAlignedBB> getCollisionBoxes(AxisAlignedBB entityBox) {
         List<AxisAlignedBB> list = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             int ord = side.ordinal();
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
@@ -503,7 +503,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<EnumFacing> getConnections(ConnectionType type) {
         List<EnumFacing> sides = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             if (getConnectionType(side) == type) {
                 sides.add(side);
             }
@@ -551,7 +551,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     protected EnumFacing sideHit(int boxIndex) {
         List<EnumFacing> list = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
                 list.add(side);
@@ -585,7 +585,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<String> getVisibleGroups() {
         List<String> visible = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             visible.add(side.getName() + getConnectionType(side).getName().toUpperCase());
         }
         return visible;

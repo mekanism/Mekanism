@@ -29,6 +29,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -123,12 +124,14 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
                         Coord4D next = stack.getPath().get(currentIndex - 1);
                         if (!stack.isFinal(this)) {
-                            if (next != null && stack.canInsertToTransporter(next.getTileEntity(world()), stack.getSide(this))) {
-                                ILogisticalTransporter nextTile = CapabilityUtils.getCapability(next.getTileEntity(world()), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
-                                nextTile.entityEntering(stack, stack.progress % 100);
-                                deletes.add(stackId);
-                                continue;
-                            } else if (next != null) {
+                            if (next != null) {
+                                TileEntity tile = next.getTileEntity(world());
+                                if (stack.canInsertToTransporter(tile, stack.getSide(this))) {
+                                    ILogisticalTransporter nextTile = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+                                    nextTile.entityEntering(stack, stack.progress % 100);
+                                    deletes.add(stackId);
+                                    continue;
+                                }
                                 prevSet = next;
                             }
                         } else if (stack.getPathType() != Path.NONE) {
@@ -138,16 +141,16 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                                       stack.getPathType() == Path.HOME);
                                 // Nothing was rejected; remove the stack from the prediction tracker and
                                 // schedule this stack for deletion. Continue the loop thereafter
-                                if (response.getRejected(stack.itemStack).isEmpty()) {
+                                ItemStack rejected = response.getRejected(stack.itemStack);
+                                if (rejected.isEmpty()) {
                                     TransporterManager.remove(stack);
                                     deletes.add(stackId);
                                     continue;
-                                } else {
-                                    // Some portion of the stack got rejected; save the remainder and
-                                    // let the recalculate below sort out what to do next
-                                    stack.itemStack = response.getRejected(stack.itemStack);
-                                    prevSet = next;
                                 }
+                                // Some portion of the stack got rejected; save the remainder and
+                                // let the recalculate below sort out what to do next
+                                stack.itemStack = rejected;
+                                prevSet = next;
                             }
                         }
                     }
@@ -159,19 +162,14 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                         stack.progress = 50;
                     }
                 } else if (stack.progress == 50) {
+                    boolean tryRecalculate;
                     if (stack.isFinal(this)) {
-                        if (checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE) {
-                            if (!recalculate(stackId, stack, null)) {
-                                deletes.add(stackId);
-                            }
-                        }
+                        tryRecalculate = checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE;
                     } else {
-                        TileEntity next = stack.getNext(this).getTileEntity(world());
-                        if (!stack.canInsertToTransporter(next, stack.getSide(this))) {
-                            if (!recalculate(stackId, stack, null)) {
-                                deletes.add(stackId);
-                            }
-                        }
+                        tryRecalculate = !stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), stack.getSide(this));
+                    }
+                    if (tryRecalculate && !recalculate(stackId, stack, null)) {
+                        deletes.add(stackId);
                     }
                 }
             }
@@ -202,13 +200,11 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     private boolean recalculate(int stackId, TransporterStack stack, Coord4D from) {
-        if (stack.getPathType() != Path.NONE) {
-            TransitResponse ret = stack.recalculatePath(TransitRequest.getFromTransport(stack), this, 0);
-            if (ret.isEmpty() && !stack.calculateIdle(this)) {
-                TransporterUtils.drop(this, stack);
-                return false;
-            }
-        } else if (!stack.calculateIdle(this)) {
+        boolean noPath = stack.getPathType() == Path.NONE;
+        if (!noPath) {
+            noPath = stack.recalculatePath(TransitRequest.getFromTransport(stack), this, 0).isEmpty();
+        }
+        if (noPath && !stack.calculateIdle(this)) {
             TransporterUtils.drop(this, stack);
             return false;
         }

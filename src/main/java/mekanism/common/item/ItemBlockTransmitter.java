@@ -93,48 +93,41 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
         } else {
             TransmitterType type = TransmitterType.values()[itemstack.getItemDamage()];
             switch (type) {
-                case UNIVERSAL_CABLE: {
+                case UNIVERSAL_CABLE:
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
                     list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
                     list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY + "(IndustrialCraft)");
                     list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY + "(Mekanism)");
                     break;
-                }
-                case MECHANICAL_PIPE: {
+                case MECHANICAL_PIPE:
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.fluids") + " " + EnumColor.GREY + "(MinecraftForge)");
                     break;
-                }
-                case PRESSURIZED_TUBE: {
+                case PRESSURIZED_TUBE:
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.gasses") + " (Mekanism)");
                     break;
-                }
-                case LOGISTICAL_TRANSPORTER: {
+                case LOGISTICAL_TRANSPORTER:
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     break;
-                }
-                case RESTRICTIVE_TRANSPORTER: {
+                case RESTRICTIVE_TRANSPORTER:
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.restrictiveDesc"));
                     break;
-                }
-                case DIVERSION_TRANSPORTER: {
+                case DIVERSION_TRANSPORTER:
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.diversionDesc"));
                     break;
-                }
-                case THERMODYNAMIC_CONDUCTOR: {
+                case THERMODYNAMIC_CONDUCTOR:
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
                     list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.heat") + " (Mekanism)");
                     break;
-                }
             }
         }
     }

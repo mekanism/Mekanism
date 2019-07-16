@@ -20,8 +20,8 @@ import net.minecraftforge.fluids.FluidTank;
 public class InventoryFrequency extends Frequency {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
-    private static final Supplier<FluidTank> FLUID_TANK_SUPPLIER = ()->new FluidTank(MekanismConfig.current().general.quantumEntangloporterFluidBuffer.val());
-    private static final Supplier<GasTank> GAS_TANK_SUPPLIER = ()->new GasTank(MekanismConfig.current().general.quantumEntangloporterGasBuffer.val());
+    private static final Supplier<FluidTank> FLUID_TANK_SUPPLIER = () -> new FluidTank(MekanismConfig.current().general.quantumEntangloporterFluidBuffer.val());
+    private static final Supplier<GasTank> GAS_TANK_SUPPLIER = () -> new GasTank(MekanismConfig.current().general.quantumEntangloporterGasBuffer.val());
 
     public double storedEnergy;
     public FluidTank storedFluid;

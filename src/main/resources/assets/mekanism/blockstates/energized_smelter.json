@@ -3,13 +3,13 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/energized_smelter/EnergizedSmelterRight",
-      "front": "mekanism:blocks/energized_smelter/EnergizedSmelterFront",
-      "west": "mekanism:blocks/energized_smelter/EnergizedSmelterRight",
-      "east": "mekanism:blocks/energized_smelter/EnergizedSmelterLeft",
-      "south": "mekanism:blocks/energized_smelter/EnergizedSmelterBack",
-      "up": "mekanism:blocks/energized_smelter/EnergizedSmelterTop",
-      "down": "mekanism:blocks/energized_smelter/EnergizedSmelterBottom"
+      "sides": "mekanism:blocks/energized_smelter/energizedsmelterside",
+      "front": "mekanism:blocks/energized_smelter/energizedsmelterfront",
+      "west": "mekanism:blocks/energized_smelter/energizedsmelterside",
+      "east": "mekanism:blocks/energized_smelter/energizedsmelterside",
+      "south": "mekanism:blocks/energized_smelter/energizedsmelterback",
+      "up": "mekanism:blocks/energized_smelter/energizedsmeltertop",
+      "down": "mekanism:blocks/energized_smelter/energizedsmelterbottom"
     }
   },
   "variants": {
@@ -22,12 +22,8 @@
     "active": {
       "true": {
         "textures": {
-          "front": "mekanism:blocks/energized_smelter/EnergizedSmelterFrontOn",
-          "west": "mekanism:blocks/energized_smelter/EnergizedSmelterRightOn",
-          "east": "mekanism:blocks/energized_smelter/EnergizedSmelterLeftOn",
-          "south": "mekanism:blocks/energized_smelter/EnergizedSmelterBackOn",
-          "up": "mekanism:blocks/energized_smelter/EnergizedSmelterTopOn",
-          "down": "mekanism:blocks/energized_smelter/EnergizedSmelterBottomOn"
+          "front": "mekanism:blocks/energized_smelter/energizedsmelterfronton",
+          "down": "mekanism:blocks/energized_smelter/energizedsmelterbottomon"
         }
       },
       "false": {}

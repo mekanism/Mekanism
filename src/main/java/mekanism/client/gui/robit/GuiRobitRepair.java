@@ -7,6 +7,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerRepair;
@@ -20,7 +21,6 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiRobitRepair extends GuiRobit implements IContainerListener {
@@ -40,9 +40,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     public void initGui() {
         super.initGui();
         Keyboard.enableRepeatEvents(true);
-        int i = (width - xSize) / 2;
-        int j = (height - ySize) / 2;
-        itemNameField = new GuiTextField(0, fontRenderer, i + 62, j + 24, 103, 12);
+        itemNameField = new GuiTextField(0, fontRenderer, guiLeft + 62, guiTop + 24, 103, 12);
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
@@ -60,7 +58,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableLighting();
         fontRenderer.drawString(LangUtils.localize("container.repair"), 60, 6, 0x404040);
 
         if (repairContainer.maximumCost > 0) {
@@ -83,8 +81,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
                 byte b0 = 67;
 
                 if (fontRenderer.getUnicodeFlag()) {
-                    drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, -16777216);
-                    drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, -12895429);
+                    drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, 0xFF000000);
+                    drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, 0xFF3B3B3B);
                 } else {
                     fontRenderer.drawString(s, i1, b0 + 1, l);
                     fontRenderer.drawString(s, i1 + 1, b0, l);
@@ -93,7 +91,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
                 fontRenderer.drawString(s, i1, b0, k);
             }
         }
-        GL11.glEnable(GL11.GL_LIGHTING);
+        GlStateManager.enableLighting();
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -108,7 +106,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    protected void extraClickListeners(int mouseX, int mouseY, int button) {
+    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+        super.mouseClicked(mouseX, mouseY, button);
         itemNameField.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -120,8 +119,9 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
         super.drawScreen(mouseX, mouseY, partialTick);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableLighting();
         itemNameField.drawTextBox();
+        GlStateManager.enableLighting();
     }
 
     @Override
@@ -130,13 +130,11 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth + 59, guiHeight + 20, 0, ySize + (repairContainer.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
+        drawTexturedModalRect(guiLeft + 59, guiTop + 20, 0, ySize + (repairContainer.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((repairContainer.getSlot(0).getHasStack() || repairContainer.getSlot(1).getHasStack()) && !repairContainer.getSlot(2).getHasStack()) {
-            drawTexturedModalRect(guiWidth + 99, guiHeight + 45, xSize + 18, 36, 28, 21);
+            drawTexturedModalRect(guiLeft + 99, guiTop + 45, xSize + 18, 36, 28, 21);
         }
     }
 

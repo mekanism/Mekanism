@@ -291,8 +291,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     }
 
     @Override
-    public boolean canSetFacing(int side) {
-        return side != 0 && side != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
     @Override
@@ -355,8 +355,31 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     }
 
     public enum GasMode {
-        IDLE,
-        DUMPING_EXCESS,
-        DUMPING
+        IDLE("gui.idle"),
+        DUMPING_EXCESS("gui.dumping"),
+        DUMPING("gui.dumping_excess");
+
+        private final String langKey;
+
+        GasMode(String langKey) {
+            this.langKey = langKey;
+        }
+
+        public String getLangKey() {
+            return langKey;
+        }
+
+        public static <T> T chooseByMode(GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption) {
+            switch (dumping) {
+                case IDLE:
+                    return idleOption;
+                case DUMPING:
+                    return dumpingOption;
+                case DUMPING_EXCESS:
+                    return dumpingExcessOption;
+                default://should not happen;
+                    return idleOption;
+            }
+        }
     }
 }

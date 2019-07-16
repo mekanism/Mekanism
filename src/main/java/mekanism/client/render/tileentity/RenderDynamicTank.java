@@ -4,12 +4,16 @@ import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank> {
@@ -19,51 +23,45 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null &&
             tileEntity.structure.fluidStored.amount != 0) {
             RenderData data = new RenderData();
-
             data.location = tileEntity.structure.renderLocation;
             data.height = tileEntity.structure.volHeight - 2;
             data.length = tileEntity.structure.volLength;
             data.width = tileEntity.structure.volWidth;
             data.fluidType = tileEntity.structure.fluidStored;
 
-            bindTexture(MekanismRenderer.getBlocksTexture());
-
             if (data.location != null && data.height >= 1) {
-                FluidRenderer.push();
-
+                bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                GlStateManager.pushMatrix();
+                GlStateManager.enableCull();
+                GlStateManager.enableBlend();
+                GlStateManager.disableLighting();
+                GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                 FluidRenderer.translateToOrigin(data.location);
-
-                MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
-
-                if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity)
-                                                           + MekanismRenderer.GAS_RENDER_BASE));
+                GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
+                MekanismRenderer.color(data.fluidType, (float) data.fluidType.amount / (float) tileEntity.clientCapacity);
+                if (data.fluidType.getFluid().isGaseous(data.fluidType)) {
                     FluidRenderer.getTankDisplay(data).render();
                 } else {
                     FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();
                 }
 
-                MekanismRenderer.glowOff();
                 MekanismRenderer.resetColor();
-
-                FluidRenderer.pop();
+                MekanismRenderer.disableGlow(glowInfo);
+                GlStateManager.popMatrix();
 
                 for (ValveData valveData : tileEntity.valveViewing) {
-                    FluidRenderer.push();
-
+                    GlStateManager.pushMatrix();
                     FluidRenderer.translateToOrigin(valveData.location);
-
-                    MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
-
+                    GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(data.fluidType);
+                    MekanismRenderer.color(data.fluidType);
                     FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
-
-                    MekanismRenderer.glowOff();
-                    MekanismRenderer.resetColor();
-
-                    FluidRenderer.pop();
+                    MekanismRenderer.disableGlow(valveGlowInfo);
+                    GlStateManager.popMatrix();
                 }
+                MekanismRenderer.resetColor();
+                GlStateManager.enableLighting();
+                GlStateManager.disableBlend();
+                GlStateManager.disableCull();
             }
         }
     }

@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
 import org.lwjgl.opengl.GL11;
@@ -23,16 +26,21 @@ public final class MinerVisualRenderer {
 
     public static void render(TileEntityDigitalMiner miner) {
         GlStateManager.pushMatrix();
-        GL11.glTranslated(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
-        MekanismRenderer.blendOn();
-        MekanismRenderer.glowOn();
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-        mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+        GlStateManager.translate((float) getX(miner.getPos().getX()), (float) getY(miner.getPos().getY()), (float) getZ(miner.getPos().getZ()));
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
+        GlStateManager.enableCull();
+        GlStateManager.color(1, 1, 1, 0.8F);
+        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         getList(new MinerRenderData(miner)).render();
         MekanismRenderer.resetColor();
-        MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
+        GlStateManager.disableCull();
+        MekanismRenderer.disableGlow(glowInfo);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
         GlStateManager.popMatrix();
     }
 
@@ -72,7 +80,7 @@ public final class MinerVisualRenderer {
 
         toReturn.setBlockBounds(rel.x + 0.4, rel.y + 0.4, rel.z + 0.4, rel.x + 0.6, rel.y + 0.6, rel.z + 0.6);
         toReturn.baseBlock = Blocks.WATER;
-        toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
+        toReturn.setTexture(MekanismRenderer.whiteIcon);
 
         return toReturn;
     }

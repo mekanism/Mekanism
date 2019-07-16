@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.element.GuiConfigTypeTab;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
+import mekanism.client.gui.button.GuiSideDataButton;
+import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -23,6 +23,7 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
@@ -31,7 +32,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlock> {
@@ -40,6 +40,10 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     private ISideConfiguration configurable;
     private TransmissionType currentType;
     private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
+    private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
+    private GuiButton backButton;
+    private GuiButton autoEjectButton;
+    private int buttonID = 0;
 
     public GuiSideConfiguration(EntityPlayer player, ISideConfiguration tile) {
         super((TileEntityContainerBlock) tile, new ContainerNull(player, (TileEntityContainerBlock) tile));
@@ -59,6 +63,42 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         slotPosMap.put(3, new GuiPos(66, 64));
         slotPosMap.put(4, new GuiPos(66, 49));
         slotPosMap.put(5, new GuiPos(96, 49));
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+        buttonList.clear();
+        buttonList.add(backButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttonList.add(autoEjectButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+        for (int i = 0; i < slotPosMap.size(); i++) {
+            GuiPos guiPos = slotPosMap.get(i);
+            EnumFacing facing = EnumFacing.byIndex(i);
+            GuiSideDataButton button = new GuiSideDataButton(buttonID++, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
+                  () -> configurable.getConfig().getOutput(currentType, facing), () -> configurable.getConfig().getOutput(currentType, facing).color);
+            buttonList.add(button);
+            sideDataButtons.add(button);
+        }
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        TileEntity tile = (TileEntity) configurable;
+        if (guibutton.id == backButton.id) {
+            int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
+            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+        } else if (guibutton.id == autoEjectButton.id) {
+            Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
+        } else {
+            for (GuiSideDataButton button : sideDataButtons) {
+                if (guibutton.id == button.id) {
+                    Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile),
+                          Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0, button.getSlotPosMapIndex(), currentType));
+                    break;
+                }
+            }
+        }
     }
 
     public TransmissionType getTopTransmission() {
@@ -82,47 +122,6 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(getGuiLocation());
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 14, 14, 14);
-        }
-        if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
-            drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 14, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 14, 14, 14, 14);
-        }
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            MekanismRenderer.resetColor();
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
-            SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
-            if (data != TileComponentConfig.EMPTY) {
-                if (data.color != EnumColor.GREY) {
-                    MekanismRenderer.color(data.color);
-                }
-                if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
-                    drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
-                } else {
-                    drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
-                }
-            } else {
-                drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
-            }
-        }
-        MekanismRenderer.resetColor();
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = currentType.localize() + " " + LangUtils.localize("gui.config");
         fontRenderer.drawString(title, (xSize / 2) - (fontRenderer.getStringWidth(title) / 2), 5, 0x404040);
@@ -132,20 +131,19 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
             fontRenderer.drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
         }
         fontRenderer.drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
-            SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
-            if (data != TileComponentConfig.EMPTY) {
-                if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
-                    drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
+        for (GuiSideDataButton button : sideDataButtons) {
+            if (button.isMouseOver()) {
+                SideData data = button.getSideData();
+                if (data != TileComponentConfig.EMPTY) {
+                    displayTooltip(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
                 }
+                break;
             }
         }
-        if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
-            drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+        if (autoEjectButton.isMouseOver()) {
+            displayTooltip(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -162,29 +160,14 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        TileEntity tile = (TileEntity) configurable;
-        if (button == 0) {
-            if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-                int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-            }
-            if (xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
-            }
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
-            button = 2;
-        }
-        for (int i = 0; i < slotPosMap.size(); i++) {
-            int x = slotPosMap.get(i).xPos;
-            int y = slotPosMap.get(i).yPos;
-            if (xAxis >= x && xAxis <= x + 14 && yAxis >= y && yAxis <= y + 14) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, currentType));
+        if (button == 1) {
+            //Handle right clicking the side data buttons
+            for (GuiSideDataButton sideDataButton : sideDataButtons) {
+                if (sideDataButton.isMouseOver()) {
+                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                    Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get((TileEntity) configurable), 1, sideDataButton.getSlotPosMapIndex(), currentType));
+                    break;
+                }
             }
         }
     }
@@ -196,8 +179,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
 
     public static class GuiPos {
 
-        public int xPos;
-        public int yPos;
+        public final int xPos;
+        public final int yPos;
 
         public GuiPos(int x, int y) {
             xPos = x;

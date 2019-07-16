@@ -118,7 +118,7 @@ public class TransporterStack {
         originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
 
         if (nbtTags.hasKey("idleDir")) {
-            idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
+            idleDir = EnumFacing.VALUES[nbtTags.getInteger("idleDir")];
         }
         if (nbtTags.hasKey("homeLocation")) {
             homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));
@@ -215,15 +215,15 @@ public class TransporterStack {
 
     public EnumFacing getSide(ILogisticalTransporter transporter) {
         if (progress < 50) {
-            if (getPrev(transporter) != null) {
-                return transporter.coord().sideDifference(getPrev(transporter));
+            Coord4D prev = getPrev(transporter);
+            if (prev != null) {
+                return transporter.coord().sideDifference(prev);
             }
-        } else if (progress == 50) {
-            if (getNext(transporter) != null) {
-                return getNext(transporter).sideDifference(transporter.coord());
+        } else {
+            Coord4D next = getNext(transporter);
+            if (next != null) {
+                return next.sideDifference(transporter.coord());
             }
-        } else if (getNext(transporter) != null) {
-            return getNext(transporter).sideDifference(transporter.coord());
         }
 
         return EnumFacing.DOWN;

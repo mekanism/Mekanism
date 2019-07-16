@@ -7,7 +7,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelBalloon extends ModelBase {
@@ -56,7 +55,7 @@ public class ModelBalloon extends ModelBase {
 
     public void render(float size, EnumColor color) {
         GlStateManager.pushMatrix();
-        GL11.glColor3f(color.getColor(0), color.getColor(1), color.getColor(2));
+        MekanismRenderer.color(color);
         GlStateManager.scale(1.5F, 1.5F, 1.5F);
         GlStateManager.translate(0, -0.07F, 0);
 

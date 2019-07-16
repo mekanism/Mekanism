@@ -59,26 +59,12 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         return modelParts;
     }
 
-    protected void push() {
-        GL11.glPushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    protected void pop() {
-        GL11.glPopAttrib();
-        GL11.glPopMatrix();
-    }
-
     public void renderTransparency(BufferBuilder renderer, TextureAtlasSprite icon, IBakedModel cc, ColourRGBA color) {
         if (!renderer.isDrawing) {
             renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
         }
 
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             for (BakedQuad quad : cc.getQuads(null, side, 0)) {
                 quad = MekanismRenderer.iconTransform(quad, icon);
                 LightUtil.renderQuadColor(renderer, quad, color.argb());

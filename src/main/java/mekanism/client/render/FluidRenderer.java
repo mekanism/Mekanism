@@ -11,8 +11,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public final class FluidRenderer {
 
@@ -22,25 +22,11 @@ public final class FluidRenderer {
     private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 
     public static void translateToOrigin(Coord4D origin) {
-        GL11.glTranslated(getX(origin.x), getY(origin.y), getZ(origin.z));
+        GlStateManager.translate((float) getX(origin.x), (float) getY(origin.y), (float) getZ(origin.z));
     }
 
     public static int getStages(RenderData data) {
         return data.height * BLOCK_STAGES;
-    }
-
-    public static void pop() {
-        GL11.glPopAttrib();
-        GlStateManager.popMatrix();
-    }
-
-    public static void push() {
-        GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public static DisplayInteger getTankDisplay(RenderData data) {
@@ -49,36 +35,35 @@ public final class FluidRenderer {
 
     public static DisplayInteger getTankDisplay(RenderData data, double scale) {
         int maxStages = getStages(data);
-        int stage = Math.min(maxStages, (int) (scale * (float) maxStages));
-
+        int stage = Math.min(maxStages, (int) (scale * maxStages));
+        DisplayInteger[] cachedCenter;
         if (cachedCenterFluids.containsKey(data)) {
-            DisplayInteger[] ret = cachedCenterFluids.get(data);
+            cachedCenter = cachedCenterFluids.get(data);
 
-            if (ret[stage] != null) {
-                return ret[stage];
+            if (cachedCenter[stage] != null) {
+                return cachedCenter[stage];
             }
+        } else {
+            cachedCenterFluids.put(data, cachedCenter = new DisplayInteger[maxStages + 1]);
         }
-
-        Model3D toReturn = new Model3D();
-        toReturn.baseBlock = Blocks.WATER;
-        toReturn.setTexture(MekanismRenderer.getFluidTexture(data.fluidType, FluidType.STILL));
-
-        DisplayInteger display = DisplayInteger.createAndStart();
-
-        if (!cachedCenterFluids.containsKey(data)) {
-            cachedCenterFluids.put(data, new DisplayInteger[maxStages + 1]);
-        }
-
-        cachedCenterFluids.get(data)[stage] = display;
-
         if (maxStages == 0) {
             maxStages = stage = 1;
         }
 
+        Model3D toReturn = new Model3D();
+        toReturn.baseBlock = data.fluidType.getFluid().getBlock();
+        if (toReturn.baseBlock == null) {
+            toReturn.baseBlock = FluidRegistry.WATER.getBlock();
+        }
+        toReturn.setTexture(MekanismRenderer.getFluidTexture(data.fluidType, FluidType.STILL));
+
+        DisplayInteger display = DisplayInteger.createAndStart();
+        cachedCenter[stage] = display;
+
         if (data.fluidType.getFluid().getStill(data.fluidType) != null) {
-            toReturn.minX = 0 + .01;
-            toReturn.minY = 0 + .01;
-            toReturn.minZ = 0 + .01;
+            toReturn.minX = 0.01;
+            toReturn.minY = 0.01;
+            toReturn.minZ = 0.01;
 
             toReturn.maxX = data.length - .01;
             toReturn.maxY = ((float) stage / (float) maxStages) * data.height - .01;
@@ -105,69 +90,62 @@ public final class FluidRenderer {
         cachedValveFluids.put(data, display);
 
         switch (data.side) {
-            case DOWN: {
-                toReturn.minX = .3;
-                toReturn.minY = 1 + .01;
-                toReturn.minZ = .3;
+            case DOWN:
+                toReturn.minX = 0.3;
+                toReturn.minY = 1.01;
+                toReturn.minZ = 0.3;
 
-                toReturn.maxX = .7;
-                toReturn.maxY = 1.4 + .1;
-                toReturn.maxZ = .7;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 1.5;
+                toReturn.maxZ = 0.7;
                 break;
-            }
-            case UP: {
-                toReturn.minX = .3;
-                toReturn.minY = -data.height - .01;
-                toReturn.minZ = .3;
+            case UP:
+                toReturn.minX = 0.3;
+                toReturn.minY = -data.height - 0.01;
+                toReturn.minZ = 0.3;
 
-                toReturn.maxX = .7;
-                toReturn.maxY = -.01;
-                toReturn.maxZ = .7;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = -0.01;
+                toReturn.maxZ = 0.7;
                 break;
-            }
-            case NORTH: {
-                toReturn.minX = .3;
-                toReturn.minY = -getValveFluidHeight(data) + .01;
-                toReturn.minZ = 1 + .02;
+            case NORTH:
+                toReturn.minX = 0.3;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 1.02;
 
-                toReturn.maxX = .7;
-                toReturn.maxY = .7;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 0.7;
                 toReturn.maxZ = 1.4;
                 break;
-            }
-            case SOUTH: {
-                toReturn.minX = .3;
-                toReturn.minY = -getValveFluidHeight(data) + .01;
-                toReturn.minZ = -.4;
+            case SOUTH:
+                toReturn.minX = 0.3;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = -0.4;
 
-                toReturn.maxX = .7;
-                toReturn.maxY = .7;
-                toReturn.maxZ = -.02;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = -0.02;
                 break;
-            }
-            case WEST: {
-                toReturn.minX = 1 + .02;
-                toReturn.minY = -getValveFluidHeight(data) + .01;
-                toReturn.minZ = .3;
+            case WEST:
+                toReturn.minX = 1.02;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 0.3;
 
                 toReturn.maxX = 1.4;
-                toReturn.maxY = .7;
-                toReturn.maxZ = .7;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = 0.7;
                 break;
-            }
-            case EAST: {
-                toReturn.minX = -.4;
-                toReturn.minY = -getValveFluidHeight(data) + .01;
-                toReturn.minZ = .3;
+            case EAST:
+                toReturn.minX = -0.4;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 0.3;
 
-                toReturn.maxX = -.02;
-                toReturn.maxY = .7;
-                toReturn.maxZ = .7;
+                toReturn.maxX = -0.02;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = 0.7;
                 break;
-            }
-            default: {
+            default:
                 break;
-            }
         }
 
         if (data.fluidType.getFluid().getFlowing(data.fluidType) != null) {

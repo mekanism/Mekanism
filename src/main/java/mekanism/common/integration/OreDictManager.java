@@ -3,7 +3,6 @@ package mekanism.common.integration;
 import ic2.api.recipe.Recipes;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -17,7 +16,6 @@ import mekanism.common.Resource;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.world.DummyWorld;
 import net.minecraft.block.BlockPlanks;
@@ -117,8 +115,7 @@ public final class OreDictManager {
                 RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
                 RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride,
                       new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
-                RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1),
-                      new GasStack(GasRegistry.getGas(resource.getName().toLowerCase(Locale.ROOT)), 1000));
+                RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas(resource.getName()), 1000));
             }
 
             for (ItemStack ingot : OreDictionary.getOres("ingot" + resource.getName(), false)) {
@@ -397,22 +394,22 @@ public final class OreDictManager {
 
         for (ItemStack coal : OreDictionary.getOres("blockCoal", false)) {
             RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
-                    new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
+                  new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
         }
 
         for (ItemStack coal : OreDictionary.getOres("blockCharcoal", false)) {
             RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
-                    new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
+                  new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
         }
 
         for (ItemStack coal : OreDictionary.getOres("dustCoal", false)) {
             RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
-                    new ItemStack(MekanismItems.OtherDust, 1, 3), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
+                  new ItemStack(MekanismItems.OtherDust, 1, 3), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
         }
 
         for (ItemStack coal : OreDictionary.getOres("dustCharcoal", false)) {
             RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
-                    new ItemStack(MekanismItems.OtherDust, 1, 3), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
+                  new ItemStack(MekanismItems.OtherDust, 1, 3), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
         }
 
         for (ItemStack sulfur : OreDictionary.getOres("sulphur", false)) {
@@ -440,7 +437,8 @@ public final class OreDictManager {
         DummyWorld dummyWorld = null;
         try {
             dummyWorld = new DummyWorld();
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
         InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
 

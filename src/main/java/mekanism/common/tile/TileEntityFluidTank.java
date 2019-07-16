@@ -97,7 +97,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     }
 
     @Override
-    public boolean canSetFacing(int facing) {
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return false;
     }
 

@@ -6,6 +6,7 @@ import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -13,9 +14,11 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,58 +44,44 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
     @Override
     public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        GlStateManager.pushMatrix();
-
-        EntityPlayer player = mc.player;
-        ItemStack itemStack = player.inventory.getCurrentItem();
-        RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
-
+        ItemStack itemStack = mc.player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
-        if (pos != null && !itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
-            BlockPos bp = pos.getBlockPos();
+        if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
+            RayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
+            if (pos != null) {
+                BlockPos bp = pos.getBlockPos();
+                TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
+                if (configurable.getConfig().supports(type)) {
+                    if (bp.equals(configurable.getPos())) {
+                        SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
+                        if (data != TileComponentConfig.EMPTY) {
+                            GlStateManager.pushMatrix();
+                            GlStateManager.enableCull();
+                            GlStateManager.disableLighting();
+                            GlowInfo glowInfo = MekanismRenderer.enableGlow();
+                            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+                            GlStateManager.disableAlpha();
+                            GlStateManager.enableBlend();
+                            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
+                            MekanismRenderer.color(data.color, 0.6F);
+                            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                            GlStateManager.translate((float) x, (float) y, (float) z);
+                            int display = getOverlayDisplay(pos.sideHit, type).display;
+                            GlStateManager.callList(display);
+                            MekanismRenderer.resetColor();
 
-            if (configurable.getConfig().supports(type)) {
-                if (bp.equals(configurable.getPos())) {
-                    SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
-
-                    if (data != TileComponentConfig.EMPTY) {
-                        push();
-
-                        MekanismRenderer.color(data.color, 0.6F);
-
-                        bindTexture(MekanismRenderer.getBlocksTexture());
-                        GlStateManager.translate((float) x, (float) y, (float) z);
-
-                        int display = getOverlayDisplay(pos.sideHit, type).display;
-                        GL11.glCallList(display);
-
-                        MekanismRenderer.resetColor();
-
-                        pop();
+                            GlStateManager.disableBlend();
+                            GlStateManager.enableAlpha();
+                            MekanismRenderer.disableGlow(glowInfo);
+                            GlStateManager.enableLighting();
+                            GlStateManager.disableCull();
+                            GlStateManager.popMatrix();
+                        }
                     }
                 }
             }
         }
-
-        GlStateManager.popMatrix();
-    }
-
-    private void pop() {
-        GL11.glPopAttrib();
-        MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
-        GlStateManager.popMatrix();
-    }
-
-    private void push() {
-        GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        MekanismRenderer.glowOn();
-        MekanismRenderer.blendOn();
     }
 
     private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type) {
@@ -115,7 +104,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         }
 
         switch (side) {
-            case DOWN: {
+            case DOWN:
                 toReturn.minY = -.01;
                 toReturn.maxY = -.001;
 
@@ -124,8 +113,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxX = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case UP: {
+            case UP:
                 toReturn.minY = 1.001;
                 toReturn.maxY = 1.01;
 
@@ -134,8 +122,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxX = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case NORTH: {
+            case NORTH:
                 toReturn.minZ = -.01;
                 toReturn.maxZ = -.001;
 
@@ -144,8 +131,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxX = 1;
                 toReturn.maxY = 1;
                 break;
-            }
-            case SOUTH: {
+            case SOUTH:
                 toReturn.minZ = 1.001;
                 toReturn.maxZ = 1.01;
 
@@ -154,8 +140,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxX = 1;
                 toReturn.maxY = 1;
                 break;
-            }
-            case WEST: {
+            case WEST:
                 toReturn.minX = -.01;
                 toReturn.maxX = -.001;
 
@@ -164,8 +149,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxY = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case EAST: {
+            case EAST:
                 toReturn.minX = 1.001;
                 toReturn.maxX = 1.01;
 
@@ -174,7 +158,6 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxY = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
         }
 
         MekanismRenderer.renderObject(toReturn);

@@ -220,6 +220,26 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return structure.steamStored.amount * i / clientSteamCapacity;
     }
 
+    public double getLastEnvironmentLoss() {
+        return structure != null ? structure.lastEnvironmentLoss : 0;
+    }
+
+    public double getTemperature() {
+        return structure != null ? structure.temperature : 0;
+    }
+
+    public int getLastBoilRate() {
+        return structure != null ? structure.lastBoilRate : 0;
+    }
+
+    public int getLastMaxBoil() {
+        return structure != null ? structure.lastMaxBoil : 0;
+    }
+
+    public int getSuperheatingElements() {
+        return structure != null ? structure.superheatingElements : 0;
+    }
+
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);

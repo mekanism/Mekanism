@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
@@ -22,10 +21,9 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
     @Override
     public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.facing);
-        if (obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite())) {
-            return;
+        if (!obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite())) {
+            render(tileEntity.facing, tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
         }
-        render(tileEntity.facing, tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
     }
 
     public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z) {
@@ -38,18 +36,18 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
             GlStateManager.pushMatrix();
             switch (facing) {
                 case NORTH:
-                    GL11.glTranslated(x + 0.73, y + 0.83, z - 0.0001);
+                    GlStateManager.translate((float) x + 0.73F, (float) y + 0.83F, (float) z - 0.0001F);
                     break;
                 case SOUTH:
-                    GL11.glTranslated(x + 0.27, y + 0.83, z + 1.0001);
+                    GlStateManager.translate((float) x + 0.27F, (float) y + 0.83F, (float) z + 1.0001F);
                     GlStateManager.rotate(180, 0, 1, 0);
                     break;
                 case WEST:
-                    GL11.glTranslated(x - 0.0001, y + 0.83, z + 0.27);
+                    GlStateManager.translate((float) x - 0.0001F, (float) y + 0.83F, (float) z + 0.27F);
                     GlStateManager.rotate(90, 0, 1, 0);
                     break;
                 case EAST:
-                    GL11.glTranslated(x + 1.0001, y + 0.83, z + 0.73);
+                    GlStateManager.translate((float) x + 1.0001F, (float) y + 0.83F, (float) z + 0.73F);
                     GlStateManager.rotate(-90, 0, 1, 0);
                     break;
                 default:
@@ -73,10 +71,9 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
         GlStateManager.pushMatrix();
         GlStateManager.doPolygonOffset(-10, -10);
         GlStateManager.enablePolygonOffset();
-        //TODO: Look into this because it gets cast to 1 due to division
-        float displayWidth = 1 - (2 / 16);
-        float displayHeight = 1 - (2 / 16);
-        GlStateManager.translate(x, y, z);
+        float displayWidth = 1;
+        float displayHeight = 1;
+        GlStateManager.translate((float) x, (float) y, (float) z);
 
         switch (side) {
             case SOUTH:
@@ -111,26 +108,21 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
         float scaler = 0.4F;
         float scaleX = displayWidth / requiredWidth;
         float scale = scaleX * scaler;
-
         if (maxScale > 0) {
             scale = Math.min(scale, maxScale);
         }
 
         GlStateManager.scale(scale, -scale, scale);
         GlStateManager.depthMask(false);
-
         int realHeight = (int) Math.floor(displayHeight / scale);
         int realWidth = (int) Math.floor(displayWidth / scale);
-
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
-
         GlStateManager.disableLighting();
         fontRenderer.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
         GlStateManager.enableLighting();
         GlStateManager.depthMask(true);
         GlStateManager.disablePolygonOffset();
-
         GlStateManager.popMatrix();
     }
 }

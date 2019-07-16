@@ -50,7 +50,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.OreDictManager;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
@@ -455,7 +454,6 @@ public class Mekanism {
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.CRAFTING_TABLE), new ItemStack(Blocks.PLANKS, 4));
         }
 
-
         if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.METALLURGIC_INFUSER)) {
             InfuseType carbon = InfuseRegistry.get("CARBON");
             InfuseType bio = InfuseRegistry.get("BIO");
@@ -777,12 +775,6 @@ public class Mekanism {
         //Load configuration
         proxy.loadConfiguration();
         proxy.onConfigSync(false);
-
-        if (config.getAbsolutePath().contains("voltz")) {
-            logger.info("Detected Voltz in root directory - hello, fellow user!");
-        } else if (config.getAbsolutePath().contains("tekkit")) {
-            logger.info("Detected Tekkit in root directory - hello, fellow user!");
-        }
 
         MinecraftForge.EVENT_BUS.register(MekanismItems.GasMask);
         MinecraftForge.EVENT_BUS.register(MekanismItems.FreeRunners);

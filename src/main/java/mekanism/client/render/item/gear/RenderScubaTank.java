@@ -26,10 +26,10 @@ public class RenderScubaTank extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(90, 0.0F, -1.0F, 0.0F);
+        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotate(90, 0, -1, 0);
         GlStateManager.scale(1.6F, 1.6F, 1.6F);
-        GlStateManager.translate(0.2F, -0.5F, 0.0F);
+        GlStateManager.translate(0.2F, -0.5F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
         scubaTank.render(0.0625F);
         GlStateManager.popMatrix();

@@ -1,10 +1,13 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelChemicalCrystallizer extends ModelBase {
@@ -136,7 +139,10 @@ public class ModelChemicalCrystallizer extends ModelBase {
     }
 
     public void render(float size) {
-        MekanismRenderer.blendOn();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
         tray.render(size);
         support4.render(size);
@@ -156,7 +162,8 @@ public class ModelChemicalCrystallizer extends ModelBase {
         base.render(size);
         Shape1.render(size);
 
-        MekanismRenderer.blendOff();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

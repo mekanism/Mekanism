@@ -19,7 +19,7 @@ public class RenderResistiveHeaterItem {
     private static ModelResistiveHeater resistiveHeater = new ModelResistiveHeater();
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.translate(0.05F, -0.96F, 0.05F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
         resistiveHeater.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine, true);

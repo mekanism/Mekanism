@@ -273,7 +273,7 @@ public abstract class BlockBasic extends BlockTileDrops {
         if (type == null) {
             return defaultResistance;
         }
-        switch(type) {
+        switch (type) {
             case REFINED_OBSIDIAN:
                 return 2400F;
             case OSMIUM_BLOCK:
@@ -285,7 +285,7 @@ public abstract class BlockBasic extends BlockTileDrops {
             case THERMAL_EVAPORATION_BLOCK:
             case THERMAL_EVAPORATION_VALVE:
             case THERMAL_EVAPORATION_CONTROLLER:
-                  return 9F;
+                return 9F;
             default:
                 return defaultResistance;
         }
@@ -295,10 +295,9 @@ public abstract class BlockBasic extends BlockTileDrops {
     @Deprecated
     public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
         BasicBlockType type = BasicBlockType.get(getBasicBlock(), blockState.getBlock().getMetaFromState(blockState));
-        if(type == BasicBlockType.REFINED_OBSIDIAN) {
+        if (type == BasicBlockType.REFINED_OBSIDIAN) {
             return 50.0F;
-        }
-        else if(type == BasicBlockType.OSMIUM_BLOCK) {
+        } else if (type == BasicBlockType.OSMIUM_BLOCK) {
             return 7.5F;
         }
         return blockHardness;
@@ -452,8 +451,7 @@ public abstract class BlockBasic extends BlockTileDrops {
                             MekanismUtils.dismantleBlock(this, state, world, pos);
                             return true;
                         }
-                        int change = bin.facing.rotateY().ordinal();
-                        bin.setFacing((short) change);
+                        bin.setFacing(bin.facing.rotateY());
                         world.notifyNeighborsOfStateChange(pos, this, true);
                     }
                     return true;
@@ -597,33 +595,33 @@ public abstract class BlockBasic extends BlockTileDrops {
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) te;
-            int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            int height = Math.round(placer.rotationPitch);
-            int change = 3;
-            if (tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1)) {
+            EnumFacing change = EnumFacing.SOUTH;
+            if (tileEntity.canSetFacing(EnumFacing.DOWN) && tileEntity.canSetFacing(EnumFacing.UP)) {
+                int height = Math.round(placer.rotationPitch);
                 if (height >= 65) {
-                    change = 1;
+                    change = EnumFacing.UP;
                 } else if (height <= -65) {
-                    change = 0;
+                    change = EnumFacing.DOWN;
                 }
             }
-            if (change != 0 && change != 1) {
+            if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
+                int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
                 switch (side) {
                     case 0:
-                        change = 2;
+                        change = EnumFacing.NORTH;
                         break;
                     case 1:
-                        change = 5;
+                        change = EnumFacing.EAST;
                         break;
                     case 2:
-                        change = 3;
+                        change = EnumFacing.SOUTH;
                         break;
                     case 3:
-                        change = 4;
+                        change = EnumFacing.WEST;
                         break;
                 }
             }
-            tileEntity.setFacing((short) change);
+            tileEntity.setFacing(change);
             tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
 
             if (tileEntity instanceof TileEntitySecurityDesk) {
@@ -704,7 +702,7 @@ public abstract class BlockBasic extends BlockTileDrops {
         if (tile instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
             for (EnumFacing dir : EnumFacing.VALUES) {
-                if (basicTile.canSetFacing(dir.ordinal())) {
+                if (basicTile.canSetFacing(dir)) {
                     valid[dir.ordinal()] = dir;
                 }
             }
@@ -717,8 +715,8 @@ public abstract class BlockBasic extends BlockTileDrops {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            if (basicTile.canSetFacing(axis.ordinal())) {
-                basicTile.setFacing((short) axis.ordinal());
+            if (basicTile.canSetFacing(axis)) {
+                basicTile.setFacing(axis);
                 return true;
             }
         }

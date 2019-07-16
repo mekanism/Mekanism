@@ -4,10 +4,14 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock> extends GuiMekanismTile<TILE> {
 
     protected GuiEmbeddedGaugeTile(TILE tile, Container container) {
@@ -24,12 +28,10 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock
         if (fluid == null) {
             return;
         }
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         int start = 0;
-        MekanismRenderer.colorFluidGLSM(fluid);
+        MekanismRenderer.color(fluid);
         TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
-        mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+        mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         while (true) {
             int renderRemaining;
             if (scale > 16) {
@@ -39,14 +41,14 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock
                 renderRemaining = scale;
                 scale = 0;
             }
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluidTexture, 16, renderRemaining);
+            drawTexturedModalRect(guiLeft + xPos, guiTop + yPos + 58 - renderRemaining - start, fluidTexture, 16, renderRemaining);
             start += 16;
             if (renderRemaining == 0 || scale == 0) {
                 break;
             }
         }
-
+        MekanismRenderer.resetColor();
         mc.renderEngine.bindTexture(getGaugeResource());
-        drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+        drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 176, side == 0 ? 0 : 54, 16, 54);
     }
 }

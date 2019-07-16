@@ -1,6 +1,7 @@
 package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.util.MekanismUtils;
@@ -15,23 +16,19 @@ public abstract class MinerFilter implements IFilter {
     public boolean requireStack;
 
     public static MinerFilter readFromNBT(NBTTagCompound nbtTags) {
-        int type = nbtTags.getInteger("type");
-        MinerFilter filter = null;
-        if (type == 0) {
-            filter = new MItemStackFilter();
-        } else if (type == 1) {
-            filter = new MOreDictFilter();
-        } else if (type == 2) {
-            filter = new MMaterialFilter();
-        } else if (type == 3) {
-            filter = new MModIDFilter();
-        }
+        MinerFilter filter = getType(nbtTags.getInteger("type"));
         filter.read(nbtTags);
         return filter;
     }
 
     public static MinerFilter readFromPacket(ByteBuf dataStream) {
-        int type = dataStream.readInt();
+        MinerFilter filter = getType(dataStream.readInt());
+        filter.read(dataStream);
+        return filter;
+    }
+
+    @Nullable
+    private static MinerFilter getType(int type) {
         MinerFilter filter = null;
         if (type == 0) {
             filter = new MItemStackFilter();
@@ -42,7 +39,6 @@ public abstract class MinerFilter implements IFilter {
         } else if (type == 3) {
             filter = new MModIDFilter();
         }
-        filter.read(dataStream);
         return filter;
     }
 

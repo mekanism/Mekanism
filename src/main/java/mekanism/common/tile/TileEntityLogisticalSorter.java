@@ -422,7 +422,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     }
 
     @Override
-    public boolean canSetFacing(int facing) {
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return true;
     }
 
@@ -552,7 +552,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                     return new Object[]{"Invalid parameters."};
                 }
                 TItemStackFilter filter = new TItemStackFilter();
-                filter.itemType = new ItemStack(Item.getByNameOrId((String) arguments[0]), 1, ((Double) arguments[1]).intValue());
+                filter.setItemStack(new ItemStack(Item.getByNameOrId((String) arguments[0]), 1, ((Double) arguments[1]).intValue()));
                 filter.color = EnumColor.getFromDyeName((String) arguments[2]);
                 filter.sizeMode = (Boolean) arguments[3];
                 filter.min = ((Double) arguments[4]).intValue();
@@ -568,7 +568,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                 while (iter.hasNext()) {
                     TransporterFilter filter = iter.next();
                     if (filter instanceof TItemStackFilter) {
-                        if (StackUtils.equalsWildcard(((TItemStackFilter) filter).itemType, stack)) {
+                        if (StackUtils.equalsWildcard(((TItemStackFilter) filter).getItemStack(), stack)) {
                             iter.remove();
                             return new Object[]{"Removed filter."};
                         }
