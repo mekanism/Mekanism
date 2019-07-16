@@ -127,7 +127,7 @@ public final class CableUtils {
             IMjConnector connector = CapabilityUtils.getCapability(orig, Capabilities.MJ_CONNECTOR_CAPABILITY, side);
             IMjReceiver receiver = CapabilityUtils.getCapability(tileEntity, Capabilities.MJ_RECEIVER_CAPABILITY, opposite);
             if (connector != null && receiver != null) {
-                return receiver.canConnect(connector);
+                return receiver.canConnect(connector) && receiver.canReceive();
             }
         }
         IEnergyStorage energyStorage;

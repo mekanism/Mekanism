@@ -59,8 +59,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
     /**
      * Note: It is assumed that a check for hasCapability was already ran.
      */
-    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability,
-          EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
+    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability, EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
         T acceptor = CapabilityUtils.getCapability(tileEntity, capability, side);
         if (acceptor != null) {
             return makeAcceptor.apply(acceptor);
@@ -210,7 +209,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public boolean needsEnergy(EnumFacing side) {
-            return acceptor.canReceive();
+            return acceptor.receiveEnergy(1, true) > 0;
         }
     }
 
@@ -223,18 +222,19 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         @Override
-        public boolean needsEnergy(EnumFacing side) {
-            return receiver.getPowerRequested() > 0;
-        }
-
-        @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return MjIntegration.fromMj(receiver.receivePower(MjIntegration.toMj(amount), simulate));
+            long toSend = MjIntegration.toMj(amount);
+            return toSend - MjIntegration.fromMj(receiver.receivePower(toSend, simulate));
         }
 
         @Override
         public boolean canReceiveEnergy(EnumFacing side) {
             return receiver.canReceive();
+        }
+
+        @Override
+        public boolean needsEnergy(EnumFacing side) {
+            return receiver.getPowerRequested() > 0;
         }
     }
 }
