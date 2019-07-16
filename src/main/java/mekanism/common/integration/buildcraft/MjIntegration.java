@@ -4,6 +4,7 @@ import buildcraft.api.mj.IMjConnector;
 import buildcraft.api.mj.IMjPassiveProvider;
 import buildcraft.api.mj.IMjReadable;
 import buildcraft.api.mj.IMjReceiver;
+import buildcraft.api.mj.MjAPI;
 import javax.annotation.Nonnull;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.config.MekanismConfig;
@@ -30,11 +31,11 @@ public class MjIntegration implements IMjReadable, IMjPassiveProvider, IMjReceiv
     }
 
     public static long toMj(double joules) {
-        return Math.round(joules * MekanismConfig.current().general.TO_MJ.val());
+        return Math.round(joules * MekanismConfig.current().general.TO_MJ.val() * MjAPI.MJ);
     }
 
     public static double fromMj(long mj) {
-        return mj * MekanismConfig.current().general.FROM_MJ.val();
+        return mj * MekanismConfig.current().general.FROM_MJ.val() / MjAPI.MJ;
     }
 
     @Override
@@ -61,6 +62,7 @@ public class MjIntegration implements IMjReadable, IMjPassiveProvider, IMjReceiv
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public long receivePower(long microJoules, boolean simulate) {
+        System.out.println("AMOUNT: " + microJoules + " " + toMj(tileEntity.acceptEnergy(side, fromMj(microJoules), true)));
         return Math.max(0, microJoules - toMj(tileEntity.acceptEnergy(side, fromMj(microJoules), simulate)));
     }
 
