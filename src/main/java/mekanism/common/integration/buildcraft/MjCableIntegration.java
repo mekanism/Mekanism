@@ -39,7 +39,6 @@ public class MjCableIntegration implements IMjPassiveProvider {
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public boolean canConnect(@Nonnull IMjConnector other) {
-        //TODO: Make this false if side is set to null??
-        return true;
+        return tileEntity.canConnect(side);
     }
 }

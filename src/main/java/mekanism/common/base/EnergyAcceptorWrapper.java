@@ -38,12 +38,12 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
             wrapper = fromCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side, MekanismAcceptor::new);
         } else if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
             wrapper = fromCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side, TeslaAcceptor::new);
+        } else if (MekanismUtils.useMj() && CapabilityUtils.hasCapability(tileEntity, Capabilities.MJ_RECEIVER_CAPABILITY, side)) {
+            wrapper = fromCapability(tileEntity, Capabilities.MJ_RECEIVER_CAPABILITY, side, MjAcceptor::new);
         } else if (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side)) {
             wrapper = fromCapability(tileEntity, CapabilityEnergy.ENERGY, side, ForgeAcceptor::new);
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             wrapper = new RFAcceptor((IEnergyReceiver) tileEntity);
-        } else if (MekanismUtils.useMj() && CapabilityUtils.hasCapability(tileEntity, Capabilities.MJ_RECEIVER_CAPABILITY, side)) {
-            wrapper = fromCapability(tileEntity, Capabilities.MJ_RECEIVER_CAPABILITY, side, MjAcceptor::new);
         } else if (MekanismUtils.useIC2()) {
             IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
             if (tile instanceof IEnergySink) {

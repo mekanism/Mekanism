@@ -74,12 +74,12 @@ public class MjIntegration implements IMjReadable, IMjPassiveProvider, IMjReceiv
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public long getStored() {
-        return toMj(tileEntity.getMaxEnergy());
+        return toMj(tileEntity.getEnergy());
     }
 
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public long getCapacity() {
-        return toMj(tileEntity.getEnergy());
+        return toMj(tileEntity.getMaxEnergy());
     }
 }

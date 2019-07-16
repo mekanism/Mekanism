@@ -20,7 +20,8 @@ import net.minecraftforge.fml.common.Optional.Method;
       @Interface(iface = "buildcraft.api.mj.IMjReadable", modid = MekanismHooks.BUILDCRAFT_MOD_ID)
 })
 public class MjItemWrapper extends ItemCapability implements IMjReadable, IMjPassiveProvider, IMjReceiver {
-    //TODO
+
+    //TODO: Figure out if this class is even needed. I am not sure BuildCraft supports items having "inventory power"
 
     @Override
     public boolean canProcess(Capability<?> capability) {

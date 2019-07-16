@@ -397,11 +397,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         if (isTesla(capability, facing)) {
             return (T) teslaManager.getWrapper(this, facing);
         }
-        if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
-        }
         if (isMj(capability, facing)) {
             return (T) mjManager.getWrapper(this, facing);
+        }
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
         }
         return super.getCapability(capability, facing);
     }
@@ -419,8 +419,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         if (capIsReceiver && sideIsConsumer(side)) {
             return true;
         }
-        boolean capIsProvider = capability == Capabilities.MJ_CONNECTOR_CAPABILITY || capability == Capabilities.MJ_PROVIDER_CAPABILITY;
-        return capIsProvider && sideIsOutput(side);
+        return (capability == Capabilities.MJ_CONNECTOR_CAPABILITY || capability == Capabilities.MJ_PROVIDER_CAPABILITY) && sideIsOutput(side);
     }
 
     @Nonnull

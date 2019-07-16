@@ -386,11 +386,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
             } else if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
                 return (T) teslaManager.getWrapper(this, facing);
+            } else if (capability == Capabilities.MJ_READABLE_CAPABILITY || ((capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY)
+                                                                             && sideIsOutput(facing))) {
+                return (T) mjManager.getWrapper(this, facing);
             } else if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
-            }
-            if (capability == Capabilities.MJ_READABLE_CAPABILITY || ((capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY) && sideIsOutput(facing))) {
-                return (T) mjManager.getWrapper(this, facing);
             }
         }
         return super.getCapability(capability, side);

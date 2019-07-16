@@ -372,10 +372,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
             return (T) this;
         } else if (isTesla(capability, side)) {
             return (T) getTeslaEnergyWrapper(side);
-        } else if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         } else if (isMj(capability, side)) {
             return (T) getMjWrapper(side);
+        } else if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         }
         return super.getCapability(capability, side);
     }
@@ -397,8 +397,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         if (capIsReceiver && sideIsConsumer(side)) {
             return true;
         }
-        boolean capIsProvider = capability == Capabilities.MJ_CONNECTOR_CAPABILITY || capability == Capabilities.MJ_PROVIDER_CAPABILITY;
-        return capIsProvider && sideIsOutput(side);
+        return (capability == Capabilities.MJ_CONNECTOR_CAPABILITY || capability == Capabilities.MJ_PROVIDER_CAPABILITY) && sideIsOutput(side);
     }
 
     protected ForgeEnergyIntegration getForgeEnergyWrapper(EnumFacing side) {

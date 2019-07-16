@@ -79,7 +79,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             updateShare();
             List<EnumFacing> sides = getConnections(ConnectionType.PULL);
             if (!sides.isEmpty()) {
-                TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(this, getPos(), getWorld());
+                TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
                 double canDraw = tier.getCableCapacity();
                 for (EnumFacing side : sides) {
                     TileEntity outputter = connectedOutputters[side.ordinal()];
@@ -103,6 +103,12 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                                 toDraw -= takeEnergy(toDraw, true);
                             }
                             teslaProducer.takePower(TeslaIntegration.toTesla(toDraw), false);
+                        } else if (MekanismUtils.useMj() && (mjProvider = CapabilityUtils.getCapability(outputter, Capabilities.MJ_PROVIDER_CAPABILITY, side.getOpposite())) != null) {
+                            double toDraw = MjIntegration.fromMj(mjProvider.extractPower(0, MjIntegration.toMj(canDraw), true));
+                            if (toDraw > 0) {
+                                toDraw -= takeEnergy(toDraw, true);
+                            }
+                            mjProvider.extractPower(0, MjIntegration.toMj(toDraw), false);
                         } else if (MekanismUtils.useForge() && (forgeStorage = CapabilityUtils.getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite())) != null) {
                             double toDraw = ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(canDraw), true));
                             if (toDraw > 0) {
@@ -117,12 +123,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                                 toDraw -= takeEnergy(toDraw, true);
                             }
                             rfProvider.extractEnergy(side.getOpposite(), MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_RF.val()), false);
-                        } else if (MekanismUtils.useMj() && (mjProvider = CapabilityUtils.getCapability(outputter, Capabilities.MJ_PROVIDER_CAPABILITY, side.getOpposite())) != null) {
-                            double toDraw = MjIntegration.fromMj(mjProvider.extractPower(0, MjIntegration.toMj(canDraw), true));
-                            if (toDraw > 0) {
-                                toDraw -= takeEnergy(toDraw, true);
-                            }
-                            mjProvider.extractPower(0, MjIntegration.toMj(toDraw), false);
                         } else if (MekanismUtils.useIC2()) {
                             IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
                             if (tile instanceof IEnergySource) {
@@ -346,11 +346,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             return (T) this;
         } else if (capability == Capabilities.TESLA_CONSUMER_CAPABILITY) {
             return (T) teslaManager.getWrapper(this, facing);
+        } else if (capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY) {
+            return (T) mjManager.getWrapper(this, facing);
         } else if (capability == CapabilityEnergy.ENERGY) {
             return (T) forgeEnergyManager.getWrapper(this, facing);
-        }
-        if (capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY) {
-            return (T) mjManager.getWrapper(this, facing);
         }
         return super.getCapability(capability, facing);
     }

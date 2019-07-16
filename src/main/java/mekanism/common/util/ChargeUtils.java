@@ -1,5 +1,7 @@
 package mekanism.common.util;
 
+import buildcraft.api.mj.IMjPassiveProvider;
+import buildcraft.api.mj.IMjReceiver;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItemManager;
@@ -8,6 +10,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.buildcraft.MjIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -45,6 +48,10 @@ public final class ChargeUtils {
                 ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
                 long needed = TeslaIntegration.toTesla(storer.getMaxEnergy() - storer.getEnergy());
                 storer.setEnergy(storer.getEnergy() + TeslaIntegration.fromTesla(producer.takePower(needed, false)));
+            } else if (MekanismUtils.useMj() && stack.hasCapability(Capabilities.MJ_PROVIDER_CAPABILITY, null)) {
+                IMjPassiveProvider provider = stack.getCapability(Capabilities.MJ_PROVIDER_CAPABILITY, null);
+                long needed = MjIntegration.toMj(storer.getMaxEnergy() - storer.getEnergy());
+                storer.setEnergy(storer.getEnergy() + MjIntegration.fromMj(provider.extractPower(0, needed, false)));
             } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                 IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
                 if (storage.canExtract()) {
@@ -91,6 +98,10 @@ public final class ChargeUtils {
                 ITeslaConsumer consumer = stack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null);
                 long stored = TeslaIntegration.toTesla(storer.getEnergy());
                 storer.setEnergy(storer.getEnergy() - TeslaIntegration.fromTesla(consumer.givePower(stored, false)));
+            } else if (MekanismUtils.useMj() && stack.hasCapability(Capabilities.MJ_RECEIVER_CAPABILITY, null)) {
+                IMjReceiver receiver = stack.getCapability(Capabilities.MJ_RECEIVER_CAPABILITY, null);
+                long stored = MjIntegration.toMj(storer.getEnergy());
+                storer.setEnergy(storer.getEnergy() - MjIntegration.fromMj(receiver.receivePower(stored, false)));
             } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                 IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
                 if (storage.canReceive()) {
@@ -127,6 +138,13 @@ public final class ChargeUtils {
         if (MekanismUtils.useTesla()) {
             if (itemstack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)) {
                 if (itemstack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null).takePower(1, true) > 0) {
+                    return true;
+                }
+            }
+        }
+        if (MekanismUtils.useMj()) {
+            if (itemstack.hasCapability(Capabilities.MJ_PROVIDER_CAPABILITY, null)) {
+                if (itemstack.getCapability(Capabilities.MJ_PROVIDER_CAPABILITY, null).extractPower(1, 1, true) > 0) {
                     return true;
                 }
             }
@@ -172,6 +190,13 @@ public final class ChargeUtils {
         if (MekanismUtils.useTesla()) {
             if (itemstack.hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null)) {
                 if (itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null).givePower(1, true) > 0) {
+                    return true;
+                }
+            }
+        }
+        if (MekanismUtils.useMj()) {
+            if (itemstack.hasCapability(Capabilities.MJ_RECEIVER_CAPABILITY, null)) {
+                if (itemstack.getCapability(Capabilities.MJ_RECEIVER_CAPABILITY, null).receivePower(1, true) > 0) {
                     return true;
                 }
             }
@@ -222,6 +247,15 @@ public final class ChargeUtils {
             } else if (!chargeSlot && itemstack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)) {
                 ITeslaProducer producer = itemstack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
                 return producer.takePower(1, true) == 0;
+            }
+        }
+        if (MekanismUtils.useMj()) {
+            if (chargeSlot && itemstack.hasCapability(Capabilities.MJ_RECEIVER_CAPABILITY, null)) {
+                IMjReceiver receiver = itemstack.getCapability(Capabilities.MJ_RECEIVER_CAPABILITY, null);
+                return receiver.receivePower(1, true) == 0;
+            } else if (!chargeSlot && itemstack.hasCapability(Capabilities.MJ_PROVIDER_CAPABILITY, null)) {
+                IMjPassiveProvider provider = itemstack.getCapability(Capabilities.MJ_PROVIDER_CAPABILITY, null);
+                return provider.extractPower(1, 1, true) == 0;
             }
         }
         if (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null)) {
