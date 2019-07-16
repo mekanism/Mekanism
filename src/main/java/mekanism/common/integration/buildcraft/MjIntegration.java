@@ -40,7 +40,7 @@ public class MjIntegration implements IMjReadable, IMjPassiveProvider, IMjReceiv
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public long extractPower(long min, long max, boolean simulate) {
-        long toDraw = toMj(tileEntity.acceptEnergy(side, fromMj(max), true));
+        long toDraw = toMj(tileEntity.pullEnergy(side, fromMj(max), true));
         if (toDraw < min) {
             return 0;
         }
@@ -49,7 +49,7 @@ public class MjIntegration implements IMjReadable, IMjPassiveProvider, IMjReceiv
             return toDraw;
         }
         //Draw it for real this time
-        return toMj(tileEntity.acceptEnergy(side, fromMj(toDraw), false));
+        return toMj(tileEntity.pullEnergy(side, fromMj(toDraw), false));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MjIntegration implements IMjReadable, IMjPassiveProvider, IMjReceiv
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public long receivePower(long microJoules, boolean simulate) {
-        return Math.max(0, microJoules - toMj(tileEntity.pullEnergy(side, fromMj(microJoules), simulate)));
+        return Math.max(0, microJoules - toMj(tileEntity.acceptEnergy(side, fromMj(microJoules), simulate)));
     }
 
     @Override

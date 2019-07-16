@@ -50,7 +50,8 @@ public final class CableUtils {
         }
         return isAcceptor(cableEntity, tile, side) || isOutputter(cableEntity, tile, side) ||
                (MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection) tile).canConnectEnergy(side.getOpposite())) ||
-               (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()));
+               (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite())) ||
+               (MekanismUtils.useMj() && CapabilityUtils.hasCapability(tile, Capabilities.MJ_CONNECTOR_CAPABILITY, side.getOpposite()));
     }
 
     /**
@@ -93,7 +94,7 @@ public final class CableUtils {
         if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_PRODUCER_CAPABILITY, opposite)) {
             return true;
         }
-        if (MekanismUtils.useMj() && CapabilityUtils.hasCapability(tileEntity, Capabilities.MJ_PROVIDER_CAPABILITY, opposite)) {
+        if (MekanismUtils.useMj()) {
             IMjConnector connector = CapabilityUtils.getCapability(orig, Capabilities.MJ_CONNECTOR_CAPABILITY, side);
             IMjPassiveProvider provider = CapabilityUtils.getCapability(tileEntity, Capabilities.MJ_PROVIDER_CAPABILITY, opposite);
             if (connector != null && provider != null) {

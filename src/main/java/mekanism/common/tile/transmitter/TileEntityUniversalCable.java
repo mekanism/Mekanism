@@ -337,7 +337,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
                || capability == Capabilities.TESLA_CONSUMER_CAPABILITY || capability == CapabilityEnergy.ENERGY
-               || capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY || super.hasCapability(capability, facing);
+               || capability == Capabilities.MJ_RECEIVER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY  || super.hasCapability(capability, facing);
     }
 
     @Override
@@ -346,7 +346,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             return (T) this;
         } else if (capability == Capabilities.TESLA_CONSUMER_CAPABILITY) {
             return (T) teslaManager.getWrapper(this, facing);
-        } else if (capability == Capabilities.MJ_PROVIDER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY) {
+        } else if (capability == Capabilities.MJ_RECEIVER_CAPABILITY || capability == Capabilities.MJ_CONNECTOR_CAPABILITY) {
             return (T) mjManager.getWrapper(this, facing);
         } else if (capability == CapabilityEnergy.ENERGY) {
             return (T) forgeEnergyManager.getWrapper(this, facing);
