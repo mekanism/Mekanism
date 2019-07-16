@@ -35,6 +35,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
 
+    public static final int START_BUTTON_ID = 0;
+    public static final int STOP_BUTTON_ID = 1;
+    public static final int CONFIG_BUTTON_ID = 2;
+    public static final int RESET_BUTTON_ID = 3;
+    public static final int SILK_TOUCH_BUTTON_ID = 4;
+    public static final int AUTOEJECT_BUTTON_ID = 5;
+    public static final int AUTO_PULL_BUTTON_ID = 6;
     private GuiButton startButton;
     private GuiButton stopButton;
     private GuiButton configButton;
@@ -72,33 +79,41 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(startButton = new GuiButton(0, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start")));
-        buttonList.add(stopButton = new GuiButton(1, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop")));
-        buttonList.add(configButton = new GuiButton(2, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config")));
-        buttonList.add(resetButton = new GuiButtonDisableableImage(3, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation()));
-        buttonList.add(silkTouchButton = new GuiButtonDisableableImage(4, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation()));
-        buttonList.add(autoEjectButton = new GuiButtonDisableableImage(5, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation()));
-        buttonList.add(autoPullButton = new GuiButtonDisableableImage(6, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation()));
+        buttonList.add(this.startButton = new GuiButton(START_BUTTON_ID, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start")));
+        buttonList.add(this.stopButton = new GuiButton(STOP_BUTTON_ID, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop")));
+        buttonList.add(this.configButton = new GuiButton(CONFIG_BUTTON_ID, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config")));
+        buttonList.add(this.resetButton = new GuiButtonDisableableImage(RESET_BUTTON_ID, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation()));
+        buttonList.add(this.silkTouchButton = new GuiButtonDisableableImage(SILK_TOUCH_BUTTON_ID, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation()));
+        buttonList.add(this.autoEjectButton = new GuiButtonDisableableImage(AUTOEJECT_BUTTON_ID, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation()));
+        buttonList.add(this.autoPullButton = new GuiButtonDisableableImage(AUTO_PULL_BUTTON_ID, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation()));
         updateEnabledButtons();
     }
 
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == startButton.id) {
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3)));
-        } else if (guibutton.id == stopButton.id) {
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(4)));
-        } else if (guibutton.id == configButton.id) {
-            Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
-        } else if (guibutton.id == resetButton.id) {
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(5)));
-        } else if (guibutton.id == silkTouchButton.id) {
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(9)));
-        } else if (guibutton.id == autoEjectButton.id) {
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(0)));
-        } else if (guibutton.id == autoPullButton.id) {
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(1)));
+        switch (guibutton.id) {
+            case START_BUTTON_ID:
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3)));
+                break;
+            case STOP_BUTTON_ID:
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(4)));
+                break;
+            case CONFIG_BUTTON_ID:
+                Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+                break;
+            case RESET_BUTTON_ID:
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(5)));
+                break;
+            case SILK_TOUCH_BUTTON_ID:
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(9)));
+                break;
+            case AUTOEJECT_BUTTON_ID:
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(0)));
+                break;
+            case AUTO_PULL_BUTTON_ID:
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(1)));
+                break;
         }
     }
 
