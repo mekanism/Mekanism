@@ -138,7 +138,7 @@ public class CommonProxy implements IGuiProvider {
      * @param isBlock      - if the chest is a block
      * @param pos          - coordinates
      */
-    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand) {
+    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand, int hotbarSlot) {
     }
 
     /**

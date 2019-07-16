@@ -626,9 +626,9 @@ public final class MekanismUtils {
         int id = player.currentWindowId;
 
         if (isBlock) {
-            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity), null), player);
+            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity), null, 0), player);
         } else {
-            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null, inventory.currentHand), player);
+            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null, inventory.currentHand, inventory.hotbarSlot), player);
         }
         player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
         player.openContainer.windowId = id;

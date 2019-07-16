@@ -277,16 +277,17 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand) {
+    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand, int hotbarSlot) {
         if (id == 0) {
             if (isBlock) {
                 TileEntityPersonalChest tileEntity = (TileEntityPersonalChest) entityplayer.world.getTileEntity(pos);
                 FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, tileEntity));
                 entityplayer.openContainer.windowId = windowId;
-            } else {
+            } else if (hotbarSlot == entityplayer.inventory.currentItem) {
+                //Ensure they still have the same hotbar slot selected
                 ItemStack stack = entityplayer.getHeldItem(hand);
                 if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
-                    InventoryPersonalChest inventory = new InventoryPersonalChest(stack, hand);
+                    InventoryPersonalChest inventory = new InventoryPersonalChest(stack, hand, hotbarSlot);
                     FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
                     entityplayer.openContainer.windowId = windowId;
                 }

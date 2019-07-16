@@ -25,14 +25,16 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
         EntityPlayer player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (message.packetType == PersonalChestPacketType.SERVER_OPEN) {
+                //TODO: Decide if the SERVER_OPEN code can just be scrapped, it is not used anywhere
                 try {
                     if (message.isBlock) {
                         TileEntityPersonalChest tileEntity = (TileEntityPersonalChest) message.coord4D.getTileEntity(player.world);
                         MekanismUtils.openPersonalChestGui((EntityPlayerMP) player, tileEntity, null, true);
-                    } else {
+                    } else if (message.hotbarSlot == player.inventory.currentItem) {
+                        //Ensure they still have the same hotbar slot selected
                         ItemStack stack = player.getHeldItem(message.currentHand);
                         if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
-                            InventoryPersonalChest inventory = new InventoryPersonalChest(stack, message.currentHand);
+                            InventoryPersonalChest inventory = new InventoryPersonalChest(stack, message.currentHand, message.hotbarSlot);
                             MekanismUtils.openPersonalChestGui((EntityPlayerMP) player, null, inventory, false);
                         }
                     }
@@ -42,7 +44,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
             } else if (message.packetType == PersonalChestPacketType.CLIENT_OPEN) {
                 try {
                     Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock,
-                          message.coord4D == null ? BlockPos.ORIGIN : message.coord4D.getPos(), message.currentHand);
+                          message.coord4D == null ? BlockPos.ORIGIN : message.coord4D.getPos(), message.currentHand, message.hotbarSlot);
                 } catch (Exception e) {
                     Mekanism.logger.error("Error while handling electric chest open packet.", e);
                 }
@@ -64,6 +66,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 
         public int guiType;
         public int windowId;
+        public int hotbarSlot;
 
         public Coord4D coord4D;
 
@@ -73,27 +76,28 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
         }
 
         //This is a really messy implementation...
-        public PersonalChestMessage(PersonalChestPacketType type, boolean b1, int i1, int i2, Coord4D c1,
-              EnumHand hand) {
+        public PersonalChestMessage(PersonalChestPacketType type, boolean isBlock, int gui, int window, Coord4D coord, EnumHand hand, int hotbarSlot) {
             packetType = type;
 
             switch (packetType) {
                 case CLIENT_OPEN:
-                    guiType = i1;
-                    windowId = i2;
-                    isBlock = b1;
-                    if (isBlock) {
-                        coord4D = c1;
+                    guiType = gui;
+                    windowId = window;
+                    this.isBlock = isBlock;
+                    if (this.isBlock) {
+                        coord4D = coord;
                     } else {
                         currentHand = hand;
+                        this.hotbarSlot = hotbarSlot;
                     }
                     break;
                 case SERVER_OPEN:
-                    isBlock = b1;
-                    if (isBlock) {
-                        coord4D = c1;
+                    this.isBlock = isBlock;
+                    if (this.isBlock) {
+                        coord4D = coord;
                     } else {
                         currentHand = hand;
+                        this.hotbarSlot = hotbarSlot;
                     }
                     break;
             }
@@ -111,6 +115,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                         coord4D.write(dataStream);
                     } else {
                         dataStream.writeInt(currentHand.ordinal());
+                        dataStream.writeInt(hotbarSlot);
                     }
                     break;
                 case SERVER_OPEN:
@@ -119,6 +124,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                         coord4D.write(dataStream);
                     } else {
                         dataStream.writeInt(currentHand.ordinal());
+                        dataStream.writeInt(hotbarSlot);
                     }
                     break;
             }
@@ -133,6 +139,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                     coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
                 } else {
                     currentHand = EnumHand.values()[dataStream.readInt()];
+                    hotbarSlot = dataStream.readInt();
                 }
             } else if (packetType == PersonalChestPacketType.CLIENT_OPEN) {
                 guiType = dataStream.readInt();
@@ -142,6 +149,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                     coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
                 } else {
                     currentHand = EnumHand.values()[dataStream.readInt()];
+                    hotbarSlot = dataStream.readInt();
                 }
             }
         }
