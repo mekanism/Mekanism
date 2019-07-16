@@ -89,7 +89,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                                         ((EntityPlayerMP) player).connection.floatingTickCount = 0;
                                     }
                                     player.closeScreen();
-                                    Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(new Coord4D(player)), coords.getTargetPoint(40D));
+                                    Mekanism.packetHandler.sendToAllTracking(new PortalFXMessage(new Coord4D(player)), coords);
                                     if (player instanceof EntityPlayerMP) {
                                         TileEntityTeleporter.teleportPlayerTo((EntityPlayerMP) player, coords, teleporter);
                                         TileEntityTeleporter.alignPlayer((EntityPlayerMP) player, coords);

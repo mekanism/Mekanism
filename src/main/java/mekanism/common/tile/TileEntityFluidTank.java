@@ -18,7 +18,6 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.ITieredTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
@@ -151,7 +150,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 currentRedstoneLevel = newRedstoneLevel;
             }
             if (needsPacket) {
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(50));
+                Mekanism.packetHandler.sendUpdatePacket(this);
             }
             needsPacket = false;
         }

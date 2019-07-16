@@ -26,7 +26,6 @@ import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -162,7 +161,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
             shouldRender = status == 1 || status > 4;
             if (shouldRender != prevShouldRender) {
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(40D));
+                Mekanism.packetHandler.sendUpdatePacket(this);
                 //This also means the comparator output changed so notify the neighbors we have a change
                 MekanismUtils.notifyLoadedNeighborsOfTileChange(world, Coord4D.get(this));
             }
@@ -319,7 +318,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
                     teleportEntityTo(entity, closestCoords, teleporter);
                 }
                 for (Coord4D coords : frequency.activeCoords) {
-                    Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(coords), coords.getTargetPoint(40D));
+                    Mekanism.packetHandler.sendToAllTracking(new PortalFXMessage(coords), coords);
                 }
                 setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
                 world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
