@@ -60,57 +60,37 @@ public final class MekanismHooks {
     public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
     public static final String WAILA_MOD_ID = "Waila";
     public static final String TOP_MOD_ID = "theoneprobe";
-    public static final String BUILDCRAFT_MOD_ID = "BuildCraft";
+    public static final String BUILDCRAFT_MOD_ID = "buildcraftcore";
     public static final String CYCLIC_MOD_ID = "cyclicmagic";
     public static final String MYSTICALAGRICULTURE_MOD_ID = "mysticalagriculture";
     public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
 
-    public boolean IC2Loaded = false;
-    public boolean CCLoaded = false;
     public boolean AE2Loaded = false;
-    public boolean TeslaLoaded = false;
-    public boolean MCMPLoaded = false;
-    public boolean RFLoaded = false;
-    public boolean MetallurgyLoaded = false;
-    public boolean CyclicLoaded = false;
-    public boolean OCLoaded = false;
-    public boolean MALoaded = false;
+    public boolean BuildCraftLoaded = false;
+    public boolean CCLoaded = false;
     public boolean CraftTweakerLoaded = false;
+    public boolean CyclicLoaded = false;
+    public boolean IC2Loaded = false;
+    public boolean MALoaded = false;
+    public boolean MCMPLoaded = false;
+    public boolean MetallurgyLoaded = false;
+    public boolean OCLoaded = false;
+    public boolean RFLoaded = false;
+    public boolean TeslaLoaded = false;
 
     public void hookPreInit() {
-        if (Loader.isModLoaded(IC2_MOD_ID)) {
-            IC2Loaded = true;
-        }
-        if (Loader.isModLoaded(COMPUTERCRAFT_MOD_ID)) {
-            CCLoaded = true;
-        }
-        if (Loader.isModLoaded(APPLIED_ENERGISTICS_2_MOD_ID)) {
-            AE2Loaded = true;
-        }
-        if (Loader.isModLoaded(OPENCOMPUTERS_MOD_ID)) {
-            OCLoaded = true;
-        }
-        if (Loader.isModLoaded(TESLA_MOD_ID)) {
-            TeslaLoaded = true;
-        }
-        if (Loader.isModLoaded(MCMULTIPART_MOD_ID)) {
-            MCMPLoaded = true;
-        }
-        if (Loader.isModLoaded(REDSTONEFLUX_MOD_ID)) {
-            RFLoaded = true;
-        }
-        if (Loader.isModLoaded(CYCLIC_MOD_ID)) {
-            CyclicLoaded = true;
-        }
-        if (Loader.isModLoaded(METALLURGY_MOD_ID)) {
-            MetallurgyLoaded = true;
-        }
-        if (Loader.isModLoaded(MYSTICALAGRICULTURE_MOD_ID)) {
-            MALoaded = true;
-        }
-        if (Loader.isModLoaded(CRAFTTWEAKER_MOD_ID)) {
-            CraftTweakerLoaded = true;
-        }
+        AE2Loaded = Loader.isModLoaded(APPLIED_ENERGISTICS_2_MOD_ID);
+        BuildCraftLoaded = Loader.isModLoaded(BUILDCRAFT_MOD_ID);
+        CCLoaded = Loader.isModLoaded(COMPUTERCRAFT_MOD_ID);
+        CraftTweakerLoaded = Loader.isModLoaded(CRAFTTWEAKER_MOD_ID);
+        CyclicLoaded = Loader.isModLoaded(CYCLIC_MOD_ID);
+        IC2Loaded = Loader.isModLoaded(IC2_MOD_ID);
+        MCMPLoaded = Loader.isModLoaded(MCMULTIPART_MOD_ID);
+        MetallurgyLoaded = Loader.isModLoaded(METALLURGY_MOD_ID);
+        MALoaded = Loader.isModLoaded(MYSTICALAGRICULTURE_MOD_ID);
+        OCLoaded = Loader.isModLoaded(OPENCOMPUTERS_MOD_ID);
+        RFLoaded = Loader.isModLoaded(REDSTONEFLUX_MOD_ID);
+        TeslaLoaded = Loader.isModLoaded(TESLA_MOD_ID);
     }
 
     public void hookInit() {

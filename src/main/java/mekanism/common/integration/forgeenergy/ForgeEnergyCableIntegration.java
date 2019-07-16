@@ -19,8 +19,7 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        return MekanismUtils.clampToInt(tileEntity.acceptEnergy(side, maxReceive * MekanismConfig.current().general.FROM_FORGE.val(), simulate)
-                                        * MekanismConfig.current().general.TO_FORGE.val());
+        return ForgeEnergyIntegration.toForge(tileEntity.acceptEnergy(side, ForgeEnergyIntegration.fromForge(maxReceive), simulate));
     }
 
     @Override
@@ -30,12 +29,12 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
     @Override
     public int getEnergyStored() {
-        return MekanismUtils.clampToInt(tileEntity.getEnergy() * MekanismConfig.current().general.TO_FORGE.val());
+        return ForgeEnergyIntegration.toForge(tileEntity.getEnergy());
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return MekanismUtils.clampToInt(tileEntity.getMaxEnergy() * MekanismConfig.current().general.TO_FORGE.val());
+        return ForgeEnergyIntegration.toForge(tileEntity.getMaxEnergy());
     }
 
     @Override

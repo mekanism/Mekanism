@@ -1165,10 +1165,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
         } else if (isStrictEnergy(capability)) {
             return (T) this;
-        } else if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         } else if (isTesla(capability, side)) {
             return (T) getTeslaEnergyWrapper(side);
+        } else if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         }
         return getCapability(capability, side);
     }

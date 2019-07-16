@@ -379,14 +379,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
                 return (T) this;
-            }
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
-            }
-            if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
+            } else if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
                 return (T) teslaManager.getWrapper(this, facing);
-            }
-            if (capability == CapabilityEnergy.ENERGY) {
+            } else if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
             }
         }

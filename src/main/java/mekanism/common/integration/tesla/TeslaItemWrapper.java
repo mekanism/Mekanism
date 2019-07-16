@@ -3,7 +3,6 @@ package mekanism.common.integration.tesla;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
@@ -32,12 +31,12 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
 
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
-    public long takePower(long power, boolean simulated) {
+    public long takePower(long power, boolean simulate) {
         if (getItem().canSend(getStack())) {
             long energyRemaining = getStoredPower();
             long toSend = Math.min(power, energyRemaining);
-            if (!simulated) {
-                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) - toSend * MekanismConfig.current().general.FROM_TESLA.val());
+            if (!simulate) {
+                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) - TeslaIntegration.fromTesla(toSend));
             }
             return toSend;
         }
@@ -46,12 +45,12 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
 
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
-    public long givePower(long power, boolean simulated) {
+    public long givePower(long power, boolean simulate) {
         if (getItem().canReceive(getStack())) {
             long energyNeeded = getCapacity() - getStoredPower();
             long toReceive = Math.min(power, energyNeeded);
-            if (!simulated) {
-                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) + toReceive * MekanismConfig.current().general.FROM_TESLA.val());
+            if (!simulate) {
+                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) + TeslaIntegration.fromTesla(toReceive));
             }
             return toReceive;
         }
@@ -61,12 +60,12 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getStoredPower() {
-        return Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_TESLA.val());
+        return TeslaIntegration.toTesla(getItem().getEnergy(getStack()));
     }
 
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getCapacity() {
-        return Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_TESLA.val());
+        return TeslaIntegration.toTesla(getItem().getMaxEnergy(getStack()));
     }
 }

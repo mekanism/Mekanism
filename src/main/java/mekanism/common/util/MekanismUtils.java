@@ -30,6 +30,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockGasTank;
@@ -738,7 +739,7 @@ public final class MekanismUtils {
             case EU:
                 return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_IC2.val(), ElectricUnit.ELECTRICAL_UNITS);
             case T:
-                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_TESLA.val(), ElectricUnit.TESLA);
+                return UnitDisplayUtils.getDisplayShort(TeslaIntegration.toTesla(energy), ElectricUnit.TESLA);
         }
         return "error";
     }

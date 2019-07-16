@@ -17,32 +17,32 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
         side = facing;
     }
 
-    public static double forgeToMek(int forge) {
+    public static double fromForge(int forge) {
         return forge * MekanismConfig.current().general.FROM_FORGE.val();
     }
 
-    public static int mekToForge(double mek) {
-        return MekanismUtils.clampToInt(mek * MekanismConfig.current().general.TO_FORGE.val());
+    public static int toForge(double joules) {
+        return MekanismUtils.clampToInt(joules * MekanismConfig.current().general.TO_FORGE.val());
     }
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        return mekToForge(tileEntity.acceptEnergy(side, forgeToMek(maxReceive), simulate));
+        return toForge(tileEntity.acceptEnergy(side, fromForge(maxReceive), simulate));
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        return mekToForge(tileEntity.pullEnergy(side, forgeToMek(maxExtract), simulate));
+        return toForge(tileEntity.pullEnergy(side, fromForge(maxExtract), simulate));
     }
 
     @Override
     public int getEnergyStored() {
-        return Math.min(Integer.MAX_VALUE, mekToForge(tileEntity.getEnergy()));
+        return toForge(tileEntity.getEnergy());
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return Math.min(Integer.MAX_VALUE, mekToForge(tileEntity.getMaxEnergy()));
+        return toForge(tileEntity.getMaxEnergy());
     }
 
     @Override

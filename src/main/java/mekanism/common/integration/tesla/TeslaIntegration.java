@@ -3,7 +3,6 @@ package mekanism.common.integration.tesla;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -28,35 +27,35 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
         side = facing;
     }
 
+    public static long toTesla(double joules) {
+        return Math.round(joules * MekanismConfig.current().general.TO_TESLA.val());
+    }
+
+    public static double fromTesla(long tesla) {
+        return tesla * MekanismConfig.current().general.FROM_TESLA.val();
+    }
+
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getStoredPower() {
-        return Math.round(tileEntity.getEnergy() * MekanismConfig.current().general.TO_TESLA.val());
+        return toTesla(tileEntity.getEnergy());
     }
 
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getCapacity() {
-        return Math.round(tileEntity.getMaxEnergy() * MekanismConfig.current().general.TO_TESLA.val());
+        return toTesla(tileEntity.getMaxEnergy());
     }
 
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
-    public long takePower(long power, boolean simulated) {
-        return rfToTesla(tileEntity.extractEnergy(side, teslaToRF(power), simulated));
+    public long takePower(long power, boolean simulate) {
+        return toTesla(tileEntity.pullEnergy(side, fromTesla(power), simulate));
     }
 
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
-    public long givePower(long power, boolean simulated) {
-        return rfToTesla(tileEntity.receiveEnergy(side, teslaToRF(power), simulated));
-    }
-
-    public long rfToTesla(int rf) {
-        return Math.round(rf * MekanismConfig.current().general.FROM_RF.val() * MekanismConfig.current().general.TO_TESLA.val());
-    }
-
-    public int teslaToRF(long tesla) {
-        return MekanismUtils.clampToInt(tesla * MekanismConfig.current().general.FROM_TESLA.val() * MekanismConfig.current().general.TO_RF.val());
+    public long givePower(long power, boolean simulate) {
+        return toTesla(tileEntity.acceptEnergy(side, fromTesla(power), simulate));
     }
 }
