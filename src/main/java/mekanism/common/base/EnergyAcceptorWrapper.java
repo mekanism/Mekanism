@@ -224,7 +224,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
             long toSend = MjIntegration.toMj(amount);
-            return toSend - MjIntegration.fromMj(receiver.receivePower(toSend, simulate));
+            return MjIntegration.fromMj(toSend - receiver.receivePower(toSend, simulate));
         }
 
         @Override
