@@ -35,7 +35,6 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.buildcraft.MjItemWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
@@ -718,7 +717,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new MjItemWrapper(), new ForgeEnergyItemWrapper(), new FluidItemWrapper()) {
+        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper(), new FluidItemWrapper()) {
             @Override
             public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
                 if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY) {
