@@ -79,7 +79,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             updateShare();
             List<EnumFacing> sides = getConnections(ConnectionType.PULL);
             if (!sides.isEmpty()) {
-                TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
+                TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(this, getPos(), getWorld());
                 double canDraw = tier.getCableCapacity();
                 for (EnumFacing side : sides) {
                     TileEntity outputter = connectedOutputters[side.ordinal()];
