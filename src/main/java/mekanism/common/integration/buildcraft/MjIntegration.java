@@ -62,7 +62,6 @@ public class MjIntegration implements IMjReadable, IMjPassiveProvider, IMjReceiv
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public long receivePower(long microJoules, boolean simulate) {
-        System.out.println("AMOUNT: " + microJoules + " " + toMj(tileEntity.acceptEnergy(side, fromMj(microJoules), true)));
         return Math.max(0, microJoules - toMj(tileEntity.acceptEnergy(side, fromMj(microJoules), simulate)));
     }
 
