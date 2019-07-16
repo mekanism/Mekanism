@@ -193,6 +193,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
             if (freq.name.equals(name)) {
                 frequency = freq;
                 frequency.activeCoords.add(Coord4D.get(this));
+                MekanismUtils.saveChunk(this);
                 return;
             }
         }
