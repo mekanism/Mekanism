@@ -28,7 +28,7 @@ public class ItemNetworkReader extends ItemEnergized {
     public static double ENERGY_PER_USE = 400;
 
     public ItemNetworkReader() {
-        super(60000);
+        super("network_reader", 60000);
     }
 
     @Nonnull

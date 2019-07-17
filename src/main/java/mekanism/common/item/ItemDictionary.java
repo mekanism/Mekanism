@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public class ItemDictionary extends ItemMekanism {
 
     public ItemDictionary() {
-        super();
+        super("dictionary");
         setMaxStackSize(1);
     }
 

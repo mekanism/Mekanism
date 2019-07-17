@@ -27,7 +27,8 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
     private Upgrade upgrade;
 
     public ItemUpgrade(Upgrade type) {
-        super();
+        //Upgrade names are upgrade_type for purposes of tab complete
+        super("upgrade_" + type.getRawName());
         upgrade = type;
         setMaxStackSize(type.getMax());
     }

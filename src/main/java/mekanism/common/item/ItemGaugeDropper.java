@@ -33,7 +33,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     public static int CAPACITY = Fluid.BUCKET_VOLUME;
 
     public ItemGaugeDropper() {
-        super();
+        super("gauge_dropper");
         setMaxStackSize(1);
         setCreativeTab(Mekanism.tabMekanism);
     }

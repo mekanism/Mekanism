@@ -20,6 +20,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemArmoredJetpack extends ItemJetpack {
 
+    public ItemArmoredJetpack() {
+        super("jetpack_armored");
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {

@@ -64,6 +64,10 @@ public enum Upgrade {
         return compound;
     }
 
+    public String getRawName() {
+        return name;
+    }
+
     public String getName() {
         return LangUtils.localize("upgrade." + name);
     }

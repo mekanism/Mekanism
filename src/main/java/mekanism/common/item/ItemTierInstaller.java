@@ -13,18 +13,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemTierInstaller extends ItemMekanism {
-
-    private final BaseTier tier;
+public class ItemTierInstaller extends ItemMekanismTiered {
 
     public ItemTierInstaller(BaseTier tier) {
-        super();
-        this.tier = tier;
+        super(tier, "tier_installer");
         setMaxStackSize(1);
-    }
-
-    public BaseTier getTier() {
-        return tier;
     }
 
     @Nonnull
@@ -39,7 +32,7 @@ public class ItemTierInstaller extends ItemMekanism {
             if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).playersUsing.size() > 0) {
                 return EnumActionResult.FAIL;
             }
-            if (((ITierUpgradeable) tile).upgrade(tier)) {
+            if (((ITierUpgradeable) tile).upgrade(getTier())) {
                 if (!player.capabilities.isCreativeMode) {
                     ItemStack stack = player.getHeldItem(hand);
                     stack.shrink(1);

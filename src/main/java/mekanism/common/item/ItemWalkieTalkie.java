@@ -31,7 +31,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 
     public ItemWalkieTalkie() {
-        super();
+        super("walkie_talkie");
         setMaxStackSize(1);
     }
 

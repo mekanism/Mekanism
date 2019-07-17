@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemConfigurationCard extends ItemMekanism {
 
     public ItemConfigurationCard() {
-        super();
+        super("configuration_card");
         setMaxStackSize(1);
     }
 

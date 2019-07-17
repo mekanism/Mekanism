@@ -8,7 +8,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
@@ -21,7 +20,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -33,14 +31,13 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
+public class ItemJetpack extends ItemArmorMekanism implements IGasItem, ISpecialArmor {
 
     public final int TRANSFER_RATE = 16;
 
-    public ItemJetpack() {
+    public ItemJetpack(String name) {
         super(EnumHelper.addArmorMaterial("JETPACK", "jetpack", 0, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
-              0), 0, EntityEquipmentSlot.CHEST);
-        setCreativeTab(Mekanism.tabMekanism);
+              0), EntityEquipmentSlot.CHEST, name);
     }
 
     @Override

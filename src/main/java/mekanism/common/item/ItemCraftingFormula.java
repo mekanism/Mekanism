@@ -30,6 +30,10 @@ public class ItemCraftingFormula extends ItemMekanism {
     public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CraftingFormulaInvalid"), "inventory");
     public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CraftingFormulaEncoded"), "inventory");
 
+    public ItemCraftingFormula() {
+        super("crafting_formula");
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {

@@ -32,7 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     public ItemElectricBow() {
-        super(120000);
+        super("electric_bow", 120000);
         setFull3D();
     }
 

@@ -26,7 +26,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     public int TRANSFER_RATE = 16;
 
     public ItemFlamethrower() {
-        super();
+        super("flamethrower");
         setMaxStackSize(1);
     }
 

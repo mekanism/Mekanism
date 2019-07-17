@@ -24,7 +24,7 @@ public class ItemSeismicReader extends ItemEnergized {
     public static final double ENERGY_USAGE = 250;
 
     public ItemSeismicReader() {
-        super(12000);
+        super("seismic_reader", 12000);
     }
 
     @Override

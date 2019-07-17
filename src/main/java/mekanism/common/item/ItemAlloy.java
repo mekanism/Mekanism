@@ -14,13 +14,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemAlloy extends ItemMekanism {
 
     private final AlloyTier tier;
 
     public ItemAlloy(AlloyTier tier) {
-        super();
+        super("alloy_" + tier.getName());
         this.tier = tier;
     }
 
@@ -41,5 +42,10 @@ public class ItemAlloy extends ItemMekanism {
 
     public AlloyTier getTier() {
         return tier;
+    }
+
+    @Override
+    public void registerOreDict() {
+        OreDictionary.registerOre("alloy" + tier.getBaseTier().getSimpleName(), new ItemStack(this));
     }
 }

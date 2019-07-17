@@ -366,7 +366,7 @@ public class Mekanism {
 
         //Osmium Compressor Recipes
         if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.OSMIUM_COMPRESSOR)) {
-            RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.GLOWSTONE_DUST), MekanismItem.GLOWSTONE_INGOT.getItemStack());
+            RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.GLOWSTONE_DUST), MekanismItem.REFINED_GLOWSTONE_INGOT.getItemStack());
         }
 
         //Crusher Recipes
@@ -568,38 +568,11 @@ public class Mekanism {
 
         //Alloys!
         OreDictionary.registerOre("alloyBasic", new ItemStack(Items.REDSTONE));
-        OreDictionary.registerOre("alloyAdvanced", MekanismItem.ENRICHED_ALLOY.getItemStack());
-        OreDictionary.registerOre("alloyElite", MekanismItem.REINFORCED_ALLOY.getItemStack());
-        OreDictionary.registerOre("alloyUltimate", MekanismItem.ATOMIC_ALLOY.getItemStack());
 
         //GregoriousT?
         OreDictionary.registerOre("itemSalt", MekanismItem.SALT.getItemStack());
         OreDictionary.registerOre("dustSalt", MekanismItem.SALT.getItemStack());
         OreDictionary.registerOre("foodSalt", MekanismItem.SALT.getItemStack());
-
-        OreDictionary.registerOre("dustDiamond", MekanismItem.DIAMOND_DUST.getItemStack());
-        OreDictionary.registerOre("dustSteel", MekanismItem.STEEL_DUST.getItemStack());
-        //Lead was once here
-        OreDictionary.registerOre("dustSulfur", MekanismItem.SULFUR_DUST.getItemStack());
-        OreDictionary.registerOre("dustLithium", MekanismItem.LITHIUM_DUST.getItemStack());
-        OreDictionary.registerOre("dustRefinedObsidian", MekanismItem.REFINED_OBSIDIAN_DUST.getItemStack());
-        OreDictionary.registerOre("dustObsidian", MekanismItem.OBSIDIAN_DUST.getItemStack());
-
-        OreDictionary.registerOre("ingotRefinedObsidian", MekanismItem.REFINED_OBSIDIAN_INGOT.getItemStack());
-        OreDictionary.registerOre("ingotOsmium", MekanismItem.OSMIUM_INGOT.getItemStack());
-        OreDictionary.registerOre("ingotBronze", MekanismItem.BRONZE_INGOT.getItemStack());
-        OreDictionary.registerOre("ingotRefinedGlowstone", MekanismItem.GLOWSTONE_INGOT.getItemStack());
-        OreDictionary.registerOre("ingotSteel", MekanismItem.STEEL_INGOT.getItemStack());
-        OreDictionary.registerOre("ingotCopper", MekanismItem.COPPER_INGOT.getItemStack());
-        OreDictionary.registerOre("ingotTin", MekanismItem.TIN_INGOT.getItemStack());
-
-        OreDictionary.registerOre("nuggetRefinedObsidian", MekanismItem.REFINED_OBSIDIAN_NUGGET.getItemStack());
-        OreDictionary.registerOre("nuggetOsmium", MekanismItem.OSMIUM_NUGGET.getItemStack());
-        OreDictionary.registerOre("nuggetBronze", MekanismItem.BRONZE_NUGGET.getItemStack());
-        OreDictionary.registerOre("nuggetRefinedGlowstone", MekanismItem.GLOWSTONE_NUGGET.getItemStack());
-        OreDictionary.registerOre("nuggetSteel", MekanismItem.STEEL_NUGGET.getItemStack());
-        OreDictionary.registerOre("nuggetCopper", MekanismItem.COPPER_NUGGET.getItemStack());
-        OreDictionary.registerOre("nuggetTin", MekanismItem.TIN_NUGGET.getItemStack());
 
         OreDictionary.registerOre("blockOsmium", new ItemStack(MekanismBlocks.BasicBlock, 1, 0));
         OreDictionary.registerOre("blockBronze", new ItemStack(MekanismBlocks.BasicBlock, 1, 1));
@@ -610,29 +583,9 @@ public class Mekanism {
         OreDictionary.registerOre("blockCopper", new ItemStack(MekanismBlocks.BasicBlock, 1, 12));
         OreDictionary.registerOre("blockTin", new ItemStack(MekanismBlocks.BasicBlock, 1, 13));
 
-        for (Resource resource : Resource.values()) {
-            OreDictionary.registerOre("dust" + resource.getName(), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
-            OreDictionary.registerOre("dustDirty" + resource.getName(), new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
-            OreDictionary.registerOre("clump" + resource.getName(), new ItemStack(MekanismItems.Clump, 1, resource.ordinal()));
-            OreDictionary.registerOre("shard" + resource.getName(), new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
-            OreDictionary.registerOre("crystal" + resource.getName(), new ItemStack(MekanismItems.Crystal, 1, resource.ordinal()));
-        }
-
         OreDictionary.registerOre("oreOsmium", new ItemStack(MekanismBlocks.OreBlock, 1, 0));
         OreDictionary.registerOre("oreCopper", new ItemStack(MekanismBlocks.OreBlock, 1, 1));
         OreDictionary.registerOre("oreTin", new ItemStack(MekanismBlocks.OreBlock, 1, 2));
-
-        if (MekanismConfig.current().general.controlCircuitOreDict.val()) {
-            OreDictionary.registerOre("circuitBasic", MekanismItem.BASIC_CONTROL_CIRCUIT.getItemStack());
-            OreDictionary.registerOre("circuitAdvanced", MekanismItem.ADVANCED_CONTROL_CIRCUIT.getItemStack());
-            OreDictionary.registerOre("circuitElite", MekanismItem.ELITE_CONTROL_CIRCUIT.getItemStack());
-            OreDictionary.registerOre("circuitUltimate", MekanismItem.ULTIMATE_CONTROL_CIRCUIT.getItemStack());
-        }
-
-        OreDictionary.registerOre("itemCompressedCarbon", MekanismItem.COMPRESSED_CARBON.getItemStack());
-        OreDictionary.registerOre("itemCompressedRedstone", MekanismItem.COMPRESSED_REDSTONE.getItemStack());
-        OreDictionary.registerOre("itemCompressedDiamond", MekanismItem.COMPRESSED_DIAMOND.getItemStack());
-        OreDictionary.registerOre("itemCompressedObsidian", MekanismItem.COMPRESSED_OBSIDIAN.getItemStack());
 
         OreDictionary.registerOre("itemEnrichedAlloy", MekanismItem.ENRICHED_ALLOY.getItemStack());
         OreDictionary.registerOre("itemBioFuel", MekanismItem.BIO_FUEL.getItemStack());

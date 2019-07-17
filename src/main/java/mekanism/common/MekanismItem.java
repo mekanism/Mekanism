@@ -1,12 +1,14 @@
 package mekanism.common;
 
 import mekanism.api.EnumColor;
+import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemArmoredJetpack;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemControlCircuit;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemElectricBow;
@@ -26,33 +28,33 @@ import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.AlloyTier;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Is some variant of the object holder thing needed here
 public enum MekanismItem {
-    ELECTRIC_BOW("electric_bow", new ItemElectricBow()),
-    ROBIT("robit", new ItemRobit()),
-    ATOMIC_DISASSEMBLER("atomic_disassembler", new ItemAtomicDisassembler()),
-    ENERGY_TABLET("energy_tablet", new ItemEnergized(1000000)),
-    CONFIGURATOR("configurator", new ItemConfigurator()),
-    NETWORK_READER("network_reader", new ItemNetworkReader()),
-    WALKIE_TALKIE("walkie_talkie", new ItemWalkieTalkie()),
-    DICTIONARY("dictionary", new ItemDictionary()),
-    GAS_MASK("gas_mask", new ItemGasMask()),
-    SCUBA_TANK("scuba_tank", new ItemScubaTank()),
-    PORTABLE_TELEPORTER("portable_teleporter", new ItemPortableTeleporter()),
-    FREE_RUNNERS("free_runners", new ItemFreeRunners()),
-    CONFIGURATION_CARD("configuration_card", new ItemConfigurationCard()),
-    CRAFTING_FORMULA("crafting_formula", new ItemCraftingFormula()),
-    SEISMIC_READER("seismic_reader", new ItemSeismicReader()),
-    FLAMETHROWER("flamethrower", new ItemFlamethrower()),
-    GAUGE_DROPPER("gauge_dropper", new ItemGaugeDropper()),
+    ELECTRIC_BOW(new ItemElectricBow()),
+    ROBIT(new ItemRobit()),
+    ATOMIC_DISASSEMBLER(new ItemAtomicDisassembler()),
+    ENERGY_TABLET(new ItemEnergized("energy_tablet", 1000000)),
+    CONFIGURATOR(new ItemConfigurator()),
+    NETWORK_READER(new ItemNetworkReader()),
+    WALKIE_TALKIE(new ItemWalkieTalkie()),
+    DICTIONARY(new ItemDictionary()),
+    GAS_MASK(new ItemGasMask()),
+    SCUBA_TANK(new ItemScubaTank()),
+    PORTABLE_TELEPORTER(new ItemPortableTeleporter()),
+    FREE_RUNNERS(new ItemFreeRunners()),
+    CONFIGURATION_CARD(new ItemConfigurationCard()),
+    CRAFTING_FORMULA(new ItemCraftingFormula()),
+    SEISMIC_READER(new ItemSeismicReader()),
+    FLAMETHROWER(new ItemFlamethrower()),
+    GAUGE_DROPPER(new ItemGaugeDropper()),
     TELEPORTATION_CORE("teleportation_core"),
     ENRICHED_IRON("enriched_iron"),
     ELECTROLYTIC_CORE("electrolytic_core"),
@@ -61,31 +63,30 @@ public enum MekanismItem {
     SUBSTRATE("substrate"),
     BIO_FUEL("bio_fuel"),
 
-    COMPRESSED_CARBON("compressed_carbon"),
-    COMPRESSED_REDSTONE("compressed_redstone"),
-    COMPRESSED_DIAMOND("compressed_diamond"),
-    COMPRESSED_OBSIDIAN("compressed_obsidian"),
+    COMPRESSED_CARBON(new ItemResource(ResourceType.COMPRESSED,  MiscResource.CARBON)),
+    COMPRESSED_REDSTONE(new ItemResource(ResourceType.COMPRESSED, MiscResource.REDSTONE)),
+    COMPRESSED_DIAMOND(new ItemResource(ResourceType.COMPRESSED, MiscResource.DIAMOND)),
+    COMPRESSED_OBSIDIAN(new ItemResource(ResourceType.COMPRESSED, MiscResource.OBSIDIAN)),
 
-    //Upgrade names are upgrade_type for purposes of tab complete
-    SPEED_UPGRADE("upgrade_speed", new ItemUpgrade(Upgrade.SPEED)),
-    ENERGY_UPGRADE("upgrade_energy", new ItemUpgrade(Upgrade.ENERGY)),
-    FILTER_UPGRADE("upgrade_filter", new ItemUpgrade(Upgrade.FILTER)),
-    MUFFLING_UPGRADE("upgrade_muffling", new ItemUpgrade(Upgrade.MUFFLING)),
-    GAS_UPGRADE("upgrade_gas", new ItemUpgrade(Upgrade.GAS)),
-    ANCHOR_UPGRADE("upgrade_anchor", new ItemUpgrade(Upgrade.ANCHOR)),
+    SPEED_UPGRADE(new ItemUpgrade(Upgrade.SPEED)),
+    ENERGY_UPGRADE(new ItemUpgrade(Upgrade.ENERGY)),
+    FILTER_UPGRADE(new ItemUpgrade(Upgrade.FILTER)),
+    MUFFLING_UPGRADE(new ItemUpgrade(Upgrade.MUFFLING)),
+    GAS_UPGRADE(new ItemUpgrade(Upgrade.GAS)),
+    ANCHOR_UPGRADE(new ItemUpgrade(Upgrade.ANCHOR)),
 
     //Alloy names are alloy_type for purposes of tab complete
-    ENRICHED_ALLOY("alloy_enriched", new ItemAlloy(AlloyTier.ENRICHED)),
-    REINFORCED_ALLOY("alloy_reinforced", new ItemAlloy(AlloyTier.REINFORCED)),
-    ATOMIC_ALLOY("alloy_atomic", new ItemAlloy(AlloyTier.ATOMIC)),
+    ENRICHED_ALLOY(new ItemAlloy(AlloyTier.ENRICHED)),
+    REINFORCED_ALLOY(new ItemAlloy(AlloyTier.REINFORCED)),
+    ATOMIC_ALLOY(new ItemAlloy(AlloyTier.ATOMIC)),
 
-    BASIC_CONTROL_CIRCUIT("basic_control_circuit"),
-    ADVANCED_CONTROL_CIRCUIT("advanced_control_circuit"),
-    ELITE_CONTROL_CIRCUIT("elite_control_circuit"),
-    ULTIMATE_CONTROL_CIRCUIT("ultimate_control_circuit"),
+    BASIC_CONTROL_CIRCUIT(new ItemControlCircuit(BaseTier.BASIC)),
+    ADVANCED_CONTROL_CIRCUIT(new ItemControlCircuit(BaseTier.ADVANCED)),
+    ELITE_CONTROL_CIRCUIT(new ItemControlCircuit(BaseTier.ELITE)),
+    ULTIMATE_CONTROL_CIRCUIT(new ItemControlCircuit(BaseTier.ULTIMATE)),
 
-    JETPACK("jetpack", new ItemJetpack()),
-    ARMORED_JETPACK("jetpack_armored", new ItemArmoredJetpack()),
+    JETPACK(new ItemJetpack("jetpack")),
+    ARMORED_JETPACK(new ItemArmoredJetpack()),
 
     BLACK_BALLOON("balloon_black", new ItemBalloon(EnumColor.BLACK)),
     RED_BALLOON("balloon_red", new ItemBalloon(EnumColor.RED)),
@@ -109,100 +110,87 @@ public enum MekanismItem {
     HDPE_SHEET("hdpe_sheet"),
     HDPE_STICK("hdpe_stick"),
 
-    BASIC_TIER_INSTALLER("basic_tier_installer", new ItemTierInstaller(BaseTier.BASIC)),
-    ADVANCED_TIER_INSTALLER("advanced_tier_installer", new ItemTierInstaller(BaseTier.ADVANCED)),
-    ELITE_TIER_INSTALLER("elite_tier_installer", new ItemTierInstaller(BaseTier.ELITE)),
-    ULTIMATE_TIER_INSTALLER("ultimate_tier_installer", new ItemTierInstaller(BaseTier.ULTIMATE)),
+    BASIC_TIER_INSTALLER(new ItemTierInstaller(BaseTier.BASIC)),
+    ADVANCED_TIER_INSTALLER(new ItemTierInstaller(BaseTier.ADVANCED)),
+    ELITE_TIER_INSTALLER(new ItemTierInstaller(BaseTier.ELITE)),
+    ULTIMATE_TIER_INSTALLER(new ItemTierInstaller(BaseTier.ULTIMATE)),
 
     //TODO: Have below stuff auto register oredict entry on constructor creation
-    IRON_CRYSTAL("crystal_iron", new ItemResource(ResourceType.CRYSTAL)),
-    GOLD_CRYSTAL("crystal_gold", new ItemResource(ResourceType.CRYSTAL)),
-    OSMIUM_CRYSTAL("crystal_osmium", new ItemResource(ResourceType.CRYSTAL)),
-    COPPER_CRYSTAL("crystal_copper", new ItemResource(ResourceType.CRYSTAL)),
-    TIN_CRYSTAL("crystal_tin", new ItemResource(ResourceType.CRYSTAL)),
-    SILVER_CRYSTAL("crystal_silver", new ItemResource(ResourceType.CRYSTAL)),
-    LEAD_CRYSTAL("crystal_lead", new ItemResource(ResourceType.CRYSTAL)),
+    IRON_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.IRON)),
+    GOLD_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.GOLD)),
+    OSMIUM_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.OSMIUM)),
+    COPPER_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.COPPER)),
+    TIN_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.TIN)),
+    SILVER_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.SILVER)),
+    LEAD_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.LEAD)),
 
-    IRON_SHARD("shard_iron", new ItemResource(ResourceType.SHARD)),
-    GOLD_SHARD("shard_gold", new ItemResource(ResourceType.SHARD)),
-    OSMIUM_SHARD("shard_osmium", new ItemResource(ResourceType.SHARD)),
-    COPPER_SHARD("shard_copper", new ItemResource(ResourceType.SHARD)),
-    TIN_SHARD("shard_tin", new ItemResource(ResourceType.SHARD)),
-    SILVER_SHARD("shard_silver", new ItemResource(ResourceType.SHARD)),
-    LEAD_SHARD("shard_lead", new ItemResource(ResourceType.SHARD)),
+    IRON_SHARD(new ItemResource(ResourceType.SHARD, Resource.IRON)),
+    GOLD_SHARD(new ItemResource(ResourceType.SHARD, Resource.GOLD)),
+    OSMIUM_SHARD(new ItemResource(ResourceType.SHARD, Resource.OSMIUM)),
+    COPPER_SHARD(new ItemResource(ResourceType.SHARD, Resource.COPPER)),
+    TIN_SHARD(new ItemResource(ResourceType.SHARD, Resource.TIN)),
+    SILVER_SHARD(new ItemResource(ResourceType.SHARD, Resource.SILVER)),
+    LEAD_SHARD(new ItemResource(ResourceType.SHARD, Resource.LEAD)),
 
-    IRON_CLUMP("clump_iron", new ItemResource(ResourceType.CLUMP)),
-    GOLD_CLUMP("clump_gold", new ItemResource(ResourceType.CLUMP)),
-    OSMIUM_CLUMP("clump_osmium", new ItemResource(ResourceType.CLUMP)),
-    COPPER_CLUMP("clump_copper", new ItemResource(ResourceType.CLUMP)),
-    TIN_CLUMP("clump_tin", new ItemResource(ResourceType.CLUMP)),
-    SILVER_CLUMP("clump_silver", new ItemResource(ResourceType.CLUMP)),
-    LEAD_CLUMP("clump_lead", new ItemResource(ResourceType.CLUMP)),
+    IRON_CLUMP(new ItemResource(ResourceType.CLUMP, Resource.IRON)),
+    GOLD_CLUMP(new ItemResource(ResourceType.CLUMP, Resource.GOLD)),
+    OSMIUM_CLUMP(new ItemResource(ResourceType.CLUMP, Resource.OSMIUM)),
+    COPPER_CLUMP(new ItemResource(ResourceType.CLUMP, Resource.COPPER)),
+    TIN_CLUMP(new ItemResource(ResourceType.CLUMP, Resource.TIN)),
+    SILVER_CLUMP(new ItemResource(ResourceType.CLUMP, Resource.SILVER)),
+    LEAD_CLUMP(new ItemResource(ResourceType.CLUMP, Resource.LEAD)),
 
-    DIRTY_IRON_DUST("dirty_dust_iron", new ItemResource(ResourceType.DIRT_DUST)),
-    DIRT_GOLD_DUST("dirty_dust_gold", new ItemResource(ResourceType.DIRT_DUST)),
-    DIRTY_OSMIUM_DUST("dirty_dust_osmium", new ItemResource(ResourceType.DIRT_DUST)),
-    DIRT_COPPER_DUST("dirty_dust_copper", new ItemResource(ResourceType.DIRT_DUST)),
-    DIRTY_TIN_DUST("dirty_dust_tin", new ItemResource(ResourceType.DIRT_DUST)),
-    DIRTY_SILVER_DUST("dirty_dust_silver", new ItemResource(ResourceType.DIRT_DUST)),
-    DIRTY_LEAD_DUST("dirty_dust_lead", new ItemResource(ResourceType.DIRT_DUST)),
+    DIRTY_IRON_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.IRON)),
+    DIRT_GOLD_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.GOLD)),
+    DIRTY_OSMIUM_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.OSMIUM)),
+    DIRT_COPPER_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.COPPER)),
+    DIRTY_TIN_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.TIN)),
+    DIRTY_SILVER_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.SILVER)),
+    DIRTY_LEAD_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.LEAD)),
 
-    IRON_DUST("dust_iron", new ItemResource(ResourceType.DUST)),
-    GOLD_DUST("dust_gold", new ItemResource(ResourceType.DUST)),
-    OSMIUM_DUST("dust_osmium", new ItemResource(ResourceType.DUST)),
-    COPPER_DUST("dust_copper", new ItemResource(ResourceType.DUST)),
-    TIN_DUST("dust_tin", new ItemResource(ResourceType.DUST)),
-    SILVER_DUST("dust_silver", new ItemResource(ResourceType.DUST)),
-    LEAD_DUST("dust_lead", new ItemResource(ResourceType.DUST)),
+    IRON_DUST(new ItemResource(ResourceType.DUST, Resource.IRON)),
+    GOLD_DUST(new ItemResource(ResourceType.DUST, Resource.GOLD)),
+    OSMIUM_DUST(new ItemResource(ResourceType.DUST, Resource.OSMIUM)),
+    COPPER_DUST(new ItemResource(ResourceType.DUST, Resource.COPPER)),
+    TIN_DUST(new ItemResource(ResourceType.DUST, Resource.TIN)),
+    SILVER_DUST(new ItemResource(ResourceType.DUST, Resource.SILVER)),
+    LEAD_DUST(new ItemResource(ResourceType.DUST, Resource.LEAD)),
 
-    DIAMOND_DUST("dust_diamond", new ItemResource(ResourceType.DUST)),
-    STEEL_DUST("dust_steel", new ItemResource(ResourceType.DUST)),
-    SULFUR_DUST("dust_sulfur", new ItemResource(ResourceType.DUST)),
-    LITHIUM_DUST("dust_lithium", new ItemResource(ResourceType.DUST)),
-    REFINED_OBSIDIAN_DUST("dust_refined_obsidian", new ItemResource(ResourceType.DUST)),
-    OBSIDIAN_DUST("dust_obsidian", new ItemResource(ResourceType.DUST)),
+    DIAMOND_DUST(new ItemResource(ResourceType.DUST, MiscResource.DIAMOND)),
+    STEEL_DUST(new ItemResource(ResourceType.DUST, MiscResource.STEEL)),
+    SULFUR_DUST(new ItemResource(ResourceType.DUST, MiscResource.SULFUR)),
+    LITHIUM_DUST(new ItemResource(ResourceType.DUST, MiscResource.LITHIUM)),
+    REFINED_OBSIDIAN_DUST(new ItemResource(ResourceType.DUST, MiscResource.REFINED_OBSIDIAN)),
+    OBSIDIAN_DUST(new ItemResource(ResourceType.DUST, MiscResource.OBSIDIAN)),
 
-    REFINED_OBSIDIAN_INGOT("ingot_refined_obsidian", new ItemResource(ResourceType.INGOT)),
-    OSMIUM_INGOT("ingot_osmium", new ItemResource(ResourceType.INGOT)),
-    BRONZE_INGOT("ingot_bronze", new ItemResource(ResourceType.INGOT)),
-    GLOWSTONE_INGOT("ingot_glowstone", new ItemResource(ResourceType.INGOT)),
-    STEEL_INGOT("ingot_steel", new ItemResource(ResourceType.INGOT)),
-    COPPER_INGOT("ingot_copper", new ItemResource(ResourceType.INGOT)),
-    TIN_INGOT("ingot_tin", new ItemResource(ResourceType.INGOT)),
+    REFINED_OBSIDIAN_INGOT(new ItemResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN)),
+    OSMIUM_INGOT(new ItemResource(ResourceType.INGOT, Resource.OSMIUM)),
+    BRONZE_INGOT(new ItemResource(ResourceType.INGOT, MiscResource.BRONZE)),
+    REFINED_GLOWSTONE_INGOT(new ItemResource(ResourceType.INGOT, MiscResource.REFINED_GLOWSTONE)),
+    STEEL_INGOT(new ItemResource(ResourceType.INGOT, MiscResource.STEEL)),
+    COPPER_INGOT(new ItemResource(ResourceType.INGOT, Resource.COPPER)),
+    TIN_INGOT(new ItemResource(ResourceType.INGOT, Resource.TIN)),
 
-    REFINED_OBSIDIAN_NUGGET("nugget_refined_obsidian", new ItemResource(ResourceType.NUGGET)),
-    OSMIUM_NUGGET("nugget_osmium", new ItemResource(ResourceType.NUGGET)),
-    BRONZE_NUGGET("nugget_bronze", new ItemResource(ResourceType.NUGGET)),
-    GLOWSTONE_NUGGET("nugget_glowstone", new ItemResource(ResourceType.NUGGET)),
-    STEEL_NUGGET("nugget_steel", new ItemResource(ResourceType.NUGGET)),
-    COPPER_NUGGET("nugget_copper", new ItemResource(ResourceType.NUGGET)),
-    TIN_NUGGET("nugget_tin", new ItemResource(ResourceType.NUGGET));
+    REFINED_OBSIDIAN_NUGGET(new ItemResource(ResourceType.NUGGET, MiscResource.REFINED_OBSIDIAN)),
+    OSMIUM_NUGGET(new ItemResource(ResourceType.NUGGET, Resource.OSMIUM)),
+    BRONZE_NUGGET(new ItemResource(ResourceType.NUGGET, MiscResource.BRONZE)),
+    REFINED_GLOWSTONE_NUGGET(new ItemResource(ResourceType.NUGGET, MiscResource.REFINED_GLOWSTONE)),
+    STEEL_NUGGET(new ItemResource(ResourceType.NUGGET, MiscResource.STEEL)),
+    COPPER_NUGGET(new ItemResource(ResourceType.NUGGET, Resource.COPPER)),
+    TIN_NUGGET(new ItemResource(ResourceType.NUGGET, Resource.TIN));
 
-    private final String name;
     private final Item item;
 
     MekanismItem(String name) {
-        this(name, new ItemMekanism());
+        this(new ItemMekanism(name));
     }
 
-    MekanismItem(String name, Item item) {
+    <ITEM extends Item & IItemMekanism> MekanismItem(ITEM item) {
         this.item = item;
-        this.name = name;
-        //TODO: Pass this information to the item itself and have it initialize it in the constructor
-        init();
-    }
-
-    private void init() {
-        item.setTranslationKey(getTranslationKey());
-        item.setRegistryName(new ResourceLocation(Mekanism.MODID, name));
-    }
-
-    public String getTranslationKey() {
-        return "item.mekanism." + name;
     }
 
     public String getName() {
-        return name;
+        return item.getRegistryName().getPath();
     }
 
     public Item getItem() {
@@ -219,7 +207,11 @@ public enum MekanismItem {
 
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (MekanismItem mekanismItem : values()) {
-            registry.register(mekanismItem.getItem());
+            Item item = mekanismItem.getItem();
+            registry.register(item);
+            if (item instanceof IItemMekanism) {
+                ((IItemMekanism) item).registerOreDict();
+            }
         }
     }
 }
