@@ -50,7 +50,7 @@ public class MekanismItems {
     public static final Item Substrate = new ItemMekanism();
     public static final Item Polyethene = new ItemHDPE();
     public static final Item BioFuel = new ItemMekanism();
-    public static final Item ItemProxy = new ItemProxy();
+    public static final Item ItemProxy = new ItemProxy();//TODO: ????
     public static final Item EnrichedIron = new ItemMekanism();
     public static final Item CompressedCarbon = new ItemMekanism();
     public static final Item CompressedRedstone = new ItemMekanism();
