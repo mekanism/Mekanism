@@ -28,9 +28,7 @@ public class ItemDictionary extends ItemMekanism {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
-          float hitY, float hitZ, EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         if (!player.isSneaking()) {
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();

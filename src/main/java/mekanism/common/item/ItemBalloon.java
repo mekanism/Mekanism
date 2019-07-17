@@ -8,7 +8,6 @@ import mekanism.api.Pos3D;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,7 +17,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -171,7 +169,7 @@ public class ItemBalloon extends ItemMekanism {
                         break;
                 }
                 if (!source.getWorld().isRemote) {
-                    source.getWorld().spawnEntity(new EntityBalloon(source.getWorld(), pos.x, pos.y, pos.z, getColor(stack)));
+                    source.getWorld().spawnEntity(new EntityBalloon(source.getWorld(), pos.x, pos.y, pos.z, color));
                 }
             }
             stack.shrink(1);
