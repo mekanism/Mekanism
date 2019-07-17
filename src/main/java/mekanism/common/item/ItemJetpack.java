@@ -10,7 +10,6 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
-import mekanism.common.MekanismItems;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -36,7 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
 
-    public int TRANSFER_RATE = 16;
+    public final int TRANSFER_RATE = 16;
 
     public ItemJetpack() {
         super(EnumHelper.addArmorMaterial("JETPACK", "jetpack", 0, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
@@ -86,11 +85,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-        if (this == MekanismItems.Jetpack) {
-            model.modelType = ArmorModel.JETPACK;
-        } else if (this == MekanismItems.ArmoredJetpack) {
-            model.modelType = ArmorModel.ARMOREDJETPACK;
-        }
+        model.modelType = ArmorModel.JETPACK;
         return model;
     }
 
@@ -192,24 +187,12 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     @Override
-    public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source,
-          double damage, int slot) {
-        if (this == MekanismItems.Jetpack) {
-            return new ArmorProperties(0, 0, 0);
-        } else if (this == MekanismItems.ArmoredJetpack) {
-            return new ArmorProperties(1, MekanismConfig.current().general.armoredJetpackDamageRatio.val(),
-                  MekanismConfig.current().general.armoredJetpackDamageMax.val());
-        }
+    public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
         return new ArmorProperties(0, 0, 0);
     }
 
     @Override
     public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot) {
-        if (armor.getItem() == MekanismItems.Jetpack) {
-            return 0;
-        } else if (armor.getItem() == MekanismItems.ArmoredJetpack) {
-            return 12;
-        }
         return 0;
     }
 

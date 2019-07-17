@@ -1,50 +1,11 @@
 package mekanism.common;
 
-import mekanism.common.item.ItemAlloy;
-import mekanism.common.item.ItemAtomicDisassembler;
-import mekanism.common.item.ItemBalloon;
-import mekanism.common.item.ItemClump;
-import mekanism.common.item.ItemConfigurationCard;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemControlCircuit;
-import mekanism.common.item.ItemCraftingFormula;
-import mekanism.common.item.ItemCrystal;
-import mekanism.common.item.ItemDictionary;
-import mekanism.common.item.ItemDirtyDust;
-import mekanism.common.item.ItemDust;
-import mekanism.common.item.ItemElectricBow;
-import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.ItemFlamethrower;
-import mekanism.common.item.ItemFreeRunners;
-import mekanism.common.item.ItemGasMask;
-import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.item.ItemHDPE;
-import mekanism.common.item.ItemIngot;
-import mekanism.common.item.ItemJetpack;
-import mekanism.common.item.ItemMekanism;
-import mekanism.common.item.ItemNetworkReader;
-import mekanism.common.item.ItemNugget;
-import mekanism.common.item.ItemOtherDust;
-import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.item.ItemProxy;
-import mekanism.common.item.ItemRobit;
-import mekanism.common.item.ItemScubaTank;
-import mekanism.common.item.ItemSeismicReader;
-import mekanism.common.item.ItemShard;
-import mekanism.common.item.ItemTierInstaller;
-import mekanism.common.item.ItemUpgrade;
-import mekanism.common.item.ItemWalkieTalkie;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import net.minecraftforge.registries.IForgeRegistry;
-
-@ObjectHolder(Mekanism.MODID)
+//@ObjectHolder(Mekanism.MODID)
 public class MekanismItems {
 
-    public static final Item EnrichedAlloy = new ItemAlloy();
-    public static final Item ReinforcedAlloy = new ItemAlloy();
-    public static final Item AtomicAlloy = new ItemAlloy();
+    /*public static final Item EnrichedAlloy = new ItemAlloy(AlloyTier.ENRICHED);
+    public static final Item ReinforcedAlloy = new ItemAlloy(AlloyTier.REINFORCED);
+    public static final Item AtomicAlloy = new ItemAlloy(AlloyTier.ATOMIC);
     public static final Item TeleportationCore = new ItemMekanism();
     public static final Item ElectrolyticCore = new ItemMekanism();
     public static final Item Substrate = new ItemMekanism();
@@ -62,7 +23,7 @@ public class MekanismItems {
     public static final Item MufflingUpgrade = new ItemUpgrade(Upgrade.MUFFLING);
     public static final Item GasUpgrade = new ItemUpgrade(Upgrade.GAS);
     public static final Item AnchorUpgrade = new ItemUpgrade(Upgrade.ANCHOR);
-    public static final Item TierInstaller = new ItemTierInstaller();
+    public static final Item TierInstaller = new ItemTierInstaller(BaseTier.BASIC);
     public static final ItemEnergized EnergyTablet = new ItemEnergized(1000000);
     public static final ItemRobit Robit = new ItemRobit();
     public static final ItemAtomicDisassembler AtomicDisassembler = new ItemAtomicDisassembler();
@@ -80,9 +41,9 @@ public class MekanismItems {
     public static final ItemScubaTank ScubaTank = new ItemScubaTank();
     public static final ItemGasMask GasMask = new ItemGasMask();
     public static final ItemJetpack Jetpack = new ItemJetpack();
-    public static final ItemJetpack ArmoredJetpack = new ItemJetpack();
+    public static final ItemJetpack ArmoredJetpack = new ItemArmoredJetpack();
     public static final ItemFreeRunners FreeRunners = new ItemFreeRunners();
-    public static final Item Balloon = new ItemBalloon();
+    public static final Item Balloon = new ItemBalloon(EnumColor.BLACK);
 
     //Multi-ID Items
     public static final Item OtherDust = new ItemOtherDust();
@@ -102,7 +63,7 @@ public class MekanismItems {
      *
      * @param registry Forge registry to add the items to
      */
-    public static void registerItems(IForgeRegistry<Item> registry) {
+    /*public static void registerItems(IForgeRegistry<Item> registry) {
         registry.register(init(ElectricBow, "ElectricBow"));
         registry.register(init(Dust, "Dust"));
         registry.register(init(Ingot, "Ingot"));
@@ -159,5 +120,5 @@ public class MekanismItems {
 
     public static Item init(Item item, String name) {
         return item.setTranslationKey(name).setRegistryName(new ResourceLocation(Mekanism.MODID, name));
-    }
+    }*/
 }

@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
-import mekanism.common.base.IMetaItem;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.BlockDispenser;
@@ -23,60 +22,29 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBalloon extends ItemMekanism implements IMetaItem {
+public class ItemBalloon extends ItemMekanism {
 
-    public ItemBalloon() {
+    private final EnumColor color;
+
+    public ItemBalloon(EnumColor color) {
         super();
-        setHasSubtypes(true);
+        this.color = color;
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, new DispenserBehavior());
     }
 
-    @Override
-    public String getTexture(int meta) {
-        return "Balloon";
-    }
-
-    @Override
-    public int getVariants() {
-        return EnumColor.DYES.length;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack stack, int renderPass) {
-        EnumColor dye = getColor(stack);
-        return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
-    }
-
-    public EnumColor getColor(ItemStack stack) {
-        return EnumColor.DYES[stack.getItemDamage()];
-    }
-
-    @Override
-    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
-            return;
-        }
-        for (int i = 0; i < EnumColor.DYES.length; i++) {
-            EnumColor color = EnumColor.DYES[i];
-            if (color != null) {
-                ItemStack stack = new ItemStack(this);
-                stack.setItemDamage(i);
-                list.add(stack);
-            }
-        }
+    public EnumColor getColor() {
+        return color;
     }
 
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
-        ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (!world.isRemote) {
             Pos3D pos = new Pos3D(hand == EnumHand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
-            world.spawnEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 0.25, pos.z - 0.5, getColor(itemstack)));
+            world.spawnEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 0.25, pos.z - 0.5, color));
         }
+        ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (!entityplayer.capabilities.isCreativeMode) {
             itemstack.shrink(1);
         }
@@ -86,12 +54,12 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
     @Nonnull
     @Override
     public String getItemStackDisplayName(@Nonnull ItemStack stack) {
-        EnumColor color = getColor(stack);
+        //TODO: Remove this method??
         String dyeName = color.getDyedName();
         if (LangUtils.canLocalize(getTranslationKey(stack) + "." + color.dyeName)) {
             return LangUtils.localize(getTranslationKey(stack) + "." + color.dyeName);
         }
-        if (getColor(stack) == EnumColor.BLACK) {
+        if (color == EnumColor.BLACK) {
             dyeName = EnumColor.DARK_GREY + color.getDyeName();
         }
         return dyeName + " " + LangUtils.localize("tooltip.balloon");
@@ -117,7 +85,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
                 world.setBlockToAir(pos.up());
                 world.setBlockToAir(pos.up(2));
                 if (!world.isRemote) {
-                    world.spawnEntity(new EntityBalloon(world, new Coord4D(pos, world), getColor(stack)));
+                    world.spawnEntity(new EntityBalloon(world, new Coord4D(pos, world), color));
                     stack.shrink(1);
                 }
                 return EnumActionResult.SUCCESS;
@@ -139,7 +107,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
                         return true;
                     }
                 }
-                player.world.spawnEntity(new EntityBalloon(entity, getColor(stack)));
+                player.world.spawnEntity(new EntityBalloon(entity, color));
                 stack.shrink(1);
             }
             return true;
@@ -174,7 +142,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
                     }
                 }
                 if (!hasBalloon) {
-                    source.getWorld().spawnEntity(new EntityBalloon(entity, getColor(stack)));
+                    source.getWorld().spawnEntity(new EntityBalloon(entity, color));
                     latched = true;
                 }
             }

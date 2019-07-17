@@ -1,12 +1,13 @@
 package mekanism.common;
 
+import mekanism.api.EnumColor;
 import mekanism.common.item.ItemAlloy;
+import mekanism.common.item.ItemArmoredJetpack;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemClump;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemControlCircuit;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemCrystal;
 import mekanism.common.item.ItemDictionary;
@@ -18,13 +19,11 @@ import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.item.ItemHDPE;
 import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemNugget;
-import mekanism.common.item.ItemOtherDust;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
@@ -33,12 +32,13 @@ import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.tier.AlloyTier;
+import mekanism.common.tier.BaseTier;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder(Mekanism.MODID)
+//TODO: Is some variant of the object holder thing needed here
 public enum MekanismItem {
     ELECTRIC_BOW("electric_bow", new ItemElectricBow()),
     ROBIT("robit", new ItemRobit()),
@@ -80,45 +80,46 @@ public enum MekanismItem {
 
     //TODO: Split the things below here
     //Alloy names are alloy_type for purposes of tab complete
-    ENRICHED_ALLOY("alloy_enriched", new ItemAlloy()),
-    REINFORCED_ALLOY("alloy_reinforced", new ItemAlloy()),
-    ATOMIC_ALLOY("alloy_atomic", new ItemAlloy()),
+    ENRICHED_ALLOY("alloy_enriched", new ItemAlloy(AlloyTier.ENRICHED)),
+    REINFORCED_ALLOY("alloy_reinforced", new ItemAlloy(AlloyTier.REINFORCED)),
+    ATOMIC_ALLOY("alloy_atomic", new ItemAlloy(AlloyTier.ATOMIC)),
 
-    BASIC_CONTROL_CIRCUIT("basic_control_circuit", new ItemControlCircuit()),
-    ADVANCED_CONTROL_CIRCUIT("advanced_control_circuit", new ItemControlCircuit()),
-    ELITE_CONTROL_CIRCUIT("elite_control_circuit", new ItemControlCircuit()),
-    ULTIMATE_CONTROL_CIRCUIT("ultimate_control_circuit", new ItemControlCircuit()),
+    BASIC_CONTROL_CIRCUIT("basic_control_circuit"),
+    ADVANCED_CONTROL_CIRCUIT("advanced_control_circuit"),
+    ELITE_CONTROL_CIRCUIT("elite_control_circuit"),
+    ULTIMATE_CONTROL_CIRCUIT("ultimate_control_circuit"),
 
     JETPACK("jetpack", new ItemJetpack()),
-    ARMORED_JETPACK("jetpack_armored", new ItemJetpack()),
+    ARMORED_JETPACK("jetpack_armored", new ItemArmoredJetpack()),
 
-    BLACK_BALLOON("balloon_black", new ItemBalloon()),
-    RED_BALLOON("balloon_red", new ItemBalloon()),
-    GREEN_BALLOON("balloon_green", new ItemBalloon()),
-    BROWN_BALLOON("balloon_brown", new ItemBalloon()),
-    BLUE_BALLOON("balloon_blue", new ItemBalloon()),
-    PURPLE_BALLOON("balloon_purple", new ItemBalloon()),
-    CYAN_BALLOON("balloon_cyan", new ItemBalloon()),
-    LIGHT_GRAY_BALLOON("balloon_light_gray", new ItemBalloon()),
-    GRAY_BALLOON("balloon_gray", new ItemBalloon()),
-    PINK_BALLOON("balloon_pink", new ItemBalloon()),
-    LIME_BALLOON("balloon_lime", new ItemBalloon()),
-    YELLOW_BALLOON("balloon_yellow", new ItemBalloon()),
-    LIGHT_BLUE_BALLOON("balloon_light_blue", new ItemBalloon()),
-    MAGENTA_BALLOON("balloon_magenta", new ItemBalloon()),
-    ORANGE_BALLOON("balloon_orange", new ItemBalloon()),
-    WHITE_BALLOON("balloon_white", new ItemBalloon()),
+    BLACK_BALLOON("balloon_black", new ItemBalloon(EnumColor.BLACK)),
+    RED_BALLOON("balloon_red", new ItemBalloon(EnumColor.RED)),
+    GREEN_BALLOON("balloon_green", new ItemBalloon(EnumColor.DARK_GREY)),
+    BROWN_BALLOON("balloon_brown", new ItemBalloon(EnumColor.BROWN)),
+    BLUE_BALLOON("balloon_blue", new ItemBalloon(EnumColor.DARK_BLUE)),
+    PURPLE_BALLOON("balloon_purple", new ItemBalloon(EnumColor.PURPLE)),
+    CYAN_BALLOON("balloon_cyan", new ItemBalloon(EnumColor.DARK_AQUA)),
+    LIGHT_GREY_BALLOON("balloon_light_grey", new ItemBalloon(EnumColor.GREY)),
+    GREY_BALLOON("balloon_grey", new ItemBalloon(EnumColor.DARK_GREY)),
+    PINK_BALLOON("balloon_pink", new ItemBalloon(EnumColor.BRIGHT_PINK)),
+    LIME_BALLOON("balloon_lime", new ItemBalloon(EnumColor.BRIGHT_GREEN)),
+    YELLOW_BALLOON("balloon_yellow", new ItemBalloon(EnumColor.YELLOW)),
+    LIGHT_BLUE_BALLOON("balloon_light_blue", new ItemBalloon(EnumColor.INDIGO)),
+    MAGENTA_BALLOON("balloon_magenta", new ItemBalloon(EnumColor.PINK)),
+    ORANGE_BALLOON("balloon_orange", new ItemBalloon(EnumColor.ORANGE)),
+    WHITE_BALLOON("balloon_white", new ItemBalloon(EnumColor.WHITE)),
 
-    HDPE_PELLET("hdpe_pellet", new ItemHDPE()),
-    HDPE_ROD("hdpe_rod", new ItemHDPE()),
-    HDPE_SHEET("hdpe_sheet", new ItemHDPE()),
-    HDPE_STICK("hdpe_stick", new ItemHDPE()),
+    HDPE_PELLET("hdpe_pellet"),
+    HDPE_ROD("hdpe_rod"),
+    HDPE_SHEET("hdpe_sheet"),
+    HDPE_STICK("hdpe_stick"),
 
-    BASIC_TIER_INSTALLER("basic_tier_installer", new ItemTierInstaller()),
-    ADVANCED_TIER_INSTALLER("advanced_tier_installer", new ItemTierInstaller()),
-    ELITE_TIER_INSTALLER("elite_tier_installer", new ItemTierInstaller()),
-    ULTIMATE_TIER_INSTALLER("ultimate_tier_installer", new ItemTierInstaller()),
+    BASIC_TIER_INSTALLER("basic_tier_installer", new ItemTierInstaller(BaseTier.BASIC)),
+    ADVANCED_TIER_INSTALLER("advanced_tier_installer", new ItemTierInstaller(BaseTier.ADVANCED)),
+    ELITE_TIER_INSTALLER("elite_tier_installer", new ItemTierInstaller(BaseTier.ELITE)),
+    ULTIMATE_TIER_INSTALLER("ultimate_tier_installer", new ItemTierInstaller(BaseTier.ULTIMATE)),
 
+    //TODO: Have below stuff auto register oredict entry on constructor creation
     IRON_CRYSTAL("crystal_iron", new ItemCrystal()),
     GOLD_CRYSTAL("crystal_gold", new ItemCrystal()),
     OSMIUM_CRYSTAL("crystal_osmium", new ItemCrystal()),
@@ -159,12 +160,12 @@ public enum MekanismItem {
     SILVER_DUST("dust_silver", new ItemDust()),
     LEAD_DUST("dust_lead", new ItemDust()),
 
-    DIAMOND_DUST("dust_diamond", new ItemOtherDust()),
-    STEEL_DUST("dust_steel", new ItemOtherDust()),
-    SULFUR_DUST("dust_sulfur", new ItemOtherDust()),
-    LITHIUM_DUST("dust_lithium", new ItemOtherDust()),
-    REFINED_OBSIDIAN_DUST("dust_refined_obsidian", new ItemOtherDust()),
-    OBSIDIAN_DUST("dust_obsidian", new ItemOtherDust()),
+    DIAMOND_DUST("dust_diamond", new ItemDust()),
+    STEEL_DUST("dust_steel", new ItemDust()),
+    SULFUR_DUST("dust_sulfur", new ItemDust()),
+    LITHIUM_DUST("dust_lithium", new ItemDust()),
+    REFINED_OBSIDIAN_DUST("dust_refined_obsidian", new ItemDust()),
+    OBSIDIAN_DUST("dust_obsidian", new ItemDust()),
 
     REFINED_OBSIDIAN_INGOT("ingot_refined_obsidian", new ItemIngot()),
     OSMIUM_INGOT("ingot_osmium", new ItemIngot()),
@@ -192,7 +193,7 @@ public enum MekanismItem {
     MekanismItem(String name, Item item) {
         this.item = item;
         this.name = name;
-        //TODO: Maybe do some of this internally
+        //TODO: Pass this information to the item itself and have it initialize it in the constructor
         init();
     }
 
