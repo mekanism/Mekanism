@@ -36,7 +36,6 @@ import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
-import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;
@@ -626,9 +625,9 @@ public final class MekanismUtils {
         int id = player.currentWindowId;
 
         if (isBlock) {
-            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity), null, 0), player);
+            Mekanism.packetHandler.sendTo(new PersonalChestMessage(true, 0, id, Coord4D.get(tileEntity), null, 0), player);
         } else {
-            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null, inventory.currentHand, inventory.hotbarSlot), player);
+            Mekanism.packetHandler.sendTo(new PersonalChestMessage(false, 0, id, null, inventory.currentHand, inventory.hotbarSlot), player);
         }
         player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
         player.openContainer.windowId = id;
