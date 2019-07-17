@@ -7,12 +7,13 @@ import net.minecraft.item.ItemStack;
 public class CreativeTabMekanism extends CreativeTabs {
 
     public CreativeTabMekanism() {
+        //TODO: I think this is lang string so rename it to a better format
         super("tabMekanism");
     }
 
     @Nonnull
     @Override
     public ItemStack createIcon() {
-        return new ItemStack(MekanismItems.AtomicAlloy);
+        return MekanismItem.ATOMIC_ALLOY.getItemStack();
     }
 }

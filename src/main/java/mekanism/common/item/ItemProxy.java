@@ -1,19 +1,24 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class ItemProxy extends Item {
+public class ItemProxy extends Item implements IItemMekanism {
 
     public ItemProxy() {
         super();
         setMaxDamage(1);
+        String name = "item_proxy";
+        setTranslationKey(Mekanism.MODID + "." + name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
     @Nonnull

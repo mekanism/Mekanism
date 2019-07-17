@@ -11,7 +11,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismItems;
+import mekanism.common.MekanismItem;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
@@ -191,7 +191,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             InfuseObject infuseObject = InfuseRegistry.getObject(itemstack);
             return infuseObject != null && (infuseStored.getType() == null || infuseStored.getType() == infuseObject.type);
         } else if (slotID == 0) {
-            return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
         } else if (slotID == 2) {
             if (infuseStored.getType() != null) {
                 return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null;

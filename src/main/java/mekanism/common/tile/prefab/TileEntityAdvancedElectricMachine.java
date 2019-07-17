@@ -12,7 +12,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismItems;
+import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
@@ -188,7 +188,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         if (slotID == 2) {
             return false;
         } else if (slotID == 4) {
-            return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
         } else if (slotID == 0) {
             for (AdvancedMachineInput input : getRecipes().keySet()) {
                 if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {

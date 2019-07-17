@@ -1,7 +1,7 @@
 package mekanism.common.recipe;
 
 import javax.annotation.Nonnull;
-import mekanism.common.MekanismItems;
+import mekanism.common.MekanismItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemProxy;
@@ -143,7 +143,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
                 ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
                 if (!testRemain.isEmpty() && testRemain.getCount() > 0) {
-                    ItemStack proxy = new ItemStack(MekanismItems.ItemProxy);
+                    ItemStack proxy = MekanismItem.ITEM_PROXY.getItemStack();
                     ((ItemProxy) proxy.getItem()).setSavedItem(proxy, testRemain.copy());
                     event.craftMatrix.setInventorySlotContents(other, proxy);
                 } else {

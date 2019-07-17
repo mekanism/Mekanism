@@ -15,9 +15,4 @@ public class ItemMekanism extends Item implements IItemMekanism {
         setTranslationKey(Mekanism.MODID + "." + name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
-
-    @Override
-    public void registerOreDict() {
-
-    }
 }

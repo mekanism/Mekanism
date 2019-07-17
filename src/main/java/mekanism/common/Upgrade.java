@@ -91,17 +91,17 @@ public enum Upgrade {
     public ItemStack getStack() {
         switch (this) {
             case SPEED:
-                return new ItemStack(MekanismItems.SpeedUpgrade);
+                return MekanismItem.SPEED_UPGRADE.getItemStack();
             case ENERGY:
-                return new ItemStack(MekanismItems.EnergyUpgrade);
+                return MekanismItem.ENERGY_UPGRADE.getItemStack();
             case FILTER:
-                return new ItemStack(MekanismItems.FilterUpgrade);
+                return MekanismItem.FILTER_UPGRADE.getItemStack();
             case MUFFLING:
-                return new ItemStack(MekanismItems.MufflingUpgrade);
+                return MekanismItem.MUFFLING_UPGRADE.getItemStack();
             case GAS:
-                return new ItemStack(MekanismItems.GasUpgrade);
+                return MekanismItem.GAS_UPGRADE.getItemStack();
             case ANCHOR:
-                return new ItemStack(MekanismItems.AnchorUpgrade);
+                return MekanismItem.ANCHOR_UPGRADE.getItemStack();
         }
         return ItemStack.EMPTY;
     }

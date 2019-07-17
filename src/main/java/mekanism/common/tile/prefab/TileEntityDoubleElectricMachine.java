@@ -3,7 +3,7 @@ package mekanism.common.tile.prefab;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismItems;
+import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
@@ -94,7 +94,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
         if (slotID == 2) {
             return false;
         } else if (slotID == 4) {
-            return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+            return MekanismItem.SPEED_UPGRADE.itemMatches(itemstack) || MekanismItem.ENERGY_UPGRADE.itemMatches(itemstack);
         } else if (slotID == 0) {
             for (DoubleMachineInput input : getRecipes().keySet()) {
                 if (ItemHandlerHelper.canItemStacksStack(input.itemStack, itemstack)) {

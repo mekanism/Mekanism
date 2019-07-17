@@ -21,6 +21,7 @@ import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemResource;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
@@ -38,6 +39,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Is some variant of the object holder thing needed here
 public enum MekanismItem {
+    ITEM_PROXY(new ItemProxy()),
+
     ELECTRIC_BOW(new ItemElectricBow()),
     ROBIT(new ItemRobit()),
     ATOMIC_DISASSEMBLER(new ItemAtomicDisassembler()),
@@ -195,6 +198,14 @@ public enum MekanismItem {
 
     public Item getItem() {
         return item;
+    }
+
+    public boolean itemMatches(ItemStack otherStack) {
+        return itemMatches(otherStack.getItem());
+    }
+
+    public boolean itemMatches(Item other) {
+        return item == other;
     }
 
     public ItemStack getItemStack() {

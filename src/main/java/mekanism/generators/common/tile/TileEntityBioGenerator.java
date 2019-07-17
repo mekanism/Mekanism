@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.FluidSlot;
-import mekanism.common.MekanismItems;
+import mekanism.common.MekanismItem;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -130,7 +130,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     public int getFuel(ItemStack itemstack) {
-        return itemstack.getItem() == MekanismItems.BioFuel ? 200 : 0;
+        return MekanismItem.BIO_FUEL.itemMatches(itemstack) ? 200 : 0;
     }
 
     /**

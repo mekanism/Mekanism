@@ -15,6 +15,7 @@ import li.cil.oc.api.Driver;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItem;
 import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.Resource;
@@ -157,19 +158,19 @@ public final class MekanismHooks {
 
         try {
             Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("oreOsmium"), null, false,
-                  new ItemStack(MekanismItems.Dust, 2, Resource.OSMIUM.ordinal()));
+                  MekanismItem.OSMIUM_DUST.getItemStack(2));
         } catch (Exception ignored) {
         }
 
         try {
             Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotOsmium"), null, false,
-                  new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()));
+                  MekanismItem.OSMIUM_DUST.getItemStack());
             Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotRefinedObsidian"), null, false,
-                  new ItemStack(MekanismItems.OtherDust, 1, 5));
+                  MekanismItem.REFINED_OBSIDIAN_DUST.getItemStack());
             Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotRefinedGlowstone"), null, false,
                   new ItemStack(Items.GLOWSTONE_DUST));
             Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotSteel"), null, false,
-                  new ItemStack(MekanismItems.OtherDust, 1, 1));
+                  MekanismItem.STEEL_DUST.getItemStack());
         } catch (Exception ignored) {
         }
 
