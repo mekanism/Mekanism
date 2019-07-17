@@ -37,7 +37,7 @@ public class MjCableIntegration implements IMjReceiver, IMjPassiveProvider, IMjR
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
     public long extractPower(long min, long max, boolean simulate) {
-        long toDraw = MjIntegration.toMj(tileEntity.takeEnergy(MjIntegration.fromMj(max), true));
+        long toDraw = MjIntegration.toMj(tileEntity.takeEnergy(MjIntegration.fromMj(max), false));
         if (toDraw < min) {
             return 0;
         }
@@ -46,7 +46,7 @@ public class MjCableIntegration implements IMjReceiver, IMjPassiveProvider, IMjR
             return toDraw;
         }
         //Draw it for real this time
-        return MjIntegration.toMj(tileEntity.takeEnergy(MjIntegration.fromMj(toDraw), false));
+        return MjIntegration.toMj(tileEntity.takeEnergy(MjIntegration.fromMj(toDraw), true));
     }
 
     @Override
