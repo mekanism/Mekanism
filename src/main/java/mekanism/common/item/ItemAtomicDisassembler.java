@@ -68,15 +68,19 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public boolean hitEntity(ItemStack itemstack, EntityLivingBase target, EntityLivingBase attacker) {
         double energy = getEnergy(itemstack);
-        //TODO: Damage should really be scaled if we do not have the full power needed
-        float damage = energy > 0 ? 20 : 4;
+        int energyCost = MekanismConfig.current().general.DISASSEMBLER_WEAPON_USAGE.val();
+        int minDamage = MekanismConfig.current().general.DISASSEMBLER_DAMAGE_MIN.val();
+        int damageDifference = MekanismConfig.current().general.DISASSEMBLER_DAMAGE_MAX.val() - minDamage;
+        //If we don't have enough power use it at a reduced power level
+        double percent = energyCost == 0 ? 1 : energy / energyCost;
+        float damage = (float) (minDamage + damageDifference * percent);
         if (attacker instanceof EntityPlayer) {
             target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), damage);
         } else {
             target.attackEntityFrom(DamageSource.causeMobDamage(attacker), damage);
         }
         if (energy > 0) {
-            setEnergy(itemstack, energy - 2000);
+            setEnergy(itemstack, energy - energyCost);
         }
         return false;
     }
@@ -105,7 +109,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
         super.onBlockStartBreak(itemstack, pos, player);
-        if (!player.world.isRemote&& !player.capabilities.isCreativeMode && getMode(itemstack) == Mode.VEIN) {
+        if (!player.world.isRemote && !player.capabilities.isCreativeMode && getMode(itemstack) == Mode.VEIN) {
             IBlockState state = player.world.getBlockState(pos);
             Block block = state.getBlock();
             if (block == Blocks.LIT_REDSTONE_ORE) {
@@ -128,12 +132,11 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     if (coord.equals(orig)) {
                         continue;
                     }
-                    Block block2 = coord.getBlock(player.world);
-                    //TODO: Use block hardness
-                    int destroyEnergy = getDestroyEnergy(itemstack);
+                    int destroyEnergy = getDestroyEnergy(itemstack, coord.getBlockState(player.world).getBlockHardness(player.world, coord.getPos()));
                     if (getEnergy(itemstack) < destroyEnergy) {
                         continue;
                     }
+                    Block block2 = coord.getBlock(player.world);
                     block2.onBlockHarvested(player.world, coord.getPos(), state, player);
                     player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
                     player.world.setBlockToAir(coord.getPos());
@@ -186,18 +189,26 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     private EnumActionResult useItemAs(EntityPlayer player, World world, BlockPos pos, EnumFacing side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
-        if (consumer.use(stack, player, world, pos, side) == EnumActionResult.FAIL) {
+        double energy = getEnergy(stack);
+        int hoeUsage = MekanismConfig.current().general.DISASSEMBLER_HOE_USAGE.val();
+        if (energy < hoeUsage || consumer.use(stack, player, world, pos, side) == EnumActionResult.FAIL) {
+            //Fail if we don't have enough energy or using the item failed
             return EnumActionResult.FAIL;
         }
+        double energyUsed = hoeUsage;
         int radius = (diameter - 1) / 2;
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-                if (x != 0 || z != 0) {
+                if (energyUsed + hoeUsage > energy) {
+                    break;
+                } else if ((x != 0 || z != 0) && consumer.use(stack, player, world, pos.add(x, 0, z), side) == EnumActionResult.SUCCESS) {
                     //Don't attempt to use it on the source location as it was already done above
-                    consumer.use(stack, player, world, pos.add(x, 0, z), side);
+                    // If we successfully used it in a spot increment how much energy we used
+                    energyUsed += hoeUsage;
                 }
             }
         }
+        setEnergy(stack, energy - energyUsed);
         return EnumActionResult.SUCCESS;
     }
 
