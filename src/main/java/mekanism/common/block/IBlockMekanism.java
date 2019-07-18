@@ -8,7 +8,10 @@ public interface IBlockMekanism {
         return false;
     }
 
-    String getDescription();
+    //TODO: This should only have to be implemented if hasDescription is true
+    default String getDescription() {
+        return "";
+    }
 
     default boolean hasActiveTexture() {
         return false;

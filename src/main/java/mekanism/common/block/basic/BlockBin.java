@@ -3,6 +3,7 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.MekanismUtils;
@@ -65,6 +66,19 @@ public class BlockBin extends BlockBasic {
                 }
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+        ItemStack ret = new ItemStack(this);
+        TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
+        if (tileEntity.getItemCount() > 0) {
+            InventoryBin inv = new InventoryBin(ret);
+            inv.setItemCount(tileEntity.getItemCount());
+            inv.setItemType(tileEntity.itemType);
+        }
+        return ret;
     }
 
     @Override

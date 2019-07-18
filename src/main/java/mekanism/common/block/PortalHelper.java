@@ -2,7 +2,8 @@ package mekanism.common.block;
 
 import com.google.common.cache.LoadingCache;
 import javax.annotation.Nonnull;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.basic.BlockResource;
+import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFire;
 import net.minecraft.block.BlockPortal;
@@ -36,11 +37,11 @@ public class PortalHelper {
 
         private boolean isFrame(IBlockState state) {
             Block block = state.getBlock();
-            BasicBlockType type = null;
-            if (block instanceof BlockBasic) {
-                type = BasicBlockType.get(state);
+            BlockResourceInfo resourceInfo = null;
+            if (block instanceof BlockResource) {
+                resourceInfo = ((BlockResource) block).getResourceInfo();
             }
-            return block == Blocks.OBSIDIAN || type == BasicBlockType.REFINED_OBSIDIAN;
+            return block == Blocks.OBSIDIAN || resourceInfo == BlockResourceInfo.REFINED_OBSIDIAN;
         }
 
         protected int getDistanceUntilEdge(BlockPos pos, @Nonnull EnumFacing facing) {

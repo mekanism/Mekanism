@@ -11,14 +11,11 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.block.PortalHelper.BlockPortalOverride;
 import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.inventory.InventoryBin;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityBin;
@@ -31,7 +28,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFire;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -41,7 +37,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -147,25 +142,13 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
             if (tileEntity instanceof IStructuralMultiblock) {
                 ((IStructuralMultiblock) tileEntity).doUpdate();
             }
-            Block newBlock = world.getBlockState(fromPos).getBlock();
-            if (BasicBlockType.get(state) == BasicBlockType.REFINED_OBSIDIAN && newBlock instanceof BlockFire) {
-                BlockPortalOverride.instance.trySpawnPortal(world, fromPos);
-            }
         }
     }
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        BasicBlockType type = BasicBlockType.get(state);
         TileEntity tile = world.getTileEntity(pos);
         ItemStack stack = entityplayer.getHeldItem(hand);
-
-        if (type == BasicBlockType.REFINED_OBSIDIAN) {
-            if (entityplayer.isSneaking()) {
-                entityplayer.openGui(Mekanism.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
-                return true;
-            }
-        }
 
         if (tile instanceof TileEntityThermalEvaporationController) {
             if (!entityplayer.isSneaking()) {
@@ -279,13 +262,6 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
         return 255;
     }
 
-    @Nonnull
-    @Override
-    @Deprecated
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
-    }
-
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
@@ -365,18 +341,7 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        BasicBlockType type = BasicBlockType.get(state);
-        ItemStack ret = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
-
-        if (type == BasicBlockType.BIN) {
-            TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
-            InventoryBin inv = new InventoryBin(ret);
-            inv.setItemCount(tileEntity.getItemCount());
-            if (tileEntity.getItemCount() > 0) {
-                inv.setItemType(tileEntity.itemType);
-            }
-        }
-
+        ItemStack ret = new ItemStack(this);
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof IStrictEnergyStorage) {
             IEnergizedItem energizedItem = (IEnergizedItem) ret.getItem();

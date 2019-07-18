@@ -7,25 +7,19 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ITierItem;
-import mekanism.common.block.IBlockMekanism;
-import mekanism.common.block.basic.BlockResource;
+import mekanism.common.block.BlockBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
-import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityInductionCell;
-import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
@@ -47,11 +41,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBlockMekanism<BLOCK> implements IEnergizedItem, ITierItem {
+public class ItemBlockBasic extends ItemBlockMekanism<BlockBasic> implements IEnergizedItem, ITierItem {
 
-    public BLOCK metaBlock;
+    public BlockBasic metaBlock;
 
-    public ItemBlockBasic(BLOCK block) {
+    public ItemBlockBasic(BlockBasic block) {
         super(block);
         metaBlock = block;
         setHasSubtypes(true);
@@ -159,24 +153,11 @@ public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBl
 
         if (place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             if (type == BasicBlockType.BIN && stack.getTagCompound() != null) {
-                TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
                 InventoryBin inv = new InventoryBin(stack);
-                tileEntity.tier = BinTier.values()[getBaseTier(stack).ordinal()];
                 if (!inv.getItemType().isEmpty()) {
+                    TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
                     tileEntity.setItemType(inv.getItemType());
-                }
-                tileEntity.setItemCount(inv.getItemCount());
-            } else if (type == BasicBlockType.INDUCTION_CELL) {
-                TileEntityInductionCell tileEntity = (TileEntityInductionCell) world.getTileEntity(pos);
-                tileEntity.tier = InductionCellTier.values()[getBaseTier(stack).ordinal()];
-                if (!world.isRemote) {
-                    Mekanism.packetHandler.sendUpdatePacket(tileEntity);
-                }
-            } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
-                TileEntityInductionProvider tileEntity = (TileEntityInductionProvider) world.getTileEntity(pos);
-                tileEntity.tier = InductionProviderTier.values()[getBaseTier(stack).ordinal()];
-                if (!world.isRemote) {
-                    Mekanism.packetHandler.sendUpdatePacket(tileEntity);
+                    tileEntity.setItemCount(inv.getItemCount());
                 }
             }
             TileEntity tileEntity = world.getTileEntity(pos);
@@ -223,17 +204,5 @@ public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBl
     @Override
     public boolean canSend(ItemStack itemStack) {
         return false;
-    }
-
-    @Override
-    public int getItemBurnTime(ItemStack itemStack) {
-        // If this is a block of charcoal, set burn time to 16000 ticks (per Minecraft standard)
-        if (this.metaBlock instanceof BlockResource) {
-            BlockResourceInfo resourceInfo = ((BlockResource) this.metaBlock).getResourceInfo();
-            if (resourceInfo.equals(BlockResourceInfo.CHARCOAL)) {
-                return 16000; // ticks
-            }
-        }
-        return super.getItemBurnTime(itemStack);
     }
 }

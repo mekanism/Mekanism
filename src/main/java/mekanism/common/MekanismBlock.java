@@ -48,6 +48,7 @@ import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockMekanism;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
+import mekanism.common.item.ItemBlockResource;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.BinTier;
@@ -61,12 +62,12 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Ensure all IBlockMekanism's set the required information
 public enum MekanismBlock {
-    OSMIUM_BLOCK(new BlockResource(BlockResourceInfo.OSMIUM), ItemBlockBasic::new),
-    BRONZE_BLOCK(new BlockResource(BlockResourceInfo.BRONZE), ItemBlockBasic::new),
-    REFINED_OBSIDIAN_BLOCK(new BlockResource(BlockResourceInfo.REFINED_OBSIDIAN), ItemBlockBasic::new),
-    CHARCOAL_BLOCK(new BlockResource(BlockResourceInfo.CHARCOAL), ItemBlockBasic::new),
-    REFINED_GLOWSTONE_BLOCK(new BlockResource(BlockResourceInfo.REFINED_GLOWSTONE), ItemBlockBasic::new),
-    STEEL_BLOCK(new BlockResource(BlockResourceInfo.STEEL), ItemBlockBasic::new),
+    OSMIUM_BLOCK(new BlockResource(BlockResourceInfo.OSMIUM), ItemBlockResource::new),
+    BRONZE_BLOCK(new BlockResource(BlockResourceInfo.BRONZE), ItemBlockResource::new),
+    REFINED_OBSIDIAN_BLOCK(new BlockResource(BlockResourceInfo.REFINED_OBSIDIAN), ItemBlockResource::new),
+    CHARCOAL_BLOCK(new BlockResource(BlockResourceInfo.CHARCOAL), ItemBlockResource::new),
+    REFINED_GLOWSTONE_BLOCK(new BlockResource(BlockResourceInfo.REFINED_GLOWSTONE), ItemBlockResource::new),
+    STEEL_BLOCK(new BlockResource(BlockResourceInfo.STEEL), ItemBlockResource::new),
 
     BASIC_BIN(new BlockBin(BinTier.BASIC), ItemBlockBasic::new),
     ADVANCED_BIN(new BlockBin(BinTier.ADVANCED), ItemBlockBasic::new),
@@ -78,8 +79,8 @@ public enum MekanismBlock {
     DYNAMIC_TANK(new BlockDynamicTank(), ItemBlockBasic::new),
     STRUCTURAL_GLASS(new BlockStructuralGlass(), ItemBlockBasic::new),
     DYNAMIC_VALVE(new BlockDynamicValve(), ItemBlockBasic::new),
-    COPPER_BLOCK(new BlockResource(BlockResourceInfo.COPPER), ItemBlockBasic::new),
-    TIN_BLOCK(new BlockResource(BlockResourceInfo.TIN), ItemBlockBasic::new),
+    COPPER_BLOCK(new BlockResource(BlockResourceInfo.COPPER), ItemBlockResource::new),
+    TIN_BLOCK(new BlockResource(BlockResourceInfo.TIN), ItemBlockResource::new),
     THERMAL_EVAPORATION_CONTROLLER(new BlockThermalEvaporationController(), ItemBlockBasic::new),
     THERMAL_EVAPORATION_VALVE(new BlockThermalEvaporationValve(), ItemBlockBasic::new),
 
