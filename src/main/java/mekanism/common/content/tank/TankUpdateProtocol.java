@@ -3,9 +3,7 @@ package mekanism.common.content.tank;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.block.BlockBasic;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.basic.BlockDynamicTank;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -28,7 +26,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
         IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
-        return state.getBlock() == MekanismBlocks.BasicBlock && state.getValue(((BlockBasic) state.getBlock()).getTypeProperty()) == BasicBlockType.DYNAMIC_TANK;
+        return state.getBlock() instanceof BlockDynamicTank;
     }
 
     @Override

@@ -5,7 +5,6 @@ import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHIN
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_3;
 
 import java.util.function.Function;
-import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -18,6 +17,7 @@ import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.IBlockMekanism;
+import mekanism.common.block.PortalHelper;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockBoilerCasing;
 import mekanism.common.block.basic.BlockBoilerValve;
@@ -379,7 +379,7 @@ public enum MekanismBlock {
         for (MekanismBlock mekanismBlock : values()) {
             registry.register(mekanismBlock.getBlock());
         }
-        registry.register(BlockBasic.BlockPortalOverride.instance);
+        registry.register(PortalHelper.BlockPortalOverride.instance);
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {

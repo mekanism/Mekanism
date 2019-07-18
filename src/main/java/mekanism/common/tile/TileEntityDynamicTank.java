@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
-import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
@@ -17,6 +16,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -24,6 +24,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -108,7 +111,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            if (!BlockBasic.manageInventory(player, this, hand, stack)) {
+            if (!manageInventory(player, hand, stack)) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
                 player.openGui(Mekanism.instance, 18, world, getPos().getX(), getPos().getY(), getPos().getZ());
             } else {
@@ -228,5 +231,80 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    public boolean manageInventory(EntityPlayer player, EnumHand hand, ItemStack itemStack) {
+        if (structure == null) {
+            return false;
+        }
+
+        ItemStack copyStack = StackUtils.size(itemStack, 1);
+        if (FluidContainerUtils.isFluidContainer(itemStack)) {
+            IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
+            if (FluidUtil.getFluidContained(copyStack) == null) {
+                if (structure.fluidStored != null) {
+                    int filled = handler.fill(structure.fluidStored, !player.capabilities.isCreativeMode);
+                    copyStack = handler.getContainer();
+                    if (filled > 0) {
+                        if (player.capabilities.isCreativeMode) {
+                            structure.fluidStored.amount -= filled;
+                        } else if (itemStack.getCount() == 1) {
+                            structure.fluidStored.amount -= filled;
+                            player.setHeldItem(hand, copyStack);
+                        } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(copyStack)) {
+                            structure.fluidStored.amount -= filled;
+                            itemStack.shrink(1);
+                        }
+                        if (structure.fluidStored.amount == 0) {
+                            structure.fluidStored = null;
+                        }
+                        return true;
+                    }
+                }
+            } else {
+                FluidStack itemFluid = FluidUtil.getFluidContained(copyStack);
+                int stored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
+                int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - stored;
+                if (structure.fluidStored != null && !structure.fluidStored.isFluidEqual(itemFluid)) {
+                    return false;
+                }
+                boolean filled = false;
+                FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
+                copyStack = handler.getContainer();
+
+                if (copyStack.getCount() == 0) {
+                    copyStack = ItemStack.EMPTY;
+                }
+                if (drained != null) {
+                    if (player.capabilities.isCreativeMode) {
+                        filled = true;
+                    } else if (!copyStack.isEmpty()) {
+                        if (itemStack.getCount() == 1) {
+                            player.setHeldItem(hand, copyStack);
+                            filled = true;
+                        } else if (player.inventory.addItemStackToInventory(copyStack)) {
+                            itemStack.shrink(1);
+                            filled = true;
+                        }
+                    } else {
+                        itemStack.shrink(1);
+                        if (itemStack.getCount() == 0) {
+                            player.setHeldItem(hand, ItemStack.EMPTY);
+                        }
+                        filled = true;
+                    }
+
+                    if (filled) {
+                        if (structure.fluidStored == null) {
+                            structure.fluidStored = drained;
+                        } else {
+                            structure.fluidStored.amount += drained.amount;
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

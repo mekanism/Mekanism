@@ -101,7 +101,7 @@ public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBl
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         BasicBlockType type = BasicBlockType.get(itemstack);
-        if (type != null && type.hasDescription) {
+        if (type != null && metaBlock.hasDescription()) {
             if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
                 if (type == BasicBlockType.BIN) {
                     InventoryBin inv = new InventoryBin(itemstack);
