@@ -88,11 +88,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     @Override
     public boolean onBlockDestroyed(ItemStack itemstack, World world, IBlockState state, BlockPos pos, EntityLivingBase entityliving) {
-        if (state.getBlockHardness(world, pos) == 0.0D) {
-            setEnergy(itemstack, getEnergy(itemstack) - getDestroyEnergy(itemstack) / 2F);
-        } else {
-            setEnergy(itemstack, getEnergy(itemstack) - getDestroyEnergy(itemstack));
-        }
+        setEnergy(itemstack, getEnergy(itemstack) - getDestroyEnergy(itemstack, state.getBlockHardness(world, pos)));
         return true;
     }
 
@@ -128,18 +124,22 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (isOre) {
                 Coord4D orig = new Coord4D(pos, player.world);
                 Set<Coord4D> found = new Finder(player, stack, orig, raytrace).calc();
-                int destroyEnergy = getDestroyEnergy(itemstack);
                 for (Coord4D coord : found) {
-                    if (coord.equals(orig) || getEnergy(itemstack) < destroyEnergy) {
+                    if (coord.equals(orig)) {
                         continue;
                     }
                     Block block2 = coord.getBlock(player.world);
+                    //TODO: Use block hardness
+                    int destroyEnergy = getDestroyEnergy(itemstack);
+                    if (getEnergy(itemstack) < destroyEnergy) {
+                        continue;
+                    }
                     block2.onBlockHarvested(player.world, coord.getPos(), state, player);
                     player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
                     player.world.setBlockToAir(coord.getPos());
                     block2.breakBlock(player.world, coord.getPos(), state);
                     block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
-                    setEnergy(itemstack, getEnergy(itemstack) - getDestroyEnergy(itemstack));
+                    setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
                 }
             }
         }
@@ -171,31 +171,30 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!player.isSneaking()) {
-            Block block = world.getBlockState(pos).getBlock();
-            if (block == Blocks.DIRT || block == Blocks.GRASS_PATH) {
-                return useItemAs(player, world, pos, hand, side, this::useHoe);
-            } else if (block == Blocks.GRASS) {
-                return useItemAs(player, world, pos, hand, side, this::useShovel);
+            ItemStack stack = player.getHeldItem(hand);
+            int diameter = getMode(stack).getDiameter();
+            if (diameter > 0) {
+                Block block = world.getBlockState(pos).getBlock();
+                if (block == Blocks.DIRT || block == Blocks.GRASS_PATH) {
+                    return useItemAs(player, world, pos, side, stack, diameter, this::useHoe);
+                } else if (block == Blocks.GRASS) {
+                    return useItemAs(player, world, pos, side, stack, diameter, this::useShovel);
+                }
             }
         }
         return EnumActionResult.PASS;
     }
 
-    private EnumActionResult useItemAs(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, ItemUseConsumer consumer) {
-        ItemStack stack = player.getHeldItem(hand);
+    private EnumActionResult useItemAs(EntityPlayer player, World world, BlockPos pos, EnumFacing side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
         if (consumer.use(stack, player, world, pos, side) == EnumActionResult.FAIL) {
             return EnumActionResult.FAIL;
         }
-        int efficiency = getMode(stack).getEfficiency();
-        //TODO: Let radius eventually be defined in the enum
-        int radius = efficiency == 20 ? 1 : efficiency == 128 ? 2 : 0;
-        if (radius > 0) {
-            for (int x = -radius; x <= radius; x++) {
-                for (int z = -radius; z <= radius; z++) {
-                    if (x != 0 || z != 0) {
-                        //Don't attempt to use it on the source location as it was already done above
-                        consumer.use(stack, player, world, pos.add(x, 0, z), side);
-                    }
+        int radius = (diameter - 1) / 2;
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                if (x != 0 || z != 0) {
+                    //Don't attempt to use it on the source location as it was already done above
+                    consumer.use(stack, player, world, pos.add(x, 0, z), side);
                 }
             }
         }
@@ -213,15 +212,20 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         if (facing != EnumFacing.DOWN && world.isAirBlock(pos.up())) {
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
+            IBlockState newState = null;
             if (block == Blocks.GRASS || block == Blocks.GRASS_PATH) {
-                return setBlock(stack, player, world, pos, Blocks.FARMLAND.getDefaultState());
+                newState = Blocks.FARMLAND.getDefaultState();
             } else if (block == Blocks.DIRT) {
                 DirtType type = state.getValue(BlockDirt.VARIANT);
                 if (type == DirtType.DIRT) {
-                    return setBlock(stack, player, world, pos, Blocks.FARMLAND.getDefaultState());
+                    newState = Blocks.FARMLAND.getDefaultState();
                 } else if (type == DirtType.COARSE_DIRT) {
-                    return setBlock(stack, player, world, pos, Blocks.DIRT.getDefaultState().withProperty(BlockDirt.VARIANT, DirtType.DIRT));
+                    newState = Blocks.DIRT.getDefaultState().withProperty(BlockDirt.VARIANT, DirtType.DIRT);
                 }
+            }
+            if (newState != null) {
+                setBlock(stack, player, world, pos, newState);
+                return EnumActionResult.SUCCESS;
             }
         }
         return EnumActionResult.PASS;
@@ -233,23 +237,24 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         } else if (facing != EnumFacing.DOWN && world.isAirBlock(pos.up())) {
             Block block = world.getBlockState(pos).getBlock();
             if (block == Blocks.GRASS) {
-                return setBlock(stack, player, world, pos, Blocks.GRASS_PATH.getDefaultState());
+                setBlock(stack, player, world, pos, Blocks.GRASS_PATH.getDefaultState());
+                return EnumActionResult.SUCCESS;
             }
         }
         return EnumActionResult.PASS;
     }
 
-    private EnumActionResult setBlock(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos, IBlockState state) {
+    private void setBlock(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos, IBlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
         if (!worldIn.isRemote) {
             worldIn.setBlockState(pos, state, 11);
             stack.damageItem(1, player);
         }
-        return EnumActionResult.SUCCESS;
     }
 
-    private int getHoeEnergy() {
-        return 10 * MekanismConfig.current().general.DISASSEMBLER_USAGE.val();
+    private int getDestroyEnergy(ItemStack itemStack, float hardness) {
+        int destroyEnergy = getDestroyEnergy(itemStack);
+        return hardness == 0 ? destroyEnergy / 2 : destroyEnergy;
     }
 
     private int getDestroyEnergy(ItemStack itemStack) {
@@ -285,18 +290,21 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     public enum Mode {
-        NORMAL("normal", 20),
-        SLOW("slow", 8),
-        FAST("fast", 128),
-        VEIN("vein", 20),
-        OFF("off", 0);
+        NORMAL("normal", 20, 3),
+        SLOW("slow", 8, 1),
+        FAST("fast", 128, 5),
+        VEIN("vein", 20, 3),
+        OFF("off", 0, 0);
 
         private final String mode;
         private final int efficiency;
+        //Must be odd, or zero
+        private final int diameter;
 
-        Mode(String mode, int efficiency) {
+        Mode(String mode, int efficiency, int diameter) {
             this.mode = mode;
             this.efficiency = efficiency;
+            this.diameter = diameter;
         }
 
         public String getModeName() {
@@ -305,6 +313,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
         public int getEfficiency() {
             return efficiency;
+        }
+
+        public int getDiameter() {
+            return diameter;
         }
     }
 
