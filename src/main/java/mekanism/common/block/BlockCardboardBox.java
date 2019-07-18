@@ -4,7 +4,7 @@ import static mekanism.common.block.states.BlockStateCardboardBox.storagePropert
 
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import mekanism.common.block.states.BlockStateCardboardBox;
 import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
@@ -88,7 +88,7 @@ public class BlockCardboardBox extends BlockMekanismContainer {
                 if (data.block != null) {
                     data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), entityplayer, new ItemStack(data.block, 1, data.meta));
                 }
-                spawnAsEntity(world, pos, new ItemStack(MekanismBlocks.CardboardBox));
+                spawnAsEntity(world, pos, MekanismBlock.CARDBOARD_BOX.getItemStack());
             }
         }
         return entityplayer.isSneaking();

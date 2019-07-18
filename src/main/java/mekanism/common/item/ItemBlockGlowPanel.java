@@ -27,7 +27,6 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
         super(block);
         metaBlock = block;
         setHasSubtypes(true);
-        setCreativeTab(Mekanism.tabMekanism);
     }
 
     @Override

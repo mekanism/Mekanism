@@ -278,14 +278,14 @@ public class Mekanism {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         // Register blocks and tile entities
-        MekanismBlocks.registerBlocks(event.getRegistry());
+        MekanismBlock.registerBlocks(event.getRegistry());
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         // Register items and itemBlocks
         MekanismItem.registerItems(event.getRegistry());
-        MekanismBlocks.registerItemBlocks(event.getRegistry());
+        MekanismBlock.registerItemBlocks(event.getRegistry());
         //Integrate certain OreDictionary recipes
         registerOreDict();
     }
@@ -323,9 +323,9 @@ public class Mekanism {
      */
     public static void addRecipes() {
         //Furnace Recipes
-        GameRegistry.addSmelting(new ItemStack(MekanismBlocks.OreBlock, 1, 0), MekanismItem.OSMIUM_INGOT.getItemStack(), 1.0F);
-        GameRegistry.addSmelting(new ItemStack(MekanismBlocks.OreBlock, 1, 1), MekanismItem.COPPER_INGOT.getItemStack(), 1.0F);
-        GameRegistry.addSmelting(new ItemStack(MekanismBlocks.OreBlock, 1, 2), MekanismItem.TIN_INGOT.getItemStack(), 1.0F);
+        GameRegistry.addSmelting(MekanismBlock.OSMIUM_ORE.getItemStack(), MekanismItem.OSMIUM_INGOT.getItemStack(), 1.0F);
+        GameRegistry.addSmelting(MekanismBlock.COPPER_ORE.getItemStack(), MekanismItem.COPPER_INGOT.getItemStack(), 1.0F);
+        GameRegistry.addSmelting(MekanismBlock.TIN_ORE.getItemStack(), MekanismItem.TIN_INGOT.getItemStack(), 1.0F);
         GameRegistry.addSmelting(MekanismItem.OSMIUM_DUST.getItemStack(), MekanismItem.OSMIUM_INGOT.getItemStack(), 0.0F);
         GameRegistry.addSmelting(MekanismItem.IRON_DUST.getItemStack(), new ItemStack(Items.IRON_INGOT), 0.0F);
         GameRegistry.addSmelting(MekanismItem.GOLD_DUST.getItemStack(), new ItemStack(Items.GOLD_INGOT), 0.0F);
@@ -349,7 +349,7 @@ public class Mekanism {
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.STONEBRICK, 1, 1), new ItemStack(Blocks.STONEBRICK, 1, 0));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.GLOWSTONE), new ItemStack(Items.GLOWSTONE_DUST, 4));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.CLAY), new ItemStack(Items.CLAY_BALL, 4));
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(MekanismBlocks.SaltBlock), MekanismItem.SALT.getItemStack(4));
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.SALT_BLOCK.getItemStack(), MekanismItem.SALT.getItemStack(4));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.DIAMOND), MekanismItem.COMPRESSED_DIAMOND.getItemStack());
             RecipeHandler.addEnrichmentChamberRecipe(MekanismItem.HDPE_PELLET.getItemStack(3), MekanismItem.HDPE_SHEET.getItemStack());
 
@@ -564,7 +564,7 @@ public class Mekanism {
         OreDictionary.registerOre("battery", MekanismItem.ENERGY_TABLET.getItemStack());
         OreDictionary.registerOre("pulpWood", MekanismItem.SAWDUST.getItemStack());
         OreDictionary.registerOre("dustWood", MekanismItem.SAWDUST.getItemStack());
-        OreDictionary.registerOre("blockSalt", MekanismBlocks.SaltBlock);
+        OreDictionary.registerOre("blockSalt", MekanismBlock.SALT_BLOCK.getItemStack());
 
         //Alloys!
         OreDictionary.registerOre("alloyBasic", new ItemStack(Items.REDSTONE));
@@ -583,9 +583,9 @@ public class Mekanism {
         OreDictionary.registerOre("blockCopper", new ItemStack(MekanismBlocks.BasicBlock, 1, 12));
         OreDictionary.registerOre("blockTin", new ItemStack(MekanismBlocks.BasicBlock, 1, 13));
 
-        OreDictionary.registerOre("oreOsmium", new ItemStack(MekanismBlocks.OreBlock, 1, 0));
-        OreDictionary.registerOre("oreCopper", new ItemStack(MekanismBlocks.OreBlock, 1, 1));
-        OreDictionary.registerOre("oreTin", new ItemStack(MekanismBlocks.OreBlock, 1, 2));
+        OreDictionary.registerOre("oreOsmium", MekanismBlock.OSMIUM_ORE.getItemStack());
+        OreDictionary.registerOre("oreCopper", MekanismBlock.COPPER_ORE.getItemStack());
+        OreDictionary.registerOre("oreTin", MekanismBlock.TIN_ORE.getItemStack());
 
         OreDictionary.registerOre("itemEnrichedAlloy", MekanismItem.ENRICHED_ALLOY.getItemStack());
         OreDictionary.registerOre("itemBioFuel", MekanismItem.BIO_FUEL.getItemStack());
@@ -890,14 +890,14 @@ public class Mekanism {
 
     @SubscribeEvent
     public void onBlacklistUpdate(BoxBlacklistEvent event) {
-        event.blacklistWildcard(MekanismBlocks.CardboardBox);
+        event.blacklistWildcard(MekanismBlock.CARDBOARD_BOX.getBlock());
 
         // Mekanism multiblock structures
-        event.blacklistWildcard(MekanismBlocks.BoundingBlock);
-        event.blacklist(MekanismBlocks.BasicBlock2, 9);   // Security Desk
-        event.blacklist(MekanismBlocks.MachineBlock, 4);  // Digital Miner
-        event.blacklist(MekanismBlocks.MachineBlock2, 9); // Seismic Vibrator
-        event.blacklist(MekanismBlocks.MachineBlock3, 1); // Solar Neutron Activator
+        event.blacklistWildcard(MekanismBlock.BOUNDING_BLOCK.getBlock());
+        event.blacklistWildcard(MekanismBlock.SECURITY_DESK.getBlock());
+        event.blacklistWildcard(MekanismBlock.DIGITAL_MINER.getBlock());
+        event.blacklistWildcard(MekanismBlock.SEISMIC_VIBRATOR.getBlock());
+        event.blacklistWildcard(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.getBlock());
 
         // Minecraft unobtainable
         event.blacklist(Blocks.BEDROCK, 0);

@@ -10,7 +10,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public class ItemBlockOre extends ItemBlock {
+public class ItemBlockOre extends ItemBlockMekanism {
 
     public Block metaBlock;
 

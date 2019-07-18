@@ -1,51 +1,15 @@
 package mekanism.common;
 
-import static mekanism.common.block.states.BlockStateBasic.BasicBlock.BASIC_BLOCK_1;
-import static mekanism.common.block.states.BlockStateBasic.BasicBlock.BASIC_BLOCK_2;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_3;
-
-import mekanism.common.block.BlockBasic;
-import mekanism.common.block.BlockBounding;
-import mekanism.common.block.BlockCardboardBox;
-import mekanism.common.block.BlockEnergyCube;
-import mekanism.common.block.BlockGasTank;
-import mekanism.common.block.BlockGlowPanel;
-import mekanism.common.block.BlockMachine;
-import mekanism.common.block.BlockObsidianTNT;
-import mekanism.common.block.BlockOre;
-import mekanism.common.block.BlockPlastic;
-import mekanism.common.block.BlockPlasticFence;
-import mekanism.common.block.BlockSalt;
-import mekanism.common.block.BlockTransmitter;
-import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
-import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.item.ItemBlockCardboardBox;
-import mekanism.common.item.ItemBlockEnergyCube;
-import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.item.ItemBlockGlowPanel;
-import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemBlockOre;
-import mekanism.common.item.ItemBlockPlastic;
-import mekanism.common.item.ItemBlockTransmitter;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import net.minecraftforge.registries.IForgeRegistry;
-
-@ObjectHolder(Mekanism.MODID)
+//@ObjectHolder(Mekanism.MODID)
 public class MekanismBlocks {
 
-    public static Block BasicBlock = BlockBasic.getBlockBasic(BASIC_BLOCK_1);
+    /*public static Block BasicBlock = BlockBasic.getBlockBasic(BASIC_BLOCK_1);
     public static Block BasicBlock2 = BlockBasic.getBlockBasic(BASIC_BLOCK_2);
     public static Block MachineBlock = BlockMachine.getBlockMachine(MACHINE_BLOCK_1);
     public static Block MachineBlock2 = BlockMachine.getBlockMachine(MACHINE_BLOCK_2);
     public static Block MachineBlock3 = BlockMachine.getBlockMachine(MACHINE_BLOCK_3);
     public static Block OreBlock = new BlockOre();
-    public static Block ObsidianTNT = new BlockObsidianTNT().setCreativeTab(Mekanism.tabMekanism);
+    public static Block ObsidianTNT = new BlockObsidianTNT();
     public static Block EnergyCube = new BlockEnergyCube();
     public static Block Transmitter = new BlockTransmitter();
     public static Block BoundingBlock = new BlockBounding();
@@ -58,14 +22,14 @@ public class MekanismBlocks {
     public static Block ReinforcedPlasticBlock = new BlockPlastic(PlasticBlockType.REINFORCED);
     public static Block RoadPlasticBlock = new BlockPlastic(PlasticBlockType.ROAD);
     public static Block PlasticFence = new BlockPlasticFence();
-    public static Block SaltBlock = new BlockSalt();
+    public static Block SaltBlock = new BlockSalt();*/
 
     /**
      * Adds and registers all blocks.
      *
      * @param registry IForgeRegistry for blocks.
      */
-    public static void registerBlocks(IForgeRegistry<Block> registry) {
+    /*public static void registerBlocks(IForgeRegistry<Block> registry) {
         registry.register(init(BasicBlock, "BasicBlock"));
         registry.register(init(BasicBlock2, "BasicBlock2"));
         registry.register(init(MachineBlock, "MachineBlock"));
@@ -87,14 +51,14 @@ public class MekanismBlocks {
         registry.register(init(PlasticFence, "PlasticFence"));
         registry.register(init(SaltBlock, "SaltBlock"));
         registry.register(BlockBasic.BlockPortalOverride.instance);
-    }
+    }*/
 
     /**
      * Adds and registers all itemBlocks.
      *
      * @param registry IForgeRegistry for items.
      */
-    public static void registerItemBlocks(IForgeRegistry<Item> registry) {
+    /*public static void registerItemBlocks(IForgeRegistry<Item> registry) {
         registry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock), "BasicBlock"));
         registry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock2), "BasicBlock2"));
         registry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock), "MachineBlock"));
@@ -119,5 +83,5 @@ public class MekanismBlocks {
 
     public static Block init(Block block, String name) {
         return block.setTranslationKey(name).setRegistryName(new ResourceLocation(Mekanism.MODID, name));
-    }
+    }*/
 }

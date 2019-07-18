@@ -62,7 +62,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -102,7 +101,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
       @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
       @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IEnergyContainerItem,
+public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IEnergyContainerItem,
       IFluidItemWrapper, ITierItem, ISecurityItem, IItemNetwork {
 
     public Block metaBlock;

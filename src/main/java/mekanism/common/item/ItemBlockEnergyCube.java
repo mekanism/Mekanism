@@ -39,7 +39,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -58,7 +57,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
       @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
       @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem, ITierItem {
+public class ItemBlockEnergyCube extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem, ITierItem {
 
     public Block metaBlock;
 
@@ -68,7 +67,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
         setMaxStackSize(1);
         setHasSubtypes(true);
         setNoRepair();
-        setCreativeTab(Mekanism.tabMekanism);
     }
 
     @Override

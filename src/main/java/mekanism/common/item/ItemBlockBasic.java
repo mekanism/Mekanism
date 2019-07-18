@@ -28,7 +28,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -46,7 +45,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierItem {
+public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem, ITierItem {
 
     public Block metaBlock;
 

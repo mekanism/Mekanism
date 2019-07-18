@@ -32,7 +32,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -44,7 +43,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory, ITierItem, ISecurityItem {
+public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISustainedInventory, ITierItem, ISecurityItem {
 
     /**
      * How fast this tank can transfer gas.
@@ -61,7 +60,6 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
         metaBlock = block;
         setHasSubtypes(true);
         setMaxStackSize(1);
-        setCreativeTab(Mekanism.tabMekanism);
     }
 
     @Override

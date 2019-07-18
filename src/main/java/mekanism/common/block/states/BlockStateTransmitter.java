@@ -97,7 +97,6 @@ public class BlockStateTransmitter extends ExtendedBlockState {
         @Nonnull
         @Override
         protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-            BlockTransmitter block = (BlockTransmitter) state.getBlock();
             TransmitterType type = state.getValue(typeProperty);
             StringBuilder builder = new StringBuilder();
             String nameOverride = null;

@@ -13,7 +13,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -25,7 +24,7 @@ import net.minecraft.world.World;
 /**
  * Created by Thiakil on 19/11/2017.
  */
-public abstract class ItemBlockMultipartAble extends ItemBlock {
+public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
 
     public ItemBlockMultipartAble(Block block) {
         super(block);
