@@ -264,12 +264,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     private int getDestroyEnergy(ItemStack itemStack, float hardness) {
-        int destroyEnergy = getDestroyEnergy(itemStack);
+        int destroyEnergy = MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getMode(itemStack).getEfficiency();
         return hardness == 0 ? destroyEnergy / 2 : destroyEnergy;
-    }
-
-    private int getDestroyEnergy(ItemStack itemStack) {
-        return MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getMode(itemStack).getEfficiency();
     }
 
     public Mode getMode(ItemStack itemStack) {
