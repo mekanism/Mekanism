@@ -24,7 +24,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBounding extends Block {
+public class BlockBounding extends Block implements IBlockMekanism {
 
     @Nullable
     private static BlockPos getMainBlockPos(IBlockAccess world, BlockPos thisPos) {

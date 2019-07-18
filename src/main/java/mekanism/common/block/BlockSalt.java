@@ -10,7 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 
-public class BlockSalt extends Block {
+public class BlockSalt extends Block implements IBlockMekanism {
 
     public BlockSalt() {
         super(Material.SAND);

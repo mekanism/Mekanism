@@ -46,10 +46,9 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 public class BlockStateBasic extends ExtendedBlockState {
 
     public static final PropertyBool activeProperty = PropertyBool.create("active");
-    public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 
     public BlockStateBasic(BlockBasic block, PropertyEnum<BasicBlockType> typeProperty) {
-        super(block, new IProperty[]{BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty}, new IUnlistedProperty[]{});
+        super(block, new IProperty[]{BlockStateFacing.facingProperty, typeProperty, activeProperty}, new IUnlistedProperty[]{});
     }
 
     public enum BasicBlock {
@@ -113,29 +112,28 @@ public class BlockStateBasic extends ExtendedBlockState {
         public boolean hasDescription;
         public Predicate<EnumFacing> facingPredicate;
         public boolean activable;
-        public boolean tiers;
         public boolean isBeaconBase;
         public boolean hasRedstoneOutput;
         public boolean isFullBlock;
         public boolean isOpaqueCube;
 
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String nameIn, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
-              boolean activeState, boolean hasTiers, boolean beaconBase) {
-            this(block, metadata, nameIn, tileClass, hasDesc, facingAllowed, activeState, hasTiers, beaconBase, false);
+              boolean activeState, boolean beaconBase) {
+            this(block, metadata, nameIn, tileClass, hasDesc, facingAllowed, activeState, beaconBase, false);
         }
 
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String nameIn, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
-              boolean activeState, boolean hasTiers, boolean beaconBase, boolean hasRedstoneOutput) {
-            this(block, metadata, nameIn, tileClass, hasDesc, facingAllowed, activeState, hasTiers, beaconBase, hasRedstoneOutput, true);
+              boolean activeState, boolean beaconBase, boolean hasRedstoneOutput) {
+            this(block, metadata, nameIn, tileClass, hasDesc, facingAllowed, activeState, beaconBase, hasRedstoneOutput, true);
         }
 
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String nameIn, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
-              boolean activeState, boolean hasTiers, boolean beaconBase, boolean hasRedstoneOutput, boolean fullBlock) {
-            this(block, metadata, nameIn, tileClass, hasDesc, facingAllowed, activeState, hasTiers, beaconBase, hasRedstoneOutput, fullBlock, true);
+              boolean activeState, boolean beaconBase, boolean hasRedstoneOutput, boolean fullBlock) {
+            this(block, metadata, nameIn, tileClass, hasDesc, facingAllowed, activeState, beaconBase, hasRedstoneOutput, fullBlock, true);
         }
 
         BasicBlockType(@Nonnull BasicBlock block, int metadata, String nameIn, Supplier<TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
-              boolean activeState, boolean hasTiers, boolean beaconBase, boolean hasRedstoneOutput, boolean fullBlock, boolean opaque) {
+              boolean activeState, boolean beaconBase, boolean hasRedstoneOutput, boolean fullBlock, boolean opaque) {
             blockType = block;
             meta = metadata;
             name = nameIn;
@@ -143,7 +141,6 @@ public class BlockStateBasic extends ExtendedBlockState {
             hasDescription = hasDesc;
             facingPredicate = facingAllowed;
             activable = activeState;
-            tiers = hasTiers;
             isBeaconBase = beaconBase;
             this.hasRedstoneOutput = hasRedstoneOutput;
             isFullBlock = fullBlock;
@@ -249,14 +246,6 @@ public class BlockStateBasic extends ExtendedBlockState {
                 builder.append(BlockStateFacing.facingProperty.getName());
                 builder.append("=");
                 builder.append(facing.getName());
-            }
-
-            if (type.tiers) {
-                BaseTier tier = state.getValue(tierProperty);
-                if (tier == BaseTier.CREATIVE && type != BasicBlockType.BIN) {
-                    tier = BaseTier.ULTIMATE;
-                }
-                nameOverride = type.getName() + "_" + tier.getName();
             }
 
             if (builder.length() == 0) {

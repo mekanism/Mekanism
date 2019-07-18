@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
 import com.google.common.cache.LoadingCache;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -45,7 +46,6 @@ import net.minecraft.block.BlockPortal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.BlockWorldState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockPattern;
@@ -97,22 +97,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public abstract class BlockBasic extends BlockTileDrops {
+public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
 
-    public BlockBasic() {
+    public BlockBasic(String name) {
         super(Material.IRON);
         setHardness(5F);
         setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
-    }
-
-    public static BlockBasic getBlockBasic(BasicBlock block) {
-        return new BlockBasic() {
-            @Override
-            public BasicBlock getBasicBlock() {
-                return block;
-            }
-        };
+        //Ensure the name is lower case as with concatenating with values from enums it may not be
+        name = name.toLowerCase(Locale.ROOT);
+        setTranslationKey(name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
     public static boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity, EnumHand hand, ItemStack itemStack) {
@@ -190,27 +185,6 @@ public abstract class BlockBasic extends BlockTileDrops {
         return false;
     }
 
-    public abstract BasicBlock getBasicBlock();
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return new BlockStateBasic(this, getTypeProperty());
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getStateFromMeta(int meta) {
-        BasicBlockType type = BasicBlockType.get(getBasicBlock(), meta & 0xF);
-        return getDefaultState().withProperty(getTypeProperty(), type);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(getTypeProperty()).meta;
-    }
-
     @Nonnull
     @Override
     @Deprecated
@@ -221,15 +195,6 @@ public abstract class BlockBasic extends BlockTileDrops {
         }
         if (tile instanceof IActiveState) {
             state = state.withProperty(BlockStateBasic.activeProperty, ((IActiveState) tile).getActive());
-        }
-        if (tile instanceof TileEntityInductionCell) {
-            state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityInductionCell) tile).tier.getBaseTier());
-        }
-        if (tile instanceof TileEntityInductionProvider) {
-            state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityInductionProvider) tile).tier.getBaseTier());
-        }
-        if (tile instanceof TileEntityBin) {
-            state = state.withProperty(BlockStateBasic.tierProperty, ((TileEntityBin) tile).tier.getBaseTier());
         }
         if (tile instanceof TileEntityInductionPort) {
             state = state.withProperty(BlockStateBasic.activeProperty, ((TileEntityInductionPort) tile).mode);

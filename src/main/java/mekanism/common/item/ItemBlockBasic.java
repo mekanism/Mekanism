@@ -10,6 +10,7 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ITierItem;
+import mekanism.common.block.IBlockMekanism;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BaseTier;
@@ -45,11 +46,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem, ITierItem {
+public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBlockMekanism<BLOCK> implements IEnergizedItem, ITierItem {
 
-    public Block metaBlock;
+    public BLOCK metaBlock;
 
-    public ItemBlockBasic(Block block) {
+    public ItemBlockBasic(BLOCK block) {
         super(block);
         metaBlock = block;
         setHasSubtypes(true);
