@@ -13,9 +13,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockBin extends BlockBasic {
@@ -23,7 +25,7 @@ public class BlockBin extends BlockBasic {
     private final BinTier tier;
 
     public BlockBin(BinTier tier) {
-        super(tier.getBaseTier().getSimpleName() + "_bin");
+        super(tier.getBaseTier().getSimpleName() + "_bin", Plane.HORIZONTAL);
         this.tier = tier;
     }
 
@@ -86,6 +88,17 @@ public class BlockBin extends BlockBasic {
         if (tile instanceof IComparatorSupport) {
             return ((IComparatorSupport) tile).getRedstoneLevel();
         }
+        return 0;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         return 0;
     }
 }

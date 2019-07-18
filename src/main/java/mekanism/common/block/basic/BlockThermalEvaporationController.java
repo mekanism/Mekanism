@@ -6,14 +6,16 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockThermalEvaporationController extends BlockBasic {
 
     public BlockThermalEvaporationController() {
-        super("thermal_evaporation_controller");
+        super("thermal_evaporation_controller", Plane.HORIZONTAL);
     }
 
     @Override
@@ -39,5 +41,16 @@ public class BlockThermalEvaporationController extends BlockBasic {
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityThermalEvaporationController();
+    }
+
+    @Override
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return 0;
     }
 }

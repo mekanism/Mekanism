@@ -486,6 +486,7 @@ public class ClientProxy extends CommonProxy {
 
         for (BasicBlockType type : BasicBlockType.values()) {
             List<ModelResourceLocation> modelsToAdd = new ArrayList<>();
+            //TODO: Get proper block info such as registry name, can probably loop over MekanismBlock.values()
             String resource = "mekanism:" + type.getName();
             BaseTier tierPointer = null;
 
@@ -497,10 +498,10 @@ public class ClientProxy extends CommonProxy {
             while (true) {
                 if (basicResources.get(resource) == null) {
                     List<String> entries = new ArrayList<>();
-                    if (type.hasActiveTexture()) {
+                    if (block.hasActiveTexture()) {
                         entries.add("active=false");
                     }
-                    if (type.hasRotations() || type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER) {
+                    if (block.hasRotations() || type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER) {
                         entries.add("facing=north");
                     }
 

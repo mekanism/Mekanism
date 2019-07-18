@@ -8,11 +8,12 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.IBlockMekanism;
+import mekanism.common.block.basic.BlockResource;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.InductionCellTier;
@@ -54,6 +55,7 @@ public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBl
         super(block);
         metaBlock = block;
         setHasSubtypes(true);
+        setTranslationKey(metaBlock.getTranslationKey());
     }
 
     @Override
@@ -62,18 +64,6 @@ public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBl
             return 1; // Temporary no stacking due to #
         }
         return super.getItemStackLimit(stack);
-    }
-
-    public ItemStack getUnchargedCell(InductionCellTier tier) {
-        ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 3);
-        setBaseTier(stack, tier.getBaseTier());
-        return stack;
-    }
-
-    public ItemStack getUnchargedProvider(InductionProviderTier tier) {
-        ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 4);
-        setBaseTier(stack, tier.getBaseTier());
-        return stack;
     }
 
     @Override
@@ -129,7 +119,7 @@ public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBl
                 list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                          EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
             } else {
-                list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
+                list.addAll(MekanismUtils.splitTooltip(metaBlock.getDescription(), itemstack));
             }
         }
     }
@@ -197,20 +187,6 @@ public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBl
         return place;
     }
 
-    @Nonnull
-    @Override
-    public String getTranslationKey(ItemStack itemstack) {
-        BasicBlockType type = BasicBlockType.get(itemstack);
-        if (type != null) {
-            String name = getTranslationKey() + "." + type.name;
-            if (type == BasicBlockType.BIN || type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER) {
-                name += getBaseTier(itemstack).getSimpleName();
-            }
-            return name;
-        }
-        return "Invalid Basic Block";
-    }
-
     @Override
     public double getEnergy(ItemStack itemStack) {
         if (BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL) {
@@ -252,8 +228,11 @@ public class ItemBlockBasic<BLOCK extends Block & IBlockMekanism> extends ItemBl
     @Override
     public int getItemBurnTime(ItemStack itemStack) {
         // If this is a block of charcoal, set burn time to 16000 ticks (per Minecraft standard)
-        if (this.metaBlock == MekanismBlocks.BasicBlock && itemStack.getMetadata() == 3) {
-            return 16000; // ticks
+        if (this.metaBlock instanceof BlockResource) {
+            BlockResourceInfo resourceInfo = ((BlockResource) this.metaBlock).getResourceInfo();
+            if (resourceInfo.equals(BlockResourceInfo.CHARCOAL)) {
+                return 16000; // ticks
+            }
         }
         return super.getItemBurnTime(itemStack);
     }

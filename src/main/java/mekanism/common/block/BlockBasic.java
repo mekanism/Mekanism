@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.Locale;
 import java.util.UUID;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
@@ -10,31 +11,29 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.ITierItem;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.InventoryBin;
-import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFire;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,15 +66,46 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
 
+    private final Predicate<EnumFacing> facingPredicate;
+    private final String name;
+
     public BlockBasic(String name) {
+        this(name, BlockStateUtils.NO_ROTATION);
+    }
+
+    public BlockBasic(String name, Predicate<EnumFacing> facingPredicate) {
         super(Material.IRON);
+        this.facingPredicate = facingPredicate;
         setHardness(5F);
         setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        name = name.toLowerCase(Locale.ROOT);
-        setTranslationKey(name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
+        this.name = name.toLowerCase(Locale.ROOT);
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    @Override
+    public String getDescription() {
+        //TODO: Should name just be gotten from registry name
+        return LangUtils.localize("tooltip.mekanism." + this.name);
+    }
+
+    @Override
+    public boolean canRotateTo(EnumFacing side) {
+        return facingPredicate.test(side);
+    }
+
+    @Override
+    public boolean hasRotations() {
+        return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
+    }
+
+    @Nonnull
+    @Override
+    public BlockStateContainer createBlockState() {
+        //TODO: Split this so that ones that don't have facing/active don't have them show
+        return new BlockStateBasic(this);
     }
 
     @Nonnull
@@ -231,29 +261,22 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
 
     @Override
     @Deprecated
-    public boolean isFullCube(IBlockState state) {
-        BasicBlockType type = BasicBlockType.get(state);
-        return type != null && type.isFullBlock;
-    }
-
-    @Override
-    @Deprecated
     public boolean isFullBlock(IBlockState state) {
-        BasicBlockType type = BasicBlockType.get(state);
-        return type != null && type.isFullBlock;
+        //TODO: Figure out about setting actual block values instead
+        return true;
     }
 
     @Override
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
-        BasicBlockType type = BasicBlockType.get(state);
-        return type != null && type.isOpaqueCube;
+        //TODO
+        return true;
     }
 
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-        BasicBlockType type = BasicBlockType.get(state);
-        return type != null && type.isOpaqueCube ? 255 : 0;
+        //TODO
+        return 255;
     }
 
     @Nonnull
@@ -271,7 +294,7 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
                 return 15;
             }
         }
-        return 0;
+        return super.getLightValue(state, world, pos);
     }
 
     @Override
@@ -348,17 +371,10 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
         if (type == BasicBlockType.BIN) {
             TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
             InventoryBin inv = new InventoryBin(ret);
-            ((ITierItem) ret.getItem()).setBaseTier(ret, tileEntity.tier.getBaseTier());
             inv.setItemCount(tileEntity.getItemCount());
             if (tileEntity.getItemCount() > 0) {
                 inv.setItemType(tileEntity.itemType);
             }
-        } else if (type == BasicBlockType.INDUCTION_CELL) {
-            TileEntityInductionCell tileEntity = (TileEntityInductionCell) world.getTileEntity(pos);
-            ((ItemBlockBasic) ret.getItem()).setBaseTier(ret, tileEntity.tier.getBaseTier());
-        } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
-            TileEntityInductionProvider tileEntity = (TileEntityInductionProvider) world.getTileEntity(pos);
-            ((ItemBlockBasic) ret.getItem()).setBaseTier(ret, tileEntity.tier.getBaseTier());
         }
 
         TileEntity tileEntity = world.getTileEntity(pos);
@@ -395,9 +411,5 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
             }
         }
         return false;
-    }
-
-    public PropertyEnum<BasicBlockType> getTypeProperty() {
-        return getBasicBlock().getProperty();
     }
 }
