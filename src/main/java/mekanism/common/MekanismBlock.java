@@ -1,8 +1,6 @@
 package mekanism.common;
 
 import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_3;
 
 import java.util.function.Function;
 import mekanism.common.block.BlockBounding;
@@ -37,6 +35,41 @@ import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.block.basic.BlockThermalEvaporation;
 import mekanism.common.block.basic.BlockThermalEvaporationController;
 import mekanism.common.block.basic.BlockThermalEvaporationValve;
+import mekanism.common.block.machine.BlockChargepad;
+import mekanism.common.block.machine.BlockChemicalCrystallizer;
+import mekanism.common.block.machine.BlockChemicalDissolutionChamber;
+import mekanism.common.block.machine.BlockChemicalInfuser;
+import mekanism.common.block.machine.BlockChemicalInjectionChamber;
+import mekanism.common.block.machine.BlockChemicalOxidizer;
+import mekanism.common.block.machine.BlockChemicalWasher;
+import mekanism.common.block.machine.BlockCombiner;
+import mekanism.common.block.machine.BlockCrusher;
+import mekanism.common.block.machine.BlockDigitalMiner;
+import mekanism.common.block.machine.BlockElectricPump;
+import mekanism.common.block.machine.BlockElectrolyticSeparator;
+import mekanism.common.block.machine.BlockEnergizedSmelter;
+import mekanism.common.block.machine.BlockEnrichmentChamber;
+import mekanism.common.block.machine.BlockFluidTank;
+import mekanism.common.block.machine.BlockFluidicPlenisher;
+import mekanism.common.block.machine.BlockFormulaicAssemblicator;
+import mekanism.common.block.machine.BlockFuelwoodHeater;
+import mekanism.common.block.machine.BlockLaser;
+import mekanism.common.block.machine.BlockLaserAmplifier;
+import mekanism.common.block.machine.BlockLaserTractorBeam;
+import mekanism.common.block.machine.BlockLogisticalSorter;
+import mekanism.common.block.machine.BlockMetallurgicInfuser;
+import mekanism.common.block.machine.BlockOredictionificator;
+import mekanism.common.block.machine.BlockOsmiumCompressor;
+import mekanism.common.block.machine.BlockPersonalChest;
+import mekanism.common.block.machine.BlockPrecisionSawmill;
+import mekanism.common.block.machine.BlockPressurizedReactionChamber;
+import mekanism.common.block.machine.BlockPurificationChamber;
+import mekanism.common.block.machine.BlockQuantumEntangloporter;
+import mekanism.common.block.machine.BlockResistiveHeater;
+import mekanism.common.block.machine.BlockRotaryCondensentrator;
+import mekanism.common.block.machine.BlockSeismicVibrator;
+import mekanism.common.block.machine.BlockSolarNeutronActivator;
+import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemBlockBasic;
@@ -52,6 +85,7 @@ import mekanism.common.item.ItemBlockResource;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.BinTier;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import net.minecraft.block.Block;
@@ -104,11 +138,11 @@ public enum MekanismBlock {
     BOILER_VALVE(new BlockBoilerValve(), ItemBlockBasic::new),
     SECURITY_DESK(new BlockSecurityDesk(), ItemBlockBasic::new),
 
-    ENRICHMENT_CHAMBER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    OSMIUM_COMPRESSOR(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    COMBINER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    CRUSHER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    DIGITAL_MINER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
+    ENRICHMENT_CHAMBER(new BlockEnrichmentChamber(), ItemBlockMachine::new),
+    OSMIUM_COMPRESSOR(new BlockOsmiumCompressor(), ItemBlockMachine::new),
+    COMBINER(new BlockCombiner(), ItemBlockMachine::new),
+    CRUSHER(new BlockCrusher(), ItemBlockMachine::new),
+    DIGITAL_MINER(new BlockDigitalMiner(), ItemBlockMachine::new),
 
     BASIC_SMELTING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
     BASIC_ENRICHING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
@@ -140,42 +174,42 @@ public enum MekanismBlock {
     ELITE_INFUSING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
     ELITE_SAWING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
 
-    METALLURGIC_INFUSER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    PURIFICATION_CHAMBER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ENERGIZED_SMELTER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    TELEPORTER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELECTRIC_PUMP(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    PERSONAL_CHEST(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    CHARGEPAD(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    LOGISTICAL_SORTER(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ROTARY_CONDENSENTRATOR(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    CHEMICAL_OXIDIZER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    CHEMICAL_INFUSER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    CHEMICAL_INJECTION_CHAMBER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    ELECTROLYTIC_SEPARATOR(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    PRECISION_SAWMILL(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    CHEMICAL_DISSOLUTION_CHAMBER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    CHEMICAL_WASHER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    CHEMICAL_CRYSTALLIZER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    SEISMIC_VIBRATOR(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    PRESSURIZED_REACTION_CHAMBER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
+    METALLURGIC_INFUSER(new BlockMetallurgicInfuser(), ItemBlockMachine::new),
+    PURIFICATION_CHAMBER(new BlockPurificationChamber(), ItemBlockMachine::new),
+    ENERGIZED_SMELTER(new BlockEnergizedSmelter(), ItemBlockMachine::new),
+    TELEPORTER(new BlockTeleporter(), ItemBlockMachine::new),
+    ELECTRIC_PUMP(new BlockElectricPump(), ItemBlockMachine::new),
+    PERSONAL_CHEST(new BlockPersonalChest(), ItemBlockMachine::new),
+    CHARGEPAD(new BlockChargepad(), ItemBlockMachine::new),
+    LOGISTICAL_SORTER(new BlockLogisticalSorter(), ItemBlockMachine::new),
+    ROTARY_CONDENSENTRATOR(new BlockRotaryCondensentrator(), ItemBlockMachine::new),
+    CHEMICAL_OXIDIZER(new BlockChemicalOxidizer(), ItemBlockMachine::new),
+    CHEMICAL_INFUSER(new BlockChemicalInfuser(), ItemBlockMachine::new),
+    CHEMICAL_INJECTION_CHAMBER(new BlockChemicalInjectionChamber(), ItemBlockMachine::new),
+    ELECTROLYTIC_SEPARATOR(new BlockElectrolyticSeparator(), ItemBlockMachine::new),
+    PRECISION_SAWMILL(new BlockPrecisionSawmill(), ItemBlockMachine::new),
+    CHEMICAL_DISSOLUTION_CHAMBER(new BlockChemicalDissolutionChamber(), ItemBlockMachine::new),
+    CHEMICAL_WASHER(new BlockChemicalWasher(), ItemBlockMachine::new),
+    CHEMICAL_CRYSTALLIZER(new BlockChemicalCrystallizer(), ItemBlockMachine::new),
+    SEISMIC_VIBRATOR(new BlockSeismicVibrator(), ItemBlockMachine::new),
+    PRESSURIZED_REACTION_CHAMBER(new BlockPressurizedReactionChamber(), ItemBlockMachine::new),
 
-    BASIC_FLUID_TANK(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    ADVANCED_FLUID_TANK(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    ELITE_FLUID_TANK(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    ULTIMATE_FLUID_TANK(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    CREATIVE_FLUID_TANK(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
+    BASIC_FLUID_TANK(new BlockFluidTank(FluidTankTier.BASIC), ItemBlockMachine::new),
+    ADVANCED_FLUID_TANK(new BlockFluidTank(FluidTankTier.ADVANCED), ItemBlockMachine::new),
+    ELITE_FLUID_TANK(new BlockFluidTank(FluidTankTier.ELITE), ItemBlockMachine::new),
+    ULTIMATE_FLUID_TANK(new BlockFluidTank(FluidTankTier.ULTIMATE), ItemBlockMachine::new),
+    CREATIVE_FLUID_TANK(new BlockFluidTank(FluidTankTier.CREATIVE), ItemBlockMachine::new),
 
-    FLUIDIC_PLENISHER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    LASER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    LASER_AMPLIFIER(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    LASER_TRACTOR_BEAM(BlockMachine.getBlockMachine(MACHINE_BLOCK_2), ItemBlockMachine::new),
-    QUANTUM_ENTANGLOPORTER(BlockMachine.getBlockMachine(MACHINE_BLOCK_3), ItemBlockMachine::new),
-    SOLAR_NEUTRON_ACTIVATOR(BlockMachine.getBlockMachine(MACHINE_BLOCK_3), ItemBlockMachine::new),
-    OREDICTIONIFICATOR(BlockMachine.getBlockMachine(MACHINE_BLOCK_3), ItemBlockMachine::new),
-    RESISTIVE_HEATER(BlockMachine.getBlockMachine(MACHINE_BLOCK_3), ItemBlockMachine::new),
-    FORMULAIC_ASSEMBLICATOR(BlockMachine.getBlockMachine(MACHINE_BLOCK_3), ItemBlockMachine::new),
-    FUELWOOD_HEATER(BlockMachine.getBlockMachine(MACHINE_BLOCK_3), ItemBlockMachine::new),
+    FLUIDIC_PLENISHER(new BlockFluidicPlenisher(), ItemBlockMachine::new),
+    LASER(new BlockLaser(), ItemBlockMachine::new),
+    LASER_AMPLIFIER(new BlockLaserAmplifier(), ItemBlockMachine::new),
+    LASER_TRACTOR_BEAM(new BlockLaserTractorBeam(), ItemBlockMachine::new),
+    QUANTUM_ENTANGLOPORTER(new BlockQuantumEntangloporter(), ItemBlockMachine::new),
+    SOLAR_NEUTRON_ACTIVATOR(new BlockSolarNeutronActivator(), ItemBlockMachine::new),
+    OREDICTIONIFICATOR(new BlockOredictionificator(), ItemBlockMachine::new),
+    RESISTIVE_HEATER(new BlockResistiveHeater(), ItemBlockMachine::new),
+    FORMULAIC_ASSEMBLICATOR(new BlockFormulaicAssemblicator(), ItemBlockMachine::new),
+    FUELWOOD_HEATER(new BlockFuelwoodHeater(), ItemBlockMachine::new),
 
     OSMIUM_ORE(new BlockOre(), ItemBlockOre::new),
     COPPER_ORE(new BlockOre(), ItemBlockOre::new),

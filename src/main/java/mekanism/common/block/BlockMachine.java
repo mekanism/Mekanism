@@ -1,6 +1,8 @@
 package mekanism.common.block;
 
+import java.util.Locale;
 import java.util.Random;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
@@ -24,6 +26,7 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -45,6 +48,7 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.PipeUtils;
@@ -72,6 +76,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -97,18 +102,29 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public abstract class BlockMachine extends BlockMekanismContainer {
+public abstract class BlockMachine extends BlockMekanismContainer implements IBlockMekanism {
 
     private static final AxisAlignedBB CHARGEPAD_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
     private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
-    public BlockMachine() {
+    private final Predicate<EnumFacing> facingPredicate;
+    private final String name;
+
+    public BlockMachine(String name) {
+        this(name, BlockStateUtils.NO_ROTATION);
+    }
+
+    public BlockMachine(String name, Predicate<EnumFacing> facingPredicate) {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
+        //Ensure the name is lower case as with concatenating with values from enums it may not be
+        this.name = name.toLowerCase(Locale.ROOT);
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     public static BlockMachine getBlockMachine(MachineBlock block) {
@@ -118,6 +134,22 @@ public abstract class BlockMachine extends BlockMekanismContainer {
                 return block;
             }
         };
+    }
+
+    @Override
+    public String getDescription() {
+        //TODO: Should name just be gotten from registry name
+        return LangUtils.localize("tooltip.mekanism." + this.name);
+    }
+
+    @Override
+    public boolean canRotateTo(EnumFacing side) {
+        return facingPredicate.test(side);
+    }
+
+    @Override
+    public boolean hasRotations() {
+        return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
     }
 
     public abstract MachineBlock getMachineBlock();
