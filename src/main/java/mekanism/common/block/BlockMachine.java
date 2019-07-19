@@ -118,6 +118,7 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
 
     public BlockMachine(String name, Predicate<EnumFacing> facingPredicate) {
         super(Material.IRON);
+        this.facingPredicate = facingPredicate;
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
@@ -303,9 +304,7 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         if (MekanismConfig.current().client.enableAmbientLighting.val()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-            if (tileEntity instanceof IActiveState &&
-                ((IActiveState) tileEntity).lightUpdate() &&
-                ((IActiveState) tileEntity).wasActiveRecently()) {
+            if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
                 return MekanismConfig.current().client.ambientLightingLevel.val();
             }
         }
@@ -467,13 +466,6 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
         return false;
     }
 
-    @Nonnull
-    @Override
-    @Deprecated
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
-    }
-
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
@@ -492,6 +484,7 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         IBlockState state = world.getBlockState(pos);
         if (MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST) {
+            //TODO: Should this be divided by 5 like in original block class
             return blockResistance;
         }
         return -1;
