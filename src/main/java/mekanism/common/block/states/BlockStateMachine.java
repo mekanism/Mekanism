@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
@@ -99,16 +98,7 @@ public class BlockStateMachine<BLOCK extends BlockMekanismContainer & IBlockMeka
         }
 
         public Block getBlock() {
-            switch (this) {
-                case MACHINE_BLOCK_1:
-                    return MekanismBlocks.MachineBlock;
-                case MACHINE_BLOCK_2:
-                    return MekanismBlocks.MachineBlock2;
-                case MACHINE_BLOCK_3:
-                    return MekanismBlocks.MachineBlock3;
-                default:
-                    return null;
-            }
+            return null;
         }
     }
 

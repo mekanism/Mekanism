@@ -308,7 +308,7 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
+        ItemStack itemStack = new ItemStack(this);
         if (itemStack.getTagCompound() == null) {
             itemStack.setTagCompound(new NBTTagCompound());
         }

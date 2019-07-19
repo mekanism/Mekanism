@@ -204,7 +204,6 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
             return true;
         }
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        int metadata = state.getBlock().getMetaFromState(state);
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);
@@ -317,7 +316,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
+        ItemStack itemStack = new ItemStack(this);
         if (itemStack.getTagCompound() == null) {
             itemStack.setTagCompound(new NBTTagCompound());
         }
