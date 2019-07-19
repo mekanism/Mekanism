@@ -3,7 +3,6 @@ package mekanism.common.block.states;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.block.BlockBasic;
-import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;

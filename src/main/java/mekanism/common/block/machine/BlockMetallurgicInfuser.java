@@ -35,7 +35,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -95,7 +94,7 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateMachine(this, getTypeProperty());
+        return new BlockStateMachine(this);
     }
 
     @Nonnull
@@ -233,10 +232,9 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
         }
 
         if (tileEntity != null) {
-            MachineType type = MachineType.get(getMachineBlock(), metadata);
-            if (!entityplayer.isSneaking() && type.guiId != -1) {
+            if (!entityplayer.isSneaking()) {
                 if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
+                    entityplayer.openGui(Mekanism.instance, MachineType.METALLURGIC_INFUSER.guiId, world, pos.getX(), pos.getY(), pos.getZ());
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
@@ -248,11 +246,7 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        int metadata = state.getBlock().getMetaFromState(state);
-        if (MachineType.get(getMachineBlock(), metadata) == null) {
-            return null;
-        }
-        return MachineType.get(getMachineBlock(), metadata).create();
+        return new TileEntityMetallurgicInfuser();
     }
 
     @Override
@@ -282,11 +276,8 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
 
     @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
-        IBlockState state = world.getBlockState(pos);
-        if (MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST) {
-            return blockResistance;
-        }
-        return -1;
+        //TODO: This is how it was before, but should it be divided by 5 like in Block.java
+        return blockResistance;
     }
 
     @Override
@@ -369,10 +360,6 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
-    }
-
-    public PropertyEnum<MachineType> getTypeProperty() {
-        return getMachineBlock().getProperty();
     }
 
     @Override

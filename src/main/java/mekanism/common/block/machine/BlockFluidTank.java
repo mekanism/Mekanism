@@ -40,7 +40,6 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -108,7 +107,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IBlockMeka
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateMachine(this, getTypeProperty());
+        return new BlockStateMachine(this);
     }
 
     @Nonnull
@@ -231,11 +230,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IBlockMeka
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        int metadata = state.getBlock().getMetaFromState(state);
-        if (MachineType.get(getMachineBlock(), metadata) == null) {
-            return null;
-        }
-        return MachineType.get(getMachineBlock(), metadata).create();
+        return new TileEntityFluidTank();
     }
 
     @Override
@@ -265,11 +260,8 @@ public class BlockFluidTank extends BlockMekanismContainer implements IBlockMeka
 
     @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
-        IBlockState state = world.getBlockState(pos);
-        if (MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST) {
-            return blockResistance;
-        }
-        return -1;
+        //TODO: This is how it was before, but should it be divided by 5 like in Block.java
+        return blockResistance;
     }
 
     @Override
@@ -462,10 +454,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IBlockMeka
     @Deprecated
     public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
         return face != EnumFacing.UP && face != EnumFacing.DOWN ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
-    }
-
-    public PropertyEnum<MachineType> getTypeProperty() {
-        return getMachineBlock().getProperty();
     }
 
     @Override

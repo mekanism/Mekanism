@@ -27,6 +27,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.ItemDataUtils;
@@ -35,7 +36,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -95,7 +95,7 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateMachine(this, getTypeProperty());
+        return new BlockStateMachine(this);
     }
 
     @Nonnull
@@ -233,10 +233,9 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
         }
 
         if (tileEntity != null) {
-            MachineType type = MachineType.get(getMachineBlock(), metadata);
-            if (!entityplayer.isSneaking() && type.guiId != -1) {
+            if (!entityplayer.isSneaking()) {
                 if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
+                    entityplayer.openGui(Mekanism.instance, MachineType.ROTARY_CONDENSENTRATOR.guiId, world, pos.getX(), pos.getY(), pos.getZ());
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
@@ -248,11 +247,7 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        int metadata = state.getBlock().getMetaFromState(state);
-        if (MachineType.get(getMachineBlock(), metadata) == null) {
-            return null;
-        }
-        return MachineType.get(getMachineBlock(), metadata).create();
+        return new TileEntityRotaryCondensentrator();
     }
 
     @Override
@@ -282,11 +277,8 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
 
     @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
-        IBlockState state = world.getBlockState(pos);
-        if (MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST) {
-            return blockResistance;
-        }
-        return -1;
+        //TODO: This is how it was before, but should it be divided by 5 like in Block.java
+        return blockResistance;
     }
 
     @Override
@@ -366,12 +358,6 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
     }
 
     @Override
-    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-        return type == MachineType.LASER_AMPLIFIER;
-    }
-
-    @Override
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
@@ -381,10 +367,6 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
     @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         return true;
-    }
-
-    public PropertyEnum<MachineType> getTypeProperty() {
-        return getMachineBlock().getProperty();
     }
 
     @Override

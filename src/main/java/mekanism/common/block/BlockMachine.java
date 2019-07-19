@@ -115,7 +115,7 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateMachine(this, getTypeProperty());
+        return new BlockStateMachine(this);
     }
 
     @Nonnull

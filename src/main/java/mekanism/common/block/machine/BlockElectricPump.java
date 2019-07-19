@@ -26,6 +26,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.ItemDataUtils;
@@ -34,7 +35,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -95,7 +95,7 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockM
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateMachine(this, getTypeProperty());
+        return new BlockStateMachine(this);
     }
 
     @Nonnull
@@ -230,10 +230,9 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockM
         }
 
         if (tileEntity != null) {
-            MachineType type = MachineType.get(getMachineBlock(), metadata);
-            if (!entityplayer.isSneaking() && type.guiId != -1) {
+            if (!entityplayer.isSneaking()) {
                 if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
+                    entityplayer.openGui(Mekanism.instance, MachineType.ELECTRIC_PUMP.guiId, world, pos.getX(), pos.getY(), pos.getZ());
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
@@ -245,11 +244,7 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockM
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        int metadata = state.getBlock().getMetaFromState(state);
-        if (MachineType.get(getMachineBlock(), metadata) == null) {
-            return null;
-        }
-        return MachineType.get(getMachineBlock(), metadata).create();
+        return new TileEntityElectricPump();
     }
 
     @Override
@@ -279,11 +274,8 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockM
 
     @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
-        IBlockState state = world.getBlockState(pos);
-        if (MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST) {
-            return blockResistance;
-        }
-        return -1;
+        //TODO: This is how it was before, but should it be divided by 5 like in Block.java
+        return blockResistance;
     }
 
     @Override
@@ -380,10 +372,6 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockM
     @Deprecated
     public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
         return face == EnumFacing.UP || face == EnumFacing.DOWN ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
-    }
-
-    public PropertyEnum<MachineType> getTypeProperty() {
-        return getMachineBlock().getProperty();
     }
 
     @Override

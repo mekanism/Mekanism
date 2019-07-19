@@ -20,7 +20,6 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.IBlockMekanism;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -35,7 +34,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -97,7 +95,7 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateMachine(this, getTypeProperty());
+        return new BlockStateMachine(this);
     }
 
     @Nonnull
@@ -246,11 +244,7 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        int metadata = state.getBlock().getMetaFromState(state);
-        if (MachineType.get(getMachineBlock(), metadata) == null) {
-            return null;
-        }
-        return MachineType.get(getMachineBlock(), metadata).create();
+        return new TileEntityPersonalChest();
     }
 
     @Override
@@ -280,10 +274,6 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
 
     @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
-        IBlockState state = world.getBlockState(pos);
-        if (MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state)) != MachineType.PERSONAL_CHEST) {
-            return blockResistance;
-        }
         return -1;
     }
 
@@ -380,10 +370,6 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Deprecated
     public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
         return BlockFaceShape.UNDEFINED;
-    }
-
-    public PropertyEnum<MachineType> getTypeProperty() {
-        return getMachineBlock().getProperty();
     }
 
     @Override
