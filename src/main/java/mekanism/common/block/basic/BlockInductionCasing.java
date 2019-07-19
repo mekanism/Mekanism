@@ -1,48 +1,15 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
-import mekanism.common.block.BlockBasic;
 import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
-public class BlockInductionCasing extends BlockBasic {
+public class BlockInductionCasing extends BlockBasicMultiblock {
 
     public BlockInductionCasing() {
         super("induction_casing");
-    }
-
-    @Override
-    public boolean hasDescription() {
-        return true;
-    }
-
-    @Override
-    public boolean canCreatureSpawn(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, SpawnPlacementType type) {
-        TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
-        if (tileEntity != null) {
-            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-                if (tileEntity.structure != null) {
-                    return false;
-                }
-            } else if (tileEntity.clientHasStructure) {
-                return false;
-            }
-        }
-        return super.canCreatureSpawn(state, world, pos, type);
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return true;
     }
 
     @Override

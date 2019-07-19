@@ -1,12 +1,19 @@
 package mekanism.common.block.basic;
 
+import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.tile.TileEntitySecurityDesk;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
@@ -59,5 +66,33 @@ public class BlockSecurityDesk extends BlockBasic {
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         return 0;
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntitySecurityDesk tile = (TileEntitySecurityDesk) world.getTileEntity(pos);
+        if (tile != null) {
+            if (!entityplayer.isSneaking()) {
+                if (!world.isRemote) {
+                    UUID ownerUUID = tile.ownerUUID;
+                    if (ownerUUID == null || entityplayer.getUniqueID().equals(ownerUUID)) {
+                        entityplayer.openGui(Mekanism.instance, 57, world, pos.getX(), pos.getY(), pos.getZ());
+                    } else {
+                        SecurityUtils.displayNoAccess(entityplayer);
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof IBoundingBlock) {
+            ((IBoundingBlock) tileEntity).onBreak();
+        }
+        super.breakBlock(world, pos, state);
     }
 }

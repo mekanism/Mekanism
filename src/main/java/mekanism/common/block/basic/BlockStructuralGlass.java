@@ -3,10 +3,14 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.tile.TileEntityStructuralGlass;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -71,8 +75,27 @@ public class BlockStructuralGlass extends BlockBasic {
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
+    @Nonnull
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
+
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         return 0;
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityStructuralGlass tileEntity = (TileEntityStructuralGlass) MekanismUtils.getTileEntitySafe(world, pos);
+        if (tileEntity != null) {
+            if (world.isRemote) {
+                return true;
+            }
+            return tileEntity.onActivate(entityplayer, hand, entityplayer.getHeldItem(hand));
+        }
+        return false;
     }
 }

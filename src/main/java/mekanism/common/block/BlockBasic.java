@@ -1,11 +1,9 @@
 package mekanism.common.block;
 
 import java.util.Locale;
-import java.util.UUID;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
@@ -15,41 +13,28 @@ import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntitySuperheatingElement;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple metal block IDs. 0:0: Osmium Block 0:1: Bronze Block 0:2: Refined Obsidian 0:3: Charcoal Block 0:4: Refined Glowstone 0:5: Steel
@@ -146,120 +131,10 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        TileEntity tile = world.getTileEntity(pos);
-        ItemStack stack = entityplayer.getHeldItem(hand);
-
-        if (tile instanceof TileEntityThermalEvaporationController) {
-            if (!entityplayer.isSneaking()) {
-                if (!world.isRemote) {
-                    entityplayer.openGui(Mekanism.instance, 33, world, pos.getX(), pos.getY(), pos.getZ());
-                }
-                return true;
-            }
-        } else if (tile instanceof TileEntitySecurityDesk) {
-            UUID ownerUUID = ((TileEntitySecurityDesk) tile).ownerUUID;
-            if (!entityplayer.isSneaking()) {
-                if (!world.isRemote) {
-                    if (ownerUUID == null || entityplayer.getUniqueID().equals(ownerUUID)) {
-                        entityplayer.openGui(Mekanism.instance, 57, world, pos.getX(), pos.getY(), pos.getZ());
-                    } else {
-                        SecurityUtils.displayNoAccess(entityplayer);
-                    }
-                }
-                return true;
-            }
-        } else if (tile instanceof TileEntityBin) {
-            TileEntityBin bin = (TileEntityBin) tile;
-            IMekWrench wrenchHandler;
-            if (!stack.isEmpty() && (wrenchHandler = Wrenches.getHandler(stack)) != null) {
-                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-                    if (!world.isRemote) {
-                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-                        if (entityplayer.isSneaking()) {
-                            MekanismUtils.dismantleBlock(this, state, world, pos);
-                            return true;
-                        }
-                        bin.setFacing(bin.facing.rotateY());
-                        world.notifyNeighborsOfStateChange(pos, this, true);
-                    }
-                    return true;
-                }
-            }
-            if (!world.isRemote) {
-                if (bin.getItemCount() < bin.tier.getStorage()) {
-                    if (bin.addTicks == 0) {
-                        if (!stack.isEmpty()) {
-                            ItemStack remain = bin.add(stack);
-                            entityplayer.setHeldItem(hand, remain);
-                            bin.addTicks = 5;
-                        }
-                    } else if (bin.addTicks > 0 && bin.getItemCount() > 0) {
-                        NonNullList<ItemStack> inv = entityplayer.inventory.mainInventory;
-
-                        for (int i = 0; i < inv.size(); i++) {
-                            if (bin.getItemCount() == bin.tier.getStorage()) {
-                                break;
-                            }
-                            if (!inv.get(i).isEmpty()) {
-                                ItemStack remain = bin.add(inv.get(i));
-                                inv.set(i, remain);
-                                bin.addTicks = 5;
-                            }
-                            ((EntityPlayerMP) entityplayer).sendContainerToPlayer(entityplayer.openContainer);
-                        }
-                    }
-                }
-            }
-            return true;
-        } else if (tile instanceof IMultiblock) {
-            if (world.isRemote) {
-                return true;
-            }
-            return ((IMultiblock<?>) world.getTileEntity(pos)).onActivate(entityplayer, hand, stack);
-        } else if (tile instanceof IStructuralMultiblock) {
-            if (world.isRemote) {
-                return true;
-            }
-
-            return ((IStructuralMultiblock) world.getTileEntity(pos)).onActivate(entityplayer, hand, stack);
-        }
-        return false;
-    }
-
-    @Override
     @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         //TODO: Figure out if this short circuit is good
         return true;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullBlock(IBlockState state) {
-        //TODO: Figure out about setting actual block values instead
-        return true;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(IBlockState state) {
-        //TODO
-        return true;
-    }
-
-    @Override
-    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-        //TODO
-        return 255;
     }
 
     @Override
@@ -329,21 +204,13 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
         }
     }
 
-    @Override
-    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IBoundingBlock) {
-            ((IBoundingBlock) tileEntity).onBreak();
-        }
-        super.breakBlock(world, pos, state);
-    }
-
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         ItemStack ret = new ItemStack(this);
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof IStrictEnergyStorage) {
+            //This can probably be moved upwards
             IEnergizedItem energizedItem = (IEnergizedItem) ret.getItem();
             energizedItem.setEnergy(ret, ((IStrictEnergyStorage) tileEntity).getEnergy());
         }
