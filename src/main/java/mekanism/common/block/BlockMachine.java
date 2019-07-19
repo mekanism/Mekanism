@@ -4,14 +4,11 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.render.particle.MekanismParticleHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
@@ -20,7 +17,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
-import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
@@ -28,67 +24,41 @@ import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFactory;
-import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.tile.TileEntityLaser;
-import mekanism.common.tile.TileEntityLaserAmplifier;
-import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -103,11 +73,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author AidanBrady
  */
 public abstract class BlockMachine extends BlockMekanismContainer implements IBlockMekanism {
-
-    private static final AxisAlignedBB CHARGEPAD_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
-    private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
-    private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
-    private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
+    //TODO: Clean this up further, currently only is used for Factories now
 
     private final Predicate<EnumFacing> facingPredicate;
     private final String name;
@@ -126,15 +92,6 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
         this.name = name.toLowerCase(Locale.ROOT);
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    public static BlockMachine getBlockMachine(MachineBlock block) {
-        return new BlockMachine() {
-            @Override
-            public MachineBlock getMachineBlock() {
-                return block;
-            }
-        };
     }
 
     @Override
@@ -186,9 +143,6 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
         if (tile instanceof IActiveState) {
             state = state.withProperty(BlockStateMachine.activeProperty, ((IActiveState) tile).getActive());
         }
-        if (tile instanceof TileEntityFluidTank) {
-            state = state.withProperty(BlockStateMachine.tierProperty, ((TileEntityFluidTank) tile).tier.getBaseTier());
-        }
         if (tile instanceof TileEntityFactory) {
             state = state.withProperty(BlockStateMachine.recipeProperty, ((TileEntityFactory) tile).getRecipeType());
         }
@@ -232,40 +186,12 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
 
         tileEntity.setFacing(change);
         tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-
-        if (tileEntity instanceof TileEntityLogisticalSorter) {
-            TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tileEntity;
-            if (!transporter.hasInventory()) {
-                for (EnumFacing dir : EnumFacing.VALUES) {
-                    TileEntity tile = Coord4D.get(transporter).offset(dir).getTileEntity(world);
-                    if (InventoryUtils.isItemHandler(tile, dir)) {
-                        tileEntity.setFacing(dir.getOpposite());
-                        break;
-                    }
-                }
-            }
-        }
-        if (tileEntity instanceof IBoundingBlock) {
-            ((IBoundingBlock) tileEntity).onPlace();
-        }
-    }
-
-    @Override
-    public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        if (tileEntity instanceof IBoundingBlock) {
-            ((IBoundingBlock) tileEntity).onBreak();
-        }
-        super.breakBlock(world, pos, state);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityFluidTank) {
-            return;
-        }
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -273,9 +199,6 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
             EnumFacing side = tileEntity.facing;
-            if (tileEntity instanceof TileEntityMetallurgicInfuser) {
-                side = side.getOpposite();
-            }
 
             switch (side) {
                 case WEST:
@@ -332,14 +255,6 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
                             }
                         }
                         break;
-                    case FLUID_TANK:
-                        ItemBlockMachine itemMachine = (ItemBlockMachine) Item.getItemFromBlock(this);
-                        for (FluidTankTier tier : FluidTankTier.values()) {
-                            ItemStack stack = new ItemStack(this, 1, type.meta);
-                            itemMachine.setBaseTier(stack, tier.getBaseTier());
-                            list.add(stack);
-                        }
-                        break;
                     default:
                         list.add(new ItemStack(this, 1, type.meta));
                 }
@@ -368,17 +283,6 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
                         }
                         if (tileEntity != null) {
                             EnumFacing change = tileEntity.facing.rotateY();
-                            if (tileEntity instanceof TileEntityLogisticalSorter) {
-                                if (!((TileEntityLogisticalSorter) tileEntity).hasInventory()) {
-                                    for (EnumFacing dir : EnumFacing.VALUES) {
-                                        TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
-                                        if (InventoryUtils.isItemHandler(tile, dir)) {
-                                            change = dir.getOpposite();
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
                             tileEntity.setFacing(change);
                             world.notifyNeighborsOfStateChange(pos, this, true);
                         }
@@ -392,55 +296,13 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
 
         if (tileEntity != null) {
             MachineType type = MachineType.get(getMachineBlock(), metadata);
-            switch (type) {
-                case PERSONAL_CHEST:
-                    if (!entityplayer.isSneaking() && !world.isSideSolid(pos.up(), EnumFacing.DOWN)) {
-                        if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                            entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
-                        } else {
-                            SecurityUtils.displayNoAccess(entityplayer);
-                        }
-                        return true;
-                    }
-                    break;
-                case FLUID_TANK:
-                    if (!entityplayer.isSneaking()) {
-                        if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                            if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack)) {
-                                if (manageInventory(entityplayer, (TileEntityFluidTank) tileEntity, hand, stack)) {
-                                    entityplayer.inventory.markDirty();
-                                    return true;
-                                }
-                            } else {
-                                entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
-                            }
-                        } else {
-                            SecurityUtils.displayNoAccess(entityplayer);
-                        }
-                        return true;
-                    }
-                    break;
-                case LOGISTICAL_SORTER:
-                    if (!entityplayer.isSneaking()) {
-                        if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                            LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP) entityplayer, Coord4D.get(tileEntity), -1);
-                        } else {
-                            SecurityUtils.displayNoAccess(entityplayer);
-                        }
-                        return true;
-                    }
-
-                    break;
-                default:
-                    if (!entityplayer.isSneaking() && type.guiId != -1) {
-                        if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                            entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
-                        } else {
-                            SecurityUtils.displayNoAccess(entityplayer);
-                        }
-                        return true;
-                    }
-                    break;
+            if (!entityplayer.isSneaking() && type.guiId != -1) {
+                if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                    entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
+                } else {
+                    SecurityUtils.displayNoAccess(entityplayer);
+                }
+                return true;
             }
         }
         return false;
@@ -503,87 +365,7 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
         if (tileEntity instanceof IComparatorSupport) {
             return ((IComparatorSupport) tileEntity).getRedstoneLevel();
         }
-        if (tileEntity instanceof TileEntityLaserAmplifier) {
-            //TODO: Move this over to using IComparatorSupport?
-            TileEntityLaserAmplifier amplifier = (TileEntityLaserAmplifier) tileEntity;
-            if (amplifier.outputMode == TileEntityLaserAmplifier.RedstoneOutput.ENERGY_CONTENTS) {
-                return amplifier.getRedstoneLevel();
-            }
-            return getWeakPower(state, world, pos, null);
-        }
         return 0;
-    }
-
-    private boolean manageInventory(EntityPlayer player, TileEntityFluidTank tileEntity, EnumHand hand, ItemStack itemStack) {
-        ItemStack copyStack = StackUtils.size(itemStack.copy(), 1);
-        if (FluidContainerUtils.isFluidContainer(itemStack)) {
-            IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
-            if (FluidUtil.getFluidContained(copyStack) == null) {
-                if (tileEntity.fluidTank.getFluid() != null) {
-                    int filled = handler.fill(tileEntity.fluidTank.getFluid(), !player.capabilities.isCreativeMode);
-                    copyStack = handler.getContainer();
-                    if (filled > 0) {
-                        if (itemStack.getCount() == 1) {
-                            player.setHeldItem(hand, copyStack);
-                        } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(copyStack)) {
-                            itemStack.shrink(1);
-                        } else {
-                            player.dropItem(copyStack, false, true);
-                            itemStack.shrink(1);
-                        }
-                        if (tileEntity.tier != FluidTankTier.CREATIVE) {
-                            tileEntity.fluidTank.drain(filled, true);
-                        }
-                        return true;
-                    }
-                }
-            } else {
-                FluidStack itemFluid = FluidUtil.getFluidContained(copyStack);
-                int needed = tileEntity.getCurrentNeeded();
-                if (tileEntity.fluidTank.getFluid() != null && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid)) {
-                    return false;
-                }
-                boolean filled = false;
-                FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
-                copyStack = handler.getContainer();
-                if (copyStack.getCount() == 0) {
-                    copyStack = ItemStack.EMPTY;
-                }
-                if (drained != null) {
-                    if (player.capabilities.isCreativeMode) {
-                        filled = true;
-                    } else if (!copyStack.isEmpty()) {
-                        if (itemStack.getCount() == 1) {
-                            player.setHeldItem(hand, copyStack);
-                            filled = true;
-                        } else if (player.inventory.addItemStackToInventory(copyStack)) {
-                            itemStack.shrink(1);
-
-                            filled = true;
-                        }
-                    } else {
-                        itemStack.shrink(1);
-                        if (itemStack.getCount() == 0) {
-                            player.setHeldItem(hand, ItemStack.EMPTY);
-                        }
-                        filled = true;
-                    }
-
-                    if (filled) {
-                        int toFill = tileEntity.fluidTank.getCapacity() - tileEntity.fluidTank.getFluidAmount();
-                        if (tileEntity.tier != FluidTankTier.CREATIVE) {
-                            toFill = Math.min(toFill, drained.amount);
-                        }
-                        tileEntity.fluidTank.fill(PipeUtils.copy(drained, toFill), true);
-                        if (drained.amount - toFill > 0) {
-                            tileEntity.pushUp(PipeUtils.copy(itemFluid, drained.amount - toFill), true);
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     @Override
@@ -593,18 +375,6 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
-            }
-            if (tileEntity instanceof TileEntityLogisticalSorter) {
-                TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tileEntity;
-                if (!sorter.hasInventory()) {
-                    for (EnumFacing dir : EnumFacing.VALUES) {
-                        TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
-                        if (InventoryUtils.isItemHandler(tile, dir)) {
-                            sorter.setFacing(dir.getOpposite());
-                            return;
-                        }
-                    }
-                }
             }
         }
     }
@@ -616,10 +386,6 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
         ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
         if (itemStack.getTagCompound() == null) {
             itemStack.setTagCompound(new NBTTagCompound());
-        }
-        if (tileEntity instanceof TileEntityFluidTank) {
-            ITierItem tierItem = (ITierItem) itemStack.getItem();
-            tierItem.setBaseTier(itemStack, ((TileEntityFluidTank) tileEntity).tier.getBaseTier());
         }
         if (tileEntity instanceof ISecurityTile) {
             ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
@@ -663,107 +429,13 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
             IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
             energizedItem.setEnergy(itemStack, ((IStrictEnergyStorage) tileEntity).getEnergy());
         }
-        if (tileEntity instanceof TileEntityQuantumEntangloporter) {
-            InventoryFrequency frequency = ((TileEntityQuantumEntangloporter) tileEntity).frequency;
-            if (frequency != null) {
-                ItemDataUtils.setCompound(itemStack, "entangleporter_frequency", frequency.getIdentity().serialize());
-            }
-        }
         return itemStack;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean addHitEffects(IBlockState state, World world, RayTraceResult target, ParticleManager manager) {
-        if (!target.typeOfHit.equals(Type.BLOCK)) {
-            return super.addHitEffects(state, world, target, manager);
-        }
-        MachineType type = state.getValue(getTypeProperty());
-        //If it is one of the types that block state won't have a color for
-        if (type == MachineType.FLUID_TANK && MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager)) {
-            return true;
-        }
-        return super.addHitEffects(state, world, target, manager);
-    }
-
-    @Override
-    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-        return type == MachineType.LASER_AMPLIFIER;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
-        MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-
-        if (type == null) {
-            return super.getBoundingBox(state, world, pos);
-        }
-
-        switch (type) {
-            case CHARGEPAD:
-                return CHARGEPAD_BOUNDS;
-            case FLUID_TANK:
-                return TANK_BOUNDS;
-            case LASER:
-                if (tile instanceof TileEntityLaser) {
-                    return MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLaser) tile).facing).offset(0.5, 0.5, 0.5);
-                }
-            case LOGISTICAL_SORTER:
-                if (tile instanceof TileEntityLogisticalSorter) {
-                    return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).facing).offset(0.5, 0.5, 0.5);
-                }
-            default:
-                return super.getBoundingBox(state, world, pos);
-        }
     }
 
     @Override
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-        MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-        if (type != null) {
-            switch (type) {
-                case CHARGEPAD:
-                case PERSONAL_CHEST:
-                    return false;
-                case FLUID_TANK:
-                    return side == EnumFacing.UP || side == EnumFacing.DOWN;
-            }
-        }
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
-        MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
-        if (type != null) {
-            switch (type) {
-                case PERSONAL_CHEST:
-                case LOGISTICAL_SORTER:
-                case LASER:
-                    return BlockFaceShape.UNDEFINED;
-                case ELECTRIC_PUMP:
-                case FLUIDIC_PLENISHER:
-                    return face == EnumFacing.UP || face == EnumFacing.DOWN ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
-                case CHARGEPAD:
-                    return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
-                case FLUID_TANK:
-                    return face != EnumFacing.UP && face != EnumFacing.DOWN ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
-            }
-        }
-        return super.getBlockFaceShape(world, state, pos, face);
     }
 
     public PropertyEnum<MachineType> getTypeProperty() {
@@ -797,15 +469,5 @@ public abstract class BlockMachine extends BlockMekanismContainer implements IBl
             }
         }
         return false;
-    }
-
-    @Override
-    @Deprecated
-    public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tile instanceof TileEntityLaserAmplifier) {
-            return ((TileEntityLaserAmplifier) tile).emittingRedstone ? 15 : 0;
-        }
-        return 0;
     }
 }
