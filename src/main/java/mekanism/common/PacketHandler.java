@@ -43,8 +43,6 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketOredictionificatorGui;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
-import mekanism.common.network.PacketPersonalChest;
-import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX;
@@ -185,7 +183,7 @@ public class PacketHandler {
     public void initialize() {
         netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
         netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Side.CLIENT);
-        netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.CLIENT);
+        //FREE ID 2
         //FREE ID 3
         netHandler.registerMessage(PacketItemStack.class, ItemStackMessage.class, 4, Side.SERVER);
         netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.CLIENT);

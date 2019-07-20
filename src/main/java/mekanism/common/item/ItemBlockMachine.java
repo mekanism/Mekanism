@@ -38,7 +38,6 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
-import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -378,8 +377,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     setOwnerUUID(itemstack, entityplayer.getUniqueID());
                 }
                 if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                    InventoryPersonalChest inventory = new InventoryPersonalChest(itemstack, hand, entityplayer.inventory.currentItem);
-                    MekanismUtils.openPersonalChestGui((EntityPlayerMP) entityplayer, inventory);
+                    MekanismUtils.openItemGui((EntityPlayerMP) entityplayer, hand, MachineType.PERSONAL_CHEST.guiId);
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }

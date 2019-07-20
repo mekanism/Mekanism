@@ -277,19 +277,6 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void openPersonalChest(EntityPlayer entityplayer, int windowId, EnumHand hand, int hotbarSlot) {
-        if (hotbarSlot == entityplayer.inventory.currentItem) {
-            //Ensure they still have the same hotbar slot selected
-            ItemStack stack = entityplayer.getHeldItem(hand);
-            if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
-                InventoryPersonalChest inventory = new InventoryPersonalChest(stack, hand, hotbarSlot);
-                FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
-                entityplayer.openContainer.windowId = windowId;
-            }
-        }
-    }
-
-    @Override
     public void registerTESRs() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedFactory.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBin.class, new RenderBin());
@@ -679,15 +666,37 @@ public class ClientProxy extends CommonProxy {
         return properties.toString();
     }
 
+    public GuiScreen getClientItemGui(EntityPlayer player, BlockPos pos) {
+        int currentItem = pos.getX();
+        int handOrdinal = pos.getY();
+        if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= EnumHand.values().length) {
+            //If it is out of bounds don't do anything
+            return null;
+        }
+        ItemStack stack = player.inventory.getStackInSlot(currentItem);
+        EnumHand hand = EnumHand.values()[handOrdinal];
+        int guiID = pos.getZ();
+        if (guiID == MachineType.PERSONAL_CHEST.guiId) {
+            if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
+                //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
+                return new GuiPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
+            }
+        }
+        return null;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+        if (ID == 1) {
+            //ID == 1 used to be credits, now it is being used for Item Gui's
+            return getClientItemGui(player, pos);
+        }
         TileEntity tileEntity = world.getTileEntity(pos);
         switch (ID) {
             case 0:
                 return new GuiDictionary(player.inventory);
-            case 1:
-                break; // Used to be credits UI
+            //1 USED BEFORE SWITCH
             case 2:
                 return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
             case 3:

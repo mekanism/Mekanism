@@ -31,11 +31,8 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.tesla.TeslaIntegration;
-import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockTransmitter;
-import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;
@@ -58,6 +55,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -611,19 +609,11 @@ public final class MekanismUtils {
     }
 
     /**
-     * FML doesn't really do GUIs the way it's supposed to -- opens Electric Chest GUI on client and server. Call this method server-side only!
-     *
-     * @param player     - player to open GUI
-     * @param inventory  - IInventory of the item, if it's not a block
+     * Encodes current item info as a gui, and opens it.
      */
-    public static void openPersonalChestGui(EntityPlayerMP player, InventoryPersonalChest inventory) {
-        player.getNextWindowId();
-        player.closeContainer();
-        int id = player.currentWindowId;
-        Mekanism.packetHandler.sendTo(new PersonalChestMessage(id, inventory.currentHand, inventory.hotbarSlot), player);
-        player.openContainer = new ContainerPersonalChest(player.inventory, inventory);
-        player.openContainer.windowId = id;
-        player.openContainer.addListener(player);
+    public static void openItemGui(EntityPlayerMP player, EnumHand hand, int guiID) {
+        //current item, hand, gui type
+        player.openGui(Mekanism.instance, 1, player.world, player.inventory.currentItem, hand.ordinal(), guiID);
     }
 
     /**

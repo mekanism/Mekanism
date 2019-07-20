@@ -11,6 +11,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
@@ -132,15 +133,6 @@ public class CommonProxy implements IGuiProvider {
     }
 
     /**
-     * Handles an PERSONAL_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
-     *
-     * @param entityplayer - player the packet was sent from
-     * @param windowId     - the container-specific window ID
-     */
-    public void openPersonalChest(EntityPlayer entityplayer, int windowId, EnumHand hand, int hotbarSlot) {
-    }
-
-    /**
      * Register and load client-only item render information.
      */
     public void registerItemRenders() {
@@ -201,13 +193,37 @@ public class CommonProxy implements IGuiProvider {
         return null;
     }
 
+    public Container getServerItemGui(EntityPlayer player, BlockPos pos) {
+        int currentItem = pos.getX();
+        int handOrdinal = pos.getY();
+        if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= EnumHand.values().length) {
+            //If it is out of bounds don't do anything
+            return null;
+        }
+        ItemStack stack = player.inventory.getStackInSlot(currentItem);
+        EnumHand hand = EnumHand.values()[handOrdinal];
+        int guiID = pos.getZ();
+        if (guiID == MachineType.PERSONAL_CHEST.guiId) {
+            if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
+                //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
+                return new ContainerPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
+            }
+        }
+        return null;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+        if (ID == 1) {
+            //ID == 1 used to be credits, now it is being used for Item Gui's
+            return getServerItemGui(player, pos);
+        }
         TileEntity tileEntity = world.getTileEntity(pos);
         switch (ID) {
             case 0:
                 return new ContainerDictionary(player.inventory);
+            //1 USED BEFORE SWITCH
             case 2:
                 return new ContainerDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
             case 3:
