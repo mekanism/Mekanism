@@ -107,13 +107,13 @@ public class GeneralConfig extends BaseConfig {
           "How much energy (Joules) a piece of redstone gives in machines.");
 
     public final IntOption disassemblerEnergyUsage = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
-          "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)", 0, 1000000);
+          "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)");
 
     public final IntOption disassemblerEnergyUsageHoe = new IntOption(this, "general", "DisassemblerEnergyUsageHoe", 10,
-          "Cost in Joules of using the Atomic Disassembler as a hoe.", 0, 1000000);
+          "Cost in Joules of using the Atomic Disassembler as a hoe.");
 
     public final IntOption disassemblerEnergyUsageWeapon = new IntOption(this, "general", "DisassemblerEnergyUsageWeapon", 2000,
-          "Cost in Joules of using the Atomic Disassembler as a weapon.", 0, 1000000);
+          "Cost in Joules of using the Atomic Disassembler as a weapon.");
 
     public final IntOption disassemblerDamageMin = new IntOption(this, "general", "DisassemblerDamageMin", 4,
           "The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)");

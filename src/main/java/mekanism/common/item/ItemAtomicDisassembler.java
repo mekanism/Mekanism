@@ -72,7 +72,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         int minDamage = MekanismConfig.current().general.disassemblerDamageMin.val();
         int damageDifference = MekanismConfig.current().general.disassemblerDamageMax.val() - minDamage;
         //If we don't have enough power use it at a reduced power level
-        double percent = energyCost == 0 ? 1 : energy / energyCost;
+        double percent = 1;
+        if (energy < energyCost && energyCost != 0) {
+            percent = energy / energyCost;
+        }
         float damage = (float) (minDamage + damageDifference * percent);
         if (attacker instanceof EntityPlayer) {
             target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), damage);
