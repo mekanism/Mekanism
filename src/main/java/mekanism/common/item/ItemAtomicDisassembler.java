@@ -68,9 +68,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public boolean hitEntity(ItemStack itemstack, EntityLivingBase target, EntityLivingBase attacker) {
         double energy = getEnergy(itemstack);
-        int energyCost = MekanismConfig.current().general.DISASSEMBLER_WEAPON_USAGE.val();
-        int minDamage = MekanismConfig.current().general.DISASSEMBLER_DAMAGE_MIN.val();
-        int damageDifference = MekanismConfig.current().general.DISASSEMBLER_DAMAGE_MAX.val() - minDamage;
+        int energyCost = MekanismConfig.current().general.disassemblerEnergyUsageWeapon.val();
+        int minDamage = MekanismConfig.current().general.disassemblerDamageMin.val();
+        int damageDifference = MekanismConfig.current().general.disassemblerDamageMax.val() - minDamage;
         //If we don't have enough power use it at a reduced power level
         double percent = energyCost == 0 ? 1 : energy / energyCost;
         float damage = (float) (minDamage + damageDifference * percent);
@@ -190,7 +190,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     private EnumActionResult useItemAs(EntityPlayer player, World world, BlockPos pos, EnumFacing side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
         double energy = getEnergy(stack);
-        int hoeUsage = MekanismConfig.current().general.DISASSEMBLER_HOE_USAGE.val();
+        int hoeUsage = MekanismConfig.current().general.disassemblerEnergyUsageHoe.val();
         if (energy < hoeUsage || consumer.use(stack, player, world, pos, side) == EnumActionResult.FAIL) {
             //Fail if we don't have enough energy or using the item failed
             return EnumActionResult.FAIL;
@@ -264,7 +264,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     private int getDestroyEnergy(ItemStack itemStack, float hardness) {
-        int destroyEnergy = MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getMode(itemStack).getEfficiency();
+        int destroyEnergy = MekanismConfig.current().general.disassemblerEnergyUsage.val() * getMode(itemStack).getEfficiency();
         return hardness == 0 ? destroyEnergy / 2 : destroyEnergy;
     }
 

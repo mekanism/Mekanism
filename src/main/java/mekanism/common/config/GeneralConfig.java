@@ -106,19 +106,19 @@ public class GeneralConfig extends BaseConfig {
     public final DoubleOption ENERGY_PER_REDSTONE = new DoubleOption(this, "general", "EnergyPerRedstone", 10000D,
           "How much energy (Joules) a piece of redstone gives in machines.");
 
-    public final IntOption DISASSEMBLER_USAGE = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
+    public final IntOption disassemblerEnergyUsage = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
           "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)", 0, 1000000);
 
-    public final IntOption DISASSEMBLER_HOE_USAGE = new IntOption(this, "general", "DisassemblerEnergyUsageHoe", 10,
+    public final IntOption disassemblerEnergyUsageHoe = new IntOption(this, "general", "DisassemblerEnergyUsageHoe", 10,
           "Cost in Joules of using the Atomic Disassembler as a hoe.", 0, 1000000);
 
-    public final IntOption DISASSEMBLER_WEAPON_USAGE = new IntOption(this, "general", "DisassemblerEnergyUsageWeapon", 2000,
+    public final IntOption disassemblerEnergyUsageWeapon = new IntOption(this, "general", "DisassemblerEnergyUsageWeapon", 2000,
           "Cost in Joules of using the Atomic Disassembler as a weapon.", 0, 1000000);
 
-    public final IntOption DISASSEMBLER_DAMAGE_MIN = new IntOption(this, "general", "DisassemblerDamageMin", 4,
+    public final IntOption disassemblerDamageMin = new IntOption(this, "general", "DisassemblerDamageMin", 4,
           "The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)");
 
-    public final IntOption DISASSEMBLER_DAMAGE_MAX = new IntOption(this, "general", "DisassemblerDamageMax", 20,
+    public final IntOption disassemblerDamageMax = new IntOption(this, "general", "DisassemblerDamageMax", 20,
           "The amount of damage the Atomic Disassembler does when it has at least DisassemblerEnergyUsageWeapon power stored. (Value is in number of half hearts)");
 
     public final IntOption VOICE_PORT = new IntOption(this, "general", "VoicePort", 36123,
