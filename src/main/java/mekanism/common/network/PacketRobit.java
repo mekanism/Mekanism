@@ -66,35 +66,18 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(activeType.ordinal());
-            switch (activeType) {
-                case FOLLOW:
-                    dataStream.writeInt(entityId);
-                    break;
-                case NAME:
-                    PacketHandler.writeString(dataStream, name);
-                    dataStream.writeInt(entityId);
-                    break;
-                case GO_HOME:
-                    dataStream.writeInt(entityId);
-                    break;
-                case DROP_PICKUP:
-                    dataStream.writeInt(entityId);
-                    break;
+            dataStream.writeInt(entityId);
+            if (activeType == RobitPacketType.NAME) {
+                PacketHandler.writeString(dataStream, name);
             }
         }
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
             activeType = RobitPacketType.values()[dataStream.readInt()];
-            if (activeType == RobitPacketType.FOLLOW) {
-                entityId = dataStream.readInt();
-            } else if (activeType == RobitPacketType.NAME) {
+            entityId = dataStream.readInt();
+            if (activeType == RobitPacketType.NAME) {
                 name = PacketHandler.readString(dataStream);
-                entityId = dataStream.readInt();
-            } else if (activeType == RobitPacketType.GO_HOME) {
-                entityId = dataStream.readInt();
-            } else if (activeType == RobitPacketType.DROP_PICKUP) {
-                entityId = dataStream.readInt();
             }
         }
     }
