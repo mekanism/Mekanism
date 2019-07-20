@@ -106,8 +106,22 @@ public class GeneralConfig extends BaseConfig {
     public final DoubleOption ENERGY_PER_REDSTONE = new DoubleOption(this, "general", "EnergyPerRedstone", 10000D,
           "How much energy (Joules) a piece of redstone gives in machines.");
 
-    public final IntOption DISASSEMBLER_USAGE = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
+    public final IntOption disassemblerEnergyUsage = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
           "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)");
+
+    public final IntOption disassemblerEnergyUsageHoe = new IntOption(this, "general", "DisassemblerEnergyUsageHoe", 10,
+          "Cost in Joules of using the Atomic Disassembler as a hoe.");
+
+    public final IntOption disassemblerEnergyUsageWeapon = new IntOption(this, "general", "DisassemblerEnergyUsageWeapon", 2000,
+          "Cost in Joules of using the Atomic Disassembler as a weapon.");
+
+    public final IntOption disassemblerDamageMin = new IntOption(this, "general", "DisassemblerDamageMin", 4,
+          "The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)");
+
+    public final IntOption disassemblerDamageMax = new IntOption(this, "general", "DisassemblerDamageMax", 20,
+          "The amount of damage the Atomic Disassembler does when it has at least DisassemblerEnergyUsageWeapon power stored. (Value is in number of half hearts)");
+
+    public final DoubleOption disassemblerBatteryCapacity = new DoubleOption(this, "general", "DisassemblerBatteryCapacity", 1000000, "Maximum amount (joules) of energy the Atomic Disassembler can contain", 0, Double.MAX_VALUE).setRequiresGameRestart(true);
 
     public final IntOption VOICE_PORT = new IntOption(this, "general", "VoicePort", 36123,
           "TCP port for the Voice server to listen on.", 1, 65535);
