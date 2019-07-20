@@ -277,7 +277,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     public void toggleMode(ItemStack itemStack) {
         Mode mode = getMode(itemStack);
-        ItemDataUtils.setInt(itemStack, "mode", mode.ordinal() + 1 < Mode.values().length ? mode.ordinal() + 1 : 0);
+        ItemDataUtils.setInt(itemStack, "mode", (mode.ordinal() + 1) % Mode.values().length);
     }
 
     @Override
