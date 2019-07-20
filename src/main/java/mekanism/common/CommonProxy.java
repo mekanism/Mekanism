@@ -56,6 +56,7 @@ import mekanism.common.inventory.container.robit.ContainerRobitInventory;
 import mekanism.common.inventory.container.robit.ContainerRobitMain;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
+import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
@@ -97,6 +98,7 @@ import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -194,7 +196,7 @@ public class CommonProxy implements IGuiProvider {
         return null;
     }
 
-    public Container getServerItemGui(EntityPlayer player, BlockPos pos) {
+    private Container getServerItemGui(EntityPlayer player, BlockPos pos) {
         int currentItem = pos.getX();
         int handOrdinal = pos.getY();
         if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= EnumHand.values().length) {
@@ -207,20 +209,64 @@ public class CommonProxy implements IGuiProvider {
         }
         EnumHand hand = EnumHand.values()[handOrdinal];
         int guiID = pos.getZ();
-        //TODO: Decide if this should be a switch statement
-        if (guiID == MachineType.PERSONAL_CHEST.guiId) {
-            if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
-                //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
-                return new ContainerPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
-            }
-        } else if (guiID == 14) {
-            if (stack.getItem() instanceof ItemPortableTeleporter) {
-                return new ContainerNull();
-            }
-        } else if (guiID == 38) {
-            if (stack.getItem() instanceof ItemSeismicReader) {
-                return new ContainerNull();
-            }
+        switch (guiID) {
+            case 0:
+                if (stack.getItem() instanceof ItemDictionary) {
+                    return new ContainerDictionary(player.inventory);
+                }
+                break;
+            case 14:
+                if (stack.getItem() instanceof ItemPortableTeleporter) {
+                    return new ContainerNull();
+                }
+            case 19:
+                if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
+                    //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
+                    return new ContainerPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
+                }
+                break;
+            case 38:
+                if (stack.getItem() instanceof ItemSeismicReader) {
+                    return new ContainerNull();
+                }
+                break;
+        }
+        return null;
+    }
+
+    private Container getServerEntityGui(EntityPlayer player, World world, BlockPos pos) {
+        int entityID = pos.getX();
+        Entity entity = world.getEntityByID(entityID);
+        if (entity == null) {
+            return null;
+        }
+        int guiID = pos.getY();
+        switch (guiID) {
+            case 21:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitMain(player.inventory, (EntityRobit) entity);
+                }
+                break;
+            case 22:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitCrafting(player.inventory, (EntityRobit) entity);
+                }
+                break;
+            case 23:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitInventory(player.inventory, (EntityRobit) entity);
+                }
+                break;
+            case 24:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitSmelting(player.inventory, (EntityRobit) entity);
+                }
+                break;
+            case 25:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitRepair(player.inventory, (EntityRobit) entity);
+                }
+                break;
         }
         return null;
     }
@@ -228,15 +274,15 @@ public class CommonProxy implements IGuiProvider {
     @Override
     @SuppressWarnings("unchecked")
     public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
-        if (ID == 1) {
-            //ID == 1 used to be credits, now it is being used for Item Gui's
+        //TODO: Replace magic numbers here and in sub methods with static lookup ints
+        if (ID == 0) {
             return getServerItemGui(player, pos);
+        } else if (ID == 1) {
+            return getServerEntityGui(player, world, pos);
         }
         TileEntity tileEntity = world.getTileEntity(pos);
         switch (ID) {
-            case 0:
-                return new ContainerDictionary(player.inventory);
-            //1 USED BEFORE SWITCH
+            //0, 1 USED BEFORE SWITCH
             case 2:
                 return new ContainerDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
             case 3:
@@ -272,37 +318,7 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank) tileEntity);
             case 19:
                 return new ContainerPersonalChest(player.inventory, (TileEntityPersonalChest) tileEntity);
-            //EMPTY 20
-            case 21:
-                EntityRobit robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitMain(player.inventory, robit);
-                }
-                return null;
-            case 22:
-                robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitCrafting(player.inventory, robit);
-                }
-                return null;
-            case 23:
-                robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitInventory(player.inventory, robit);
-                }
-                return null;
-            case 24:
-                robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitSmelting(player.inventory, robit);
-                }
-                return null;
-            case 25:
-                robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitRepair(player.inventory, robit);
-                }
-                return null;
+            //EMPTY 20, 21, 22, 23, 24, 25
             case 26:
                 return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
             case 27:

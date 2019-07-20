@@ -112,7 +112,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    protected boolean openGui(int id) {
+    protected boolean shouldOpenGui(int id) {
         return id != 4;
     }
 

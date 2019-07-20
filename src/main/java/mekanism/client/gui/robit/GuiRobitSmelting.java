@@ -39,7 +39,7 @@ public class GuiRobitSmelting extends GuiRobit {
     }
 
     @Override
-    protected boolean openGui(int id) {
+    protected boolean shouldOpenGui(int id) {
         return id != 3;
     }
 

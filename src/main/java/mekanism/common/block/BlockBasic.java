@@ -409,16 +409,8 @@ public abstract class BlockBasic extends BlockTileDrops {
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        BasicBlockType type = BasicBlockType.get(state);
         TileEntity tile = world.getTileEntity(pos);
         ItemStack stack = entityplayer.getHeldItem(hand);
-
-        if (type == BasicBlockType.REFINED_OBSIDIAN) {
-            if (entityplayer.isSneaking()) {
-                entityplayer.openGui(Mekanism.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
-                return true;
-            }
-        }
 
         if (tile instanceof TileEntityThermalEvaporationController) {
             if (!entityplayer.isSneaking()) {

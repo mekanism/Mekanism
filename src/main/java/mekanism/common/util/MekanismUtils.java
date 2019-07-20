@@ -45,6 +45,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -613,8 +614,17 @@ public final class MekanismUtils {
      */
     public static void openItemGui(EntityPlayer player, EnumHand hand, int guiID) {
         //current item, hand, gui type
-        player.openGui(Mekanism.instance, 1, player.world, player.inventory.currentItem, hand.ordinal(), guiID);
+        player.openGui(Mekanism.instance, 0, player.world, player.inventory.currentItem, hand.ordinal(), guiID);
     }
+
+    /**
+     * Encodes entity info as a gui, and opens it.
+     */
+    public static void openEntityGui(EntityPlayer player, Entity entity, int guiID) {
+        //entity id, gui type
+        player.openGui(Mekanism.instance, 1, player.world, entity.getEntityId(), guiID, 0);
+    }
+
 
     /**
      * Gets a ResourceLocation with a defined resource type and name.

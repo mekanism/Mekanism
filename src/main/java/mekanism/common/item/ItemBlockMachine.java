@@ -376,7 +376,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     setOwnerUUID(itemstack, entityplayer.getUniqueID());
                 }
                 if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                    MekanismUtils.openItemGui(entityplayer, hand, MachineType.PERSONAL_CHEST.guiId);
+                    MekanismUtils.openItemGui(entityplayer, hand, 19);
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }

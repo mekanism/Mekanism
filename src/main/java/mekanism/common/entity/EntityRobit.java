@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.capabilities.Capabilities;
@@ -325,7 +324,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                 return EnumActionResult.SUCCESS;
             }
         } else {
-            entityplayer.openGui(Mekanism.instance, 21, world, getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(entityplayer, this, 21);
             return EnumActionResult.SUCCESS;
         }
 

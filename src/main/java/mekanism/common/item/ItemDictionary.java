@@ -6,6 +6,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,7 +56,7 @@ public class ItemDictionary extends ItemMekanism {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (entityplayer.isSneaking()) {
-            entityplayer.openGui(Mekanism.instance, 0, world, 0, 0, 0);
+            MekanismUtils.openItemGui(entityplayer, hand, 0);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
         }
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
