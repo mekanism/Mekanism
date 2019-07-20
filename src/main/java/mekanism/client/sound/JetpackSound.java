@@ -1,5 +1,6 @@
 package mekanism.client.sound;
 
+import javax.annotation.Nonnull;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,12 +13,12 @@ public class JetpackSound extends PlayerSound {
 
     private static final ResourceLocation SOUND = new ResourceLocation(Mekanism.MODID, "item.jetpack");
 
-    public JetpackSound(EntityPlayer player) {
+    public JetpackSound(@Nonnull EntityPlayer player) {
         super(player, SOUND);
     }
 
     @Override
-    public boolean shouldPlaySound() {
+    public boolean shouldPlaySound(@Nonnull EntityPlayer player) {
         return ClientTickHandler.isJetpackActive(player);
     }
 }

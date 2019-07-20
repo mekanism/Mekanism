@@ -43,8 +43,9 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     }
 
     public void useGas(ItemStack stack) {
-        if (getGas(stack) != null) {
-            setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount - 1));
+        GasStack gas = getGas(stack);
+        if (gas != null) {
+            setGas(stack, new GasStack(gas.getGas(), gas.amount - 1));
         }
     }
 

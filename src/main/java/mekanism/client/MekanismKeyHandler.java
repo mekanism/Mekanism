@@ -16,7 +16,6 @@ import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
-import mekanism.common.network.PacketFlamethrowerData.FlamethrowerPacket;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketFreeRunnerData.FreeRunnerDataMessage;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
@@ -120,7 +119,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             } else if (player.isSneaking() && item instanceof ItemFlamethrower) {
                 ItemFlamethrower flamethrower = (ItemFlamethrower) item;
                 flamethrower.incrementMode(toolStack);
-                Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(FlamethrowerPacket.MODE, EnumHand.MAIN_HAND, null, false));
+                Mekanism.packetHandler.sendToServer(FlamethrowerDataMessage.MODE_CHANGE(EnumHand.MAIN_HAND));
                 player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
                       .translation("mekanism.tooltip.flamethrower.modeBump", flamethrower.getMode(toolStack).getTextComponent()));
             }

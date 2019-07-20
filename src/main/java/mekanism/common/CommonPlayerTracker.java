@@ -3,6 +3,7 @@ package mekanism.common;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
+import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
@@ -31,28 +32,31 @@ public class CommonPlayerTracker {
                 Mekanism.logger.info("Sent config to '" + event.player.getDisplayNameString() + ".'");
             }
             Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP) event.player);
-            // TODO: Coalesce all these sync events into a single message
-            Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), (EntityPlayerMP) event.player);
-            Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), (EntityPlayerMP) event.player);
+            syncChangedData((EntityPlayerMP) event.player);
             Mekanism.packetHandler.sendTo(new SecurityUpdateMessage(SecurityPacket.FULL, null, null), (EntityPlayerMP) event.player);
-            Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP) event.player);
         }
     }
 
     @SubscribeEvent
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
-        Mekanism.playerState.clearPlayer(event.player);
+        Mekanism.playerState.clearPlayer(event.player.getUniqueID());
         Mekanism.freeRunnerOn.remove(event.player.getUniqueID());
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
-        Mekanism.playerState.clearPlayer(event.player);
+        Mekanism.playerState.clearPlayer(event.player.getUniqueID());
         Mekanism.freeRunnerOn.remove(event.player.getUniqueID());
         if (!event.player.world.isRemote) {
-            Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), (EntityPlayerMP) event.player);
-            Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), (EntityPlayerMP) event.player);
-            Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP) event.player);
+            syncChangedData((EntityPlayerMP) event.player);
         }
+    }
+
+    private void syncChangedData(EntityPlayerMP player) {
+        // TODO: Coalesce all these sync events into a single message
+        Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), player);
+        Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), player);
+        Mekanism.packetHandler.sendTo(FlamethrowerDataMessage.FULL(Mekanism.playerState.getActiveFlamethrowers()), player);
+        Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), player);
     }
 }

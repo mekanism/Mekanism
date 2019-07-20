@@ -1,6 +1,8 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -33,6 +35,9 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower) {
                     ((ItemFlamethrower) stack.getItem()).incrementMode(stack);
                 }
+            } else if (message.packetType == FlamethrowerPacket.FULL) {
+                // This is a full sync; merge into our player state
+                Mekanism.playerState.setActiveFlamethrowers(message.activeFlamethrowers);
             }
         }, player);
         return null;
@@ -40,12 +45,15 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
     public enum FlamethrowerPacket {
         UPDATE,
+        FULL,
         MODE
     }
 
     public static class FlamethrowerDataMessage implements IMessage {
 
         public FlamethrowerPacket packetType;
+
+        protected Set<UUID> activeFlamethrowers;
 
         public EnumHand currentHand;
         public UUID uuid;
@@ -54,14 +62,27 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
         public FlamethrowerDataMessage() {
         }
 
-        public FlamethrowerDataMessage(FlamethrowerPacket type, EnumHand hand, UUID uuid, boolean state) {
+        public FlamethrowerDataMessage(FlamethrowerPacket type) {
             packetType = type;
-            if (type == FlamethrowerPacket.UPDATE) {
-                this.uuid = uuid;
-                value = state;
-            } else if (type == FlamethrowerPacket.MODE) {
-                currentHand = hand;
-            }
+        }
+
+        public static FlamethrowerDataMessage MODE_CHANGE(EnumHand hand) {
+            FlamethrowerDataMessage m = new FlamethrowerDataMessage(FlamethrowerPacket.MODE);
+            m.currentHand = hand;
+            return m;
+        }
+
+        public static FlamethrowerDataMessage UPDATE(UUID uuid, boolean state) {
+            FlamethrowerDataMessage m = new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE);
+            m.uuid = uuid;
+            m.value = state;
+            return m;
+        }
+
+        public static FlamethrowerDataMessage FULL(Set<UUID> activeNames) {
+            FlamethrowerDataMessage m = new FlamethrowerDataMessage(FlamethrowerPacket.FULL);
+            m.activeFlamethrowers = activeNames;
+            return m;
         }
 
         @Override
@@ -70,8 +91,13 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
             if (packetType == FlamethrowerPacket.UPDATE) {
                 PacketHandler.writeUUID(dataStream, uuid);
                 dataStream.writeBoolean(value);
-            } else {
+            } else if (packetType == FlamethrowerPacket.MODE) {
                 dataStream.writeInt(currentHand.ordinal());
+            } else if (packetType == FlamethrowerPacket.FULL) {
+                dataStream.writeInt(activeFlamethrowers.size());
+                for (UUID uuid : activeFlamethrowers) {
+                    PacketHandler.writeUUID(dataStream, uuid);
+                }
             }
         }
 
@@ -83,6 +109,13 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
                 value = dataStream.readBoolean();
             } else if (packetType == FlamethrowerPacket.MODE) {
                 currentHand = EnumHand.values()[dataStream.readInt()];
+            } else if (packetType == FlamethrowerPacket.FULL) {
+                activeFlamethrowers = new HashSet<>();
+
+                int amount = dataStream.readInt();
+                for (int i = 0; i < amount; i++) {
+                    activeFlamethrowers.add(PacketHandler.readUUID(dataStream));
+                }
             }
         }
     }

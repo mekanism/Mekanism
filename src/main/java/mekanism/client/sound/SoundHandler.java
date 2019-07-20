@@ -1,11 +1,14 @@
 package mekanism.client.sound;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
@@ -22,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -49,26 +53,57 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SoundHandler {
 
-    private static IdentityHashMap<EntityPlayer, Boolean> jetpackSounds = new IdentityHashMap<>();
-    private static IdentityHashMap<EntityPlayer, Boolean> gasmaskSounds = new IdentityHashMap<>();
+    private static Set<UUID> jetpackSounds = new HashSet<>();
+    private static Set<UUID> gasmaskSounds = new HashSet<>();
+    private static Set<UUID> flamethrowerSounds = new HashSet<>();
 
     private static Map<Long, ISound> soundMap = new HashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
 
-    public static void startSound(EntityPlayer player, String soundName) {
-        ISound soundToPlay = null;
+    public static void clearPlayerSounds() {
+        jetpackSounds.clear();
+        gasmaskSounds.clear();
+        flamethrowerSounds.clear();
+    }
 
-        if (soundName.equals("jetpack") && !jetpackSounds.containsKey(player)) {
-            jetpackSounds.put(player, true);
-            soundToPlay = new JetpackSound(player);
-        }
-        if (soundName.equals("gasmask") && !gasmaskSounds.containsKey(player)) {
-            gasmaskSounds.put(player, true);
-            soundToPlay = new GasMaskSound(player);
-        }
+    public static void clearPlayerSounds(UUID uuid) {
+        jetpackSounds.remove(uuid);
+        gasmaskSounds.remove(uuid);
+        flamethrowerSounds.remove(uuid);
+    }
 
-        if (soundToPlay != null) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(soundToPlay);
+    public static void startSound(@Nonnull World world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
+        switch (soundType) {
+            case JETPACK:
+                if (!jetpackSounds.contains(uuid)) {
+                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    if (player != null) {
+                        jetpackSounds.add(uuid);
+                        playSound(new JetpackSound(player));
+                    }
+                }
+                break;
+            case GAS_MASK:
+                if (!gasmaskSounds.contains(uuid)) {
+                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    if (player != null) {
+                        gasmaskSounds.add(uuid);
+                        playSound(new GasMaskSound(player));
+                    }
+                }
+                break;
+            case FLAMETHROWER:
+                if (!flamethrowerSounds.contains(uuid)) {
+                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    if (player != null) {
+                        flamethrowerSounds.add(uuid);
+                        //TODO: Evaluate at some point if there is a better way to do this
+                        // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
+                        playSound(new FlamethrowerSound.Active(player));
+                        playSound(new FlamethrowerSound.Idle(player));
+                    }
+                }
+                break;
         }
     }
 
