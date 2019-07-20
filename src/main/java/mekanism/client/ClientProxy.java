@@ -674,12 +674,24 @@ public class ClientProxy extends CommonProxy {
             return null;
         }
         ItemStack stack = player.inventory.getStackInSlot(currentItem);
+        if (stack.isEmpty()) {
+            return null;
+        }
         EnumHand hand = EnumHand.values()[handOrdinal];
         int guiID = pos.getZ();
+        //TODO: Decide if this should be a switch statement
         if (guiID == MachineType.PERSONAL_CHEST.guiId) {
             if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
                 //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
                 return new GuiPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
+            }
+        } else if (guiID == 14) {
+            if (stack.getItem() instanceof ItemPortableTeleporter) {
+                return new GuiTeleporter(player, hand, stack);
+            }
+        } else if (guiID == 38) {
+            if (stack.getItem() instanceof ItemSeismicReader) {
+                return new GuiSeismicReader(player.world, new Coord4D(player), stack.copy());
             }
         }
         return null;
@@ -721,12 +733,7 @@ public class ClientProxy extends CommonProxy {
                 return new GuiMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser) tileEntity);
             case 13:
                 return new GuiTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
-            case 14:
-                ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
-                if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter) {
-                    return new GuiTeleporter(player, EnumHand.values()[pos.getX()], itemStack);
-                }
-                return null;
+            //EMPTY 14
             case 15:
                 return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine<PurificationRecipe>) tileEntity);
             case 16:
@@ -786,12 +793,7 @@ public class ClientProxy extends CommonProxy {
                 return new GuiChemicalWasher(player.inventory, (TileEntityChemicalWasher) tileEntity);
             case 37:
                 return new GuiChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer) tileEntity);
-            case 38:
-                ItemStack itemStack1 = player.getHeldItem(EnumHand.values()[pos.getX()]);
-                if (!itemStack1.isEmpty() && itemStack1.getItem() instanceof ItemSeismicReader) {
-                    return new GuiSeismicReader(world, new Coord4D(player), itemStack1.copy());
-                }
-                return null;
+            //EMPTY 38
             case 39:
                 return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator) tileEntity);
             case 40:

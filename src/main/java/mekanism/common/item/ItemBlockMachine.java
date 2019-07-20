@@ -60,7 +60,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -377,7 +376,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     setOwnerUUID(itemstack, entityplayer.getUniqueID());
                 }
                 if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                    MekanismUtils.openItemGui((EntityPlayerMP) entityplayer, hand, MachineType.PERSONAL_CHEST.guiId);
+                    MekanismUtils.openItemGui(entityplayer, hand, MachineType.PERSONAL_CHEST.guiId);
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }

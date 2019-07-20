@@ -70,7 +70,7 @@ public class ItemSeismicReader extends ItemEnergized {
         if (!entityplayer.capabilities.isCreativeMode) {
             setEnergy(itemstack, getEnergy(itemstack) - ENERGY_USAGE);
         }
-        entityplayer.openGui(Mekanism.instance, 38, world, hand.ordinal(), 0, 0);
+        MekanismUtils.openItemGui(entityplayer, hand, 38);
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }
 }

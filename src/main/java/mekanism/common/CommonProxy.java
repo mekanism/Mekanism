@@ -57,6 +57,7 @@ import mekanism.common.inventory.container.robit.ContainerRobitMain;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -201,12 +202,24 @@ public class CommonProxy implements IGuiProvider {
             return null;
         }
         ItemStack stack = player.inventory.getStackInSlot(currentItem);
+        if (stack.isEmpty()) {
+            return null;
+        }
         EnumHand hand = EnumHand.values()[handOrdinal];
         int guiID = pos.getZ();
+        //TODO: Decide if this should be a switch statement
         if (guiID == MachineType.PERSONAL_CHEST.guiId) {
             if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
                 //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
                 return new ContainerPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
+            }
+        } else if (guiID == 14) {
+            if (stack.getItem() instanceof ItemPortableTeleporter) {
+                return new ContainerNull();
+            }
+        } else if (guiID == 38) {
+            if (stack.getItem() instanceof ItemSeismicReader) {
+                return new ContainerNull();
             }
         }
         return null;
@@ -248,12 +261,7 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser) tileEntity);
             case 13:
                 return new ContainerTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
-            case 14:
-                ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
-                if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter) {
-                    return new ContainerNull();
-                }
-                return null;
+            //EMPTY 14
             case 15:
                 return new ContainerAdvancedElectricMachine<>(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 16:
@@ -264,6 +272,7 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank) tileEntity);
             case 19:
                 return new ContainerPersonalChest(player.inventory, (TileEntityPersonalChest) tileEntity);
+            //EMPTY 20
             case 21:
                 EntityRobit robit = (EntityRobit) world.getEntityByID(pos.getX());
                 if (robit != null) {
@@ -318,6 +327,7 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerChemicalWasher(player.inventory, (TileEntityChemicalWasher) tileEntity);
             case 37:
                 return new ContainerChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer) tileEntity);
+            //EMPTY 38
             case 39:
                 return new ContainerSeismicVibrator(player.inventory, (TileEntitySeismicVibrator) tileEntity);
             case 40:

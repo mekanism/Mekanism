@@ -611,7 +611,7 @@ public final class MekanismUtils {
     /**
      * Encodes current item info as a gui, and opens it.
      */
-    public static void openItemGui(EntityPlayerMP player, EnumHand hand, int guiID) {
+    public static void openItemGui(EntityPlayer player, EnumHand hand, int guiID) {
         //current item, hand, gui type
         player.openGui(Mekanism.instance, 1, player.world, player.inventory.currentItem, hand.ordinal(), guiID);
     }
