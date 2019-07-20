@@ -40,6 +40,7 @@ import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.inventory.container.ContainerPRC;
+import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
@@ -79,6 +80,7 @@ import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityPRC;
+import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -133,12 +135,9 @@ public class CommonProxy implements IGuiProvider {
      * Handles an PERSONAL_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
      *
      * @param entityplayer - player the packet was sent from
-     * @param id           - the gui ID to open
      * @param windowId     - the container-specific window ID
-     * @param isBlock      - if the chest is a block
-     * @param pos          - coordinates
      */
-    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand, int hotbarSlot) {
+    public void openPersonalChest(EntityPlayer entityplayer, int windowId, EnumHand hand, int hotbarSlot) {
     }
 
     /**
@@ -247,6 +246,8 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerElectricPump(player.inventory, (TileEntityElectricPump) tileEntity);
             case 18:
                 return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank) tileEntity);
+            case 19:
+                return new ContainerPersonalChest(player.inventory, (TileEntityPersonalChest) tileEntity);
             case 21:
                 EntityRobit robit = (EntityRobit) world.getEntityByID(pos.getX());
                 if (robit != null) {

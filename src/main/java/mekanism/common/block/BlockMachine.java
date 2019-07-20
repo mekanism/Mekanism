@@ -39,7 +39,6 @@ import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -365,9 +364,8 @@ public abstract class BlockMachine extends BlockMekanismContainer {
             switch (type) {
                 case PERSONAL_CHEST:
                     if (!entityplayer.isSneaking() && !world.isSideSolid(pos.up(), EnumFacing.DOWN)) {
-                        TileEntityPersonalChest chest = (TileEntityPersonalChest) tileEntity;
                         if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                            MekanismUtils.openPersonalChestGui((EntityPlayerMP) entityplayer, chest, null, true);
+                            entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
                         } else {
                             SecurityUtils.displayNoAccess(entityplayer);
                         }

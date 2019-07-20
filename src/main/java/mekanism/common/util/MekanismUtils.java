@@ -41,7 +41,6 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.component.SideConfig;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -615,21 +614,14 @@ public final class MekanismUtils {
      * FML doesn't really do GUIs the way it's supposed to -- opens Electric Chest GUI on client and server. Call this method server-side only!
      *
      * @param player     - player to open GUI
-     * @param tileEntity - TileEntity of the chest, if it's not an item
      * @param inventory  - IInventory of the item, if it's not a block
-     * @param isBlock    - whether or not this electric chest is in it's block form
      */
-    public static void openPersonalChestGui(EntityPlayerMP player, TileEntityPersonalChest tileEntity, InventoryPersonalChest inventory, boolean isBlock) {
+    public static void openPersonalChestGui(EntityPlayerMP player, InventoryPersonalChest inventory) {
         player.getNextWindowId();
         player.closeContainer();
         int id = player.currentWindowId;
-
-        if (isBlock) {
-            Mekanism.packetHandler.sendTo(new PersonalChestMessage(true, 0, id, Coord4D.get(tileEntity), null, 0), player);
-        } else {
-            Mekanism.packetHandler.sendTo(new PersonalChestMessage(false, 0, id, null, inventory.currentHand, inventory.hotbarSlot), player);
-        }
-        player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
+        Mekanism.packetHandler.sendTo(new PersonalChestMessage(id, inventory.currentHand, inventory.hotbarSlot), player);
+        player.openContainer = new ContainerPersonalChest(player.inventory, inventory);
         player.openContainer.windowId = id;
         player.openContainer.addListener(player);
     }

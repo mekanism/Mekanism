@@ -277,20 +277,14 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand, int hotbarSlot) {
-        if (id == 0) {
-            if (isBlock) {
-                TileEntityPersonalChest tileEntity = (TileEntityPersonalChest) entityplayer.world.getTileEntity(pos);
-                FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, tileEntity));
+    public void openPersonalChest(EntityPlayer entityplayer, int windowId, EnumHand hand, int hotbarSlot) {
+        if (hotbarSlot == entityplayer.inventory.currentItem) {
+            //Ensure they still have the same hotbar slot selected
+            ItemStack stack = entityplayer.getHeldItem(hand);
+            if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
+                InventoryPersonalChest inventory = new InventoryPersonalChest(stack, hand, hotbarSlot);
+                FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
                 entityplayer.openContainer.windowId = windowId;
-            } else if (hotbarSlot == entityplayer.inventory.currentItem) {
-                //Ensure they still have the same hotbar slot selected
-                ItemStack stack = entityplayer.getHeldItem(hand);
-                if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
-                    InventoryPersonalChest inventory = new InventoryPersonalChest(stack, hand, hotbarSlot);
-                    FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
-                    entityplayer.openContainer.windowId = windowId;
-                }
             }
         }
     }
@@ -689,7 +683,6 @@ public class ClientProxy extends CommonProxy {
     @SuppressWarnings("unchecked")
     public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-
         switch (ID) {
             case 0:
                 return new GuiDictionary(player.inventory);
@@ -733,7 +726,9 @@ public class ClientProxy extends CommonProxy {
                 return new GuiElectricPump(player.inventory, (TileEntityElectricPump) tileEntity);
             case 18:
                 return new GuiDynamicTank(player.inventory, (TileEntityDynamicTank) tileEntity);
-            //EMPTY 19, 20
+            case 19:
+                return new GuiPersonalChest(player.inventory, (TileEntityPersonalChest) tileEntity);
+            //EMPTY 20
             case 21:
                 EntityRobit robit = (EntityRobit) world.getEntityByID(pos.getX());
                 if (robit != null) {

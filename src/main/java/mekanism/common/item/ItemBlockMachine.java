@@ -379,7 +379,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                 }
                 if (SecurityUtils.canAccess(entityplayer, itemstack)) {
                     InventoryPersonalChest inventory = new InventoryPersonalChest(itemstack, hand, entityplayer.inventory.currentItem);
-                    MekanismUtils.openPersonalChestGui((EntityPlayerMP) entityplayer, null, inventory, false);
+                    MekanismUtils.openPersonalChestGui((EntityPlayerMP) entityplayer, inventory);
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
