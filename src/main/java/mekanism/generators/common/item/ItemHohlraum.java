@@ -26,7 +26,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
     public static final int TRANSFER_RATE = 1;
 
     public ItemHohlraum() {
-        super();
+        super("hohlraum");
         setMaxStackSize(1);
     }
 

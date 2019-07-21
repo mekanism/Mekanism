@@ -15,44 +15,33 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 @ObjectHolder(MekanismGenerators.MODID)
 public enum GeneratorsItem {
-    SOLAR_PANEL("solar_panel"),
-    HOHLRAUM("hohlraum", new ItemHohlraum()),
-    TURBINE_BLADE("turbine_blade", new ItemMekanism() {
+    SOLAR_PANEL(new ItemMekanism("solar_panel")),
+    HOHLRAUM(new ItemHohlraum()),
+    TURBINE_BLADE(new ItemMekanism("turbine_blade") {
         @Override
         public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
             return MekanismUtils.getTileEntitySafe(world, pos) instanceof TileEntityTurbineRotor;
         }
     });
 
-    private final String name;
     private final Item item;
 
-    GeneratorsItem(String name) {
-        this(name, new ItemMekanism());
-    }
-
-    GeneratorsItem(String name, Item item) {
+    GeneratorsItem(Item item) {
         this.item = item;
-        this.name = name;
-        //TODO: Maybe do some of this internally
-        init();
-    }
-
-    private void init() {
-        item.setTranslationKey(getTranslationKey());
-        item.setRegistryName(new ResourceLocation(MekanismGenerators.MODID, name));
-    }
-
-    public String getTranslationKey() {
-        return "item.mekanism." + name;
-    }
-
-    public String getName() {
-        return name;
+        //TODO: This part is needed (or more accurately it being registered against MekanismGenerators instead of Mekanism)
+        item.setRegistryName(new ResourceLocation(MekanismGenerators.MODID, item.getRegistryName().getPath()));
     }
 
     public Item getItem() {
         return item;
+    }
+
+    public ItemStack getItemStack() {
+        return getItemStack(1);
+    }
+
+    public ItemStack getItemStack(int size) {
+        return new ItemStack(getItem(), size);
     }
 
     public static void registerItems(IForgeRegistry<Item> registry) {

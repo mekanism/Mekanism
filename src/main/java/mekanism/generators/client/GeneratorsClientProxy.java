@@ -26,7 +26,7 @@ import mekanism.generators.client.render.RenderWindGenerator;
 import mekanism.generators.client.render.item.RenderGeneratorItem;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
-import mekanism.generators.common.GeneratorsItems;
+import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlockStateMapper;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
@@ -87,9 +87,9 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
     @Override
     public void registerItemRenders() {
-        registerItemRender(GeneratorsItems.SolarPanel);
-        registerItemRender(GeneratorsItems.Hohlraum);
-        registerItemRender(GeneratorsItems.TurbineBlade);
+        registerItemRender(GeneratorsItem.SOLAR_PANEL.getItem());
+        registerItemRender(GeneratorsItem.HOHLRAUM.getItem());
+        registerItemRender(GeneratorsItem.TURBINE_BLADE.getItem());
 
         Item.getItemFromBlock(GeneratorsBlocks.Generator).setTileEntityItemStackRenderer(new RenderGeneratorItem());
     }

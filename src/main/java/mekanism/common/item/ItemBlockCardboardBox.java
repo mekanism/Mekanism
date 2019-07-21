@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
@@ -91,7 +91,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
                 // double updates, but if the block we are wrapping has multiple stacked blocks,
                 // we need to make sure it has a chance to update.
                 world.setBlockToAir(pos);
-                world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1));
+                world.setBlockState(pos, MekanismBlock.CARDBOARD_BOX.getBlock().getStateFromMeta(1));
                 isMonitoring = false;
                 TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
                 if (tileEntity != null) {

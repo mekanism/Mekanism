@@ -25,7 +25,7 @@ import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
-import mekanism.generators.common.GeneratorsItems;
+import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlock;
@@ -286,7 +286,7 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
         if (!world.isRemote && tileEntity instanceof TileEntityTurbineRotor) {
             int amount = ((TileEntityTurbineRotor) tileEntity).getHousedBlades();
             if (amount > 0) {
-                spawnAsEntity(world, pos, new ItemStack(GeneratorsItems.TurbineBlade, amount));
+                spawnAsEntity(world, pos, GeneratorsItem.TURBINE_BLADE.getItemStack(amount));
             }
         }
         if (tileEntity instanceof IBoundingBlock) {
@@ -335,7 +335,7 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
         if (metadata == GeneratorType.TURBINE_ROTOR.meta) {
             TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tileEntity;
             if (!entityplayer.isSneaking()) {
-                if (!stack.isEmpty() && stack.getItem() == GeneratorsItems.TurbineBlade) {
+                if (!stack.isEmpty() && stack.getItem() == GeneratorsItem.TURBINE_BLADE.getItem()) {
                     if (rod.addBlade()) {
                         if (!entityplayer.capabilities.isCreativeMode) {
                             stack.shrink(1);
@@ -349,11 +349,11 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
             } else if (stack.isEmpty()) {
                 if (rod.removeBlade()) {
                     if (!entityplayer.capabilities.isCreativeMode) {
-                        entityplayer.setHeldItem(hand, new ItemStack(GeneratorsItems.TurbineBlade));
+                        entityplayer.setHeldItem(hand, GeneratorsItem.TURBINE_BLADE.getItemStack());
                         entityplayer.inventory.markDirty();
                     }
                 }
-            } else if (stack.getItem() == GeneratorsItems.TurbineBlade) {
+            } else if ( stack.getItem() == GeneratorsItem.TURBINE_BLADE.getItem()) {
                 if (stack.getCount() < stack.getMaxStackSize()) {
                     if (rod.removeBlade()) {
                         if (!entityplayer.capabilities.isCreativeMode) {
