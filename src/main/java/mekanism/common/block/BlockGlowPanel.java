@@ -1,9 +1,10 @@
 package mekanism.common.block;
 
+import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGlowPanel;
@@ -44,12 +45,16 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
         }
     }
 
-    public BlockGlowPanel() {
+    private final EnumColor color;
+    private final String name;
+
+    public BlockGlowPanel(EnumColor color) {
         super(Material.PISTON);
+        this.color = color;
         setCreativeTab(Mekanism.tabMekanism);
         setHardness(1F);
         setResistance(10F);
-        this.name = ;
+        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_glow_panel";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
@@ -82,11 +87,6 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
             }
         }
         return glowPanel;
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return 0;
     }
 
     @Nonnull
@@ -151,8 +151,7 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
-        return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
+        return new ItemStack(this);
     }
 
     @Override

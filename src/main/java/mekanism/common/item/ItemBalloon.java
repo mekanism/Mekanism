@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -26,7 +27,7 @@ public class ItemBalloon extends ItemMekanism {
     private final EnumColor color;
 
     public ItemBalloon(EnumColor color) {
-        super();
+        super(color.dyeName.toLowerCase(Locale.ROOT) + "_balloon");
         this.color = color;
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, new DispenserBehavior());
     }

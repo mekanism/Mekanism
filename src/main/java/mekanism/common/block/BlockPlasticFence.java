@@ -19,6 +19,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class BlockPlasticFence extends BlockFence {
 
+    private final String name;
+
     public BlockPlasticFence() {
         super(Material.CLAY, Material.CLAY.getMaterialMapColor());
         setCreativeTab(Mekanism.tabMekanism);

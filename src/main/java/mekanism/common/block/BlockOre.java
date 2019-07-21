@@ -1,16 +1,10 @@
 package mekanism.common.block;
 
-import javax.annotation.Nonnull;
+import java.util.Locale;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStateOre;
-import mekanism.common.block.states.BlockStateOre.EnumOreType;
+import mekanism.common.resource.INamedResource;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -20,45 +14,17 @@ import net.minecraft.util.ResourceLocation;
  */
 public class BlockOre extends Block {
 
+    private final INamedResource resource;
     private final String name;
 
-    public BlockOre() {
+    public BlockOre(INamedResource resource) {
         super(Material.ROCK);
+        this.resource = resource;
         setHardness(3F);
         setResistance(5F);
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = ;
+        this.name = this.resource.getRegistrySuffix().toLowerCase(Locale.ROOT) + "_ore";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Nonnull
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateOre(this);
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(BlockStateOre.typeProperty).ordinal();
-    }
-
-    @Override
-    public int damageDropped(IBlockState state) {
-        return getMetaFromState(state);
-    }
-
-    @Override
-    public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
-        for (EnumOreType ore : EnumOreType.values()) {
-            list.add(new ItemStack(this, 1, ore.ordinal()));
-        }
     }
 }

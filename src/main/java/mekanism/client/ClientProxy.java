@@ -1,14 +1,10 @@
 package mekanism.client;
 
-import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
-
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
@@ -110,23 +106,17 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismItems;
-import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.MekanismItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -134,10 +124,6 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -151,8 +137,6 @@ import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
@@ -215,7 +199,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -223,7 +206,6 @@ import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -324,7 +306,8 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerItemRenders() {
-        registerItemRender(MekanismItems.ElectricBow);
+        //TODO: Figure out how many of these can just be done through json now
+        /*registerItemRender(MekanismItems.ElectricBow);
         registerItemRender(MekanismItems.Dust);
         registerItemRender(MekanismItems.Ingot);
         registerItemRender(MekanismItems.Nugget);
@@ -373,28 +356,29 @@ public class ClientProxy extends CommonProxy {
         registerItemRender(MekanismItems.Flamethrower);
         registerItemRender(MekanismItems.GaugeDropper);
         registerItemRender(MekanismItems.TierInstaller);
-        registerItemRender(MekanismItems.OtherDust);
+        registerItemRender(MekanismItems.OtherDust);*/
 
-        ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.OFF_MODEL);
+        ModelBakery.registerItemVariants(MekanismItem.WALKIE_TALKIE.getItem(), ItemWalkieTalkie.OFF_MODEL);
 
         for (int i = 1; i <= 9; i++) {
-            ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.getModel(i));
+            ModelBakery.registerItemVariants(MekanismItem.WALKIE_TALKIE.getItem(), ItemWalkieTalkie.getModel(i));
         }
 
-        ModelBakery.registerItemVariants(MekanismItems.CraftingFormula, ItemCraftingFormula.MODEL, ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
+        ModelBakery.registerItemVariants(MekanismItem.CRAFTING_FORMULA.getItem(), ItemCraftingFormula.MODEL, ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
 
-        MekanismItems.Jetpack.setTileEntityItemStackRenderer(new RenderJetpack());
-        MekanismItems.ArmoredJetpack.setTileEntityItemStackRenderer(new RenderArmoredJetpack());
-        MekanismItems.GasMask.setTileEntityItemStackRenderer(new RenderGasMask());
-        MekanismItems.ScubaTank.setTileEntityItemStackRenderer(new RenderScubaTank());
-        MekanismItems.FreeRunners.setTileEntityItemStackRenderer(new RenderFreeRunners());
-        MekanismItems.AtomicDisassembler.setTileEntityItemStackRenderer(new RenderAtomicDisassembler());
-        MekanismItems.Flamethrower.setTileEntityItemStackRenderer(new RenderFlameThrower());
-        Item.getItemFromBlock(MekanismBlocks.EnergyCube).setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
+        MekanismItem.JETPACK.getItem().setTileEntityItemStackRenderer(new RenderJetpack());
+        MekanismItem.ARMORED_JETPACK.getItem().setTileEntityItemStackRenderer(new RenderArmoredJetpack());
+        MekanismItem.GAS_MASK.getItem().setTileEntityItemStackRenderer(new RenderGasMask());
+        MekanismItem.SCUBA_TANK.getItem().setTileEntityItemStackRenderer(new RenderScubaTank());
+        MekanismItem.FREE_RUNNERS.getItem().setTileEntityItemStackRenderer(new RenderFreeRunners());
+        MekanismItem.ATOMIC_DISASSEMBLER.getItem().setTileEntityItemStackRenderer(new RenderAtomicDisassembler());
+        MekanismItem.FLAMETHROWER.getItem().setTileEntityItemStackRenderer(new RenderFlameThrower());
+        //TODO: Adjust these to use the proper items
+        /*Item.getItemFromBlock(MekanismBlocks.EnergyCube).setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
         Item.getItemFromBlock(MekanismBlocks.MachineBlock).setTileEntityItemStackRenderer(new RenderMachineItem());
         Item.getItemFromBlock(MekanismBlocks.MachineBlock2).setTileEntityItemStackRenderer(new RenderMachineItem());
         Item.getItemFromBlock(MekanismBlocks.MachineBlock3).setTileEntityItemStackRenderer(new RenderMachineItem());
-        Item.getItemFromBlock(MekanismBlocks.BasicBlock2).setTileEntityItemStackRenderer(new RenderBasicBlockItem());
+        Item.getItemFromBlock(MekanismBlocks.BasicBlock2).setTileEntityItemStackRenderer(new RenderBasicBlockItem());*/
     }
 
     private ModelResourceLocation getInventoryMRL(String type) {
@@ -403,7 +387,8 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerBlockRenders() {
-        ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock, machineMapper);
+        //TODO: Redo all of these. Lots can probably just be done with json now
+        /*ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock, machineMapper);
         ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock2, machineMapper);
         ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock3, machineMapper);
         ModelLoader.setCustomStateMapper(MekanismBlocks.BasicBlock, basicMapper);
@@ -623,10 +608,10 @@ public class ClientProxy extends CommonProxy {
             return null;
         };
 
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.Transmitter), transmitterMesher);
+        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.Transmitter), transmitterMesher);*/
 
         //Walkie Talkie dynamic texture
-        ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, stack -> {
+        ModelLoader.setCustomMeshDefinition(MekanismItem.WALKIE_TALKIE.getItem(), stack -> {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemWalkieTalkie) {
                 ItemWalkieTalkie item = (ItemWalkieTalkie) stack.getItem();
                 if (item.getOn(stack)) {
@@ -637,7 +622,7 @@ public class ClientProxy extends CommonProxy {
         });
 
         //Crafting Formula dynamic texture
-        ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, stack -> {
+        ModelLoader.setCustomMeshDefinition(MekanismItem.CRAFTING_FORMULA.getItem(), stack -> {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
                 ItemCraftingFormula item = (ItemCraftingFormula) stack.getItem();
                 if (item.getInventory(stack) == null) {
@@ -902,14 +887,17 @@ public class ClientProxy extends CommonProxy {
     public void init() {
         super.init();
 
-        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
-            BlockMachine machine = (BlockMachine) state.getBlock();
-            if (state.getValue(machine.getMachineBlock().getProperty()) == MachineType.FLUID_TANK) {
-                EnumColor color = state.getValue(BlockStateMachine.tierProperty).getColor();
+        //TODO: Redo all these color handlers as needed
+        /*Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
+            //TODO: Evaluate if this can be removed
+            Block block = state.getBlock();
+            if (block instanceof BlockFluidTank) {
+                EnumColor color = ((BlockFluidTank) block).getTier().getBaseTier().getColor();
                 return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
             }
             return -1;
-        }, MekanismBlocks.MachineBlock, MekanismBlocks.MachineBlock2, MekanismBlocks.MachineBlock3);
+        }, MekanismBlock.BASIC_FLUID_TANK.getBlock(), MekanismBlock.ADVANCED_FLUID_TANK.getBlock(), MekanismBlock.ELITE_FLUID_TANK.getBlock(),
+              MekanismBlock.ULTIMATE_FLUID_TANK.getBlock(), MekanismBlock.CREATIVE_FLUID_TANK.getBlock());
         Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
                   EnumDyeColor color = state.getValue(colorProperty);
                   EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
@@ -917,12 +905,14 @@ public class ClientProxy extends CommonProxy {
               }, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock,
               MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
+            //TODO: Proper way to evaluate this
             if (MachineType.get(stack) == MachineType.FLUID_TANK) {
                 EnumColor color = ((ItemBlockMachine) stack.getItem()).getBaseTier(stack).getColor();
                 return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
             }
             return -1;
-        }, MekanismBlocks.MachineBlock, MekanismBlocks.MachineBlock2, MekanismBlocks.MachineBlock3);
+        }, MekanismBlock.BASIC_FLUID_TANK.getBlock(), MekanismBlock.ADVANCED_FLUID_TANK.getBlock(), MekanismBlock.ELITE_FLUID_TANK.getBlock(),
+              MekanismBlock.ULTIMATE_FLUID_TANK.getBlock(), MekanismBlock.CREATIVE_FLUID_TANK.getBlock());
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
                   EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getItemDamage() & 15);
                   EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
@@ -932,7 +922,7 @@ public class ClientProxy extends CommonProxy {
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             EnumColor dye = EnumColor.DYES[stack.getItemDamage()];
             return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
-        }, MekanismItems.Balloon);
+        }, MekanismItems.Balloon);*/
 
         MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
         MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());

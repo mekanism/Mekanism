@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 
 public class BlockPlastic extends Block {
 
+    private final String name;
     public PlasticBlockType type;
 
     public BlockPlastic(PlasticBlockType blockType) {

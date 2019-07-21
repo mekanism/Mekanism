@@ -296,7 +296,7 @@ public class BlockStateMachine extends ExtendedBlockState {
         @Nonnull
         @Override
         protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-            BlockMachine block = (BlockMachine) state.getBlock();
+            Block block = state.getBlock();
             MachineType type = state.getValue(block.getTypeProperty());
             StringBuilder builder = new StringBuilder();
             String nameOverride = null;

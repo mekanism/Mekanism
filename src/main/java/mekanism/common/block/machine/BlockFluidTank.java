@@ -73,16 +73,22 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
+    private final FluidTankTier tier;
     private final String name;
 
     public BlockFluidTank(FluidTankTier tier) {
         super(Material.IRON);
+        this.tier = tier;
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
         this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_fluid_tank";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    public FluidTankTier getTier() {
+        return tier;
     }
 
     @Override

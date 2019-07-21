@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import java.util.function.Function;
+import mekanism.api.EnumColor;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -222,9 +223,9 @@ public enum MekanismBlock {
     FORMULAIC_ASSEMBLICATOR(new BlockFormulaicAssemblicator(), ItemBlockMachine::new),
     FUELWOOD_HEATER(new BlockFuelwoodHeater(), ItemBlockMachine::new),
 
-    OSMIUM_ORE(new BlockOre(), ItemBlockOre::new),
-    COPPER_ORE(new BlockOre(), ItemBlockOre::new),
-    TIN_ORE(new BlockOre(), ItemBlockOre::new),
+    OSMIUM_ORE(new BlockOre(Resource.OSMIUM), ItemBlockOre::new),
+    COPPER_ORE(new BlockOre(Resource.COPPER), ItemBlockOre::new),
+    TIN_ORE(new BlockOre(Resource.TIN), ItemBlockOre::new),
 
     BASIC_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.BASIC), ItemBlockEnergyCube::new),
     ADVANCED_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ADVANCED), ItemBlockEnergyCube::new),
@@ -271,22 +272,22 @@ public enum MekanismBlock {
 
     CARDBOARD_BOX(new BlockCardboardBox(), ItemBlockCardboardBox::new),
 
-    BLACK_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    RED_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    GREEN_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    BROWN_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    BLUE_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    PURPLE_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    CYAN_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    LIGHT_GRAY_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    GRAY_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    PINK_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    LIME_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    YELLOW_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    LIGHT_BLUE_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    MAGENTA_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    ORANGE_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
-    WHITE_GLOW_PANEL(new BlockGlowPanel(), ItemBlockGlowPanel::new),
+    BLACK_GLOW_PANEL(new BlockGlowPanel(EnumColor.BLACK), ItemBlockGlowPanel::new),
+    RED_GLOW_PANEL(new BlockGlowPanel(EnumColor.RED), ItemBlockGlowPanel::new),
+    GREEN_GLOW_PANEL(new BlockGlowPanel(EnumColor.DARK_GREEN), ItemBlockGlowPanel::new),
+    BROWN_GLOW_PANEL(new BlockGlowPanel(EnumColor.BROWN), ItemBlockGlowPanel::new),
+    BLUE_GLOW_PANEL(new BlockGlowPanel(EnumColor.DARK_BLUE), ItemBlockGlowPanel::new),
+    PURPLE_GLOW_PANEL(new BlockGlowPanel(EnumColor.PURPLE), ItemBlockGlowPanel::new),
+    CYAN_GLOW_PANEL(new BlockGlowPanel(EnumColor.DARK_AQUA), ItemBlockGlowPanel::new),
+    LIGHT_GRAY_GLOW_PANEL(new BlockGlowPanel(EnumColor.GREY), ItemBlockGlowPanel::new),
+    GRAY_GLOW_PANEL(new BlockGlowPanel(EnumColor.DARK_GREY), ItemBlockGlowPanel::new),
+    PINK_GLOW_PANEL(new BlockGlowPanel(EnumColor.BRIGHT_PINK), ItemBlockGlowPanel::new),
+    LIME_GLOW_PANEL(new BlockGlowPanel(EnumColor.BRIGHT_GREEN), ItemBlockGlowPanel::new),
+    YELLOW_GLOW_PANEL(new BlockGlowPanel(EnumColor.YELLOW), ItemBlockGlowPanel::new),
+    LIGHT_BLUE_GLOW_PANEL(new BlockGlowPanel(EnumColor.INDIGO), ItemBlockGlowPanel::new),
+    MAGENTA_GLOW_PANEL(new BlockGlowPanel(EnumColor.PINK), ItemBlockGlowPanel::new),
+    ORANGE_GLOW_PANEL(new BlockGlowPanel(EnumColor.ORANGE), ItemBlockGlowPanel::new),
+    WHITE_GLOW_PANEL(new BlockGlowPanel(EnumColor.WHITE), ItemBlockGlowPanel::new),
 
     BLACK_PLASTIC_BLOCK(new BlockPlastic(PlasticBlockType.PLASTIC), ItemBlockPlastic::new),
     RED_PLASTIC_BLOCK(new BlockPlastic(PlasticBlockType.PLASTIC), ItemBlockPlastic::new),
