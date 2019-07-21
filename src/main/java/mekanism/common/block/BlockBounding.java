@@ -54,6 +54,7 @@ public class BlockBounding extends Block {
     private final String name;
 
     public BlockBounding() {
+        //TODO: Replace meta with blockstate
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);

@@ -11,12 +11,12 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -375,7 +375,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
     public boolean isFrame(int x, int y, int z) {
         IBlockState state = world.getBlockState(new BlockPos(x, y, z));
-        return state.getBlock() == MekanismBlocks.BasicBlock && state.getBlock().getMetaFromState(state) == 7;
+        return state.getBlock() instanceof BlockTeleporterFrame;
     }
 
     @Override

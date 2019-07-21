@@ -17,6 +17,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
 import mekanism.common.SideData;
@@ -111,7 +112,19 @@ public final class MekanismUtils {
      * @return empty gas tank
      */
     public static ItemStack getEmptyGasTank(GasTankTier tier) {
-        return ((ItemBlockGasTank) new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem(tier);
+        switch (tier) {
+            case BASIC:
+                return MekanismBlock.BASIC_GAS_TANK.getItemStack();
+            case ADVANCED:
+                return MekanismBlock.ADVANCED_GAS_TANK.getItemStack();
+            case ELITE:
+                return MekanismBlock.ELITE_GAS_TANK.getItemStack();
+            case ULTIMATE:
+                return MekanismBlock.ULTIMATE_GAS_TANK.getItemStack();
+            case CREATIVE:
+                return MekanismBlock.CREATIVE_GAS_TANK.getItemStack();
+        }
+        return ItemStack.EMPTY;
     }
 
     public static ItemStack getTransmitter(TransmitterType type, BaseTier tier, int amount) {
@@ -484,7 +497,7 @@ public final class MekanismUtils {
      * @param orig             - original block
      */
     public static void makeBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
-        world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(0));
+        world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getStateFromMeta(0));
         if (!world.isRemote) {
             ((TileEntityBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
         }
@@ -498,7 +511,7 @@ public final class MekanismUtils {
      * @param orig             - original block
      */
     public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
-        world.setBlockState(boundingLocation, MekanismBlocks.BoundingBlock.getStateFromMeta(1));
+        world.setBlockState(boundingLocation,  MekanismBlock.BOUNDING_BLOCK.getBlock().getStateFromMeta(1));
         if (!world.isRemote) {
             ((TileEntityAdvancedBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
         }

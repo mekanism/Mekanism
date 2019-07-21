@@ -3,7 +3,7 @@ package mekanism.common.content.matrix;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.block.basic.BlockInductionCasing;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -25,7 +25,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
         IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
-        return state.getBlock() == MekanismBlocks.BasicBlock2 && state.getBlock().getMetaFromState(state) == 1;
+        return state.getBlock() instanceof BlockInductionCasing;
     }
 
     @Override

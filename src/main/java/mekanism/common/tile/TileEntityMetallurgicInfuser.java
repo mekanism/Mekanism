@@ -10,7 +10,7 @@ import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
@@ -124,7 +124,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         }
 
         world.setBlockToAir(getPos());
-        world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
+        world.setBlockState(getPos(), MekanismBlock.BASIC_INFUSING_FACTORY.getBlock().getDefaultState(), 3);
 
         TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
         RecipeType type = RecipeType.INFUSING;
