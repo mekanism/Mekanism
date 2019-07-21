@@ -16,8 +16,8 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
-import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateFacing;
@@ -61,7 +61,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockRotaryCondensentrator extends BlockMekanismContainer implements IBlockMekanism, IBlockElectric, IHasModel, IRotatableBlock {
+public class BlockRotaryCondensentrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IRotatableBlock, IBlockDescriptive {
 
     private final String name;
 

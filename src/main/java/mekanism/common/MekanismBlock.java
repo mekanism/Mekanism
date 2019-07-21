@@ -11,7 +11,6 @@ import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.block.BlockTransmitter;
-import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.PortalHelper;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockBoilerCasing;
@@ -384,11 +383,11 @@ public enum MekanismBlock {
     private final ItemBlock item;
     private final Block block;
 
-    <BLOCK extends Block & IBlockMekanism> MekanismBlock(BLOCK block) {
+    MekanismBlock(Block block) {
         this(block, ItemBlockMekanism::new);
     }
 
-    <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block & IBlockMekanism> MekanismBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
+    <ITEM extends ItemBlock & IItemMekanism> MekanismBlock(Block block, Function<Block, ITEM> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
     }

@@ -30,6 +30,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
@@ -222,7 +223,7 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
                 }
             }
         } else {
-            list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
+            list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) metaBlock).getDescription(), itemstack));
         }
     }
 

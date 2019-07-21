@@ -18,8 +18,8 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
-import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
@@ -63,7 +63,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockMekanism, IBlockElectric, ISupportsUpgrades, IHasModel, IBlockActiveTextured, IRotatableBlock {
+public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IBlockActiveTextured, IRotatableBlock,
+      IBlockDescriptive {
 
     private final String name;
 

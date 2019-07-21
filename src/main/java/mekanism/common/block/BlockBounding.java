@@ -3,7 +3,6 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -25,7 +24,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBounding extends Block implements IBlockMekanism {
+public class BlockBounding extends Block {
 
     @Nullable
     private static BlockPos getMainBlockPos(IBlockAccess world, BlockPos thisPos) {

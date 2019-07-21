@@ -8,7 +8,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.ITierItem;
-import mekanism.common.block.BlockBasic;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BaseTier;
@@ -20,6 +20,7 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
@@ -41,11 +42,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public class ItemBlockBasic extends ItemBlockMekanism<BlockBasic> implements IEnergizedItem, ITierItem {
+public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem, ITierItem {
 
-    public BlockBasic metaBlock;
+    public Block metaBlock;
 
-    public ItemBlockBasic(BlockBasic block) {
+    public ItemBlockBasic(Block block) {
         super(block);
         metaBlock = block;
         setHasSubtypes(true);
@@ -85,7 +86,7 @@ public class ItemBlockBasic extends ItemBlockMekanism<BlockBasic> implements IEn
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         BasicBlockType type = BasicBlockType.get(itemstack);
-        if (type != null && metaBlock.hasDescription()) {
+        if (type != null && metaBlock instanceof IBlockDescriptive) {
             if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
                 if (type == BasicBlockType.BIN) {
                     InventoryBin inv = new InventoryBin(itemstack);
@@ -113,7 +114,7 @@ public class ItemBlockBasic extends ItemBlockMekanism<BlockBasic> implements IEn
                 list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                          EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
             } else {
-                list.addAll(MekanismUtils.splitTooltip(metaBlock.getDescription(), itemstack));
+                list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) metaBlock).getDescription(), itemstack));
             }
         }
     }

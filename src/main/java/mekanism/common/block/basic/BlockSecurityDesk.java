@@ -5,8 +5,10 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.tile.TileEntitySecurityDesk;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -20,15 +22,16 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDesk extends BlockBasic implements IRotatableBlock {
+public class BlockSecurityDesk extends BlockBasic implements IRotatableBlock, IBlockDescriptive {
 
     public BlockSecurityDesk() {
         super("security_desk");
     }
 
     @Override
-    public boolean hasDescription() {
-        return true;
+    public String getDescription() {
+        //TODO: Should name just be gotten from registry name
+        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Override

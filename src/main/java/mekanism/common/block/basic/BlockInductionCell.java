@@ -2,13 +2,15 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.util.LangUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockBasic {
+public class BlockInductionCell extends BlockBasic implements IBlockDescriptive {
 
     private final InductionCellTier tier;
 
@@ -18,8 +20,9 @@ public class BlockInductionCell extends BlockBasic {
     }
 
     @Override
-    public boolean hasDescription() {
-        return true;
+    public String getDescription() {
+        //TODO: Should name just be gotten from registry name
+        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Override

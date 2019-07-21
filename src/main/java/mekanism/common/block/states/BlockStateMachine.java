@@ -11,11 +11,9 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
-import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.BaseTier;
-import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -30,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class BlockStateMachine<BLOCK extends BlockMekanismContainer & IBlockMekanism> extends ExtendedBlockState {
+public class BlockStateMachine<BLOCK extends BlockMekanismContainer> extends ExtendedBlockState {
 
     public static final PropertyBool activeProperty = PropertyBool.create("active");
     public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
@@ -272,10 +270,6 @@ public class BlockStateMachine<BLOCK extends BlockMekanismContainer & IBlockMeka
 
         public double getStorage() {
             return Math.max(getConfigStorage(), getUsage());
-        }
-
-        public String getDescription() {
-            return LangUtils.localize("tooltip." + blockName);
         }
 
         public ItemStack getStack() {

@@ -8,7 +8,6 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -18,7 +17,6 @@ import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -43,9 +41,9 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
+public class BlockBasic extends BlockTileDrops {
 
-    private final String name;
+    protected final String name;
 
     public BlockBasic(String name) {
         super(Material.IRON);
@@ -56,12 +54,6 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
         this.name = name.toLowerCase(Locale.ROOT);
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Nonnull

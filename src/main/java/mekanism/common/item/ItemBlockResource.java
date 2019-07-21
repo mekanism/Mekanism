@@ -4,7 +4,7 @@ import mekanism.common.block.basic.BlockResource;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.item.ItemStack;
 
-public class ItemBlockResource extends ItemBlockMekanism<BlockResource> {
+public class ItemBlockResource extends ItemBlockMekanism {
 
     private final BlockResource blockResource;
 

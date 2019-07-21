@@ -5,11 +5,13 @@ import mekanism.api.IMekWrench;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -30,7 +32,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockBasic implements IBlockActiveTextured, IRotatableBlock {
+public class BlockBin extends BlockBasic implements IBlockActiveTextured, IRotatableBlock, IBlockDescriptive {
 
     private final BinTier tier;
 
@@ -40,8 +42,9 @@ public class BlockBin extends BlockBasic implements IBlockActiveTextured, IRotat
     }
 
     @Override
-    public boolean hasDescription() {
-        return true;
+    public String getDescription() {
+        //TODO: Should name just be gotten from registry name
+        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Override
