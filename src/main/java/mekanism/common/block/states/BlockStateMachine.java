@@ -28,13 +28,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class BlockStateMachine<BLOCK extends BlockMekanismContainer> extends ExtendedBlockState {
+public class BlockStateMachine extends ExtendedBlockState {
 
     public static final PropertyBool activeProperty = PropertyBool.create("active");
     public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
     public static final PropertyEnum<RecipeType> recipeProperty = PropertyEnum.create("recipe", RecipeType.class);
 
-    public BlockStateMachine(BLOCK block) {
+    public BlockStateMachine(BlockMekanismContainer block) {
         //TODO: Should tier stay part of blockstate or be extracted into its own block
         super(block, new IProperty[]{BlockStateFacing.facingProperty, activeProperty, tierProperty, recipeProperty}, new IUnlistedProperty[]{});
     }
