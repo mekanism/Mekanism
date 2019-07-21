@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.MekanismKeyHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
@@ -130,11 +129,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     break;
                 }
             }
-            boolean extended = MekanismConfig.current().general.DISASSEMBER_EXTENDED.val() && Mekanism.keyMap.has(player, KeySync.EXTENDEDMINING);
+            boolean extended = MekanismConfig.current().general.disassemblerExtendedMining.val() && Mekanism.keyMap.has(player, KeySync.EXTENDEDMINING);
             if (isOre || extended) {
                 Coord4D orig = new Coord4D(pos, player.world);
-                Set<Coord4D> found = new Finder(player, stack, orig, raytrace, extended ?
-                      MekanismConfig.current().general.DISASSEMBLER_RANGE.val() : -1).calc();
+                Set<Coord4D> found = new Finder(player, stack, orig, raytrace, extended ? MekanismConfig.current().general.disassemblerMiningRange.val() : -1).calc();
                 for (Coord4D coord : found) {
                     if (coord.equals(orig)) {
                         continue;
@@ -363,7 +361,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             rayTraceResult = traceResult;
             isWood = OreDictCache.getOreDictName(stack).contains("logWood");
             maxRange = range;
-            maxCount = MekanismConfig.current().general.DISASSEMBLER_COUNT.val() - 1;
+            maxCount = MekanismConfig.current().general.disassemblerMiningCount.val() - 1;
         }
 
         public void loop(Coord4D pointer) {
