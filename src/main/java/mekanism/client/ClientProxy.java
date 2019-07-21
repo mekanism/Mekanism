@@ -109,7 +109,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockPlasticFence.PlasticFenceStateMapper;
+import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
@@ -243,7 +243,6 @@ public class ClientProxy extends CommonProxy {
 
     private static final IStateMapper machineMapper = new MachineBlockStateMapper();
     private static final IStateMapper basicMapper = new BasicBlockStateMapper();
-    private static final IStateMapper plasticMapper = new PlasticBlockStateMapper();
     private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
     private static final IStateMapper boxMapper = new CardboardBoxStateMapper();
     private static final IStateMapper transmitterMapper = new TransmitterStateMapper();

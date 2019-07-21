@@ -1,7 +1,8 @@
-package mekanism.common.block;
+package mekanism.common.block.plastic;
 
 import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
 
+import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
@@ -19,12 +20,14 @@ import net.minecraft.util.ResourceLocation;
 
 public class BlockPlasticFence extends BlockFence {
 
+    private final EnumColor color;
     private final String name;
 
-    public BlockPlasticFence() {
+    public BlockPlasticFence(EnumColor color) {
         super(Material.CLAY, Material.CLAY.getMaterialMapColor());
+        this.color = color;
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = ;
+        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_plastic_fence";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
