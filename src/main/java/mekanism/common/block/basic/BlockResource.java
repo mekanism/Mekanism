@@ -4,7 +4,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.IBlockMekanism;
+import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;

@@ -442,10 +442,6 @@ public class ClientProxy extends CommonProxy {
         }
 
         for (MachineType type : MachineType.values()) {
-            if (!type.isValidMachine()) {
-                continue;
-            }
-
             List<ModelResourceLocation> modelsToAdd = new ArrayList<>();
             String resource = "mekanism:" + type.getName();
             RecipeType recipePointer = null;
@@ -458,10 +454,10 @@ public class ClientProxy extends CommonProxy {
             while (true) {
                 if (machineResources.get(resource) == null) {
                     List<String> entries = new ArrayList<>();
-                    if (type.hasActiveTexture()) {
+                    if (block.hasActiveTexture()) {
                         entries.add("active=false");
                     }
-                    if (type.hasRotations()) {
+                    if (block.hasRotations()) {
                         entries.add("facing=north");
                     }
 
@@ -481,6 +477,7 @@ public class ClientProxy extends CommonProxy {
                 break;
             }
 
+            //TODO: Only register the ones that need it
             ModelLoader.registerItemVariants(Item.getItemFromBlock(type.typeBlock.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[]{}));
         }
 

@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import mekanism.common.block.IBlockMekanism;
+import mekanism.common.block.interfaces.IBlockMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 

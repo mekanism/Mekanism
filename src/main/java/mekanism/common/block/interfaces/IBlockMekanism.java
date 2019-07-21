@@ -1,4 +1,4 @@
-package mekanism.common.block;
+package mekanism.common.block.interfaces;
 
 import net.minecraft.util.EnumFacing;
 

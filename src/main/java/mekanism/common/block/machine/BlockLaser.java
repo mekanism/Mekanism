@@ -2,7 +2,6 @@ package mekanism.common.block.machine;
 
 import java.util.Locale;
 import java.util.Random;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
@@ -17,10 +16,9 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.IBlockMekanism;
+import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
@@ -64,12 +62,10 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockMekanism
 
     private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
 
-    private final Predicate<EnumFacing> facingPredicate;
     private final String name;
 
-    public BlockLaser(String name, Predicate<EnumFacing> facingPredicate) {
+    public BlockLaser(String name) {
         super(Material.IRON);
-        this.facingPredicate = facingPredicate;
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
@@ -87,12 +83,12 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockMekanism
 
     @Override
     public boolean canRotateTo(EnumFacing side) {
-        return facingPredicate.test(side);
+        return true;
     }
 
     @Override
     public boolean hasRotations() {
-        return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
+        return true;
     }
 
     @Nonnull

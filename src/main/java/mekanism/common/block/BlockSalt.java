@@ -4,6 +4,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItem;
+import mekanism.common.block.interfaces.IBlockMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;

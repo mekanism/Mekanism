@@ -1,7 +1,6 @@
 package mekanism.common.block.machine;
 
 import java.util.Random;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
@@ -16,11 +15,10 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.IBlockMekanism;
+import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
@@ -59,7 +57,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockTeleporter extends BlockMekanismContainer implements IBlockMekanism {
 
-    private final Predicate<EnumFacing> facingPredicate;
     private final String name;
 
     public BlockTeleporter() {
@@ -80,12 +77,12 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockMek
 
     @Override
     public boolean canRotateTo(EnumFacing side) {
-        return facingPredicate.test(side);
+        return false;
     }
 
     @Override
     public boolean hasRotations() {
-        return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
+        return false;
     }
 
     @Nonnull

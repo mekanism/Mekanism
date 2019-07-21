@@ -2,7 +2,6 @@ package mekanism.common.block.machine.factory;
 
 import java.util.Locale;
 import java.util.Random;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
@@ -19,11 +18,10 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.IBlockMekanism;
+import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
@@ -52,6 +50,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
@@ -69,14 +68,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockFactory extends BlockMekanismContainer implements IBlockMekanism {
     //TODO: Clean this up further, currently only is used for Factories now
 
-    private final Predicate<EnumFacing> facingPredicate;
     private final FactoryTier tier;
     private final String name;
 
     public BlockFactory(FactoryTier tier) {
         super(Material.IRON);
         this.tier = tier;
-        this.facingPredicate = facingPredicate;
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
@@ -93,13 +90,18 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockMekani
     }
 
     @Override
+    public boolean hasActiveTexture() {
+        return true;
+    }
+
+    @Override
     public boolean canRotateTo(EnumFacing side) {
-        return facingPredicate.test(side);
+        return Plane.HORIZONTAL.test(side);
     }
 
     @Override
     public boolean hasRotations() {
-        return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
+        return true;
     }
 
     @Nonnull
