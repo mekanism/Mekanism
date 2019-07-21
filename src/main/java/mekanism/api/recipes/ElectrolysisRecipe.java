@@ -18,8 +18,11 @@ public class ElectrolysisRecipe implements Predicate<@NonNull FluidStack> {
 
     private final GasStack rightGasOutput;
 
-    public ElectrolysisRecipe(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
+    private final double energyUsage;
+
+    public ElectrolysisRecipe(FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput) {
         this.input = input;
+        this.energyUsage = energyUsage;
         this.leftGasOutput = leftGasOutput;
         this.rightGasOutput = rightGasOutput;
     }
@@ -45,4 +48,7 @@ public class ElectrolysisRecipe implements Predicate<@NonNull FluidStack> {
         return Pair.of(leftGasOutput.copy(), rightGasOutput.copy());
     }
 
+    public double getEnergyUsage() {
+        return energyUsage;
+    }
 }

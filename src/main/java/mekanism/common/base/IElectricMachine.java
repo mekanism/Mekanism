@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import java.util.List;
 import java.util.Map;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
@@ -10,7 +11,7 @@ import mekanism.common.recipe.outputs.MachineOutput;
  *
  * @author AidanBrady
  */
-public interface IElectricMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> {
+public interface IElectricMachine<RECIPE> {
 
     /**
      * Update call for machines. Use instead of updateEntity() - it's called every tick.
@@ -32,9 +33,7 @@ public interface IElectricMachine<INPUT extends MachineInput<INPUT>, OUTPUT exte
     /**
      * Gets this machine's recipes.
      */
-    Map<INPUT, RECIPE> getRecipes();
+    List<RECIPE> getRecipes();
 
     RECIPE getRecipe();
-
-    INPUT getInput();
 }

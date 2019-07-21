@@ -1,9 +1,11 @@
 package mekanism.common.tile;
 
+import java.util.List;
 import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -26,7 +28,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     }
 
     @Override
-    public Map<AdvancedMachineInput, InjectionRecipe> getRecipes() {
+    public List<ItemStackGasToItemStackRecipe> getRecipes() {
         return Recipe.CHEMICAL_INJECTION_CHAMBER.get();
     }
 

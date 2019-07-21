@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
+import mekanism.api.recipes.ItemStack2ItemStackRecipe;
 import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -112,67 +113,6 @@ public interface IFactory {
             return type;
         }
 
-        public BasicMachineRecipe getRecipe(ItemStackInput input) {
-            return (BasicMachineRecipe) RecipeHandler.getRecipe(input, recipe);
-        }
-
-        public BasicMachineRecipe getRecipe(ItemStack input) {
-            return getRecipe(new ItemStackInput(input));
-        }
-
-        public AdvancedMachineRecipe getRecipe(AdvancedMachineInput input) {
-            return (AdvancedMachineRecipe) RecipeHandler.getRecipe(input, recipe);
-        }
-
-        public AdvancedMachineRecipe getRecipe(ItemStack input, Gas gas) {
-            return getRecipe(new AdvancedMachineInput(input, gas));
-        }
-
-        public DoubleMachineRecipe getRecipe(DoubleMachineInput input) {
-            return (DoubleMachineRecipe) RecipeHandler.getRecipe(input, recipe);
-        }
-
-        public DoubleMachineRecipe getRecipe(ItemStack input, ItemStack extra) {
-            return getRecipe(new DoubleMachineInput(input, extra));
-        }
-
-        public ChanceMachineRecipe getChanceRecipe(ItemStackInput input) {
-            return (ChanceMachineRecipe) RecipeHandler.getRecipe(input, recipe);
-        }
-
-        public ChanceMachineRecipe getChanceRecipe(ItemStack input) {
-            return getChanceRecipe(new ItemStackInput(input));
-        }
-
-        public MetallurgicInfuserRecipe getRecipe(InfusionInput input) {
-            return RecipeHandler.getMetallurgicInfuserRecipe(input);
-        }
-
-        public MetallurgicInfuserRecipe getRecipe(ItemStack input, InfuseStorage storage) {
-            return getRecipe(new InfusionInput(storage, input));
-        }
-
-        @Nullable
-        public MachineRecipe getAnyRecipe(ItemStack slotStack, ItemStack extraStack, Gas gasType, InfuseStorage infuse) {
-            if (fuelType == MachineFuelType.ADVANCED) {
-                return getRecipe(slotStack, gasType);
-            } else if (fuelType == MachineFuelType.DOUBLE) {
-                return getRecipe(slotStack, extraStack);
-            } else if (fuelType == MachineFuelType.CHANCE) {
-                return getChanceRecipe(slotStack);
-            } else if (this == INFUSING) {
-                if (infuse.getType() != null) {
-                    return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuse, slotStack));
-                }
-                for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get().entrySet()) {
-                    if (ItemHandlerHelper.canItemStacksStack(entry.getKey().inputStack, slotStack)) {
-                        return entry.getValue();
-                    }
-                }
-            }
-            return getRecipe(slotStack);
-        }
-
         public int getSecondaryEnergyPerTick() {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().BASE_SECONDARY_ENERGY_PER_TICK;
@@ -194,38 +134,6 @@ public interface IFactory {
         public boolean isValidGas(Gas gas) {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().isValidGas(gas);
-            }
-            return false;
-        }
-
-        public boolean hasRecipe(ItemStack itemStack) {
-            if (itemStack.isEmpty()) {
-                return false;
-            }
-            for (Object obj : recipe.get().entrySet()) {
-                if (((Map.Entry) obj).getKey() instanceof AdvancedMachineInput) {
-                    Map.Entry entry = (Map.Entry) obj;
-                    ItemStack stack = ((AdvancedMachineInput) entry.getKey()).itemStack;
-                    if (StackUtils.equalsWildcard(stack, itemStack)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        public boolean hasRecipeForExtra(ItemStack extraStack) {
-            if (extraStack.isEmpty()) {
-                return false;
-            }
-            for (Object obj : recipe.get().entrySet()) {
-                if (((Map.Entry) obj).getKey() instanceof DoubleMachineInput) {
-                    Map.Entry entry = (Map.Entry) obj;
-                    ItemStack stack = ((DoubleMachineInput) entry.getKey()).extraStack;
-                    if (StackUtils.equalsWildcard(stack, extraStack)) {
-                        return true;
-                    }
-                }
             }
             return false;
         }

@@ -13,16 +13,24 @@ public class AmbientAccumulatorRecipe implements IntPredicate {
 
     private final int ticksRequired;
 
+    private final int dimension;
+
     private final GasStack output;
 
-    public AmbientAccumulatorRecipe(int ticksRequired, GasStack output) {
+    public AmbientAccumulatorRecipe(int dimensionId, int ticksRequired, GasStack output) {
+        this.dimension = dimensionId;
         this.ticksRequired = ticksRequired;
         this.output = output;
     }
 
+    /**
+     * Check dimension against recipe
+     * @param value the dimension Id
+     * @return true if match
+     */
     @Override
     public boolean test(int value) {
-        return value >= ticksRequired;
+        return value == dimension;
     }
 
     public GasStack getOutput() {
@@ -31,5 +39,9 @@ public class AmbientAccumulatorRecipe implements IntPredicate {
 
     public int getTicksRequired() {
         return ticksRequired;
+    }
+
+    public int getDimension() {
+        return dimension;
     }
 }

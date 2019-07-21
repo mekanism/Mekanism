@@ -41,8 +41,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends
-      TileEntityUpgradeableMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ISustainedData {
+public abstract class TileEntityAdvancedElectricMachine<RECIPE> extends
+      TileEntityUpgradeableMachine<RECIPE> implements IGasHandler, ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy",
                                                          "getEnergyNeeded"};

@@ -6,7 +6,9 @@ import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.inputs.GasIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.outputs.OreDictSupplier;
 import mekanism.common.util.FieldsAreNonnullByDefault;
@@ -22,15 +24,15 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemStack, @NonNull GasStack> {
+public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemStack, @NonNull Gas> {
 
     private final Ingredient itemInput;
 
-    private final GasStackIngredient gasInput;
+    private final GasIngredient gasInput;
 
     private final ItemStack outputDefinition;
 
-    public ItemStackGasToItemStackRecipe(Ingredient itemInput, GasStackIngredient gasInput, ItemStack outputDefinition) {
+    public ItemStackGasToItemStackRecipe(Ingredient itemInput, GasIngredient gasInput, ItemStack outputDefinition) {
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.outputDefinition = outputDefinition;
@@ -40,7 +42,7 @@ public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemS
         return itemInput;
     }
 
-    public GasStackIngredient getGasInput() {
+    public GasIngredient getGasInput() {
         return gasInput;
     }
 
@@ -49,7 +51,7 @@ public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemS
     }
 
     @Override
-    public boolean test(@NonNull ItemStack itemStack, @NonNull GasStack gasStack) {
+    public boolean test(@NonNull ItemStack itemStack, @NonNull Gas gasStack) {
         return itemInput.apply(itemStack) && gasInput.test(gasStack);
     }
 
@@ -61,7 +63,7 @@ public class ItemStackGasToItemStackRecipe implements BiPredicate<@NonNull ItemS
 
         private final OreDictSupplier outputSupplier;
 
-        public ItemStackGasToItemStackRecipeOre(Ingredient itemInput, GasStackIngredient gasInput, String outputOreName) {
+        public ItemStackGasToItemStackRecipeOre(Ingredient itemInput, GasIngredient gasInput, String outputOreName) {
             super(itemInput, gasInput, ItemStack.EMPTY);
             this.outputSupplier = new OreDictSupplier(outputOreName);
         }

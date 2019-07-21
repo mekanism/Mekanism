@@ -36,6 +36,10 @@ public class ChemicalInfuserRecipe implements BiPredicate<@NonNull GasStack, @No
         this.outputGasAmount = outputGasAmount;
     }
 
+    public ChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
+        this(leftInput, rightInput, output.getGas(), output.amount);
+    }
+
     @Override
     public boolean test(GasStack input1, GasStack input2) {
         return (leftInput.test(input1) && rightInput.test(input2)) || (rightInput.test(input1) && leftInput.test(input2));

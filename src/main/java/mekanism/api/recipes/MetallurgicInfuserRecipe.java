@@ -19,7 +19,7 @@ import net.minecraft.item.crafting.Ingredient;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MetallurgicInfuserRecipe implements BiPredicate<InfusionContainer, ItemStack> {
+public class MetallurgicInfuserRecipe implements BiPredicate<InfusionContainer, ItemStack> {
 
     private final Ingredient itemInput;
 
@@ -27,7 +27,7 @@ public abstract class MetallurgicInfuserRecipe implements BiPredicate<InfusionCo
 
     private final ItemStack outputDefinition;
 
-    protected MetallurgicInfuserRecipe(Ingredient itemInput, InfusionIngredient infusionInput, ItemStack outputDefinition) {
+    public MetallurgicInfuserRecipe(Ingredient itemInput, InfusionIngredient infusionInput, ItemStack outputDefinition) {
         this.itemInput = itemInput;
         this.infusionInput = infusionInput;
         this.outputDefinition = outputDefinition.copy();
