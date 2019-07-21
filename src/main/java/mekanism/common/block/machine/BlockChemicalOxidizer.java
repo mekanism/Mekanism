@@ -16,7 +16,10 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockMekanism;
+import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -57,7 +60,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBlockMekanism {
+public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBlockMekanism, IBlockElectric, ISupportsUpgrades, IHasModel {
 
     private final String name;
 

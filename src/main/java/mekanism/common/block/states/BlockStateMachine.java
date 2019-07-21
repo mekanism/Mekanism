@@ -13,7 +13,6 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -60,67 +59,49 @@ public class BlockStateMachine<BLOCK extends BlockMekanismContainer & IBlockMeka
     }
 
     public enum MachineType implements IStringSerializable, IBlockType {
-        ENRICHMENT_CHAMBER(3, true, false, true),
-        OSMIUM_COMPRESSOR(4, true, false, true),
-        COMBINER(5, true, false, true),
-        CRUSHER(6, true, false, true),
-        DIGITAL_MINER(2, true, true, true),
-        BASIC_FACTORY(11, true, false, true),
-        ADVANCED_FACTORY(11, true, false, true),
-        ELITE_FACTORY(11, true, false, true),
-        METALLURGIC_INFUSER(12, true, true, true),
-        PURIFICATION_CHAMBER(15, true, false, true),
-        ENERGIZED_SMELTER(16, true, false, true),
-        TELEPORTER(13, true, false, false),
-        ELECTRIC_PUMP(17, true, true, false),
-        PERSONAL_CHEST(-1, true, true, false),
-        CHARGEPAD(-1, true, true, false),
+        ENRICHMENT_CHAMBER(3),
+        OSMIUM_COMPRESSOR(4),
+        COMBINER(5),
+        CRUSHER(6),
+        DIGITAL_MINER(2),
+        BASIC_FACTORY(11),
+        ADVANCED_FACTORY(11),
+        ELITE_FACTORY(11),
+        METALLURGIC_INFUSER(12),
+        PURIFICATION_CHAMBER(15),
+        ENERGIZED_SMELTER(16),
+        TELEPORTER(13),
+        ELECTRIC_PUMP(17),
+        PERSONAL_CHEST(-1),
+        CHARGEPAD(-1),
+        LOGISTICAL_SORTER(59),
+        ROTARY_CONDENSENTRATOR(7),
+        CHEMICAL_OXIDIZER(29),
+        CHEMICAL_INFUSER(30),
+        CHEMICAL_INJECTION_CHAMBER(31),
+        ELECTROLYTIC_SEPARATOR(32),
+        PRECISION_SAWMILL(34),
+        CHEMICAL_DISSOLUTION_CHAMBER(35),
+        CHEMICAL_WASHER(36),
+        CHEMICAL_CRYSTALLIZER(37),
+        SEISMIC_VIBRATOR(39),
+        PRESSURIZED_REACTION_CHAMBER(40),
+        FLUID_TANK(41),
+        FLUIDIC_PLENISHER(42),
+        LASER(-1),
+        LASER_AMPLIFIER(44),
+        LASER_TRACTOR_BEAM(45),
+        QUANTUM_ENTANGLOPORTER(46),
+        SOLAR_NEUTRON_ACTIVATOR(47),
+        OREDICTIONIFICATOR(52),
+        RESISTIVE_HEATER(53),
+        FORMULAIC_ASSEMBLICATOR(56),
+        FUELWOOD_HEATER(58);
 
-        LOGISTICAL_SORTER(59, false, true, false),
-
-        ROTARY_CONDENSENTRATOR(7, true, true, false),
-        CHEMICAL_OXIDIZER(29, true, true, true),
-        CHEMICAL_INFUSER(30, true, true, false),
-        CHEMICAL_INJECTION_CHAMBER(31, true, false, true),
-        ELECTROLYTIC_SEPARATOR(32, true, true, false),
-        PRECISION_SAWMILL(34, true, false, true),
-        CHEMICAL_DISSOLUTION_CHAMBER(35, true, true, true),
-        CHEMICAL_WASHER(36, true, true, false),
-        CHEMICAL_CRYSTALLIZER(37, true, true, true),
-        SEISMIC_VIBRATOR(39, true, true, false),
-        PRESSURIZED_REACTION_CHAMBER(40, true, true, false),
-
-        FLUID_TANK(41, false, true, false),
-
-        FLUIDIC_PLENISHER(42, true, true, false),
-        LASER(-1, true, true, false),
-
-        LASER_AMPLIFIER(44, false, true, false),
-        LASER_TRACTOR_BEAM(45, false, true, false),
-
-        QUANTUM_ENTANGLOPORTER(46, true, false, false),
-
-        SOLAR_NEUTRON_ACTIVATOR(47, false, true, false),
-        OREDICTIONIFICATOR(52, false, false, false),
-
-        RESISTIVE_HEATER(53, true, false, false),
-        FORMULAIC_ASSEMBLICATOR(56, true, false, true),
-
-        FUELWOOD_HEATER(58, false, false, false);
-
-        public MachineBlock typeBlock;
-        public String blockName;
         public int guiId;
-        public boolean isElectric;
-        public boolean hasModel;
-        public boolean supportsUpgrades;
-        public FactoryTier factoryTier;
 
-        MachineType(int gui, boolean electric, boolean model, boolean upgrades) {
+        MachineType(int gui) {
             guiId = gui;
-            isElectric = electric;
-            hasModel = model;
-            supportsUpgrades = upgrades;
         }
 
         private static final List<MachineType> VALID_MACHINES = new ArrayList<>();
@@ -156,6 +137,7 @@ public class BlockStateMachine<BLOCK extends BlockMekanismContainer & IBlockMeka
             return MekanismConfig.current().general.machinesManager.isEnabled(this);
         }
 
+        //TODO: Put this as part of IBlockElectric?
         public double getUsage() {
             switch (this) {
                 case ENRICHMENT_CHAMBER:
