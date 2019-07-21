@@ -23,7 +23,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 //TODO: Make this not extend BlockBasic
-public class BlockResource extends BlockTileDrops, IHasModel {
+public class BlockResource extends BlockTileDrops implements IHasModel {
 
     @Nonnull
     private final BlockResourceInfo resource;

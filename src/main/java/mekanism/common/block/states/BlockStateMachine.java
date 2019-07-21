@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
@@ -59,50 +58,44 @@ public class BlockStateMachine extends ExtendedBlockState {
     }
 
     public enum MachineType implements IStringSerializable, IBlockType {
-        ENRICHMENT_CHAMBER(3),
-        OSMIUM_COMPRESSOR(4),
-        COMBINER(5),
-        CRUSHER(6),
-        DIGITAL_MINER(2),
-        BASIC_FACTORY(11),
-        ADVANCED_FACTORY(11),
-        ELITE_FACTORY(11),
-        METALLURGIC_INFUSER(12),
-        PURIFICATION_CHAMBER(15),
-        ENERGIZED_SMELTER(16),
-        TELEPORTER(13),
-        ELECTRIC_PUMP(17),
-        PERSONAL_CHEST(-1),
-        CHARGEPAD(-1),
-        LOGISTICAL_SORTER(59),
-        ROTARY_CONDENSENTRATOR(7),
-        CHEMICAL_OXIDIZER(29),
-        CHEMICAL_INFUSER(30),
-        CHEMICAL_INJECTION_CHAMBER(31),
-        ELECTROLYTIC_SEPARATOR(32),
-        PRECISION_SAWMILL(34),
-        CHEMICAL_DISSOLUTION_CHAMBER(35),
-        CHEMICAL_WASHER(36),
-        CHEMICAL_CRYSTALLIZER(37),
-        SEISMIC_VIBRATOR(39),
-        PRESSURIZED_REACTION_CHAMBER(40),
-        FLUID_TANK(41),
-        FLUIDIC_PLENISHER(42),
-        LASER(-1),
-        LASER_AMPLIFIER(44),
-        LASER_TRACTOR_BEAM(45),
-        QUANTUM_ENTANGLOPORTER(46),
-        SOLAR_NEUTRON_ACTIVATOR(47),
-        OREDICTIONIFICATOR(52),
-        RESISTIVE_HEATER(53),
-        FORMULAIC_ASSEMBLICATOR(56),
-        FUELWOOD_HEATER(58);
-
-        public int guiId;
-
-        MachineType(int gui) {
-            guiId = gui;
-        }
+        ENRICHMENT_CHAMBER,
+        OSMIUM_COMPRESSOR,
+        COMBINER,
+        CRUSHER,
+        DIGITAL_MINER,
+        BASIC_FACTORY,
+        ADVANCED_FACTORY,
+        ELITE_FACTORY,
+        METALLURGIC_INFUSER,
+        PURIFICATION_CHAMBER,
+        ENERGIZED_SMELTER,
+        TELEPORTER,
+        ELECTRIC_PUMP,
+        PERSONAL_CHEST,
+        CHARGEPAD,
+        LOGISTICAL_SORTER,
+        ROTARY_CONDENSENTRATOR,
+        CHEMICAL_OXIDIZER,
+        CHEMICAL_INFUSER,
+        CHEMICAL_INJECTION_CHAMBER,
+        ELECTROLYTIC_SEPARATOR,
+        PRECISION_SAWMILL,
+        CHEMICAL_DISSOLUTION_CHAMBER,
+        CHEMICAL_WASHER,
+        CHEMICAL_CRYSTALLIZER,
+        SEISMIC_VIBRATOR,
+        PRESSURIZED_REACTION_CHAMBER,
+        FLUID_TANK,
+        FLUIDIC_PLENISHER,
+        LASER,
+        LASER_AMPLIFIER,
+        LASER_TRACTOR_BEAM,
+        QUANTUM_ENTANGLOPORTER,
+        SOLAR_NEUTRON_ACTIVATOR,
+        OREDICTIONIFICATOR,
+        RESISTIVE_HEATER,
+        FORMULAIC_ASSEMBLICATOR,
+        FUELWOOD_HEATER;
 
         private static final List<MachineType> VALID_MACHINES = new ArrayList<>();
 

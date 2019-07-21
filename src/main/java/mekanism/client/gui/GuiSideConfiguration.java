@@ -86,7 +86,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityContainerBlo
         super.actionPerformed(guibutton);
         TileEntity tile = (TileEntity) configurable;
         if (guibutton.id == backButton.id) {
-            int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
+            int guiId = Mekanism.proxy.getGuiId(tile.getBlockType());
             Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
         } else if (guibutton.id == autoEjectButton.id) {
             Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));

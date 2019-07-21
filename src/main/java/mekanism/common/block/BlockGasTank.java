@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGasTank;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -41,7 +42,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockMekanismContainer {
+public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
@@ -278,5 +279,10 @@ public class BlockGasTank extends BlockMekanismContainer {
     @Deprecated
     public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
         return face == EnumFacing.UP || face == EnumFacing.DOWN ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
+    }
+
+    @Override
+    public int getGuiID() {
+        return 10;
     }
 }

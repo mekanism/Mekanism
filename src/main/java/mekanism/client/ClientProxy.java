@@ -115,7 +115,6 @@ import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;

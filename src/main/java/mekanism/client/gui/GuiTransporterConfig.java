@@ -80,7 +80,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
         super.actionPerformed(guibutton);
         TileEntity tile = (TileEntity) configurable;
         if (guibutton.id == backButton.id) {
-            int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
+            int guiId = Mekanism.proxy.getGuiId(tile.getBlockType());
             Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
         } else if (guibutton.id == strictInputButton.id) {
             Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));

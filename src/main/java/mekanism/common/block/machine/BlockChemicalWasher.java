@@ -18,11 +18,11 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
@@ -60,7 +60,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockChemicalWasher extends BlockMekanismContainer implements IBlockElectric, IHasModel, IBlockActiveTextured, IRotatableBlock, IBlockDescriptive {
+public class BlockChemicalWasher extends BlockMekanismContainer implements IBlockElectric, IHasModel, IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasGui {
 
     private final String name;
 
@@ -224,7 +224,7 @@ public class BlockChemicalWasher extends BlockMekanismContainer implements IBloc
         if (tileEntity != null) {
             if (!entityplayer.isSneaking()) {
                 if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(Mekanism.instance, MachineType.CHEMICAL_WASHER.guiId, world, pos.getX(), pos.getY(), pos.getZ());
+                    entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
@@ -379,5 +379,10 @@ public class BlockChemicalWasher extends BlockMekanismContainer implements IBloc
             }
         }
         return false;
+    }
+
+    @Override
+    public int getGuiID() {
+        return 36;
     }
 }

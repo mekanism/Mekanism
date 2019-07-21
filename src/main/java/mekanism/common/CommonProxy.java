@@ -8,7 +8,7 @@ import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
@@ -445,13 +445,9 @@ public class CommonProxy implements IGuiProvider {
         }
     }
 
-    public int getGuiId(Block block, int metadata) {
-        if (MachineType.get(block, metadata) != null) {
-            return MachineType.get(block, metadata).guiId;
-        } else if (block == MekanismBlocks.GasTank) {
-            return 10;
-        } else if (block == MekanismBlocks.EnergyCube) {
-            return 8;
+    public int getGuiId(Block block) {
+        if (block instanceof IHasGui) {
+            return ((IHasGui) block).getGuiID();
         }
         return -1;
     }

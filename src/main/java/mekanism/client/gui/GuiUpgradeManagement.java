@@ -8,13 +8,14 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.network.PacketRemoveUpgrade.RemoveUpgradeMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -55,8 +56,10 @@ public class GuiUpgradeManagement extends GuiMekanism {
         super.actionPerformed(guibutton);
         TileEntity tile = (TileEntity) tileEntity;
         if (guibutton.id == backButton.id) {
-            int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
-            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+            Block block = tile.getBlockType();
+            if (block instanceof IHasGui) {
+                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, ((IHasGui) block).getGuiID()));
+            }
         } else if (guibutton.id == removeButton.id) {
             Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
         }
