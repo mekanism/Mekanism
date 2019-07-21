@@ -3,6 +3,7 @@ package mekanism.common.block.states;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import net.minecraft.block.properties.IProperty;
@@ -20,7 +21,7 @@ public class BlockStateBasic extends ExtendedBlockState {
 
     public static final PropertyBool activeProperty = PropertyBool.create("active");
 
-    public BlockStateBasic(BlockBasic block) {
+    public BlockStateBasic(BlockTileDrops block) {
         super(block, new IProperty[]{BlockStateFacing.facingProperty, activeProperty}, new IUnlistedProperty[]{});
     }
 

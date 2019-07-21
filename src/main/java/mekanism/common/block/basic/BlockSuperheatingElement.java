@@ -1,6 +1,5 @@
 package mekanism.common.block.basic;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
@@ -15,7 +14,6 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -107,17 +105,6 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         //TODO: Figure out if this short circuit is good
         return true;
-    }
-
-    @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tileEntity instanceof IActiveState) {
-            if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
-                return 15;
-            }
-        }
-        return super.getLightValue(state, world, pos);
     }
 
     @Override
