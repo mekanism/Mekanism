@@ -1,6 +1,5 @@
 package mekanism.common.block.machine;
 
-import java.util.Locale;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
@@ -65,13 +64,12 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
 
     private final String name;
 
-    public BlockElectricPump(String name) {
+    public BlockElectricPump() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
-        //Ensure the name is lower case as with concatenating with values from enums it may not be
-        this.name = name.toLowerCase(Locale.ROOT);
+        this.name = "electric_pump";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }

@@ -387,7 +387,7 @@ public enum MekanismBlock {
         this(block, ItemBlockMekanism::new);
     }
 
-    <ITEM extends ItemBlock & IItemMekanism> MekanismBlock(Block block, Function<Block, ITEM> itemCreator) {
+    <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block> MekanismBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
     }

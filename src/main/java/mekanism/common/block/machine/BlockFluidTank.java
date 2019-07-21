@@ -80,8 +80,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
-        //Ensure the name is lower case as with concatenating with values from enums it may not be
-        this.name = name.toLowerCase(Locale.ROOT);
+        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_fluid_tank";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }

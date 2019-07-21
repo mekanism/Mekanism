@@ -42,7 +42,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -81,8 +80,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
-        //Ensure the name is lower case as with concatenating with values from enums it may not be
-        this.name = name.toLowerCase(Locale.ROOT);
+        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_factory";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
@@ -395,10 +393,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
-    }
-
-    public PropertyEnum<MachineType> getTypeProperty() {
-        return getMachineBlock().getProperty();
     }
 
     @Override

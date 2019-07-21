@@ -31,6 +31,8 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
@@ -105,11 +107,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IEnergyContainerItem,
       IFluidItemWrapper, ITierItem, ISecurityItem, IItemNetwork {
 
-    public Block metaBlock;
-
     public ItemBlockMachine(Block block) {
         super(block);
-        metaBlock = block;
         setHasSubtypes(true);
         setNoRepair();
         setMaxStackSize(1);
@@ -199,7 +198,7 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
                 list.add(EnumColor.INDIGO + LangUtils.localizeWithFormat("mekanism.tooltip.portableTank.bucketMode", LangUtils.transYesNo(getBucketMode(itemstack))));
             }
 
-            if (type.isElectric) {
+            if (block instanceof IBlockElectric) {
                 list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
                          + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
             }
@@ -216,14 +215,14 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
                 list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                          LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
             }
-            if (type.supportsUpgrades && ItemDataUtils.hasData(itemstack, "upgrades")) {
+            if (block instanceof ISupportsUpgrades && ItemDataUtils.hasData(itemstack, "upgrades")) {
                 Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
                 for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                     list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
                 }
             }
         } else {
-            list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) metaBlock).getDescription(), itemstack));
+            list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
         }
     }
 
