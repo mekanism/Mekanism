@@ -16,6 +16,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.interfaces.IHasModel;
@@ -59,7 +60,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockPressurizedReactionChamber extends BlockMekanismContainer implements IBlockMekanism, IBlockElectric, IHasModel {
+public class BlockPressurizedReactionChamber extends BlockMekanismContainer implements IBlockMekanism, IBlockElectric, IHasModel, IBlockActiveTextured {
 
     private final String name;
 
@@ -78,11 +79,6 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
     public String getDescription() {
         //TODO: Should name just be gotten from registry name
         return LangUtils.localize("tooltip.mekanism." + this.name);
-    }
-
-    @Override
-    public boolean hasActiveTexture() {
-        return true;
     }
 
     @Override

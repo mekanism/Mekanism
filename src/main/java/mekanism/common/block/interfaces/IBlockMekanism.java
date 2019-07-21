@@ -9,14 +9,12 @@ public interface IBlockMekanism {
     }
 
     //TODO: This should only have to be implemented if hasDescription is true
+    //TODO: Interface of IBlockDescriptive
     default String getDescription() {
         return "";
     }
 
-    default boolean hasActiveTexture() {
-        return false;
-    }
-
+    //TODO: Interface of IRotatableBlock
     boolean canRotateTo(EnumFacing side);
 
     boolean hasRotations();

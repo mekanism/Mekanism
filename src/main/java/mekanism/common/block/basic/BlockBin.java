@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
@@ -28,7 +29,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockBasic {
+public class BlockBin extends BlockBasic implements IBlockActiveTextured {
 
     private final BinTier tier;
 
@@ -39,11 +40,6 @@ public class BlockBin extends BlockBasic {
 
     @Override
     public boolean hasDescription() {
-        return true;
-    }
-
-    @Override
-    public boolean hasActiveTexture() {
         return true;
     }
 

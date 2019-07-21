@@ -16,6 +16,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
@@ -57,7 +58,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFuelwoodHeater extends BlockMekanismContainer implements IBlockMekanism {
+public class BlockFuelwoodHeater extends BlockMekanismContainer implements IBlockMekanism, IBlockActiveTextured {
 
     private final String name;
 
@@ -76,11 +77,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IBloc
     public String getDescription() {
         //TODO: Should name just be gotten from registry name
         return LangUtils.localize("tooltip.mekanism." + this.name);
-    }
-
-    @Override
-    public boolean hasActiveTexture() {
-        return true;
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.common.block.states;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.block.interfaces.IBlockActiveTextured;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
@@ -65,7 +66,7 @@ public class BlockStateBasic extends ExtendedBlockState {
             BlockBasic block = (BlockBasic) state.getBlock();
             StringBuilder builder = new StringBuilder();
 
-            if (block.hasActiveTexture()) {
+            if (block instanceof IBlockActiveTextured) {
                 builder.append(activeProperty.getName());
                 builder.append("=");
                 builder.append(state.getValue(activeProperty));

@@ -10,6 +10,7 @@ import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.BaseTier;
@@ -305,7 +306,7 @@ public class BlockStateMachine<BLOCK extends BlockMekanismContainer & IBlockMeka
             StringBuilder builder = new StringBuilder();
             String nameOverride = null;
 
-            if (block.hasActiveTexture()) {
+            if (block instanceof IBlockActiveTextured) {
                 builder.append(activeProperty.getName());
                 builder.append("=");
                 builder.append(state.getValue(activeProperty));

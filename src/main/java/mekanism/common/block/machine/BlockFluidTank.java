@@ -17,6 +17,7 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateFacing;
@@ -68,7 +69,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFluidTank extends BlockMekanismContainer implements IBlockMekanism, IHasModel {
+public class BlockFluidTank extends BlockMekanismContainer implements IBlockMekanism, IHasModel, IBlockActiveTextured {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -89,11 +90,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IBlockMeka
     public String getDescription() {
         //TODO: Should name just be gotten from registry name
         return LangUtils.localize("tooltip.mekanism." + this.name);
-    }
-
-    @Override
-    public boolean hasActiveTexture() {
-        return true;
     }
 
     @Override

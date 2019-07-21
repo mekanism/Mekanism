@@ -3,6 +3,7 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -16,7 +17,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationController extends BlockBasic {
+public class BlockThermalEvaporationController extends BlockBasic implements IBlockActiveTextured {
 
     public BlockThermalEvaporationController() {
         super("thermal_evaporation_controller", Plane.HORIZONTAL);
@@ -24,11 +25,6 @@ public class BlockThermalEvaporationController extends BlockBasic {
 
     @Override
     public boolean hasDescription() {
-        return true;
-    }
-
-    @Override
-    public boolean hasActiveTexture() {
         return true;
     }
 
