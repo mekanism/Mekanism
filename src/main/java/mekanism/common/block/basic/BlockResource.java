@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
+import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFire;
@@ -22,7 +23,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 //TODO: Make this not extend BlockBasic
-public class BlockResource extends BlockTileDrops {
+public class BlockResource extends BlockTileDrops, IHasModel {
 
     @Nonnull
     private final BlockResourceInfo resource;

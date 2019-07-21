@@ -5,6 +5,7 @@ import static mekanism.common.block.states.BlockStateCardboardBox.storagePropert
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateCardboardBox;
 import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
@@ -29,7 +30,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class BlockCardboardBox extends BlockMekanismContainer {
+public class BlockCardboardBox extends BlockMekanismContainer implements IHasModel {
 
     private static boolean testingPlace = false;
 

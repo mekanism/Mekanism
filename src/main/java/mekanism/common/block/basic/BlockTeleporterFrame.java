@@ -1,42 +1,25 @@
 package mekanism.common.block.basic;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.tile.TileEntitySuperheatingElement;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockTeleporterFrame extends BlockTileDrops implements IBlockDescriptive {
+public class BlockTeleporterFrame extends BlockTileDrops implements IBlockDescriptive, IHasModel {
 
     private final String name;
 

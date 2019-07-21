@@ -2,7 +2,7 @@ package mekanism.common.world;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -17,7 +17,7 @@ public class WorldGenSalt extends WorldGenerator {
     private int numberOfBlocks;
 
     public WorldGenSalt(int blockNum) {
-        blockGen = MekanismBlocks.SaltBlock;
+        blockGen = MekanismBlock.SALT_BLOCK.getBlock();
         numberOfBlocks = blockNum;
     }
 
@@ -36,7 +36,7 @@ public class WorldGenSalt extends WorldGenerator {
                     for (int yPos = pos.getY() - yOffset; yPos <= pos.getY() + yOffset; yPos++) {
                         BlockPos newPos = new BlockPos(xPos, yPos, zPos);
                         Block block = world.getBlockState(newPos).getBlock();
-                        if (block == Blocks.DIRT || block == Blocks.CLAY || block == MekanismBlocks.SaltBlock) {
+                        if (block == Blocks.DIRT || block == Blocks.CLAY || block == blockGen) {
                             world.setBlockState(newPos, blockGen.getDefaultState(), 2);
                         }
                     }

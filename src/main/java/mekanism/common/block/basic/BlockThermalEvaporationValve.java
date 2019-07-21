@@ -10,14 +10,12 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
@@ -39,7 +37,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationValve extends BlockTileDrops implements IBlockDescriptive {
+public class BlockThermalEvaporationValve extends BlockTileDrops implements IBlockDescriptive, IHasModel {
 
     private final String name;
 

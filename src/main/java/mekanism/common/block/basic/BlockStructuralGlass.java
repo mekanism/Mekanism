@@ -9,6 +9,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.multiblock.IMultiblock;
@@ -39,7 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescriptive {
+public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescriptive, IHasModel {
 
     private final String name;
 

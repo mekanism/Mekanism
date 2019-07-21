@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -18,7 +19,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSteelCasing extends BlockTileDrops implements IBlockDescriptive {
+public class BlockSteelCasing extends BlockTileDrops implements IBlockDescriptive, IHasModel {
 
     private final String name;
 

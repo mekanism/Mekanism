@@ -4,28 +4,20 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.InventoryBin;
-import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -55,7 +47,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IRotatableBlock, IBlockDescriptive {
+public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasModel {
 
     private final String name;
     private final BinTier tier;

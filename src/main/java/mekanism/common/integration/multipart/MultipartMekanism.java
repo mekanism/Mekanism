@@ -1,8 +1,5 @@
 package mekanism.common.integration.multipart;
 
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_2;
-
 import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -23,12 +20,13 @@ import mcmultipart.api.slot.EnumCenterSlot;
 import mcmultipart.api.world.IMultipartBlockAccess;
 import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
+import mekanism.common.block.BlockGlowPanel;
+import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.block.transmitter.BlockTransmitter;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -142,10 +140,14 @@ public class MultipartMekanism implements IMCMPAddon {
     @Override
     public void registerParts(IMultipartRegistry registry) {
         MinecraftForge.EVENT_BUS.register(this);
-        registry.registerPartWrapper(MekanismBlocks.Transmitter, TRANSMITTER_MP = new MultipartTransmitter());
-        //registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.Transmitter), s -> true, MekanismBlocks.Transmitter);
-        registry.registerPartWrapper(MekanismBlocks.GlowPanel, GLOWPANEL_MP = new MultipartGlowPanel());
-        //registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);
+        for (MekanismBlock mekanismBlock : MekanismBlock.values()) {
+            Block block = mekanismBlock.getBlock();
+            if (block instanceof BlockTransmitter) {
+                registry.registerPartWrapper(block, TRANSMITTER_MP = new MultipartTransmitter());
+            } else if (block instanceof BlockTransmitter) {
+                registry.registerPartWrapper(block, GLOWPANEL_MP = new MultipartGlowPanel());
+            }
+        }
         MultipartCapabilityHelper.registerCapabilityJoiner(Capabilities.TILE_NETWORK_CAPABILITY, MultipartTileNetworkJoiner::new);
     }
 
@@ -177,20 +179,12 @@ public class MultipartMekanism implements IMCMPAddon {
     }
 
     public void registerMicroMaterials() {
-        for (int i = 0; i < 16; i++) {
-            FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock, 1, i));
-
-            if (!MachineType.get(MACHINE_BLOCK_1, i).hasModel) {
-                FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.MachineBlock, 1, i));
-            }
-
-            if (!MachineType.get(MACHINE_BLOCK_2, i).hasModel) {
-                FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.MachineBlock2, 1, i));
+        for (MekanismBlock mekanismBlock : MekanismBlock.values()) {
+            Block block = mekanismBlock.getBlock();
+            if (block instanceof IHasModel) {
+                FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", mekanismBlock.getItemStack());
             }
         }
-
-        FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock2, 1, 0));
-        FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.CardboardBox));
     }
 
     //No idea why mcmultipart doesnt do this itself...
@@ -198,7 +192,7 @@ public class MultipartMekanism implements IMCMPAddon {
     @SideOnly(Side.CLIENT)
     public void drawBlockHighlightEvent(DrawMultipartHighlightEvent ev) {
         IBlockState state = ev.getPartInfo().getState();
-        if (state.getBlock() == MekanismBlocks.GlowPanel || state.getBlock() == MekanismBlocks.Transmitter) {
+        if (state.getBlock() instanceof BlockGlowPanel || state.getBlock() instanceof BlockTransmitter) {
             EntityPlayer player = ev.getPlayer();
             @SuppressWarnings("deprecation")
             AxisAlignedBB bb = state.getBlock().getSelectedBoundingBox(state, ev.getPartInfo().getPartWorld(), ev.getPartInfo().getPartPos());

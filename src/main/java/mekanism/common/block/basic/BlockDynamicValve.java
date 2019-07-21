@@ -2,13 +2,14 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.common.base.IComparatorSupport;
+import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.tile.TileEntityDynamicValve;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockDynamicValve extends BlockBasicMultiblock {
+public class BlockDynamicValve extends BlockBasicMultiblock implements IHasModel {
 
     public BlockDynamicValve() {
         super("dynamic_valve");
