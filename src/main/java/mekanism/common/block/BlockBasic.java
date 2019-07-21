@@ -1,7 +1,6 @@
 package mekanism.common.block;
 
 import java.util.Locale;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
@@ -12,7 +11,6 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
@@ -47,16 +45,10 @@ import net.minecraft.world.World;
  */
 public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
 
-    private final Predicate<EnumFacing> facingPredicate;
     private final String name;
 
     public BlockBasic(String name) {
-        this(name, BlockStateUtils.NO_ROTATION);
-    }
-
-    public BlockBasic(String name, Predicate<EnumFacing> facingPredicate) {
         super(Material.IRON);
-        this.facingPredicate = facingPredicate;
         setHardness(5F);
         setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
@@ -70,16 +62,6 @@ public class BlockBasic extends BlockTileDrops implements IBlockMekanism {
     public String getDescription() {
         //TODO: Should name just be gotten from registry name
         return LangUtils.localize("tooltip.mekanism." + this.name);
-    }
-
-    @Override
-    public boolean canRotateTo(EnumFacing side) {
-        return facingPredicate.test(side);
-    }
-
-    @Override
-    public boolean hasRotations() {
-        return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
     }
 
     @Nonnull

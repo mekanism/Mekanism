@@ -5,6 +5,7 @@ import mekanism.api.IMekWrench;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
+import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
@@ -29,18 +30,23 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockBasic implements IBlockActiveTextured {
+public class BlockBin extends BlockBasic implements IBlockActiveTextured, IRotatableBlock {
 
     private final BinTier tier;
 
     public BlockBin(BinTier tier) {
-        super(tier.getBaseTier().getSimpleName() + "_bin", Plane.HORIZONTAL);
+        super(tier.getBaseTier().getSimpleName() + "_bin");
         this.tier = tier;
     }
 
     @Override
     public boolean hasDescription() {
         return true;
+    }
+
+    @Override
+    public boolean canRotateTo(EnumFacing side) {
+        return Plane.HORIZONTAL.test(side);
     }
 
     @Override

@@ -18,6 +18,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockMekanism;
+import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -58,7 +59,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockOredictionificator extends BlockMekanismContainer implements IBlockMekanism, IBlockActiveTextured {
+public class BlockOredictionificator extends BlockMekanismContainer implements IBlockMekanism, IBlockActiveTextured, IRotatableBlock {
 
     private final String name;
 
@@ -82,11 +83,6 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
     @Override
     public boolean canRotateTo(EnumFacing side) {
         return Plane.HORIZONTAL.test(side);
-    }
-
-    @Override
-    public boolean hasRotations() {
-        return true;
     }
 
     @Nonnull

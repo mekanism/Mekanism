@@ -19,6 +19,7 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -58,7 +59,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLaserTractorBeam extends BlockMekanismContainer implements IBlockMekanism, IHasModel, IBlockActiveTextured {
+public class BlockLaserTractorBeam extends BlockMekanismContainer implements IBlockMekanism, IHasModel, IBlockActiveTextured, IRotatableBlock {
 
     private final String name;
 
@@ -81,11 +82,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IBl
 
     @Override
     public boolean canRotateTo(EnumFacing side) {
-        return true;
-    }
-
-    @Override
-    public boolean hasRotations() {
         return true;
     }
 

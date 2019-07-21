@@ -20,6 +20,7 @@ import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
@@ -61,7 +62,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBlockMekanism, IBlockElectric, ISupportsUpgrades, IHasModel, IBlockActiveTextured {
+public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBlockMekanism, IBlockElectric, ISupportsUpgrades, IHasModel, IBlockActiveTextured, IRotatableBlock {
 
     private final String name;
 
@@ -85,11 +86,6 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
     @Override
     public boolean canRotateTo(EnumFacing side) {
         return Plane.HORIZONTAL.test(side);
-    }
-
-    @Override
-    public boolean hasRotations() {
-        return true;
     }
 
     @Nonnull

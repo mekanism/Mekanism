@@ -1,7 +1,5 @@
 package mekanism.common.block.interfaces;
 
-import net.minecraft.util.EnumFacing;
-
 public interface IBlockMekanism {
 
     default boolean hasDescription() {
@@ -13,9 +11,4 @@ public interface IBlockMekanism {
     default String getDescription() {
         return "";
     }
-
-    //TODO: Interface of IRotatableBlock
-    boolean canRotateTo(EnumFacing side);
-
-    boolean hasRotations();
 }

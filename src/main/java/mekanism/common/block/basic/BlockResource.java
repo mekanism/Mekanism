@@ -4,7 +4,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockMekanism;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
@@ -23,7 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 //TODO: Make this not extend BlockBasic
-public class BlockResource extends BlockTileDrops implements IBlockMekanism {
+public class BlockResource extends BlockTileDrops {
 
     @Nonnull
     private final BlockResourceInfo resource;
@@ -51,16 +50,6 @@ public class BlockResource extends BlockTileDrops implements IBlockMekanism {
     @Override
     public boolean isBeaconBase(IBlockAccess world, BlockPos pos, BlockPos beacon) {
         return resource.isBeaconBase();
-    }
-
-    @Override
-    public boolean canRotateTo(EnumFacing side) {
-        return false;
-    }
-
-    @Override
-    public boolean hasRotations() {
-        return false;
     }
 
     @Override

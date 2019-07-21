@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
+import mekanism.common.block.interfaces.IRotatableBlock;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
@@ -72,10 +73,10 @@ public class BlockStateBasic extends ExtendedBlockState {
                 builder.append(state.getValue(activeProperty));
             }
 
-            if (block.hasRotations()) {
+            if (block instanceof IRotatableBlock) {
                 EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
 
-                if (!block.canRotateTo(facing)) {
+                if (!((IRotatableBlock) block).canRotateTo(facing)) {
                     facing = EnumFacing.NORTH;
                 }
 

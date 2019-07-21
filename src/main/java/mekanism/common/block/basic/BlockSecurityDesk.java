@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockBasic;
+import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.state.IBlockState;
@@ -19,15 +20,20 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDesk extends BlockBasic {
+public class BlockSecurityDesk extends BlockBasic implements IRotatableBlock {
 
     public BlockSecurityDesk() {
-        super("security_desk", Plane.HORIZONTAL);
+        super("security_desk");
     }
 
     @Override
     public boolean hasDescription() {
         return true;
+    }
+
+    @Override
+    public boolean canRotateTo(EnumFacing side) {
+        return Plane.HORIZONTAL.test(side);
     }
 
     @Override

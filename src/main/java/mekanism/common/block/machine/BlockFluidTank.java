@@ -92,16 +92,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IBlockMeka
         return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
-    @Override
-    public boolean canRotateTo(EnumFacing side) {
-        return false;
-    }
-
-    @Override
-    public boolean hasRotations() {
-        return false;
-    }
-
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {

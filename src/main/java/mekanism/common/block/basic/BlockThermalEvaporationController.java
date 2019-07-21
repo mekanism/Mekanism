@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
+import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -17,15 +18,20 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationController extends BlockBasic implements IBlockActiveTextured {
+public class BlockThermalEvaporationController extends BlockBasic implements IBlockActiveTextured, IRotatableBlock {
 
     public BlockThermalEvaporationController() {
-        super("thermal_evaporation_controller", Plane.HORIZONTAL);
+        super("thermal_evaporation_controller");
     }
 
     @Override
     public boolean hasDescription() {
         return true;
+    }
+
+    @Override
+    public boolean canRotateTo(EnumFacing side) {
+        return Plane.HORIZONTAL.test(side);
     }
 
     @Override

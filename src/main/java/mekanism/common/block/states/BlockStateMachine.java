@@ -12,6 +12,7 @@ import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockMekanism;
+import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.util.LangUtils;
@@ -312,9 +313,9 @@ public class BlockStateMachine<BLOCK extends BlockMekanismContainer & IBlockMeka
                 builder.append(state.getValue(activeProperty));
             }
 
-            if (block.hasRotations()) {
+            if (block instanceof IRotatableBlock) {
                 EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
-                if (!block.canRotateTo(facing)) {
+                if (!((IRotatableBlock) block).canRotateTo(facing)) {
                     facing = EnumFacing.NORTH;
                 }
                 if (builder.length() > 0) {
