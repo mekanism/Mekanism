@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -31,6 +32,9 @@ public class BlockPlastic extends Block {
         if (type == PlasticBlockType.SLICK) {
             slipperiness = 0.98F;
         }
+        this.name = ;
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     @Nonnull

@@ -47,6 +47,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -94,6 +95,9 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
         setCreativeTab(Mekanism.tabMekanism);
         setHardness(1F);
         setResistance(10F);
+        this.name = ;
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     private static AxisAlignedBB getDefaultForTile(TileEntitySidedPipe tile) {

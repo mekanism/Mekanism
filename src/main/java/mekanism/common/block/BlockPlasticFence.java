@@ -22,6 +22,9 @@ public class BlockPlasticFence extends BlockFence {
     public BlockPlasticFence() {
         super(Material.CLAY, Material.CLAY.getMaterialMapColor());
         setCreativeTab(Mekanism.tabMekanism);
+        this.name = ;
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     @Nonnull

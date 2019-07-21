@@ -1,10 +1,10 @@
 package mekanism.common.block;
 
+import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
@@ -34,6 +34,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -49,29 +50,24 @@ import net.minecraft.world.World;
  */
 public class BlockEnergyCube extends BlockMekanismContainer {
 
-    public BlockEnergyCube() {
+    private final EnergyCubeTier tier;
+    private final String name;
+
+    public BlockEnergyCube(EnergyCubeTier tier) {
         super(Material.IRON);
+        this.tier = tier;
         setHardness(2F);
         setResistance(4F);
         setCreativeTab(Mekanism.tabMekanism);
+        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_energy_cube";
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateEnergyCube(this);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState();
     }
 
     @Nonnull
@@ -104,6 +100,7 @@ public class BlockEnergyCube extends BlockMekanismContainer {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        //TODO
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
         if (tileEntity == null) {
             return;
@@ -138,15 +135,13 @@ public class BlockEnergyCube extends BlockMekanismContainer {
 
     @Override
     public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
-        for (EnergyCubeTier tier : EnergyCubeTier.values()) {
-            ItemStack discharged = new ItemStack(this);
-            ((ItemBlockEnergyCube) discharged.getItem()).setBaseTier(discharged, tier.getBaseTier());
-            list.add(discharged);
-            ItemStack charged = new ItemStack(this);
-            ((ItemBlockEnergyCube) charged.getItem()).setBaseTier(charged, tier.getBaseTier());
-            ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.getMaxEnergy());
-            list.add(charged);
-        }
+        ItemStack discharged = new ItemStack(this);
+        ((ItemBlockEnergyCube) discharged.getItem()).setBaseTier(discharged, tier.getBaseTier());
+        list.add(discharged);
+        ItemStack charged = new ItemStack(this);
+        ((ItemBlockEnergyCube) charged.getItem()).setBaseTier(charged, tier.getBaseTier());
+        ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.getMaxEnergy());
+        list.add(charged);
     }
 
     @Override
@@ -222,7 +217,7 @@ public class BlockEnergyCube extends BlockMekanismContainer {
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
+        ItemStack itemStack = new ItemStack(this);
 
         if (!itemStack.hasTagCompound()) {
             itemStack.setTagCompound(new NBTTagCompound());

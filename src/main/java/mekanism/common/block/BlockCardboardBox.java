@@ -20,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -32,12 +33,17 @@ public class BlockCardboardBox extends BlockMekanismContainer {
 
     private static boolean testingPlace = false;
 
+    private final String name;
+
     public BlockCardboardBox() {
         super(Material.CLOTH);
         setCreativeTab(Mekanism.tabMekanism);
         setHardness(0.5F);
         setResistance(1F);
         MinecraftForge.EVENT_BUS.register(this);
+        this.name = "cardboard_box";
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     @Nonnull

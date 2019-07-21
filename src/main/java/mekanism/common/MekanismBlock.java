@@ -82,8 +82,10 @@ import mekanism.common.item.ItemBlockResource;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.BinTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import net.minecraft.block.Block;
@@ -213,11 +215,11 @@ public enum MekanismBlock {
     COPPER_ORE(new BlockOre(), ItemBlockOre::new),
     TIN_ORE(new BlockOre(), ItemBlockOre::new),
 
-    BASIC_ENERGY_CUBE(new BlockEnergyCube(), ItemBlockEnergyCube::new),
-    ADVANCED_ENERGY_CUBE(new BlockEnergyCube(), ItemBlockEnergyCube::new),
-    ELITE_ENERGY_CUBE(new BlockEnergyCube(), ItemBlockEnergyCube::new),
-    ULTIMATE_ENERGY_CUBE(new BlockEnergyCube(), ItemBlockEnergyCube::new),
-    CREATIVE_ENERGY_CUBE(new BlockEnergyCube(), ItemBlockEnergyCube::new),
+    BASIC_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.BASIC), ItemBlockEnergyCube::new),
+    ADVANCED_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ADVANCED), ItemBlockEnergyCube::new),
+    ELITE_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ELITE), ItemBlockEnergyCube::new),
+    ULTIMATE_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ULTIMATE), ItemBlockEnergyCube::new),
+    CREATIVE_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.CREATIVE), ItemBlockEnergyCube::new),
 
     BASIC_UNIVERSAL_CABLE(new BlockTransmitter(), ItemBlockTransmitter::new),
     ADVANCED_UNIVERSAL_CABLE(new BlockTransmitter(), ItemBlockTransmitter::new),
@@ -250,11 +252,11 @@ public enum MekanismBlock {
     OBSIDIAN_TNT(new BlockBounding()),
     BOUNDING_BLOCK(new BlockBounding()),
 
-    BASIC_GAS_TANK(new BlockGasTank(), ItemBlockGasTank::new),
-    ADVANCED_GAS_TANK(new BlockGasTank(), ItemBlockGasTank::new),
-    ELITE_GAS_TANK(new BlockGasTank(), ItemBlockGasTank::new),
-    ULTIMATE_GAS_TANK(new BlockGasTank(), ItemBlockGasTank::new),
-    CREATIVE_GAS_TANK(new BlockGasTank(), ItemBlockGasTank::new),
+    BASIC_GAS_TANK(new BlockGasTank(GasTankTier.BASIC), ItemBlockGasTank::new),
+    ADVANCED_GAS_TANK(new BlockGasTank(GasTankTier.ADVANCED), ItemBlockGasTank::new),
+    ELITE_GAS_TANK(new BlockGasTank(GasTankTier.ELITE), ItemBlockGasTank::new),
+    ULTIMATE_GAS_TANK(new BlockGasTank(GasTankTier.ULTIMATE), ItemBlockGasTank::new),
+    CREATIVE_GAS_TANK(new BlockGasTank(GasTankTier.CREATIVE), ItemBlockGasTank::new),
 
     CARDBOARD_BOX(new BlockCardboardBox(), ItemBlockCardboardBox::new),
 

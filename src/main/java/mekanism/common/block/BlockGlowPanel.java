@@ -22,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -48,6 +49,9 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
         setCreativeTab(Mekanism.tabMekanism);
         setHardness(1F);
         setResistance(10F);
+        this.name = ;
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     public static boolean canStay(IBlockAccess world, BlockPos pos) {

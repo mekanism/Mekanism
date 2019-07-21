@@ -11,6 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Block class for handling multiple ore block IDs. 0: Osmium Ore 1: Copper Ore 2: Tin Ore
@@ -19,11 +20,16 @@ import net.minecraft.util.NonNullList;
  */
 public class BlockOre extends Block {
 
+    private final String name;
+
     public BlockOre() {
         super(Material.ROCK);
         setHardness(3F);
         setResistance(5F);
         setCreativeTab(Mekanism.tabMekanism);
+        this.name = ;
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     @Nonnull

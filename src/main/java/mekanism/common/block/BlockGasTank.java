@@ -1,10 +1,10 @@
 package mekanism.common.block;
 
+import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
@@ -13,6 +13,7 @@ import mekanism.common.block.states.BlockStateGasTank;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
@@ -31,6 +32,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -43,29 +45,24 @@ public class BlockGasTank extends BlockMekanismContainer {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
-    public BlockGasTank() {
+    private final GasTankTier tier;
+    private final String name;
+
+    public BlockGasTank(GasTankTier tier) {
         super(Material.IRON);
+        this.tier = tier;
         setHardness(3.5F);
         setResistance(8F);
         setCreativeTab(Mekanism.tabMekanism);
+        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_gas_tank";
+        setTranslationKey(this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
     @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateGasTank(this);
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState();
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return 0;
     }
 
     @Nonnull
@@ -197,7 +194,7 @@ public class BlockGasTank extends BlockMekanismContainer {
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
+        ItemStack itemStack = new ItemStack(this);
         if (itemStack.hasTagCompound()) {
             itemStack.setTagCompound(new NBTTagCompound());
         }
