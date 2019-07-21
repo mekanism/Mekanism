@@ -151,7 +151,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     if(!player.capabilities.isCreativeMode) {
                         block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
                     }
-                    setEnergy(itemstack, getEnergy(itemstack) - (MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getEfficiency(itemstack)));
+                    setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
                 }
             }
         }
