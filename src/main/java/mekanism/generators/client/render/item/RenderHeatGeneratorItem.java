@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderHeatGeneratorItem {
@@ -20,8 +19,8 @@ public class RenderHeatGeneratorItem {
     private static ModelHeatGenerator heatGenerator = new ModelHeatGenerator();
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslated(0.0F, -1.0F, 0.0F);
+        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.translate(0, -1.0F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
         heatGenerator.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine);
     }

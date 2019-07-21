@@ -12,7 +12,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -84,7 +83,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
             if (!on || firing != lastFired) {
                 on = true;
                 lastFired = firing;
-                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(50D));
+                Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
             LaserInfo info = LaserManager.fireLaser(this, facing, firing, world);
@@ -115,7 +114,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
         } else if (on) {
             on = false;
             diggingProgress = 0;
-            Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(this), Coord4D.get(this).getTargetPoint(50D));
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 

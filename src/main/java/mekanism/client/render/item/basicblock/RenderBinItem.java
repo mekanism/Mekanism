@@ -13,16 +13,18 @@ public class RenderBinItem {
         //TODO: The idea of this is to render the bin's contents onto the bin
         //TODO: Implement it
         /*GlStateManager.pushMatrix();
-        ItemBlockBasic itemBasic = (ItemBlockBasic)stack.getItem();
+        ItemBlockBasic itemBasic = (ItemBlockBasic) stack.getItem();
         InventoryBin inv = new InventoryBin(stack);
         binRenderer.render(EnumFacing.NORTH, inv.getItemType(), inv.getItemCount(), false, -0.5, -0.5, -0.5);
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
-        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.enableBlend();
-        GlStateManager.blendFunc(770, 771);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableRescaleNormal();
         GlStateManager.popMatrix();*/
     }
 }

@@ -99,7 +99,10 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     public void useGas(ItemStack stack) {
-        setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount - 1));
+        GasStack gas = getGas(stack);
+        if (gas != null) {
+            setGas(stack, new GasStack(gas.getGas(), gas.amount - 1));
+        }
     }
 
     @Override

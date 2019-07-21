@@ -1,23 +1,25 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class ModelDigitalMiner extends ModelBase {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils
-          .getResource(ResourceType.RENDER, "DigitalMiner_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils
-          .getResource(ResourceType.RENDER, "DigitalMiner_OverlayOff.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner_OverlayOn.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner_OverlayOff.png");
 
     ModelRenderer keyboard;
     ModelRenderer keyboardBottom;
@@ -423,7 +425,10 @@ public class ModelDigitalMiner extends ModelBase {
 
     public void render(float size, boolean on, TextureManager manager, boolean renderMain) {
         GlStateManager.pushMatrix();
-        MekanismRenderer.blendOn();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
         if (renderMain) {
             doRender(size);
@@ -432,12 +437,13 @@ public class ModelDigitalMiner extends ModelBase {
         manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
         GlStateManager.scale(1.001F, 1.001F, 1.001F);
         GlStateManager.translate(-0.0011F, -0.0011F, -0.0011F);
-        MekanismRenderer.glowOn();
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
         doRender(size);
 
-        MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
+        MekanismRenderer.disableGlow(glowInfo);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
         GlStateManager.popMatrix();
     }
 

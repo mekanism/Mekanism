@@ -50,7 +50,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.OreDictManager;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
@@ -455,7 +454,6 @@ public class Mekanism {
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.CRAFTING_TABLE), new ItemStack(Blocks.PLANKS, 4));
         }
 
-
         if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.METALLURGIC_INFUSER)) {
             InfuseType carbon = InfuseRegistry.get("CARBON");
             InfuseType bio = InfuseRegistry.get("BIO");
@@ -544,6 +542,8 @@ public class Mekanism {
                   new GasStack(MekanismFluids.Oxygen, 10), new ItemStack(MekanismItems.Polyethene), new GasStack(MekanismFluids.Oxygen, 5), 1000, 60);
             RecipeHandler.addPRCRecipe(new ItemStack(MekanismItems.Substrate), new FluidStack(FluidRegistry.WATER, 200), new GasStack(MekanismFluids.Ethene, 100),
                   new ItemStack(MekanismItems.Substrate, 8), new GasStack(MekanismFluids.Oxygen, 10), 200, 400);
+            RecipeHandler.addPRCRecipe(new ItemStack(Items.COAL, 1, OreDictionary.WILDCARD_VALUE), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100),
+                  new ItemStack(MekanismItems.OtherDust, 1, 3), new GasStack(MekanismFluids.Hydrogen, 100), 0, 100);
         }
 
         //Solar Neutron Activator Recipes
@@ -775,12 +775,6 @@ public class Mekanism {
         //Load configuration
         proxy.loadConfiguration();
         proxy.onConfigSync(false);
-
-        if (config.getAbsolutePath().contains("voltz")) {
-            logger.info("Detected Voltz in root directory - hello, fellow user!");
-        } else if (config.getAbsolutePath().contains("tekkit")) {
-            logger.info("Detected Tekkit in root directory - hello, fellow user!");
-        }
 
         MinecraftForge.EVENT_BUS.register(MekanismItems.GasMask);
         MinecraftForge.EVENT_BUS.register(MekanismItems.FreeRunners);

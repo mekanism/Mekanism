@@ -77,7 +77,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 
     public void updateController() {
         if (!(this instanceof TileEntityThermalEvaporationController)) {
-            for (EnumFacing side : EnumFacing.values()) {
+            for (EnumFacing side : EnumFacing.VALUES) {
                 BlockPos checkPos = pos.offset(side);
                 TileEntity check = MekanismUtils.getTileEntity(world, checkPos);
                 if (check instanceof TileEntityThermalEvaporationBlock) {

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -20,6 +21,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.Fluid;
+import org.lwjgl.opengl.GL11;
 
 public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
@@ -63,13 +65,6 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         return gasStillSprite;
     }
 
-    private static void setGLColorFromInt(int color) {
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-        GlStateManager.color(red, green, blue, 1.0F);
-    }
-
     private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite, int maskTop, int maskRight, double zLevel) {
         double uMin = (double) textureSprite.getMinU();
         double uMax = (double) textureSprite.getMaxU();
@@ -80,7 +75,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuffer();
-        vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         vertexBuffer.pos(xCoord, yCoord + 16, zLevel).tex(uMin, vMax).endVertex();
         vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + 16, zLevel).tex(uMax, vMax).endVertex();
         vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
@@ -93,14 +88,12 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         GlStateManager.enableBlend();
         GlStateManager.enableAlpha();
         drawGas(minecraft, xPosition, yPosition, gasStack);
-        GlStateManager.color(1, 1, 1, 1);
         if (overlay != null) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 200);
             overlay.draw(minecraft, xPosition, yPosition);
             GlStateManager.popMatrix();
         }
-
         GlStateManager.disableAlpha();
         GlStateManager.disableBlend();
     }
@@ -117,13 +110,13 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         if (scaledAmount > height) {
             scaledAmount = height;
         }
-        drawTiledSprite(minecraft, xPosition, yPosition, width, height, gas.getTint(), scaledAmount, getStillGasSprite(minecraft, gas));
+        drawTiledSprite(minecraft, xPosition, yPosition, width, height, gas, scaledAmount, getStillGasSprite(minecraft, gas));
     }
 
-    private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, int color, int scaledAmount,
+    private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, Gas gas, int scaledAmount,
           TextureAtlasSprite sprite) {
         minecraft.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        setGLColorFromInt(color);
+        MekanismRenderer.color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;
         final int xRemainder = tiledWidth - (xTileCount * TEX_WIDTH);
@@ -146,6 +139,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
                 }
             }
         }
+        MekanismRenderer.resetColor();
     }
 
     @Override

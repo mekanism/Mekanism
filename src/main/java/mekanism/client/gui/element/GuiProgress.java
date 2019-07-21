@@ -32,14 +32,12 @@ public class GuiProgress extends GuiElement {
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         if (handler.isActive()) {
             guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
             int innerOffsetX = 2;
             int displayInt = (int) (handler.getProgress() * (type.width - 2 * innerOffsetX));
             guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -71,11 +69,11 @@ public class GuiProgress extends GuiElement {
         SMALL_LEFT(32, 10, 128, 40),
         BI(20, 8, 128, 50);
 
-        public int width;
-        public int height;
+        public final int width;
+        public final int height;
 
-        public int textureX;
-        public int textureY;
+        public final int textureX;
+        public final int textureY;
 
         ProgressBar(int w, int h, int u, int v) {
             width = w;

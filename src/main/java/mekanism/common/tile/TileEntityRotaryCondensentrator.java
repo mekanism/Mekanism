@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -146,9 +147,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     }
 
-    public boolean isValidFluid(FluidStack f) {
-        return f != null && GasRegistry.getGas(f.getFluid()) != null;
+    public boolean isValidFluid(@Nonnull Fluid f) {
+        return GasRegistry.getGas(f) != null;
+    }
 
+    public boolean isValidFluid(FluidStack f) {
+        return f != null && isValidFluid(f.getFluid());
     }
 
     @Override
@@ -277,30 +281,24 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (canFill(from, resource)) {
-            return fluidTank.fill(resource, doFill);
-        }
-        return 0;
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return fluidTank.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()) {
-            return drain(from, resource.amount, doDrain);
-        }
-        return null;
+    @Nullable
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+        return fluidTank.drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluid != null && mode == 1 && from == MekanismUtils.getRight(facing) &&
-               (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(fluid) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return mode == 0 && from == MekanismUtils.getRight(facing);
+        return mode == 0 && from == MekanismUtils.getRight(facing) && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
     }
 
     @Override
@@ -314,14 +312,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public FluidTankInfo[] getAllTanks() {
         return new FluidTankInfo[]{fluidTank.getInfo()};
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (canDrain(from, null)) {
-            return fluidTank.drain(maxDrain, doDrain);
-        }
-        return null;
     }
 
     @Override

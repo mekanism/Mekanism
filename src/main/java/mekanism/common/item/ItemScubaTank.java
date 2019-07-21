@@ -86,16 +86,20 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
     }
 
     public void useGas(ItemStack itemstack) {
-        setGas(itemstack, new GasStack(getGas(itemstack).getGas(), getGas(itemstack).amount - 1));
+        GasStack gas = getGas(itemstack);
+        if (gas != null) {
+            setGas(itemstack, new GasStack(gas.getGas(), gas.amount - 1));
+        }
     }
 
     public GasStack useGas(ItemStack itemstack, int amount) {
-        if (getGas(itemstack) == null) {
+        GasStack gas = getGas(itemstack);
+        if (gas == null) {
             return null;
         }
-        Gas type = getGas(itemstack).getGas();
-        int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-        setGas(itemstack, new GasStack(type, getStored(itemstack) - gasToUse));
+        Gas type = gas.getGas();
+        int gasToUse = Math.min(gas.amount, Math.min(getRate(itemstack), amount));
+        setGas(itemstack, new GasStack(type, gas.amount - gasToUse));
         return new GasStack(type, gasToUse);
     }
 

@@ -56,14 +56,14 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public void onUpdate() {
         super.onUpdate();
         if (world.isRemote) {
-            if (structure != null && clientHasStructure && isRendering) {
-                float targetScale = (float) (structure.fluidStored != null ? structure.fluidStored.amount : 0) / clientCapacity;
-                if (Math.abs(prevScale - targetScale) > 0.01) {
-                    prevScale = (9 * prevScale + targetScale) / 10;
+            if (clientHasStructure && isRendering) {
+                if (structure != null) {
+                    float targetScale = (float) (structure.fluidStored != null ? structure.fluidStored.amount : 0) / clientCapacity;
+                    if (Math.abs(prevScale - targetScale) > 0.01) {
+                        prevScale = (9 * prevScale + targetScale) / 10;
+                    }
                 }
-            }
-
-            if (!clientHasStructure || !isRendering) {
+            } else {
                 for (ValveData data : valveViewing) {
                     TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) data.location.getTileEntity(world);
                     if (tileEntity != null) {
@@ -72,29 +72,27 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 }
                 valveViewing.clear();
             }
-        } else {
-            if (structure != null) {
-                if (structure.fluidStored != null && structure.fluidStored.amount <= 0) {
-                    structure.fluidStored = null;
-                    markDirty();
-                }
-                if (isRendering) {
-                    boolean needsValveUpdate = false;
-                    for (ValveData data : structure.valves) {
-                        if (data.activeTicks > 0) {
-                            data.activeTicks--;
-                        }
-                        if (data.activeTicks > 0 != data.prevActive) {
-                            needsValveUpdate = true;
-                        }
-                        data.prevActive = data.activeTicks > 0;
+        } else if (structure != null) {
+            if (structure.fluidStored != null && structure.fluidStored.amount <= 0) {
+                structure.fluidStored = null;
+                markDirty();
+            }
+            if (isRendering) {
+                boolean needsValveUpdate = false;
+                for (ValveData data : structure.valves) {
+                    if (data.activeTicks > 0) {
+                        data.activeTicks--;
                     }
-                    if (needsValveUpdate || structure.needsRenderUpdate()) {
-                        sendPacketToRenderer();
+                    if (data.activeTicks > 0 != data.prevActive) {
+                        needsValveUpdate = true;
                     }
-                    structure.prevFluid = structure.fluidStored != null ? structure.fluidStored.copy() : null;
-                    manageInventory();
+                    data.prevActive = data.activeTicks > 0;
                 }
+                if (needsValveUpdate || structure.needsRenderUpdate()) {
+                    sendPacketToRenderer();
+                }
+                structure.prevFluid = structure.fluidStored != null ? structure.fluidStored.copy() : null;
+                manageInventory();
             }
         }
     }

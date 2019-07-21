@@ -2,12 +2,12 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.element.GuiAmplifierTab;
-import mekanism.client.gui.element.GuiGauge.Type;
-import mekanism.client.gui.element.GuiNumberGauge;
-import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.gui.element.gauge.GuiNumberGauge;
+import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
+import mekanism.client.gui.element.tab.GuiAmplifierTab;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
@@ -23,7 +23,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier> {
@@ -73,18 +72,12 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         minField.drawTextBox();
         maxField.drawTextBox();
         timerField.drawTextBox();
+        MekanismRenderer.resetColor();
     }
 
     @Override
@@ -177,21 +170,18 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-
         String prevTime = timerField != null ? timerField.getText() : "";
-        timerField = new GuiTextField(0, fontRenderer, guiWidth + 96, guiHeight + 28, 36, 11);
+        timerField = new GuiTextField(0, fontRenderer, guiLeft + 96, guiTop + 28, 36, 11);
         timerField.setMaxStringLength(4);
         timerField.setText(prevTime);
 
         String prevMin = minField != null ? minField.getText() : "";
-        minField = new GuiTextField(1, fontRenderer, guiWidth + 96, guiHeight + 43, 72, 11);
+        minField = new GuiTextField(1, fontRenderer, guiLeft + 96, guiTop + 43, 72, 11);
         minField.setMaxStringLength(10);
         minField.setText(prevMin);
 
         String prevMax = maxField != null ? maxField.getText() : "";
-        maxField = new GuiTextField(2, fontRenderer, guiWidth + 96, guiHeight + 58, 72, 11);
+        maxField = new GuiTextField(2, fontRenderer, guiLeft + 96, guiTop + 58, 72, 11);
         maxField.setMaxStringLength(10);
         maxField.setText(prevMax);
     }

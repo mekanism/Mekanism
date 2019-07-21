@@ -123,15 +123,15 @@ public class GlowPanelModel extends OBJBakedModelBase {
         if (transformType == TransformType.GUI) {
             GlStateManager.rotate(180, 1, 0, 0);
             ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
-            GlStateManager.translate(0.65F, 0.45F, 0.0F);
+            GlStateManager.translate(0.65F, 0.45F, 0);
             GlStateManager.rotate(90, 1, 0, 0);
             GlStateManager.scale(1.6F, 1.6F, 1.6F);
             return Pair.of(this, null);
         } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            GlStateManager.translate(0, 0.2F, 0);
         } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
-            GlStateManager.translate(0.0F, 0.3F, 0.2F);
+            GlStateManager.translate(0, 0.3F, 0.2F);
             return Pair.of(this, null);
         }
         return Pair.of(this, transforms.get(transformType).getMatrix());

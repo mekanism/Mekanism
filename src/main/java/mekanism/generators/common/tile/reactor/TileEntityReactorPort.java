@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -19,6 +20,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -82,51 +84,37 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
             CableUtils.emit(this);
             if (fluidEject && getReactor() != null && getReactor().getSteamTank().getFluid() != null) {
                 IFluidTank tank = getReactor().getSteamTank();
-                for (EnumFacing side : EnumFacing.values()) {
-                    TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
-                    if (tile != null && !(tile instanceof TileEntityReactorPort) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
+                EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(EnumFacing.class), (tile, side) -> {
+                    if (!(tile instanceof TileEntityReactorPort)) {
                         IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-                        if (PipeUtils.canFill(handler, tank.getFluid())) {
+                        if (handler != null && PipeUtils.canFill(handler, tank.getFluid())) {
                             tank.drain(handler.fill(tank.getFluid(), true), true);
                         }
                     }
-                }
+                });
             }
         }
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (resource != null && resource.getFluid() == FluidRegistry.WATER && getReactor() != null && !fluidEject) {
-            return getReactor().getWaterTank().fill(resource, doFill);
-        }
-        return 0;
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        return getReactor().getWaterTank().fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (resource != null && resource.getFluid() == FluidRegistry.getFluid("steam") && getReactor() != null) {
-            getReactor().getSteamTank().drain(resource.amount, doDrain);
-        }
-        return null;
-    }
-
-    @Override
+    @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (getReactor() != null) {
-            return getReactor().getSteamTank().drain(maxDrain, doDrain);
-        }
-        return null;
+        return getReactor().getSteamTank().drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return getReactor() != null && fluid != null && fluid.getFluid().equals(FluidRegistry.WATER) && !fluidEject;
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        return getReactor() != null && !fluidEject && fluid.getFluid() == FluidRegistry.WATER;
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return getReactor() != null && fluid != null && fluid.getFluid() == FluidRegistry.getFluid("steam");
+        return getReactor() != null && (fluid == null || fluid.getFluid() == FluidRegistry.getFluid("steam"));
     }
 
     @Override

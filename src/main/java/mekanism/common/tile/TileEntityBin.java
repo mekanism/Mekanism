@@ -455,8 +455,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     }
 
     @Override
-    public boolean canSetFacing(int facing) {
-        return facing != 0 && facing != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
     @Override

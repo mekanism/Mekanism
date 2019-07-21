@@ -3,8 +3,8 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Set;
 import mekanism.api.Coord4D;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
@@ -15,19 +15,19 @@ import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiUpgradeManagement extends GuiMekanism {
 
+    private GuiButton backButton;
+    private GuiButton removeButton;
     private IUpgradeTile tileEntity;
     private Upgrade selectedType;
     private boolean isDragging = false;
@@ -42,6 +42,31 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     @Override
+    public void initGui() {
+        super.initGui();
+        buttonList.clear();
+        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
+        buttonList.add(removeButton = new GuiButtonDisableableImage(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation()));
+        updateEnabledButtons();
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
+        TileEntity tile = (TileEntity) tileEntity;
+        if (guibutton.id == backButton.id) {
+            int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
+            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+        } else if (guibutton.id == removeButton.id) {
+            Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
+        }
+    }
+
+    private boolean overUpgradeType(int xAxis, int yAxis, int xPos, int yPos) {
+        return xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12;
+    }
+
+    @Override
     public void updateScreen() {
         super.updateScreen();
         if (delay < 40) {
@@ -50,12 +75,16 @@ public class GuiUpgradeManagement extends GuiMekanism {
             delay = 0;
             supportedIndex = ++supportedIndex % tileEntity.getComponent().getSupportedTypes().size();
         }
+        updateEnabledButtons();
+    }
+
+    private void updateEnabledButtons() {
+        removeButton.enabled = selectedType != null;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1, 1, 1, 1);
         drawTexturedModalRect(84, 8 + getScroll(), 202, 0, 4, 4);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.upgrades.supported") + ":", 26, 59, 0x404040);
@@ -78,8 +107,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
             }
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         for (int i = 0; i < 4; i++) {
             int index = getUpgradeIndex() + i;
             if (index > upgrades.length - 1) {
@@ -90,8 +119,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
             int yPos = 7 + (i * 12);
             fontRenderer.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
-            if (xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12) {
-                drawHoveringText(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
+            if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
+                displayTooltips(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
             }
         }
 
@@ -106,37 +135,18 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(size, size, size);
-        RenderHelper.enableGUIStandardItemLighting();
-        itemRender.renderItemAndEffectIntoGUI(type.getStack(), scale ? (int) ((1F / size) * x) : x, scale ? (int) ((1F / size) * y) : y);
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.popMatrix();
+        if (scale) {
+            renderItem(type.getStack(), (int) ((float) x / size), (int) ((float) y / size), size);
+        } else {
+            renderItem(type.getStack(), x, y, size);
+        }
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 0, 14, 14);
-        } else {
-            drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 14, 14, 14);
-        }
-        if (selectedType == null) {
-            drawTexturedModalRect(guiWidth + 136, guiHeight + 57, 176 + 14, 24, 12, 12);
-        } else if (xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69) {
-            drawTexturedModalRect(guiWidth + 136, guiHeight + 57, 176 + 14, 0, 12, 12);
-        } else {
-            drawTexturedModalRect(guiWidth + 136, guiHeight + 57, 176 + 14, 12, 12, 12);
-        }
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
-        drawTexturedModalRect(guiWidth + 154, guiHeight + 26, 176, 28, 10, displayInt);
+        drawTexturedModalRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
         if (selectedType != null && tileEntity.getComponent().getUpgrades(selectedType) == 0) {
             selectedType = null;
         }
@@ -152,16 +162,15 @@ public class GuiUpgradeManagement extends GuiMekanism {
             int yRender;
             if (upgrade == selectedType) {
                 yRender = 166 + 24;
-            } else if (xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12) {
+            } else if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
                 yRender = 166;
             } else {
                 yRender = 166 + 12;
             }
             MekanismRenderer.color(upgrade.getColor(), 1.0F, 2.5F);
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 0, yRender, 58, 12);
+            drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 0, yRender, 58, 12);
             MekanismRenderer.resetColor();
         }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
     private Set<Upgrade> getCurrentUpgrades() {
@@ -205,10 +214,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        TileEntity tile = (TileEntity) tileEntity;
         if (button == 0) {
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             if (xAxis >= 84 && xAxis <= 88 && yAxis >= getScroll() + 8 && yAxis <= getScroll() + 8 + 4) {
                 if (getCurrentUpgrades().size() > 4) {
                     dragOffset = yAxis - (getScroll() + 8);
@@ -217,20 +225,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
                     scroll = 0;
                 }
             }
-            if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
-                int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-            }
-            if (selectedType != null && xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69) {
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
-            }
             int counter = 0;
             for (Upgrade upgrade : getCurrentUpgrades()) {
                 int xPos = 25;
                 int yPos = 7 + (counter++ * 12);
-                if (xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12) {
+                if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
                     selectedType = upgrade;
                     break;
                 }

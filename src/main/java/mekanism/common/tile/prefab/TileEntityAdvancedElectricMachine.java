@@ -221,7 +221,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     public void operate(RECIPE recipe) {
         recipe.operate(inventory, 0, 2, gasTank, secondaryEnergyThisTick);
         markDirty();
-        ejectorComponent.outputItems();
     }
 
     @Override

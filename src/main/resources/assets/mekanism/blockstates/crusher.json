@@ -3,13 +3,13 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/crusher/CrusherRight",
-      "front": "mekanism:blocks/crusher/CrusherFront",
-      "west": "mekanism:blocks/crusher/CrusherRight",
-      "east": "mekanism:blocks/crusher/CrusherLeft",
-      "south": "mekanism:blocks/crusher/CrusherBack",
-      "up": "mekanism:blocks/crusher/CrusherTop",
-      "down": "mekanism:blocks/crusher/CrusherBottom"
+      "sides": "mekanism:blocks/crusher/crusherside",
+      "front": "mekanism:blocks/crusher/crusherfront",
+      "west": "mekanism:blocks/crusher/crusherside",
+      "east": "mekanism:blocks/crusher/crusherside",
+      "south": "mekanism:blocks/crusher/crusherback",
+      "up": "mekanism:blocks/crusher/crushertop",
+      "down": "mekanism:blocks/crusher/crusherbottom"
     }
   },
   "variants": {
@@ -22,11 +22,9 @@
     "active": {
       "true": {
         "textures": {
-          "front": "mekanism:blocks/crusher/CrusherFrontOn",
-          "west": "mekanism:blocks/crusher/CrusherRightOn",
-          "east": "mekanism:blocks/crusher/CrusherLeftOn",
-          "south": "mekanism:blocks/crusher/CrusherBackOn",
-          "up": "mekanism:blocks/crusher/CrusherTopOn"
+          "front": "mekanism:blocks/crusher/crusherfronton",
+          "west": "mekanism:blocks/crusher/crushersideon",
+          "east": "mekanism:blocks/crusher/crushersideon"
         }
       },
       "false": {}

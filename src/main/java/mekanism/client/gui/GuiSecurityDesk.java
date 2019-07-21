@@ -6,8 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
+import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.gui.element.GuiScrollList;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -19,19 +20,22 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
 
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
-    private static int MAX_LENGTH = 24;
+    private static final int MAX_LENGTH = 24;
     private GuiButton removeButton;
+    private GuiButton publicButton;
+    private GuiButton privateButton;
+    private GuiButton trustedButton;
+    private GuiButton checkboxButton;
+    private GuiButton overrideButton;
     private GuiScrollList scrollList;
     private GuiTextField trustedField;
 
@@ -44,15 +48,17 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         buttonList.clear();
-        removeButton = new GuiButton(0, guiWidth + 13, guiHeight + 81, 122, 20, LangUtils.localize("gui.remove"));
-        trustedField = new GuiTextField(1, fontRenderer, guiWidth + 35, guiHeight + 69, 86, 11);
+        buttonList.add(removeButton = new GuiButton(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove")));
+        trustedField = new GuiTextField(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
+        buttonList.add(publicButton = new GuiButtonDisableableImage(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation()));
+        buttonList.add(privateButton = new GuiButtonDisableableImage(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation()));
+        buttonList.add(trustedButton = new GuiButtonDisableableImage(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation()));
+        buttonList.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttonList.add(overrideButton = new GuiButtonDisableableImage(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation()));
         updateButtons();
-        buttonList.add(removeButton);
     }
 
     public void addTrusted(String trusted) {
@@ -64,17 +70,30 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     public void updateButtons() {
-        if (tileEntity.clientOwner == null) {
-            return;
-        }
-        List<String> text = new ArrayList<>();
-        if (tileEntity.frequency != null) {
-            for (String s : tileEntity.frequency.trusted) {
-                text.add(s);
+        if (tileEntity.ownerUUID != null) {
+            List<String> text = new ArrayList<>();
+            if (tileEntity.frequency != null) {
+                for (String s : tileEntity.frequency.trusted) {
+                    text.add(s);
+                }
             }
+            scrollList.setText(text);
+            removeButton.enabled = scrollList.hasSelection();
         }
-        scrollList.setText(text);
-        removeButton.enabled = scrollList.hasSelection();
+
+        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(mc.player.getUniqueID())) {
+            publicButton.enabled = tileEntity.frequency.securityMode != SecurityMode.PUBLIC;
+            privateButton.enabled = tileEntity.frequency.securityMode != SecurityMode.PRIVATE;
+            trustedButton.enabled = tileEntity.frequency.securityMode != SecurityMode.TRUSTED;
+            checkboxButton.enabled = true;
+            overrideButton.enabled = true;
+        } else {
+            publicButton.enabled = false;
+            privateButton.enabled = false;
+            trustedButton.enabled = false;
+            checkboxButton.enabled = false;
+            overrideButton.enabled = false;
+        }
     }
 
     @Override
@@ -89,43 +108,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         super.mouseClicked(mouseX, mouseY, button);
         updateButtons();
         trustedField.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
-            //TODO: replace compare with uuid instead of clientOwner and player name
-            if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.clientOwner.equals(mc.player.getName())) {
-                if (xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79) {
-                    addTrusted(trustedField.getText());
-                    trustedField.setText("");
-                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                }
-                TileNetworkList data = new TileNetworkList();
-                if (xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75) {
-                    data.add(2);
-                }
-                if (tileEntity.frequency.securityMode != SecurityMode.PUBLIC) {
-                    if (xAxis >= 13 && xAxis <= 53 && yAxis >= 113 && yAxis <= 129) {
-                        data.add(3);
-                        data.add(0);
-                    }
-                }
-                if (tileEntity.frequency.securityMode != SecurityMode.PRIVATE) {
-                    if (xAxis >= 54 && xAxis <= 94 && yAxis >= 113 && yAxis <= 129) {
-                        data.add(3);
-                        data.add(1);
-                    }
-                }
-                if (tileEntity.frequency.securityMode != SecurityMode.TRUSTED) {
-                    if (xAxis >= 95 && xAxis <= 135 && yAxis >= 113 && yAxis <= 129) {
-                        data.add(3);
-                        data.add(2);
-                    }
-                }
-                if (!data.isEmpty()) {
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-                }
-            }
-        }
     }
 
     @Override
@@ -153,13 +135,24 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 0) {
+        if (guibutton.id == removeButton.id) {
             int selection = scrollList.getSelection();
             if (tileEntity.frequency != null && selection != -1) {
                 TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 scrollList.clearSelection();
             }
+        } else if (guibutton.id == publicButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3, 0)));
+        } else if (guibutton.id == privateButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3, 1)));
+        } else if (guibutton.id == trustedButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(3, 2)));
+        } else if (guibutton.id == checkboxButton.id) {
+            addTrusted(trustedField.getText());
+            trustedField.setText("");
+        } else if (guibutton.id == overrideButton.id) {
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(2)));
         }
         updateButtons();
     }
@@ -178,80 +171,29 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
         }
         fontRenderer.drawString(security, 13, 103, 0x404040);
         renderScaledText(LangUtils.localize("gui.add") + ":", 13, 70, 0x404040, 20);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        if (tileEntity.frequency != null && xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75) {
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
+        if (tileEntity.frequency != null && overrideButton.isMouseOver()) {
             displayTooltip(LangUtils.localize("gui.securityOverride") + ": " + LangUtils.transOnOff(tileEntity.frequency.override), xAxis, yAxis);
-        }
-        if (xAxis >= 13 && xAxis <= 53 && yAxis >= 113 && yAxis <= 129) {
+        } else if (publicButton.isMouseOver()) {
             displayTooltip(LangUtils.localize("gui.publicMode"), xAxis, yAxis);
-        }
-        if (xAxis >= 54 && xAxis <= 94 && yAxis >= 113 && yAxis <= 129) {
+        } else if (privateButton.isMouseOver()) {
             displayTooltip(LangUtils.localize("gui.privateMode"), xAxis, yAxis);
-        }
-        if (xAxis >= 95 && xAxis <= 135 && yAxis >= 113 && yAxis <= 129) {
+        } else if (trustedButton.isMouseOver()) {
             displayTooltip(LangUtils.localize("gui.trustedMode"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
-        //TODO: replace compare with uuid instead of clientOwner and player name
-        if (tileEntity.frequency != null && tileEntity.clientOwner != null && mc.player.getName().equals(tileEntity.clientOwner)) {
-            drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
-            if (xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75) {
-                drawTexturedModalRect(guiWidth + 146, guiHeight + 59, xSize + 12, 0, 16, 16);
-            } else {
-                drawTexturedModalRect(guiWidth + 146, guiHeight + 59, xSize + 12, 16, 16, 16);
-            }
-            if (tileEntity.frequency.securityMode != SecurityMode.PUBLIC) {
-                if (xAxis >= 13 && xAxis <= 53 && yAxis >= 113 && yAxis <= 129) {
-                    drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 48, 40, 16);
-                } else {
-                    drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 64, 40, 16);
-                }
-            } else {
-                drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 80, 40, 16);
-            }
-            if (tileEntity.frequency.securityMode != SecurityMode.PRIVATE) {
-                if (xAxis >= 54 && xAxis <= 94 && yAxis >= 113 && yAxis <= 129) {
-                    drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 48, 40, 16);
-                } else {
-                    drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 64, 40, 16);
-                }
-            } else {
-                drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 80, 40, 16);
-            }
-            if (tileEntity.frequency.securityMode != SecurityMode.TRUSTED) {
-                if (xAxis >= 95 && xAxis <= 135 && yAxis >= 113 && yAxis <= 129) {
-                    drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 96, 40, 16);
-                } else {
-                    drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 112, 40, 16);
-                }
-            } else {
-                drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 128, 40, 16);
-            }
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
+        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(mc.player.getUniqueID())) {
+            drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
         } else {
-            drawTexturedModalRect(guiWidth + 145, guiHeight + 78, xSize, 28, 6, 6);
-            drawTexturedModalRect(guiWidth + 146, guiHeight + 59, xSize + 12, 32, 16, 16);
-            drawTexturedModalRect(guiWidth + 13, guiHeight + 113, xSize, 80, 40, 16);
-            drawTexturedModalRect(guiWidth + 54, guiHeight + 113, xSize + 40, 80, 40, 16);
-            drawTexturedModalRect(guiWidth + 95, guiHeight + 113, xSize, 128, 40, 16);
+            drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);
         }
-        if (xAxis >= 123 && xAxis <= 134 && yAxis >= 68 && yAxis <= 79) {
-            drawTexturedModalRect(guiWidth + 123, guiHeight + 68, xSize, 0, 11, 11);
-        } else {
-            drawTexturedModalRect(guiWidth + 123, guiHeight + 68, xSize, 11, 11, 11);
-        }
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         trustedField.drawTextBox();
+        MekanismRenderer.resetColor();
     }
 }

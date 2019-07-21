@@ -116,7 +116,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public void operate(CrystallizerRecipe recipe) {
         recipe.operate(inputTank, inventory);
         markDirty();
-        ejectorComponent.outputItems();
     }
 
     @Override
@@ -150,8 +149,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     }
 
     @Override
-    public boolean canSetFacing(int i) {
-        return i != 0 && i != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
     @Override

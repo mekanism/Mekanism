@@ -6,12 +6,16 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -24,11 +28,17 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
     @Override
     public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.shouldRender) {
-            push();
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            MekanismRenderer.color(EnumColor.PURPLE, 0.75F);
 
-            GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
-
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate((float) x, (float) y, (float) z);
             Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
             int type = 0;
@@ -38,28 +48,16 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
             }
 
             int display = getOverlayDisplay(type).display;
-            GL11.glCallList(display);
+            GlStateManager.callList(display);
 
             MekanismRenderer.resetColor();
-
-            pop();
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            MekanismRenderer.disableGlow(glowInfo);
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
-    }
-
-    private void pop() {
-        GL11.glPopAttrib();
-        MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
-        GlStateManager.popMatrix();
-    }
-
-    private void push() {
-        GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        MekanismRenderer.glowOn();
-        MekanismRenderer.blendOn();
     }
 
     private DisplayInteger getOverlayDisplay(Integer type) {
@@ -72,15 +70,11 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
         toReturn.setTexture(MekanismFluids.Oxygen.getSprite());
 
         DisplayInteger display = DisplayInteger.createAndStart();
-
-        if (cachedOverlays.containsKey(type)) {
-            cachedOverlays.get(type);
-        } else {
-            cachedOverlays.put(type, display);
-        }
+        //We already know it does not contain type, so add it
+        cachedOverlays.put(type, display);
 
         switch (type) {
-            case 0: {
+            case 0:
                 toReturn.minY = 1;
                 toReturn.maxY = 3;
 
@@ -89,8 +83,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
                 toReturn.maxX = 0.54;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case 1: {
+            case 1:
                 toReturn.minY = 1;
                 toReturn.maxY = 3;
 
@@ -99,7 +92,6 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
                 toReturn.maxX = 1;
                 toReturn.maxZ = 0.54;
                 break;
-            }
         }
 
         MekanismRenderer.renderObject(toReturn);

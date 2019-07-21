@@ -21,7 +21,9 @@ import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaCableIntegration;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.transmitters.grid.EnergyNetwork;
@@ -73,11 +75,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             updateShare();
             List<EnumFacing> sides = getConnections(ConnectionType.PULL);
             if (!sides.isEmpty()) {
-                TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
+                TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(this, getPos(), getWorld());
                 double canDraw = tier.getCableCapacity();
                 for (EnumFacing side : sides) {
-                    if (connectedOutputters[side.ordinal()] != null) {
-                        TileEntity outputter = connectedOutputters[side.ordinal()];
+                    TileEntity outputter = connectedOutputters[side.ordinal()];
+                    if (outputter != null) {
                         //pre declare some variables for inline assignment & checks
                         IStrictEnergyStorage strictStorage;
                         ITeslaProducer teslaProducer;//do not assign anything to this here, or classloader issues may happen
@@ -91,23 +93,21 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                             }
                             strictStorage.setEnergy(strictStorage.getEnergy() - toDraw);
                         } else if (MekanismUtils.useTesla() && (teslaProducer = CapabilityUtils.getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite())) != null) {
-                            double toDraw = teslaProducer.takePower(MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_TESLA.val()), true)
-                                            * MekanismConfig.current().general.FROM_TESLA.val();
+                            double toDraw = TeslaIntegration.fromTesla(teslaProducer.takePower(TeslaIntegration.toTesla(canDraw), true));
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
-                            teslaProducer.takePower(Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()), false);
+                            teslaProducer.takePower(TeslaIntegration.toTesla(toDraw), false);
                         } else if (MekanismUtils.useForge() && (forgeStorage = CapabilityUtils.getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite())) != null) {
-                            double toDraw = forgeStorage.extractEnergy(MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_FORGE.val()), true)
-                                            * MekanismConfig.current().general.FROM_FORGE.val();
+                            double toDraw = ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(canDraw), true));
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
-                            forgeStorage.extractEnergy(MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_TESLA.val()), false);
+                            forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(toDraw), false);
                         } else if (MekanismUtils.useRF() && outputter instanceof IEnergyProvider) {
                             IEnergyProvider rfProvider = (IEnergyProvider) outputter;
-                            double toDraw = rfProvider.extractEnergy(side.getOpposite(),
-                                  MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_RF.val()), true) * MekanismConfig.current().general.FROM_RF.val();
+                            double toDraw = rfProvider.extractEnergy(side.getOpposite(), MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_RF.val()), true)
+                                            * MekanismConfig.current().general.FROM_RF.val();
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
@@ -186,7 +186,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public boolean isValidAcceptor(TileEntity acceptor, EnumFacing side) {
-        return CableUtils.isValidAcceptorOnSide( MekanismUtils.getTileEntity(world, getPos()), acceptor, side);
+        return CableUtils.isValidAcceptorOnSide(MekanismUtils.getTileEntity(world, getPos()), acceptor, side);
     }
 
     @Override
@@ -332,11 +332,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
             return (T) this;
-        }
-        if (capability == Capabilities.TESLA_CONSUMER_CAPABILITY) {
+        } else if (capability == Capabilities.TESLA_CONSUMER_CAPABILITY) {
             return (T) teslaManager.getWrapper(this, facing);
-        }
-        if (capability == CapabilityEnergy.ENERGY) {
+        } else if (capability == CapabilityEnergy.ENERGY) {
             return (T) forgeEnergyManager.getWrapper(this, facing);
         }
         return super.getCapability(capability, facing);

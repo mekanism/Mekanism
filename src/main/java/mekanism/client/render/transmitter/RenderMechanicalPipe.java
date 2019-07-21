@@ -2,13 +2,11 @@ package mekanism.client.render.transmitter;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
@@ -16,13 +14,14 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
 
@@ -43,11 +42,17 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
 
         float targetScale;
-
+        Fluid fluid;
+        FluidStack fluidStack;
         if (pipe.getTransmitter().hasTransmitterNetwork()) {
-            targetScale = pipe.getTransmitter().getTransmitterNetwork().fluidScale;
+            FluidNetwork network = pipe.getTransmitter().getTransmitterNetwork();
+            targetScale = network.fluidScale;
+            fluid = network.refFluid;
+            fluidStack = network.buffer;
         } else {
             targetScale = (float) pipe.buffer.getFluidAmount() / (float) pipe.buffer.getCapacity();
+            fluidStack = pipe.getBuffer();
+            fluid = fluidStack == null ? null : fluidStack.getFluid();
         }
 
         if (Math.abs(pipe.currentScale - targetScale) > 0.01) {
@@ -56,71 +61,55 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             pipe.currentScale = targetScale;
         }
 
-        Fluid fluid;
-        FluidStack fluidStack;
-
-        if (pipe.getTransmitter().hasTransmitterNetwork()) {
-            fluid = pipe.getTransmitter().getTransmitterNetwork().refFluid;
-            fluidStack = pipe.getTransmitter().getTransmitterNetwork().buffer;
-        } else {
-            fluidStack = pipe.getBuffer();
-            fluid = fluidStack == null ? null : fluidStack.getFluid();
-        }
-
         float scale = Math.min(pipe.currentScale, 1);
-
         if (scale > 0.01 && fluid != null) {
-            push();
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
+            GlowInfo glowInfo;
+            if (fluidStack != null) {
+                glowInfo = MekanismRenderer.enableGlow(fluidStack);
+                MekanismRenderer.color(fluidStack);
+            } else {
+                glowInfo = MekanismRenderer.enableGlow(fluid);
+                MekanismRenderer.color(fluid);
+            }
 
-            MekanismRenderer.glowOn(fluid.getLuminosity());
-            MekanismRenderer.color(fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : fluid.getColor());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            GlStateManager.translate((float) x, (float) y, (float) z);
 
-            bindTexture(MekanismRenderer.getBlocksTexture());
-            GL11.glTranslated(x, y, z);
-
-            boolean gas = fluid.isGaseous();
-
+            boolean gas = fluidStack == null ? fluid.isGaseous() : fluid.isGaseous(fluidStack);
             for (EnumFacing side : EnumFacing.VALUES) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
-                    DisplayInteger[] displayLists = getListAndRender(side, fluidStack);
-
-                    if (displayLists != null) {
-                        if (!gas) {
-                            displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
-                        } else {
-                            GL11.glColor4f(1F, 1F, 1F, scale);
-                            displayLists[stages - 1].render();
-                        }
-                    }
+                    renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
-                    GL11.glTranslated(0.5, 0.5, 0.5);
+                    GlStateManager.translate(0.5F, 0.5F, 0.5F);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder worldRenderer = tessellator.getBuffer();
-
                     if (renderFluidInOut(worldRenderer, side, pipe)) {
                         tessellator.draw();
                     }
-
-                    GL11.glTranslated(-0.5, -0.5, -0.5);
+                    GlStateManager.translate(-0.5F, -0.5F, -0.5F);
                 }
             }
-
-            DisplayInteger[] displayLists = getListAndRender(null, fluidStack);
-
-            if (displayLists != null) {
-                if (!gas) {
-                    displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
-                } else {
-                    GL11.glColor4f(1F, 1F, 1F, scale);
-                    displayLists[stages - 1].render();
-                }
-            }
-
-            MekanismRenderer.glowOff();
+            renderDisplayLists(getListAndRender(null, fluidStack), scale, gas);
             MekanismRenderer.resetColor();
+            MekanismRenderer.disableGlow(glowInfo);
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
+        }
+    }
 
-            pop();
+    private void renderDisplayLists(DisplayInteger[] displayLists, float scale, boolean gas) {
+        if (displayLists != null) {
+            if (gas) {
+                GlStateManager.color(1, 1, 1, scale);
+                displayLists[stages - 1].render();
+                MekanismRenderer.resetColor();
+            } else {
+                displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
+            }
         }
     }
 
@@ -158,7 +147,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             displays[i] = DisplayInteger.createAndStart();
 
             switch (sideOrdinal) {
-                case 6: {
+                case 6:
                     toReturn.minX = 0.25 + offset;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.25 + offset;
@@ -167,8 +156,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 0.75 - offset;
                     break;
-                }
-                case 0: {
+                case 0:
                     toReturn.minX = 0.5 - (((float) i / (float) stages) * height) / 2;
                     toReturn.minY = 0.0;
                     toReturn.minZ = 0.5 - (((float) i / (float) stages) * height) / 2;
@@ -177,8 +165,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset;
                     toReturn.maxZ = 0.5 + (((float) i / (float) stages) * height) / 2;
                     break;
-                }
-                case 1: {
+                case 1:
                     toReturn.minX = 0.5 - (((float) i / (float) stages) * height) / 2;
                     toReturn.minY = 0.25 - offset + ((float) i / (float) stages) * height;
                     toReturn.minZ = 0.5 - (((float) i / (float) stages) * height) / 2;
@@ -187,8 +174,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 1.0;
                     toReturn.maxZ = 0.5 + (((float) i / (float) stages) * height) / 2;
                     break;
-                }
-                case 2: {
+                case 2:
                     toReturn.minX = 0.25 + offset;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.0;
@@ -197,8 +183,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 0.25 + offset;
                     break;
-                }
-                case 3: {
+                case 3:
                     toReturn.minX = 0.25 + offset;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.75 - offset;
@@ -207,8 +192,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 1.0;
                     break;
-                }
-                case 4: {
+                case 4:
                     toReturn.minX = 0.0;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.25 + offset;
@@ -217,8 +201,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 0.75 - offset;
                     break;
-                }
-                case 5: {
+                case 5:
                     toReturn.minX = 0.75 - offset;
                     toReturn.minY = 0.25 + offset;
                     toReturn.minZ = 0.25 + offset;
@@ -227,7 +210,6 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
                     toReturn.maxZ = 0.75 - offset;
                     break;
-                }
             }
 
             MekanismRenderer.renderObject(toReturn);
@@ -239,7 +221,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
     public boolean renderFluidInOut(BufferBuilder renderer, EnumFacing side, TileEntityMechanicalPipe pipe) {
         if (pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null) {
-            bindTexture(MekanismRenderer.getBlocksTexture());
+            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
             TextureAtlasSprite tex;
             if (fn.buffer != null) {
@@ -253,10 +235,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 c.setRGBFromInt(color);
             }
             renderTransparency(renderer, tex, getModelForSide(pipe, side), c);
-
             return true;
         }
-
         return false;
     }
 }

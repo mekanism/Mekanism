@@ -4,13 +4,19 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiElement;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -64,9 +70,14 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
+        //Ensure that the GL color is white, as drawing rectangles, text boxes, or even text might have changed the color from
+        // what we assume it is at the start. This prevents any unintentional color state leaks. GlStateManager, will ensure that
+        // GL changes only get ran if it is not already the color we are assuming it is.
+        // This is called here as, all extenders of GuiMekanism that overwrite this method call super on it at the end of their
+        // implementation, and almost all have the color get changed at one point or another due to drawing text
+        MekanismRenderer.resetColor();
         guiElements.forEach(element -> element.renderForeground(xAxis, yAxis));
     }
 
@@ -74,19 +85,26 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
     }
 
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
-        guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiWidth, guiHeight));
+        //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
+        // it in an unexpected state.
+        MekanismRenderer.resetColor();
+        mc.renderEngine.bindTexture(getGuiLocation());
+        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
+        drawGuiContainerBackgroundLayer(xAxis, yAxis);
+        guiElements.forEach(element -> element.renderBackground(xAxis, yAxis, guiLeft, guiTop));
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.preMouseClicked(xAxis, yAxis, button));
         super.mouseClicked(mouseX, mouseY, button);
         guiElements.forEach(element -> element.mouseClicked(xAxis, yAxis, button));
@@ -105,11 +123,15 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     @Override
     public void displayTooltip(String s, int x, int y) {
         drawHoveringText(s, x, y);
+        //Fix unwanted lighting changes made by drawHoveringText
+        RenderHelper.disableStandardItemLighting();
     }
 
     @Override
     public void displayTooltips(List<String> list, int xAxis, int yAxis) {
         drawHoveringText(list, xAxis, yAxis);
+        //Fix unwanted lighting changes made by drawHoveringText
+        RenderHelper.disableStandardItemLighting();
     }
 
     @Override
@@ -120,40 +142,28 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.mouseClickMove(xAxis, yAxis, button, ticks));
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int type) {
         super.mouseReleased(mouseX, mouseY, type);
-        int xAxis = mouseX - (width - xSize) / 2;
-        int yAxis = mouseY - (height - ySize) / 2;
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.mouseReleased(xAxis, yAxis, type));
     }
 
     @Override
-    public void handleMouseInput() throws java.io.IOException {
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         int delta = Mouse.getEventDWheel();
         if (delta != 0) {
-            int xAxis = Mouse.getEventX() * width / mc.displayWidth - getXPos();
-            int yAxis = height - Mouse.getEventY() * height / mc.displayHeight - 1 - getYPos();
-            mouseWheel(xAxis, yAxis, delta);
+            int xAxis = Mouse.getEventX() * width / mc.displayWidth - guiLeft;
+            int yAxis = height - Mouse.getEventY() * height / mc.displayHeight - 1 - guiTop;
+            guiElements.forEach(element -> element.mouseWheel(xAxis, yAxis, delta));
         }
-    }
-
-    public void mouseWheel(int xAxis, int yAxis, int delta) {
-        guiElements.forEach(element -> element.mouseWheel(xAxis, yAxis, delta));
-    }
-
-    public int getXPos() {
-        return (width - xSize) / 2;
-    }
-
-    public int getYPos() {
-        return (height - ySize) / 2;
     }
 
     protected FontRenderer getFontRenderer() {
@@ -171,6 +181,36 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         int textWidth = fontRenderer.getStringWidth(text);
         int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
         fontRenderer.drawString(text, centerX, y, color);
+    }
+
+    protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {
+        if (color != null) {
+            drawRect(x, y, x + 16, y + 16, MekanismRenderer.getColorARGB(color, alpha));
+            MekanismRenderer.resetColor();
+        }
+    }
+
+    protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {
+        renderItem(stack, xAxis, yAxis, 1);
+    }
+
+    protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
+        if (!stack.isEmpty()) {
+            try {
+                GlStateManager.pushMatrix();
+                GlStateManager.enableDepth();
+                RenderHelper.enableGUIStandardItemLighting();
+                if (scale != 1) {
+                    GlStateManager.scale(scale, scale, scale);
+                }
+                itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                RenderHelper.disableStandardItemLighting();
+                GlStateManager.disableDepth();
+                GlStateManager.popMatrix();
+            } catch (Exception e) {
+                Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
+            }
+        }
     }
 
     protected abstract ResourceLocation getGuiLocation();

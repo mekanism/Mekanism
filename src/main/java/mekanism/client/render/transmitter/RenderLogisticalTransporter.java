@@ -1,14 +1,21 @@
 package mekanism.client.render.transmitter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import mekanism.api.Coord4D;
+import java.util.Set;
+import javax.annotation.Nullable;
+import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
@@ -17,28 +24,30 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
     private static Map<EnumFacing, Map<Integer, DisplayInteger>> cachedOverlays = new EnumMap<>(EnumFacing.class);
+    private final static ResourceLocation transporterBox = MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png");
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
     private EntityItem entityItem = new EntityItem(null);
-    private Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
+    private Render<EntityItem> renderer = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
 
     public static void onStitch(TextureMap map) {
         cachedOverlays.clear();
@@ -53,81 +62,114 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }
+        //Keep track of if we had to push. Makes it so that we don't have to push and pop if we end up doing no rendering
+        boolean pushed = false;
+        Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
+        if (!inTransit.isEmpty()) {
+            GlStateManager.pushMatrix();
+            pushed = true;
 
-        GL11.glPushMatrix();
+            entityItem.setNoDespawn();
+            entityItem.hoverStart = 0;
+            entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
+            entityItem.world = transporter.getWorld();
 
-        entityItem.setNoDespawn();
-        entityItem.hoverStart = 0;
-
-        entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
-        entityItem.world = transporter.getWorld();
-
-        for (TransporterStack stack : transporter.getTransmitter().getTransit()) {
-            if (stack != null) {
-                GL11.glPushMatrix();
+            float partial = partialTick * transporter.tier.getSpeed();
+            Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
+            for (TransporterStack stack : reducedTransit) {
                 entityItem.setItem(stack.itemStack);
+                float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
+                float xShifted = (float) x + pos[0];
+                float yShifted = (float) y + pos[1];
+                float zShifted = (float) z + pos[2];
 
-                float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick * transporter.tier.getSpeed());
-
-                GL11.glTranslated(x + pos[0], y + pos[1], z + pos[2]);
-                GL11.glScalef(0.75F, 0.75F, 0.75F);
-
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(xShifted, yShifted, zShifted);
+                GlStateManager.scale(0.75F, 0.75F, 0.75F);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
                 if (stack.color != null) {
-                    bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
-                    GL11.glPushMatrix();
-                    MekanismRenderer.glowOn();
-                    GL11.glDisable(GL11.GL_CULL_FACE);
-                    GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
-                    GL11.glTranslatef((float) (x + pos[0]), (float) (y + pos[1]), (float) (z + pos[2]));
+                    bindTexture(transporterBox);
+                    GlStateManager.pushMatrix();
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow();
+                    GlStateManager.disableCull();
+                    MekanismRenderer.color(stack.color);
+                    GlStateManager.translate(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
-                    MekanismRenderer.glowOff();
-                    GL11.glPopMatrix();
+                    MekanismRenderer.resetColor();
+                    GlStateManager.enableCull();
+                    MekanismRenderer.disableGlow(glowInfo);
+                    GlStateManager.popMatrix();
                 }
             }
         }
 
         if (transporter instanceof TileEntityDiversionTransporter) {
-            EntityPlayer player = mc.player;
-            World world = mc.player.world;
-            ItemStack itemStack = player.inventory.getCurrentItem();
-            RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
-
-            if (pos != null && !itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
-                Coord4D obj = new Coord4D(pos.getBlockPos(), transporter.getWorld());
-
-                if (obj.equals(new Coord4D(transporter.getPos(), transporter.getWorld())) && pos.sideHit != null) {
+            if (!pushed) {
+                GlStateManager.pushMatrix();
+                pushed = true;
+            }
+            ItemStack itemStack = mc.player.inventory.getCurrentItem();
+            if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
+                RayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
+                if (pos != null && pos.sideHit != null && pos.getBlockPos().equals(transporter.getPos())) {
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.sideHit.ordinal()];
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableCull();
+                    GlStateManager.disableLighting();
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow();
+                    GlStateManager.shadeModel(GL11.GL_SMOOTH);
+                    GlStateManager.disableAlpha();
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.color(1, 1, 1, 0.8F);
+                    bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                    GlStateManager.translate((float) x, (float) y, (float) z);
+                    GlStateManager.scale(0.5F, 0.5F, 0.5F);
+                    GlStateManager.translate(0.5F, 0.5F, 0.5F);
 
-                    pushTransporter();
+                    int display = getOverlayDisplay(pos.sideHit, mode).display;
+                    GlStateManager.callList(display);
 
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-
-                    bindTexture(MekanismRenderer.getBlocksTexture());
-                    GL11.glTranslatef((float) x, (float) y, (float) z);
-                    GL11.glScalef(0.5F, 0.5F, 0.5F);
-                    GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-
-                    int display = getOverlayDisplay(world, pos.sideHit, mode).display;
-                    GL11.glCallList(display);
-
-                    popTransporter();
+                    MekanismRenderer.resetColor();
+                    GlStateManager.disableBlend();
+                    GlStateManager.enableAlpha();
+                    MekanismRenderer.disableGlow(glowInfo);
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableCull();
+                    GlStateManager.popMatrix();
                 }
             }
         }
-
-        GL11.glPopMatrix();
+        if (pushed) {
+            //If we did anything we need to pop the matrix we pushed
+            GlStateManager.popMatrix();
+        }
     }
 
-    private DisplayInteger getOverlayDisplay(World world, EnumFacing side, int mode) {
+    /**
+     * Shrink the in transit list as much as possible. Don't try to render things of the same type that are in the same spot with the same color, ignoring stack size
+     */
+    private Collection<TransporterStack> getReducedTransit(Collection<TransporterStack> inTransit) {
+        Collection<TransporterStack> reducedTransit = new ArrayList<>();
+        Set<TransportInformation> information = new HashSet<>();
+        for (TransporterStack stack : inTransit) {
+            if (stack != null && !stack.itemStack.isEmpty() && information.add(new TransportInformation(stack))) {
+                //Ensure the stack is valid AND we did not already have information matching the stack
+                //We use add to check if it already contained the value, so that we only have to query the set once
+                reducedTransit.add(stack);
+            }
+        }
+        return reducedTransit;
+    }
+
+    private DisplayInteger getOverlayDisplay(EnumFacing side, int mode) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode)) {
             return cachedOverlays.get(side).get(mode);
         }
 
         TextureAtlasSprite icon = null;
-
         switch (mode) {
             case 0:
                 icon = gunpowderIcon;
@@ -155,7 +197,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         }
 
         switch (side) {
-            case DOWN: {
+            case DOWN:
                 toReturn.minY = -0.01;
                 toReturn.maxY = 0;
 
@@ -164,8 +206,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxX = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case UP: {
+            case UP:
                 toReturn.minY = 1;
                 toReturn.maxY = 1.01;
 
@@ -174,8 +215,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxX = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case NORTH: {
+            case NORTH:
                 toReturn.minZ = -0.01;
                 toReturn.maxZ = 0;
 
@@ -184,8 +224,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxX = 1;
                 toReturn.maxY = 1;
                 break;
-            }
-            case SOUTH: {
+            case SOUTH:
                 toReturn.minZ = 1;
                 toReturn.maxZ = 1.01;
 
@@ -194,8 +233,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxX = 1;
                 toReturn.maxY = 1;
                 break;
-            }
-            case WEST: {
+            case WEST:
                 toReturn.minX = -0.01;
                 toReturn.maxX = 0;
 
@@ -204,8 +242,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxY = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            case EAST: {
+            case EAST:
                 toReturn.minX = 1;
                 toReturn.maxX = 1.01;
 
@@ -214,31 +251,48 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 toReturn.maxY = 1;
                 toReturn.maxZ = 1;
                 break;
-            }
-            default: {
+            default:
                 break;
-            }
         }
-
         MekanismRenderer.renderObject(toReturn);
         DisplayInteger.endList();
-
         return display;
     }
 
-    private void popTransporter() {
-        GL11.glPopAttrib();
-        MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
-        GL11.glPopMatrix();
-    }
+    private class TransportInformation {
 
-    private void pushTransporter() {
-        GL11.glPushMatrix();
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        MekanismRenderer.glowOn();
-        MekanismRenderer.blendOn();
+        @Nullable
+        private final EnumColor color;
+        private final HashedItem item;
+        private final int progress;
+
+        private TransportInformation(TransporterStack transporterStack) {
+            this.progress = transporterStack.progress;
+            this.color = transporterStack.color;
+            this.item = new HashedItem(transporterStack.itemStack);
+        }
+
+        @Override
+        public int hashCode() {
+            int code = 1;
+            code = 31 * code + progress;
+            code = 31 * code + item.hashCode();
+            if (color != null) {
+                code = 31 * code + color.hashCode();
+            }
+            return code;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof TransportInformation) {
+                TransportInformation other = (TransportInformation) obj;
+                return progress == other.progress && color == other.color && item.equals(other.item);
+            }
+            return false;
+        }
     }
 }

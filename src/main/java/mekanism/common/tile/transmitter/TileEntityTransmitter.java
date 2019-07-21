@@ -116,7 +116,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         if (canHaveIncompatibleNetworks() && getTransmitter().hasTransmitterNetwork()) {
             //We only need to check if we can have incompatible networks and if we actually have a network
             boolean networkUpdated = false;
-            for (EnumFacing side : EnumFacing.values()) {
+            for (EnumFacing side : EnumFacing.VALUES) {
                 if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
                     //Recheck the side that is now enabled, as we manually merge this
                     // cannot be simplified to a first match is good enough

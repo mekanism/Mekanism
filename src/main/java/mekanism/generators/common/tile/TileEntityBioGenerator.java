@@ -2,7 +2,6 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
@@ -152,8 +151,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public boolean canSetFacing(int facing) {
-        return facing != 0 && facing != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
     @Override
@@ -197,44 +196,24 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (resource != null && FluidRegistry.isFluidRegistered("bioethanol") && from != facing) {
-            if (resource.getFluid() == FluidRegistry.getFluid("bioethanol")) {
-                int fuelTransfer;
-                int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
-                int attemptTransfer = resource.amount;
-                if (attemptTransfer <= fuelNeeded) {
-                    fuelTransfer = attemptTransfer;
-                } else {
-                    fuelTransfer = fuelNeeded;
-                }
-                if (doFill) {
-                    bioFuelSlot.setFluid(bioFuelSlot.fluidStored + fuelTransfer);
-                }
-                return fuelTransfer;
-            }
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+        int fuelTransfer;
+        int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
+        int attemptTransfer = resource.amount;
+        if (attemptTransfer <= fuelNeeded) {
+            fuelTransfer = attemptTransfer;
+        } else {
+            fuelTransfer = fuelNeeded;
         }
-        return 0;
+        if (doFill) {
+            bioFuelSlot.setFluid(bioFuelSlot.fluidStored + fuelTransfer);
+        }
+        return fuelTransfer;
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("bioethanol"));
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return false;
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        return from != facing && fluid.getFluid() == FluidRegistry.getFluid("bioethanol");
     }
 
     @Override

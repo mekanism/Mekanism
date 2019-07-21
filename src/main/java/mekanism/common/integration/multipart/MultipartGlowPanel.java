@@ -36,7 +36,7 @@ public class MultipartGlowPanel implements IMultipart {
     public void onPartPlacedBy(IPartInfo part, EntityLivingBase placer, ItemStack stack) {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntityGlowPanel) {
-            EnumFacing facing = EnumFacing.values()[((EnumFaceSlot) part.getSlot()).ordinal()];
+            EnumFacing facing = EnumFacing.VALUES[((EnumFaceSlot) part.getSlot()).ordinal()];
             EnumColor col = EnumColor.DYES[stack.getItemDamage()];
             TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
             glowPanel.setOrientation(facing);

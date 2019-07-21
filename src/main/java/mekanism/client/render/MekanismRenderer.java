@@ -3,22 +3,24 @@ package mekanism.client.render;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tier.BaseTier;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -43,6 +45,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -51,19 +54,15 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer {
 
-    public static TextureAtlasSprite[] colors = new TextureAtlasSprite[256];
+    public static final GlowInfo NO_GLOW = new GlowInfo(0, 0, false);
+
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite laserIcon;
-    public static float GAS_RENDER_BASE = 0.2F;
+    public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
-    public static int[] directionMap = new int[]{3, 0, 1, 2};
     private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
     public static TextureAtlasSprite missingIcon;
-    private static float lightmapLastX;
-    private static float lightmapLastY;
-    private static boolean optifineBreak = false;
-    private static String[] simpleSides = new String[]{"Bottom", "Top", "Front", "Back", "Left", "Right"};
     private static TextureMap texMap = null;
 
     public static void init() {
@@ -123,7 +122,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getFluidTexture(FluidStack fluidStack, FluidType type) {
-        if (fluidStack == null || fluidStack.getFluid() == null || type == null) {
+        if (fluidStack == null || type == null) {
             return missingIcon;
         }
 
@@ -210,7 +209,7 @@ public class MekanismRenderer {
         }
 
         GlStateManager.pushMatrix();
-        GL11.glTranslated(object.minX, object.minY, object.minZ);
+        GlStateManager.translate((float) object.minX, (float) object.minY, (float) object.minZ);
         RenderResizableCuboid.INSTANCE.renderCube(object);
         GlStateManager.popMatrix();
     }
@@ -219,143 +218,154 @@ public class MekanismRenderer {
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
     }
 
-    public static void color(EnumColor color) {
-        color(color, 1.0F);
-    }
-
-    public static void color(EnumColor color, float alpha) {
-        color(color, alpha, 1.0F);
-    }
-
-    public static void color(EnumColor color, float alpha, float multiplier) {
-        GL11.glColor4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
-    }
-
+    //Color
     public static void resetColor() {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1, 1, 1, 1);
     }
 
-    public static TextureAtlasSprite getColorIcon(EnumColor color) {
-        return colors[color.ordinal()];
+    private static float getRed(int color) {
+        return (color >> 16 & 0xFF) / 255.0F;
     }
 
-    public static void glowOn() {
-        glowOn(15);
+    private static float getGreen(int color) {
+        return (color >> 8 & 0xFF) / 255.0F;
     }
 
-    public static void glowOn(int glow) {
-        GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-
-        try {
-            lightmapLastX = OpenGlHelper.lastBrightnessX;
-            lightmapLastY = OpenGlHelper.lastBrightnessY;
-        } catch (NoSuchFieldError e) {
-            optifineBreak = true;
-        }
-
-        float glowRatioX = Math.min((glow / 15F) * 240F + lightmapLastX, 240);
-        float glowRatioY = Math.min((glow / 15F) * 240F + lightmapLastY, 240);
-
-        if (!optifineBreak) {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);
-        }
-    }
-
-    public static void glowOff() {
-        if (!optifineBreak) {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
-        }
-
-        GL11.glPopAttrib();
-    }
-
-    public static void blendOn() {
-        GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_LIGHTING_BIT);
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    public static void blendOff() {
-        GL11.glPopAttrib();
-    }
-
-    /**
-     * Blender .objs have a different handedness of coordinate system to MC, so faces are wound backwards.
-     */
-    public static void cullFrontFace() {
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glCullFace(GL11.GL_FRONT);
-    }
-
-    public static void disableCullFace() {
-        GL11.glCullFace(GL11.GL_BACK);
-        GL11.glDisable(GL11.GL_CULL_FACE);
-    }
-
-    public static void colorFluidGLSM(FluidStack fluid) {
-        int color = fluid.getFluid().getColor(fluid);
-        if (color != -1) {
-            colorGLSM(color);
-        }
-    }
-
-    public static void colorGLSM(int color) {
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-        float alpha = (color >> 24 & 0xFF) / 255f;
-        GlStateManager.color(red, green, blue, alpha);
-    }
-
-    public static void colorFluid(FluidStack fluid) {
-        color(fluid.getFluid().getColor(fluid));
+    private static float getBlue(int color) {
+        return (color & 0xFF) / 255.0F;
     }
 
     public static void color(int color) {
-        float cR = (color >> 16 & 0xFF) / 255.0F;
-        float cG = (color >> 8 & 0xFF) / 255.0F;
-        float cB = (color & 0xFF) / 255.0F;
+        GlStateManager.color(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
+    }
 
-        GL11.glColor3f(cR, cG, cB);
+    public static void color(@Nullable FluidStack fluid, float fluidScale) {
+        if (fluid != null) {
+            int color = fluid.getFluid().getColor(fluid);
+            if (fluid.getFluid().isGaseous(fluid)) {
+                GlStateManager.color(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+            } else {
+                color(color);
+            }
+        }
+    }
+
+    public static void color(@Nullable FluidStack fluid) {
+        if (fluid != null && fluid.getFluid() != null) {
+            color(fluid.getFluid().getColor(fluid));
+        }
+    }
+
+    public static void color(@Nullable Fluid fluid) {
+        if (fluid != null) {
+            color(fluid.getColor());
+        }
+    }
+
+    public static void color(@Nullable GasStack gasStack) {
+        if (gasStack != null) {
+            color(gasStack.getGas());
+        }
+    }
+
+    public static void color(@Nullable Gas gas) {
+        if (gas != null) {
+            int color = gas.getTint();
+            GlStateManager.color(getRed(color), getGreen(color), getBlue(color));
+        }
+    }
+
+    public static void color(@Nonnull BaseTier tier) {
+        color(tier.getColor());
+    }
+
+    public static void color(@Nullable EnumColor color) {
+        color(color, 1.0F);
+    }
+
+    public static void color(@Nullable EnumColor color, float alpha) {
+        color(color, alpha, 1.0F);
+    }
+
+    public static void color(@Nullable EnumColor color, float alpha, float multiplier) {
+        if (color != null) {
+            GlStateManager.color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+        }
+    }
+
+    public static int getColorARGB(EnumColor color, float alpha) {
+        if (alpha < 0) {
+            alpha = 0;
+        } else if (alpha > 1) {
+            alpha = 1;
+        }
+        int argb = (int) (255 * alpha) << 24;
+        argb |= color.rgbCode[0] << 16;
+        argb |= color.rgbCode[1] << 8;
+        argb |= color.rgbCode[2];
+        return argb;
+    }
+
+    @Nonnull
+    public static GlowInfo enableGlow() {
+        return enableGlow(15);
+    }
+
+    @Nonnull
+    public static GlowInfo enableGlow(int glow) {
+        if (!FMLClientHandler.instance().hasOptifine() && glow > 0) {
+            GlowInfo info = new GlowInfo(OpenGlHelper.lastBrightnessX, OpenGlHelper.lastBrightnessY, true);
+            float glowStrength = (glow / 15F) * 240F;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
+            return info;
+        }
+        return NO_GLOW;
+    }
+
+    @Nonnull
+    public static GlowInfo enableGlow(@Nullable FluidStack fluid) {
+        return fluid == null ? NO_GLOW : enableGlow(fluid.getFluid().getLuminosity(fluid));
+    }
+
+    @Nonnull
+    public static GlowInfo enableGlow(@Nullable Fluid fluid) {
+        return fluid == null ? NO_GLOW : enableGlow(fluid.getLuminosity());
+    }
+
+    public static void disableGlow(@Nonnull GlowInfo info) {
+        if (info.glowEnabled) {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, info.lightmapLastX, info.lightmapLastY);
+        }
     }
 
     public static float getPartialTick() {
         return Minecraft.getMinecraft().getRenderPartialTicks();
     }
 
-    public static ResourceLocation getBlocksTexture() {
-        return TextureMap.LOCATION_BLOCKS_TEXTURE;
-    }
-
-    public static void glRotateForFacing(TileEntityBasicBlock tileEntity) {
-        switch (tileEntity.facing) /*TODO: switch the enum*/ {
+    public static void rotate(EnumFacing facing, float north, float south, float west, float east) {
+        switch (facing) {
             case NORTH:
-                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(north, 0, 1, 0);
                 break;
             case SOUTH:
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(south, 0, 1, 0);
                 break;
             case WEST:
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(west, 0, 1, 0);
                 break;
             case EAST:
-                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(east, 0, 1, 0);
                 break;
         }
     }
 
     @SubscribeEvent
     public void onStitch(TextureStitchEvent.Pre event) {
-        for (EnumColor color : EnumColor.values()) {
-            colors[color.ordinal()] = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_" + color.unlocalizedName));
-        }
-
         for (TransmissionType type : TransmissionType.values()) {
             overlays.put(type, event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/" + type.getTransmission() + "Overlay")));
         }
 
+        whiteIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/overlay/overlay_white"));
         energyIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidEnergy"));
         heatIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/liquid/LiquidHeat"));
         laserIcon = event.getMap().registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/Laser"));
@@ -373,7 +383,6 @@ public class MekanismRenderer {
         }
 
         FluidRenderer.resetDisplayInts();
-        RenderThermalEvaporationController.resetDisplayInts();
         RenderFluidTank.resetDisplayInts();
     }
 
@@ -455,8 +464,7 @@ public class MekanismRenderer {
             Arrays.fill(textures, tex);
         }
 
-        public void setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north,
-              TextureAtlasSprite south, TextureAtlasSprite west, TextureAtlasSprite east) {
+        public void setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite west, TextureAtlasSprite east) {
             textures[0] = down;
             textures[1] = up;
             textures[2] = north;
@@ -473,12 +481,12 @@ public class MekanismRenderer {
         public static DisplayInteger createAndStart() {
             DisplayInteger newInteger = new DisplayInteger();
             newInteger.display = GLAllocation.generateDisplayLists(1);
-            GL11.glNewList(newInteger.display, GL11.GL_COMPILE);
+            GlStateManager.glNewList(newInteger.display, GL11.GL_COMPILE);
             return newInteger;
         }
 
         public static void endList() {
-            GL11.glEndList();
+            GlStateManager.glEndList();
         }
 
         @Override
@@ -494,7 +502,7 @@ public class MekanismRenderer {
         }
 
         public void render() {
-            GL11.glCallList(display);
+            GlStateManager.callList(display);
         }
     }
 
@@ -506,6 +514,19 @@ public class MekanismRenderer {
         private RenderState(VertexFormat prevFormat, int prevMode) {
             this.prevFormat = prevFormat;
             this.prevMode = prevMode;
+        }
+    }
+
+    public static class GlowInfo {
+
+        private final boolean glowEnabled;
+        private final float lightmapLastX;
+        private final float lightmapLastY;
+
+        public GlowInfo(float lightmapLastX, float lightmapLastY, boolean glowEnabled) {
+            this.lightmapLastX = lightmapLastX;
+            this.lightmapLastY = lightmapLastY;
+            this.glowEnabled = glowEnabled;
         }
     }
 }

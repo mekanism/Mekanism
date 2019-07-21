@@ -17,9 +17,9 @@ public class RenderAdvancedSolarGeneratorItem {
     private static ModelAdvancedSolarGenerator advancedSolarGenerator = new ModelAdvancedSolarGenerator();
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(90F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(0.0F, 0.2F, 0.0F);
+        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotate(90, 0, 1, 0);
+        GlStateManager.translate(0, 0.2F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
         advancedSolarGenerator.render(0.022F);
     }

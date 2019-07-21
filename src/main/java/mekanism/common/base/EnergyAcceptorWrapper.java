@@ -9,6 +9,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
@@ -32,12 +34,12 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         EnergyAcceptorWrapper wrapper = null;
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side)) {
             wrapper = fromCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side, MekanismAcceptor::new);
+        } else if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
+            wrapper = fromCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side, TeslaAcceptor::new);
         } else if (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side)) {
             wrapper = fromCapability(tileEntity, CapabilityEnergy.ENERGY, side, ForgeAcceptor::new);
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             wrapper = new RFAcceptor((IEnergyReceiver) tileEntity);
-        } else if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
-            wrapper = fromCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side, TeslaAcceptor::new);
         } else if (MekanismUtils.useIC2()) {
             IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
             if (tile instanceof IEnergySink) {
@@ -53,8 +55,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
     /**
      * Note: It is assumed that a check for hasCapability was already ran.
      */
-    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability,
-          EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
+    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability, EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
         T acceptor = CapabilityUtils.getCapability(tileEntity, capability, side);
         if (acceptor != null) {
             return makeAcceptor.apply(acceptor);
@@ -170,7 +171,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromTesla(acceptor.givePower(toTesla(amount), simulate));
+            return TeslaIntegration.fromTesla(acceptor.givePower(TeslaIntegration.toTesla(amount), simulate));
         }
 
         @Override
@@ -181,14 +182,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         @Override
         public boolean needsEnergy(EnumFacing side) {
             return canReceiveEnergy(side);
-        }
-
-        public long toTesla(double joules) {
-            return Math.round(joules * MekanismConfig.current().general.TO_TESLA.val());
-        }
-
-        public double fromTesla(double tesla) {
-            return tesla * MekanismConfig.current().general.FROM_TESLA.val();
         }
     }
 
@@ -202,7 +195,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromForge(acceptor.receiveEnergy(toForge(amount), simulate));
+            return ForgeEnergyIntegration.fromForge(acceptor.receiveEnergy(ForgeEnergyIntegration.toForge(amount), simulate));
         }
 
         @Override
@@ -212,15 +205,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public boolean needsEnergy(EnumFacing side) {
-            return acceptor.canReceive();
-        }
-
-        public int toForge(double joules) {
-            return MekanismUtils.clampToInt(joules * MekanismConfig.current().general.TO_FORGE.val());
-        }
-
-        public double fromForge(double forge) {
-            return forge * MekanismConfig.current().general.FROM_FORGE.val();
+            return acceptor.receiveEnergy(1, true) > 0;
         }
     }
 }

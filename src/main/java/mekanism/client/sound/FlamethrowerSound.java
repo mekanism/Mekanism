@@ -1,5 +1,6 @@
 package mekanism.client.sound;
 
+import javax.annotation.Nonnull;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,31 +11,35 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class FlamethrowerSound extends PlayerSound {
 
-    private static ResourceLocation IDLE_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.idle");
-    private static ResourceLocation ON_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.active");
-    private static ResourceLocation OFF_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.active");
+    private static final ResourceLocation IDLE_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.idle");
+    private static final ResourceLocation ON_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.active");
 
-    private boolean inUse;
+    private boolean active;
 
-    public FlamethrowerSound(EntityPlayer player) {
-        super(player, IDLE_SOUND);
-        inUse = ClientTickHandler.isFlamethrowerOn(player);
-        this.positionedSoundLocation = inUse ? ON_SOUND : OFF_SOUND;
+    private FlamethrowerSound(@Nonnull EntityPlayer player, boolean active) {
+        super(player, active ? ON_SOUND : IDLE_SOUND);
+        this.active = active;
     }
 
     @Override
-    public boolean shouldPlaySound() {
-        boolean hasFlamethrower = ClientTickHandler.hasFlamethrower(player);
-        boolean isFlamethrowerOn = ClientTickHandler.isFlamethrowerOn(player);
-
-        if (!hasFlamethrower) {
+    public boolean shouldPlaySound(@Nonnull EntityPlayer player) {
+        if (!ClientTickHandler.hasFlamethrower(player)) {
             return false;
         }
+        return ClientTickHandler.isFlamethrowerOn(player) == active;
+    }
 
-        if (inUse != isFlamethrowerOn) {
-            inUse = isFlamethrowerOn;
-            this.positionedSoundLocation = inUse ? ON_SOUND : OFF_SOUND;
+    public static class Active extends FlamethrowerSound {
+
+        public Active(@Nonnull EntityPlayer player) {
+            super(player, true);
         }
-        return true;
+    }
+
+    public static class Idle extends FlamethrowerSound {
+
+        public Idle(@Nonnull EntityPlayer player) {
+            super(player, false);
+        }
     }
 }

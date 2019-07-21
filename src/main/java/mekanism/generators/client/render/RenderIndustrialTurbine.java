@@ -4,9 +4,13 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -15,7 +19,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntityTurbineCasing> {
@@ -28,8 +31,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
     }
 
     public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null
-            && tileEntity.structure.complex != null) {
+        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
             Coord4D coord = tileEntity.structure.complex;
 
@@ -53,30 +55,26 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = STEAM;
 
-                bindTexture(MekanismRenderer.getBlocksTexture());
+                bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
                 if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
-                    FluidRenderer.push();
-
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableCull();
+                    GlStateManager.enableBlend();
+                    GlStateManager.disableLighting();
+                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-
-                    MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
-
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount /
-                                                            (float) tileEntity.structure.getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tileEntity.structure.fluidStored);
+                    MekanismRenderer.color(tileEntity.structure.fluidStored, (float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure.getFluidCapacity());
                     FluidRenderer.getTankDisplay(data).render();
-
-                    MekanismRenderer.glowOff();
                     MekanismRenderer.resetColor();
-
-                    FluidRenderer.pop();
+                    MekanismRenderer.disableGlow(glowInfo);
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.disableCull();
+                    GlStateManager.popMatrix();
                 }
             }
         }
-    }
-
-    private int getStages(int height) {
-        return TankUpdateProtocol.FLUID_PER_TANK / 10;
     }
 }

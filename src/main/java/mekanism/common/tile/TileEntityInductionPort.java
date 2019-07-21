@@ -381,11 +381,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
-               || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.TESLA_HOLDER_CAPABILITY
-               || capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityEnergy.ENERGY
-               || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
-               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))
-               || super.hasCapability(capability, facing);
+               || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY
+               || capability == CapabilityEnergy.ENERGY || isTesla(capability, facing) || super.hasCapability(capability, facing);
     }
 
     @Override
@@ -394,14 +391,18 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return (T) this;
         }
-        if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(facing))
-            || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
+        if (isTesla(capability, facing)) {
             return (T) teslaManager.getWrapper(this, facing);
         }
         if (capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
         }
         return super.getCapability(capability, facing);
+    }
+
+    private boolean isTesla(@Nonnull Capability capability, EnumFacing side) {
+        return capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(side))
+               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(side));
     }
 
     @Nonnull

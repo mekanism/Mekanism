@@ -19,6 +19,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
@@ -168,13 +170,13 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                     setEnergy(getEnergy() + EnergizedItemManager.discharge(stack, MAX_ELECTRICITY - getEnergy()));
                 } else if (MekanismUtils.useTesla() && stack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)) {
                     ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
-                    long needed = Math.round((MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_TESLA.val());
-                    setEnergy(getEnergy() + producer.takePower(needed, false) * MekanismConfig.current().general.FROM_TESLA.val());
+                    long needed = TeslaIntegration.toTesla(MAX_ELECTRICITY - getEnergy());
+                    setEnergy(getEnergy() + TeslaIntegration.fromTesla(producer.takePower(needed, false)));
                 } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                     IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
                     if (storage.canExtract()) {
-                        int needed = MekanismUtils.clampToInt((MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_FORGE.val());
-                        setEnergy(getEnergy() + storage.extractEnergy(needed, false) * MekanismConfig.current().general.FROM_FORGE.val());
+                        int needed = ForgeEnergyIntegration.toForge(MAX_ELECTRICITY - getEnergy());
+                        setEnergy(getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
                     }
                 } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                     IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();

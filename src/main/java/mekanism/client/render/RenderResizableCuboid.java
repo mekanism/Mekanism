@@ -7,7 +7,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -89,7 +88,7 @@ public class RenderResizableCuboid {
     public static EnumFacing[] getNeighbours(EnumFacing face) {
         EnumFacing[] faces = new EnumFacing[4];
         int ordinal = 0;
-        for (EnumFacing next : EnumFacing.values()) {
+        for (EnumFacing next : EnumFacing.VALUES) {
             if (next.getAxis() != face.getAxis()) {
                 faces[ordinal] = next;
                 ordinal++;
@@ -130,7 +129,7 @@ public class RenderResizableCuboid {
      */
     public void renderCubeFromCentre(Model3D cuboid) {
         GlStateManager.pushMatrix();
-        GL11.glTranslated(-cuboid.sizeX() / 2d, -cuboid.sizeY() / 2d, -cuboid.sizeZ() / 2d);
+        GlStateManager.translate((float) -cuboid.sizeX() / 2F, (float) -cuboid.sizeY() / 2F, (float) -cuboid.sizeZ() / 2F);
         renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
         GlStateManager.popMatrix();
     }
@@ -167,7 +166,7 @@ public class RenderResizableCuboid {
 
         wr.begin(GL11.GL_QUADS, shadeTypes.vertexFormat);
 
-        for (EnumFacing face : EnumFacing.values()) {
+        for (EnumFacing face : EnumFacing.VALUES) {
             if (cube.shouldSideRender(face)) {
                 renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
             }
@@ -175,8 +174,8 @@ public class RenderResizableCuboid {
 
         tess.draw();
 
-        GlStateManager.disableAlpha();
         GlStateManager.enableLighting();
+        GlStateManager.disableAlpha();
         GlStateManager.enableFog();
     }
 
@@ -256,7 +255,6 @@ public class RenderResizableCuboid {
         Vec3d transVertex = locationFormula.transformToWorld(vertex);
         BlockPos pos = convertFloor(transVertex);
         IBlockState state = access.getBlockState(pos);
-        Block block = state.getBlock();
         int combindedLight = state.getPackedLightmapCoords(access, pos);
 
         skyLight[0] = combindedLight / 0x10000;
@@ -265,7 +263,7 @@ public class RenderResizableCuboid {
         distances[0] = transVertex.distanceTo(convertMiddle(pos));
 
         int index = 0;
-        EnumFacing[] testArray = allAround ? EnumFacing.values() : getNeighbours(face);
+        EnumFacing[] testArray = allAround ? EnumFacing.VALUES : getNeighbours(face);
         for (EnumFacing otherFace : testArray) {
             Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));

@@ -1,9 +1,12 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -235,9 +238,21 @@ public class ModelGasMask extends ModelBase {
         filterpipelower.render(size);
         filterpipeupper.render(size);
 
-        MekanismRenderer.blendOn();
-        MekanismRenderer.glowOn();
-        GL11.glColor4f(1, 1, 1, 0.3F);
+        pipecornerFL.render(size);
+        pipecornerFR.render(size);
+        pipecornerBR.render(size);
+        pipecornerBL.render(size);
+
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
+        lightL.render(size);
+        lightR.render(size);
+
+        //Glass needs more settings
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(1, 1, 1, 0.3F);
         GlStateManager.enableCull();
 
         glasstop.render(size);
@@ -249,18 +264,9 @@ public class ModelGasMask extends ModelBase {
 
         GlStateManager.disableCull();
         MekanismRenderer.resetColor();
-        MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
-
-        pipecornerFL.render(size);
-        pipecornerFR.render(size);
-        pipecornerBR.render(size);
-        pipecornerBL.render(size);
-
-        MekanismRenderer.glowOn();
-        lightL.render(size);
-        lightR.render(size);
-        MekanismRenderer.glowOff();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        MekanismRenderer.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

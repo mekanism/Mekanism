@@ -20,6 +20,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -87,23 +88,23 @@ public class BlockGasTank extends BlockMekanismContainer {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        EnumFacing change = EnumFacing.SOUTH;
         int side = MathHelper.floor((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-        int change = 3;
         switch (side) {
             case 0:
-                change = 2;
+                change = EnumFacing.NORTH;
                 break;
             case 1:
-                change = 5;
+                change = EnumFacing.EAST;
                 break;
             case 2:
-                change = 3;
+                change = EnumFacing.SOUTH;
                 break;
             case 3:
-                change = 4;
+                change = EnumFacing.WEST;
                 break;
         }
-        tileEntity.setFacing((short) change);
+        tileEntity.setFacing(change);
         tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
     }
 
@@ -144,8 +145,7 @@ public class BlockGasTank extends BlockMekanismContainer {
                             return true;
                         }
                         if (tileEntity != null) {
-                            int change = tileEntity.facing.rotateY().ordinal();
-                            tileEntity.setFacing((short) change);
+                            tileEntity.setFacing(tileEntity.facing.rotateY());
                             world.notifyNeighborsOfStateChange(pos, this, true);
                         }
                     } else {
@@ -242,7 +242,7 @@ public class BlockGasTank extends BlockMekanismContainer {
             TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
 
             for (EnumFacing dir : EnumFacing.VALUES) {
-                if (basicTile.canSetFacing(dir.ordinal())) {
+                if (basicTile.canSetFacing(dir)) {
                     valid[dir.ordinal()] = dir;
                 }
             }
@@ -256,8 +256,8 @@ public class BlockGasTank extends BlockMekanismContainer {
         if (tile instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
 
-            if (basicTile.canSetFacing(axis.ordinal())) {
-                basicTile.setFacing((short) axis.ordinal());
+            if (basicTile.canSetFacing(axis)) {
+                basicTile.setFacing(axis);
                 return true;
             }
         }
@@ -274,5 +274,12 @@ public class BlockGasTank extends BlockMekanismContainer {
     @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
+        return face == EnumFacing.UP || face == EnumFacing.DOWN ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
     }
 }

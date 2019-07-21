@@ -214,7 +214,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public void operate(MetallurgicInfuserRecipe recipe) {
         recipe.output(inventory, 2, 3, infuseStored);
         markDirty();
-        ejectorComponent.outputItems();
     }
 
     @Contract("null -> false")
@@ -320,8 +319,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     }
 
     @Override
-    public boolean canSetFacing(int side) {
-        return side != 0 && side != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
     @Override

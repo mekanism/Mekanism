@@ -2,25 +2,26 @@ package mekanism.common.content.entangloporter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
+import java.util.function.Supplier;
 import mekanism.api.TileNetworkList;
-import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.common.PacketHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 public class InventoryFrequency extends Frequency {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
+    private static final Supplier<FluidTank> FLUID_TANK_SUPPLIER = () -> new FluidTank(MekanismConfig.current().general.quantumEntangloporterFluidBuffer.val());
+    private static final Supplier<GasTank> GAS_TANK_SUPPLIER = () -> new GasTank(MekanismConfig.current().general.quantumEntangloporterGasBuffer.val());
 
     public double storedEnergy;
     public FluidTank storedFluid;
@@ -30,8 +31,8 @@ public class InventoryFrequency extends Frequency {
 
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
-        storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
-        storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
+        storedFluid = FLUID_TANK_SUPPLIER.get();
+        storedGas = GAS_TANK_SUPPLIER.get();
     }
 
     public InventoryFrequency(NBTTagCompound nbtTags) {
@@ -68,8 +69,8 @@ public class InventoryFrequency extends Frequency {
     @Override
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
-        storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
-        storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
+        storedFluid = FLUID_TANK_SUPPLIER.get();
+        storedGas = GAS_TANK_SUPPLIER.get();
         storedEnergy = nbtTags.getDouble("storedEnergy");
 
         if (nbtTags.hasKey("storedFluid")) {
@@ -77,6 +78,7 @@ public class InventoryFrequency extends Frequency {
         }
         if (nbtTags.hasKey("storedGas")) {
             storedGas.read(nbtTags.getCompoundTag("storedGas"));
+            storedGas.setMaxGas(MekanismConfig.current().general.quantumEntangloporterGasBuffer.val());
         }
 
         NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
@@ -95,20 +97,8 @@ public class InventoryFrequency extends Frequency {
     public void write(TileNetworkList data) {
         super.write(data);
         data.add(storedEnergy);
-        if (storedFluid.getFluid() != null) {
-            data.add(true);
-            data.add(FluidRegistry.getFluidName(storedFluid.getFluid()));
-            data.add(storedFluid.getFluidAmount());
-        } else {
-            data.add(false);
-        }
-        if (storedGas.getGas() != null) {
-            data.add(true);
-            data.add(storedGas.getGasType().getID());
-            data.add(storedGas.getStored());
-        } else {
-            data.add(false);
-        }
+        TileUtils.addTankData(data, storedFluid);
+        TileUtils.addTankData(data, storedGas);
         data.add(temperature);
     }
 
@@ -118,16 +108,8 @@ public class InventoryFrequency extends Frequency {
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
         storedEnergy = dataStream.readDouble();
-        if (dataStream.readBoolean()) {
-            storedFluid.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
-        } else {
-            storedFluid.setFluid(null);
-        }
-        if (dataStream.readBoolean()) {
-            storedGas.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
-        } else {
-            storedGas.setGas(null);
-        }
+        TileUtils.readTankData(dataStream, storedFluid);
+        TileUtils.readTankData(dataStream, storedGas);
         temperature = dataStream.readDouble();
     }
 }

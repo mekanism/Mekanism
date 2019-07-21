@@ -52,36 +52,24 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
         return fluidTank.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (structure != null && structure.fluidStored != null) {
-            if (resource != null && resource.getFluid() == structure.fluidStored.getFluid()) {
-                return fluidTank.drain(resource.amount, doDrain);
-            }
-        }
-        return null;
-    }
-
-    @Override
+    @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (structure != null) {
-            return fluidTank.drain(maxDrain, doDrain);
-        }
-        return null;
+        return fluidTank.drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && FluidContainerUtils.canDrain(structure.fluidStored, fluid);
     }
 
     @Nonnull

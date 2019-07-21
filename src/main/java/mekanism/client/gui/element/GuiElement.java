@@ -3,6 +3,7 @@ package mekanism.client.gui.element;
 import java.awt.Rectangle;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -14,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiElement {
 
-    public static Minecraft mc = Minecraft.getMinecraft();
+    public static final Minecraft mc = Minecraft.getMinecraft();
 
     protected final ResourceLocation RESOURCE;
     protected final IGuiWrapper guiObj;
@@ -73,6 +74,8 @@ public abstract class GuiElement {
             getFontRenderer().drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }
+        //Make sure the color does not leak from having drawn the string
+        MekanismRenderer.resetColor();
     }
 
     public FontRenderer getFontRenderer() {
@@ -105,7 +108,10 @@ public abstract class GuiElement {
 
     public static class Rectangle4i {
 
-        public int x, y, width, height;
+        public final int x;
+        public final int y;
+        public final int width;
+        public final int height;
 
         public Rectangle4i(int x, int y, int width, int height) {
             this.x = x;

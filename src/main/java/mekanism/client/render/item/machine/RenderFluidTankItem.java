@@ -6,13 +6,17 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,39 +42,38 @@ public class RenderFluidTankItem {
         GlStateManager.pushMatrix();
         if (fluid != null && fluidScale > 0) {
             GlStateManager.pushMatrix();
-            GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-            GL11.glEnable(GL11.GL_CULL_FACE);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            MekanismRenderer.blendOn();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            MekanismRenderer.bindTexture(MekanismRenderer.getBlocksTexture());
-            GL11.glTranslated(-0.5, -0.5, -0.5);
-
-            MekanismRenderer.glowOn(fluid.getFluid().getLuminosity(fluid));
-            MekanismRenderer.colorFluid(fluid);
+            MekanismRenderer.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
-
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
 
+            MekanismRenderer.color(fluid, fluidScale);
             if (fluid.getFluid().isGaseous(fluid)) {
-                GL11.glColor4f(1F, 1F, 1F, Math.min(1, fluidScale + MekanismRenderer.GAS_RENDER_BASE));
                 displayList[stages - 1].render();
             } else {
                 displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
-
             MekanismRenderer.resetColor();
-            MekanismRenderer.glowOff();
-
-            GL11.glPopAttrib();
-            MekanismRenderer.blendOff();
+            MekanismRenderer.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
             GlStateManager.popMatrix();
         }
 
-        GlStateManager.translate(0F, -0.9F, 0F);
+        GlStateManager.translate(0, -0.9F, 0);
         GlStateManager.scale(0.9F, 0.8F, 0.9F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
         fluidTank.render(0.073F, tier);
@@ -104,7 +107,7 @@ public class RenderFluidTankItem {
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            GL11.glEndList();
+            DisplayInteger.endList();
         }
 
         return displays;

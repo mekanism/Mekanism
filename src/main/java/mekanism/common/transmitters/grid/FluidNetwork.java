@@ -76,10 +76,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
         FluidStack fluid = transmitter.getBuffer();
-        if (fluid == null || fluid.getFluid() == null || fluid.amount == 0) {
+        if (fluid == null || fluid.amount == 0) {
             return;
         }
-        if (buffer == null || buffer.getFluid() == null || buffer.amount == 0) {
+        if (buffer == null || buffer.amount == 0) {
             buffer = fluid.copy();
             fluid.amount = 0;
             return;

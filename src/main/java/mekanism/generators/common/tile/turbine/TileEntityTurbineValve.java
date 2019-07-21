@@ -8,7 +8,6 @@ import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
@@ -309,10 +308,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        if (resource == null || !canFill(from, resource)) {
-            return 0;
-        }
+    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
         int filled = fluidTank.fill(resource, doFill);
         if (doFill) {
             structure.newSteamInput += filled;
@@ -324,25 +320,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        if (fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("steam"))) {
+    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+        if (fluid.getFluid() == FluidRegistry.getFluid("steam")) {
             return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
         }
-        return false;
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 
@@ -398,14 +379,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
                 return (T) this;
-            }
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
-            }
-            if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
+            } else if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
                 return (T) teslaManager.getWrapper(this, facing);
-            }
-            if (capability == CapabilityEnergy.ENERGY) {
+            } else if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
             }
         }

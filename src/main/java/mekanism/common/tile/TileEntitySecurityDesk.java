@@ -152,8 +152,10 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (dataStream.readBoolean()) {
                 clientOwner = PacketHandler.readString(dataStream);
+                ownerUUID = PacketHandler.readUUID(dataStream);
             } else {
                 clientOwner = null;
+                ownerUUID = null;
             }
             if (dataStream.readBoolean()) {
                 frequency = new SecurityFrequency(dataStream);
@@ -196,6 +198,8 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
         if (ownerUUID != null) {
             data.add(true);
             data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
+            data.add(ownerUUID.getMostSignificantBits());
+            data.add(ownerUUID.getLeastSignificantBits());
         } else {
             data.add(false);
         }

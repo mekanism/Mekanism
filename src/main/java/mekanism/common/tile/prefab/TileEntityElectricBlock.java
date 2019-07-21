@@ -368,10 +368,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
             return null;
         } else if (isStrictEnergy(capability)) {
             return (T) this;
-        } else if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         } else if (isTesla(capability, side)) {
             return (T) getTeslaEnergyWrapper(side);
+        } else if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         }
         return super.getCapability(capability, side);
     }

@@ -1,9 +1,12 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import org.lwjgl.opengl.GL11;
 
 public class ModelArmoredJetpack extends ModelBase {
@@ -239,33 +242,34 @@ public class ModelArmoredJetpack extends ModelBase {
         Bottomthruster.render(size);
 
         GlStateManager.pushMatrix();
-        MekanismRenderer.blendOn();
-        MekanismRenderer.glowOn();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         GlStateManager.enableCull();
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glColor4f(1, 1, 1, 0.2F);
+        GlStateManager.color(1, 1, 1, 0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);
 
         MekanismRenderer.resetColor();
         GlStateManager.disableCull();
-        MekanismRenderer.glowOff();
-        MekanismRenderer.blendOff();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
         GlStateManager.popMatrix();
 
-        MekanismRenderer.glowOn();
         light1.render(size);
         light2.render(size);
         light3.render(size);
         Packcore.render(size);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.0F, 0.0F, -0.0625F);
+        GlStateManager.translate(0, 0, -0.0625F);
 
         Rightlight.render(size);
         Leftlight.render(size);
-        MekanismRenderer.glowOff();
+        MekanismRenderer.disableGlow(glowInfo);
 
         Chestplate.render(size);
         Leftguardtop.render(size);

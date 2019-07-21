@@ -5,6 +5,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITierItem;
@@ -12,6 +13,8 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -28,24 +31,22 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, -1.0F, 0);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(0.0F, -1.0F, 0.0F);
-
-        MekanismRenderer.blendOn();
-
         energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
 
         for (EnumFacing side : EnumFacing.VALUES) {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
             energyCube.renderSide(0.0625F, side, side == EnumFacing.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getMinecraft().renderEngine);
         }
-
-        MekanismRenderer.blendOff();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
         GlStateManager.popMatrix();
 
         double energy = ItemDataUtils.getDouble(stack, "energyStored");
@@ -53,25 +54,27 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         if (energy / tier.getMaxEnergy() > 0.1) {
             GlStateManager.pushMatrix();
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-            MekanismRenderer.blendOn();
-            MekanismRenderer.glowOn();
-
-            int[] c = RenderEnergyCube.COLORS[tier.getBaseTier().ordinal()];
-
+            //Begin core color
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GL11.glColor4f((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (energy / tier.getMaxEnergy()));
-            GlStateManager.translate(0, (float) Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
-            GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
-            GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);
+            MekanismRenderer.color(tier.getBaseTier());
+            GlStateManager.translate(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
+            GlStateManager.rotate(4 * MekanismClient.ticksPassed, 0, 1, 0);
+            GlStateManager.rotate(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
             GlStateManager.popMatrix();
+            //End core color
 
-            MekanismRenderer.glowOff();
-            MekanismRenderer.blendOff();
-
+            MekanismRenderer.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
             GlStateManager.popMatrix();
         }
     }

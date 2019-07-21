@@ -26,8 +26,8 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(90, 0.0F, -1.0F, 0.0F);
+        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotate(90, 0, -1, 0);
         GlStateManager.scale(2.0F, 2.0F, 2.0F);
         GlStateManager.translate(0.2F, -1.43F, 0.12F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));

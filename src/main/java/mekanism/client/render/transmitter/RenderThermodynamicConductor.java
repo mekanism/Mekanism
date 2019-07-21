@@ -5,37 +5,21 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
-import org.lwjgl.opengl.GL11;
 
-public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor> {
+public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEntityThermodynamicConductor> {
 
     @Override
     public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        if (MekanismConfig.current().client.opaqueTransmitters.val()) {
-            return;
+        if (!MekanismConfig.current().client.opaqueTransmitters.val()) {
+            render(transmitter, x, y, z, 15);
         }
-
-        push();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder worldRenderer = tessellator.getBuffer();
-        GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
-
-        for (EnumFacing side : EnumFacing.VALUES) {
-            renderHeatSide(worldRenderer, side, transmitter);
-        }
-
-        MekanismRenderer.glowOn();
-
-        tessellator.draw();
-
-        MekanismRenderer.glowOff();
-        pop();
     }
 
-    public void renderHeatSide(BufferBuilder renderer, EnumFacing side, TileEntityThermodynamicConductor cable) {
-        bindTexture(MekanismRenderer.getBlocksTexture());
+    @Override
+    public void renderSide(BufferBuilder renderer, EnumFacing side, TileEntityThermodynamicConductor cable) {
+        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
     }
 }

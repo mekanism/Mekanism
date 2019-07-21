@@ -328,8 +328,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean canSetFacing(int side) {
-        return side != 0 && side != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
     @Nonnull
@@ -372,34 +372,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.byIndex(1)) {
-            return drain(from, resource.amount, doDrain);
-        }
-        return null;
-    }
-
-    @Override
-    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @Override
+    @Nullable
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (from == EnumFacing.byIndex(1)) {
-            return fluidTank.drain(maxDrain, doDrain);
-        }
-        return null;
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return false;
+        return fluidTank.drain(maxDrain, doDrain);
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return from == EnumFacing.byIndex(1);
+        return from == EnumFacing.byIndex(1) && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
     }
 
     @Override

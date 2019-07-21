@@ -4,10 +4,13 @@ import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,54 +25,42 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
     public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.isBurning()) {
             GlStateManager.pushMatrix();
-            GL11.glTranslated(x + 0.5, y - 1.5, z + 0.5);
+            GlStateManager.translate((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
-            MekanismRenderer.blendOn();
-            MekanismRenderer.glowOn();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-            EnumColor c;
-            double scale;
             long scaledTemp = Math.round(tileEntity.getPlasmaTemp() / 1E8);
+            float ticks = MekanismClient.ticksPassed + partialTick;
+            double scale = 1 + 0.7 * Math.sin(Math.toRadians(ticks * 3.14 * scaledTemp + 135F));
+            renderPart(EnumColor.AQUA, scale, ticks, scaledTemp, -6, -7, 0, 36);
 
-            c = EnumColor.AQUA;
+            scale = 1 + 0.8 * Math.sin(Math.toRadians(ticks * 3 * scaledTemp));
+            renderPart(EnumColor.RED, scale, ticks, scaledTemp, 4, 4, 0, 36);
 
-            GlStateManager.pushMatrix();
-            scale = 1 + 0.7 * Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3.14 * scaledTemp + 135F));
-            GL11.glScaled(scale, scale, scale);
-            GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), 1);
-            GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * -6 * scaledTemp, 0, 1, 0);
-            GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * -7 * scaledTemp, 0, 1, 1);
-            core.render(0.0625F);
-            GlStateManager.popMatrix();
+            scale = 1 - 0.9 * Math.sin(Math.toRadians(ticks * 4 * scaledTemp + 90F));
+            renderPart(EnumColor.ORANGE, scale, ticks, scaledTemp, 5, -3, -35, 106);
 
-            c = EnumColor.RED;
-
-            GlStateManager.pushMatrix();
-            scale = 1 + 0.8 * Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3 * scaledTemp));
-            GL11.glScaled(scale, scale, scale);
-            GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), 1);
-            GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4 * scaledTemp, 0, 1, 0);
-            GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4 * scaledTemp, 0, 1, 1);
-            core.render(0.0625F);
-            GlStateManager.popMatrix();
-
-            c = EnumColor.ORANGE;
-
-            GlStateManager.pushMatrix();
-            scale = 1 - 0.9 * Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 4 * scaledTemp + 90F));
-            GL11.glScaled(scale, scale, scale);
-            GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), 1);
-            GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 5 * scaledTemp - 35F, 0, 1, 0);
-            GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * -3 * scaledTemp + 70F, 0, 1, 1);
-            core.render(0.0625F);
-            GlStateManager.popMatrix();
-
-            MekanismRenderer.glowOff();
-            MekanismRenderer.blendOff();
-            MekanismRenderer.resetColor();
-
+            MekanismRenderer.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
             GlStateManager.popMatrix();
         }
+    }
+
+    private void renderPart(EnumColor color, double scale, float ticks, long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
+        float ticksScaledTemp = ticks * scaledTemp;
+        GlStateManager.pushMatrix();
+        GlStateManager.scale((float) scale, (float) scale, (float) scale);
+        MekanismRenderer.color(color);
+        GlStateManager.rotate(ticksScaledTemp * mult1 + shift1, 0, 1, 0);
+        GlStateManager.rotate(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
+        core.render(0.0625F);
+        MekanismRenderer.resetColor();
+        GlStateManager.popMatrix();
     }
 }

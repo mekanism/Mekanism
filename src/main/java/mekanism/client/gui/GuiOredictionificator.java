@@ -10,9 +10,9 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -25,8 +25,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -34,7 +32,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator> {
@@ -60,24 +57,23 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         ySize += 64;
     }
 
-    public int getScroll() {
+    private boolean overFilter(int xAxis, int yAxis, int yStart) {
+        return xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22;
+    }
+
+    private int getScroll() {
         return Math.max(Math.min((int) (scroll * 73), 73), 0);
     }
 
-    public int getFilterIndex() {
-        if (tileEntity.filters.size() <= 3) {
-            return 0;
-        }
-        return (int) ((tileEntity.filters.size() * scroll) - (3F / (float) tileEntity.filters.size()) * scroll);
+    private int getFilterIndex() {
+        return tileEntity.filters.size() <= 3 ? 0 : (int) (tileEntity.filters.size() * scroll - (3F / (float) tileEntity.filters.size()) * scroll);
     }
 
     @Override
     public void initGui() {
         super.initGui();
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
         buttonList.clear();
-        buttonList.add(new GuiButton(0, guiWidth + 10, guiHeight + 86, 142, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(new GuiButton(0, guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter")));
     }
 
     @Override
@@ -95,18 +91,11 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex() + i);
-                int yStart = i * 22 + 18;
                 if (!renderStacks.containsKey(filter)) {
                     updateRenderStacks();
                 }
-                ItemStack stack = renderStacks.get(filter);
-                if (!stack.isEmpty()) {
-                    GlStateManager.pushMatrix();
-                    RenderHelper.enableGUIStandardItemLighting();
-                    itemRender.renderItemAndEffectIntoGUI(stack, 13, yStart + 3);
-                    RenderHelper.disableStandardItemLighting();
-                    GlStateManager.popMatrix();
-                }
+                int yStart = i * 22 + 18;
+                renderItem(renderStacks.get(filter), 13, yStart + 3);
                 fontRenderer.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
                 renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
             }
@@ -115,26 +104,20 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(getGuiLocation());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-        drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
-        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-        int xAxis = mouseX - guiWidth;
-        int yAxis = mouseY - guiHeight;
+    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
+        drawTexturedModalRect(guiLeft + 154, guiTop + 18 + getScroll(), 232, 0, 12, 15);
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
-                boolean mouseOver = xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22;
+                boolean mouseOver = overFilter(xAxis, yAxis, yStart);
                 if (mouseOver) {
-                    MekanismRenderer.color(EnumColor.GREY, 3.0F);
+                    MekanismRenderer.color(EnumColor.GREY);
                 }
-                drawTexturedModalRect(guiWidth + 10, guiHeight + yStart, 0, 230, 142, 22);
-                MekanismRenderer.resetColor();
+                drawTexturedModalRect(guiLeft + 10, guiTop + yStart, 0, 230, 142, 22);
+                if (mouseOver) {
+                    MekanismRenderer.resetColor();
+                }
             }
         }
     }
@@ -143,8 +126,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = mouseX - (width - xSize) / 2;
-            int yAxis = mouseY - (height - ySize) / 2;
+            int xAxis = mouseX - guiLeft;
+            int yAxis = mouseY - guiTop;
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (tileEntity.filters.size() > 3) {
                     dragOffset = yAxis - (getScroll() + 18);
@@ -155,13 +138,9 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
             }
 
             for (int i = 0; i < 3; i++) {
-                if (tileEntity.filters.get(getFilterIndex() + i) != null) {
-                    int yStart = i * 22 + 18;
-                    if (xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22) {
-                        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        Mekanism.packetHandler.sendToServer(
-                              new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
-                    }
+                if (tileEntity.filters.get(getFilterIndex() + i) != null && overFilter(xAxis, yAxis, i * 22 + 18)) {
+                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                    Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
                 }
             }
         }

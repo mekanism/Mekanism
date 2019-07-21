@@ -3,12 +3,12 @@ package mekanism.common;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
-import mekanism.common.network.PacketFlamethrowerData.FlamethrowerPacket;
-import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketScubaTankData;
+import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
+import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -24,12 +24,14 @@ public class PlayerState {
         activeJetpacks.clear();
         activeGasmasks.clear();
         activeFlamethrowers.clear();
+        SoundHandler.clearPlayerSounds();
     }
 
-    public void clearPlayer(EntityPlayer p) {
-        activeJetpacks.remove(p.getUniqueID());
-        activeGasmasks.remove(p.getUniqueID());
-        activeFlamethrowers.remove(p.getUniqueID());
+    public void clearPlayer(UUID uuid) {
+        activeJetpacks.remove(uuid);
+        activeGasmasks.remove(uuid);
+        activeFlamethrowers.remove(uuid);
+        SoundHandler.clearPlayerSounds(uuid);
     }
 
     public void init(World world) {
@@ -57,12 +59,12 @@ public class PlayerState {
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(PacketJetpackData.JetpackDataMessage.UPDATE(uuid, isActive));
+                Mekanism.packetHandler.sendToServer(JetpackDataMessage.UPDATE(uuid, isActive));
             }
 
             // Start a sound playing if the person is now flying
             if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "jetpack");
+                SoundHandler.startSound(world, uuid, SoundType.JETPACK);
             }
         }
     }
@@ -100,12 +102,12 @@ public class PlayerState {
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(PacketScubaTankData.ScubaTankDataMessage.UPDATE(uuid, isActive));
+                Mekanism.packetHandler.sendToServer(ScubaTankDataMessage.UPDATE(uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a gasmask
             if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "gasmask");
+                SoundHandler.startSound(world, uuid, SoundType.GAS_MASK);
             }
         }
     }
@@ -131,6 +133,10 @@ public class PlayerState {
     // ----------------------
 
     public void setFlamethrowerState(UUID uuid, boolean isActive, boolean isLocal) {
+        setFlamethrowerState(uuid, isActive, isActive, isLocal);
+    }
+
+    public void setFlamethrowerState(UUID uuid, boolean hasFlameThrower, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeFlamethrowers.contains(uuid);
         boolean changed = alreadyActive != isActive;
         if (alreadyActive && !isActive) {
@@ -139,22 +145,46 @@ public class PlayerState {
             activeFlamethrowers.add(uuid); // Off -> on
         }
 
-        // If something changed and we're in a remote world, take appropriate action
-        if (changed && world.isRemote) {
-            // If the player is the "local" player, we need to tell the server the state has changed
-            if (isLocal) {
-                Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, null, uuid, isActive));
-            }
+        if (world.isRemote) {
+            boolean startSound;
+            // If something changed and we're in a remote world, take appropriate action
+            if (changed) {
+                // If the player is the "local" player, we need to tell the server the state has changed
+                if (isLocal) {
+                    Mekanism.packetHandler.sendToServer(FlamethrowerDataMessage.UPDATE(uuid, isActive));
+                }
 
-            // Start a sound playing if the person is now using a flamethrower
-            if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
-                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "flamethrower");
+                // Start a sound playing if the person is now using a flamethrower
+                startSound = isActive;
+            } else {
+                //Start the sound if it isn't already active, and still isn't, but has a flame thrower
+                // This allows us to catch and start playing the idle sound
+                //TODO: Currently this only happens for the local player as "having" a flame thrower is not
+                // synced from server to client. This is not that big a deal, though may be something we want
+                // to look into eventually
+                startSound = !isActive && hasFlameThrower;
+                //Note: If they just continue to hold (but not use) a flame thrower it "will" continue having this
+                // attempt to start the sound. This is not a major deal as the uuid gets checked before attempting
+                // to retrieve the player or actually creating a new sound object.
+            }
+            if (startSound && MekanismConfig.current().client.enablePlayerSounds.val()) {
+                SoundHandler.startSound(world, uuid, SoundType.FLAMETHROWER);
             }
         }
     }
 
     public boolean isFlamethrowerOn(EntityPlayer p) {
         return activeFlamethrowers.contains(p.getUniqueID());
+    }
+
+    public Set<UUID> getActiveFlamethrowers() {
+        return activeFlamethrowers;
+    }
+
+    public void setActiveFlamethrowers(Set<UUID> newActiveFlamethrowers) {
+        for (UUID activeUser : newActiveFlamethrowers) {
+            setFlamethrowerState(activeUser, true, false);
+        }
     }
 
 }

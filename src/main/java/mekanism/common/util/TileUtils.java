@@ -30,11 +30,7 @@ public class TileUtils {
     }
 
     public static void addTankData(TileNetworkList data, FluidTank tank) {
-        if (tank.getFluid() != null) {
-            data.add(tank.getFluid().writeToNBT(new NBTTagCompound()));
-        } else {
-            data.add(EMPTY_TAG_COMPOUND);
-        }
+        addFluidStack(data, tank.getFluid());
     }
 
     public static void addFluidStack(TileNetworkList data, FluidStack stack) {

@@ -1,17 +1,17 @@
 package mekanism.client.render.tileentity;
 
-import java.util.EnumMap;
-import java.util.Map;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.tier.EnergyCubeTier;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -22,18 +22,8 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergyCube> {
 
-    public static int[][] COLORS = new int[][]{new int[]{100, 210, 125}, new int[]{215, 85, 70}, new int[]{80, 125, 230}, new int[]{154, 120, 200}, new int[]{0, 0, 0}};
-    public static Map<EnergyCubeTier, ResourceLocation> resources = new EnumMap<>(EnergyCubeTier.class);
     public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube.png");
     public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png");
-
-    static {
-        if (resources.isEmpty()) {
-            for (EnergyCubeTier tier : EnergyCubeTier.values()) {
-                resources.put(tier, MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.getBaseTier().getSimpleName() + ".png"));
-            }
-        }
-    }
 
     private ModelEnergyCube model = new ModelEnergyCube();
     private ModelEnergyCore core = new ModelEnergyCore();
@@ -41,68 +31,64 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
     @Override
     public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-
-        bindTexture(baseTexture);
-
-        switch (tileEntity.facing.ordinal()) {
-            case 0: {
-                GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
-                GlStateManager.translate(0.0F, 1.0F, -1.0F);
+        switch (tileEntity.facing) {
+            case DOWN:
+                GlStateManager.rotate(90, -1, 0, 0);
+                GlStateManager.translate(0, 1.0F, -1.0F);
                 break;
-            }
-            case 1: {
-                GlStateManager.rotate(90F, 1.0F, 0.0F, 0.0F);
-                GlStateManager.translate(0.0F, 1.0F, 1.0F);
+            case UP:
+                GlStateManager.rotate(90, 1, 0, 0);
+                GlStateManager.translate(0, 1.0F, 1.0F);
                 break;
-            }
-            case 2:
-                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
-                break;
-            case 3:
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
-                break;
-            case 4:
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
-                break;
-            case 5:
-                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
+            default:
+                //Otherwise use the helper method for handling different face options because it is one of them
+                MekanismRenderer.rotate(tileEntity.facing, 0, 180, 90, 270);
                 break;
         }
 
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F, tileEntity.tier, rendererDispatcher.renderEngine, false);
 
-        for (EnumFacing side : EnumFacing.values()) {
+        for (EnumFacing side : EnumFacing.VALUES) {
             bindTexture(baseTexture);
             model.renderSide(0.0625F, side, tileEntity.configComponent.getOutput(TransmissionType.ENERGY, side).ioState, tileEntity.tier, rendererDispatcher.renderEngine);
         }
 
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
         GlStateManager.popMatrix();
 
         if (tileEntity.getEnergy() / tileEntity.getMaxEnergy() > 0.1) {
             GlStateManager.pushMatrix();
-            GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+            GlStateManager.translate((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
             bindTexture(coreTexture);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-            MekanismRenderer.blendOn();
-            MekanismRenderer.glowOn();
-
-            int[] c = COLORS[tileEntity.tier.getBaseTier().ordinal()];
-
+            //Begin core color
+            float ticks = MekanismClient.ticksPassed + partialTick;
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GL11.glColor4f((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (tileEntity.getEnergy() / tileEntity.getMaxEnergy()));
-            GlStateManager.translate(0, (float) Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
-            GlStateManager.rotate((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
-            GlStateManager.rotate(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
+            MekanismRenderer.color(tileEntity.tier.getBaseTier());
+            GlStateManager.translate(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            GlStateManager.rotate(4 * ticks, 0, 1, 0);
+            GlStateManager.rotate(36F + 4 * ticks, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
             GlStateManager.popMatrix();
+            //End core color
 
-            MekanismRenderer.glowOff();
-            MekanismRenderer.blendOff();
-
+            MekanismRenderer.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
             GlStateManager.popMatrix();
         }
 

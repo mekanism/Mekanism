@@ -2,6 +2,7 @@ package mekanism.client.entity;
 
 import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -36,14 +37,9 @@ public class ParticleLaser extends Particle {
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         Tessellator tessellator = Tessellator.getInstance();
-
         tessellator.draw();
 
         GlStateManager.pushMatrix();
-        GL11.glPushAttrib(GL11.GL_POLYGON_BIT + GL11.GL_ENABLE_BIT);
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        MekanismRenderer.glowOn();
-
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
         float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
         float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - interpPosZ);
@@ -51,10 +47,6 @@ public class ParticleLaser extends Particle {
         GlStateManager.translate(newX, newY, newZ);
 
         switch (direction) {
-            case UP:
-            case DOWN:
-            default:
-                break;
             case WEST:
             case EAST:
                 GlStateManager.rotate(90, 0, 0, 1);
@@ -63,42 +55,35 @@ public class ParticleLaser extends Particle {
             case SOUTH:
                 GlStateManager.rotate(90, 1, 0, 0);
                 break;
+            default:
+                break;
         }
+        drawLaser(buffer, tessellator);
+        GlStateManager.popMatrix();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+    }
 
+    private void drawLaser(BufferBuilder buffer, Tessellator tessellator) {
         float uMin = particleTexture.getInterpolatedU(0);
         float uMax = particleTexture.getInterpolatedU(16);
         float vMin = particleTexture.getInterpolatedV(0);
         float vMax = particleTexture.getInterpolatedV(16);
+        GlStateManager.disableCull();
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
+        drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 45);
+        drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 90);
+        MekanismRenderer.disableGlow(glowInfo);
+        GlStateManager.enableCull();
+    }
 
-        GlStateManager.rotate(45, 0, 1, 0);
+    private void drawComponent(BufferBuilder buffer, Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, float angle) {
+        GlStateManager.rotate(angle, 0, 1, 0);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin)
-              .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax)
-              .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        buffer.pos(particleScale, length / 2, 0).tex(uMax, vMax)
-              .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        buffer.pos(particleScale, -length / 2, 0).tex(uMax, vMin)
-              .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        buffer.pos(particleScale, length / 2, 0).tex(uMax, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        buffer.pos(particleScale, -length / 2, 0).tex(uMax, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
         tessellator.draw();
-
-        GlStateManager.rotate(90, 0, 1, 0);
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin)
-              .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax)
-              .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        buffer.pos(particleScale, length / 2, 0).tex(uMax, vMax)
-              .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        buffer.pos(particleScale, -length / 2, 0).tex(uMax, vMin)
-              .color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
-        tessellator.draw();
-
-        MekanismRenderer.glowOff();
-        GL11.glPopAttrib();
-        GlStateManager.popMatrix();
-
-        buffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
     }
 
     @Override

@@ -131,7 +131,6 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
     public void operate(RECIPE recipe) {
         recipe.operate(inventory, 0, 1, 2);
         markDirty();
-        ejectorComponent.outputItems();
     }
 
     @Override

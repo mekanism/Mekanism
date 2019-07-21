@@ -21,6 +21,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
@@ -53,6 +54,7 @@ import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -85,7 +87,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
-    public static int[] EJECT_INV;
     public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
     public HashList<MinerFilter> filters = new HashList<>();
@@ -261,12 +262,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                 TileEntity ejectInv = getEjectInv();
                 TileEntity ejectTile = getEjectTile();
                 if (ejectInv != null && ejectTile != null) {
+                    ILogisticalTransporter capability = CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
                     TransitResponse response;
-                    if (CapabilityUtils.hasCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite())) {
-                        response = TransporterUtils.insert(ejectTile, CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite()),
-                              ejectMap, null, true, 0);
-                    } else {
+                    if (capability == null) {
                         response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, facing.getOpposite(), false);
+                    } else {
+                        response = TransporterUtils.insert(ejectTile, capability, ejectMap, null, true, 0);
                     }
                     if (!response.isEmpty()) {
                         response.getInvStack(ejectTile, facing.getOpposite()).use();
@@ -401,13 +402,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         TransitRequest request = new TransitRequest();
         for (int i = 27 - 1; i >= 0; i--) {
             ItemStack stack = inventory.get(i);
-            if (!stack.isEmpty()) {
-                if (isReplaceStack(stack)) {
-                    continue;
-                }
-                if (!request.hasType(stack)) {
-                    request.addItem(stack, i);
-                }
+            if (!stack.isEmpty() && !isReplaceStack(stack)) {
+                request.addItem(stack, i);
             }
         }
         return request;
@@ -450,7 +446,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public TileEntity getEjectInv() {
         final EnumFacing side = facing.getOpposite();
         final BlockPos pos = getPos().up().offset(side, 2);
-        if(world.isBlockLoaded(pos)) {
+        if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }
         return null;
@@ -852,8 +848,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean canSetFacing(int side) {
-        return side != 0 && side != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
     @Override
@@ -882,7 +878,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public TileEntity getEjectTile() {
         final EnumFacing side = facing.getOpposite();
         final BlockPos pos = getPos().up().offset(side);
-        if(world.isBlockLoaded(pos)) {
+        if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }
         return null;
@@ -964,7 +960,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             while (iter.hasNext()) {
                 MinerFilter filter = iter.next();
                 if (filter instanceof MItemStackFilter) {
-                    if (MekanismUtils.getID(((MItemStackFilter) filter).itemType) == id) {
+                    if (MekanismUtils.getID(((MItemStackFilter) filter).getItemStack()) == id) {
                         iter.remove();
                         return new Object[]{"Removed filter."};
                     }
@@ -1169,17 +1165,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
         } else if (isStrictEnergy(capability)) {
             return (T) this;
-        } else if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         } else if (isTesla(capability, side)) {
             return (T) getTeslaEnergyWrapper(side);
+        } else if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         }
         return getCapability(capability, side);
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side,
-          @Nonnull Vec3i offset) {
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Input
             if (offset.equals(new Vec3i(0, 1, 0))) {
@@ -1235,5 +1230,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             chunkSet = new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream().map(Chunk3D::getPos).collect(Collectors.toSet());
         }
         return chunkSet;
+    }
+
+    @Nonnull
+    @Override
+    public BlockFaceShape getOffsetBlockFaceShape(@Nonnull EnumFacing face, @Nonnull Vec3i offset) {
+        if (offset.equals(new Vec3i(0, 1, 0))) {
+            return BlockFaceShape.SOLID;
+        }
+        EnumFacing back = facing.getOpposite();
+        if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
+            return BlockFaceShape.SOLID;
+        }
+        return BlockFaceShape.UNDEFINED;
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
@@ -29,6 +30,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockGasTank;
@@ -55,8 +57,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -512,7 +512,7 @@ public final class MekanismUtils {
      * @param pos   Position of the block
      */
     public static void updateBlock(World world, BlockPos pos) {
-        if(!world.isBlockLoaded(pos)) {
+        if (!world.isBlockLoaded(pos)) {
             return;
         }
         //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
@@ -739,7 +739,7 @@ public final class MekanismUtils {
             case EU:
                 return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_IC2.val(), ElectricUnit.ELECTRICAL_UNITS);
             case T:
-                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_TESLA.val(), ElectricUnit.TESLA);
+                return UnitDisplayUtils.getDisplayShort(TeslaIntegration.toTesla(energy), ElectricUnit.TESLA);
         }
         return "error";
     }
@@ -902,14 +902,14 @@ public final class MekanismUtils {
     }
 
     /**
-     * Finds the output of a defined InventoryCrafting grid.
+     * Finds the output of a brute forced repairing action
      *
      * @param inv   - InventoryCrafting to check
      * @param world - world reference
      *
      * @return output ItemStack
      */
-    public static ItemStack findMatchingRecipe(InventoryCrafting inv, World world) {
+    public static ItemStack findRepairRecipe(InventoryCrafting inv, World world) {
         NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             if (!inv.getStackInSlot(i).isEmpty()) {
@@ -935,8 +935,7 @@ public final class MekanismUtils {
             int solve = Math.max(0, theItem.getMaxDamage() - value);
             return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
         }
-        IRecipe potentialResult = CraftingManager.findMatchingRecipe(inv, world);
-        return potentialResult != null ? potentialResult.getRecipeOutput() : ItemStack.EMPTY;
+        return ItemStack.EMPTY;
     }
 
     /**
@@ -1077,12 +1076,15 @@ public final class MekanismUtils {
 
     /**
      * Gets a tile entity if the location is loaded
+     *
      * @param world - world
-     * @param pos - position
+     * @param pos   - position
+     *
      * @return tile entity if found, null if either not found or not loaded
      */
+    @Nullable
     public static TileEntity getTileEntity(World world, BlockPos pos) {
-        if(world != null && world.isBlockLoaded(pos)) {
+        if (world != null && world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
         }
         return null;

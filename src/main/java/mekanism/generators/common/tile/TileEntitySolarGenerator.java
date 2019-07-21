@@ -41,8 +41,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public boolean canSetFacing(int facing) {
-        return facing != 0 && facing != 1;
+    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
 
@@ -74,7 +74,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
             // significant penalty.
-            seesSun = world.isDaytime() && world.canSeeSky(getPos().up(4)) && !world.provider.isNether();
+            seesSun = world.isDaytime() && canSeeSky() && !world.provider.isNether();
 
             if (canOperate()) {
                 setActive(true);
@@ -83,6 +83,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
                 setActive(false);
             }
         }
+    }
+
+    protected boolean canSeeSky() {
+        return world.canSeeSky(getPos());
     }
 
     @Override

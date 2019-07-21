@@ -7,6 +7,7 @@ import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.EnumOption;
 import mekanism.common.config.options.IntOption;
 import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
 
@@ -105,9 +106,15 @@ public class GeneralConfig extends BaseConfig {
     public final DoubleOption ENERGY_PER_REDSTONE = new DoubleOption(this, "general", "EnergyPerRedstone", 10000D,
           "How much energy (Joules) a piece of redstone gives in machines.");
 
-    public final IntOption DISASSEMBLER_USAGE = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
+    public final IntOption disassemblerEnergyUsage = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
           "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)");
 
+    public final IntOption disassemblerEnergyUsageHoe = new IntOption(this, "general", "DisassemblerEnergyUsageHoe", 10,
+          "Cost in Joules of using the Atomic Disassembler as a hoe.");
+
+    public final IntOption disassemblerEnergyUsageWeapon = new IntOption(this, "general", "DisassemblerEnergyUsageWeapon", 2000,
+          "Cost in Joules of using the Atomic Disassembler as a weapon.");
+  
     public final IntOption DISASSEMBLER_RANGE = new IntOption(this, "general", "DisassemblerMiningRange", 10,
             "The Range of the Atimic Disassembler Extended Vein Mining.");
 
@@ -116,6 +123,14 @@ public class GeneralConfig extends BaseConfig {
 
     public final BooleanOption DISASSEMBER_EXTENDED = new BooleanOption(this, "general", "DisassemblerExtendedMining", true,
             "Enable Extended Vein Mining.");
+
+    public final IntOption disassemblerDamageMin = new IntOption(this, "general", "DisassemblerDamageMin", 4,
+          "The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)");
+
+    public final IntOption disassemblerDamageMax = new IntOption(this, "general", "DisassemblerDamageMax", 20,
+          "The amount of damage the Atomic Disassembler does when it has at least DisassemblerEnergyUsageWeapon power stored. (Value is in number of half hearts)");
+
+    public final DoubleOption disassemblerBatteryCapacity = new DoubleOption(this, "general", "DisassemblerBatteryCapacity", 1000000, "Maximum amount (joules) of energy the Atomic Disassembler can contain", 0, Double.MAX_VALUE).setRequiresGameRestart(true);
 
     public final IntOption VOICE_PORT = new IntOption(this, "general", "VoicePort", 36123,
           "TCP port for the Voice server to listen on.", 1, 65535);
@@ -197,7 +212,13 @@ public class GeneralConfig extends BaseConfig {
           "Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter.");
 
     public final DoubleOption quantumEntangloporterEnergyTransfer = new DoubleOption(this, "general", "QuantumEntangloporterEnergyTransfer", 16000000D,
-          "Maximum buffer of an Entangoloporter frequency.");
+          "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency.", 0, Double.MAX_VALUE).setRequiresWorldRestart(true);
+
+    public final IntOption quantumEntangloporterFluidBuffer = new IntOption(this, "general", "quantumEntangloporterFluidBuffer", GasTankTier.ULTIMATE.getBaseStorage(),
+          "Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.", 0, Integer.MAX_VALUE).setRequiresWorldRestart(true);
+
+    public final IntOption quantumEntangloporterGasBuffer = new IntOption(this, "general", "quantumEntangloporterGasBuffer", GasTankTier.ULTIMATE.getBaseStorage(),
+          "Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.", 0, Integer.MAX_VALUE).setRequiresWorldRestart(true);
 
     public final BooleanOption blacklistIC2 = new BooleanOption(this, "general", "BlacklistIC2Power", false,
           "Disables IC2 power integration. Requires world restart (server-side option in SMP).");
