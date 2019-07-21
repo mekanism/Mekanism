@@ -393,4 +393,9 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
         }
         return false;
     }
+
+    @Override
+    public double getUsage() {
+        return 30;
+    }
 }

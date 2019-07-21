@@ -394,4 +394,14 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
     public int getGuiID() {
         return 7;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.rotaryCondensentrator.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.rotaryCondensentrator.val();
+    }
 }

@@ -400,4 +400,14 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
     public int getGuiID() {
         return 2;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.digitalMiner.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.digitalMiner.val();
+    }
 }

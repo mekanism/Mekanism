@@ -4,5 +4,16 @@ package mekanism.common.block.interfaces;
  * Implement this if the block is electric
  */
 public interface IBlockElectric {
-    //TODO: This might just go away after redoing the ItemBlock stuff
+
+    default double getUsage() {
+        return 0;
+    }
+
+    default double getConfigStorage() {
+        return 400 * getUsage();
+    }
+
+    default double getStorage() {
+        return Math.max(getConfigStorage(), getUsage());
+    }
 }

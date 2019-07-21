@@ -386,4 +386,14 @@ public class BlockEnergizedSmelter extends BlockMekanismContainer implements IBl
     public int getGuiID() {
         return 16;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.energizedSmelter.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.energizedSmelter.val();
+    }
 }

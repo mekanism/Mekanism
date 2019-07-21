@@ -384,4 +384,9 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
     public int getGuiID() {
         return 53;
     }
+
+    @Override
+    public double getUsage() {
+        return 100;
+    }
 }

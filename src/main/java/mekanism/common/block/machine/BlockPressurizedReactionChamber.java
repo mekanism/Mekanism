@@ -386,4 +386,14 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
     public int getGuiID() {
         return 40;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.pressurizedReactionBase.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.pressurizedReactionBase.val();
+    }
 }

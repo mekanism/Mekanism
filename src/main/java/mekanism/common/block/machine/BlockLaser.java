@@ -396,4 +396,14 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
         }
         return false;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.laser.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.laser.val();
+    }
 }

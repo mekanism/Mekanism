@@ -386,4 +386,14 @@ public class BlockPurificationChamber extends BlockMekanismContainer implements 
     public int getGuiID() {
         return 15;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.purificationChamber.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.purificationChamber.val();
+    }
 }

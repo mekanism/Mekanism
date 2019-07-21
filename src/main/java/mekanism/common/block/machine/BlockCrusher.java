@@ -385,4 +385,14 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
     public int getGuiID() {
         return 6;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.crusher.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.crusher.val();
+    }
 }

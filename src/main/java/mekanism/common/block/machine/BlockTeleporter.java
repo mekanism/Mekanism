@@ -383,4 +383,14 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     public int getGuiID() {
         return 13;
     }
+
+    @Override
+    public double getUsage() {
+        return 12500;
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.teleporter.val();
+    }
 }

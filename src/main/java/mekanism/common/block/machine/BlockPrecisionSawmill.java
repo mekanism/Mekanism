@@ -386,4 +386,14 @@ public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBl
     public int getGuiID() {
         return 34;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.precisionSawmill.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.precisionSawmill.val();
+    }
 }

@@ -386,4 +386,14 @@ public class BlockElectrolyticSeparator extends BlockMekanismContainer implement
     public int getGuiID() {
         return 32;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().general.FROM_H2.val() * 2;
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.electrolyticSeparator.val();
+    }
 }

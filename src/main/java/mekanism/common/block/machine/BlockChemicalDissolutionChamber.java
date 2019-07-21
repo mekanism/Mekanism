@@ -387,4 +387,14 @@ public class BlockChemicalDissolutionChamber extends BlockMekanismContainer impl
     public int getGuiID() {
         return 35;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.chemicalDissolutionChamber.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.chemicalDissolutionChamber.val();
+    }
 }

@@ -385,4 +385,14 @@ public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlo
     public int getGuiID() {
         return 30;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.chemicalInfuser.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.chemicalInfuser.val();
+    }
 }

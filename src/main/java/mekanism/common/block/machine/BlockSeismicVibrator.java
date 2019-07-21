@@ -404,4 +404,14 @@ public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlo
     public int getGuiID() {
         return 39;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.seismicVibrator.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.seismicVibrator.val();
+    }
 }

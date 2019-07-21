@@ -385,4 +385,14 @@ public class BlockChemicalWasher extends BlockMekanismContainer implements IBloc
     public int getGuiID() {
         return 36;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.chemicalWasher.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.chemicalWasher.val();
+    }
 }

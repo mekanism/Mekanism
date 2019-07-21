@@ -391,4 +391,14 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
         }
         return false;
     }
+
+    @Override
+    public double getUsage() {
+        return 25;
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.chargePad.val();
+    }
 }

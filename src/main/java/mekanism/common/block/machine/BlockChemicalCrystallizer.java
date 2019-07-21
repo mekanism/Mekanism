@@ -387,4 +387,14 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
     public int getGuiID() {
         return 37;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.chemicalCrystallizer.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.chemicalCrystallizer.val();
+    }
 }

@@ -387,4 +387,14 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
     public int getGuiID() {
         return 29;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.oxidationChamber.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.oxidationChamber.val();
+    }
 }

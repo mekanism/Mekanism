@@ -386,4 +386,14 @@ public class BlockFormulaicAssemblicator extends BlockMekanismContainer implemen
     public int getGuiID() {
         return 56;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.formulaicAssemblicator.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.formulaicAssemblicator.val();
+    }
 }

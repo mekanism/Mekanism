@@ -401,4 +401,14 @@ public class BlockFluidicPlenisher extends BlockMekanismContainer implements IBl
     public int getGuiID() {
         return 42;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.fluidicPlenisher.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.fluidicPlenisher.val();
+    }
 }

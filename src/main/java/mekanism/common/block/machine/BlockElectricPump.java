@@ -399,4 +399,14 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     public int getGuiID() {
         return 17;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.electricPump.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.electricPump.val();
+    }
 }

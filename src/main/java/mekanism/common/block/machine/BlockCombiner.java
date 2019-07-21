@@ -385,4 +385,14 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
     public int getGuiID() {
         return 5;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.combiner.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.combiner.val();
+    }
 }

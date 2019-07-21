@@ -386,4 +386,14 @@ public class BlockEnrichmentChamber extends BlockMekanismContainer implements IB
     public int getGuiID() {
         return 3;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.enrichmentChamber.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.enrichmentChamber.val();
+    }
 }

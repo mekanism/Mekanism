@@ -386,4 +386,14 @@ public class BlockChemicalInjectionChamber extends BlockMekanismContainer implem
     public int getGuiID() {
         return 31;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.chemicalInjectionChamber.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.chemicalInjectionChamber.val();
+    }
 }

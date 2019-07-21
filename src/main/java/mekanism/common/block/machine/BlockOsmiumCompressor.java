@@ -386,4 +386,14 @@ public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBl
     public int getGuiID() {
         return 4;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.osmiumCompressor.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.osmiumCompressor.val();
+    }
 }

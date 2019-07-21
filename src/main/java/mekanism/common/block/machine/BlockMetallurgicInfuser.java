@@ -388,4 +388,14 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
     public int getGuiID() {
         return 12;
     }
+
+    @Override
+    public double getUsage() {
+        return MekanismConfig.current().usage.metallurgicInfuser.val();
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return MekanismConfig.current().storage.metallurgicInfuser.val();
+    }
 }
