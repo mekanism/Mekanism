@@ -10,7 +10,6 @@ import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
-import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.PortalHelper;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockBoilerCasing;
@@ -68,6 +67,13 @@ import mekanism.common.block.machine.BlockSolarNeutronActivator;
 import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
+import mekanism.common.block.transmitter.BlockDiversionTransporter;
+import mekanism.common.block.transmitter.BlockLogisticalTransporter;
+import mekanism.common.block.transmitter.BlockMechanicalPipe;
+import mekanism.common.block.transmitter.BlockPressurizedTube;
+import mekanism.common.block.transmitter.BlockRestrictiveTransporter;
+import mekanism.common.block.transmitter.BlockThermodynamicConductor;
+import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockCardboardBox;
@@ -82,12 +88,17 @@ import mekanism.common.item.ItemBlockResource;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.BinTier;
+import mekanism.common.tier.CableTier;
+import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
+import mekanism.common.tier.PipeTier;
+import mekanism.common.tier.TransporterTier;
+import mekanism.common.tier.TubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -221,33 +232,33 @@ public enum MekanismBlock {
     ULTIMATE_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ULTIMATE), ItemBlockEnergyCube::new),
     CREATIVE_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.CREATIVE), ItemBlockEnergyCube::new),
 
-    BASIC_UNIVERSAL_CABLE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ADVANCED_UNIVERSAL_CABLE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ELITE_UNIVERSAL_CABLE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ULTIMATE_UNIVERSAL_CABLE(new BlockTransmitter(), ItemBlockTransmitter::new),
+    BASIC_UNIVERSAL_CABLE(new BlockUniversalCable(CableTier.BASIC), ItemBlockTransmitter::new),
+    ADVANCED_UNIVERSAL_CABLE(new BlockUniversalCable(CableTier.ADVANCED), ItemBlockTransmitter::new),
+    ELITE_UNIVERSAL_CABLE(new BlockUniversalCable(CableTier.ELITE), ItemBlockTransmitter::new),
+    ULTIMATE_UNIVERSAL_CABLE(new BlockUniversalCable(CableTier.ULTIMATE), ItemBlockTransmitter::new),
 
-    BASIC_MECHANICAL_PIPE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ADVANCED_MECHANICAL_PIPE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ELITE_MECHANICAL_PIPE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ULTIMATE_MECHANICAL_PIPE(new BlockTransmitter(), ItemBlockTransmitter::new),
+    BASIC_MECHANICAL_PIPE(new BlockMechanicalPipe(PipeTier.BASIC), ItemBlockTransmitter::new),
+    ADVANCED_MECHANICAL_PIPE(new BlockMechanicalPipe(PipeTier.ADVANCED), ItemBlockTransmitter::new),
+    ELITE_MECHANICAL_PIPE(new BlockMechanicalPipe(PipeTier.ELITE), ItemBlockTransmitter::new),
+    ULTIMATE_MECHANICAL_PIPE(new BlockMechanicalPipe(PipeTier.ULTIMATE), ItemBlockTransmitter::new),
 
-    BASIC_PRESSURIZED_TUBE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ADVANCED_PRESSURIZED_TUBE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ELITE_PRESSURIZED_TUBE(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ULTIMATE_PRESSURIZED_TUBE(new BlockTransmitter(), ItemBlockTransmitter::new),
+    BASIC_PRESSURIZED_TUBE(new BlockPressurizedTube(TubeTier.BASIC), ItemBlockTransmitter::new),
+    ADVANCED_PRESSURIZED_TUBE(new BlockPressurizedTube(TubeTier.ADVANCED), ItemBlockTransmitter::new),
+    ELITE_PRESSURIZED_TUBE(new BlockPressurizedTube(TubeTier.ELITE), ItemBlockTransmitter::new),
+    ULTIMATE_PRESSURIZED_TUBE(new BlockPressurizedTube(TubeTier.ULTIMATE), ItemBlockTransmitter::new),
 
-    BASIC_LOGISTICAL_TRANSPORTER(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ADVANCED_LOGISTICAL_TRANSPORTER(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ELITE_LOGISTICAL_TRANSPORTER(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ULTIMATE_LOGISTICAL_TRANSPORTER(new BlockTransmitter(), ItemBlockTransmitter::new),
+    BASIC_LOGISTICAL_TRANSPORTER(new BlockLogisticalTransporter(TransporterTier.BASIC), ItemBlockTransmitter::new),
+    ADVANCED_LOGISTICAL_TRANSPORTER(new BlockLogisticalTransporter(TransporterTier.ADVANCED), ItemBlockTransmitter::new),
+    ELITE_LOGISTICAL_TRANSPORTER(new BlockLogisticalTransporter(TransporterTier.ELITE), ItemBlockTransmitter::new),
+    ULTIMATE_LOGISTICAL_TRANSPORTER(new BlockLogisticalTransporter(TransporterTier.ULTIMATE), ItemBlockTransmitter::new),
 
-    RESTRICTIVE_TRANSPORTER(new BlockTransmitter(), ItemBlockTransmitter::new),
-    DIVERSION_TRANSPORTER(new BlockTransmitter(), ItemBlockTransmitter::new),
+    RESTRICTIVE_TRANSPORTER(new BlockRestrictiveTransporter(), ItemBlockTransmitter::new),
+    DIVERSION_TRANSPORTER(new BlockDiversionTransporter(), ItemBlockTransmitter::new),
 
-    BASIC_THERMODYNAMIC_CONDUCTOR(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ADVANCED_THERMODYNAMIC_CONDUCTOR(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ELITE_THERMODYNAMIC_CONDUCTOR(new BlockTransmitter(), ItemBlockTransmitter::new),
-    ULTIMATE_THERMODYNAMIC_CONDUCTOR(new BlockTransmitter(), ItemBlockTransmitter::new),
+    BASIC_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.BASIC), ItemBlockTransmitter::new),
+    ADVANCED_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ADVANCED), ItemBlockTransmitter::new),
+    ELITE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ELITE), ItemBlockTransmitter::new),
+    ULTIMATE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ULTIMATE), ItemBlockTransmitter::new),
 
     OBSIDIAN_TNT(new BlockBounding()),
     BOUNDING_BLOCK(new BlockBounding()),

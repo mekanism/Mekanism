@@ -24,7 +24,9 @@ import mcmultipart.api.world.IMultipartBlockAccess;
 import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.block.BlockTransmitter;
+import mekanism.common.block.transmitter.BlockLargeTransmitter;
+import mekanism.common.block.transmitter.BlockSmallTransmitter;
+import mekanism.common.block.transmitter.BlockTransmitter;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.capabilities.Capabilities;
@@ -84,7 +86,7 @@ public class MultipartMekanism implements IMCMPAddon {
         if (tile.getTileEntity() instanceof TileEntityTransmitter) {
             TileEntityTransmitter transmitter = (TileEntityTransmitter) tile.getTileEntity();
             boolean large = transmitter.getTransmitterType().getSize() == Size.LARGE;
-            AxisAlignedBB ret = large ? BlockTransmitter.largeSides[side.ordinal()] : BlockTransmitter.smallSides[side.ordinal()];
+            AxisAlignedBB ret = large ? BlockLargeTransmitter.largeSides[side.ordinal()] : BlockSmallTransmitter.smallSides[side.ordinal()];
             return Collections.singletonList(ret);
         }
         return Collections.emptyList();

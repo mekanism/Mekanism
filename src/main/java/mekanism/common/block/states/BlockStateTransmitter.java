@@ -4,7 +4,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockTransmitter;
+import mekanism.common.block.transmitter.BlockTransmitter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.tier.BaseTier;

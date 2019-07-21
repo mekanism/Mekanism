@@ -15,10 +15,11 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
+import mekanism.common.block.transmitter.BlockLargeTransmitter;
+import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
@@ -222,10 +223,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             int ord = side.ordinal();
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
-                list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord]);
+                list.add(getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides[ord] : BlockLargeTransmitter.largeSides[ord]);
             }
         }
-        list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6] : BlockTransmitter.largeSides[6]);
+        list.add(getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides[6] : BlockLargeTransmitter.largeSides[6]);
         return list;
     }
 
@@ -237,13 +238,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             int ord = side.ordinal();
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
-                AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord];
+                AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides[ord] : BlockLargeTransmitter.largeSides[ord];
                 if (box.intersects(entityBox)) {
                     list.add(box);
                 }
             }
         }
-        AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6] : BlockTransmitter.largeSides[6];
+        AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockSmallTransmitter.smallSides[6] : BlockLargeTransmitter.largeSides[6];
         if (box.intersects(entityBox)) {
             list.add(box);
         }
