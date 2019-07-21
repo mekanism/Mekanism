@@ -1,14 +1,11 @@
 package mekanism.common;
 
-import static mekanism.common.block.states.BlockStateMachine.MachineBlock.MACHINE_BLOCK_1;
-
 import java.util.function.Function;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.BlockGlowPanel;
-import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
@@ -70,6 +67,7 @@ import mekanism.common.block.machine.BlockRotaryCondensentrator;
 import mekanism.common.block.machine.BlockSeismicVibrator;
 import mekanism.common.block.machine.BlockSolarNeutronActivator;
 import mekanism.common.block.machine.BlockTeleporter;
+import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemBlockBasic;
@@ -85,6 +83,7 @@ import mekanism.common.item.ItemBlockResource;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.BinTier;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
@@ -144,35 +143,35 @@ public enum MekanismBlock {
     CRUSHER(new BlockCrusher(), ItemBlockMachine::new),
     DIGITAL_MINER(new BlockDigitalMiner(), ItemBlockMachine::new),
 
-    BASIC_SMELTING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    BASIC_ENRICHING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    BASIC_CRUSHING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    BASIC_COMPRESSING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    BASIC_COMBINING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    BASIC_PURIFYING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    BASIC_INJECTING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    BASIC_INFUSING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    BASIC_SAWING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
+    BASIC_SMELTING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
+    BASIC_ENRICHING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
+    BASIC_CRUSHING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
+    BASIC_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
+    BASIC_COMBINING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
+    BASIC_PURIFYING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
+    BASIC_INJECTING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
+    BASIC_INFUSING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
+    BASIC_SAWING_FACTORY(new BlockFactory(FactoryTier.BASIC), ItemBlockMachine::new),
 
-    ADVANCED_SMELTING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ADVANCED_ENRICHING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ADVANCED_CRUSHING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ADVANCED_COMPRESSING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ADVANCED_COMBINING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ADVANCED_PURIFYING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ADVANCED_INJECTING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ADVANCED_INFUSING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ADVANCED_SAWING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
+    ADVANCED_SMELTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
+    ADVANCED_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
+    ADVANCED_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
+    ADVANCED_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
+    ADVANCED_COMBINING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
+    ADVANCED_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
+    ADVANCED_INJECTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
+    ADVANCED_INFUSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
+    ADVANCED_SAWING_FACTORY(new BlockFactory(FactoryTier.ADVANCED), ItemBlockMachine::new),
 
-    ELITE_SMELTING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELITE_ENRICHING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELITE_CRUSHING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELITE_COMPRESSING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELITE_COMBINING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELITE_PURIFYING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELITE_INJECTING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELITE_INFUSING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
-    ELITE_SAWING_FACTORY(BlockMachine.getBlockMachine(MACHINE_BLOCK_1), ItemBlockMachine::new),
+    ELITE_SMELTING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
+    ELITE_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
+    ELITE_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
+    ELITE_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
+    ELITE_COMBINING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
+    ELITE_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
+    ELITE_INJECTING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
+    ELITE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
+    ELITE_SAWING_FACTORY(new BlockFactory(FactoryTier.ELITE), ItemBlockMachine::new),
 
     METALLURGIC_INFUSER(new BlockMetallurgicInfuser(), ItemBlockMachine::new),
     PURIFICATION_CHAMBER(new BlockPurificationChamber(), ItemBlockMachine::new),

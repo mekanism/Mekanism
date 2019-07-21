@@ -42,6 +42,7 @@ import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeWrapper;
 import mekanism.client.jei.machine.other.SolarNeutronRecipeWrapper;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -230,7 +231,7 @@ public class RecipeRegistryHelper {
         registry.addRecipes(condensentratorRecipes, condensentrating);
         registry.addRecipes(decondensentratorRecipes, decondensentrating);
         registry.addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, condensentrating, decondensentrating);
-        registry.addRecipeCatalyst(MachineType.ROTARY_CONDENSENTRATOR.getStack(), condensentrating, decondensentrating);
+        registry.addRecipeCatalyst(MekanismBlock.ROTARY_CONDENSENTRATOR.getItemStack(), condensentrating, decondensentrating);
     }
 
     public static void registerSmelter(IModRegistry registry) {
@@ -270,12 +271,12 @@ public class RecipeRegistryHelper {
         if (!MachineType.FORMULAIC_ASSEMBLICATOR.isEnabled()) {
             return;
         }
-        registry.addRecipeCatalyst(MachineType.FORMULAIC_ASSEMBLICATOR.getStack(), VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeCatalyst(MekanismBlock.FORMULAIC_ASSEMBLICATOR.getItemStack(), VanillaRecipeCategoryUid.CRAFTING);
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerFormulaicAssemblicator.class, VanillaRecipeCategoryUid.CRAFTING, 20, 9, 35, 36);
     }
 
     private static void registerVanillaSmeltingRecipeCatalyst(IModRegistry registry) {
-        registry.addRecipeCatalyst(MachineType.ENERGIZED_SMELTER.getStack(), VanillaRecipeCategoryUid.SMELTING);
+        registry.addRecipeCatalyst(MekanismBlock.ENERGIZED_SMELTER.getItemStack(), VanillaRecipeCategoryUid.SMELTING);
         FactoryTier.forEnabled(tier -> registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, RecipeType.SMELTING), VanillaRecipeCategoryUid.SMELTING));
     }
 
