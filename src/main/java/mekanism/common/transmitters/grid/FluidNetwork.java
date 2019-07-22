@@ -69,6 +69,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Nullable
+    @Override
     public FluidStack getBuffer() {
         return buffer;
     }

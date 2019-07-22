@@ -48,9 +48,8 @@ public final class PipeUtils {
      */
     public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world) {
         final IFluidHandler[] acceptors = new IFluidHandler[]{null, null, null, null, null, null};
-        EmitUtils.forEachSide(world, pos, EnumSet.allOf(EnumFacing.class), (tile, side) -> {
-            acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-        });
+        EmitUtils.forEachSide(world, pos, EnumSet.allOf(EnumFacing.class), (tile, side) ->
+              acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()));
         return acceptors;
     }
 

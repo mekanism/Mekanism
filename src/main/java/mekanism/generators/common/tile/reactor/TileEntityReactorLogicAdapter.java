@@ -36,6 +36,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         }
     }
 
+    @Override
     public boolean isFrame() {
         return false;
     }

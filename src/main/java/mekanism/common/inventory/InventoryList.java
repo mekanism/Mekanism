@@ -65,6 +65,7 @@ public class InventoryList implements IInventory {
     /**
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
      */
+    @Override
     public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
         this.inventoryContents.set(index, stack);
         if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
@@ -76,10 +77,12 @@ public class InventoryList implements IInventory {
     /**
      * Returns the number of slots in the inventory.
      */
+    @Override
     public int getSizeInventory() {
         return this.slotsCount;
     }
 
+    @Override
     public boolean isEmpty() {
         for (ItemStack itemstack : this.inventoryContents) {
             if (!itemstack.isEmpty()) {
@@ -101,6 +104,7 @@ public class InventoryList implements IInventory {
     /**
      * Returns true if this thing is named
      */
+    @Override
     public boolean hasCustomName() {
         return false;
     }
@@ -123,6 +127,7 @@ public class InventoryList implements IInventory {
     /**
      * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended.
      */
+    @Override
     public int getInventoryStackLimit() {
         return 64;
     }
@@ -130,6 +135,7 @@ public class InventoryList implements IInventory {
     /**
      * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it hasn't changed and skip it.
      */
+    @Override
     public void markDirty() {
         this.te.markDirty();
     }
@@ -137,34 +143,42 @@ public class InventoryList implements IInventory {
     /**
      * Don't rename this method to canInteractWith due to conflicts with Container
      */
+    @Override
     public boolean isUsableByPlayer(@Nonnull EntityPlayer player) {
         return true;
     }
 
+    @Override
     public void openInventory(@Nonnull EntityPlayer player) {
     }
 
+    @Override
     public void closeInventory(@Nonnull EntityPlayer player) {
     }
 
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot. For guis use Slot.isItemValid
      */
+    @Override
     public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
         return true;
     }
 
+    @Override
     public int getField(int id) {
         return 0;
     }
 
+    @Override
     public void setField(int id, int value) {
     }
 
+    @Override
     public int getFieldCount() {
         return 0;
     }
 
+    @Override
     public void clear() {
         this.inventoryContents.clear();
     }

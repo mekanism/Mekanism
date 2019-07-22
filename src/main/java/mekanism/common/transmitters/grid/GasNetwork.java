@@ -85,6 +85,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Nullable
+    @Override
     public GasStack getBuffer() {
         return buffer;
     }

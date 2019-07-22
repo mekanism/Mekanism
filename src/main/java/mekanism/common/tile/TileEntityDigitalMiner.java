@@ -1051,6 +1051,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         return getBlockType().getTranslationKey() + "." + fullName + ".name";
     }
 
+    @Override
     public void writeSustainedData(ItemStack itemStack) {
         ItemDataUtils.setBoolean(itemStack, "hasMinerConfig", true);
 
