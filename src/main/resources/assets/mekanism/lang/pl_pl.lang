@@ -776,11 +776,11 @@ tooltip.heatCapacity=Pojemność cieplna
 
 mekanism.tooltip.portableTank.bucketMode=Tryb czerpania: %s
 
-tooltip.disassembler.normal=normalnie
-tooltip.disassembler.slow=powoli
-tooltip.disassembler.fast=szybko
-tooltip.disassembler.vein=żyła
-tooltip.disassembler.off=wyłącz.
+mekanism.tooltip.disassembler.normal=normalnie
+mekanism.tooltip.disassembler.slow=powoli
+mekanism.tooltip.disassembler.fast=szybko
+mekanism.tooltip.disassembler.vein=żyła
+mekanism.tooltip.disassembler.off=wyłącz.
 
 tooltip.configurationCard.got=Pobrane dane ustawień z: %s
 tooltip.configurationCard.set=Przenoszenie danych ustawień do: %s

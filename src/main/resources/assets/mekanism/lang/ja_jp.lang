@@ -794,11 +794,11 @@ tooltip.heatCapacity=熱容量
 
 mekanism.tooltip.portableTank.bucketMode=バケツモード: %s
 
-tooltip.disassembler.normal=通常
-tooltip.disassembler.slow=遅い
-tooltip.disassembler.fast=早い
-tooltip.disassembler.vein=鉱脈
-tooltip.disassembler.off=オフ
+mekanism.tooltip.disassembler.normal=通常
+mekanism.tooltip.disassembler.slow=遅い
+mekanism.tooltip.disassembler.fast=早い
+mekanism.tooltip.disassembler.vein=鉱脈
+mekanism.tooltip.disassembler.off=オフ
 
 tooltip.configurationCard.got=%sから設定データを読み取りました
 tooltip.configurationCard.set=%sの設定を適用しました

@@ -385,8 +385,9 @@ upgrade.muffling=Dämpfung
 upgrade.muffling.desc=Verringert den von Maschinen produzierten Schall.
 
 # Key description text
-mekanism.key.mode=Moduswechsel
-mekanism.key.armorMode=Küstungsmoduswechsel
+mekanism.key.mode=Item Modus wechsel
+mekanism.key.armorMode=Rüstungs Modus wechsel
+mekanism.key.feetMode=Fuß Modus wechsel
 mekanism.key.voice=Stimme
 
 # Entities
@@ -751,11 +752,12 @@ tooltip.invalid=Ungültig
 tooltip.encoded=Codiert
 tooltip.ingredients=Bestandteile
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=slow
-tooltip.disassembler.fast=fast
-tooltip.disassembler.vein=vein
-tooltip.disassembler.off=off
+mekanism.tooltip.disassembler.normal=normal
+mekanism.tooltip.disassembler.slow=slow
+mekanism.tooltip.disassembler.fast=fast
+mekanism.tooltip.disassembler.vein=vein
+mekanism.tooltip.disassembler.extended_vein=Erweitertes vein mining
+mekanism.tooltip.disassembler.off=off
 
 tooltip.configurationCard.got=Konfigurationsdaten erhalten: %s
 tooltip.configurationCard.set=Konfigurationsdaten übertragen: %s

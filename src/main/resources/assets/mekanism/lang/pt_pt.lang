@@ -745,11 +745,11 @@ tooltip.ingredients=Ingredientes
 
 mekanism.tooltip.portableTank.bucketMode=Modo Balde: %s
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=lento
-tooltip.disassembler.fast=rápido
-tooltip.disassembler.vein=veio
-tooltip.disassembler.off=desligado
+mekanism.tooltip.disassembler.normal=normal
+mekanism.tooltip.disassembler.slow=lento
+mekanism.tooltip.disassembler.fast=rápido
+mekanism.tooltip.disassembler.vein=veio
+mekanism.tooltip.disassembler.off=desligado
 
 tooltip.configurationCard.got=Dados de configuração de %s salvos
 tooltip.configurationCard.set=Dados de configuração de %s inseridos

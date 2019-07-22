@@ -244,11 +244,11 @@ tooltip.no=아니오
 tooltip.blockData=블럭 data
 tooltip.block=블럭
 
-tooltip.disassembler.normal=기본
-tooltip.disassembler.slow=느림
-tooltip.disassembler.fast=빠름
-tooltip.disassembler.vein=vein
-tooltip.disassembler.off=꺼짐
+mekanism.tooltip.disassembler.normal=기본
+mekanism.tooltip.disassembler.slow=느림
+mekanism.tooltip.disassembler.fast=빠름
+mekanism.tooltip.disassembler.vein=vein
+mekanism.tooltip.disassembler.off=꺼짐
 
 tooltip.balloon=풍선
 

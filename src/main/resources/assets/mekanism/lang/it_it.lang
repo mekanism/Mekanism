@@ -656,11 +656,12 @@ tooltip.readyForReaction=Pronto per Reazione
 
 mekanism.tooltip.portableTank.bucketMode=Modalità secchio: %s
 
-tooltip.disassembler.normal=normale
-tooltip.disassembler.slow=lento
-tooltip.disassembler.fast=veloce
-tooltip.disassembler.vein=filone
-tooltip.disassembler.off=spento
+mekanism.tooltip.disassembler.normal=normale
+mekanism.tooltip.disassembler.slow=lento
+mekanism.tooltip.disassembler.fast=veloce
+mekanism.tooltip.disassembler.vein=filone
+mekanism.tooltip.disassembler.extended_vein=Estrazione di filone estese
+mekanism.tooltip.disassembler.off=spento
 
 tooltip.balloon=Palloncino
 

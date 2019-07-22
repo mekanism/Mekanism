@@ -738,11 +738,12 @@ tooltip.ingredients=Ingrédients
 
 mekanism.tooltip.portableTank.bucketMode=Mode de seau: %s
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=lent
-tooltip.disassembler.fast=rapide
-tooltip.disassembler.vein=veine
-tooltip.disassembler.off=arrêt
+mekanism.tooltip.disassembler.normal=normal
+mekanism.tooltip.disassembler.slow=lent
+mekanism.tooltip.disassembler.fast=rapide
+mekanism.tooltip.disassembler.vein=veine
+mekanism.tooltip.disassembler.extended_vein=Extraction de veine étendus
+mekanism.tooltip.disassembler.off=arrêt
 
 tooltip.configurationCard.got=Données de configuration récupérées de %s
 tooltip.configurationCard.set=Données de configuration injectées de type %s

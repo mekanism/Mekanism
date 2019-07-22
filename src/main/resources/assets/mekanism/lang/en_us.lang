@@ -797,11 +797,12 @@ tooltip.heatCapacity=Heat Capacity
 
 mekanism.tooltip.portableTank.bucketMode=Bucket Mode: %s
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=slow
-tooltip.disassembler.fast=fast
-tooltip.disassembler.vein=vein
-tooltip.disassembler.off=off
+mekanism.tooltip.disassembler.normal=normal
+mekanism.tooltip.disassembler.slow=slow
+mekanism.tooltip.disassembler.fast=fast
+mekanism.tooltip.disassembler.vein=vein
+mekanism.tooltip.disassembler.extended_vein=extended vein mining
+mekanism.tooltip.disassembler.off=off
 
 tooltip.configurationCard.got=Retrieved configuration data from %s
 tooltip.configurationCard.set=Injected configuration data of type %s

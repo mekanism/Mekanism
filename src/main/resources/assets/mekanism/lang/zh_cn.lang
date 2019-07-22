@@ -777,11 +777,11 @@ tooltip.heatCapacity=热容量
 
 mekanism.tooltip.portableTank.bucketMode=水桶模式: %s
 
-tooltip.disassembler.normal=正常
-tooltip.disassembler.slow=慢
-tooltip.disassembler.fast=快
-tooltip.disassembler.vein=矿脉
-tooltip.disassembler.off=关
+mekanism.tooltip.disassembler.normal=正常
+mekanism.tooltip.disassembler.slow=慢
+mekanism.tooltip.disassembler.fast=快
+mekanism.tooltip.disassembler.vein=矿脉
+mekanism.tooltip.disassembler.off=关
 
 tooltip.configurationCard.got=从%s恢复过滤器数据
 tooltip.configurationCard.set=导入类型%s的过滤器数据

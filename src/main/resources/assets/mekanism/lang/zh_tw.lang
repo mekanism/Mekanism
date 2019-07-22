@@ -583,11 +583,11 @@ tooltip.readyForReaction=已準備好反應
 
 mekanism.tooltip.portableTank.bucketMode=水桶模式: %s
 
-tooltip.disassembler.normal=正常
-tooltip.disassembler.slow=慢
-tooltip.disassembler.fast=快
-tooltip.disassembler.vein=礦脈
-tooltip.disassembler.off=關
+mekanism.tooltip.disassembler.normal=正常
+mekanism.tooltip.disassembler.slow=慢
+mekanism.tooltip.disassembler.fast=快
+mekanism.tooltip.disassembler.vein=礦脈
+mekanism.tooltip.disassembler.off=關
 
 tooltip.balloon=氣球
 
