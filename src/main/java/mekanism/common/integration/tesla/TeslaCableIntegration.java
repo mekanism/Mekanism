@@ -1,6 +1,5 @@
 package mekanism.common.integration.tesla;
 
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.darkhax.tesla.api.ITeslaConsumer;

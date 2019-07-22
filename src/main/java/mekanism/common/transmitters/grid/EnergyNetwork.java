@@ -57,6 +57,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     @Nullable
+    @Override
     public EnergyStack getBuffer() {
         return buffer;
     }

@@ -28,9 +28,8 @@ public final class GasUtils {
 
     public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<EnumFacing> sides) {
         final IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
-        EmitUtils.forEachSide(world, pos, sides, (tile, side) -> {
-            acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
-        });
+        EmitUtils.forEachSide(world, pos, sides, (tile, side) ->
+              acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()));
         return acceptors;
     }
 

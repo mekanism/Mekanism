@@ -141,6 +141,7 @@ public class GasTank implements GasTankInfo {
      *
      * @return - max gas
      */
+    @Override
     public int getMaxGas() {
         return maxGas;
     }
@@ -157,6 +158,7 @@ public class GasTank implements GasTankInfo {
      *
      * @return - GasStakc held by this tank
      */
+    @Override
     public GasStack getGas() {
         return stored;
     }
@@ -190,6 +192,7 @@ public class GasTank implements GasTankInfo {
      *
      * @return amount of gas stored
      */
+    @Override
     public int getStored() {
         return stored != null ? stored.amount : 0;
     }

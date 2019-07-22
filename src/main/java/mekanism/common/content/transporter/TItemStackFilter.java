@@ -35,6 +35,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
         return super.getStackFromInventory(searcher, singleItem);
     }
 
+    @Override
     public Finder getFinder() {
         return new ItemStackFinder(itemType);
     }

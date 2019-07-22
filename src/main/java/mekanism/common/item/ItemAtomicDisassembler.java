@@ -325,7 +325,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
          * Gets a Mode from its ordinal. NOTE: if this mode is not enabled then it will reset to NORMAL
          */
         public static Mode getFromInt(int ordinal) {
-            Mode[] values = Mode.values();
+            Mode[] values = values();
             //If it is out of bounds just shift it as if it had gone around that many times
             Mode mode = values[ordinal % values.length];
             return mode.isEnabled() ? mode : NORMAL;

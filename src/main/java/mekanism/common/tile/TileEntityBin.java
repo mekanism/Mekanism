@@ -561,6 +561,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         }
 
         @Nonnull
+        @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return slot != 0 ? ItemStack.EMPTY : tileEntityBin.remove(amount, simulate);
         }

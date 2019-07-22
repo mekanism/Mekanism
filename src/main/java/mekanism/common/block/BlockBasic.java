@@ -760,6 +760,7 @@ public abstract class BlockBasic extends BlockTileDrops {
             return block == Blocks.OBSIDIAN || type == BasicBlockType.REFINED_OBSIDIAN;
         }
 
+        @Override
         protected int getDistanceUntilEdge(BlockPos pos, @Nonnull EnumFacing facing) {
             int i;
             for (i = 0; i < 22; ++i) {
@@ -771,6 +772,7 @@ public abstract class BlockBasic extends BlockTileDrops {
             return isFrame(this.world.getBlockState(pos.offset(facing, i))) ? i : 0;
         }
 
+        @Override
         protected int calculatePortalHeight() {
             label56:
             for (this.height = 0; this.height < 21; ++this.height) {

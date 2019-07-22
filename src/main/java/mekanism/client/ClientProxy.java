@@ -702,7 +702,7 @@ public class ClientProxy extends CommonProxy {
                 if (stack.getItem() instanceof ItemSeismicReader) {
                     return new GuiSeismicReader(player.world, new Coord4D(player), stack.copy());
                 }
-            break;
+                break;
         }
         return null;
     }
@@ -895,7 +895,7 @@ public class ClientProxy extends CommonProxy {
         doSparkle(tileEntity, new SparkleAnimation(tileEntity, renderLoc, length, width, height, checker));
     }
 
-
+    @Override
     public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
         doSparkle(tileEntity, new SparkleAnimation(tileEntity, corner1, corner2, checker));
     }

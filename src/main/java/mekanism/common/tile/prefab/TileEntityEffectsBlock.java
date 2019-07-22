@@ -146,6 +146,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         }
     }
 
+    @Override
     public boolean wasActiveRecently() {
         // If the machine is currently active or it flipped off within our threshold,
         // we'll consider it recently active.

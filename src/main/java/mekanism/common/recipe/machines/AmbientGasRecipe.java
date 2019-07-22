@@ -15,6 +15,7 @@ public class AmbientGasRecipe extends MachineRecipe<IntegerInput, GasOutput, Amb
         this(new IntegerInput(input), new GasOutput(new GasStack(GasRegistry.getGas(output), 1)));
     }
 
+    @Override
     public AmbientGasRecipe copy() {
         return new AmbientGasRecipe(getInput().copy(), getOutput().copy());
     }
