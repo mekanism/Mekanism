@@ -1,8 +1,6 @@
 package mekanism.common.integration.forgeenergy;
 
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.IEnergyStorage;
 

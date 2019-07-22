@@ -68,7 +68,7 @@ public class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<REC
         int yAxis = mouseY - guiTop;
         if (xAxis >= 61 && xAxis <= 67 && yAxis >= 37 && yAxis <= 49) {
             displayTooltip(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored()
-                                                                 : LangUtils.localize("gui.none"), xAxis, yAxis);
+                                                               : LangUtils.localize("gui.none"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

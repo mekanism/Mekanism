@@ -702,7 +702,7 @@ public class ClientProxy extends CommonProxy {
                 if (stack.getItem() instanceof ItemSeismicReader) {
                     return new GuiSeismicReader(player.world, new Coord4D(player), stack.copy());
                 }
-            break;
+                break;
         }
         return null;
     }
