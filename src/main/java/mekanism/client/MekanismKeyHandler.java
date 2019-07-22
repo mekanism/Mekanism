@@ -164,6 +164,5 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
     @Override
     public void keyUp(KeyBinding kb) {
-
     }
 }
