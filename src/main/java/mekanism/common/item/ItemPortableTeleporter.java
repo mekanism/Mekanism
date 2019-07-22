@@ -14,6 +14,7 @@ import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
@@ -70,7 +71,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
                 Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
                 entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
             } else if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                entityplayer.openGui(Mekanism.instance, 14, world, hand.ordinal(), 0, 0);
+                MekanismUtils.openItemGui(entityplayer, hand, 14);
             } else {
                 SecurityUtils.displayNoAccess(entityplayer);
             }

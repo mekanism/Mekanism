@@ -31,18 +31,13 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.tesla.TeslaIntegration;
-import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockTransmitter;
-import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
-import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.component.SideConfig;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -50,6 +45,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -60,6 +56,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -613,27 +610,21 @@ public final class MekanismUtils {
     }
 
     /**
-     * FML doesn't really do GUIs the way it's supposed to -- opens Electric Chest GUI on client and server. Call this method server-side only!
-     *
-     * @param player     - player to open GUI
-     * @param tileEntity - TileEntity of the chest, if it's not an item
-     * @param inventory  - IInventory of the item, if it's not a block
-     * @param isBlock    - whether or not this electric chest is in it's block form
+     * Encodes current item info as a gui, and opens it.
      */
-    public static void openPersonalChestGui(EntityPlayerMP player, TileEntityPersonalChest tileEntity, InventoryPersonalChest inventory, boolean isBlock) {
-        player.getNextWindowId();
-        player.closeContainer();
-        int id = player.currentWindowId;
-
-        if (isBlock) {
-            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, true, 0, id, Coord4D.get(tileEntity), null), player);
-        } else {
-            Mekanism.packetHandler.sendTo(new PersonalChestMessage(PersonalChestPacketType.CLIENT_OPEN, false, 0, id, null, inventory.currentHand), player);
-        }
-        player.openContainer = new ContainerPersonalChest(player.inventory, tileEntity, inventory, isBlock);
-        player.openContainer.windowId = id;
-        player.openContainer.addListener(player);
+    public static void openItemGui(EntityPlayer player, EnumHand hand, int guiID) {
+        //current item, hand, gui type
+        player.openGui(Mekanism.instance, 0, player.world, player.inventory.currentItem, hand.ordinal(), guiID);
     }
+
+    /**
+     * Encodes entity info as a gui, and opens it.
+     */
+    public static void openEntityGui(EntityPlayer player, Entity entity, int guiID) {
+        //entity id, gui type
+        player.openGui(Mekanism.instance, 1, player.world, entity.getEntityId(), guiID, 0);
+    }
+
 
     /**
      * Gets a ResourceLocation with a defined resource type and name.

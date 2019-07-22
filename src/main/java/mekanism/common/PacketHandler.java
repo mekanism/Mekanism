@@ -30,6 +30,7 @@ import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketFreeRunnerData;
+import mekanism.common.network.PacketFreeRunnerData.FreeRunnerDataMessage;
 import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData;
@@ -42,8 +43,6 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketOredictionificatorGui;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
-import mekanism.common.network.PacketPersonalChest;
-import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX;
@@ -184,8 +183,7 @@ public class PacketHandler {
     public void initialize() {
         netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
         netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Side.CLIENT);
-        netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.CLIENT);
-        netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.SERVER);
+        //FREE ID 2
         //FREE ID 3
         netHandler.registerMessage(PacketItemStack.class, ItemStackMessage.class, 4, Side.SERVER);
         netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.CLIENT);
@@ -223,8 +221,8 @@ public class PacketHandler {
         netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
         netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
         netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Side.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31, Side.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31, Side.SERVER);
+        netHandler.registerMessage(PacketFreeRunnerData.class, FreeRunnerDataMessage.class, 31, Side.CLIENT);
+        netHandler.registerMessage(PacketFreeRunnerData.class, FreeRunnerDataMessage.class, 31, Side.SERVER);
     }
 
     /**

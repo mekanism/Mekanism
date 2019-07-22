@@ -27,7 +27,7 @@ public class GuiRobitCrafting extends GuiRobit {
     }
 
     @Override
-    protected boolean openGui(int id) {
+    protected boolean shouldOpenGui(int id) {
         return id != 1;
     }
 }

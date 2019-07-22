@@ -38,7 +38,6 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
-import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -61,7 +60,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -378,8 +376,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     setOwnerUUID(itemstack, entityplayer.getUniqueID());
                 }
                 if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                    InventoryPersonalChest inventory = new InventoryPersonalChest(itemstack, hand);
-                    MekanismUtils.openPersonalChestGui((EntityPlayerMP) entityplayer, null, inventory, false);
+                    MekanismUtils.openItemGui(entityplayer, hand, 19);
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }

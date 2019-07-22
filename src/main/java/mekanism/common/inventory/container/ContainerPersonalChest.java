@@ -18,11 +18,21 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     private IInventory itemInventory;
     private boolean isBlock;
 
-    public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tile, IInventory inv, boolean b) {
+    public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tile) {
         super(tile, inventory);
-        itemInventory = inv;
-        isBlock = b;
+        itemInventory = null;
+        isBlock = true;
+        addAndOpen(inventory);
+    }
 
+    public ContainerPersonalChest(InventoryPlayer inventory, IInventory inv) {
+        super(null, inventory);
+        itemInventory = inv;
+        isBlock = false;
+        addAndOpen(inventory);
+    }
+
+    private void addAndOpen(InventoryPlayer inventory) {
         //Manually handle this stuff so that it gets called at the correct time
         addSlots();
         addInventorySlots(inventory);

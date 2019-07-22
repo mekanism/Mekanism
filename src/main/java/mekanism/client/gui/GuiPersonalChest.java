@@ -16,14 +16,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiPersonalChest extends GuiMekanismTile<TileEntityPersonalChest> {
 
     public GuiPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tile) {
-        super(tile, new ContainerPersonalChest(inventory, tile, null, true));
+        super(tile, new ContainerPersonalChest(inventory, tile));
         xSize += 26;
         ySize += 64;
         addGuiElement(new GuiSecurityTab(this, tileEntity, getGuiLocation()));
     }
 
     public GuiPersonalChest(InventoryPlayer inventory, InventoryPersonalChest inv) {
-        super(null, new ContainerPersonalChest(inventory, null, inv, false));
+        super(null, new ContainerPersonalChest(inventory, inv));
         xSize += 26;
         ySize += 64;
         addGuiElement(new GuiSecurityTab(this, getGuiLocation(), inv.currentHand));

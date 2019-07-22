@@ -52,7 +52,7 @@ public class GuiRobitMain extends GuiMekanism {
 
     private void changeName() {
         if (!nameChangeField.getText().isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.NAME, robit.getEntityId(), 0, nameChangeField.getText()));
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.NAME, robit.getEntityId(), nameChangeField.getText()));
             toggleNameChange();
             nameChangeField.setText("");
         }
@@ -63,28 +63,24 @@ public class GuiRobitMain extends GuiMekanism {
         if (guibutton.id == confirmName.id) {
             changeName();
         } else if (guibutton.id == teleportHomeButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GO_HOME, robit.getEntityId(), 0, null));
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GO_HOME, robit.getEntityId(), null));
             mc.displayGuiScreen(null);
         } else if (guibutton.id == pickupButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.DROP_PICKUP, robit.getEntityId(), 0, null));
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.DROP_PICKUP, robit.getEntityId(), null));
         } else if (guibutton.id == renameButton.id) {
             toggleNameChange();
         } else if (guibutton.id == followButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.FOLLOW, robit.getEntityId(), 0, null));
+            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.FOLLOW, robit.getEntityId(), null));
         } else if (guibutton.id == mainButton.id) {
             //Clicking main button doesn't do anything while already on the main GUI
         } else if (guibutton.id == craftingButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 1, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 22, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 22);
         } else if (guibutton.id == inventoryButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 2, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 23, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 23);
         } else if (guibutton.id == smeltingButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 3, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 24, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 24);
         } else if (guibutton.id == repairButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.GUI, 4, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 25, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 25);
         }
     }
 

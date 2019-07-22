@@ -95,8 +95,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
             }
         }
 
-        public static void openServerGui(SorterGuiPacket t, int guiType, World world, EntityPlayerMP playerMP,
-              Coord4D obj, int i) {
+        public static void openServerGui(SorterGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i) {
             Container container = null;
 
             playerMP.closeContainer();

@@ -3,10 +3,7 @@ package mekanism.client.gui.robit;
 import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
-import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.network.PacketRobit;
-import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -45,25 +42,20 @@ public abstract class GuiRobit extends GuiMekanism {
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-        if (!openGui(guibutton.id)) {
+        if (!shouldOpenGui(guibutton.id)) {
             //Don't do anything when the button is the same one as the one we are on
             return;
         }
         if (guibutton.id == mainButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(PacketRobit.RobitPacketType.GUI, 0, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 21, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 21);
         } else if (guibutton.id == craftingButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(PacketRobit.RobitPacketType.GUI, 1, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 22, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 22);
         } else if (guibutton.id == inventoryButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(PacketRobit.RobitPacketType.GUI, 2, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 23, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 23);
         } else if (guibutton.id == smeltingButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(PacketRobit.RobitPacketType.GUI, 3, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 24, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 24);
         } else if (guibutton.id == repairButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(PacketRobit.RobitPacketType.GUI, 4, robit.getEntityId(), null));
-            mc.player.openGui(Mekanism.instance, 25, mc.world, robit.getEntityId(), 0, 0);
+            MekanismUtils.openEntityGui(mc.player, robit, 25);
         }
     }
 
@@ -74,5 +66,5 @@ public abstract class GuiRobit extends GuiMekanism {
 
     protected abstract String getBackgroundImage();
 
-    protected abstract boolean openGui(int id);
+    protected abstract boolean shouldOpenGui(int id);
 }

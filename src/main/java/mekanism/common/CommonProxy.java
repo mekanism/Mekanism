@@ -11,6 +11,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
@@ -40,6 +41,7 @@ import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.inventory.container.ContainerPRC;
+import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
@@ -54,7 +56,9 @@ import mekanism.common.inventory.container.robit.ContainerRobitInventory;
 import mekanism.common.inventory.container.robit.ContainerRobitMain;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
+import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -79,6 +83,7 @@ import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityPRC;
+import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -93,6 +98,7 @@ import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -127,18 +133,6 @@ public class CommonProxy implements IGuiProvider {
     }
 
     public void handleTeleporterUpdate(PortableTeleporterMessage message) {
-    }
-
-    /**
-     * Handles an PERSONAL_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
-     *
-     * @param entityplayer - player the packet was sent from
-     * @param id           - the gui ID to open
-     * @param windowId     - the container-specific window ID
-     * @param isBlock      - if the chest is a block
-     * @param pos          - coordinates
-     */
-    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand) {
     }
 
     /**
@@ -202,13 +196,93 @@ public class CommonProxy implements IGuiProvider {
         return null;
     }
 
+    private Container getServerItemGui(EntityPlayer player, BlockPos pos) {
+        int currentItem = pos.getX();
+        int handOrdinal = pos.getY();
+        if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= EnumHand.values().length) {
+            //If it is out of bounds don't do anything
+            return null;
+        }
+        ItemStack stack = player.inventory.getStackInSlot(currentItem);
+        if (stack.isEmpty()) {
+            return null;
+        }
+        EnumHand hand = EnumHand.values()[handOrdinal];
+        int guiID = pos.getZ();
+        switch (guiID) {
+            case 0:
+                if (stack.getItem() instanceof ItemDictionary) {
+                    return new ContainerDictionary(player.inventory);
+                }
+                break;
+            case 14:
+                if (stack.getItem() instanceof ItemPortableTeleporter) {
+                    return new ContainerNull();
+                }
+            case 19:
+                if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
+                    //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
+                    return new ContainerPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
+                }
+                break;
+            case 38:
+                if (stack.getItem() instanceof ItemSeismicReader) {
+                    return new ContainerNull();
+                }
+                break;
+        }
+        return null;
+    }
+
+    private Container getServerEntityGui(EntityPlayer player, World world, BlockPos pos) {
+        int entityID = pos.getX();
+        Entity entity = world.getEntityByID(entityID);
+        if (entity == null) {
+            return null;
+        }
+        int guiID = pos.getY();
+        switch (guiID) {
+            case 21:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitMain(player.inventory, (EntityRobit) entity);
+                }
+                break;
+            case 22:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitCrafting(player.inventory, (EntityRobit) entity);
+                }
+                break;
+            case 23:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitInventory(player.inventory, (EntityRobit) entity);
+                }
+                break;
+            case 24:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitSmelting(player.inventory, (EntityRobit) entity);
+                }
+                break;
+            case 25:
+                if (entity instanceof EntityRobit) {
+                    return new ContainerRobitRepair(player.inventory, (EntityRobit) entity);
+                }
+                break;
+        }
+        return null;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+        //TODO: Replace magic numbers here and in sub methods with static lookup ints
+        if (ID == 0) {
+            return getServerItemGui(player, pos);
+        } else if (ID == 1) {
+            return getServerEntityGui(player, world, pos);
+        }
         TileEntity tileEntity = world.getTileEntity(pos);
         switch (ID) {
-            case 0:
-                return new ContainerDictionary(player.inventory);
+            //0, 1 USED BEFORE SWITCH
             case 2:
                 return new ContainerDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
             case 3:
@@ -233,12 +307,7 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser) tileEntity);
             case 13:
                 return new ContainerTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
-            case 14:
-                ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
-                if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter) {
-                    return new ContainerNull();
-                }
-                return null;
+            //EMPTY 14
             case 15:
                 return new ContainerAdvancedElectricMachine<>(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 16:
@@ -247,36 +316,9 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerElectricPump(player.inventory, (TileEntityElectricPump) tileEntity);
             case 18:
                 return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank) tileEntity);
-            case 21:
-                EntityRobit robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitMain(player.inventory, robit);
-                }
-                return null;
-            case 22:
-                robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitCrafting(player.inventory, robit);
-                }
-                return null;
-            case 23:
-                robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitInventory(player.inventory, robit);
-                }
-                return null;
-            case 24:
-                robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitSmelting(player.inventory, robit);
-                }
-                return null;
-            case 25:
-                robit = (EntityRobit) world.getEntityByID(pos.getX());
-                if (robit != null) {
-                    return new ContainerRobitRepair(player.inventory, robit);
-                }
-                return null;
+            case 19:
+                return new ContainerPersonalChest(player.inventory, (TileEntityPersonalChest) tileEntity);
+            //EMPTY 20, 21, 22, 23, 24, 25
             case 26:
                 return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
             case 27:
@@ -301,6 +343,7 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerChemicalWasher(player.inventory, (TileEntityChemicalWasher) tileEntity);
             case 37:
                 return new ContainerChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer) tileEntity);
+            //EMPTY 38
             case 39:
                 return new ContainerSeismicVibrator(player.inventory, (TileEntitySeismicVibrator) tileEntity);
             case 40:

@@ -12,18 +12,12 @@ public class InventoryPersonalChest extends InventoryBasic {
 
     private final ItemStack itemStack;
     private boolean reading;
-    public EnumHand currentHand = EnumHand.MAIN_HAND;
+    public EnumHand currentHand;
 
     public InventoryPersonalChest(ItemStack stack, EnumHand hand) {
         super("PersonalChest", false, 55);
         itemStack = stack;
         currentHand = hand;
-        read();
-    }
-
-    public InventoryPersonalChest(ItemStack stack) {
-        super("PersonalChest", false, 55);
-        itemStack = stack;
         read();
     }
 
