@@ -21,14 +21,7 @@ public interface IGasStack extends IIngredient {
     @ZenGetter("displayName")
     String getDisplayName();
 
-    @Override
-    @ZenGetter("amount")
-    int getAmount();
-
     @ZenOperator(OperatorType.MUL)
     @ZenMethod
     IGasStack withAmount(int amount);
-
-    @Override
-    Object getInternal();
 }
