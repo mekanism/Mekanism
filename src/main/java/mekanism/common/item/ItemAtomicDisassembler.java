@@ -49,7 +49,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class ItemAtomicDisassembler extends ItemEnergized {
 
     public ItemAtomicDisassembler() {
-        super(MekanismConfig.current().general.disassemblerBatteryCapacity.val());
+        super("atomic_disassembler", MekanismConfig.current().general.disassemblerBatteryCapacity.val());
     }
 
     @Override

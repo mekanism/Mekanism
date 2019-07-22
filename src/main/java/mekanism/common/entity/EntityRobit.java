@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.MekanismItems;
+import mekanism.common.MekanismItem;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -333,7 +333,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     public void drop() {
-        EntityItem entityItem = new EntityItem(world, posX, posY + 0.3, posZ, new ItemStack(MekanismItems.Robit));
+        EntityItem entityItem = new EntityItem(world, posX, posY + 0.3, posZ, MekanismItem.ROBIT.getItemStack());
         ItemRobit item = (ItemRobit) entityItem.getItem().getItem();
         item.setEnergy(entityItem.getItem(), getEnergy());
         item.setInventory(((ISustainedInventory) this).getInventory(), entityItem.getItem());

@@ -17,6 +17,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateFacing;
@@ -40,7 +41,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -60,7 +60,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IRotatableBlock, IBlockDescriptive {
+public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IRotatableBlock, IBlockDescriptive, IHasGui {
 
     private final String name;
 
@@ -222,10 +222,9 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
         }
 
         if (tileEntity != null) {
-            if (!entityplayer.isSneaking() && !world.isSideSolid(pos.up(), EnumFacing.DOWN)) {
-                TileEntityPersonalChest chest = (TileEntityPersonalChest) tileEntity;
+            if (!entityplayer.isSneaking()) {
                 if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    MekanismUtils.openPersonalChestGui((EntityPlayerMP) entityplayer, chest, null, true);
+                    entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
@@ -397,5 +396,10 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Override
     public double getUsage() {
         return 30;
+    }
+
+    @Override
+    public int getGuiID() {
+        return 19;
     }
 }

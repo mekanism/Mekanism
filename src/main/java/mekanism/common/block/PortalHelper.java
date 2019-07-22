@@ -44,6 +44,7 @@ public class PortalHelper {
             return block == Blocks.OBSIDIAN || resourceInfo == BlockResourceInfo.REFINED_OBSIDIAN;
         }
 
+        @Override
         protected int getDistanceUntilEdge(BlockPos pos, @Nonnull EnumFacing facing) {
             int i;
             for (i = 0; i < 22; ++i) {
@@ -55,6 +56,7 @@ public class PortalHelper {
             return isFrame(this.world.getBlockState(pos.offset(facing, i))) ? i : 0;
         }
 
+        @Override
         protected int calculatePortalHeight() {
             label56:
             for (this.height = 0; this.height < 21; ++this.height) {
