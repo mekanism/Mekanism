@@ -377,7 +377,6 @@ upgrade.muffling.desc=Reducérer støj genereret af maskineri.
 mekanism.key.mode=Ændr Genstandsmodus
 mekanism.key.armorMode=Ændr Armormodus
 mekanism.key.voice=Stemme
-mekanism.key.extendedMining=Udvidet åreudvikling
 
 # Entities
 entity.Robit.name=Robit
@@ -736,11 +735,12 @@ tooltip.ingredients=Ingredienser
 
 mekanism.tooltip.portableTank.bucketMode=Spand-modus: %s
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=langsom
-tooltip.disassembler.fast=hurtig
-tooltip.disassembler.vein=åre
-tooltip.disassembler.off=fra
+mekanism.tooltip.disassembler.normal=normal
+mekanism.tooltip.disassembler.slow=langsom
+mekanism.tooltip.disassembler.fast=hurtig
+mekanism.tooltip.disassembler.vein=åre
+mekanism.tooltip.disassembler.extended_vein=Udvidet åreudvikling
+mekanism.tooltip.disassembler.off=fra
 
 tooltip.configurationCard.got=Hentede konfigurationsdata fra %s
 tooltip.configurationCard.set=Injicerede konfigurationsdata af type %s

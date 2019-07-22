@@ -787,11 +787,11 @@ tooltip.heatCapacity=Теплоемкость
 
 mekanism.tooltip.portableTank.bucketMode=Режим ведра: %s
 
-tooltip.disassembler.normal=нормальный
-tooltip.disassembler.slow=медленный
-tooltip.disassembler.fast=быстрый
-tooltip.disassembler.vein=жила
-tooltip.disassembler.off=нет
+mekanism.tooltip.disassembler.normal=нормальный
+mekanism.tooltip.disassembler.slow=медленный
+mekanism.tooltip.disassembler.fast=быстрый
+mekanism.tooltip.disassembler.vein=жила
+mekanism.tooltip.disassembler.off=нет
 
 tooltip.configurationCard.got=Получена конфигурация из %s
 tooltip.configurationCard.set=Введена конфигурация типа %s

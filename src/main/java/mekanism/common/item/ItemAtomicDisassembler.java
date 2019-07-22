@@ -7,10 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
@@ -113,41 +113,44 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
         super.onBlockStartBreak(itemstack, pos, player);
-        if (!player.world.isRemote && !player.capabilities.isCreativeMode && getMode(itemstack) == Mode.VEIN) {
-            IBlockState state = player.world.getBlockState(pos);
-            Block block = state.getBlock();
-            if (block == Blocks.LIT_REDSTONE_ORE) {
-                block = Blocks.REDSTONE_ORE;
-            }
-            RayTraceResult raytrace = doRayTrace(state, pos, player);
-            ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
-            List<String> names = OreDictCache.getOreDictName(stack);
-            boolean isOre = false;
-            for (String s : names) {
-                if (s.startsWith("ore") || s.equals("logWood")) {
-                    isOre = true;
-                    break;
+        if (!player.world.isRemote && !player.capabilities.isCreativeMode) {
+            Mode mode = getMode(itemstack);
+            boolean extended = mode == Mode.EXTENDED_VEIN;
+            if (extended || mode == Mode.VEIN) {
+                IBlockState state = player.world.getBlockState(pos);
+                Block block = state.getBlock();
+                if (block == Blocks.LIT_REDSTONE_ORE) {
+                    block = Blocks.REDSTONE_ORE;
                 }
-            }
-            boolean extended = MekanismConfig.current().general.disassemblerExtendedMining.val() && Mekanism.keyMap.has(player, KeySync.EXTENDEDMINING);
-            if (isOre || extended) {
-                Coord4D orig = new Coord4D(pos, player.world);
-                Set<Coord4D> found = new Finder(player, stack, orig, raytrace, extended ? MekanismConfig.current().general.disassemblerMiningRange.val() : -1).calc();
-                for (Coord4D coord : found) {
-                    if (coord.equals(orig)) {
-                        continue;
+                RayTraceResult raytrace = doRayTrace(state, pos, player);
+                ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
+                List<String> names = OreDictCache.getOreDictName(stack);
+                boolean isOre = false;
+                for (String s : names) {
+                    if (s.startsWith("ore") || s.equals("logWood")) {
+                        isOre = true;
+                        break;
                     }
-                    int destroyEnergy = getDestroyEnergy(itemstack, coord.getBlockState(player.world).getBlockHardness(player.world, coord.getPos()));
-                    if (getEnergy(itemstack) < destroyEnergy) {
-                        continue;
+                }
+                if (isOre || extended) {
+                    Coord4D orig = new Coord4D(pos, player.world);
+                    Set<Coord4D> found = new Finder(player, stack, orig, raytrace, extended ? MekanismConfig.current().general.disassemblerMiningRange.val() : -1).calc();
+                    for (Coord4D coord : found) {
+                        if (coord.equals(orig)) {
+                            continue;
+                        }
+                        int destroyEnergy = getDestroyEnergy(itemstack, coord.getBlockState(player.world).getBlockHardness(player.world, coord.getPos()));
+                        if (getEnergy(itemstack) < destroyEnergy) {
+                            continue;
+                        }
+                        Block block2 = coord.getBlock(player.world);
+                        block2.onBlockHarvested(player.world, coord.getPos(), state, player);
+                        player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
+                        player.world.setBlockToAir(coord.getPos());
+                        block2.breakBlock(player.world, coord.getPos(), state);
+                        block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
+                        setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
                     }
-                    Block block2 = coord.getBlock(player.world);
-                    block2.onBlockHarvested(player.world, coord.getPos(), state, player);
-                    player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
-                    player.world.setBlockToAir(coord.getPos());
-                    block2.breakBlock(player.world, coord.getPos(), state);
-                    block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
-                    setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
                 }
             }
         }
@@ -274,15 +277,11 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     public Mode getMode(ItemStack itemStack) {
-        Mode[] values = Mode.values();
-        //If it is out of bounds just shift it as if it had gone around that many times
-        int mode = ItemDataUtils.getInt(itemStack, "mode") % values.length;
-        return values[mode];
+        return Mode.getFromInt(ItemDataUtils.getInt(itemStack, "mode"));
     }
 
     public void toggleMode(ItemStack itemStack) {
-        Mode mode = getMode(itemStack);
-        ItemDataUtils.setInt(itemStack, "mode", (mode.ordinal() + 1) % Mode.values().length);
+        ItemDataUtils.setInt(itemStack, "mode", Mode.getNextEnabledAsInt(getMode(itemStack)));
     }
 
     @Override
@@ -302,25 +301,53 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     public enum Mode {
-        NORMAL("normal", 20, 3),
-        SLOW("slow", 8, 1),
-        FAST("fast", 128, 5),
-        VEIN("vein", 20, 3),
-        OFF("off", 0, 0);
+        NORMAL("normal", 20, 3, () -> true),
+        SLOW("slow", 8, 1, () -> MekanismConfig.current().general.disassemblerSlowMode.val()),
+        FAST("fast", 128, 5, () -> MekanismConfig.current().general.disassemblerFastMode.val()),
+        VEIN("vein", 20, 3, () -> MekanismConfig.current().general.disassemblerVeinMining.val()),
+        EXTENDED_VEIN("extended_vein", 20, 3, () -> MekanismConfig.current().general.disassemblerExtendedMining.val()),
+        OFF("off", 0, 0, () -> true);
 
+        private final Supplier<Boolean> checkEnabled;
         private final String mode;
         private final int efficiency;
         //Must be odd, or zero
         private final int diameter;
 
-        Mode(String mode, int efficiency, int diameter) {
+        Mode(String mode, int efficiency, int diameter, Supplier<Boolean> checkEnabled) {
             this.mode = mode;
             this.efficiency = efficiency;
             this.diameter = diameter;
+            this.checkEnabled = checkEnabled;
+        }
+
+        /**
+         * Gets a Mode from its ordinal. NOTE: if this mode is not enabled then it will reset to NORMAL
+         */
+        public static Mode getFromInt(int ordinal) {
+            Mode[] values = Mode.values();
+            //If it is out of bounds just shift it as if it had gone around that many times
+            Mode mode = values[ordinal % values.length];
+            return mode.isEnabled() ? mode : NORMAL;
+        }
+
+        public static int getNextEnabledAsInt(Mode mode) {
+            //Get the next mode
+            Mode next = mode.getNext();
+            //keep going until we find one that is enabled (we know at the very least NORMAL and OFF are enabled
+            while (!next.isEnabled()) {
+                next = next.getNext();
+            }
+            return next.ordinal();
+        }
+
+        private Mode getNext() {
+            Mode[] values = values();
+            return values[(ordinal() + 1) % values.length];
         }
 
         public String getModeName() {
-            return LangUtils.localize("tooltip.disassembler." + mode);
+            return LangUtils.localize("mekanism.tooltip.disassembler." + mode);
         }
 
         public int getEfficiency() {
@@ -329,6 +356,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
         public int getDiameter() {
             return diameter;
+        }
+
+        public boolean isEnabled() {
+            return checkEnabled.get();
         }
     }
 

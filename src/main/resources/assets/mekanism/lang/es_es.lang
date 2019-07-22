@@ -404,7 +404,6 @@ mekanism.key.mode=Cambiar modo de Objetos
 mekanism.key.armorMode=Cambiar modo de Armadura
 mekanism.key.feetMode=Cambiar modo de Zapatos
 mekanism.key.voice=Voz
-mekanism.key.extendedMining=Minería de Mena extendidas
 
 # Entities / Entidades
 entity.Robit.name=Robit
@@ -798,11 +797,12 @@ tooltip.heatCapacity=Capacidad calorífica
 
 mekanism.tooltip.portableTank.bucketMode=Modo cubeta: %s
 
-tooltip.disassembler.normal=Normal
-tooltip.disassembler.slow=Lento
-tooltip.disassembler.fast=Rápido
-tooltip.disassembler.vein=Mena
-tooltip.disassembler.off=Apagado
+mekanism.tooltip.disassembler.normal=Normal
+mekanism.tooltip.disassembler.slow=Lento
+mekanism.tooltip.disassembler.fast=Rápido
+mekanism.tooltip.disassembler.vein=Mena
+mekanism.tooltip.disassembler.extended_vein=Minería de Mena extendidas
+mekanism.tooltip.disassembler.off=Apagado
 
 tooltip.configurationCard.got=Recibiendo datos de conf. de %s
 tooltip.configurationCard.set=Inyectando datos de conf. de tipo %s

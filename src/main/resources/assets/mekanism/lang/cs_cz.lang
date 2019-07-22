@@ -750,11 +750,11 @@ tooltip.ingredients=Ingredience
 
 mekanism.tooltip.portableTank.bucketMode=Kyblíkový Mód: %s
 # totally legit and not funny sounding :D
-tooltip.disassembler.normal=normální
-tooltip.disassembler.slow=pomalý
-tooltip.disassembler.fast=rychlý
-tooltip.disassembler.vein=žilný
-tooltip.disassembler.off=vyplý
+mekanism.tooltip.disassembler.normal=normální
+mekanism.tooltip.disassembler.slow=pomalý
+mekanism.tooltip.disassembler.fast=rychlý
+mekanism.tooltip.disassembler.vein=žilný
+mekanism.tooltip.disassembler.off=vyplý
 
 tooltip.configurationCard.got=Získaná konfigurační data z %s
 tooltip.configurationCard.set=Vložená konfigurační data typu %s

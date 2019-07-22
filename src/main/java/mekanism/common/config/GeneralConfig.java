@@ -121,8 +121,17 @@ public class GeneralConfig extends BaseConfig {
     public final IntOption disassemblerMiningCount = new IntOption(this, "general", "DisassemblerMiningCount", 128,
             "The max Atomic Disassembler Vein Mining Block Count.");
 
-    public final BooleanOption disassemblerExtendedMining = new BooleanOption(this, "general", "DisassemblerExtendedMining", true,
-            "Enable Extended Vein Mining for the Atomic Disassembler.");
+    public final BooleanOption disassemblerSlowMode = new BooleanOption(this, "general", "DisassemblerSlowMode", true,
+          "Enable the 'Slow' mode for the Atomic Disassembler.");
+
+    public final BooleanOption disassemblerFastMode = new BooleanOption(this, "general", "DisassemblerFastMode", true,
+          "Enable the 'Fast' mode for the Atomic Disassembler.");
+
+    public final BooleanOption disassemblerVeinMining = new BooleanOption(this, "general", "DisassemblerVeinMiningMode", true,
+          "Enable the 'Vein Mining' mode for the Atomic Disassembler.");
+
+    public final BooleanOption disassemblerExtendedMining = new BooleanOption(this, "general", "DisassemblerExtendedMiningMode", true,
+            "Enable the 'Extended Vein Mining' mode for the Atomic Disassembler. (Allows vein mining everything not just ores/logs)");
 
     public final IntOption disassemblerDamageMin = new IntOption(this, "general", "DisassemblerDamageMin", 4,
           "The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)");

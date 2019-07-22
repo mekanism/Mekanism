@@ -2,7 +2,6 @@ package mekanism.client;
 
 import java.util.Collections;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -49,7 +48,6 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static KeyBinding armorModeSwitchKey = new KeyBinding("mekanism.key.armorMode", Keyboard.KEY_G, keybindCategory);
     public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("mekanism.key.feetMode", Keyboard.KEY_H, keybindCategory);
     public static KeyBinding voiceKey = new KeyBinding("mekanism.key.voice", Keyboard.KEY_U, keybindCategory);
-    public static KeyBinding extendedVeinMineKey = new KeyBinding("mekanism.key.extendedMining", Keyboard.KEY_GRAVE, keybindCategory);
 
     public static KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
     public static KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
@@ -58,8 +56,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
           .addBinding(modeSwitchKey, false)
           .addBinding(armorModeSwitchKey, false)
           .addBinding(freeRunnerModeSwitchKey, false)
-          .addBinding(voiceKey, true)
-          .addBinding(extendedVeinMineKey, false);
+          .addBinding(voiceKey, true);
 
     public MekanismKeyHandler() {
         super(BINDINGS);
@@ -68,7 +65,6 @@ public class MekanismKeyHandler extends MekKeyHandler {
         ClientRegistry.registerKeyBinding(armorModeSwitchKey);
         ClientRegistry.registerKeyBinding(freeRunnerModeSwitchKey);
         ClientRegistry.registerKeyBinding(voiceKey);
-        ClientRegistry.registerKeyBinding(extendedVeinMineKey);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -163,15 +159,11 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 Mekanism.packetHandler.sendToServer(new FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             }
-        } else if(kb == extendedVeinMineKey) {
-            MekanismClient.updateKey(extendedVeinMineKey, KeySync.EXTENDEDMINING);
         }
     }
 
     @Override
     public void keyUp(KeyBinding kb) {
-        if(kb == extendedVeinMineKey) {
-            MekanismClient.updateKey(extendedVeinMineKey, KeySync.EXTENDEDMINING);
-        }
+
     }
 }

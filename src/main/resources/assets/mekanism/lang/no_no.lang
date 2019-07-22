@@ -526,11 +526,11 @@ tooltip.readyForReaction=Klar for Reaksjon
 
 mekanism.tooltip.portableTank.bucketMode=Bøttemodus: %s
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=treg
-tooltip.disassembler.fast=rask
-tooltip.disassembler.vein=åre
-tooltip.disassembler.off=av
+mekanism.tooltip.disassembler.normal=normal
+mekanism.tooltip.disassembler.slow=treg
+mekanism.tooltip.disassembler.fast=rask
+mekanism.tooltip.disassembler.vein=åre
+mekanism.tooltip.disassembler.off=av
 
 tooltip.balloon=Ballong
 
