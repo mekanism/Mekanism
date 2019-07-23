@@ -6,8 +6,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.StackUtils;
-import mekanism.tools.common.ToolUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -51,11 +49,6 @@ public class ItemMekanismPaxel extends ItemTool {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
-    }
-
-    @Override
-    public boolean getIsRepairable(ItemStack toRepair, @Nonnull ItemStack repair) {
-        return StackUtils.equalsWildcard(ToolUtils.getRepairStack(toolMaterial), repair) || super.getIsRepairable(toRepair, repair);
     }
 
     @Override

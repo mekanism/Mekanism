@@ -2,12 +2,9 @@ package mekanism.tools.item;
 
 import java.util.List;
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.StackUtils;
-import mekanism.tools.common.ToolUtils;
 import mekanism.tools.common.ToolsItems;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
@@ -31,11 +28,6 @@ public class ItemMekanismArmor extends ItemArmor {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
-    }
-
-    @Override
-    public boolean getIsRepairable(ItemStack toRepair, @Nonnull ItemStack repair) {
-        return StackUtils.equalsWildcard(ToolUtils.getRepairStack(getArmorMaterial()), repair) || super.getIsRepairable(toRepair, repair);
     }
 
     @Override

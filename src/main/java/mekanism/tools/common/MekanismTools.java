@@ -141,8 +141,37 @@ public class MekanismTools implements IModule {
         armorGLOWSTONE = getArmorMaterial("GLOWSTONE", MekanismConfig.current().tools.armorGLOWSTONE, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
         armorSTEEL = getArmorMaterial("STEEL", MekanismConfig.current().tools.armorSTEEL, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
 
+        setRepairItems();
         ToolsItems.initializeItems();
         ToolsItems.setHarvestLevels();
+    }
+
+    private void setRepairItems() {
+        ItemStack refinedObsidianIngot = new ItemStack(MekanismItems.Ingot, 1, 0);
+        ItemStack osmiumIngot = new ItemStack(MekanismItems.Ingot, 1, 1);
+        ItemStack bronzeIngot = new ItemStack(MekanismItems.Ingot, 1, 2);
+        ItemStack refinedGlowstoneIngot = new ItemStack(MekanismItems.Ingot, 1, 3);
+        ItemStack steelIngot = new ItemStack(MekanismItems.Ingot, 1, 4);
+        ItemStack lapisLazuli = new ItemStack(Items.DYE, 1, 4);
+
+        toolOBSIDIAN.setRepairItem(refinedObsidianIngot);
+        toolOBSIDIAN2.setRepairItem(refinedObsidianIngot);
+        armorOBSIDIAN.setRepairItem(refinedObsidianIngot);
+        toolLAZULI.setRepairItem(lapisLazuli);
+        toolLAZULI2.setRepairItem(lapisLazuli);
+        armorLAZULI.setRepairItem(lapisLazuli);
+        toolOSMIUM.setRepairItem(osmiumIngot);
+        toolOSMIUM2.setRepairItem(osmiumIngot);
+        armorOSMIUM.setRepairItem(osmiumIngot);
+        toolBRONZE.setRepairItem(bronzeIngot);
+        toolBRONZE2.setRepairItem(bronzeIngot);
+        armorBRONZE.setRepairItem(bronzeIngot);
+        toolGLOWSTONE.setRepairItem(refinedGlowstoneIngot);
+        toolGLOWSTONE2.setRepairItem(refinedGlowstoneIngot);
+        armorGLOWSTONE.setRepairItem(refinedGlowstoneIngot);
+        toolSTEEL.setRepairItem(steelIngot);
+        toolSTEEL2.setRepairItem(steelIngot);
+        armorSTEEL.setRepairItem(steelIngot);
     }
 
     private void setAxeSpeedDamage(ToolMaterial toolOBSIDIAN, ToolsConfig.ToolBalance toolOBSIDIAN2) {

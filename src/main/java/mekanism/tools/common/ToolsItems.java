@@ -168,50 +168,6 @@ public class ToolsItems {
         SteelBoots = init(new ItemMekanismArmor(MekanismTools.armorSTEEL, 3, EntityEquipmentSlot.FEET), "SteelBoots");
     }
 
-    public static void setHarvestLevels() {
-        setPaxelHarvest(BronzePaxel, MekanismTools.toolBRONZE2);
-        BronzePickaxe.setHarvestLevel("pickaxe", MekanismTools.toolBRONZE.getHarvestLevel());
-        BronzeAxe.setHarvestLevel("axe", MekanismTools.toolBRONZE.getHarvestLevel());
-        BronzeShovel.setHarvestLevel("shovel", MekanismTools.toolBRONZE.getHarvestLevel());
-
-        setPaxelHarvest(OsmiumPaxel, MekanismTools.toolOSMIUM2);
-        OsmiumPickaxe.setHarvestLevel("pickaxe", MekanismTools.toolOSMIUM.getHarvestLevel());
-        OsmiumAxe.setHarvestLevel("axe", MekanismTools.toolOSMIUM.getHarvestLevel());
-        OsmiumShovel.setHarvestLevel("shovel", MekanismTools.toolOSMIUM.getHarvestLevel());
-
-        setPaxelHarvest(ObsidianPaxel, MekanismTools.toolOBSIDIAN2);
-        ObsidianPickaxe.setHarvestLevel("pickaxe", MekanismTools.toolOBSIDIAN.getHarvestLevel());
-        ObsidianAxe.setHarvestLevel("axe", MekanismTools.toolOBSIDIAN.getHarvestLevel());
-        ObsidianShovel.setHarvestLevel("shovel", MekanismTools.toolOBSIDIAN.getHarvestLevel());
-
-        setPaxelHarvest(LazuliPaxel, MekanismTools.toolLAZULI2);
-        LazuliPickaxe.setHarvestLevel("pickaxe", MekanismTools.toolLAZULI.getHarvestLevel());
-        LazuliAxe.setHarvestLevel("axe", MekanismTools.toolLAZULI.getHarvestLevel());
-        LazuliShovel.setHarvestLevel("shovel", MekanismTools.toolLAZULI.getHarvestLevel());
-
-        setPaxelHarvest(GlowstonePaxel, MekanismTools.toolGLOWSTONE2);
-        GlowstonePickaxe.setHarvestLevel("pickaxe", MekanismTools.toolGLOWSTONE.getHarvestLevel());
-        GlowstoneAxe.setHarvestLevel("axe", MekanismTools.toolGLOWSTONE.getHarvestLevel());
-        GlowstoneShovel.setHarvestLevel("shovel", MekanismTools.toolGLOWSTONE.getHarvestLevel());
-
-        setPaxelHarvest(SteelPaxel, MekanismTools.toolSTEEL2);
-        SteelPickaxe.setHarvestLevel("pickaxe", MekanismTools.toolSTEEL.getHarvestLevel());
-        SteelAxe.setHarvestLevel("axe", MekanismTools.toolSTEEL.getHarvestLevel());
-        SteelShovel.setHarvestLevel("shovel", MekanismTools.toolSTEEL.getHarvestLevel());
-
-        setPaxelHarvest(WoodPaxel, ToolMaterial.WOOD);
-        setPaxelHarvest(StonePaxel, ToolMaterial.STONE);
-        setPaxelHarvest(IronPaxel, ToolMaterial.IRON);
-        setPaxelHarvest(DiamondPaxel, ToolMaterial.DIAMOND);
-        setPaxelHarvest(GoldPaxel, ToolMaterial.GOLD);
-    }
-
-    private static void setPaxelHarvest(Item item, ToolMaterial material) {
-        item.setHarvestLevel("pickaxe", material.getHarvestLevel());
-        item.setHarvestLevel("axe", material.getHarvestLevel());
-        item.setHarvestLevel("shovel", material.getHarvestLevel());
-    }
-
     public static void registerItems(IForgeRegistry<Item> registry) {
         //Base
         registry.register(WoodPaxel);
