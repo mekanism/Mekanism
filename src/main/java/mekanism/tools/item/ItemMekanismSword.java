@@ -1,7 +1,6 @@
 package mekanism.tools.item;
 
 import java.util.List;
-import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -14,7 +13,6 @@ public class ItemMekanismSword extends ItemSword {
 
     public ItemMekanismSword(ToolMaterial material) {
         super(material);
-        setCreativeTab(Mekanism.tabMekanism);
     }
 
     @Override

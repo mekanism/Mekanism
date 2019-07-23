@@ -1,7 +1,6 @@
 package mekanism.tools.item;
 
 import java.util.List;
-import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.util.ITooltipFlag;
@@ -15,7 +14,6 @@ public class ItemMekanismAxe extends ItemAxe {
 
     public ItemMekanismAxe(ToolMaterial material) {
         super(material, MekanismTools.AXE_DAMAGE.get(material), MekanismTools.AXE_SPEED.get(material));
-        setCreativeTab(Mekanism.tabMekanism);
         setHarvestLevel("axe", material.getHarvestLevel());
     }
 

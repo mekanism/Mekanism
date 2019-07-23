@@ -3,9 +3,8 @@ package mekanism.tools.item;
 import java.util.List;
 import java.util.Locale;
 import mekanism.client.render.ModelCustomArmor;
-import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
-import mekanism.tools.common.ToolsItems;
+import mekanism.tools.common.ToolsItem;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -21,7 +20,6 @@ public class ItemMekanismArmor extends ItemArmor {
 
     public ItemMekanismArmor(ArmorMaterial material, int renderIndex, EntityEquipmentSlot slot) {
         super(material, renderIndex, slot);
-        setCreativeTab(Mekanism.tabMekanism);
     }
 
     @Override
@@ -39,8 +37,8 @@ public class ItemMekanismArmor extends ItemArmor {
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
-        if (itemStack.getItem() == ToolsItems.GlowstoneHelmet || itemStack.getItem() == ToolsItems.GlowstoneChestplate
-            || itemStack.getItem() == ToolsItems.GlowstoneLeggings || itemStack.getItem() == ToolsItems.GlowstoneBoots) {
+        if (itemStack.getItem() == ToolsItem.GLOWSTONE_HELMET.getItem() || itemStack.getItem() == ToolsItem.GLOWSTONE_CHESTPLATE.getItem()
+            || itemStack.getItem() == ToolsItem.GLOWSTONE_LEGGINGS.getItem() || itemStack.getItem() == ToolsItem.GLOWSTONE_BOOTS.getItem()) {
             return ModelCustomArmor.getGlow(armorSlot);
         }
         return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);

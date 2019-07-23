@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -35,7 +34,6 @@ public class ItemMekanismPaxel extends ItemTool {
 
     public ItemMekanismPaxel(ToolMaterial material, ItemPickaxe pickaxe, ItemSpade shovel, ItemAxe axe) {
         super(4, -2.4F, material, EFFECTIVE_ON);
-        setCreativeTab(Mekanism.tabMekanism);
         setHarvestLevel("pickaxe", material.getHarvestLevel());
         setHarvestLevel("shovel", material.getHarvestLevel());
         setHarvestLevel("axe", material.getHarvestLevel());

@@ -82,8 +82,7 @@ public class MekanismTools implements IModule {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        // Register items and itemBlocks
-        ToolsItems.registerItems(event.getRegistry());
+        ToolsItem.registerItems(event.getRegistry());
     }
 
     @SubscribeEvent
@@ -96,7 +95,7 @@ public class MekanismTools implements IModule {
     public void preInit(FMLPreInitializationEvent event) {
         //Load the config
         proxy.loadConfiguration();
-        addItems();
+        addMaterials();
     }
 
     @EventHandler
@@ -111,7 +110,7 @@ public class MekanismTools implements IModule {
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }
 
-    public void addItems() {
+    public void addMaterials() {
         //Tools
         toolOBSIDIAN = getToolMaterial("OBSIDIAN", MekanismConfig.current().tools.toolOBSIDIAN);
         toolOBSIDIAN2 = getToolMaterial("OBSIDIAN2", MekanismConfig.current().tools.toolOBSIDIAN2);
@@ -148,8 +147,6 @@ public class MekanismTools implements IModule {
         setRepairItems(toolGLOWSTONE, toolGLOWSTONE2, armorGLOWSTONE, new ItemStack(MekanismItems.Ingot, 1, 3));
         setRepairItems(toolSTEEL, toolSTEEL2, armorSTEEL, new ItemStack(MekanismItems.Ingot, 1, 4));
         setRepairItems(toolLAZULI, toolLAZULI2, armorLAZULI, new ItemStack(Items.DYE, 1, 4));
-
-        ToolsItems.initializeItems();
     }
 
     private void setRepairItems(ToolMaterial material, ToolMaterial material2, ArmorMaterial armorMaterial, ItemStack repairStack) {
@@ -179,63 +176,67 @@ public class MekanismTools implements IModule {
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         //Furnace Recipes
-        GameRegistry.addSmelting(ToolsItems.IronPaxel, new ItemStack(Items.IRON_NUGGET), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GoldPaxel, new ItemStack(Items.GOLD_NUGGET), 0.1F);
+        addSmeltingRecipe(ToolsItem.IRON_PAXEL, new ItemStack(Items.IRON_NUGGET));
+        addSmeltingRecipe(ToolsItem.GOLD_PAXEL, new ItemStack(Items.GOLD_NUGGET));
 
-        GameRegistry.addSmelting(ToolsItems.GlowstonePaxel, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstonePickaxe, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstoneAxe, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstoneShovel, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstoneHoe, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstoneSword, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstoneHelmet, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstoneChestplate, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstoneLeggings, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.GlowstoneBoots, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_PAXEL, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_PICKAXE, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_AXE, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_SHOVEL, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_HOE, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_SWORD, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_HELMET, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_CHESTPLATE, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_LEGGINGS, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_BOOTS, new ItemStack(MekanismItems.Nugget, 1, 3));
 
-        GameRegistry.addSmelting(ToolsItems.BronzePaxel, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzePickaxe, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzeAxe, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzeShovel, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzeHoe, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzeSword, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzeHelmet, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzeChestplate, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzeLeggings, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.BronzeBoots, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+        addSmeltingRecipe(ToolsItem.BRONZE_PAXEL, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_PICKAXE, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_AXE, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_SHOVEL, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_HOE, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_SWORD, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_HELMET, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_CHESTPLATE, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_LEGGINGS, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.BRONZE_BOOTS, new ItemStack(MekanismItems.Nugget, 1, 2));
 
-        GameRegistry.addSmelting(ToolsItems.OsmiumPaxel, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumPickaxe, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumAxe, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumShovel, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumHoe, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumSword, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumHelmet, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumChestplate, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumLeggings, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.OsmiumBoots, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+        addSmeltingRecipe(ToolsItem.OSMIUM_PAXEL, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_PICKAXE, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_AXE, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_SHOVEL, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_HOE, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_SWORD, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_HELMET, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_CHESTPLATE, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_LEGGINGS, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.OSMIUM_BOOTS, new ItemStack(MekanismItems.Nugget, 1, 1));
 
-        GameRegistry.addSmelting(ToolsItems.ObsidianPaxel, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianPickaxe, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianAxe, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianShovel, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianHoe, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianSword, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianHelmet, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianChestplate, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianLeggings, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.ObsidianBoots, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_PAXEL, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_PICKAXE, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_AXE, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_SHOVEL, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_HOE, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_SWORD, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_HELMET, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_CHESTPLATE, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_LEGGINGS, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_BOOTS, new ItemStack(MekanismItems.Nugget, 1, 0));
 
-        GameRegistry.addSmelting(ToolsItems.SteelPaxel, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelPickaxe, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelAxe, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelShovel, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelHoe, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelSword, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelHelmet, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelChestplate, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelLeggings, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
-        GameRegistry.addSmelting(ToolsItems.SteelBoots, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+        addSmeltingRecipe(ToolsItem.STEEL_PAXEL, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_PICKAXE, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_AXE, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_SHOVEL, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_HOE, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_SWORD, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_HELMET, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_CHESTPLATE, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_LEGGINGS, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.STEEL_BOOTS, new ItemStack(MekanismItems.Nugget, 1, 4));
+    }
+
+    private static void addSmeltingRecipe(ToolsItem item, ItemStack nugget) {
+        GameRegistry.addSmelting(item.getItemStack(), nugget, 0.1F);
     }
 
     private void setStackIfEmpty(EntityLivingBase entity, EntityEquipmentSlot slot, ItemStack item) {
@@ -244,21 +245,21 @@ public class MekanismTools implements IModule {
         }
     }
 
-    private void setEntityArmorWithChance(Random random, EntityLivingBase entity, Item sword, Item helmet, Item chestplate, Item leggings, Item boots) {
+    private void setEntityArmorWithChance(Random random, EntityLivingBase entity, ToolsItem sword, ToolsItem helmet, ToolsItem chestplate, ToolsItem leggings, ToolsItem boots) {
         if (entity instanceof EntityZombie && random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.MAINHAND, new ItemStack(sword));
+            setStackIfEmpty(entity, EntityEquipmentSlot.MAINHAND, sword.getItemStack());
         }
         if (random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.HEAD, new ItemStack(helmet));
+            setStackIfEmpty(entity, EntityEquipmentSlot.HEAD, helmet.getItemStack());
         }
         if (random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.CHEST, new ItemStack(chestplate));
+            setStackIfEmpty(entity, EntityEquipmentSlot.CHEST, chestplate.getItemStack());
         }
         if (random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.LEGS, new ItemStack(leggings));
+            setStackIfEmpty(entity, EntityEquipmentSlot.LEGS, leggings.getItemStack());
         }
         if (random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.FEET, new ItemStack(boots));
+            setStackIfEmpty(entity, EntityEquipmentSlot.FEET, boots.getItemStack());
         }
     }
 
@@ -274,20 +275,20 @@ public class MekanismTools implements IModule {
 
             if (entity instanceof EntityZombie || entity instanceof EntitySkeleton) {
                 if (armorType == 0) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.GlowstoneSword, ToolsItems.GlowstoneHelmet, ToolsItems.GlowstoneChestplate,
-                          ToolsItems.GlowstoneLeggings, ToolsItems.GlowstoneBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItem.GLOWSTONE_SWORD, ToolsItem.GLOWSTONE_HELMET, ToolsItem.GLOWSTONE_CHESTPLATE,
+                          ToolsItem.GLOWSTONE_LEGGINGS, ToolsItem.GLOWSTONE_BOOTS);
                 } else if (armorType == 1) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.LazuliSword, ToolsItems.LazuliHelmet, ToolsItems.LazuliChestplate,
-                          ToolsItems.LazuliLeggings, ToolsItems.LazuliBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItem.LAPIS_LAZULI_SWORD, ToolsItem.LAPIS_LAZULI_HELMET, ToolsItem.LAPIS_LAZULI_CHESTPLATE,
+                          ToolsItem.LAPIS_LAZULI_LEGGINGS, ToolsItem.LAPIS_LAZULI_BOOTS);
                 } else if (armorType == 2) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.OsmiumSword, ToolsItems.OsmiumHelmet, ToolsItems.OsmiumChestplate,
-                          ToolsItems.OsmiumLeggings, ToolsItems.OsmiumBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItem.OBSIDIAN_SWORD, ToolsItem.OBSIDIAN_HELMET, ToolsItem.OBSIDIAN_CHESTPLATE,
+                          ToolsItem.OBSIDIAN_LEGGINGS, ToolsItem.OBSIDIAN_BOOTS);
                 } else if (armorType == 3) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.SteelSword, ToolsItems.SteelHelmet, ToolsItems.SteelChestplate,
-                          ToolsItems.SteelLeggings, ToolsItems.SteelBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItem.STEEL_SWORD, ToolsItem.STEEL_HELMET, ToolsItem.STEEL_CHESTPLATE,
+                          ToolsItem.STEEL_LEGGINGS, ToolsItem.STEEL_BOOTS);
                 } else if (armorType == 4) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.BronzeSword, ToolsItems.BronzeHelmet, ToolsItems.BronzeChestplate,
-                          ToolsItems.BronzeLeggings, ToolsItems.BronzeBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItem.BRONZE_SWORD, ToolsItem.BRONZE_HELMET, ToolsItem.BRONZE_CHESTPLATE,
+                          ToolsItem.BRONZE_LEGGINGS, ToolsItem.BRONZE_BOOTS);
                 }
             }
         }

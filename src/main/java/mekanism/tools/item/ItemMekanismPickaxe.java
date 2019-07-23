@@ -1,7 +1,6 @@
 package mekanism.tools.item;
 
 import java.util.List;
-import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemPickaxe;
@@ -14,7 +13,6 @@ public class ItemMekanismPickaxe extends ItemPickaxe {
 
     public ItemMekanismPickaxe(ToolMaterial material) {
         super(material);
-        setCreativeTab(Mekanism.tabMekanism);
         setHarvestLevel("pickaxe", material.getHarvestLevel());
     }
 
