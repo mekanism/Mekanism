@@ -15,13 +15,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismSword extends ItemSword {
 
-    private ToolMaterial toolMaterial;
-
     public ItemMekanismSword(ToolMaterial material) {
         super(material);
         setCreativeTab(Mekanism.tabMekanism);
-        //TODO: Access transformer to make it so we don't have to duplicate storing this? As ItemSword keeps track of it
-        toolMaterial = material;
     }
 
     @Override
@@ -32,6 +28,6 @@ public class ItemMekanismSword extends ItemSword {
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, @Nonnull ItemStack repair) {
-        return StackUtils.equalsWildcard(ToolUtils.getRepairStack(toolMaterial), repair) || super.getIsRepairable(toRepair, repair);
+        return StackUtils.equalsWildcard(ToolUtils.getRepairStack(material), repair) || super.getIsRepairable(toRepair, repair);
     }
 }
