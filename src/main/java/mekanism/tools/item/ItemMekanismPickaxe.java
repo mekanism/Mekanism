@@ -15,8 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismPickaxe extends ItemPickaxe {
 
-    public ItemMekanismPickaxe(ToolMaterial tool) {
-        super(tool);
+    public ItemMekanismPickaxe(ToolMaterial material) {
+        super(material);
         setCreativeTab(Mekanism.tabMekanism);
     }
 

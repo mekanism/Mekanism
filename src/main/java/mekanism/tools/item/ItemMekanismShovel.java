@@ -15,8 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismShovel extends ItemSpade {
 
-    public ItemMekanismShovel(ToolMaterial tool) {
-        super(tool);
+    public ItemMekanismShovel(ToolMaterial material) {
+        super(material);
         setCreativeTab(Mekanism.tabMekanism);
     }
 

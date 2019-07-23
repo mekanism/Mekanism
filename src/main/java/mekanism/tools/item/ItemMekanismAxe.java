@@ -16,8 +16,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismAxe extends ItemAxe {
 
-    public ItemMekanismAxe(ToolMaterial tool) {
-        super(tool, MekanismTools.AXE_DAMAGE.get(tool), MekanismTools.AXE_SPEED.get(tool));
+    public ItemMekanismAxe(ToolMaterial material) {
+        super(material, MekanismTools.AXE_DAMAGE.get(material), MekanismTools.AXE_SPEED.get(material));
         setCreativeTab(Mekanism.tabMekanism);
     }
 

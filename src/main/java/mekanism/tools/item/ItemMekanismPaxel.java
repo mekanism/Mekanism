@@ -18,9 +18,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismPaxel extends ItemTool {
 
-    public ItemMekanismPaxel(ToolMaterial toolMaterial) {
-        super(4, -2.4F, toolMaterial, new HashSet<>());
+    public ItemMekanismPaxel(ToolMaterial material) {
+        super(4, -2.4F, material, new HashSet<>());
         setCreativeTab(Mekanism.tabMekanism);
+        //setHarvestLevel("pickaxe", );
+        //setHarvestLevel("axe", );
+        //setHarvestLevel("shovel", );
     }
 
     @Override

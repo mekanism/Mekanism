@@ -17,11 +17,11 @@ public class ItemMekanismSword extends ItemSword {
 
     private ToolMaterial toolMaterial;
 
-    public ItemMekanismSword(ToolMaterial tool) {
-        super(tool);
+    public ItemMekanismSword(ToolMaterial material) {
+        super(material);
         setCreativeTab(Mekanism.tabMekanism);
         //TODO: Access transformer to make it so we don't have to duplicate storing this? As ItemSword keeps track of it
-        toolMaterial = tool;
+        toolMaterial = material;
     }
 
     @Override

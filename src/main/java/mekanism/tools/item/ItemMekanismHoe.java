@@ -15,8 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismHoe extends ItemHoe {
 
-    public ItemMekanismHoe(ToolMaterial tool) {
-        super(tool);
+    public ItemMekanismHoe(ToolMaterial material) {
+        super(material);
         setCreativeTab(Mekanism.tabMekanism);
     }
 
