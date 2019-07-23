@@ -14,6 +14,7 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
@@ -131,14 +132,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
                 list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                          LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
             } else {
-                list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
+                list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
             }
         } else {
             if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
                 list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                          EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
             } else {
-                list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
+                list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
             }
         }
     }

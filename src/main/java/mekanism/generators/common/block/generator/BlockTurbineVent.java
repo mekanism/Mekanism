@@ -4,14 +4,12 @@ import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.security.ISecurityItem;
@@ -20,12 +18,11 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator;
-import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -51,7 +48,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTurbineVent extends BlockMekanismContainer {
+public class BlockTurbineVent extends BlockMekanismContainer implements IBlockDescriptive {
 
     private final String name;
 
@@ -63,6 +60,11 @@ public class BlockTurbineVent extends BlockMekanismContainer {
         this.name = "turbine_vent";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
+    }
+
+    @Override
+    public String getDescription() {
+        return LangUtils.localize("tooltip.mekanism." + name);
     }
 
     @Nonnull
@@ -78,9 +80,6 @@ public class BlockTurbineVent extends BlockMekanismContainer {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
             state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        if (tile instanceof IActiveState) {
-            state = state.withProperty(BlockStateGenerator.activeProperty, ((IActiveState) tile).getActive());
         }
         return state;
     }
@@ -135,19 +134,6 @@ public class BlockTurbineVent extends BlockMekanismContainer {
         if (!world.isRemote && tileEntity instanceof IMultiblock) {
             ((IMultiblock<?>) tileEntity).doUpdate();
         }
-    }
-
-    @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        if (MekanismConfig.current().client.enableAmbientLighting.val()) {
-            TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-            if (tileEntity instanceof IActiveState) {
-                if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
-                    return MekanismConfig.current().client.ambientLightingLevel.val();
-                }
-            }
-        }
-        return 0;
     }
 
     @Override
@@ -224,7 +210,7 @@ public class BlockTurbineVent extends BlockMekanismContainer {
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
+        ItemStack itemStack = new ItemStack(this);
 
         if (itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock)) {
             itemStack.setTagCompound(new NBTTagCompound());
@@ -310,23 +296,5 @@ public class BlockTurbineVent extends BlockMekanismContainer {
             }
         }
         return super.canCreatureSpawn(state, world, pos, type);
-    }
-
-    @Override
-    public boolean hasComparatorInputOverride(IBlockState blockState) {
-        GeneratorType generatorType = GeneratorType.get(blockState);
-        return generatorType != null && generatorType.hasRedstoneOutput;
-    }
-
-    @Override
-    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
-        GeneratorType generatorType = GeneratorType.get(blockState);
-        if (generatorType != null && generatorType.hasRedstoneOutput) {
-            TileEntity tile = worldIn.getTileEntity(pos);
-            if (tile instanceof IComparatorSupport) {
-                return ((IComparatorSupport) tile).getRedstoneLevel();
-            }
-        }
-        return 0;
     }
 }

@@ -10,7 +10,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
+import mekanism.generators.common.block.generator.BlockTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
@@ -33,7 +33,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return GeneratorType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z))) == GeneratorType.TURBINE_CASING;
+        return pointer.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockTurbineCasing;
     }
 
     @Override

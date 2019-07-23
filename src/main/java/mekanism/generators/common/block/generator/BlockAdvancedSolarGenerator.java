@@ -4,13 +4,12 @@ import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -20,12 +19,11 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator;
-import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -51,7 +49,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Maybe make this extend BlockSolarGenerator
-public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui {
+public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive {
 
     private final String name;
 
@@ -63,6 +61,11 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
         this.name = "advanced_solar_generator";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
+    }
+
+    @Override
+    public String getDescription() {
+        return LangUtils.localize("tooltip.mekanism." + name);
     }
 
     @Nonnull
@@ -78,9 +81,6 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
             state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        if (tile instanceof IActiveState) {
-            state = state.withProperty(BlockStateGenerator.activeProperty, ((IActiveState) tile).getActive());
         }
         return state;
     }
@@ -235,7 +235,7 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
+        ItemStack itemStack = new ItemStack(this);
 
         if (itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock)) {
             itemStack.setTagCompound(new NBTTagCompound());
@@ -307,24 +307,6 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean hasComparatorInputOverride(IBlockState blockState) {
-        GeneratorType generatorType = GeneratorType.get(blockState);
-        return generatorType != null && generatorType.hasRedstoneOutput;
-    }
-
-    @Override
-    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
-        GeneratorType generatorType = GeneratorType.get(blockState);
-        if (generatorType != null && generatorType.hasRedstoneOutput) {
-            TileEntity tile = worldIn.getTileEntity(pos);
-            if (tile instanceof IComparatorSupport) {
-                return ((IComparatorSupport) tile).getRedstoneLevel();
-            }
-        }
-        return 0;
     }
 
     @Override
