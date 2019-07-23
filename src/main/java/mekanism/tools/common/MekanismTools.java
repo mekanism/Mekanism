@@ -158,18 +158,16 @@ public class MekanismTools implements IModule {
         armorMaterial.setRepairItem(repairStack);
     }
 
-    private void setAxeSpeedDamage(ToolMaterial toolOBSIDIAN, ToolsConfig.ToolBalance toolOBSIDIAN2) {
-        AXE_DAMAGE.put(toolOBSIDIAN, toolOBSIDIAN2.axeAttackDamage.val());
-        AXE_SPEED.put(toolOBSIDIAN, toolOBSIDIAN2.axeAttackSpeed.val());
+    private void setAxeSpeedDamage(ToolMaterial tool, ToolsConfig.ToolBalance tool2) {
+        AXE_DAMAGE.put(tool, tool2.axeAttackDamage.val());
+        AXE_SPEED.put(tool, tool2.axeAttackSpeed.val());
     }
 
-    private ToolMaterial getToolMaterial(String enumName, ToolsConfig.ToolBalance toolConfig) {
-        return EnumHelper.addToolMaterial(enumName, toolConfig.harvestLevel.val(), toolConfig.maxUses.val(),
-              toolConfig.efficiency.val(), toolConfig.damage.val(), toolConfig.enchantability.val());
+    private ToolMaterial getToolMaterial(String enumName, ToolsConfig.ToolBalance config) {
+        return EnumHelper.addToolMaterial(enumName, config.harvestLevel.val(), config.maxUses.val(), config.efficiency.val(), config.damage.val(), config.enchantability.val());
     }
 
-    private ArmorMaterial getArmorMaterial(String enumName, ToolsConfig.ArmorBalance settings,
-          SoundEvent equipSoundEvent) {
+    private ArmorMaterial getArmorMaterial(String enumName, ToolsConfig.ArmorBalance settings, SoundEvent equipSoundEvent) {
         return EnumHelper.addArmorMaterial(enumName, "TODO", settings.durability.val(), new int[]{
               settings.feetProtection.val(),
               settings.legsProtection.val(),

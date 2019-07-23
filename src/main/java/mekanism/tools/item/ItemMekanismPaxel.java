@@ -62,6 +62,7 @@ public class ItemMekanismPaxel extends ItemTool {
 
     @Override
     public boolean canHarvestBlock(@Nonnull IBlockState state, @Nonnull ItemStack stack) {
+        //TODO: If the paxel and the tools have different harvest levels this potentially could cause problems?
         return pickaxe.canHarvestBlock(state, stack) || shovel.canHarvestBlock(state, stack) || axe.canHarvestBlock(state, stack);
     }
 }
