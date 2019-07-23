@@ -3,7 +3,9 @@ package mekanism.generators.common.block.reactor;
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateReactor;
@@ -28,7 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLaserFocusMatrix extends Block implements ITileEntityProvider {
+public class BlockLaserFocusMatrix extends Block implements ITileEntityProvider, IBlockDescriptive {
 
     private final String name;
 
@@ -40,6 +42,11 @@ public class BlockLaserFocusMatrix extends Block implements ITileEntityProvider 
         this.name = "laser_focus_matrix";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
+    }
+
+    @Override
+    public String getDescription() {
+        return LangUtils.localize("tooltip.mekanism." + name);
     }
 
     @Nonnull

@@ -44,13 +44,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem, ITierItem {
 
-    public Block metaBlock;
-
     public ItemBlockBasic(Block block) {
         super(block);
-        metaBlock = block;
         setHasSubtypes(true);
-        setTranslationKey(metaBlock.getTranslationKey());
+        setTranslationKey(block.getTranslationKey());
     }
 
     @Override
@@ -86,7 +83,7 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         BasicBlockType type = BasicBlockType.get(itemstack);
-        if (type != null && metaBlock instanceof IBlockDescriptive) {
+        if (type != null && block instanceof IBlockDescriptive) {
             if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
                 if (type == BasicBlockType.BIN) {
                     InventoryBin inv = new InventoryBin(itemstack);
@@ -114,7 +111,7 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
                 list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                          EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
             } else {
-                list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) metaBlock).getDescription(), itemstack));
+                list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
             }
         }
     }

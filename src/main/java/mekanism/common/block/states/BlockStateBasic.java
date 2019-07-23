@@ -6,6 +6,7 @@ import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
@@ -65,7 +66,7 @@ public class BlockStateBasic extends ExtendedBlockState {
         @Nonnull
         @Override
         protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-            BlockBasic block = (BlockBasic) state.getBlock();
+            Block block = state.getBlock();
             StringBuilder builder = new StringBuilder();
 
             if (block instanceof IBlockActiveTextured) {

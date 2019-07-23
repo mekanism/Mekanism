@@ -3,12 +3,13 @@ package mekanism.generators.common.block.reactor;
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
+import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateReactor;
-import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -28,7 +29,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorLogicAdapter extends Block implements ITileEntityProvider {
+public class BlockReactorLogicAdapter extends Block implements ITileEntityProvider, IHasGui, IBlockDescriptive {
 
     private final String name;
 
@@ -40,6 +41,11 @@ public class BlockReactorLogicAdapter extends Block implements ITileEntityProvid
         this.name = "reactor_logic_adapter";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
+    }
+
+    @Override
+    public String getDescription() {
+        return LangUtils.localize("tooltip.mekanism." + name);
     }
 
     @Nonnull
@@ -64,11 +70,7 @@ public class BlockReactorLogicAdapter extends Block implements ITileEntityProvid
         if (world.isRemote) {
             return true;
         }
-
-        TileEntityElectricBlock tileEntity = (TileEntityElectricBlock) world.getTileEntity(pos);
-        int metadata = state.getBlock().getMetaFromState(state);
         ItemStack stack = entityplayer.getHeldItem(hand);
-
         if (!stack.isEmpty()) {
             if (MekanismUtils.isBCWrench(stack.getItem()) && !stack.getTranslationKey().contains("omniwrench")) {
                 if (entityplayer.isSneaking()) {
@@ -79,12 +81,9 @@ public class BlockReactorLogicAdapter extends Block implements ITileEntityProvid
                 return true;
             }
         }
-
-        if (tileEntity instanceof TileEntityReactorLogicAdapter) {
-            if (!entityplayer.isSneaking()) {
-                entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(), pos.getZ());
-                return true;
-            }
+        if (!entityplayer.isSneaking()) {
+            entityplayer.openGui(MekanismGenerators.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+            return true;
         }
         return false;
     }
@@ -138,5 +137,10 @@ public class BlockReactorLogicAdapter extends Block implements ITileEntityProvid
     @Override
     public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return true;
+    }
+
+    @Override
+    public int getGuiID() {
+        return 15;
     }
 }

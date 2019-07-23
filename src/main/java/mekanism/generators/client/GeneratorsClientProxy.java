@@ -24,14 +24,12 @@ import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
 import mekanism.generators.client.render.item.RenderGeneratorItem;
-import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlockStateMapper;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockStateMapper;
-import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
@@ -57,7 +55,6 @@ import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -90,13 +87,14 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         registerItemRender(GeneratorsItem.SOLAR_PANEL.getItem());
         registerItemRender(GeneratorsItem.HOHLRAUM.getItem());
         registerItemRender(GeneratorsItem.TURBINE_BLADE.getItem());
-
-        Item.getItemFromBlock(GeneratorsBlocks.Generator).setTileEntityItemStackRenderer(new RenderGeneratorItem());
+        //TODO
+        //Item.getItemFromBlock(GeneratorsBlocks.Generator).setTileEntityItemStackRenderer(new RenderGeneratorItem());
     }
 
     @Override
     public void registerBlockRenders() {
-        ModelLoader.setCustomStateMapper(GeneratorsBlocks.Generator, generatorMapper);
+        //TODO
+        /*ModelLoader.setCustomStateMapper(GeneratorsBlocks.Generator, generatorMapper);
         ModelLoader.setCustomStateMapper(GeneratorsBlocks.Reactor, reactorMapper);
         ModelLoader.setCustomStateMapper(GeneratorsBlocks.ReactorGlass, reactorMapper);
 
@@ -106,7 +104,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
         for (ReactorBlockType type : ReactorBlockType.values()) {
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation(new ResourceLocation(MekanismGenerators.MODID, type.getName()), "inventory"));
-        }
+        }*/
     }
 
     public void registerItemRender(Item item) {

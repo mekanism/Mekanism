@@ -3,7 +3,10 @@ package mekanism.generators.common.block.reactor;
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
+import mekanism.common.block.interfaces.IBlockActiveTextured;
+import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateReactor;
@@ -26,7 +29,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorPort extends Block implements ITileEntityProvider {
+public class BlockReactorPort extends Block implements ITileEntityProvider, IBlockActiveTextured, IBlockDescriptive {
 
     private final String name;
 
@@ -38,6 +41,11 @@ public class BlockReactorPort extends Block implements ITileEntityProvider {
         this.name = "reactor_port";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
+    }
+
+    @Override
+    public String getDescription() {
+        return LangUtils.localize("tooltip.mekanism." + name);
     }
 
     @Nonnull
