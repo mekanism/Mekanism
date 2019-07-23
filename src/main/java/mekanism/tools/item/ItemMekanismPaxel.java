@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismPaxel extends ItemTool {
 
-    public static final Set<Block> EFFECTIVE_ON = new HashSet<>();
+    private static final Set<Block> EFFECTIVE_ON = new HashSet<>();
 
     static {
         EFFECTIVE_ON.addAll(ItemPickaxe.EFFECTIVE_ON);
@@ -35,12 +35,16 @@ public class ItemMekanismPaxel extends ItemTool {
     private final ItemSpade shovel;
     private final ItemAxe axe;
 
-    public ItemMekanismPaxel(ToolMaterial material) {
+    public ItemMekanismPaxel(ToolMaterial material, ItemPickaxe pickaxe, ItemSpade shovel, ItemAxe axe) {
         super(4, -2.4F, material, EFFECTIVE_ON);
         setCreativeTab(Mekanism.tabMekanism);
         setHarvestLevel("pickaxe", material.getHarvestLevel());
         setHarvestLevel("shovel", material.getHarvestLevel());
         setHarvestLevel("axe", material.getHarvestLevel());
+        //Store the normal tool variants of this material for query purposes
+        this.pickaxe = pickaxe;
+        this.shovel = shovel;
+        this.axe = axe;
     }
 
     @Override

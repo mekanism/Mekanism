@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class ToolUtils {
 
+    //TODO: Make the material's getRepairItemStack just have it so that these methods and overrides are not needed
     public static ItemStack getRepairStack(ToolMaterial material) {
         if (material == MekanismTools.toolOBSIDIAN || material == MekanismTools.toolOBSIDIAN2) {
             return new ItemStack(MekanismItems.Ingot, 1, 0);
