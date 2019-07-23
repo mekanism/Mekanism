@@ -69,14 +69,14 @@ public class MekanismGenerators implements IModule {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         // Register blocks and tile entities
-        GeneratorsBlocks.registerBlocks(event.getRegistry());
+        GeneratorsBlock.registerBlocks(event.getRegistry());
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         // Register items and itemBlocks
         GeneratorsItem.registerItems(event.getRegistry());
-        GeneratorsBlocks.registerItemBlocks(event.getRegistry());
+        GeneratorsBlock.registerItemBlocks(event.getRegistry());
     }
 
     @SubscribeEvent
