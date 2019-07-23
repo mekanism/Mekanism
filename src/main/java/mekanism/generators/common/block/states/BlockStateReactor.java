@@ -33,8 +33,8 @@ public class BlockStateReactor extends ExtendedBlockState {
 
     public static final PropertyBool activeProperty = PropertyBool.create("active");
 
-    public BlockStateReactor(BlockReactor block, PropertyEnum<ReactorBlockType> typeProperty) {
-        super(block, new IProperty[]{typeProperty, activeProperty}, new IUnlistedProperty[]{});
+    public BlockStateReactor(Block block) {
+        super(block, new IProperty[]{activeProperty}, new IUnlistedProperty[]{});
     }
 
     public enum ReactorBlock {

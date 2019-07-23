@@ -67,11 +67,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem,
       ISecurityItem, IItemMekanism {
 
-    public Block metaBlock;
-
     public ItemBlockGenerator(Block block) {
         super(block);
-        metaBlock = block;
         setHasSubtypes(true);
     }
 

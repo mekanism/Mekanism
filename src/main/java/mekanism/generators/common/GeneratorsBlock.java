@@ -3,7 +3,6 @@ package mekanism.generators.common;
 import java.util.function.Function;
 import mekanism.common.block.PortalHelper;
 import mekanism.common.item.IItemMekanism;
-import mekanism.common.item.ItemBlockMekanism;
 import mekanism.generators.common.block.generator.BlockAdvancedSolarGenerator;
 import mekanism.generators.common.block.generator.BlockBioGenerator;
 import mekanism.generators.common.block.generator.BlockElectromagneticCoil;
@@ -17,6 +16,12 @@ import mekanism.generators.common.block.generator.BlockTurbineRotor;
 import mekanism.generators.common.block.generator.BlockTurbineValve;
 import mekanism.generators.common.block.generator.BlockTurbineVent;
 import mekanism.generators.common.block.generator.BlockWindGenerator;
+import mekanism.generators.common.block.reactor.BlockLaserFocusMatrix;
+import mekanism.generators.common.block.reactor.BlockReactorController;
+import mekanism.generators.common.block.reactor.BlockReactorFrame;
+import mekanism.generators.common.block.reactor.BlockReactorGlass;
+import mekanism.generators.common.block.reactor.BlockReactorLogicAdapter;
+import mekanism.generators.common.block.reactor.BlockReactorPort;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.item.ItemBlockReactor;
 import net.minecraft.block.Block;
@@ -39,19 +44,15 @@ public enum GeneratorsBlock {
     TURBINE_VALVE(new BlockTurbineValve(), ItemBlockGenerator::new),
     TURBINE_VENT(new BlockTurbineVent(), ItemBlockGenerator::new),
     SATURATING_CONDENSER(new BlockSaturatingCondenser(), ItemBlockGenerator::new),
-    REACTOR_CONTROLLER(new BlockWindGenerator(), ItemBlockReactor::new),
-    REACTOR_FRAME(),
-    REACTOR_PORT(),
-    REACTOR_LOGIC_ADAPTER(),
-    REACTOR_GLASS(),
-    LASER_FOCUS_MATRIX();
+    REACTOR_CONTROLLER(new BlockReactorController(), ItemBlockReactor::new),
+    REACTOR_FRAME(new BlockReactorFrame(), ItemBlockReactor::new),
+    REACTOR_PORT(new BlockReactorPort(), ItemBlockReactor::new),
+    REACTOR_LOGIC_ADAPTER(new BlockReactorLogicAdapter(), ItemBlockReactor::new),
+    REACTOR_GLASS(new BlockReactorGlass(), ItemBlockReactor::new),
+    LASER_FOCUS_MATRIX(new BlockLaserFocusMatrix(), ItemBlockReactor::new);
 
     private final ItemBlock item;
     private final Block block;
-
-    GeneratorsBlock(Block block) {
-        this(block, ItemBlockMekanism::new);
-    }
 
     <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block> GeneratorsBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
         this.block = block;

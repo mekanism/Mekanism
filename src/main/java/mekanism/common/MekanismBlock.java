@@ -407,6 +407,7 @@ public enum MekanismBlock {
     <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block> MekanismBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
+        //TODO: Fix all translation keys so that they have mekanism in them
     }
 
     public Block getBlock() {
