@@ -1,13 +1,12 @@
 package mekanism.generators.common.block.states;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.common.base.IBlockType;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -16,7 +15,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -28,46 +26,37 @@ public class BlockStateGenerator extends ExtendedBlockState {
     }
 
     public enum GeneratorType implements IBlockType {
-        HEAT_GENERATOR(160000, true, Plane.HORIZONTAL),
-        SOLAR_GENERATOR(96000, true, Plane.HORIZONTAL),
-        GAS_GENERATOR(-1/*uses config, set after generators config loaded*/, true, Plane.HORIZONTAL),
-        BIO_GENERATOR(160000, true, Plane.HORIZONTAL),
-        ADVANCED_SOLAR_GENERATOR(200000, true, Plane.HORIZONTAL),
-        WIND_GENERATOR(200000, true, Plane.HORIZONTAL),
-        TURBINE_ROTOR(-1, false, BlockStateUtils.NO_ROTATION),
-        ROTATIONAL_COMPLEX(-1, false, BlockStateUtils.NO_ROTATION),
-        ELECTROMAGNETIC_COIL(-1, false, BlockStateUtils.NO_ROTATION),
-        TURBINE_CASING(-1, false, BlockStateUtils.NO_ROTATION),
-        TURBINE_VALVE(-1, false, BlockStateUtils.NO_ROTATION),
-        TURBINE_VENT(-1, false, BlockStateUtils.NO_ROTATION),
-        SATURATING_CONDENSER(-1, false, BlockStateUtils.NO_ROTATION);
+        HEAT_GENERATOR(160000, true),
+        SOLAR_GENERATOR(96000, true),
+        GAS_GENERATOR(-1/*uses config, set after generators config loaded*/, true),
+        BIO_GENERATOR(160000, true),
+        ADVANCED_SOLAR_GENERATOR(200000, true),
+        WIND_GENERATOR(200000, true),
+        TURBINE_ROTOR,
+        ROTATIONAL_COMPLEX,
+        ELECTROMAGNETIC_COIL,
+        TURBINE_CASING,
+        TURBINE_VALVE,
+        TURBINE_VENT,
+        SATURATING_CONDENSER;
 
-        private static final List<GeneratorType> GENERATORS_FOR_CONFIG;
+        public double maxEnergy;
+        public boolean hasSecurity;
+        private boolean notGenerator;
 
-        static {
-            GENERATORS_FOR_CONFIG = new ArrayList<>();
-
-            for (GeneratorType type : GeneratorType.values()) {
-                if (type.ordinal() <= 5) {
-                    GENERATORS_FOR_CONFIG.add(type);
-                }
-            }
+        GeneratorType() {
+            this(-1, false);
+            //This constructor is not actually used by "generators"
+            notGenerator = true;
         }
 
-        public int meta;
-        public String blockName;
-        public double maxEnergy;
-        public boolean hasModel;
-        public Predicate<EnumFacing> facingPredicate;
-
-        GeneratorType(double energy, boolean model, Predicate<EnumFacing> predicate) {
+        GeneratorType(double energy, boolean model) {
             maxEnergy = energy;
-            hasModel = model;
-            facingPredicate = predicate;
+            hasSecurity = model;
         }
 
         public static List<GeneratorType> getGeneratorsForConfig() {
-            return GENERATORS_FOR_CONFIG;
+            return Arrays.stream(values()).filter(type -> !type.notGenerator).collect(Collectors.toList());
         }
 
         public static GeneratorType get(Block block, int meta) {
@@ -80,23 +69,12 @@ public class BlockStateGenerator extends ExtendedBlockState {
 
         @Override
         public String getBlockName() {
-            return blockName;
+
         }
 
         @Override
         public boolean isEnabled() {
-            if (meta > WIND_GENERATOR.meta) {
-                return true;
-            }
-            return MekanismConfig.current().generators.generatorsManager.isEnabled(this);
-        }
-
-        public boolean canRotateTo(EnumFacing side) {
-            return facingPredicate.test(side);
-        }
-
-        public boolean hasRotations() {
-            return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
+            return notGenerator || MekanismConfig.current().generators.generatorsManager.isEnabled(this);
         }
     }
 

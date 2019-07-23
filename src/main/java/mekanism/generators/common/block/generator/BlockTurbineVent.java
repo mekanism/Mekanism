@@ -22,11 +22,9 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.states.BlockStateGenerator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -65,12 +63,6 @@ public class BlockTurbineVent extends BlockMekanismContainer implements IBlockDe
     @Override
     public String getDescription() {
         return LangUtils.localize("tooltip.mekanism." + name);
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return new BlockStateGenerator(this);
     }
 
     @Nonnull

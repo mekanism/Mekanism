@@ -32,6 +32,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -150,7 +151,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
         boolean place = true;
         Block block = world.getBlockState(pos).getBlock();
 
-        if (stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta) {
+        if (stack.getItem() == GeneratorsBlock.ADVANCED_SOLAR_GENERATOR.getItem()) {
             if (!(block.isReplaceable(world, pos) && world.isAirBlock(pos.add(0, 1, 0)))) {
                 return false;
             }
@@ -163,7 +164,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
                     }
                 }
             }
-        } else if (stack.getItemDamage() == GeneratorType.WIND_GENERATOR.meta) {
+        } else if (stack.getItem() == GeneratorsBlock.WIND_GENERATOR.getItem()) {
             if (!block.isReplaceable(world, pos)) {
                 return false;
             }
@@ -364,7 +365,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
     @Override
     public boolean hasSecurity(ItemStack stack) {
         GeneratorType type = GeneratorType.get(stack);
-        return type != null && type.hasModel;
+        return type != null && type.hasSecurity;
     }
 
     @Override
