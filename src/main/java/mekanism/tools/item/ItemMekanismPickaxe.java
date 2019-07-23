@@ -1,36 +1,33 @@
 package mekanism.tools.item;
 
-import com.google.common.collect.Sets;
-import java.util.Set;
+import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
+import mekanism.common.util.LangUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.tools.common.ToolUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemMekanismPickaxe extends ItemMekanismTool {
+public class ItemMekanismPickaxe extends ItemPickaxe {
 
-    private static final Set<Block> EFFECTIVE_ON = Sets.newHashSet(Blocks.ACTIVATOR_RAIL, Blocks.COAL_ORE, Blocks.COBBLESTONE, Blocks.DETECTOR_RAIL, Blocks.DIAMOND_BLOCK,
-          Blocks.DIAMOND_ORE, Blocks.DOUBLE_STONE_SLAB, Blocks.GOLDEN_RAIL, Blocks.GOLD_BLOCK, Blocks.GOLD_ORE, Blocks.ICE, Blocks.IRON_BLOCK, Blocks.IRON_ORE,
-          Blocks.LAPIS_BLOCK, Blocks.LAPIS_ORE, Blocks.LIT_REDSTONE_ORE, Blocks.MOSSY_COBBLESTONE, Blocks.NETHERRACK, Blocks.PACKED_ICE, Blocks.RAIL, Blocks.REDSTONE_ORE,
-          Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.STONE, Blocks.STONE_SLAB, Blocks.STONE_BUTTON, Blocks.STONE_PRESSURE_PLATE);
-
-    public ItemMekanismPickaxe(ToolMaterial toolMaterial) {
-        super(1, -2.8F, toolMaterial, EFFECTIVE_ON);
+    public ItemMekanismPickaxe(ToolMaterial tool) {
+        super(tool);
+        setCreativeTab(Mekanism.tabMekanism);
     }
 
     @Override
-    public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack) {
-        return ToolUtils.canPickaxeHarvest(state, toolMaterial);
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+        list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
     }
 
     @Override
-    public float getDestroySpeed(@Nonnull ItemStack itemstack, IBlockState blockState) {
-        if (blockState != null && (blockState.getMaterial() == Material.IRON || blockState.getMaterial() == Material.ANVIL || blockState.getMaterial() == Material.ROCK)) {
-            return efficiency;
-        }
-        return super.getDestroySpeed(itemstack, blockState);
+    public boolean getIsRepairable(ItemStack toRepair, @Nonnull ItemStack repair) {
+        return StackUtils.equalsWildcard(ToolUtils.getRepairStack(toolMaterial), repair) || super.getIsRepairable(toRepair, repair);
     }
 }

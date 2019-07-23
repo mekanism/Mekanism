@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.tools.common.ToolUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -16,10 +17,11 @@ public class ItemMekanismSword extends ItemSword {
 
     private ToolMaterial toolMaterial;
 
-    public ItemMekanismSword(ToolMaterial enumtoolmaterial) {
-        super(enumtoolmaterial);
-        toolMaterial = enumtoolmaterial;
+    public ItemMekanismSword(ToolMaterial tool) {
+        super(tool);
         setCreativeTab(Mekanism.tabMekanism);
+        //TODO: Access transformer to make it so we don't have to duplicate storing this? As ItemSword keeps track of it
+        toolMaterial = tool;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class ItemMekanismSword extends ItemSword {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack stack1, @Nonnull ItemStack stack2) {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super.getIsRepairable(stack1, stack2);
+    public boolean getIsRepairable(ItemStack toRepair, @Nonnull ItemStack repair) {
+        return StackUtils.equalsWildcard(ToolUtils.getRepairStack(toolMaterial), repair) || super.getIsRepairable(toRepair, repair);
     }
 }

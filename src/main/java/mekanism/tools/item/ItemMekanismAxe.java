@@ -6,6 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
+import mekanism.tools.common.ToolUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
@@ -28,6 +29,6 @@ public class ItemMekanismAxe extends ItemAxe {
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, @Nonnull ItemStack repair) {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), repair) || super.getIsRepairable(toRepair, repair);
+        return StackUtils.equalsWildcard(ToolUtils.getRepairStack(toolMaterial), repair) || super.getIsRepairable(toRepair, repair);
     }
 }
