@@ -3,6 +3,7 @@ package mekanism.generators.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.common.item.IItemMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
@@ -15,13 +16,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
-public class ItemBlockReactor extends ItemBlock {
-
-    public Block metaBlock;
+public class ItemBlockReactor extends ItemBlock implements IItemMekanism {
 
     public ItemBlockReactor(Block block) {
         super(block);
-        metaBlock = block;
         setHasSubtypes(true);
     }
 

@@ -6,11 +6,19 @@ import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemBlockMekanism;
 import mekanism.generators.common.block.generator.BlockAdvancedSolarGenerator;
 import mekanism.generators.common.block.generator.BlockBioGenerator;
+import mekanism.generators.common.block.generator.BlockElectromagneticCoil;
 import mekanism.generators.common.block.generator.BlockGasBurningGenerator;
 import mekanism.generators.common.block.generator.BlockHeatGenerator;
+import mekanism.generators.common.block.generator.BlockRotationalComplex;
+import mekanism.generators.common.block.generator.BlockSaturatingCondenser;
 import mekanism.generators.common.block.generator.BlockSolarGenerator;
+import mekanism.generators.common.block.generator.BlockTurbineCasing;
+import mekanism.generators.common.block.generator.BlockTurbineRotor;
+import mekanism.generators.common.block.generator.BlockTurbineValve;
+import mekanism.generators.common.block.generator.BlockTurbineVent;
 import mekanism.generators.common.block.generator.BlockWindGenerator;
 import mekanism.generators.common.item.ItemBlockGenerator;
+import mekanism.generators.common.item.ItemBlockReactor;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -24,14 +32,14 @@ public enum GeneratorsBlock {
     BIO_GENERATOR(new BlockBioGenerator(), ItemBlockGenerator::new),
     ADVANCED_SOLAR_GENERATOR(new BlockAdvancedSolarGenerator(), ItemBlockGenerator::new),
     WIND_GENERATOR(new BlockWindGenerator(), ItemBlockGenerator::new),
-    TURBINE_ROTOR(),
-    ROTATIONAL_COMPLEX(),
-    ELECTROMAGNETIC_COIL(),
-    TURBINE_CASING(),
-    TURBINE_VALVE(),
-    TURBINE_VENT(),
-    SATURATING_CONDENSER(),
-    REACTOR_CONTROLLER(),
+    TURBINE_ROTOR(new BlockTurbineRotor(), ItemBlockGenerator::new),
+    ROTATIONAL_COMPLEX(new BlockRotationalComplex(), ItemBlockGenerator::new),
+    ELECTROMAGNETIC_COIL(new BlockElectromagneticCoil(), ItemBlockGenerator::new),
+    TURBINE_CASING(new BlockTurbineCasing(), ItemBlockGenerator::new),
+    TURBINE_VALVE(new BlockTurbineValve(), ItemBlockGenerator::new),
+    TURBINE_VENT(new BlockTurbineVent(), ItemBlockGenerator::new),
+    SATURATING_CONDENSER(new BlockSaturatingCondenser(), ItemBlockGenerator::new),
+    REACTOR_CONTROLLER(new BlockWindGenerator(), ItemBlockReactor::new),
     REACTOR_FRAME(),
     REACTOR_PORT(),
     REACTOR_LOGIC_ADAPTER(),

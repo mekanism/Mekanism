@@ -9,6 +9,4 @@ package mekanism.common.block;
  * @author AidanBrady
  */
 public class BlockBasic {
-    //TODO: Move this stuff to the individual blocks similar to how it was done for the machines, and then the ones without tiles can stop having to extend BlockTileDrops
-
 }
