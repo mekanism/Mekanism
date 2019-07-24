@@ -2,6 +2,7 @@ package mekanism.tools.item;
 
 import java.util.List;
 import mekanism.common.util.LangUtils;
+import mekanism.tools.common.Materials;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
@@ -11,9 +12,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismShovel extends ItemSpade {
 
-    public ItemMekanismShovel(ToolMaterial material) {
-        super(material);
-        setHarvestLevel("shovel", material.getHarvestLevel());
+    public ItemMekanismShovel(Materials material) {
+        super(material.getMaterial());
+        setHarvestLevel("shovel", material.getMaterial().getHarvestLevel());
     }
 
     @Override

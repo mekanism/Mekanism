@@ -2,6 +2,7 @@ package mekanism.tools.item;
 
 import java.util.List;
 import mekanism.common.util.LangUtils;
+import mekanism.tools.common.Materials;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -11,8 +12,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismSword extends ItemSword {
 
-    public ItemMekanismSword(ToolMaterial material) {
-        super(material);
+    public ItemMekanismSword(Materials material) {
+        super(material.getMaterial());
     }
 
     @Override

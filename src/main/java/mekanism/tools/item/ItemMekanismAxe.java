@@ -2,7 +2,7 @@ package mekanism.tools.item;
 
 import java.util.List;
 import mekanism.common.util.LangUtils;
-import mekanism.tools.common.MekanismTools;
+import mekanism.tools.common.Materials;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
@@ -12,9 +12,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismAxe extends ItemAxe {
 
-    public ItemMekanismAxe(ToolMaterial material) {
-        super(material, MekanismTools.AXE_DAMAGE.get(material), MekanismTools.AXE_SPEED.get(material));
-        setHarvestLevel("axe", material.getHarvestLevel());
+    public ItemMekanismAxe(Materials material) {
+        super(material.getMaterial(), material.getAxeDamage(), material.getAxeSpeed());
+        setHarvestLevel("axe", material.getMaterial().getHarvestLevel());
     }
 
     @Override

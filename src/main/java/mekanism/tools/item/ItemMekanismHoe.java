@@ -2,6 +2,7 @@ package mekanism.tools.item;
 
 import java.util.List;
 import mekanism.common.util.LangUtils;
+import mekanism.tools.common.Materials;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
@@ -11,8 +12,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismHoe extends ItemHoe {
 
-    public ItemMekanismHoe(ToolMaterial material) {
-        super(material);
+    public ItemMekanismHoe(Materials material) {
+        super(material.getMaterial());
     }
 
     @Override

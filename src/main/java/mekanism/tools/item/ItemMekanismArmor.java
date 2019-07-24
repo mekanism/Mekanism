@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.util.LangUtils;
+import mekanism.tools.common.Materials;
 import mekanism.tools.common.ToolsItem;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,8 +19,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismArmor extends ItemArmor {
 
-    public ItemMekanismArmor(ArmorMaterial material, int renderIndex, EntityEquipmentSlot slot) {
-        super(material, renderIndex, slot);
+    public ItemMekanismArmor(Materials material, int renderIndex, EntityEquipmentSlot slot) {
+        super(material.getArmorMaterial(), renderIndex, slot);
     }
 
     @Override

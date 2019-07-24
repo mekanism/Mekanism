@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.util.LangUtils;
+import mekanism.tools.common.Materials;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -31,6 +32,10 @@ public class ItemMekanismPaxel extends ItemTool {
     private final ItemPickaxe pickaxe;
     private final ItemSpade shovel;
     private final ItemAxe axe;
+
+    public ItemMekanismPaxel(Materials material, ItemPickaxe pickaxe, ItemSpade shovel, ItemAxe axe) {
+        this(material.getPaxelMaterial(), pickaxe, shovel, axe);
+    }
 
     public ItemMekanismPaxel(ToolMaterial material, ItemPickaxe pickaxe, ItemSpade shovel, ItemAxe axe) {
         super(4, -2.4F, material, EFFECTIVE_ON);
