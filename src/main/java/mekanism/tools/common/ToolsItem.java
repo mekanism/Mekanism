@@ -1,5 +1,7 @@
 package mekanism.tools.common;
 
+import java.util.Arrays;
+import java.util.List;
 import mekanism.common.Mekanism;
 import mekanism.tools.item.ItemMekanismArmor;
 import mekanism.tools.item.ItemMekanismAxe;
@@ -91,6 +93,17 @@ public enum ToolsItem {
     STEEL_CHESTPLATE("SteelChestplate", new ItemMekanismArmor(MekanismTools.armorSTEEL, 1, EntityEquipmentSlot.CHEST)),
     STEEL_LEGGINGS("SteelLeggings", new ItemMekanismArmor(MekanismTools.armorSTEEL, 2, EntityEquipmentSlot.LEGS)),
     STEEL_BOOTS("SteelBoots", new ItemMekanismArmor(MekanismTools.armorSTEEL, 3, EntityEquipmentSlot.FEET));
+
+    public static final List<ToolsItem> bronzeSet = Arrays.asList(BRONZE_PICKAXE, BRONZE_AXE, BRONZE_SHOVEL, BRONZE_HOE, BRONZE_SWORD, BRONZE_PAXEL, BRONZE_HELMET,
+          BRONZE_CHESTPLATE, BRONZE_LEGGINGS, BRONZE_BOOTS);
+    public static final List<ToolsItem> osmiumSet = Arrays.asList(OSMIUM_PICKAXE, OSMIUM_AXE, OSMIUM_SHOVEL, OSMIUM_HOE, OSMIUM_SWORD, OSMIUM_PAXEL, OSMIUM_HELMET,
+          OSMIUM_CHESTPLATE, OSMIUM_LEGGINGS, OSMIUM_BOOTS);
+    public static final List<ToolsItem> obsidianSet = Arrays.asList(OBSIDIAN_PICKAXE, OBSIDIAN_AXE, OBSIDIAN_SHOVEL, OBSIDIAN_HOE, OBSIDIAN_SWORD, OBSIDIAN_PAXEL,
+          OBSIDIAN_HELMET, OBSIDIAN_CHESTPLATE, OBSIDIAN_LEGGINGS, OBSIDIAN_BOOTS);
+    public static final List<ToolsItem> glowstoneSet = Arrays.asList(GLOWSTONE_PICKAXE, GLOWSTONE_AXE, GLOWSTONE_SHOVEL, GLOWSTONE_HOE, GLOWSTONE_SWORD, GLOWSTONE_PAXEL,
+          GLOWSTONE_HELMET, GLOWSTONE_CHESTPLATE, GLOWSTONE_LEGGINGS, GLOWSTONE_BOOTS);
+    public static final List<ToolsItem> steelSet = Arrays.asList(STEEL_PICKAXE, STEEL_AXE, STEEL_SHOVEL, STEEL_HOE, STEEL_SWORD, STEEL_PAXEL, STEEL_HELMET,
+          STEEL_CHESTPLATE, STEEL_LEGGINGS, STEEL_BOOTS);
 
     private final Item item;
 
