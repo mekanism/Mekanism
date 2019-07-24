@@ -62,7 +62,7 @@ public class MekanismTools implements IModule {
     public void preInit(FMLPreInitializationEvent event) {
         //Load the config
         proxy.loadConfiguration();
-        Materials.addRepairItems();
+        Materials.load();
     }
 
     @EventHandler

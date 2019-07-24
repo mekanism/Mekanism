@@ -1,7 +1,10 @@
 package mekanism.tools.common;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.common.MekanismItems;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.ToolsConfig;
 import mekanism.common.config.ToolsConfig.ArmorBalance;
 import mekanism.common.config.ToolsConfig.ToolBalance;
 import net.minecraft.init.Items;
@@ -13,33 +16,61 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.util.EnumHelper;
 
 public enum Materials {
-    OBSIDIAN("OBSIDIAN", MekanismConfig.current().tools.toolOBSIDIAN, MekanismConfig.current().tools.toolOBSIDIAN2, MekanismConfig.current().tools.armorOBSIDIAN, SoundEvents.ITEM_ARMOR_EQUIP_IRON),
-    LAZULI("LAZULI", MekanismConfig.current().tools.toolLAZULI, MekanismConfig.current().tools.toolLAZULI2, MekanismConfig.current().tools.armorLAZULI, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND),
-    OSMIUM("OSMIUM", MekanismConfig.current().tools.toolOSMIUM, MekanismConfig.current().tools.toolOSMIUM2, MekanismConfig.current().tools.armorOSMIUM, SoundEvents.ITEM_ARMOR_EQUIP_IRON),
-    BRONZE("BRONZE", MekanismConfig.current().tools.toolBRONZE, MekanismConfig.current().tools.toolBRONZE2, MekanismConfig.current().tools.armorBRONZE, SoundEvents.ITEM_ARMOR_EQUIP_IRON),
-    GLOWSTONE("GLOWSTONE", MekanismConfig.current().tools.toolGLOWSTONE, MekanismConfig.current().tools.toolGLOWSTONE2, MekanismConfig.current().tools.armorGLOWSTONE, SoundEvents.ITEM_ARMOR_EQUIP_IRON),
-    STEEL("STEEL", MekanismConfig.current().tools.toolSTEEL, MekanismConfig.current().tools.toolSTEEL2, MekanismConfig.current().tools.armorSTEEL, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+    OBSIDIAN("OBSIDIAN", cfg -> cfg.toolOBSIDIAN, cfg -> cfg.toolOBSIDIAN2, cfg -> cfg.armorOBSIDIAN, () -> new ItemStack(MekanismItems.Ingot)),
+    LAZULI("LAZULI", cfg -> cfg.toolLAZULI, cfg -> cfg.toolLAZULI2, cfg -> cfg.armorLAZULI, () -> new ItemStack(Items.DYE, 1, 4), SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND),
+    OSMIUM("OSMIUM", cfg -> cfg.toolOSMIUM, cfg -> cfg.toolOSMIUM2, cfg -> cfg.armorOSMIUM, () -> new ItemStack(MekanismItems.Ingot, 1, 1)),
+    BRONZE("BRONZE", cfg -> cfg.toolBRONZE, cfg -> cfg.toolBRONZE2, cfg -> cfg.armorBRONZE, () -> new ItemStack(MekanismItems.Ingot, 1, 2)),
+    GLOWSTONE("GLOWSTONE", tools -> tools.toolGLOWSTONE, tools -> tools.toolGLOWSTONE2, cfg -> cfg.armorGLOWSTONE, () -> new ItemStack(MekanismItems.Ingot, 1, 3)),
+    STEEL("STEEL", cfg -> cfg.toolSTEEL, cfg -> cfg.toolSTEEL2, cfg -> cfg.armorSTEEL, () -> new ItemStack(MekanismItems.Ingot, 1, 4));
 
-    private final ToolMaterial material;
-    private final ToolMaterial paxelMaterial;
-    private final ArmorMaterial armorMaterial;
-    private final float axeDamage;
-    private final float axeSpeed;
+    private final Function<ToolsConfig, ToolBalance> materialFunction;
+    private final Function<ToolsConfig, ToolBalance> paxelMaterialFunction;
+    private final Function<ToolsConfig, ArmorBalance> armorMaterialFunction;
+    private final Supplier<ItemStack> repairStackSupplier;
+    private final SoundEvent equipSound;
+    private final String materialName;
+    private ToolMaterial material;
+    private ToolMaterial paxelMaterial;
+    private ArmorMaterial armorMaterial;
+    private boolean initialized;
+    private float axeDamage;
+    private float axeSpeed;
 
-    Materials(String materialName, ToolBalance material, ToolBalance paxelMaterial, ArmorBalance armorMaterial, SoundEvent equipSound) {
-        this.material = getToolMaterial(materialName, material);
-        this.paxelMaterial = getToolMaterial(materialName + "2", paxelMaterial);
-        this.armorMaterial = EnumHelper.addArmorMaterial(materialName, "TODO", armorMaterial.durability.val(), new int[]{
-              armorMaterial.feetProtection.val(), armorMaterial.legsProtection.val(), armorMaterial.chestProtection.val(), armorMaterial.headProtection.val(),
-              }, armorMaterial.enchantability.val(), equipSound, armorMaterial.toughness.val());
-        this.axeDamage = material.axeAttackDamage.val();
-        this.axeSpeed = material.axeAttackSpeed.val();
+    Materials(String name, Function<ToolsConfig, ToolBalance> material, Function<ToolsConfig, ToolBalance> paxelMaterial, Function<ToolsConfig, ArmorBalance> armorMaterial,
+          Supplier<ItemStack> repairStack) {
+        this(name, material, paxelMaterial, armorMaterial, repairStack, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
     }
 
-    public void setRepairItem(ItemStack repairStack) {
+    Materials(String name, Function<ToolsConfig, ToolBalance> material, Function<ToolsConfig, ToolBalance> paxelMaterial, Function<ToolsConfig, ArmorBalance> armorMaterial,
+          Supplier<ItemStack> repairStack, SoundEvent equipSound) {
+        this.materialName = name;
+        this.materialFunction = material;
+        this.paxelMaterialFunction = paxelMaterial;
+        this.armorMaterialFunction = armorMaterial;
+        this.repairStackSupplier = repairStack;
+        this.equipSound = equipSound;
+    }
+
+    private void init() {
+        if (initialized) {
+            return;
+        }
+        ToolBalance materialBalance = materialFunction.apply(MekanismConfig.current().tools);
+        ToolBalance paxelMaterialBalance = paxelMaterialFunction.apply(MekanismConfig.current().tools);
+        ArmorBalance armorBalance = armorMaterialFunction.apply(MekanismConfig.current().tools);
+
+        this.material = getToolMaterial(materialName, materialBalance);
+        this.paxelMaterial = getToolMaterial(materialName + "2", paxelMaterialBalance);
+        this.armorMaterial = EnumHelper.addArmorMaterial(materialName, "TODO", armorBalance.durability.val(), new int[]{
+              armorBalance.feetProtection.val(), armorBalance.legsProtection.val(), armorBalance.chestProtection.val(), armorBalance.headProtection.val(),
+              }, armorBalance.enchantability.val(), equipSound, armorBalance.toughness.val());
+        this.axeDamage = materialBalance.axeAttackDamage.val();
+        this.axeSpeed = materialBalance.axeAttackSpeed.val();
+        ItemStack repairStack = repairStackSupplier.get();
         material.setRepairItem(repairStack);
         paxelMaterial.setRepairItem(repairStack);
         armorMaterial.setRepairItem(repairStack);
+        initialized = true;
     }
 
     public ToolMaterial getMaterial() {
@@ -66,12 +97,9 @@ public enum Materials {
         return EnumHelper.addToolMaterial(enumName, config.harvestLevel.val(), config.maxUses.val(), config.efficiency.val(), config.damage.val(), config.enchantability.val());
     }
 
-    public static void addRepairItems() {
-        OBSIDIAN.setRepairItem(new ItemStack(MekanismItems.Ingot, 1, 0));
-        OSMIUM.setRepairItem(new ItemStack(MekanismItems.Ingot, 1, 1));
-        BRONZE.setRepairItem(new ItemStack(MekanismItems.Ingot, 1, 2));
-        GLOWSTONE.setRepairItem(new ItemStack(MekanismItems.Ingot, 1, 3));
-        STEEL.setRepairItem(new ItemStack(MekanismItems.Ingot, 1, 4));
-        LAZULI.setRepairItem(new ItemStack(Items.DYE, 1, 4));
+    public static void load() {
+        for (Materials material : values()) {
+            material.init();
+        }
     }
 }
