@@ -256,7 +256,7 @@ uploadArchives {
                         artifactId = "Mekanism"
                     }
                     project {
-                        name "Mekanism"
+                        name = "Mekanism"
                         packaging 'jar'
                         description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
                         url 'http://aidancbrady.com/mekanism/'
@@ -269,7 +269,7 @@ uploadArchives {
                         }
                         licenses {
                             license {
-                                name 'MIT'
+                                name = 'MIT'
                                 distribution 'repo'
                             }
                         }
