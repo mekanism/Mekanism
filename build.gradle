@@ -2,12 +2,12 @@ buildscript {
     repositories {
         jcenter()
         maven {
-            name = "forge"
-            url = "https://files.minecraftforge.net/maven"
+            name "forge"
+            url "https://files.minecraftforge.net/maven"
         }
         maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+            name "sonatype"
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
         }
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -15,15 +15,17 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.3.0"
     }
 }
 
 plugins {
-    id 'org.ajoberstar.grgit' version '2.3.0'
+    id 'org.ajoberstar.grgit' version '3.1.1'
+    id "com.matthewprenger.cursegradle" version "1.3.0"
+    id 'idea'
+    id 'maven'
+    id 'maven-publish'
 }
-
-apply plugin: 'idea'
 
 defaultTasks 'fullBuild'
 
@@ -35,7 +37,6 @@ idea {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
 
 repositories {
     maven {
@@ -95,8 +96,7 @@ repositories {
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "MekanismAll"
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = '1.8'
 
 def explodedVersion = mod_version.split("\\.")
 
@@ -248,9 +248,6 @@ runClient {
 runServer {
     jvmArgs "-Dfml.coreMods.load=mekanism.coremod.MekanismCoremod"
 }
-
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
 
 uploadArchives {
     if(System.getenv("LOCAL_MAVEN") != null) {
