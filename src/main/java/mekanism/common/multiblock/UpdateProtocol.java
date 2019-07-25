@@ -429,7 +429,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
         }
     }
 
-    public class NodeCounter {
+    public static class NodeCounter {
 
         public Set<Coord4D> iterated = new HashSet<>();
 

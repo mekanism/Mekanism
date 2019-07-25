@@ -35,7 +35,7 @@ public class OCDriver extends DriverSidedTileEntity {
         return null;
     }
 
-    public class OCManagedEnvironment extends AbstractManagedEnvironment implements NamedBlock, ManagedPeripheral {
+    public static class OCManagedEnvironment extends AbstractManagedEnvironment implements NamedBlock, ManagedPeripheral {
 
         public IComputerIntegration computerTile;
 
