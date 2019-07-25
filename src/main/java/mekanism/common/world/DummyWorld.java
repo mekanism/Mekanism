@@ -1,6 +1,7 @@
 package mekanism.common.world;
 
 import java.io.File;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.Profiler;
@@ -55,17 +56,17 @@ public class DummyWorld extends World {
         }
 
         @Override
-        public IChunkLoader getChunkLoader(WorldProvider provider) {
+        public IChunkLoader getChunkLoader(@Nonnull WorldProvider provider) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void saveWorldInfoWithPlayer(WorldInfo worldInformation, NBTTagCompound tagCompound) {
+        public void saveWorldInfoWithPlayer(@Nonnull WorldInfo worldInformation, @Nonnull NBTTagCompound tagCompound) {
 
         }
 
         @Override
-        public void saveWorldInfo(WorldInfo worldInformation) {
+        public void saveWorldInfo(@Nonnull WorldInfo worldInformation) {
 
         }
 
@@ -85,7 +86,7 @@ public class DummyWorld extends World {
         }
 
         @Override
-        public File getMapFileFromName(String mapName) {
+        public File getMapFileFromName(@Nonnull String mapName) {
             throw new UnsupportedOperationException();
         }
 
