@@ -2,6 +2,7 @@ package mekanism.tools.common;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.tools.item.ItemMekanismArmor;
 import mekanism.tools.item.ItemMekanismAxe;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum ToolsItem {
@@ -108,30 +110,50 @@ public enum ToolsItem {
     public static final List<ToolsItem> LAPIS_LAZULI_SET = Arrays.asList(LAPIS_LAZULI_PICKAXE, LAPIS_LAZULI_AXE, LAPIS_LAZULI_SHOVEL, LAPIS_LAZULI_HOE, LAPIS_LAZULI_SWORD,
           LAPIS_LAZULI_PAXEL, LAPIS_LAZULI_HELMET, LAPIS_LAZULI_CHESTPLATE, LAPIS_LAZULI_LEGGINGS, LAPIS_LAZULI_BOOTS);
 
+    @Nonnull
     private final Item item;
 
-    ToolsItem(String name, Materials paxelMaterial, ToolsItem pickaxe, ToolsItem shovel, ToolsItem axe) {
+    ToolsItem(@Nonnull String name, @Nonnull Materials paxelMaterial, @Nonnull ToolsItem pickaxe, @Nonnull ToolsItem shovel, @Nonnull ToolsItem axe) {
         //Paxel helper
         this(name, new ItemMekanismPaxel(paxelMaterial, (ItemPickaxe) pickaxe.getItem(), (ItemSpade) shovel.getItem(), (ItemAxe) axe.getItem()));
     }
 
-    ToolsItem(String name, Item item) {
+    <ITEM extends Item & IHasRepairType> ToolsItem(@Nonnull String name, @Nonnull ITEM item) {
         //TODO: Make name be part of item instead of added on this extra layer.
         // Also make them have underscores rather than "fake" capitalization that is just to make it easier to read in the enum
         // This note is for 1.14 when we are going to be mass changing ids anyways to flatten things
         this.item = item.setTranslationKey(name).setRegistryName(new ResourceLocation(MekanismTools.MODID, name)).setCreativeTab(Mekanism.tabMekanism);
     }
 
+    @Nonnull
     public Item getItem() {
         return item;
     }
 
+    @Nonnull
+    public ItemStack getRepairStack() {
+        //All cases currently implement IHasRepairType but just in case we decide to add some eventually that doesn't
+        return item instanceof IHasRepairType ? ((IHasRepairType) item).getRepairStack() : ItemStack.EMPTY;
+    }
+
+    @Nonnull
     public ItemStack getItemStack() {
         return getItemStack(1);
     }
 
+    @Nonnull
     public ItemStack getItemStack(int size) {
         return new ItemStack(getItem(), size);
+    }
+
+    @Nonnull
+    public ItemStack getItemStackAnyDamage() {
+        return getItemStackAnyDamage(1);
+    }
+
+    @Nonnull
+    public ItemStack getItemStackAnyDamage(int size) {
+        return new ItemStack(getItem(), size, OreDictionary.WILDCARD_VALUE);
     }
 
     public static void registerItems(IForgeRegistry<Item> registry) {

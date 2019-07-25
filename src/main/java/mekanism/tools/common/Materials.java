@@ -2,6 +2,7 @@ package mekanism.tools.common;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.common.MekanismItems;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.ToolsConfig;
@@ -36,13 +37,13 @@ public enum Materials {
     private float axeDamage;
     private float axeSpeed;
 
-    Materials(String name, Function<ToolsConfig, ToolBalance> material, Function<ToolsConfig, ToolBalance> paxelMaterial, Function<ToolsConfig, ArmorBalance> armorMaterial,
-          Supplier<ItemStack> repairStack) {
+    Materials(@Nonnull String name, @Nonnull Function<ToolsConfig, ToolBalance> material, @Nonnull Function<ToolsConfig, ToolBalance> paxelMaterial,
+          @Nonnull Function<ToolsConfig, ArmorBalance> armorMaterial, @Nonnull Supplier<ItemStack> repairStack) {
         this(name, material, paxelMaterial, armorMaterial, repairStack, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
     }
 
-    Materials(String name, Function<ToolsConfig, ToolBalance> material, Function<ToolsConfig, ToolBalance> paxelMaterial, Function<ToolsConfig, ArmorBalance> armorMaterial,
-          Supplier<ItemStack> repairStack, SoundEvent equipSound) {
+    Materials(@Nonnull String name, @Nonnull Function<ToolsConfig, ToolBalance> material, @Nonnull Function<ToolsConfig, ToolBalance> paxelMaterial,
+          @Nonnull Function<ToolsConfig, ArmorBalance> armorMaterial, @Nonnull  Supplier<ItemStack> repairStack, @Nonnull SoundEvent equipSound) {
         this.materialName = name;
         this.materialFunction = material;
         this.paxelMaterialFunction = paxelMaterial;
@@ -51,11 +52,11 @@ public enum Materials {
         this.equipSound = equipSound;
     }
 
-    private static ToolMaterial getToolMaterial(String enumName, ToolBalance config) {
+    private static ToolMaterial getToolMaterial(@Nonnull String enumName, @Nonnull ToolBalance config) {
         return EnumHelper.addToolMaterial(enumName, config.harvestLevel.val(), config.maxUses.val(), config.efficiency.val(), config.damage.val(), config.enchantability.val());
     }
 
-    private static ArmorMaterial getArmorMaterial(String enumName, ArmorBalance config, SoundEvent equipSound) {
+    private static ArmorMaterial getArmorMaterial(@Nonnull String enumName, @Nonnull ArmorBalance config, @Nonnull SoundEvent equipSound) {
         return EnumHelper.addArmorMaterial(enumName, "TODO", config.durability.val(), new int[]{
               config.feetProtection.val(), config.legsProtection.val(), config.chestProtection.val(), config.headProtection.val(),
               }, config.enchantability.val(), equipSound, config.toughness.val());

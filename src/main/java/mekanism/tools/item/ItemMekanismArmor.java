@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.util.LangUtils;
+import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.Materials;
 import mekanism.tools.common.ToolsItem;
 import net.minecraft.client.model.ModelBiped;
@@ -17,7 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemMekanismArmor extends ItemArmor {
+public class ItemMekanismArmor extends ItemArmor implements IHasRepairType {
 
     public ItemMekanismArmor(Materials material, int renderIndex, EntityEquipmentSlot slot) {
         super(material.getArmorMaterial(), renderIndex, slot);
@@ -43,5 +44,10 @@ public class ItemMekanismArmor extends ItemArmor {
             return ModelCustomArmor.getGlow(armorSlot);
         }
         return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+    }
+
+    @Override
+    public ItemStack getRepairStack() {
+        return getArmorMaterial().getRepairItemStack();
     }
 }

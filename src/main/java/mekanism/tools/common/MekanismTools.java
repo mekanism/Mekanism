@@ -80,9 +80,9 @@ public class MekanismTools implements IModule {
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         //Furnace Recipes
-        GameRegistry.addSmelting(ToolsItem.IRON_PAXEL.getItemStack(), new ItemStack(Items.IRON_NUGGET), 0.1F);
-        GameRegistry.addSmelting(ToolsItem.GOLD_PAXEL.getItemStack(), new ItemStack(Items.GOLD_NUGGET), 0.1F);
-        addSmeltingRecipe(ToolsItem.OBSIDIAN_SET, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.IRON_PAXEL, new ItemStack(Items.IRON_NUGGET));
+        addSmeltingRecipe(ToolsItem.GOLD_PAXEL, new ItemStack(Items.GOLD_NUGGET));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_SET, new ItemStack(MekanismItems.Nugget));
         addSmeltingRecipe(ToolsItem.OSMIUM_SET, new ItemStack(MekanismItems.Nugget, 1, 1));
         addSmeltingRecipe(ToolsItem.BRONZE_SET, new ItemStack(MekanismItems.Nugget, 1, 2));
         addSmeltingRecipe(ToolsItem.GLOWSTONE_SET, new ItemStack(MekanismItems.Nugget, 1, 3));
@@ -90,7 +90,11 @@ public class MekanismTools implements IModule {
     }
 
     private static void addSmeltingRecipe(List<ToolsItem> itemSet, ItemStack nugget) {
-        itemSet.forEach(toolsItem -> GameRegistry.addSmelting(toolsItem.getItemStack(), nugget, 0.1F));
+        itemSet.forEach(toolsItem -> addSmeltingRecipe(toolsItem, nugget));
+    }
+
+    private static void addSmeltingRecipe(ToolsItem toolsItem, ItemStack nugget) {
+        GameRegistry.addSmelting(toolsItem.getItemStackAnyDamage(), nugget, 0.1F);
     }
 
     private void setStackIfEmpty(EntityLivingBase entity, EntityEquipmentSlot slot, ItemStack item) {

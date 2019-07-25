@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.util.LangUtils;
+import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.Materials;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemMekanismPaxel extends ItemTool {
+public class ItemMekanismPaxel extends ItemTool implements IHasRepairType {
 
     private static final Set<Block> EFFECTIVE_ON = new HashSet<>();
 
@@ -66,6 +67,12 @@ public class ItemMekanismPaxel extends ItemTool {
     @Override
     public boolean canHarvestBlock(@Nonnull IBlockState state, @Nonnull ItemStack stack) {
         //TODO: If the paxel and the tools have different harvest levels this potentially could cause problems?
+        // Would it make sense to
         return pickaxe.canHarvestBlock(state, stack) || shovel.canHarvestBlock(state, stack) || axe.canHarvestBlock(state, stack);
+    }
+
+    @Override
+    public ItemStack getRepairStack() {
+        return toolMaterial.getRepairItemStack();
     }
 }
