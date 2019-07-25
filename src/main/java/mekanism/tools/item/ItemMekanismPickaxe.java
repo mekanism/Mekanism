@@ -14,8 +14,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemMekanismPickaxe extends ItemPickaxe implements IHasRepairType {
 
     public ItemMekanismPickaxe(Materials material) {
-        super(material.getMaterial());
-        setHarvestLevel("pickaxe", material.getMaterial().getHarvestLevel());
+        this(material.getMaterial());
+    }
+
+    public ItemMekanismPickaxe(ToolMaterial toolMaterial) {
+        super(toolMaterial);
+        setHarvestLevel("pickaxe", toolMaterial.getHarvestLevel());
     }
 
     @Override

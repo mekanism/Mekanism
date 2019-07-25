@@ -30,12 +30,32 @@ public class ItemMekanismPaxel extends ItemTool implements IHasRepairType {
         EFFECTIVE_ON.addAll(ItemAxe.EFFECTIVE_ON);
     }
 
+    //NOTE: Do not try to make an ItemStack out of these items.
+    // If the harvest levels between paxel and rest of tools, these Item objects will be references
+    // to unregistered items used solely for query purposes of canHarvestBlock
     private final ItemPickaxe pickaxe;
     private final ItemSpade shovel;
     private final ItemAxe axe;
 
     public ItemMekanismPaxel(Materials material, ItemPickaxe pickaxe, ItemSpade shovel, ItemAxe axe) {
-        this(material.getPaxelMaterial(), pickaxe, shovel, axe);
+        super(4, -2.4F, material.getPaxelMaterial(), EFFECTIVE_ON);
+        ToolMaterial paxelMaterial = material.getPaxelMaterial();
+        int harvestLevel = paxelMaterial.getHarvestLevel();
+        setHarvestLevel("pickaxe", harvestLevel);
+        setHarvestLevel("shovel", harvestLevel);
+        setHarvestLevel("axe", harvestLevel);
+        //If the harvest level is the same for the paxel material as the normal material, then just store references to the actual items
+        if (harvestLevel == material.getMaterial().getHarvestLevel()) {
+            this.pickaxe = pickaxe;
+            this.shovel = shovel;
+            this.axe = axe;
+        } else {
+            //Otherwise create normal tool variants of this material for query purposes. This is so that when canHarvestBlock
+            // is delegated to the different tools it makes sure they have the correct harvest level.
+            this.pickaxe = new ItemMekanismPickaxe(paxelMaterial);
+            this.shovel = new ItemMekanismShovel(paxelMaterial);
+            this.axe = new ItemMekanismAxe(paxelMaterial, material.getAxeDamage(), material.getAxeSpeed());
+        }
     }
 
     public ItemMekanismPaxel(ToolMaterial material, ItemPickaxe pickaxe, ItemSpade shovel, ItemAxe axe) {
@@ -65,10 +85,10 @@ public class ItemMekanismPaxel extends ItemTool implements IHasRepairType {
     }
 
     @Override
-    public boolean canHarvestBlock(@Nonnull IBlockState state, @Nonnull ItemStack stack) {
-        //TODO: If the paxel and the tools have different harvest levels this potentially could cause problems?
-        // Would it make sense to
-        return pickaxe.canHarvestBlock(state, stack) || shovel.canHarvestBlock(state, stack) || axe.canHarvestBlock(state, stack);
+    public boolean canHarvestBlock(@Nonnull IBlockState state) {
+        //Note: While this is not "strictly" needed due to the setHarvestLevel calls, this ensures greater
+        // compatibility in case anything still calls this method directly.
+        return pickaxe.canHarvestBlock(state) || shovel.canHarvestBlock(state) || axe.canHarvestBlock(state);
     }
 
     @Override
