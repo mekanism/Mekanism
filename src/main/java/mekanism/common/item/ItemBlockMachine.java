@@ -73,7 +73,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -138,7 +137,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             RecipeType recipeType = getRecipeTypeOrNull(itemstack);
             if (recipeType != null) {
                 String langKey = "tile." + tier.getSimpleName() + recipeType.getTranslationKey() + "Factory";
-                if (I18n.canTranslate(langKey)) {
+                if (LangUtils.canLocalize(langKey)) {
                     return LangUtils.localize(langKey);
                 }
                 return tier.getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getItemStackDisplayName(itemstack);

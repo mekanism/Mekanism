@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -64,7 +63,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
         if (repairContainer.maximumCost > 0) {
             int k = 8453920;
             boolean flag = true;
-            String s = I18n.translateToLocalFormatted("container.repair.cost", repairContainer.maximumCost);
+            String s = LangUtils.localizeWithFormat("container.repair.cost", repairContainer.maximumCost);
 
             if (repairContainer.maximumCost >= 40 && !mc.player.capabilities.isCreativeMode) {
                 s = LangUtils.localize("container.repair.expensive");

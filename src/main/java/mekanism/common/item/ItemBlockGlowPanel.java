@@ -16,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -76,7 +75,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
         }
         EnumColor colour = EnumColor.DYES[itemDamage];
         String colourName;
-        if (I18n.canTranslate(getTranslationKey(stack) + "." + colour.dyeName)) {
+        if (LangUtils.canLocalize(getTranslationKey(stack) + "." + colour.dyeName)) {
             return LangUtils.localize(getTranslationKey(stack) + "." + colour.dyeName);
         }
         if (colour == EnumColor.BLACK) {
