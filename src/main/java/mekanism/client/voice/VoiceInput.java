@@ -45,7 +45,7 @@ public class VoiceInput extends Thread {
                     while (voiceClient.isRunning() && MekanismKeyHandler.voiceKey.isPressed()) {
                         try {
                             int availableBytes = audioInput.available();
-                            byte[] audioData = new byte[availableBytes > 2200 ? 2200 : availableBytes];
+                            byte[] audioData = new byte[Math.min(availableBytes, 2200)];
                             int bytesRead = audioInput.read(audioData, 0, audioData.length);
 
                             if (bytesRead > 0) {
