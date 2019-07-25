@@ -94,16 +94,19 @@ public enum ToolsItem {
     STEEL_LEGGINGS("SteelLeggings", new ItemMekanismArmor(Materials.STEEL, 2, EntityEquipmentSlot.LEGS)),
     STEEL_BOOTS("SteelBoots", new ItemMekanismArmor(Materials.STEEL, 3, EntityEquipmentSlot.FEET));
 
-    public static final List<ToolsItem> bronzeSet = Arrays.asList(BRONZE_PICKAXE, BRONZE_AXE, BRONZE_SHOVEL, BRONZE_HOE, BRONZE_SWORD, BRONZE_PAXEL, BRONZE_HELMET,
+    public static final List<ToolsItem> BRONZE_SET = Arrays.asList(BRONZE_PICKAXE, BRONZE_AXE, BRONZE_SHOVEL, BRONZE_HOE, BRONZE_SWORD, BRONZE_PAXEL, BRONZE_HELMET,
           BRONZE_CHESTPLATE, BRONZE_LEGGINGS, BRONZE_BOOTS);
-    public static final List<ToolsItem> osmiumSet = Arrays.asList(OSMIUM_PICKAXE, OSMIUM_AXE, OSMIUM_SHOVEL, OSMIUM_HOE, OSMIUM_SWORD, OSMIUM_PAXEL, OSMIUM_HELMET,
+    public static final List<ToolsItem> OSMIUM_SET = Arrays.asList(OSMIUM_PICKAXE, OSMIUM_AXE, OSMIUM_SHOVEL, OSMIUM_HOE, OSMIUM_SWORD, OSMIUM_PAXEL, OSMIUM_HELMET,
           OSMIUM_CHESTPLATE, OSMIUM_LEGGINGS, OSMIUM_BOOTS);
-    public static final List<ToolsItem> obsidianSet = Arrays.asList(OBSIDIAN_PICKAXE, OBSIDIAN_AXE, OBSIDIAN_SHOVEL, OBSIDIAN_HOE, OBSIDIAN_SWORD, OBSIDIAN_PAXEL,
+    public static final List<ToolsItem> OBSIDIAN_SET = Arrays.asList(OBSIDIAN_PICKAXE, OBSIDIAN_AXE, OBSIDIAN_SHOVEL, OBSIDIAN_HOE, OBSIDIAN_SWORD, OBSIDIAN_PAXEL,
           OBSIDIAN_HELMET, OBSIDIAN_CHESTPLATE, OBSIDIAN_LEGGINGS, OBSIDIAN_BOOTS);
-    public static final List<ToolsItem> glowstoneSet = Arrays.asList(GLOWSTONE_PICKAXE, GLOWSTONE_AXE, GLOWSTONE_SHOVEL, GLOWSTONE_HOE, GLOWSTONE_SWORD, GLOWSTONE_PAXEL,
+    public static final List<ToolsItem> GLOWSTONE_SET = Arrays.asList(GLOWSTONE_PICKAXE, GLOWSTONE_AXE, GLOWSTONE_SHOVEL, GLOWSTONE_HOE, GLOWSTONE_SWORD, GLOWSTONE_PAXEL,
           GLOWSTONE_HELMET, GLOWSTONE_CHESTPLATE, GLOWSTONE_LEGGINGS, GLOWSTONE_BOOTS);
-    public static final List<ToolsItem> steelSet = Arrays.asList(STEEL_PICKAXE, STEEL_AXE, STEEL_SHOVEL, STEEL_HOE, STEEL_SWORD, STEEL_PAXEL, STEEL_HELMET,
+    public static final List<ToolsItem> STEEL_SET = Arrays.asList(STEEL_PICKAXE, STEEL_AXE, STEEL_SHOVEL, STEEL_HOE, STEEL_SWORD, STEEL_PAXEL, STEEL_HELMET,
           STEEL_CHESTPLATE, STEEL_LEGGINGS, STEEL_BOOTS);
+    //Unused but for consistency if something needs it
+    public static final List<ToolsItem> LAPIS_LAZULI_SET = Arrays.asList(LAPIS_LAZULI_PICKAXE, LAPIS_LAZULI_AXE, LAPIS_LAZULI_SHOVEL, LAPIS_LAZULI_HOE, LAPIS_LAZULI_SWORD,
+          LAPIS_LAZULI_PAXEL, LAPIS_LAZULI_HELMET, LAPIS_LAZULI_CHESTPLATE, LAPIS_LAZULI_LEGGINGS, LAPIS_LAZULI_BOOTS);
 
     private final Item item;
 
@@ -115,6 +118,7 @@ public enum ToolsItem {
     ToolsItem(String name, Item item) {
         //TODO: Make name be part of item instead of added on this extra layer.
         // Also make them have underscores rather than "fake" capitalization that is just to make it easier to read in the enum
+        // This note is for 1.14 when we are going to be mass changing ids anyways to flatten things
         this.item = item.setTranslationKey(name).setRegistryName(new ResourceLocation(MekanismTools.MODID, name)).setCreativeTab(Mekanism.tabMekanism);
     }
 

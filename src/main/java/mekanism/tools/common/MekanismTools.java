@@ -82,11 +82,11 @@ public class MekanismTools implements IModule {
         //Furnace Recipes
         GameRegistry.addSmelting(ToolsItem.IRON_PAXEL.getItemStack(), new ItemStack(Items.IRON_NUGGET), 0.1F);
         GameRegistry.addSmelting(ToolsItem.GOLD_PAXEL.getItemStack(), new ItemStack(Items.GOLD_NUGGET), 0.1F);
-        addSmeltingRecipe(ToolsItem.obsidianSet, new ItemStack(MekanismItems.Nugget, 1, 0));
-        addSmeltingRecipe(ToolsItem.osmiumSet, new ItemStack(MekanismItems.Nugget, 1, 1));
-        addSmeltingRecipe(ToolsItem.bronzeSet, new ItemStack(MekanismItems.Nugget, 1, 2));
-        addSmeltingRecipe(ToolsItem.glowstoneSet, new ItemStack(MekanismItems.Nugget, 1, 3));
-        addSmeltingRecipe(ToolsItem.steelSet, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_SET, new ItemStack(MekanismItems.Nugget, 1, 0));
+        addSmeltingRecipe(ToolsItem.OSMIUM_SET, new ItemStack(MekanismItems.Nugget, 1, 1));
+        addSmeltingRecipe(ToolsItem.BRONZE_SET, new ItemStack(MekanismItems.Nugget, 1, 2));
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_SET, new ItemStack(MekanismItems.Nugget, 1, 3));
+        addSmeltingRecipe(ToolsItem.STEEL_SET, new ItemStack(MekanismItems.Nugget, 1, 4));
     }
 
     private static void addSmeltingRecipe(List<ToolsItem> itemSet, ItemStack nugget) {

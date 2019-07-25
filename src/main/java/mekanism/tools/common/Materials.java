@@ -51,6 +51,22 @@ public enum Materials {
         this.equipSound = equipSound;
     }
 
+    private static ToolMaterial getToolMaterial(String enumName, ToolBalance config) {
+        return EnumHelper.addToolMaterial(enumName, config.harvestLevel.val(), config.maxUses.val(), config.efficiency.val(), config.damage.val(), config.enchantability.val());
+    }
+
+    private static ArmorMaterial getArmorMaterial(String enumName, ArmorBalance config, SoundEvent equipSound) {
+        return EnumHelper.addArmorMaterial(enumName, "TODO", config.durability.val(), new int[]{
+              config.feetProtection.val(), config.legsProtection.val(), config.chestProtection.val(), config.headProtection.val(),
+              }, config.enchantability.val(), equipSound, config.toughness.val());
+    }
+
+    public static void load() {
+        for (Materials material : values()) {
+            material.init();
+        }
+    }
+
     private void init() {
         if (initialized) {
             return;
@@ -61,11 +77,10 @@ public enum Materials {
 
         this.material = getToolMaterial(materialName, materialBalance);
         this.paxelMaterial = getToolMaterial(materialName + "2", paxelMaterialBalance);
-        this.armorMaterial = EnumHelper.addArmorMaterial(materialName, "TODO", armorBalance.durability.val(), new int[]{
-              armorBalance.feetProtection.val(), armorBalance.legsProtection.val(), armorBalance.chestProtection.val(), armorBalance.headProtection.val(),
-              }, armorBalance.enchantability.val(), equipSound, armorBalance.toughness.val());
+        this.armorMaterial = getArmorMaterial(materialName, armorBalance, equipSound);
         this.axeDamage = materialBalance.axeAttackDamage.val();
         this.axeSpeed = materialBalance.axeAttackSpeed.val();
+        //Set repair stack of the material
         ItemStack repairStack = repairStackSupplier.get();
         material.setRepairItem(repairStack);
         paxelMaterial.setRepairItem(repairStack);
@@ -73,6 +88,8 @@ public enum Materials {
         initialized = true;
     }
 
+    //The below getters should **NOT** be used before the Materials are initialized. Storing the Materials object for reference
+    // before any of the getters is fine as the Fucntions/Suppliers mean nothing is prematurely initialized (before the config gets red for example)
     public ToolMaterial getMaterial() {
         return material;
     }
@@ -91,15 +108,5 @@ public enum Materials {
 
     public float getAxeSpeed() {
         return axeSpeed;
-    }
-
-    private static ToolMaterial getToolMaterial(String enumName, ToolBalance config) {
-        return EnumHelper.addToolMaterial(enumName, config.harvestLevel.val(), config.maxUses.val(), config.efficiency.val(), config.damage.val(), config.enchantability.val());
-    }
-
-    public static void load() {
-        for (Materials material : values()) {
-            material.init();
-        }
     }
 }
