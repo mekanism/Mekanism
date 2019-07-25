@@ -2,28 +2,23 @@ buildscript {
     repositories {
         jcenter()
         maven {
-            name = "forge"
-            url = "https://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-        maven {
-            url "https://plugins.gradle.org/m2/"
+            name "forge"
+            url "https://files.minecraftforge.net/maven"
         }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
     }
 }
 
 plugins {
-    id 'org.ajoberstar.grgit' version '2.3.0'
+    id 'org.ajoberstar.grgit' version '3.1.1'
+    id "com.matthewprenger.cursegradle" version "1.3.0"
+    id 'java'
+    id 'idea'
+    id 'maven'
+    id 'maven-publish'
 }
-
-apply plugin: 'idea'
 
 defaultTasks 'fullBuild'
 
@@ -35,7 +30,6 @@ idea {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
 
 repositories {
     maven {
@@ -95,8 +89,7 @@ repositories {
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "MekanismAll"
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 def explodedVersion = mod_version.split("\\.")
 
@@ -249,9 +242,6 @@ runServer {
     jvmArgs "-Dfml.coreMods.load=mekanism.coremod.MekanismCoremod"
 }
 
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-
 uploadArchives {
     if(System.getenv("LOCAL_MAVEN") != null) {
         repositories {
@@ -266,7 +256,7 @@ uploadArchives {
                         artifactId = "Mekanism"
                     }
                     project {
-                        name "Mekanism"
+                        name = "Mekanism"
                         packaging 'jar'
                         description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
                         url 'http://aidancbrady.com/mekanism/'
@@ -279,7 +269,7 @@ uploadArchives {
                         }
                         licenses {
                             license {
-                                name 'MIT'
+                                name = 'MIT'
                                 distribution 'repo'
                             }
                         }
