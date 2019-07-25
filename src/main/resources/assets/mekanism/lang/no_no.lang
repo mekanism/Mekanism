@@ -716,16 +716,16 @@ item.ObsidianHoe.name=Obsidian Ljå
 item.ObsidianSword.name=Obsidian Sverd
 
 # Lapis Lazuli
-item.LazuliHelmet.name=Lapis Lazuli Hjelm
-item.LazuliChestplate.name=Lapis Lazuli Brystplate
-item.LazuliLeggings.name=Lapis Lazuli Benplater
-item.LazuliBoots.name=Lapis Lazuli Støvler
-item.LazuliPaxel.name=Lapis Lazuli Paxel
-item.LazuliPickaxe.name=Lapis Lazuli Hakke
-item.LazuliAxe.name=Lapis Lazuli Øks
-item.LazuliShovel.name=Lapis Lazuli Spade
-item.LazuliHoe.name=Lapis Lazuli Ljå
-item.LazuliSword.name=Lapis Lazuli Sverd
+item.LapisLazuliHelmet.name=Lapis Lazuli Hjelm
+item.LapisLazuliChestplate.name=Lapis Lazuli Brystplate
+item.LapisLazuliLeggings.name=Lapis Lazuli Benplater
+item.LapisLazuliBoots.name=Lapis Lazuli Støvler
+item.LapisLazuliPaxel.name=Lapis Lazuli Paxel
+item.LapisLazuliPickaxe.name=Lapis Lazuli Hakke
+item.LapisLazuliAxe.name=Lapis Lazuli Øks
+item.LapisLazuliShovel.name=Lapis Lazuli Spade
+item.LapisLazuliHoe.name=Lapis Lazuli Ljå
+item.LapisLazuliSword.name=Lapis Lazuli Sverd
 
 # Osmium
 item.OsmiumHelmet.name=Osmium Hjelm

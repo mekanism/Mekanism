@@ -1004,16 +1004,16 @@ item.ObsidianHoe.name=Enxada de Obsidiana
 item.ObsidianSword.name=Espada de Obsidiana
 
 # Lapis Lazuli
-item.LazuliHelmet.name=Capacete de Lápis-Lazúli
-item.LazuliChestplate.name=Peitoral de Lápis-Lazúli
-item.LazuliLeggings.name=Perneiras de Lápis-Lazúli
-item.LazuliBoots.name=Botas de Lápis-Lazúli
-item.LazuliPaxel.name=Pacachado de Lápis-Lazúli
-item.LazuliPickaxe.name=Picareta de Lápis-Lazúli
-item.LazuliAxe.name=Machado de Lápis-Lazúli
-item.LazuliShovel.name=Pá de Lápis-Lazúli
-item.LazuliHoe.name=Enxada de Lápis-Lazúli
-item.LazuliSword.name=Espada de Lápis-Lazúli
+item.LapisLazuliHelmet.name=Capacete de Lápis-Lazúli
+item.LapisLazuliChestplate.name=Peitoral de Lápis-Lazúli
+item.LapisLazuliLeggings.name=Perneiras de Lápis-Lazúli
+item.LapisLazuliBoots.name=Botas de Lápis-Lazúli
+item.LapisLazuliPaxel.name=Pacachado de Lápis-Lazúli
+item.LapisLazuliPickaxe.name=Picareta de Lápis-Lazúli
+item.LapisLazuliAxe.name=Machado de Lápis-Lazúli
+item.LapisLazuliShovel.name=Pá de Lápis-Lazúli
+item.LapisLazuliHoe.name=Enxada de Lápis-Lazúli
+item.LapisLazuliSword.name=Espada de Lápis-Lazúli
 
 # Osmium
 item.OsmiumHelmet.name=Capacete de Ósmio

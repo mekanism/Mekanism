@@ -358,16 +358,16 @@ item.ObsidianHoe.name=옵시디언 괭이
 item.ObsidianSword.name=옵시디언 검
 
 # Lazuli
-item.LazuliHelmet.name=라피스 헬맷
-item.LazuliChestplate.name=라피스 갑옷
-item.LazuliLeggings.name=라피스 레깅스
-item.LazuliBoots.name=라피스 부츠
-item.LazuliPaxel.name=라피스 팩셀
-item.LazuliPickaxe.name=라피스 곡괭이
-item.LazuliAxe.name=라피스 도끼
-item.LazuliShovel.name=라피스 삽
-item.LazuliHoe.name=라피스 괭이
-item.LazuliSword.name=라피스 검
+item.LapisLazuliHelmet.name=라피스 헬맷
+item.LapisLazuliChestplate.name=라피스 갑옷
+item.LapisLazuliLeggings.name=라피스 레깅스
+item.LapisLazuliBoots.name=라피스 부츠
+item.LapisLazuliPaxel.name=라피스 팩셀
+item.LapisLazuliPickaxe.name=라피스 곡괭이
+item.LapisLazuliAxe.name=라피스 도끼
+item.LapisLazuliShovel.name=라피스 삽
+item.LapisLazuliHoe.name=라피스 괭이
+item.LapisLazuliSword.name=라피스 검
 
 # Osmium
 item.OsmiumHelmet.name=오스뮴 헬맷
