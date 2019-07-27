@@ -1,7 +1,7 @@
 package mekanism.common.world;
 
 import java.util.Random;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
@@ -21,19 +21,19 @@ public class GenHandler implements IWorldGenerator {
         if (!(chunkGenerator instanceof ChunkGeneratorHell) && !(chunkGenerator instanceof ChunkGeneratorEnd)) {
             for (int i = 0; i < MekanismConfig.current().general.osmiumPerChunk.val(); i++) {
                 BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
-                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(0), MekanismConfig.current().general.osmiumMaxVeinSize.val(),
+                new WorldGenMinable(MekanismBlock.OSMIUM_ORE.getBlock().getDefaultState(), MekanismConfig.current().general.osmiumMaxVeinSize.val(),
                       BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
             }
 
             for (int i = 0; i < MekanismConfig.current().general.copperPerChunk.val(); i++) {
                 BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
-                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(1), MekanismConfig.current().general.copperMaxVeinSize.val(),
+                new WorldGenMinable(MekanismBlock.COPPER_ORE.getBlock().getDefaultState(), MekanismConfig.current().general.copperMaxVeinSize.val(),
                       BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
             }
 
             for (int i = 0; i < MekanismConfig.current().general.tinPerChunk.val(); i++) {
                 BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
-                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(2), MekanismConfig.current().general.tinMaxVeinSize.val(),
+                new WorldGenMinable(MekanismBlock.TIN_ORE.getBlock().getDefaultState(), MekanismConfig.current().general.tinMaxVeinSize.val(),
                       BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
             }
 

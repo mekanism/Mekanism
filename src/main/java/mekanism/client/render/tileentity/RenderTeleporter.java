@@ -8,8 +8,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
+import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -43,7 +43,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
             Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
             int type = 0;
             IBlockState s = obj.getBlockState(tileEntity.getWorld());
-            if (s.getBlock() == MekanismBlocks.BasicBlock && s.getBlock().getMetaFromState(s) == 7) {
+            if (s.getBlock() instanceof BlockTeleporter) {
                 type = 1;
             }
 

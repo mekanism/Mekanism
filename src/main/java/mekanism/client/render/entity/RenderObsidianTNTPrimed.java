@@ -2,7 +2,7 @@ package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityObsidianTNT;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -43,7 +43,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
         float f3 = (1.0F - ((entityobsidiantnt.fuse - partialTicks) + 1.0F) / 100F) * 0.8F;
         bindEntityTexture(entityobsidiantnt);
         GlStateManager.translate(-0.5F, -0.5F, 0.5F);
-        renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), entityobsidiantnt.getBrightness());
+        renderer.renderBlockBrightness(MekanismBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), entityobsidiantnt.getBrightness());
         GlStateManager.translate(0, 0, 1.0F);
 
         if (entityobsidiantnt.fuse / 5 % 2 == 0) {
@@ -54,7 +54,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
             GlStateManager.color(1, 1, 1, f3);
             GlStateManager.doPolygonOffset(-3.0F, -3.0F);
             GlStateManager.enablePolygonOffset();
-            renderer.renderBlockBrightness(MekanismBlocks.ObsidianTNT.getDefaultState(), 1.0F);
+            renderer.renderBlockBrightness(MekanismBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), 1.0F);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
             GlStateManager.disablePolygonOffset();
             MekanismRenderer.resetColor();

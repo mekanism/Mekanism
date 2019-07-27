@@ -21,11 +21,8 @@ import net.minecraftforge.fml.common.Optional;
 
 public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
 
-    public Block metaBlock;
-
     public ItemBlockGlowPanel(Block block) {
         super(block);
-        metaBlock = block;
         setHasSubtypes(true);
     }
 
