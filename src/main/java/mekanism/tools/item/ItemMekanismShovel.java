@@ -14,12 +14,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemMekanismShovel extends ItemSpade implements IHasRepairType {
 
     public ItemMekanismShovel(Materials material) {
-        this(material.getMaterial());
-    }
-
-    public ItemMekanismShovel(ToolMaterial toolMaterial) {
-        super(toolMaterial);
-        setHarvestLevel("shovel", toolMaterial.getHarvestLevel());
+        super(material.getMaterial());
+        setHarvestLevel("shovel", material.getMaterial().getHarvestLevel());
     }
 
     @Override

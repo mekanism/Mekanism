@@ -11,31 +11,27 @@ import mekanism.tools.item.ItemMekanismPaxel;
 import mekanism.tools.item.ItemMekanismPickaxe;
 import mekanism.tools.item.ItemMekanismShovel;
 import mekanism.tools.item.ItemMekanismSword;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemPickaxe;
-import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum ToolsItem {
-    WOOD_PAXEL("WoodPaxel", new ItemMekanismPaxel(ToolMaterial.WOOD, (ItemPickaxe) Items.WOODEN_PICKAXE, (ItemSpade) Items.WOODEN_SHOVEL, (ItemAxe) Items.WOODEN_AXE)),
-    STONE_PAXEL("StonePaxel", new ItemMekanismPaxel(ToolMaterial.STONE, (ItemPickaxe) Items.STONE_PICKAXE, (ItemSpade) Items.STONE_SHOVEL, (ItemAxe) Items.STONE_AXE)),
-    IRON_PAXEL("IronPaxel", new ItemMekanismPaxel(ToolMaterial.IRON, (ItemPickaxe) Items.IRON_PICKAXE, (ItemSpade) Items.IRON_SHOVEL, (ItemAxe) Items.IRON_AXE)),
-    DIAMOND_PAXEL("DiamondPaxel", new ItemMekanismPaxel(ToolMaterial.DIAMOND, (ItemPickaxe) Items.DIAMOND_PICKAXE, (ItemSpade) Items.DIAMOND_SHOVEL, (ItemAxe) Items.DIAMOND_AXE)),
-    GOLD_PAXEL("GoldPaxel", new ItemMekanismPaxel(ToolMaterial.GOLD, (ItemPickaxe) Items.GOLDEN_PICKAXE, (ItemSpade) Items.GOLDEN_SHOVEL, (ItemAxe) Items.GOLDEN_AXE)),
+    WOOD_PAXEL("WoodPaxel", new ItemMekanismPaxel(ToolMaterial.WOOD)),
+    STONE_PAXEL("StonePaxel", new ItemMekanismPaxel(ToolMaterial.STONE)),
+    IRON_PAXEL("IronPaxel", new ItemMekanismPaxel(ToolMaterial.IRON)),
+    DIAMOND_PAXEL("DiamondPaxel", new ItemMekanismPaxel(ToolMaterial.DIAMOND)),
+    GOLD_PAXEL("GoldPaxel", new ItemMekanismPaxel(ToolMaterial.GOLD)),
 
     GLOWSTONE_PICKAXE("GlowstonePickaxe", new ItemMekanismPickaxe(Materials.GLOWSTONE)),
     GLOWSTONE_AXE("GlowstoneAxe", new ItemMekanismAxe(Materials.GLOWSTONE)),
     GLOWSTONE_SHOVEL("GlowstoneShovel", new ItemMekanismShovel(Materials.GLOWSTONE)),
     GLOWSTONE_HOE("GlowstoneHoe", new ItemMekanismHoe(Materials.GLOWSTONE)),
     GLOWSTONE_SWORD("GlowstoneSword", new ItemMekanismSword(Materials.GLOWSTONE)),
-    GLOWSTONE_PAXEL("GlowstonePaxel", Materials.GLOWSTONE, GLOWSTONE_PICKAXE, GLOWSTONE_SHOVEL, GLOWSTONE_AXE),
+    GLOWSTONE_PAXEL("GlowstonePaxel", new ItemMekanismPaxel(Materials.GLOWSTONE)),
     GLOWSTONE_HELMET("GlowstoneHelmet", new ItemMekanismArmor(Materials.GLOWSTONE, 0, EntityEquipmentSlot.HEAD)),
     GLOWSTONE_CHESTPLATE("GlowstoneChestplate", new ItemMekanismArmor(Materials.GLOWSTONE, 1, EntityEquipmentSlot.CHEST)),
     GLOWSTONE_LEGGINGS("GlowstoneLeggings", new ItemMekanismArmor(Materials.GLOWSTONE, 2, EntityEquipmentSlot.LEGS)),
@@ -46,7 +42,7 @@ public enum ToolsItem {
     BRONZE_SHOVEL("BronzeShovel", new ItemMekanismShovel(Materials.BRONZE)),
     BRONZE_HOE("BronzeHoe", new ItemMekanismHoe(Materials.BRONZE)),
     BRONZE_SWORD("BronzeSword", new ItemMekanismSword(Materials.BRONZE)),
-    BRONZE_PAXEL("BronzePaxel", Materials.BRONZE, BRONZE_PICKAXE, BRONZE_SHOVEL, BRONZE_AXE),
+    BRONZE_PAXEL("BronzePaxel", new ItemMekanismPaxel(Materials.BRONZE)),
     BRONZE_HELMET("BronzeHelmet", new ItemMekanismArmor(Materials.BRONZE, 0, EntityEquipmentSlot.HEAD)),
     BRONZE_CHESTPLATE("BronzeChestplate", new ItemMekanismArmor(Materials.BRONZE, 1, EntityEquipmentSlot.CHEST)),
     BRONZE_LEGGINGS("BronzeLeggings", new ItemMekanismArmor(Materials.BRONZE, 2, EntityEquipmentSlot.LEGS)),
@@ -57,7 +53,7 @@ public enum ToolsItem {
     OSMIUM_SHOVEL("OsmiumShovel", new ItemMekanismShovel(Materials.OSMIUM)),
     OSMIUM_HOE("OsmiumHoe", new ItemMekanismHoe(Materials.OSMIUM)),
     OSMIUM_SWORD("OsmiumSword", new ItemMekanismSword(Materials.OSMIUM)),
-    OSMIUM_PAXEL("OsmiumPaxel", Materials.OSMIUM, OSMIUM_PICKAXE, OSMIUM_SHOVEL, OSMIUM_AXE),
+    OSMIUM_PAXEL("OsmiumPaxel", new ItemMekanismPaxel(Materials.OSMIUM)),
     OSMIUM_HELMET("OsmiumHelmet", new ItemMekanismArmor(Materials.OSMIUM, 0, EntityEquipmentSlot.HEAD)),
     OSMIUM_CHESTPLATE("OsmiumChestplate", new ItemMekanismArmor(Materials.OSMIUM, 1, EntityEquipmentSlot.CHEST)),
     OSMIUM_LEGGINGS("OsmiumLeggings", new ItemMekanismArmor(Materials.OSMIUM, 2, EntityEquipmentSlot.LEGS)),
@@ -68,7 +64,7 @@ public enum ToolsItem {
     OBSIDIAN_SHOVEL("ObsidianShovel", new ItemMekanismShovel(Materials.OBSIDIAN)),
     OBSIDIAN_HOE("ObsidianHoe", new ItemMekanismHoe(Materials.OBSIDIAN)),
     OBSIDIAN_SWORD("ObsidianSword", new ItemMekanismSword(Materials.OBSIDIAN)),
-    OBSIDIAN_PAXEL("ObsidianPaxel", Materials.OBSIDIAN, OBSIDIAN_PICKAXE, OBSIDIAN_SHOVEL, OBSIDIAN_AXE),
+    OBSIDIAN_PAXEL("ObsidianPaxel", new ItemMekanismPaxel(Materials.OBSIDIAN)),
     OBSIDIAN_HELMET("ObsidianHelmet", new ItemMekanismArmor(Materials.OBSIDIAN, 0, EntityEquipmentSlot.HEAD)),
     OBSIDIAN_CHESTPLATE("ObsidianChestplate", new ItemMekanismArmor(Materials.OBSIDIAN, 1, EntityEquipmentSlot.CHEST)),
     OBSIDIAN_LEGGINGS("ObsidianLeggings", new ItemMekanismArmor(Materials.OBSIDIAN, 2, EntityEquipmentSlot.LEGS)),
@@ -79,7 +75,7 @@ public enum ToolsItem {
     LAPIS_LAZULI_SHOVEL("LapisLazuliShovel", new ItemMekanismShovel(Materials.LAZULI)),
     LAPIS_LAZULI_HOE("LapisLazuliHoe", new ItemMekanismHoe(Materials.LAZULI)),
     LAPIS_LAZULI_SWORD("LapisLazuliSword", new ItemMekanismSword(Materials.LAZULI)),
-    LAPIS_LAZULI_PAXEL("LapisLazuliPaxel", Materials.LAZULI, LAPIS_LAZULI_PICKAXE, LAPIS_LAZULI_SHOVEL, LAPIS_LAZULI_AXE),
+    LAPIS_LAZULI_PAXEL("LapisLazuliPaxel", new ItemMekanismPaxel(Materials.LAZULI)),
     LAPIS_LAZULI_HELMET("LapisLazuliHelmet", new ItemMekanismArmor(Materials.LAZULI, 0, EntityEquipmentSlot.HEAD)),
     LAPIS_LAZULI_CHESTPLATE("LapisLazuliChestplate", new ItemMekanismArmor(Materials.LAZULI, 1, EntityEquipmentSlot.CHEST)),
     LAPIS_LAZULI_LEGGINGS("LapisLazuliLeggings", new ItemMekanismArmor(Materials.LAZULI, 2, EntityEquipmentSlot.LEGS)),
@@ -90,7 +86,7 @@ public enum ToolsItem {
     STEEL_SHOVEL("SteelShovel", new ItemMekanismShovel(Materials.STEEL)),
     STEEL_HOE("SteelHoe", new ItemMekanismHoe(Materials.STEEL)),
     STEEL_SWORD("SteelSword", new ItemMekanismSword(Materials.STEEL)),
-    STEEL_PAXEL("SteelPaxel", Materials.STEEL, STEEL_PICKAXE, STEEL_SHOVEL, STEEL_AXE),
+    STEEL_PAXEL("SteelPaxel", new ItemMekanismPaxel(Materials.STEEL)),
     STEEL_HELMET("SteelHelmet", new ItemMekanismArmor(Materials.STEEL, 0, EntityEquipmentSlot.HEAD)),
     STEEL_CHESTPLATE("SteelChestplate", new ItemMekanismArmor(Materials.STEEL, 1, EntityEquipmentSlot.CHEST)),
     STEEL_LEGGINGS("SteelLeggings", new ItemMekanismArmor(Materials.STEEL, 2, EntityEquipmentSlot.LEGS)),
@@ -112,11 +108,6 @@ public enum ToolsItem {
 
     @Nonnull
     private final Item item;
-
-    ToolsItem(@Nonnull String name, @Nonnull Materials paxelMaterial, @Nonnull ToolsItem pickaxe, @Nonnull ToolsItem shovel, @Nonnull ToolsItem axe) {
-        //Paxel helper
-        this(name, new ItemMekanismPaxel(paxelMaterial, (ItemPickaxe) pickaxe.getItem(), (ItemSpade) shovel.getItem(), (ItemAxe) axe.getItem()));
-    }
 
     <ITEM extends Item & IHasRepairType> ToolsItem(@Nonnull String name, @Nonnull ITEM item) {
         //TODO: Make name be part of item instead of added on this extra layer.

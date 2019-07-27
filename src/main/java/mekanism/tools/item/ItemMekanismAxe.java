@@ -14,12 +14,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemMekanismAxe extends ItemAxe implements IHasRepairType {
 
     public ItemMekanismAxe(Materials material) {
-        this(material.getMaterial(), material.getAxeDamage(), material.getAxeSpeed());
-    }
-
-    public ItemMekanismAxe(ToolMaterial toolMaterial, float axeDamage, float axeSpeed) {
-        super(toolMaterial, axeDamage, axeSpeed);
-        setHarvestLevel("axe", toolMaterial.getHarvestLevel());
+        super(material.getMaterial(), material.getAxeDamage(), material.getAxeSpeed());
+        setHarvestLevel("axe", material.getMaterial().getHarvestLevel());
     }
 
     @Override
