@@ -37,6 +37,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -563,11 +564,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     public int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canReceive(theItem)) {
             double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
-            double toReceive = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyNeeded);
+            double toReceive = Math.min(RFIntegration.fromRF(energy), energyNeeded);
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
-            return MekanismUtils.clampToInt(toReceive * MekanismConfig.current().general.TO_RF.val());
+            return RFIntegration.toRF(toReceive);
         }
         return 0;
     }
@@ -577,11 +578,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyRemaining);
+            double toSend = Math.min(RFIntegration.fromRF(energy), energyRemaining);
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
-            return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
+            return RFIntegration.toRF(toSend);
         }
         return 0;
     }
@@ -589,13 +590,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(ItemStack theItem) {
-        return (int) (getEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(getEnergy(theItem));
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(ItemStack theItem) {
-        return (int) (getMaxEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(getMaxEnergy(theItem));
     }
 
     @Override

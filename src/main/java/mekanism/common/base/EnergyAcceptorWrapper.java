@@ -8,8 +8,9 @@ import java.util.function.Function;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -101,7 +102,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromRF(acceptor.receiveEnergy(side, toRF(amount), simulate));
+            return RFIntegration.fromRF(acceptor.receiveEnergy(side, RFIntegration.toRF(amount), simulate));
         }
 
         @Override
@@ -112,14 +113,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         @Override
         public boolean needsEnergy(EnumFacing side) {
             return acceptor.receiveEnergy(side, 1, true) > 0;
-        }
-
-        public int toRF(double joules) {
-            return MekanismUtils.clampToInt(joules * MekanismConfig.current().general.TO_RF.val());
-        }
-
-        public double fromRF(int rf) {
-            return rf * MekanismConfig.current().general.FROM_RF.val();
         }
     }
 
@@ -133,13 +126,13 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            double toTransfer = Math.min(acceptor.getDemandedEnergy(), toEU(amount));
+            double toTransfer = Math.min(acceptor.getDemandedEnergy(), IC2Integration.toEU(amount));
             if (simulate) {
                 //IC2 has no built in way to simulate, so we have to calculate it ourselves
-                return fromEU(toTransfer);
+                return IC2Integration.fromEU(toTransfer);
             }
             double rejects = acceptor.injectEnergy(side, toTransfer, 0);
-            return fromEU(toTransfer - rejects);
+            return IC2Integration.fromEU(toTransfer - rejects);
         }
 
         @Override
@@ -150,14 +143,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         @Override
         public boolean needsEnergy(EnumFacing side) {
             return acceptor.getDemandedEnergy() > 0;
-        }
-
-        public double toEU(double joules) {
-            return joules * MekanismConfig.current().general.TO_IC2.val();
-        }
-
-        public double fromEU(double eu) {
-            return eu * MekanismConfig.current().general.FROM_IC2.val();
         }
     }
 

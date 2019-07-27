@@ -30,6 +30,8 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockTransmitter;
@@ -726,9 +728,9 @@ public final class MekanismUtils {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
             case RF:
-                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_RF.val(), ElectricUnit.REDSTONE_FLUX);
+                return UnitDisplayUtils.getDisplayShort(RFIntegration.toRF(energy), ElectricUnit.REDSTONE_FLUX);
             case EU:
-                return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_IC2.val(), ElectricUnit.ELECTRICAL_UNITS);
+                return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
             case T:
                 return UnitDisplayUtils.getDisplayShort(TeslaIntegration.toTesla(energy), ElectricUnit.TESLA);
         }
@@ -754,11 +756,11 @@ public final class MekanismUtils {
     public static double convertToJoules(double energy) {
         switch (MekanismConfig.current().general.energyUnit.val()) {
             case RF:
-                return energy * MekanismConfig.current().general.FROM_RF.val();
+                return RFIntegration.fromRF(energy);
             case EU:
-                return energy * MekanismConfig.current().general.FROM_IC2.val();
+                return IC2Integration.fromEU(energy);
             case T:
-                return energy * MekanismConfig.current().general.FROM_TESLA.val();
+                return TeslaIntegration.fromTesla(energy);
             default:
                 return energy;
         }
@@ -774,11 +776,11 @@ public final class MekanismUtils {
     public static double convertToDisplay(double energy) {
         switch (MekanismConfig.current().general.energyUnit.val()) {
             case RF:
-                return energy * MekanismConfig.current().general.TO_RF.val();
+                return RFIntegration.toRFAsDouble(energy);
             case EU:
-                return energy * MekanismConfig.current().general.TO_IC2.val();
+                return IC2Integration.toEU(energy);
             case T:
-                return energy * MekanismConfig.current().general.TO_RF.val() / 10;
+                return TeslaIntegration.toTesla(energy);
             default:
                 return energy;
         }

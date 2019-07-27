@@ -35,6 +35,10 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
         return tesla * MekanismConfig.current().general.FROM_TESLA.val();
     }
 
+    public static double fromTesla(double tesla) {
+        return tesla * MekanismConfig.current().general.FROM_TESLA.val();
+    }
+
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getStoredPower() {

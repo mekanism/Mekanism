@@ -9,6 +9,8 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.darkhax.tesla.api.ITeslaConsumer;
@@ -53,11 +55,10 @@ public final class ChargeUtils {
                 }
             } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                 IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
-                int needed = MekanismUtils.clampToInt((storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_RF.val());
-                storer.setEnergy(storer.getEnergy() + (item.extractEnergy(stack, needed, false) * MekanismConfig.current().general.FROM_RF.val()));
+                int needed = RFIntegration.toRF(storer.getMaxEnergy() - storer.getEnergy());
+                storer.setEnergy(storer.getEnergy() + RFIntegration.fromRF(item.extractEnergy(stack, needed, false)));
             } else if (MekanismUtils.useIC2() && isIC2Dischargeable(stack)) {
-                double gain = ElectricItem.manager.discharge(stack, (storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_IC2.val(),
-                      4, true, true, false) * MekanismConfig.current().general.FROM_IC2.val();
+                double gain = IC2Integration.fromEU(ElectricItem.manager.discharge(stack, IC2Integration.toEU(storer.getMaxEnergy() - storer.getEnergy()), 4, true, true, false));
                 storer.setEnergy(storer.getEnergy() + gain);
             } else if (stack.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= storer.getMaxEnergy()) {
                 storer.setEnergy(storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val());
@@ -99,11 +100,10 @@ public final class ChargeUtils {
                 }
             } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                 IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
-                int toTransfer = MekanismUtils.clampToInt(storer.getEnergy() * MekanismConfig.current().general.TO_RF.val());
-                storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(stack, toTransfer, false) * MekanismConfig.current().general.FROM_RF.val()));
+                int toTransfer = RFIntegration.toRF(storer.getEnergy());
+                storer.setEnergy(storer.getEnergy() - RFIntegration.fromRF(item.receiveEnergy(stack, toTransfer, false)));
             } else if (MekanismUtils.useIC2() && isIC2Chargeable(stack)) {
-                double sent = ElectricItem.manager.charge(stack, storer.getEnergy() * MekanismConfig.current().general.TO_IC2.val(), 4, true, false)
-                              * MekanismConfig.current().general.FROM_IC2.val();
+                double sent = IC2Integration.fromEU(ElectricItem.manager.charge(stack, IC2Integration.toEU(storer.getEnergy()), 4, true, false));
                 storer.setEnergy(storer.getEnergy() - sent);
             }
         }
