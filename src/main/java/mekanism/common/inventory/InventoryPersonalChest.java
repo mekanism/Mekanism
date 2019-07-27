@@ -73,7 +73,7 @@ public class InventoryPersonalChest extends InventoryBasic
 			if (getStack().getItem() instanceof ISustainedInventory) {
                             ((ISustainedInventory)getStack().getItem()).setInventory(tagList, getStack());
                         } else {
-                            System.out.println("Avoiding a server crash as : " + getStack().getItem().getItemName() + " is not a sustained inventory.");
+                            System.out.println("Avoiding a server crash as : " + getStack().getItem().getClass().getName() + " is not a sustained inventory.");
                         }
 		}
 	}
