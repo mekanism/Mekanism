@@ -1,8 +1,9 @@
 package mekanism.common.world;
 
 import java.io.File;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.world.DimensionType;
@@ -19,6 +20,8 @@ import net.minecraft.world.storage.WorldInfo;
 /**
  * Dummy object for providing something to CraftingManager#findMatchingRecipe during startup, to prevent in-dev non-null assertions from breaking things
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class DummyWorld extends World {
 
     public DummyWorld() {
@@ -56,17 +59,17 @@ public class DummyWorld extends World {
         }
 
         @Override
-        public IChunkLoader getChunkLoader(@Nonnull WorldProvider provider) {
+        public IChunkLoader getChunkLoader(WorldProvider provider) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void saveWorldInfoWithPlayer(@Nonnull WorldInfo worldInformation, @Nonnull NBTTagCompound tagCompound) {
+        public void saveWorldInfoWithPlayer(WorldInfo worldInformation, NBTTagCompound tagCompound) {
 
         }
 
         @Override
-        public void saveWorldInfo(@Nonnull WorldInfo worldInformation) {
+        public void saveWorldInfo(WorldInfo worldInformation) {
 
         }
 
@@ -86,7 +89,7 @@ public class DummyWorld extends World {
         }
 
         @Override
-        public File getMapFileFromName(@Nonnull String mapName) {
+        public File getMapFileFromName(String mapName) {
             throw new UnsupportedOperationException();
         }
 
