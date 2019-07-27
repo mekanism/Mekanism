@@ -176,7 +176,6 @@ public class RenderResizableCuboid {
 
         GlStateManager.enableLighting();
         GlStateManager.disableAlpha();
-        GlStateManager.enableFog();
     }
 
     private void renderCuboidFace(BufferBuilder wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
