@@ -12,7 +12,6 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItem;
-import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
@@ -108,43 +107,13 @@ public final class OreDictManager {
             InfuseRegistry.registerInfuseObject(dust, new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 10));
         }
 
-        for (Resource resource : Resource.values()) {
-            for (ItemStack clump : OreDictionary.getOres("clump" + resource.getName(), false)) {
-                RecipeHandler.addCrusherRecipe(StackUtils.size(clump, 1), new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
-            }
-
-            for (ItemStack shard : OreDictionary.getOres("shard" + resource.getName(), false)) {
-                RecipeHandler.addPurificationChamberRecipe(StackUtils.size(shard, 1), new ItemStack(MekanismItems.Clump, 1, resource.ordinal()));
-            }
-
-            for (ItemStack crystal : OreDictionary.getOres("crystal" + resource.getName(), false)) {
-                RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(crystal, 1), MekanismFluids.HydrogenChloride, new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
-            }
-
-            for (ItemStack dust : OreDictionary.getOres("dustDirty" + resource.getName(), false)) {
-                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(dust, 1), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
-            }
-
-            for (ItemStack ore : OreDictionary.getOres("ore" + resource.getName(), false)) {
-                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Dust, 2, resource.ordinal()));
-                RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
-                RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride,
-                      new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
-                RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas(resource.getName()), 1000));
-            }
-
-            for (ItemStack ingot : OreDictionary.getOres("ingot" + resource.getName(), false)) {
-                RecipeHandler.addCrusherRecipe(StackUtils.size(ingot, 1), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
-            }
-
-            oreDict = OreDictionary.getOres("ore" + resource.getName(), false);
-            if (oreDict.size() > 0) {
-                ItemStack ore = StackUtils.size(oreDict.get(0), 1);
-                for (ItemStack dust : OreDictionary.getOres("dust" + resource.getName(), false)) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 8), new ItemStack(Blocks.COBBLESTONE), ore);
-                }
-            }
-        }
+        addResourceRecipes(Resource.IRON, MekanismItem.IRON_SHARD, MekanismItem.IRON_CLUMP, MekanismItem.DIRTY_IRON_DUST, MekanismItem.IRON_DUST);
+        addResourceRecipes(Resource.GOLD, MekanismItem.GOLD_SHARD, MekanismItem.GOLD_CLUMP, MekanismItem.DIRTY_GOLD_DUST, MekanismItem.GOLD_DUST);
+        addResourceRecipes(Resource.OSMIUM, MekanismItem.OSMIUM_SHARD, MekanismItem.OSMIUM_CLUMP, MekanismItem.DIRTY_OSMIUM_DUST, MekanismItem.OSMIUM_DUST);
+        addResourceRecipes(Resource.COPPER, MekanismItem.COPPER_SHARD, MekanismItem.COPPER_CLUMP, MekanismItem.DIRTY_COPPER_DUST, MekanismItem.COPPER_DUST);
+        addResourceRecipes(Resource.TIN, MekanismItem.TIN_SHARD, MekanismItem.TIN_CLUMP, MekanismItem.DIRTY_TIN_DUST, MekanismItem.TIN_DUST);
+        addResourceRecipes(Resource.SILVER, MekanismItem.SILVER_SHARD, MekanismItem.SILVER_CLUMP, MekanismItem.DIRTY_SILVER_DUST, MekanismItem.SILVER_DUST);
+        addResourceRecipes(Resource.LEAD, MekanismItem.LEAD_SHARD, MekanismItem.LEAD_CLUMP, MekanismItem.DIRTY_LEAD_DUST, MekanismItem.LEAD_DUST);
 
         minorCompatIngot.forEach(OreDictManager::addStandardOredictMetal);
         minorCompatGem.forEach(OreDictManager::addStandardOredictGem);
@@ -432,6 +401,42 @@ public final class OreDictManager {
               StackUtils.size(OreDictionary.getOres("dustBronze", false).get(0), 1));
     }
 
+    private static void addResourceRecipes(Resource resource, MekanismItem shardItem, MekanismItem clumpItem, MekanismItem dirtyDustItem, MekanismItem dustItem) {
+        for (ItemStack clump : OreDictionary.getOres("clump" + resource.getName(), false)) {
+            RecipeHandler.addCrusherRecipe(StackUtils.size(clump, 1), dirtyDustItem.getItemStack());
+        }
+
+        for (ItemStack shard : OreDictionary.getOres("shard" + resource.getName(), false)) {
+            RecipeHandler.addPurificationChamberRecipe(StackUtils.size(shard, 1), clumpItem.getItemStack());
+        }
+
+        for (ItemStack crystal : OreDictionary.getOres("crystal" + resource.getName(), false)) {
+            RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(crystal, 1), MekanismFluids.HydrogenChloride, shardItem.getItemStack());
+        }
+
+        for (ItemStack dust : OreDictionary.getOres("dustDirty" + resource.getName(), false)) {
+            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(dust, 1), dustItem.getItemStack());
+        }
+
+        for (ItemStack ore : OreDictionary.getOres("ore" + resource.getName(), false)) {
+            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), dustItem.getItemStack(2));
+            RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1), clumpItem.getItemStack(3));
+            RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride, shardItem.getItemStack(4));
+            RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas(resource.getName()), 1000));
+        }
+
+        for (ItemStack ingot : OreDictionary.getOres("ingot" + resource.getName(), false)) {
+            RecipeHandler.addCrusherRecipe(StackUtils.size(ingot, 1), dustItem.getItemStack());
+        }
+
+        List<ItemStack> oreDict = OreDictionary.getOres("ore" + resource.getName(), false);
+        if (oreDict.size() > 0) {
+            ItemStack ore = StackUtils.size(oreDict.get(0), 1);
+            for (ItemStack dust : OreDictionary.getOres("dust" + resource.getName(), false)) {
+                RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 8), new ItemStack(Blocks.COBBLESTONE), ore);
+            }
+        }
+    }
 
     /**
      * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Credit to CofhCore.

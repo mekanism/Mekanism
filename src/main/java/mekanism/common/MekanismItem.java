@@ -144,9 +144,9 @@ public enum MekanismItem implements IItemProvider {
     LEAD_CLUMP(new ItemResource(ResourceType.CLUMP, Resource.LEAD)),
 
     DIRTY_IRON_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.IRON)),
-    DIRT_GOLD_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.GOLD)),
+    DIRTY_GOLD_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.GOLD)),
     DIRTY_OSMIUM_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.OSMIUM)),
-    DIRT_COPPER_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.COPPER)),
+    DIRTY_COPPER_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.COPPER)),
     DIRTY_TIN_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.TIN)),
     DIRTY_SILVER_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.SILVER)),
     DIRTY_LEAD_DUST(new ItemResource(ResourceType.DIRTY_DUST, Resource.LEAD)),

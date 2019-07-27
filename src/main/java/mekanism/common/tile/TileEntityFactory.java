@@ -19,7 +19,6 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItem;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
@@ -168,8 +167,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return false;
         }
 
+        //TODO: Upgrading remove this if and fix the block state setting. A bunch of the TileEntity stuff may be able to be moved to the block classes themselves
+        if (true) {
+            return false;
+        }
         world.setBlockToAir(getPos());
-        world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1), 3);
+        //world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1), 3);
 
         TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
 

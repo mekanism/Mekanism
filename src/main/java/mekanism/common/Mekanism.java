@@ -352,9 +352,23 @@ public class Mekanism {
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.DIAMOND), MekanismItem.COMPRESSED_DIAMOND.getItemStack());
             RecipeHandler.addEnrichmentChamberRecipe(MekanismItem.HDPE_PELLET.getItemStack(3), MekanismItem.HDPE_SHEET.getItemStack());
 
-            for (int i = 0; i < EnumColor.DYES.length; i++) {
-                RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i));
-            }
+            //Plastic to Slick Plastic
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.BLACK_PLASTIC_BLOCK.getItemStack(), MekanismBlock.BLACK_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.RED_PLASTIC_BLOCK.getItemStack(), MekanismBlock.RED_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.GREEN_PLASTIC_BLOCK.getItemStack(), MekanismBlock.GREEN_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.BROWN_PLASTIC_BLOCK.getItemStack(), MekanismBlock.BROWN_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.BLUE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.BLUE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.PURPLE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.PURPLE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.CYAN_PLASTIC_BLOCK.getItemStack(), MekanismBlock.CYAN_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.LIGHT_GRAY_PLASTIC_BLOCK.getItemStack(), MekanismBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.GRAY_PLASTIC_BLOCK.getItemStack(), MekanismBlock.GRAY_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.PINK_PLASTIC_BLOCK.getItemStack(), MekanismBlock.PINK_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.LIME_PLASTIC_BLOCK.getItemStack(), MekanismBlock.LIME_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.YELLOW_PLASTIC_BLOCK.getItemStack(), MekanismBlock.YELLOW_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.LIGHT_BLUE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.MAGENTA_PLASTIC_BLOCK.getItemStack(), MekanismBlock.MAGENTA_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.ORANGE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.ORANGE_SLICK_PLASTIC_BLOCK.getItemStack());
+            RecipeHandler.addEnrichmentChamberRecipe(MekanismBlock.WHITE_PLASTIC_BLOCK.getItemStack(), MekanismBlock.WHITE_SLICK_PLASTIC_BLOCK.getItemStack());
         }
 
         //Combiner recipes
@@ -525,10 +539,12 @@ public class Mekanism {
                     RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
                 }
 
-                //do the crystallizer only if it's one of ours!
-                Resource gasResource = Resource.getFromName(oreGas.getName());
-                if (gasResource != null && MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_CRYSTALLIZER)) {
-                    RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(MekanismItems.Crystal, 1, gasResource.ordinal()));
+                if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_CRYSTALLIZER)) {
+                    //do the crystallizer only if it's one of our gases!
+                    Resource gasResource = Resource.getFromName(oreGas.getName());
+                    if (gasResource != null) {
+                        RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(MekanismItems.Crystal, 1, gasResource.ordinal()));
+                    }
                 }
             }
         }

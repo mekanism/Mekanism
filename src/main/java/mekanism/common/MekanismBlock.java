@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IFactory.RecipeType;
@@ -398,7 +399,6 @@ public enum MekanismBlock implements IBlockProvider {
 
     SALT_BLOCK(new BlockSalt());
 
-
     @Nonnull
     private final ItemBlock item;
     @Nonnull
@@ -424,6 +424,19 @@ public enum MekanismBlock implements IBlockProvider {
     @Override
     public ItemBlock getItem() {
         return item;
+    }
+
+    @Nullable
+    public MekanismBlock getUpgradedBlock() {
+        //TODO: Have this be dynamic/built up automatically
+        if (this == ENERGIZED_SMELTER) {
+            return BASIC_SMELTING_FACTORY;
+        } else if (this == BASIC_SMELTING_FACTORY) {
+            return ADVANCED_SMELTING_FACTORY;
+        } else if (this == ADVANCED_SMELTING_FACTORY) {
+            return ELITE_SMELTING_FACTORY;
+        }
+        return null;
     }
 
     public static void registerBlocks(IForgeRegistry<Block> registry) {

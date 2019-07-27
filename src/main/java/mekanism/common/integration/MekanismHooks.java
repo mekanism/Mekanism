@@ -174,13 +174,13 @@ public final class MekanismHooks {
         } catch (Exception ignored) {
         }
 
-        try {
-            for (Resource resource : Resource.values()) {
-                Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clump" + resource.getName()), null, false,
-                      new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
-            }
-        } catch (Exception ignored) {
-        }
+        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpIron"), null, false, MekanismItem.DIRTY_IRON_DUST.getItemStack());
+        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpGold"), null, false, MekanismItem.DIRTY_GOLD_DUST.getItemStack());
+        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpOsmium"), null, false, MekanismItem.DIRTY_OSMIUM_DUST.getItemStack());
+        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpCopper"), null, false, MekanismItem.DIRTY_COPPER_DUST.getItemStack());
+        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpTin"), null, false, MekanismItem.DIRTY_TIN_DUST.getItemStack());
+        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpSilver"), null, false, MekanismItem.DIRTY_SILVER_DUST.getItemStack());
+        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpLead"), null, false, MekanismItem.DIRTY_LEAD_DUST.getItemStack());
     }
 
     @Method(modid = COMPUTERCRAFT_MOD_ID)
