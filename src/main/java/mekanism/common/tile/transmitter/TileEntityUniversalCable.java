@@ -18,10 +18,11 @@ import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaCableIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tier.BaseTier;
@@ -106,21 +107,20 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                             forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(toDraw), false);
                         } else if (MekanismUtils.useRF() && outputter instanceof IEnergyProvider) {
                             IEnergyProvider rfProvider = (IEnergyProvider) outputter;
-                            double toDraw = rfProvider.extractEnergy(side.getOpposite(), MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_RF.val()), true)
-                                            * MekanismConfig.current().general.FROM_RF.val();
+                            double toDraw = RFIntegration.fromRF(rfProvider.extractEnergy(side.getOpposite(), RFIntegration.toRF(canDraw), true));
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
-                            rfProvider.extractEnergy(side.getOpposite(), MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_RF.val()), false);
+                            rfProvider.extractEnergy(side.getOpposite(), RFIntegration.toRF(toDraw), false);
                         } else if (MekanismUtils.useIC2()) {
                             IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
                             if (tile instanceof IEnergySource) {
-                                double received = Math.min(((IEnergySource) tile).getOfferedEnergy() * MekanismConfig.current().general.FROM_IC2.val(), canDraw);
+                                double received = Math.min(IC2Integration.fromEU(((IEnergySource) tile).getOfferedEnergy()), canDraw);
                                 double toDraw = received;
                                 if (received > 0) {
                                     toDraw -= takeEnergy(received, true);
                                 }
-                                ((IEnergySource) tile).drawEnergy(toDraw * MekanismConfig.current().general.TO_IC2.val());
+                                ((IEnergySource) tile).drawEnergy(IC2Integration.toEU(toDraw));
                             }
                         }
                     }
@@ -210,8 +210,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return maxReceive - MekanismUtils.clampToInt(takeEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), !simulate) *
-                                                     MekanismConfig.current().general.TO_RF.val());
+        return maxReceive - RFIntegration.toRF(takeEnergy(RFIntegration.fromRF(maxReceive), !simulate));
     }
 
     @Override
@@ -223,13 +222,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(getEnergy());
     }
 
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return MekanismUtils.clampToInt(getMaxEnergy() * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(getMaxEnergy());
     }
 
     @Override

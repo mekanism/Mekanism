@@ -15,6 +15,7 @@ import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.fixers.MekanismDataFixers.MekFixers;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
@@ -125,8 +126,7 @@ public class MekanismGenerators implements IModule {
                 }
             }
 
-            BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (long) (240 * MekanismConfig.current().general.TO_RF.val() / 20 * MjAPI.MJ),
-                  40 * Fluid.BUCKET_VOLUME);
+            BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (RFIntegration.toRFAsLong(12 * MjAPI.MJ)), 40 * Fluid.BUCKET_VOLUME);
         }
     }
 

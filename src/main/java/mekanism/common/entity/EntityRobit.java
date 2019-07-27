@@ -19,6 +19,8 @@ import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
@@ -179,13 +181,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                     }
                 } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                     IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
-                    int needed = MekanismUtils.clampToInt((MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_RF.val());
-                    setEnergy(getEnergy() + (item.extractEnergy(stack, needed, false) * MekanismConfig.current().general.FROM_RF.val()));
+                    int needed = RFIntegration.toRF(MAX_ELECTRICITY - getEnergy());
+                    setEnergy(getEnergy() + RFIntegration.fromRF(item.extractEnergy(stack, needed, false)));
                 } else if (MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem) {
                     IElectricItem item = (IElectricItem) stack.getItem();
                     if (item.canProvideEnergy(stack)) {
-                        double gain = ElectricItem.manager.discharge(stack, (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_IC2.val(), 4, true, true, false)
-                                      * MekanismConfig.current().general.FROM_IC2.val();
+                        double gain = IC2Integration.fromEU(ElectricItem.manager.discharge(stack, IC2Integration.toEU(MAX_ELECTRICITY - getEnergy()), 4, true, true, false));
                         setEnergy(getEnergy() + gain);
                     }
                 } else if (stack.getItem() == Items.REDSTONE && getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= MAX_ELECTRICITY) {

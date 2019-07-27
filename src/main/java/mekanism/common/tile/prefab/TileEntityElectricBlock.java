@@ -14,6 +14,8 @@ import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -189,15 +191,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return MekanismUtils.clampToInt(acceptEnergy(from, maxReceive * MekanismConfig.current().general.FROM_RF.val(), simulate)
-                                        * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(acceptEnergy(from, RFIntegration.fromRF(maxReceive), simulate));
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        return MekanismUtils.clampToInt(pullEnergy(from, maxExtract * MekanismConfig.current().general.FROM_RF.val(), simulate)
-                                        * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(pullEnergy(from, RFIntegration.fromRF(maxExtract), simulate));
     }
 
     @Override
@@ -209,13 +209,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(getEnergy());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return MekanismUtils.clampToInt(getMaxEnergy() * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(getMaxEnergy());
     }
 
     @Override
@@ -234,8 +234,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
         if (!MekanismConfig.current().general.blacklistIC2.val()) {
-            setEnergy(getEnergy() + amount * MekanismConfig.current().general.FROM_IC2.val());
-            return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
+            setEnergy(getEnergy() + IC2Integration.fromEU(amount));
+            return IC2Integration.toEUAsInt(getEnergy());
         }
         return 0;
     }
@@ -266,39 +266,39 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getStored() {
-        return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
+        return IC2Integration.toEUAsInt(getEnergy());
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void setStored(int energy) {
         if (!MekanismConfig.current().general.blacklistIC2.val()) {
-            setEnergy(energy * MekanismConfig.current().general.FROM_IC2.val());
+            setEnergy(IC2Integration.fromEU(energy));
         }
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getCapacity() {
-        return MekanismUtils.clampToInt(getMaxEnergy() * MekanismConfig.current().general.TO_IC2.val());
+        return IC2Integration.toEUAsInt(getMaxEnergy());
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getOutput() {
-        return MekanismUtils.clampToInt(getMaxOutput() * MekanismConfig.current().general.TO_IC2.val());
+        return IC2Integration.toEUAsInt(getMaxOutput());
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getDemandedEnergy() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? (getMaxEnergy() - getEnergy()) * MekanismConfig.current().general.TO_IC2.val() : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU((getMaxEnergy() - getEnergy())) : 0;
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOfferedEnergy() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? Math.min(getEnergy(), getMaxOutput()) * MekanismConfig.current().general.TO_IC2.val() : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU(Math.min(getEnergy(), getMaxOutput())) : 0;
     }
 
     @Override
@@ -309,7 +309,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOutputEnergyUnitsPerTick() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? getMaxOutput() * MekanismConfig.current().general.TO_IC2.val() : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU(getMaxOutput()) : 0;
     }
 
     @Override
@@ -320,14 +320,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         if (MekanismConfig.current().general.blacklistIC2.val() || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)) {
             return amount;
         }
-        return amount - acceptEnergy(pushDirection.getOpposite(), amount * MekanismConfig.current().general.FROM_IC2.val(), false)
-                        * MekanismConfig.current().general.TO_IC2.val();
+        return amount - IC2Integration.toEU(acceptEnergy(pushDirection.getOpposite(), IC2Integration.fromEU(amount), false));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void drawEnergy(double amount) {
-        setEnergy(Math.max(getEnergy() - (amount * MekanismConfig.current().general.FROM_IC2.val()), 0));
+        setEnergy(Math.max(getEnergy() - IC2Integration.fromEU(amount), 0));
     }
 
     @Override

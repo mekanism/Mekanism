@@ -9,10 +9,10 @@ import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
+import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -122,36 +122,37 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
     public int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canReceive(theItem)) {
             double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
-            double toReceive = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyNeeded);
+            double toReceive = Math.min(RFIntegration.fromRF(energy), energyNeeded);
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
-            return MekanismUtils.clampToInt(toReceive * MekanismConfig.current().general.TO_RF.val());
+            return RFIntegration.toRF(toReceive);
         }
         return 0;
     }
 
     @Override
+    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyRemaining);
+            double toSend = Math.min(RFIntegration.fromRF(energy), energyRemaining);
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
-            return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
+            return RFIntegration.toRF(toSend);
         }
         return 0;
     }
 
     @Override
     public int getEnergyStored(ItemStack theItem) {
-        return MekanismUtils.clampToInt(getEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(getEnergy(theItem));
     }
 
     @Override
     public int getMaxEnergyStored(ItemStack theItem) {
-        return MekanismUtils.clampToInt(getMaxEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
+        return RFIntegration.toRF(getMaxEnergy(theItem));
     }
 
     @Override
