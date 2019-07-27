@@ -40,19 +40,20 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 		{
 			ChargeUtils.charge(0, this);
 			
-			if(ticker % 20 == 0)
-			{
-				setActive((currentMultiplier = getMultiplier()) > 0);
-			}
-                        
                             ForgeDimension dim = ((ForgeDimension)DimensionAPI.getForgeDimension(this.worldObj.provider.dimensionId));
                             if (dim != null && (dim.getType().equals(CelestialType.System) || dim.getType().equals(CelestialType.Cluster)) && getActive()) {
                                 setActive(false);
+                            } else {
+                                if(ticker % 20 == 0)
+                                {
+                                        setActive((currentMultiplier = getMultiplier()) > 0);
+                                }
+
+                                if(getActive())
+                                {
+                                        setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
+                                }
                             }
-			if(getActive())
-			{
-				setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
-			}
 		}
 	}
 	
