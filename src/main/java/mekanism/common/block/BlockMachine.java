@@ -1,7 +1,5 @@
 package mekanism.common.block;
 
-import mekanism.common.block.states.BlockStateMachine.MachineBlock;
-
 /**
  * Block class for handling multiple machine block IDs. 0:0: Enrichment Chamber 0:1: Osmium Compressor 0:2: Combiner 0:3: Crusher 0:4: Digital Miner 0:5: Basic Factory
  * 0:6: Advanced Factory 0:7: Elite Factory 0:8: Metallurgic Infuser 0:9: Purification Chamber 0:10: Energized Smelter 0:11: Teleporter 0:12: Electric Pump 0:13: Electric
@@ -14,6 +12,4 @@ import mekanism.common.block.states.BlockStateMachine.MachineBlock;
  */
 public abstract class BlockMachine {
     //TODO: Delete
-
-    public abstract MachineBlock getMachineBlock();
 }

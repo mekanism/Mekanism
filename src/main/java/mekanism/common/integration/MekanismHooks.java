@@ -12,14 +12,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import li.cil.oc.api.Driver;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
-import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
-import mekanism.common.Resource;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.computer.CCPeripheral;
 import mekanism.common.integration.computer.OCDriver;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
@@ -236,15 +232,25 @@ public final class MekanismHooks {
     }
 
     private void registerAE2P2P() {
-        for (TransmitterType type : TransmitterType.values()) {
-            if (type.getTransmission().equals(TransmissionType.ITEM)) {
-                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
-            } else if (type.getTransmission().equals(TransmissionType.FLUID)) {
-                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
-            } else if (type.getTransmission().equals(TransmissionType.ENERGY)) {
-                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fe-power", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
-            }
-        }
+        //ITEMS
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", MekanismBlock.BASIC_LOGISTICAL_TRANSPORTER.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", MekanismBlock.ADVANCED_LOGISTICAL_TRANSPORTER.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", MekanismBlock.ELITE_LOGISTICAL_TRANSPORTER.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", MekanismBlock.ULTIMATE_LOGISTICAL_TRANSPORTER.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", MekanismBlock.RESTRICTIVE_TRANSPORTER.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", MekanismBlock.DIVERSION_TRANSPORTER.getItemStack());
+
+        //FLUID
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid", MekanismBlock.BASIC_MECHANICAL_PIPE.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid", MekanismBlock.ADVANCED_MECHANICAL_PIPE.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid", MekanismBlock.ELITE_MECHANICAL_PIPE.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid", MekanismBlock.ULTIMATE_MECHANICAL_PIPE.getItemStack());
+
+        //ENERGY
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fe-power", MekanismBlock.BASIC_UNIVERSAL_CABLE.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fe-power", MekanismBlock.ADVANCED_UNIVERSAL_CABLE.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fe-power", MekanismBlock.ELITE_UNIVERSAL_CABLE.getItemStack());
+        FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fe-power", MekanismBlock.ULTIMATE_UNIVERSAL_CABLE.getItemStack());
     }
 
     private void registerAE2Recipes() {

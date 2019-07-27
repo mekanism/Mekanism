@@ -47,6 +47,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
@@ -110,23 +111,8 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
 
     public ItemBlockMachine(Block block) {
         super(block);
-        setHasSubtypes(true);
         setNoRepair();
         setMaxStackSize(1);
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
-    }
-
-    @Nonnull
-    @Override
-    public String getTranslationKey(ItemStack itemstack) {
-        if (MachineType.get(itemstack) != null) {
-            return getTranslationKey() + "." + MachineType.get(itemstack).blockName;
-        }
-        return "null";
     }
 
     @Nonnull
@@ -134,7 +120,8 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
     public String getItemStackDisplayName(@Nonnull ItemStack itemstack) {
         MachineType type = MachineType.get(itemstack);
         if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-            BaseTier tier = type.factoryTier.getBaseTier();
+            //TODO: Get tier from stack
+            BaseTier tier = FactoryTier.BASIC.getBaseTier();
             RecipeType recipeType = getRecipeTypeOrNull(itemstack);
             if (recipeType != null) {
                 String langKey = "tile." + tier.getSimpleName() + recipeType.getTranslationKey() + "Factory";
@@ -537,7 +524,8 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
         MachineType machineType = MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage());
         if (BlockFactory.isInstance(itemStack)) {
             RecipeType recipeType = getRecipeTypeOrNull(itemStack);
-            int tierProcess = machineType.factoryTier.processes;
+            //TODO: Get tier from stack
+            int tierProcess = FactoryTier.BASIC.processes;
             double baseMaxEnergy = tierProcess * (recipeType == null ? 1 : Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage()));
             return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
         }

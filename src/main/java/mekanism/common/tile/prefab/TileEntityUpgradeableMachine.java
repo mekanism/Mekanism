@@ -2,7 +2,6 @@ package mekanism.common.tile.prefab;
 
 import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierUpgradeable;
@@ -33,9 +32,12 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         if (upgradeTier != BaseTier.BASIC) {
             return false;
         }
+        //TODO: Grab proper factory. If this is moved into the block from the tile it may make it easier
+        if (true) {
+            return false;
+        }
         world.setBlockToAir(getPos());
-        //TODO: Grab proper factory
-        world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
+        //world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 
         TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
         RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());

@@ -18,24 +18,20 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;
@@ -128,10 +124,8 @@ public final class MekanismUtils {
     }
 
     public static ItemStack getTransmitter(TransmitterType type, BaseTier tier, int amount) {
-        ItemStack stack = new ItemStack(MekanismBlocks.Transmitter, amount, type.ordinal());
-        ItemBlockTransmitter itemTransmitter = (ItemBlockTransmitter) stack.getItem();
-        itemTransmitter.setBaseTier(stack, tier);
-        return stack;
+        //TODO
+        return ItemStack.EMPTY;
     }
 
     /**
@@ -143,9 +137,8 @@ public final class MekanismUtils {
      * @return factory with defined tier and recipe type
      */
     public static ItemStack getFactory(FactoryTier tier, RecipeType type) {
-        ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, MachineType.BASIC_FACTORY.ordinal() + tier.ordinal());
-        ((IFactory) itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
-        return itemstack;
+        //TODO
+        return ItemStack.EMPTY;
     }
 
     /**

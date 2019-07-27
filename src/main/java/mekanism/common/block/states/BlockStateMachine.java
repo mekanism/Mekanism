@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMekanismContainer;
@@ -36,25 +35,6 @@ public class BlockStateMachine extends ExtendedBlockState {
     public BlockStateMachine(BlockMekanismContainer block) {
         //TODO: Should tier stay part of blockstate or be extracted into its own block
         super(block, new IProperty[]{BlockStateFacing.facingProperty, activeProperty, tierProperty, recipeProperty}, new IUnlistedProperty[]{});
-    }
-
-    public enum MachineBlock {
-        MACHINE_BLOCK_1,
-        MACHINE_BLOCK_2,
-        MACHINE_BLOCK_3;
-
-        PropertyEnum<MachineType> machineTypeProperty;
-
-        public PropertyEnum<MachineType> getProperty() {
-            if (machineTypeProperty == null) {
-                machineTypeProperty = PropertyEnum.create("type", MachineType.class, input -> input != null && input.typeBlock == this);
-            }
-            return machineTypeProperty;
-        }
-
-        public Block getBlock() {
-            return null;
-        }
     }
 
     public enum MachineType implements IStringSerializable, IBlockType {
@@ -117,7 +97,7 @@ public class BlockStateMachine extends ExtendedBlockState {
 
         @Override
         public String getBlockName() {
-            return blockName;
+            return "";
         }
 
         @Override
@@ -127,11 +107,13 @@ public class BlockStateMachine extends ExtendedBlockState {
 
         //TODO: Put this as part of IBlockElectric?
         public double getUsage() {
-
+            //TODO
+            return 0;
         }
 
         public double getStorage() {
-
+            //TODO
+            return 0;
         }
 
         public ItemStack getStack() {
@@ -155,7 +137,6 @@ public class BlockStateMachine extends ExtendedBlockState {
         @Override
         protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             Block block = state.getBlock();
-            MachineType type = state.getValue(block.getTypeProperty());
             StringBuilder builder = new StringBuilder();
             String nameOverride = null;
 
@@ -178,15 +159,10 @@ public class BlockStateMachine extends ExtendedBlockState {
                 builder.append(facing.getName());
             }
 
-            if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                RecipeType recipe = state.getValue(recipeProperty);
-                nameOverride = type.getName() + "_" + recipe.getName();
-            }
-
             if (builder.length() == 0) {
                 builder.append("normal");
             }
-            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, nameOverride != null ? nameOverride : type.getName());
+            ResourceLocation baseLocation = block.getRegistryName();
             return new ModelResourceLocation(baseLocation, builder.toString());
         }
     }

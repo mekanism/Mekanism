@@ -44,7 +44,6 @@ import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
@@ -202,7 +201,7 @@ public class RecipeRegistryHelper {
     public static void registerEvaporationPlant(IModRegistry registry) {
         addRecipes(registry, Recipe.THERMAL_EVAPORATION_PLANT, ThermalEvaporationRecipeWrapper::new);
         registry.addRecipeClickArea(GuiThermalEvaporationController.class, 49, 20, 78, 38, Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
-        registry.addRecipeCatalyst(BasicBlockType.THERMAL_EVAPORATION_CONTROLLER.getStack(1), Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
+        registry.addRecipeCatalyst(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER.getItemStack(), Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
     }
 
     public static void registerReactionChamber(IModRegistry registry) {
