@@ -97,18 +97,28 @@ public class MekanismTools implements IModule {
         GameRegistry.addSmelting(toolsItem.getItemStackAnyDamage(), nugget, 0.1F);
     }
 
-    private void setStackIfCaseAndEmpty(EntityLivingBase entity, EntityEquipmentSlot slot, ItemStack item, boolean shouldSet) {
-        if (shouldSet && entity.getItemStackFromSlot(slot).isEmpty()) {
+    private void setStackIfEmpty(EntityLivingBase entity, EntityEquipmentSlot slot, ItemStack item) {
+        if (entity.getItemStackFromSlot(slot).isEmpty()) {
             entity.setItemStackToSlot(slot, item);
         }
     }
 
     private void setEntityArmorWithChance(Random random, EntityLivingBase entity, ToolsItem sword, ToolsItem helmet, ToolsItem chestplate, ToolsItem leggings, ToolsItem boots) {
-        setStackIfCaseAndEmpty(entity, EntityEquipmentSlot.MAINHAND, sword.getItemStack(), entity instanceof EntityZombie && random.nextInt(100) < 50);
-        setStackIfCaseAndEmpty(entity, EntityEquipmentSlot.HEAD, helmet.getItemStack(), random.nextInt(100) < 50);
-        setStackIfCaseAndEmpty(entity, EntityEquipmentSlot.CHEST, chestplate.getItemStack(), random.nextInt(100) < 50);
-        setStackIfCaseAndEmpty(entity, EntityEquipmentSlot.LEGS, leggings.getItemStack(), random.nextInt(100) < 50);
-        setStackIfCaseAndEmpty(entity, EntityEquipmentSlot.FEET, boots.getItemStack(), random.nextInt(100) < 50);
+        if (entity instanceof EntityZombie && random.nextInt(100) < 50) {
+            setStackIfEmpty(entity, EntityEquipmentSlot.MAINHAND, sword.getItemStack());
+        }
+        if (random.nextInt(100) < 50) {
+            setStackIfEmpty(entity, EntityEquipmentSlot.HEAD, helmet.getItemStack());
+        }
+        if (random.nextInt(100) < 50) {
+            setStackIfEmpty(entity, EntityEquipmentSlot.CHEST, chestplate.getItemStack());
+        }
+        if (random.nextInt(100) < 50) {
+            setStackIfEmpty(entity, EntityEquipmentSlot.LEGS, leggings.getItemStack());
+        }
+        if (random.nextInt(100) < 50) {
+            setStackIfEmpty(entity, EntityEquipmentSlot.FEET, boots.getItemStack());
+        }
     }
 
     @SubscribeEvent
