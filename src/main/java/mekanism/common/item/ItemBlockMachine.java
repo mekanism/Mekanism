@@ -33,6 +33,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
+import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
@@ -517,7 +518,7 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
 
     @Override
     public double getEnergy(ItemStack itemStack) {
-        if (!MachineType.get(itemStack).isElectric) {
+        if (!IBlockElectric.isInstance(itemStack)) {
             return 0;
         }
         return ItemDataUtils.getDouble(itemStack, "energyStored");
@@ -525,7 +526,7 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
 
     @Override
     public void setEnergy(ItemStack itemStack, double amount) {
-        if (!MachineType.get(itemStack).isElectric) {
+        if (!IBlockElectric.isInstance(itemStack)) {
             return;
         }
         ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
@@ -534,7 +535,7 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         MachineType machineType = MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage());
-        if (machineType.isFactory()) {
+        if (BlockFactory.isInstance(itemStack)) {
             RecipeType recipeType = getRecipeTypeOrNull(itemStack);
             int tierProcess = machineType.factoryTier.processes;
             double baseMaxEnergy = tierProcess * (recipeType == null ? 1 : Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage()));
@@ -550,7 +551,7 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
 
     @Override
     public boolean canReceive(ItemStack itemStack) {
-        return MachineType.get(itemStack).isElectric;
+        return IBlockElectric.isInstance(itemStack);
     }
 
     @Override

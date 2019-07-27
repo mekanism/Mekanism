@@ -31,6 +31,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -61,6 +62,11 @@ public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IR
         this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_bin";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    public static boolean isInstance(ItemStack stack) {
+        //TODO: Do some better sort of isInstance check?
+        return !stack.isEmpty() && stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockBin;
     }
 
     @Nonnull

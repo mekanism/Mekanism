@@ -2,7 +2,7 @@ package mekanism.common.recipe;
 
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismItem;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.basic.BlockBin;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.tier.BinTier;
@@ -38,10 +38,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
     }
 
     private boolean isBin(ItemStack itemStack) {
-        if (itemStack.isEmpty()) {
-            return false;
-        }
-        return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.getCount() <= 1;
+        return BlockBin.isInstance(itemStack) && itemStack.getCount() == 1;
     }
 
     @Nonnull

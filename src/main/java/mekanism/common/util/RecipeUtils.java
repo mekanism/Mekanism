@@ -10,7 +10,8 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierItem;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.basic.BlockBin;
+import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.security.ISecurityItem;
@@ -139,12 +140,12 @@ public class RecipeUtils {
             }
         }
 
-        if (BasicBlockType.get(toReturn) == BasicBlockType.BIN) {
+        if (BlockBin.isInstance(toReturn)) {
             int foundCount = 0;
             ItemStack foundType = ItemStack.EMPTY;
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-                if (!itemstack.isEmpty() && BasicBlockType.get(itemstack) == BasicBlockType.BIN) {
+                if (BlockBin.isInstance(itemstack)) {
                     InventoryBin binInv = new InventoryBin(itemstack);
                     foundCount = binInv.getItemCount();
                     foundType = binInv.getItemType();
@@ -158,11 +159,11 @@ public class RecipeUtils {
             }
         }
 
-        if (MachineType.get(toReturn) != null && MachineType.get(toReturn).supportsUpgrades) {
+        if (ISupportsUpgrades.isInstance(toReturn)) {
             Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-                if (!itemstack.isEmpty() && MachineType.get(itemstack) != null && MachineType.get(itemstack).supportsUpgrades) {
+                if (ISupportsUpgrades.isInstance(itemstack)) {
                     Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(itemstack));
                     for (Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
                         if (entry != null && entry.getKey() != null && entry.getValue() != null) {

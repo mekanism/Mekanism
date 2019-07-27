@@ -111,13 +111,8 @@ public class BlockStateMachine extends ExtendedBlockState {
             return null;
         }
 
-        public static MachineType get(MachineBlock block, int meta) {
-            return null;
-        }
-
-
         public static MachineType get(ItemStack stack) {
-            return get(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
+            return null;
         }
 
         @Override
@@ -151,10 +146,6 @@ public class BlockStateMachine extends ExtendedBlockState {
         @Override
         public String toString() {
             return getName();
-        }
-
-        public boolean isFactory() {
-            return factoryTier != null;
         }
     }
 

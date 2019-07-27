@@ -1,7 +1,7 @@
 package mekanism.common.inventory;
 
 import mekanism.common.base.ITierItem;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.basic.BlockBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StackUtils;
@@ -61,7 +61,7 @@ public class InventoryBin {
     }
 
     public boolean isValid(ItemStack stack) {
-        if (stack.isEmpty() || stack.getCount() <= 0 || BasicBlockType.get(stack) == BasicBlockType.BIN) {
+        if (stack.isEmpty() || BlockBin.isInstance(stack)) {
             return false;
         }
         if (getItemType().isEmpty()) {

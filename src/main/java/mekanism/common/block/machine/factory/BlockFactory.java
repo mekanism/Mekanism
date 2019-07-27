@@ -48,6 +48,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -82,6 +83,10 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_factory";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    public static boolean isInstance(ItemStack stack) {
+        return !stack.isEmpty() && stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockFactory;
     }
 
     @Override

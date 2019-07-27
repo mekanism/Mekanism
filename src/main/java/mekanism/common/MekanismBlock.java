@@ -1,7 +1,9 @@
 package mekanism.common;
 
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -106,11 +108,10 @@ import mekanism.common.tier.TubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Ensure all IBlockMekanism's set the required information
-public enum MekanismBlock {
+public enum MekanismBlock implements IBlockProvider {
     OSMIUM_BLOCK(new BlockResource(BlockResourceInfo.OSMIUM), ItemBlockResource::new),
     BRONZE_BLOCK(new BlockResource(BlockResourceInfo.BRONZE), ItemBlockResource::new),
     REFINED_OBSIDIAN_BLOCK(new BlockResource(BlockResourceInfo.REFINED_OBSIDIAN), ItemBlockResource::new),
@@ -397,33 +398,31 @@ public enum MekanismBlock {
     SALT_BLOCK(new BlockSalt());
 
 
+    @Nonnull
     private final ItemBlock item;
+    @Nonnull
     private final Block block;
 
-    MekanismBlock(Block block) {
+    MekanismBlock(@Nonnull Block block) {
         this(block, ItemBlockMekanism::new);
     }
 
-    <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block> MekanismBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
+    <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block> MekanismBlock(@Nonnull BLOCK block, Function<BLOCK, ITEM> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
         //TODO: Fix all translation keys so that they have mekanism in them
     }
 
+    @Nonnull
+    @Override
     public Block getBlock() {
         return block;
     }
 
+    @Nonnull
+    @Override
     public ItemBlock getItem() {
         return item;
-    }
-
-    public ItemStack getItemStack() {
-        return getItemStack(1);
-    }
-
-    public ItemStack getItemStack(int size) {
-        return new ItemStack(getItem(), size);
     }
 
     public static void registerBlocks(IForgeRegistry<Block> registry) {

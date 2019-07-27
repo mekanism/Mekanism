@@ -8,8 +8,11 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.ITierItem;
+import mekanism.common.block.basic.BlockBin;
+import mekanism.common.block.basic.BlockInductionCell;
+import mekanism.common.block.basic.BlockInductionPort;
+import mekanism.common.block.basic.BlockSecurityDesk;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
@@ -52,7 +55,7 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
 
     @Override
     public int getItemStackLimit(ItemStack stack) {
-        if (BasicBlockType.get(stack) == BasicBlockType.BIN) {
+        if (BlockBin.isInstance(stack)) {
             return 1; // Temporary no stacking due to #
         }
         return super.getItemStackLimit(stack);
@@ -82,10 +85,9 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        BasicBlockType type = BasicBlockType.get(itemstack);
-        if (type != null && block instanceof IBlockDescriptive) {
+        if (block instanceof IBlockDescriptive) {
             if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-                if (type == BasicBlockType.BIN) {
+                if (BlockBin.isInstance(itemstack)) {
                     InventoryBin inv = new InventoryBin(itemstack);
                     if (inv.getItemCount() > 0) {
                         list.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
@@ -97,10 +99,10 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
                     int cap = BinTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
                     list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
                              (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap) + " " + LangUtils.localize("transmission.Items"));
-                } else if (type == BasicBlockType.INDUCTION_CELL) {
+                } else if (BlockInductionCell.isInstance(itemstack)) {
                     InductionCellTier tier = InductionCellTier.values()[getBaseTier(itemstack).ordinal()];
                     list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getMaxEnergy()));
-                } else if (type == BasicBlockType.INDUCTION_PROVIDER) {
+                } else if (BlockInductionPort.isInstance(itemstack)) {
                     InductionProviderTier tier = InductionProviderTier.values()[getBaseTier(itemstack).ordinal()];
                     list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getOutput()));
                 }
@@ -118,13 +120,13 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
 
     @Override
     public boolean hasContainerItem(ItemStack stack) {
-        return BasicBlockType.get(stack) == BasicBlockType.BIN && ItemDataUtils.hasData(stack, "newCount");
+        return BlockBin.isInstance(stack) && ItemDataUtils.hasData(stack, "newCount");
     }
 
     @Nonnull
     @Override
     public ItemStack getContainerItem(@Nonnull ItemStack stack) {
-        if (BasicBlockType.get(stack) == BasicBlockType.BIN) {
+        if (BlockBin.isInstance(stack)) {
             if (!ItemDataUtils.hasData(stack, "newCount")) {
                 return ItemStack.EMPTY;
             }
@@ -142,15 +144,14 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
           float hitZ, @Nonnull IBlockState state) {
         boolean place = true;
 
-        BasicBlockType type = BasicBlockType.get(stack);
-        if (type == BasicBlockType.SECURITY_DESK) {
+        if (BlockSecurityDesk.isInstance(stack)) {
             if (world.isOutsideBuildHeight(pos.up()) || !world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up())) {
                 place = false;
             }
         }
 
         if (place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            if (type == BasicBlockType.BIN && stack.getTagCompound() != null) {
+            if (BlockBin.isInstance(stack) && stack.getTagCompound() != null) {
                 InventoryBin inv = new InventoryBin(stack);
                 if (!inv.getItemType().isEmpty()) {
                     TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
@@ -168,7 +169,7 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
 
     @Override
     public double getEnergy(ItemStack itemStack) {
-        if (BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL) {
+        if (BlockInductionCell.isInstance(itemStack)) {
             return ItemDataUtils.getDouble(itemStack, "energyStored");
         }
         return 0;
@@ -176,14 +177,14 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
 
     @Override
     public void setEnergy(ItemStack itemStack, double amount) {
-        if (BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL) {
+        if (BlockInductionCell.isInstance(itemStack)) {
             ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
         }
     }
 
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
-        if (BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL) {
+        if (BlockInductionCell.isInstance(itemStack)) {
             return InductionCellTier.values()[getBaseTier(itemStack).ordinal()].getMaxEnergy();
         }
         return 0;

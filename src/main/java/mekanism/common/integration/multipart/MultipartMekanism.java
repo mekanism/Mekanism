@@ -144,7 +144,7 @@ public class MultipartMekanism implements IMCMPAddon {
             Block block = mekanismBlock.getBlock();
             if (block instanceof BlockTransmitter) {
                 registry.registerPartWrapper(block, TRANSMITTER_MP = new MultipartTransmitter());
-            } else if (block instanceof BlockTransmitter) {
+            } else if (block instanceof BlockGlowPanel) {
                 registry.registerPartWrapper(block, GLOWPANEL_MP = new MultipartGlowPanel());
             }
         }
