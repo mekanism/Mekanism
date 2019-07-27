@@ -67,7 +67,6 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityAdvancedFactory;
-import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
@@ -467,7 +466,7 @@ public class Mekanism {
             InfuseRegistry.registerInfuseObject(new ItemStack(Items.COAL, 1, 0), new InfuseObject(carbon, 10));
             InfuseRegistry.registerInfuseObject(new ItemStack(Items.COAL, 1, 1), new InfuseObject(carbon, 20));
             InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.COAL_BLOCK, 1, 0), new InfuseObject(carbon, 90));
-            InfuseRegistry.registerInfuseObject(new ItemStack(MekanismBlocks.BasicBlock, 1, 3), new InfuseObject(carbon, 180));
+            InfuseRegistry.registerInfuseObject(MekanismBlock.CHARCOAL_BLOCK.getItemStack(), new InfuseObject(carbon, 180));
             InfuseRegistry.registerInfuseObject(MekanismItem.COMPRESSED_CARBON.getItemStack(), new InfuseObject(carbon, 80));
             InfuseRegistry.registerInfuseObject(new ItemStack(Items.REDSTONE), new InfuseObject(redstone, 10));
             InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.REDSTONE_BLOCK), new InfuseObject(redstone, 90));
@@ -574,14 +573,14 @@ public class Mekanism {
         OreDictionary.registerOre("dustSalt", MekanismItem.SALT.getItemStack());
         OreDictionary.registerOre("foodSalt", MekanismItem.SALT.getItemStack());
 
-        OreDictionary.registerOre("blockOsmium", new ItemStack(MekanismBlocks.BasicBlock, 1, 0));
-        OreDictionary.registerOre("blockBronze", new ItemStack(MekanismBlocks.BasicBlock, 1, 1));
-        OreDictionary.registerOre("blockRefinedObsidian", new ItemStack(MekanismBlocks.BasicBlock, 1, 2));
-        OreDictionary.registerOre("blockCharcoal", new ItemStack(MekanismBlocks.BasicBlock, 1, 3));
-        OreDictionary.registerOre("blockRefinedGlowstone", new ItemStack(MekanismBlocks.BasicBlock, 1, 4));
-        OreDictionary.registerOre("blockSteel", new ItemStack(MekanismBlocks.BasicBlock, 1, 5));
-        OreDictionary.registerOre("blockCopper", new ItemStack(MekanismBlocks.BasicBlock, 1, 12));
-        OreDictionary.registerOre("blockTin", new ItemStack(MekanismBlocks.BasicBlock, 1, 13));
+        OreDictionary.registerOre("blockOsmium", MekanismBlock.OSMIUM_BLOCK.getItemStack());
+        OreDictionary.registerOre("blockBronze", MekanismBlock.BRONZE_BLOCK.getItemStack());
+        OreDictionary.registerOre("blockRefinedObsidian", MekanismBlock.REFINED_OBSIDIAN_BLOCK.getItemStack());
+        OreDictionary.registerOre("blockCharcoal", MekanismBlock.CHARCOAL_BLOCK.getItemStack());
+        OreDictionary.registerOre("blockRefinedGlowstone", MekanismBlock.REFINED_GLOWSTONE_BLOCK.getItemStack());
+        OreDictionary.registerOre("blockSteel", MekanismBlock.STEEL_BLOCK.getItemStack());
+        OreDictionary.registerOre("blockCopper", MekanismBlock.COPPER_BLOCK.getItemStack());
+        OreDictionary.registerOre("blockTin", MekanismBlock.TIN_BLOCK.getItemStack());
 
         OreDictionary.registerOre("oreOsmium", MekanismBlock.OSMIUM_ORE.getItemStack());
         OreDictionary.registerOre("oreCopper", MekanismBlock.COPPER_ORE.getItemStack());
@@ -602,7 +601,6 @@ public class Mekanism {
         //Tile entities
         registerTileEntity(TileEntityAdvancedBoundingBlock.class, "advanced_bounding_block");
         registerTileEntity(TileEntityAdvancedFactory.class, "advanced_smelting_factory");
-        registerTileEntity(TileEntityAmbientAccumulator.class, "ambient_accumulator");
         registerTileEntity(TileEntityBin.class, "bin");
         registerTileEntity(TileEntityBoilerCasing.class, "boiler_casing");
         registerTileEntity(TileEntityBoilerValve.class, "boiler_valve");

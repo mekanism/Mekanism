@@ -220,7 +220,7 @@ public class CommonProxy implements IGuiProvider {
                     return new ContainerNull();
                 }
             case 19:
-                if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
+                if (MekanismBlock.PERSONAL_CHEST.blockMatches(stack)) {
                     //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
                     return new ContainerPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
                 }

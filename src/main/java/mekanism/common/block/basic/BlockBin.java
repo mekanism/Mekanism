@@ -65,7 +65,7 @@ public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IR
     }
 
     public static boolean isInstance(ItemStack stack) {
-        //TODO: Do some better sort of isInstance check?
+        //TODO: Do some better sort of isInstance check? Once we have separate ItemBlock implementations can compare the getItem() to that
         return !stack.isEmpty() && stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockBin;
     }
 

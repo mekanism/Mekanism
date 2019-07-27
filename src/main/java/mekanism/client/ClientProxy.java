@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
-import mekanism.client.gui.GuiAmbientAccumulator;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
@@ -137,7 +136,6 @@ import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.tile.TileEntityAdvancedFactory;
-import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
@@ -810,8 +808,7 @@ public class ClientProxy extends CommonProxy {
                 return new GuiQuantumEntangloporter(player.inventory, (TileEntityQuantumEntangloporter) tileEntity);
             case 47:
                 return new GuiSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator) tileEntity);
-            case 48:
-                return new GuiAmbientAccumulator(player, (TileEntityAmbientAccumulator) tileEntity);
+            //EMPTY 48
             case 49:
                 return new GuiInductionMatrix(player.inventory, (TileEntityInductionCasing) tileEntity);
             case 50:
