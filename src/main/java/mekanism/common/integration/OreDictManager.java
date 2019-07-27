@@ -399,13 +399,11 @@ public final class OreDictManager {
         }
 
         for (ItemStack dust : OreDictionary.getOres("dustDiamond", false)) {
-            dust = StackUtils.size(dust, 1);
-            InfuseRegistry.registerInfuseObject(dust, new InfuseObject(diamondInfuseType, 10));
+            InfuseRegistry.registerInfuseObject(StackUtils.size(dust, 1), new InfuseObject(diamondInfuseType, 10));
         }
 
         for (ItemStack dust : OreDictionary.getOres("dustTin", false)) {
-            dust = StackUtils.size(dust, 1);
-            InfuseRegistry.registerInfuseObject(dust, new InfuseObject(tinInfuseType, 10));
+            InfuseRegistry.registerInfuseObject(StackUtils.size(dust, 1), new InfuseObject(tinInfuseType, 10));
         }
 
         for (ItemStack sapling : OreDictionary.getOres("treeSapling", false)) {
@@ -415,22 +413,19 @@ public final class OreDictManager {
         }
 
         for (ItemStack coal : OreDictionary.getOres("blockCoal", false)) {
-            coal = StackUtils.size(coal, 1);
-            RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
+            RecipeHandler.addPRCRecipe(StackUtils.size(coal, 1), new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
                   new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
         }
 
         for (ItemStack coal : OreDictionary.getOres("blockCharcoal", false)) {
-            coal = StackUtils.size(coal, 1);
-            RecipeHandler.addPRCRecipe(coal, new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
+            RecipeHandler.addPRCRecipe(StackUtils.size(coal, 1), new FluidStack(FluidRegistry.WATER, 1000), new GasStack(MekanismFluids.Oxygen, 1000),
                   new ItemStack(MekanismItems.OtherDust, 9, 3), new GasStack(MekanismFluids.Hydrogen, 1000), 0, 900);
         }
 
         for (ItemStack sawdust : OreDictionary.getOres("dustWood", false)) {
-            sawdust = StackUtils.size(sawdust, 8);
             //TODO: 1.14 evaluate adding a charcoal dust item to Mekanism, and if so use that instead of charcoal here
-            RecipeHandler.addEnrichmentChamberRecipe(sawdust, new ItemStack(Items.COAL, 1, 1));
-            RecipeHandler.addPRCRecipe(sawdust, new FluidStack(FluidRegistry.WATER, 20), new GasStack(MekanismFluids.Oxygen, 20),
+            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(sawdust, 8), new ItemStack(Items.COAL, 1, 1));
+            RecipeHandler.addPRCRecipe(StackUtils.size(sawdust, 1), new FluidStack(FluidRegistry.WATER, 20), new GasStack(MekanismFluids.Oxygen, 20),
                   ItemStack.EMPTY, new GasStack(MekanismFluids.Hydrogen, 20), 0, 30);
         }
     }
