@@ -1,4 +1,4 @@
-package mekanism.client.render.item;
+package mekanism.client.render.item.block;
 
 import javax.annotation.Nonnull;
 import mekanism.client.MekanismClient;
@@ -6,6 +6,8 @@ import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITierItem;

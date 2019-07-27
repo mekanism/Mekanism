@@ -1,4 +1,4 @@
-package mekanism.client.render.item.machine;
+package mekanism.client.render.item.block;
 
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
@@ -8,6 +8,8 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
@@ -25,15 +27,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderFluidTankItem {
+public class RenderFluidTankItem extends MekanismItemStackRenderer {
+
+    public static ItemLayerWrapper model;
 
     private static ModelFluidTank fluidTank = new ModelFluidTank();
-
     private static FluidRenderMap<DisplayInteger[]> cachedCenterFluids = new FluidRenderMap<>();
-
     private static int stages = 1400;
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+    @Override
+    public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
         float fluidScale = (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0) / itemMachine.getCapacity(stack);
         FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
@@ -111,5 +114,15 @@ public class RenderFluidTankItem {
         }
 
         return displays;
+    }
+
+    @Override
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    }
+
+    @Nonnull
+    @Override
+    protected TransformType getTransform(@Nonnull ItemStack stack) {
+        return model.getTransform();
     }
 }

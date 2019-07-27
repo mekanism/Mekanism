@@ -1,6 +1,9 @@
 package mekanism.generators.client;
 
+import java.util.function.Function;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.common.Mekanism;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -22,6 +25,13 @@ import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
+import mekanism.generators.client.render.item.RenderAdvancedSolarGeneratorItem;
+import mekanism.generators.client.render.item.RenderBioGeneratorItem;
+import mekanism.generators.client.render.item.RenderGasGeneratorItem;
+import mekanism.generators.client.render.item.RenderHeatGeneratorItem;
+import mekanism.generators.client.render.item.RenderSolarGeneratorItem;
+import mekanism.generators.client.render.item.RenderWindGeneratorItem;
+import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.MekanismGenerators;
@@ -46,6 +56,7 @@ import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.World;
@@ -83,8 +94,13 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         registerItemRender(GeneratorsItem.SOLAR_PANEL.getItem());
         registerItemRender(GeneratorsItem.HOHLRAUM.getItem());
         registerItemRender(GeneratorsItem.TURBINE_BLADE.getItem());
-        //TODO
-        //Item.getItemFromBlock(GeneratorsBlocks.Generator).setTileEntityItemStackRenderer(new RenderGeneratorItem());
+
+        GeneratorsBlock.ADVANCED_SOLAR_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderAdvancedSolarGeneratorItem());
+        GeneratorsBlock.BIO_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderBioGeneratorItem());
+        GeneratorsBlock.GAS_BURNING_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderGasGeneratorItem());
+        GeneratorsBlock.HEAT_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderHeatGeneratorItem());
+        GeneratorsBlock.SOLAR_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderSolarGeneratorItem());
+        GeneratorsBlock.WIND_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderWindGeneratorItem());
     }
 
     @Override
@@ -110,21 +126,18 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
         IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-        //TODO
-        /*generatorModelBake(modelRegistry, GeneratorType.HEAT_GENERATOR);
-        generatorModelBake(modelRegistry, GeneratorType.SOLAR_GENERATOR);
-        generatorModelBake(modelRegistry, GeneratorType.BIO_GENERATOR);
-        generatorModelBake(modelRegistry, GeneratorType.WIND_GENERATOR);
-        generatorModelBake(modelRegistry, GeneratorType.GAS_GENERATOR);
-        generatorModelBake(modelRegistry, GeneratorType.ADVANCED_SOLAR_GENERATOR);*/
+        registerItemStackModel(modelRegistry, "heat_generator", model -> RenderHeatGeneratorItem.model = model);
+        registerItemStackModel(modelRegistry, "solar_generator", model -> RenderSolarGeneratorItem.model = model);
+        registerItemStackModel(modelRegistry, "bio_generator", model -> RenderBioGeneratorItem.model = model);
+        registerItemStackModel(modelRegistry, "wind_generator", model -> RenderWindGeneratorItem.model = model);
+        registerItemStackModel(modelRegistry, "gas_burning_generator", model -> RenderGasGeneratorItem.model = model);
+        registerItemStackModel(modelRegistry, "advanced_solar_generator", model -> RenderAdvancedSolarGeneratorItem.model = model);
     }
 
-    /*private void generatorModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, GeneratorType type) {
-        ModelResourceLocation modelResourceLocation = new ModelResourceLocation(new ResourceLocation(MekanismGenerators.MODID, type.getName()), "inventory");
-        ItemLayerWrapper itemLayerWrapper = new ItemLayerWrapper(modelRegistry.getObject(modelResourceLocation));
-        RenderGeneratorItem.modelMap.put(type, itemLayerWrapper);
-        modelRegistry.putObject(modelResourceLocation, itemLayerWrapper);
-    }*/
+    private void registerItemStackModel(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
+        ModelResourceLocation resourceLocation = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, type), "inventory");
+        modelRegistry.putObject(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.getObject(resourceLocation))));
+    }
 
     @Override
     public void preInit() {

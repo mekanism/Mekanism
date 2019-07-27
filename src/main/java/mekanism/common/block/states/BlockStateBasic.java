@@ -2,7 +2,6 @@ package mekanism.common.block.states;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
@@ -57,7 +56,7 @@ public class BlockStateBasic extends ExtendedBlockState {
 
         @Nullable
         public static BasicBlockType get(ItemStack stack) {
-
+            return null;
         }
     }
 

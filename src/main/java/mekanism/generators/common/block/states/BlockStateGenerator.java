@@ -69,7 +69,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
 
         @Override
         public String getBlockName() {
-
+            return "";
         }
 
         @Override

@@ -44,7 +44,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -57,7 +56,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -72,15 +70,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasGui {
 
     private final FactoryTier tier;
+    private final RecipeType type;
     private final String name;
 
-    public BlockFactory(FactoryTier tier) {
+    public BlockFactory(FactoryTier tier, RecipeType type) {
         super(Material.IRON);
         this.tier = tier;
+        this.type = type;
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_factory";
+        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_" + type.getTranslationKey().toLowerCase(Locale.ROOT) + "_factory";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
@@ -210,20 +210,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
-        //TODO: Redo this
-        for (FactoryTier tier : FactoryTier.values()) {
-            for (RecipeType recipe : RecipeType.values()) {
-                if (recipe.getType().isEnabled()) {
-                    ItemStack stack = new ItemStack(this, 1, tier.ordinal());
-                    ((IFactory) stack.getItem()).setRecipeType(recipe.ordinal(), stack);
-                    list.add(stack);
-                }
-            }
-        }
-    }
-
-    @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return true;
@@ -270,6 +256,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+        //TODO
         switch (tier) {
             case BASIC:
                 return new TileEntityFactory();

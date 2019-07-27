@@ -2,6 +2,8 @@ package mekanism.generators.client.render.item;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
@@ -12,12 +14,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderWindGeneratorItem {
+public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
 
     private static ModelWindGenerator windGenerator = new ModelWindGenerator();
     private static int angle = 0;
+    public static ItemLayerWrapper model;
 
-    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
+    @Override
+    public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(180, 0, 0, 1);
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
@@ -48,5 +52,15 @@ public class RenderWindGeneratorItem {
         angle = (angle + 2) % 360;
         windGenerator.render(0.016F, angle);
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    }
+
+    @Nonnull
+    @Override
+    protected TransformType getTransform(@Nonnull ItemStack stack) {
+        return model.getTransform();
     }
 }

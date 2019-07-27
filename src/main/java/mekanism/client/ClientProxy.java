@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
@@ -68,8 +69,17 @@ import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.client.render.item.RenderEnergyCubeItem;
-import mekanism.client.render.item.basicblock.RenderBasicBlockItem;
+import mekanism.client.render.item.block.RenderChemicalCrystallizerItem;
+import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
+import mekanism.client.render.item.block.RenderDigitalMinerItem;
+import mekanism.client.render.item.block.RenderEnergyCubeItem;
+import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.client.render.item.block.RenderPersonalChestItem;
+import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
+import mekanism.client.render.item.block.RenderResistiveHeaterItem;
+import mekanism.client.render.item.block.RenderSecurityDeskItem;
+import mekanism.client.render.item.block.RenderSeismicVibratorItem;
+import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
 import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
@@ -77,7 +87,6 @@ import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderGasMask;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaTank;
-import mekanism.client.render.item.machine.RenderMachineItem;
 import mekanism.client.render.obj.MekanismOBJLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -105,12 +114,12 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -303,56 +312,57 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerItemRenders() {
         //TODO: Figure out how many of these can just be done through json now
-        /*registerItemRender(MekanismItems.ElectricBow);
+        registerItemRender(MekanismItem.ELECTRIC_BOW.getItem());
+        registerItemRender(MekanismItem.ENERGY_TABLET.getItem());
+        registerItemRender(MekanismItem.SPEED_UPGRADE.getItem());
+        registerItemRender(MekanismItem.ENERGY_UPGRADE.getItem());
+        registerItemRender(MekanismItem.FILTER_UPGRADE.getItem());
+        registerItemRender(MekanismItem.MUFFLING_UPGRADE.getItem());
+        registerItemRender(MekanismItem.GAS_UPGRADE.getItem());
+        registerItemRender(MekanismItem.ANCHOR_UPGRADE.getItem());
+        registerItemRender(MekanismItem.ROBIT.getItem());
+        registerItemRender(MekanismItem.ATOMIC_DISASSEMBLER.getItem());
+        registerItemRender(MekanismItem.ENRICHED_ALLOY.getItem());
+        registerItemRender(MekanismItem.REINFORCED_ALLOY.getItem());
+        registerItemRender(MekanismItem.ATOMIC_ALLOY.getItem());
+        registerItemRender(MekanismItem.ITEM_PROXY.getItem());
+        registerItemRender(MekanismItem.ENRICHED_IRON.getItem());
+        registerItemRender(MekanismItem.COMPRESSED_CARBON.getItem());
+        registerItemRender(MekanismItem.COMPRESSED_REDSTONE.getItem());
+        registerItemRender(MekanismItem.COMPRESSED_DIAMOND.getItem());
+        registerItemRender(MekanismItem.COMPRESSED_OBSIDIAN.getItem());
+        registerItemRender(MekanismItem.PORTABLE_TELEPORTER.getItem());
+        registerItemRender(MekanismItem.TELEPORTATION_CORE.getItem());
+        registerItemRender(MekanismItem.CONFIGURATOR.getItem());
+        registerItemRender(MekanismItem.NETWORK_READER.getItem());
+        registerItemRender(MekanismItem.JETPACK.getItem());
+        registerItemRender(MekanismItem.DICTIONARY.getItem());
+        registerItemRender(MekanismItem.GAS_MASK.getItem());
+        registerItemRender(MekanismItem.SCUBA_TANK.getItem());
+        registerItemRender(MekanismItem.ELECTROLYTIC_CORE.getItem());
+        registerItemRender(MekanismItem.SAWDUST.getItem());
+        registerItemRender(MekanismItem.SALT.getItem());
+        registerItemRender(MekanismItem.FREE_RUNNERS.getItem());
+        registerItemRender(MekanismItem.ARMORED_JETPACK.getItem());
+        registerItemRender(MekanismItem.CONFIGURATION_CARD.getItem());
+        registerItemRender(MekanismItem.SEISMIC_READER.getItem());
+        registerItemRender(MekanismItem.SUBSTRATE.getItem());
+        registerItemRender(MekanismItem.BIO_FUEL.getItem());
+        registerItemRender(MekanismItem.FLAMETHROWER.getItem());
+        registerItemRender(MekanismItem.GAUGE_DROPPER.getItem());
+        //TODO
+        /*registerItemRender(MekanismItems.Shard);
+        registerItemRender(MekanismItems.Crystal);
         registerItemRender(MekanismItems.Dust);
         registerItemRender(MekanismItems.Ingot);
         registerItemRender(MekanismItems.Nugget);
-        registerItemRender(MekanismItems.EnergyTablet);
-        registerItemRender(MekanismItems.SpeedUpgrade);
-        registerItemRender(MekanismItems.EnergyUpgrade);
-        registerItemRender(MekanismItems.FilterUpgrade);
-        registerItemRender(MekanismItems.MufflingUpgrade);
-        registerItemRender(MekanismItems.GasUpgrade);
-        registerItemRender(MekanismItems.AnchorUpgrade);
-        registerItemRender(MekanismItems.Robit);
-        registerItemRender(MekanismItems.AtomicDisassembler);
-        registerItemRender(MekanismItems.EnrichedAlloy);
-        registerItemRender(MekanismItems.ReinforcedAlloy);
-        registerItemRender(MekanismItems.AtomicAlloy);
-        registerItemRender(MekanismItems.ItemProxy);
-        registerItemRender(MekanismItems.ControlCircuit);
-        registerItemRender(MekanismItems.EnrichedIron);
-        registerItemRender(MekanismItems.CompressedCarbon);
-        registerItemRender(MekanismItems.CompressedRedstone);
-        registerItemRender(MekanismItems.CompressedDiamond);
-        registerItemRender(MekanismItems.CompressedObsidian);
-        registerItemRender(MekanismItems.PortableTeleporter);
-        registerItemRender(MekanismItems.TeleportationCore);
         registerItemRender(MekanismItems.Clump);
         registerItemRender(MekanismItems.DirtyDust);
-        registerItemRender(MekanismItems.Configurator);
-        registerItemRender(MekanismItems.NetworkReader);
-        registerItemRender(MekanismItems.Jetpack);
-        registerItemRender(MekanismItems.Dictionary);
-        registerItemRender(MekanismItems.GasMask);
-        registerItemRender(MekanismItems.ScubaTank);
-        registerItemRender(MekanismItems.Balloon);
-        registerItemRender(MekanismItems.Shard);
-        registerItemRender(MekanismItems.ElectrolyticCore);
-        registerItemRender(MekanismItems.Sawdust);
-        registerItemRender(MekanismItems.Salt);
-        registerItemRender(MekanismItems.Crystal);
-        registerItemRender(MekanismItems.FreeRunners);
-        registerItemRender(MekanismItems.ArmoredJetpack);
-        registerItemRender(MekanismItems.ConfigurationCard);
-        registerItemRender(MekanismItems.SeismicReader);
-        registerItemRender(MekanismItems.Substrate);
-        registerItemRender(MekanismItems.Polyethene);
-        registerItemRender(MekanismItems.BioFuel);
-        registerItemRender(MekanismItems.Flamethrower);
-        registerItemRender(MekanismItems.GaugeDropper);
+        registerItemRender(MekanismItems.OtherDust);
         registerItemRender(MekanismItems.TierInstaller);
-        registerItemRender(MekanismItems.OtherDust);*/
+        registerItemRender(MekanismItems.Polyethene);
+        registerItemRender(MekanismItems.Balloon);
+        registerItemRender(MekanismItems.ControlCircuit);*/
 
         ModelBakery.registerItemVariants(MekanismItem.WALKIE_TALKIE.getItem(), ItemWalkieTalkie.OFF_MODEL);
 
@@ -369,16 +379,31 @@ public class ClientProxy extends CommonProxy {
         MekanismItem.FREE_RUNNERS.getItem().setTileEntityItemStackRenderer(new RenderFreeRunners());
         MekanismItem.ATOMIC_DISASSEMBLER.getItem().setTileEntityItemStackRenderer(new RenderAtomicDisassembler());
         MekanismItem.FLAMETHROWER.getItem().setTileEntityItemStackRenderer(new RenderFlameThrower());
-        //TODO: Adjust these to use the proper items
-        /*Item.getItemFromBlock(MekanismBlocks.EnergyCube).setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
-        Item.getItemFromBlock(MekanismBlocks.MachineBlock).setTileEntityItemStackRenderer(new RenderMachineItem());
-        Item.getItemFromBlock(MekanismBlocks.MachineBlock2).setTileEntityItemStackRenderer(new RenderMachineItem());
-        Item.getItemFromBlock(MekanismBlocks.MachineBlock3).setTileEntityItemStackRenderer(new RenderMachineItem());
-        Item.getItemFromBlock(MekanismBlocks.BasicBlock2).setTileEntityItemStackRenderer(new RenderBasicBlockItem());*/
-    }
+        //Energy cubes
+        MekanismBlock.BASIC_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
+        MekanismBlock.ADVANCED_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
+        MekanismBlock.ELITE_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
+        MekanismBlock.ULTIMATE_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
+        MekanismBlock.CREATIVE_ENERGY_CUBE.getItem().setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
 
-    private ModelResourceLocation getInventoryMRL(String type) {
-        return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, type), "inventory");
+        //Used to be machine blocks
+        MekanismBlock.CHEMICAL_CRYSTALLIZER.getItem().setTileEntityItemStackRenderer(new RenderChemicalCrystallizerItem());
+        MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER.getItem().setTileEntityItemStackRenderer(new RenderChemicalDissolutionChamberItem());
+        MekanismBlock.DIGITAL_MINER.getItem().setTileEntityItemStackRenderer(new RenderDigitalMinerItem());
+        MekanismBlock.PERSONAL_CHEST.getItem().setTileEntityItemStackRenderer(new RenderPersonalChestItem());
+        MekanismBlock.QUANTUM_ENTANGLOPORTER.getItem().setTileEntityItemStackRenderer(new RenderQuantumEntangloporterItem());
+        MekanismBlock.RESISTIVE_HEATER.getItem().setTileEntityItemStackRenderer(new RenderResistiveHeaterItem());
+        MekanismBlock.SEISMIC_VIBRATOR.getItem().setTileEntityItemStackRenderer(new RenderSeismicVibratorItem());
+        MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.getItem().setTileEntityItemStackRenderer(new RenderSolarNeutronActivatorItem());
+        //Fluid Tank
+        MekanismBlock.BASIC_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
+        MekanismBlock.ADVANCED_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
+        MekanismBlock.ELITE_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
+        MekanismBlock.ULTIMATE_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
+        MekanismBlock.CREATIVE_FLUID_TANK.getItem().setTileEntityItemStackRenderer(new RenderFluidTankItem());
+
+        //Used to be basic blocks
+        MekanismBlock.SECURITY_DESK.getItem().setTileEntityItemStackRenderer(new RenderSecurityDeskItem());
     }
 
     @Override
@@ -941,57 +966,31 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
         IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-        ModelResourceLocation ERL = getInventoryMRL("EnergyCube");
-        modelRegistry.putObject(ERL, RenderEnergyCubeItem.model = new ItemLayerWrapper(modelRegistry.getObject(ERL)));
+        registerItemStackModel(modelRegistry, "jetpack", model -> RenderJetpack.model = model);
+        registerItemStackModel(modelRegistry, "armored_jetpack", model -> RenderArmoredJetpack.model = model);
+        registerItemStackModel(modelRegistry, "gas_mask", model -> RenderGasMask.model = model);
+        registerItemStackModel(modelRegistry, "scuba_tank", model -> RenderScubaTank.model = model);
+        registerItemStackModel(modelRegistry, "free_runners", model -> RenderFreeRunners.model = model);
+        registerItemStackModel(modelRegistry, "atomic_disassembler", model -> RenderAtomicDisassembler.model = model);
+        registerItemStackModel(modelRegistry, "flamethrower", model -> RenderFlameThrower.model = model);
+        registerItemStackModel(modelRegistry, "digital_miner", model -> RenderDigitalMinerItem.model = model);
+        registerItemStackModel(modelRegistry, "solar_neutron_activator", model -> RenderSolarNeutronActivatorItem.model = model);
+        registerItemStackModel(modelRegistry, "chemical_dissolution_chamber", model -> RenderChemicalDissolutionChamberItem.model = model);
+        registerItemStackModel(modelRegistry, "chemical_crystallizer", model -> RenderChemicalCrystallizerItem.model = model);
+        registerItemStackModel(modelRegistry, "seismic_vibrator", model -> RenderSeismicVibratorItem.model = model);
+        registerItemStackModel(modelRegistry, "quantum_entangloporter", model -> RenderQuantumEntangloporterItem.model = model);
+        registerItemStackModel(modelRegistry, "resistive_heater", model -> RenderResistiveHeaterItem.model = model);
+        registerItemStackModel(modelRegistry, "personal_chest", model -> RenderPersonalChestItem.model = model);
+        registerItemStackModel(modelRegistry, "security_desk", model -> RenderSecurityDeskItem.model = model);
 
-        ModelResourceLocation JetpackRL = getInventoryMRL("Jetpack");
-        modelRegistry.putObject(JetpackRL, RenderJetpack.model = new ItemLayerWrapper(modelRegistry.getObject(JetpackRL)));
-
-        ModelResourceLocation ArmorJetpackRL = getInventoryMRL("ArmoredJetpack");
-        modelRegistry.putObject(ArmorJetpackRL, RenderArmoredJetpack.model = new ItemLayerWrapper(modelRegistry.getObject(ArmorJetpackRL)));
-
-        ModelResourceLocation GasMaskRL = getInventoryMRL("GasMask");
-        modelRegistry.putObject(GasMaskRL, RenderGasMask.model = new ItemLayerWrapper(modelRegistry.getObject(GasMaskRL)));
-
-        ModelResourceLocation ScubaTankRL = getInventoryMRL("ScubaTank");
-        modelRegistry.putObject(ScubaTankRL, RenderScubaTank.model = new ItemLayerWrapper(modelRegistry.getObject(ScubaTankRL)));
-
-        ModelResourceLocation FreeRunnerRL = getInventoryMRL("FreeRunners");
-        modelRegistry.putObject(FreeRunnerRL, RenderFreeRunners.model = new ItemLayerWrapper(modelRegistry.getObject(FreeRunnerRL)));
-
-        ModelResourceLocation AtomicDisassemblerRL = getInventoryMRL("AtomicDisassembler");
-        modelRegistry.putObject(AtomicDisassemblerRL, RenderAtomicDisassembler.model = new ItemLayerWrapper(modelRegistry.getObject(AtomicDisassemblerRL)));
-
-        ModelResourceLocation FlamethrowerRL = getInventoryMRL("Flamethrower");
-        modelRegistry.putObject(FlamethrowerRL, RenderFlameThrower.model = new ItemLayerWrapper(modelRegistry.getObject(FlamethrowerRL)));
-
-        machineModelBake(modelRegistry, "digital_miner", MachineType.DIGITAL_MINER);
-        machineModelBake(modelRegistry, "solar_neutron_activator", MachineType.SOLAR_NEUTRON_ACTIVATOR);
-        machineModelBake(modelRegistry, "chemical_dissolution_chamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER);
-        machineModelBake(modelRegistry, "chemical_crystallizer", MachineType.CHEMICAL_CRYSTALLIZER);
-        machineModelBake(modelRegistry, "seismic_vibrator", MachineType.SEISMIC_VIBRATOR);
-        machineModelBake(modelRegistry, "quantum_entangloporter", MachineType.QUANTUM_ENTANGLOPORTER);
-        machineModelBake(modelRegistry, "resistive_heater", MachineType.RESISTIVE_HEATER);
-        machineModelBake(modelRegistry, "personal_chest", MachineType.PERSONAL_CHEST);
-
-        machineModelBake(modelRegistry, "fluid_tank", MachineType.FLUID_TANK);
-
-        //basicBlockModelBake(modelRegistry, "bin", BasicBlockType.BIN);
-        basicBlockModelBake(modelRegistry, "security_desk", BasicBlockType.SECURITY_DESK);
+        //TODO: Does tier matter
+        registerItemStackModel(modelRegistry, "energy_cube", model -> RenderEnergyCubeItem.model = model);
+        registerItemStackModel(modelRegistry, "fluid_tank", model -> RenderFluidTankItem.model = model);
     }
 
-    private void machineModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, MachineType machineType) {
-        ModelResourceLocation modelResourceLocation = getInventoryMRL(type);
-        ItemLayerWrapper itemLayerWrapper = new ItemLayerWrapper(modelRegistry.getObject(modelResourceLocation));
-        RenderMachineItem.modelMap.put(machineType, itemLayerWrapper);
-        modelRegistry.putObject(modelResourceLocation, itemLayerWrapper);
-    }
-
-    private void basicBlockModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, BasicBlockType basicType) {
-        ModelResourceLocation modelResourceLocation = getInventoryMRL(type);
-        ItemLayerWrapper itemLayerWrapper = new ItemLayerWrapper(modelRegistry.getObject(modelResourceLocation));
-        RenderBasicBlockItem.modelMap.put(basicType, itemLayerWrapper);
-        modelRegistry.putObject(modelResourceLocation, itemLayerWrapper);
+    private void registerItemStackModel(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
+        ModelResourceLocation resourceLocation = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, type), "inventory");
+        modelRegistry.putObject(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.getObject(resourceLocation))));
     }
 
     @Override
