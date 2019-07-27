@@ -1,6 +1,8 @@
 package mekanism.common;
 
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.common.base.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemArmoredJetpack;
@@ -34,11 +36,9 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.AlloyTier;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistry;
 
-//TODO: Is some variant of the object holder thing needed here
-public enum MekanismItem {
+public enum MekanismItem implements IItemProvider {
     ITEM_PROXY(new ItemProxy()),
 
     ELECTRIC_BOW(new ItemElectricBow()),
@@ -182,13 +182,14 @@ public enum MekanismItem {
     COPPER_NUGGET(new ItemResource(ResourceType.NUGGET, Resource.COPPER)),
     TIN_NUGGET(new ItemResource(ResourceType.NUGGET, Resource.TIN));
 
+    @Nonnull
     private final Item item;
 
     MekanismItem(String name) {
         this(new ItemMekanism(name));
     }
 
-    <ITEM extends Item & IItemMekanism> MekanismItem(ITEM item) {
+    <ITEM extends Item & IItemMekanism> MekanismItem(@Nonnull ITEM item) {
         this.item = item;
     }
 
@@ -196,24 +197,10 @@ public enum MekanismItem {
         return item.getRegistryName().getPath();
     }
 
+    @Override
+    @Nonnull
     public Item getItem() {
         return item;
-    }
-
-    public boolean itemMatches(ItemStack otherStack) {
-        return itemMatches(otherStack.getItem());
-    }
-
-    public boolean itemMatches(Item other) {
-        return item == other;
-    }
-
-    public ItemStack getItemStack() {
-        return getItemStack(1);
-    }
-
-    public ItemStack getItemStack(int size) {
-        return new ItemStack(getItem(), size);
     }
 
     public static void registerItems(IForgeRegistry<Item> registry) {

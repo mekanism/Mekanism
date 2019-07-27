@@ -1,5 +1,7 @@
 package mekanism.generators.common;
 
+import javax.annotation.Nonnull;
+import mekanism.common.base.IItemProvider;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -10,11 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder(MekanismGenerators.MODID)
-public enum GeneratorsItem {
+public enum GeneratorsItem implements IItemProvider {
     SOLAR_PANEL(new ItemMekanism("solar_panel")),
     HOHLRAUM(new ItemHohlraum()),
     TURBINE_BLADE(new ItemMekanism("turbine_blade") {
@@ -32,16 +32,10 @@ public enum GeneratorsItem {
         item.setRegistryName(new ResourceLocation(MekanismGenerators.MODID, item.getRegistryName().getPath()));
     }
 
+    @Override
+    @Nonnull
     public Item getItem() {
         return item;
-    }
-
-    public ItemStack getItemStack() {
-        return getItemStack(1);
-    }
-
-    public ItemStack getItemStack(int size) {
-        return new ItemStack(getItem(), size);
     }
 
     public static void registerItems(IForgeRegistry<Item> registry) {
