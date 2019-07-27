@@ -85,7 +85,7 @@ public class InventoryPersonalChest extends InventoryBasic
 			return;
 		}
 
-                if (!(getStack().getItem() instanceof ISustainedInventory)) return;
+                if (getStack() != null && !(getStack().getItem() instanceof ISustainedInventory)) return;
 		reading = true;
 
 		NBTTagList tagList = ((ISustainedInventory)getStack().getItem()).getInventory(getStack());
