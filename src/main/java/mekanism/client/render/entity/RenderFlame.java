@@ -68,10 +68,10 @@ public class RenderFlame extends Render<EntityFlame> {
             GlStateManager.glNormal3f(0.0F, 0.0F, scale);
 
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex((double) f2, (double) f4).endVertex();
-            worldrenderer.pos(8.0D, -2.0D, 0.0D).tex((double) f3, (double) f4).endVertex();
-            worldrenderer.pos(8.0D, 2.0D, 0.0D).tex((double) f3, (double) f5).endVertex();
-            worldrenderer.pos(-8.0D, 2.0D, 0.0D).tex((double) f2, (double) f5).endVertex();
+            worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex(f2, f4).endVertex();
+            worldrenderer.pos(8.0D, -2.0D, 0.0D).tex(f3, f4).endVertex();
+            worldrenderer.pos(8.0D, 2.0D, 0.0D).tex(f3, f5).endVertex();
+            worldrenderer.pos(-8.0D, 2.0D, 0.0D).tex(f2, f5).endVertex();
             tessellator.draw();
         }
         GlStateManager.disableRescaleNormal();

@@ -251,7 +251,7 @@ public class RecipeRegistryHelper {
             // Only add added recipes
             Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
             List<MachineRecipeWrapper> smeltingWrapper = smeltingRecipes.entrySet().stream().filter(entry ->
-                  !FurnaceRecipes.instance().getSmeltingList().keySet().contains(entry.getKey().ingredient)).map(entry ->
+                  !FurnaceRecipes.instance().getSmeltingList().containsKey(entry.getKey().ingredient)).map(entry ->
                   new MachineRecipeWrapper<>(entry.getValue())).collect(Collectors.toList());
             registry.addRecipes(smeltingWrapper, Recipe.ENERGIZED_SMELTER.getJEICategory());
 

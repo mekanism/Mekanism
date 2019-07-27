@@ -2,6 +2,8 @@ package mekanism.common.world;
 
 import java.io.File;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.world.DimensionType;
@@ -18,6 +20,8 @@ import net.minecraft.world.storage.WorldInfo;
 /**
  * Dummy object for providing something to CraftingManager#findMatchingRecipe during startup, to prevent in-dev non-null assertions from breaking things
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class DummyWorld extends World {
 
     public DummyWorld() {

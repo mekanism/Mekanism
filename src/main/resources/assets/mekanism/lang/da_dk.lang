@@ -984,16 +984,16 @@ item.ObsidianHoe.name=Obsidianlugejern
 item.ObsidianSword.name=Obsidiansværd
 
 # Lapis Lazuli
-item.LazuliHelmet.name=Lapis Lazuli-hjelm
-item.LazuliChestplate.name=Lapis Lazuli-brystplate
-item.LazuliLeggings.name=Lapis Lazuli-bukser
-item.LazuliBoots.name=Lapis Lazuli-støvler
-item.LazuliPaxel.name=Lapis Lazuli-paxel
-item.LazuliPickaxe.name=Lapis Lazuli-hakke
-item.LazuliAxe.name=Lapis Lazuli-økse
-item.LazuliShovel.name=Lapis Lazuli-spade
-item.LazuliHoe.name=Lapis Lazuli-lugejern
-item.LazuliSword.name=Lapis Lazuli-sværd
+item.LapisLazuliHelmet.name=Lapis Lazuli-hjelm
+item.LapisLazuliChestplate.name=Lapis Lazuli-brystplate
+item.LapisLazuliLeggings.name=Lapis Lazuli-bukser
+item.LapisLazuliBoots.name=Lapis Lazuli-støvler
+item.LapisLazuliPaxel.name=Lapis Lazuli-paxel
+item.LapisLazuliPickaxe.name=Lapis Lazuli-hakke
+item.LapisLazuliAxe.name=Lapis Lazuli-økse
+item.LapisLazuliShovel.name=Lapis Lazuli-spade
+item.LapisLazuliHoe.name=Lapis Lazuli-lugejern
+item.LapisLazuliSword.name=Lapis Lazuli-sværd
 
 # Osmium
 item.OsmiumHelmet.name=Osmiumhjelm

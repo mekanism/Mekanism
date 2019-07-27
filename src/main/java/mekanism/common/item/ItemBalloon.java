@@ -22,7 +22,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -89,7 +88,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
     public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         EnumColor color = getColor(stack);
         String dyeName = color.getDyedName();
-        if (I18n.canTranslate(getTranslationKey(stack) + "." + color.dyeName)) {
+        if (LangUtils.canLocalize(getTranslationKey(stack) + "." + color.dyeName)) {
             return LangUtils.localize(getTranslationKey(stack) + "." + color.dyeName);
         }
         if (getColor(stack) == EnumColor.BLACK) {
@@ -171,6 +170,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
                         hasBalloon = true;
+                        break;
                     }
                 }
                 if (!hasBalloon) {

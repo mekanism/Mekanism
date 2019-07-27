@@ -8,6 +8,7 @@ import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerRepair;
@@ -17,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -64,7 +64,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
         if (repairContainer.maximumCost > 0) {
             int k = 8453920;
             boolean flag = true;
-            String s = I18n.translateToLocalFormatted("container.repair.cost", repairContainer.maximumCost);
+            String s = I18n.format("container.repair.cost", repairContainer.maximumCost);
 
             if (repairContainer.maximumCost >= 40 && !mc.player.capabilities.isCreativeMode) {
                 s = LangUtils.localize("container.repair.expensive");

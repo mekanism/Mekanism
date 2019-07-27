@@ -1009,16 +1009,16 @@ item.ObsidianHoe.name=Obsidiánová Motyka
 item.ObsidianSword.name=Obsidiánový Meč
 
 # Lapis Lazuli
-item.LazuliHelmet.name=Lapis Lazuli Helma
-item.LazuliChestplate.name=Lapis Lazuli Brnění
-item.LazuliLeggings.name=Lapis Lazuli Kalhoty
-item.LazuliBoots.name=Lapis Lazuli Boty
-item.LazuliPaxel.name=Lapis Lazuli Sekrumpáč
-item.LazuliPickaxe.name=Lapis Lazuli Krumpáč
-item.LazuliAxe.name=Lapis Lazuli Sekyra
-item.LazuliShovel.name=Lapis Lazuli Lopata
-item.LazuliHoe.name=Lapis Lazuli Motyka
-item.LazuliSword.name=Lapis Lazuli Meč
+item.LapisLazuliHelmet.name=Lapis Lazuli Helma
+item.LapisLazuliChestplate.name=Lapis Lazuli Brnění
+item.LapisLazuliLeggings.name=Lapis Lazuli Kalhoty
+item.LapisLazuliBoots.name=Lapis Lazuli Boty
+item.LapisLazuliPaxel.name=Lapis Lazuli Sekrumpáč
+item.LapisLazuliPickaxe.name=Lapis Lazuli Krumpáč
+item.LapisLazuliAxe.name=Lapis Lazuli Sekyra
+item.LapisLazuliShovel.name=Lapis Lazuli Lopata
+item.LapisLazuliHoe.name=Lapis Lazuli Motyka
+item.LapisLazuliSword.name=Lapis Lazuli Meč
 
 # Osmium
 item.OsmiumHelmet.name=Osmiová Helma

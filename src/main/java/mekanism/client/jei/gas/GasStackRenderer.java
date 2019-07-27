@@ -66,10 +66,10 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite, int maskTop, int maskRight, double zLevel) {
-        double uMin = (double) textureSprite.getMinU();
-        double uMax = (double) textureSprite.getMaxU();
-        double vMin = (double) textureSprite.getMinV();
-        double vMax = (double) textureSprite.getMaxV();
+        double uMin = textureSprite.getMinU();
+        double uMax = textureSprite.getMaxU();
+        double vMin = textureSprite.getMinV();
+        double vMax = textureSprite.getMaxV();
         uMax = uMax - (maskRight / 16.0 * (uMax - uMin));
         vMax = vMax - (maskTop / 16.0 * (vMax - vMin));
 

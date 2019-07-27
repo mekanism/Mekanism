@@ -1010,16 +1010,16 @@ item.ObsidianHoe.name=Obsidianhacke
 item.ObsidianSword.name=Obsidianschwert
 
 # Lapis Lazuli
-item.LazuliHelmet.name=Lapislazulihelm
-item.LazuliChestplate.name=Lapislazulibrustpanzer
-item.LazuliLeggings.name=Lapislazulibeinschutz
-item.LazuliBoots.name=Lapislazulistiefel
-item.LazuliPaxel.name=Lapislazuli-Paxel
-item.LazuliPickaxe.name=Lapislazulispitzhacke
-item.LazuliAxe.name=Lapislazuliaxt
-item.LazuliShovel.name=Lapislazulischaufel
-item.LazuliHoe.name=Lapislazulihacke
-item.LazuliSword.name=Lapislazulischwert
+item.LapisLazuliHelmet.name=Lapislazulihelm
+item.LapisLazuliChestplate.name=Lapislazulibrustpanzer
+item.LapisLazuliLeggings.name=Lapislazulibeinschutz
+item.LapisLazuliBoots.name=Lapislazulistiefel
+item.LapisLazuliPaxel.name=Lapislazuli-Paxel
+item.LapisLazuliPickaxe.name=Lapislazulispitzhacke
+item.LapisLazuliAxe.name=Lapislazuliaxt
+item.LapisLazuliShovel.name=Lapislazulischaufel
+item.LapisLazuliHoe.name=Lapislazulihacke
+item.LapisLazuliSword.name=Lapislazulischwert
 
 # Osmium
 item.OsmiumHelmet.name=Osmiumhelm

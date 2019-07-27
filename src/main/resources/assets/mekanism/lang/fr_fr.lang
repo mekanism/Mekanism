@@ -953,16 +953,16 @@ item.ObsidianHoe.name=Houe en obsidienne
 item.ObsidianSword.name=Épée en obsidienne
 
 # Lapis Lazuli
-item.LazuliHelmet.name=Casque en lapis lazuli
-item.LazuliChestplate.name=Plastron en lapis lazuli
-item.LazuliLeggings.name=Jambières en lapis lazuli
-item.LazuliBoots.name=Bottes en lapis lazuli
-item.LazuliPaxel.name=Piopèche en lapis lazuli
-item.LazuliPickaxe.name=Pioche en lapis lazuli
-item.LazuliAxe.name=Hache en lapis lazuli
-item.LazuliShovel.name=Pelle en lapis lazuli
-item.LazuliHoe.name=Houe en lapis lazuli
-item.LazuliSword.name=Épée en lapis lazuli
+item.LapisLazuliHelmet.name=Casque en lapis lazuli
+item.LapisLazuliChestplate.name=Plastron en lapis lazuli
+item.LapisLazuliLeggings.name=Jambières en lapis lazuli
+item.LapisLazuliBoots.name=Bottes en lapis lazuli
+item.LapisLazuliPaxel.name=Piopèche en lapis lazuli
+item.LapisLazuliPickaxe.name=Pioche en lapis lazuli
+item.LapisLazuliAxe.name=Hache en lapis lazuli
+item.LapisLazuliShovel.name=Pelle en lapis lazuli
+item.LapisLazuliHoe.name=Houe en lapis lazuli
+item.LapisLazuliSword.name=Épée en lapis lazuli
 
 # Osmium
 item.OsmiumHelmet.name=Casque en osmium

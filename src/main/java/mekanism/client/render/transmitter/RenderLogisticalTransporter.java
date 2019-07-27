@@ -259,7 +259,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         return display;
     }
 
-    private class TransportInformation {
+    private static class TransportInformation {
 
         @Nullable
         private final EnumColor color;
