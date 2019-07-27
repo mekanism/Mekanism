@@ -419,6 +419,16 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
      * @param newlyEnabledTransmitters The transmitters that are now enabled and were not before.
      */
     protected void recheckConnections(byte newlyEnabledTransmitters) {
+        //If our connectivity changed on a side and it is also a sided pipe, inform it to recheck its connections
+        //This fixes pipes not reconnecting cross chunk
+        for (EnumFacing side : EnumFacing.VALUES) {
+            if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
+                TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
+                if (tileEntity instanceof TileEntitySidedPipe) {
+                    ((TileEntitySidedPipe) tileEntity).refreshConnections();
+                }
+            }
+        }
     }
 
     /**
