@@ -151,22 +151,22 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos)) {
             float xRandom = (float) pos.getX() + 0.5F;
-            float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+            float yRandom = (float) pos.getY() + random.nextFloat() * 6.0F / 16.0F;
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
             if (tileEntity.facing == EnumFacing.WEST) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom + iRandom), (double) yRandom, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom + iRandom), (double) yRandom, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, (double) yRandom, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
             } else if (tileEntity.facing == EnumFacing.EAST) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom + iRandom), (double) yRandom + 0.5F, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom + iRandom), (double) yRandom + 0.5F, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
             } else if (tileEntity.facing == EnumFacing.NORTH) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom - jRandom), (double) yRandom + 0.5F, (double) (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom - jRandom), (double) yRandom + 0.5F, (double) (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
             } else if (tileEntity.facing == EnumFacing.SOUTH) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom - jRandom), (double) yRandom + 0.5F, (double) (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom - jRandom), (double) yRandom + 0.5F, (double) (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
             }
         }
     }
