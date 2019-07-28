@@ -93,7 +93,7 @@ public enum MekanismItem implements IItemProvider {
 
     BLACK_BALLOON(new ItemBalloon(EnumColor.BLACK)),
     RED_BALLOON(new ItemBalloon(EnumColor.RED)),
-    GREEN_BALLOON(new ItemBalloon(EnumColor.DARK_GREY)),
+    GREEN_BALLOON(new ItemBalloon(EnumColor.DARK_GREEN)),
     BROWN_BALLOON(new ItemBalloon(EnumColor.BROWN)),
     BLUE_BALLOON(new ItemBalloon(EnumColor.DARK_BLUE)),
     PURPLE_BALLOON(new ItemBalloon(EnumColor.PURPLE)),
