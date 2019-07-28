@@ -59,6 +59,10 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
+    public GasTankTier getTier() {
+        return tier;
+    }
+
     @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {

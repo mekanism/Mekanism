@@ -1171,8 +1171,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init() {
         super.init();
-
-        //TODO: Redo all these color handlers as needed
         registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {
@@ -1227,6 +1225,7 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.LIGHT_GRAY_PLASTIC_BARRIER, MekanismBlock.GRAY_PLASTIC_BARRIER, MekanismBlock.PINK_PLASTIC_BARRIER, MekanismBlock.LIME_PLASTIC_BARRIER,
               MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
               MekanismBlock.WHITE_PLASTIC_BARRIER);
+        //TODO
         /*Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             EnumColor dye = EnumColor.DYES[stack.getItemDamage()];
             return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);

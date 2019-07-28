@@ -10,11 +10,9 @@ import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
@@ -23,12 +21,6 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
 
     public ItemBlockGlowPanel(Block block) {
         super(block);
-        setHasSubtypes(true);
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
     }
 
     @Override
@@ -51,15 +43,6 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
             }
         }
         return place;
-    }
-
-    @Override
-    public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> listToAddTo) {
-        if (isInCreativeTab(tab)) {
-            for (EnumColor color : EnumColor.DYES) {
-                listToAddTo.add(new ItemStack(this, 1, color.getMetaValue()));
-            }
-        }
     }
 
     @Nonnull

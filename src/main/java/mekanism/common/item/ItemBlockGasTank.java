@@ -14,12 +14,11 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ITierItem;
+import mekanism.common.block.BlockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.ItemDataUtils;
@@ -32,6 +31,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -43,13 +43,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISustainedInventory, ITierItem, ISecurityItem {
+public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISustainedInventory, ISecurityItem {
 
     /**
      * How fast this tank can transfer gas.
      */
     public static final int TRANSFER_RATE = 256;
-    public Block metaBlock;
     /**
      * The maximum amount of gas this tank can hold.
      */
@@ -57,20 +56,13 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
 
     public ItemBlockGasTank(Block block) {
         super(block);
-        metaBlock = block;
-        setHasSubtypes(true);
         setMaxStackSize(1);
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
     }
 
     @Nonnull
     @Override
     public String getItemStackDisplayName(@Nonnull ItemStack itemstack) {
-        return LangUtils.localize("tile.GasTank" + getBaseTier(itemstack).getSimpleName() + ".name");
+        return LangUtils.localize("tile.GasTank" + getTier(itemstack).getBaseTier().getSimpleName() + ".name");
     }
 
     @Override
@@ -79,7 +71,7 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
         boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
         if (place) {
             TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
-            tileEntity.tier = GasTankTier.values()[getBaseTier(stack).ordinal()];
+            tileEntity.tier = getTier(stack);
             tileEntity.gasTank.setMaxGas(tileEntity.tier.getStorage());
             tileEntity.gasTank.setGas(getGas(stack));
             ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(getOwnerUUID(stack));
@@ -114,7 +106,7 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
             String amount = gasStack.amount == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : Integer.toString(gasStack.amount);
             list.add(EnumColor.ORANGE + gasStack.getGas().getLocalizedName() + ": " + EnumColor.GREY + amount);
         }
-        int cap = GasTankTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
+        int cap = getTier(itemstack).getStorage();
         list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap));
 
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
@@ -150,11 +142,19 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
         }
     }
 
-    public ItemStack getEmptyItem(GasTankTier tier) {
+    public ItemStack getEmptyItem() {
         ItemStack empty = new ItemStack(this);
-        setBaseTier(empty, tier.getBaseTier());
         setGas(empty, null);
         return empty;
+    }
+
+    private GasTankTier getTier(ItemStack stack) {
+        Item item = stack.getItem();
+        if (item instanceof ItemBlockGasTank) {
+            BlockGasTank gasTank = (BlockGasTank) (((ItemBlockGasTank) item).block);
+            return gasTank.getTier();
+        }
+        return GasTankTier.BASIC;
     }
 
     @Override
@@ -162,16 +162,12 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
         if (!isInCreativeTab(tabs)) {
             return;
         }
-        for (GasTankTier tier : GasTankTier.values()) {
-            ItemStack empty = new ItemStack(this);
-            setBaseTier(empty, tier.getBaseTier());
-            list.add(empty);
-        }
-        if (MekanismConfig.current().general.prefilledGasTanks.val()) {
+        list.add(getEmptyItem());
+        BlockGasTank gasTank = (BlockGasTank) this.block;
+        if (gasTank.getTier() == GasTankTier.CREATIVE && MekanismConfig.current().general.prefilledGasTanks.val()) {
             for (Gas type : GasRegistry.getRegisteredGasses()) {
                 if (type.isVisible()) {
                     ItemStack filled = new ItemStack(this);
-                    setBaseTier(filled, BaseTier.CREATIVE);
                     setGas(filled, new GasStack(type, ((IGasItem) filled.getItem()).getMaxGas(filled)));
                     list.add(filled);
                 }
@@ -180,29 +176,13 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
     }
 
     @Override
-    public BaseTier getBaseTier(ItemStack itemstack) {
-        if (!itemstack.hasTagCompound()) {
-            return BaseTier.BASIC;
-        }
-        return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
-    }
-
-    @Override
-    public void setBaseTier(ItemStack itemstack, BaseTier tier) {
-        if (!itemstack.hasTagCompound()) {
-            itemstack.setTagCompound(new NBTTagCompound());
-        }
-        itemstack.getTagCompound().setInteger("tier", tier.ordinal());
-    }
-
-    @Override
     public int getMaxGas(ItemStack itemstack) {
-        return GasTankTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
+        return getTier(itemstack).getStorage();
     }
 
     @Override
     public int getRate(ItemStack itemstack) {
-        return GasTankTier.values()[getBaseTier(itemstack).ordinal()].getOutput();
+        return getTier(itemstack).getOutput();
     }
 
     @Override
@@ -210,7 +190,7 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-        if (getBaseTier(itemstack) == BaseTier.CREATIVE) {
+        if (getTier(itemstack) == GasTankTier.CREATIVE) {
             setGas(itemstack, new GasStack(stack.getGas(), Integer.MAX_VALUE));
             return stack.amount;
         }
@@ -226,7 +206,7 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
         }
         Gas type = getGas(itemstack).getGas();
         int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-        if (getBaseTier(itemstack) != BaseTier.CREATIVE) {
+        if (getTier(itemstack) != GasTankTier.CREATIVE) {
             setGas(itemstack, new GasStack(type, getStored(itemstack) - gasToUse));
         }
         return new GasStack(type, gasToUse);
