@@ -72,11 +72,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         if (!changedAcceptors.isEmpty()) {
             for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> entry : changedAcceptors.entrySet()) {
                 IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = entry.getKey();
-
                 if (transmitter.isValid()) {
-                    EnumSet<EnumFacing> directionsChanged = entry.getValue();
-
-                    for (EnumFacing side : directionsChanged) {
+                    //Update all the changed directions
+                    for (EnumFacing side : entry.getValue()) {
                         updateTransmitterOnSide(transmitter, side);
                     }
                 }
@@ -155,7 +153,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         } else {
             changedAcceptors.put(transmitter, EnumSet.of(side));
         }
-
         TransmitterNetworkRegistry.registerChangedNetwork(this);
     }
 
@@ -180,10 +177,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public Range4D getPacketRange() {
-        if (packetRange == null) {
-            return genPacketRange();
-        }
-        return packetRange;
+        return packetRange == null ? genPacketRange() : packetRange;
     }
 
     protected Range4D genPacketRange() {
@@ -204,23 +198,19 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
         for (IGridTransmitter transmitter : transmitters) {
             Coord4D coord = transmitter.coord();
-
             if (coord.x < minX) {
                 minX = coord.x;
+            } else if (coord.x > maxX) {
+                maxX = coord.x;
             }
             if (coord.y < minY) {
                 minY = coord.y;
+            } else if (coord.y > maxY) {
+                maxY = coord.y;
             }
             if (coord.z < minZ) {
                 minZ = coord.z;
-            }
-            if (coord.x > maxX) {
-                maxX = coord.x;
-            }
-            if (coord.y > maxY) {
-                maxY = coord.y;
-            }
-            if (coord.x > maxZ) {
+            } else if (coord.x > maxZ) {
                 maxZ = coord.z;
             }
         }
@@ -274,7 +264,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return capacity;
     }
 
-    public double getDoubleCapacity() {
+    public double getCapacityAsDouble() {
         return doubleCapacity;
     }
 
