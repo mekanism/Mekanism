@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
@@ -119,6 +120,7 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
@@ -131,6 +133,7 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.item.ItemBlockMekanism;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -202,6 +205,7 @@ import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.TextComponentGroup;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -212,9 +216,12 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -430,7 +437,7 @@ public class ClientProxy extends CommonProxy {
         registerItemRender(MekanismItem.COPPER_NUGGET);
         registerItemRender(MekanismItem.TIN_NUGGET);
 
-        setCustomModelResourceLocation(getInventoryMRL("balloon"), MekanismItem.BLACK_BALLOON,MekanismItem.RED_BALLOON, MekanismItem.GREEN_BALLOON,
+        setCustomModelResourceLocation(getInventoryMRL("balloon"), MekanismItem.BLACK_BALLOON, MekanismItem.RED_BALLOON, MekanismItem.GREEN_BALLOON,
               MekanismItem.BROWN_BALLOON, MekanismItem.BLUE_BALLOON, MekanismItem.PURPLE_BALLOON, MekanismItem.CYAN_BALLOON, MekanismItem.LIGHT_GREY_BALLOON,
               MekanismItem.GREY_BALLOON, MekanismItem.PINK_BALLOON, MekanismItem.LIME_BALLOON, MekanismItem.YELLOW_BALLOON, MekanismItem.LIGHT_BLUE_BALLOON,
               MekanismItem.MAGENTA_BALLOON, MekanismItem.ORANGE_BALLOON, MekanismItem.WHITE_BALLOON);
@@ -530,7 +537,7 @@ public class ClientProxy extends CommonProxy {
                                  @Override
                                  protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
                                      //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=plastic");
+                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "");
                                  }
                              }, MekanismBlock.BLACK_PLASTIC_BLOCK, MekanismBlock.RED_PLASTIC_BLOCK, MekanismBlock.GREEN_PLASTIC_BLOCK, MekanismBlock.BROWN_PLASTIC_BLOCK,
               MekanismBlock.BLUE_PLASTIC_BLOCK, MekanismBlock.PURPLE_PLASTIC_BLOCK, MekanismBlock.CYAN_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_BLOCK,
@@ -542,7 +549,7 @@ public class ClientProxy extends CommonProxy {
                                  @Override
                                  protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
                                      //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=slick");
+                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "slick_plastic_block"), "");
                                  }
                              }, MekanismBlock.BLACK_SLICK_PLASTIC_BLOCK, MekanismBlock.RED_SLICK_PLASTIC_BLOCK, MekanismBlock.GREEN_SLICK_PLASTIC_BLOCK,
               MekanismBlock.BROWN_SLICK_PLASTIC_BLOCK, MekanismBlock.BLUE_SLICK_PLASTIC_BLOCK, MekanismBlock.PURPLE_SLICK_PLASTIC_BLOCK, MekanismBlock.CYAN_SLICK_PLASTIC_BLOCK,
@@ -555,7 +562,7 @@ public class ClientProxy extends CommonProxy {
                                  @Override
                                  protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
                                      //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=glow");
+                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_glow_block"), "");
                                  }
                              }, MekanismBlock.BLACK_PLASTIC_GLOW_BLOCK, MekanismBlock.RED_PLASTIC_GLOW_BLOCK, MekanismBlock.GREEN_PLASTIC_GLOW_BLOCK, MekanismBlock.BROWN_PLASTIC_GLOW_BLOCK,
               MekanismBlock.BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.PURPLE_PLASTIC_GLOW_BLOCK, MekanismBlock.CYAN_PLASTIC_GLOW_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_GLOW_BLOCK,
@@ -567,7 +574,7 @@ public class ClientProxy extends CommonProxy {
                                  @Override
                                  protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
                                      //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=reinforced");
+                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "reinforced_plastic_block"), "");
                                  }
                              }, MekanismBlock.BLACK_REINFORCED_PLASTIC_BLOCK, MekanismBlock.RED_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GREEN_REINFORCED_PLASTIC_BLOCK,
               MekanismBlock.BROWN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.PURPLE_REINFORCED_PLASTIC_BLOCK,
@@ -576,12 +583,11 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.MAGENTA_REINFORCED_PLASTIC_BLOCK, MekanismBlock.ORANGE_REINFORCED_PLASTIC_BLOCK,
               MekanismBlock.WHITE_REINFORCED_PLASTIC_BLOCK);
         setCustomStateMapper(new StateMapperBase() {
-
                                  @Nonnull
                                  @Override
                                  protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
                                      //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=road");
+                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_road"), "");
                                  }
                              }, MekanismBlock.BLACK_PLASTIC_ROAD, MekanismBlock.RED_PLASTIC_ROAD, MekanismBlock.GREEN_PLASTIC_ROAD, MekanismBlock.BROWN_PLASTIC_ROAD,
               MekanismBlock.BLUE_PLASTIC_ROAD, MekanismBlock.PURPLE_PLASTIC_ROAD, MekanismBlock.CYAN_PLASTIC_ROAD, MekanismBlock.LIGHT_GRAY_PLASTIC_ROAD,
@@ -619,12 +625,12 @@ public class ClientProxy extends CommonProxy {
         }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
 
         setCustomStateMapper(new StateMapperBase() {
-            @Nonnull
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "glow_panel"), "");
-            }
-        }, MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL, MekanismBlock.BROWN_GLOW_PANEL, MekanismBlock.BLUE_GLOW_PANEL,
+                                 @Nonnull
+                                 @Override
+                                 protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
+                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "glow_panel"), "");
+                                 }
+                             }, MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL, MekanismBlock.BROWN_GLOW_PANEL, MekanismBlock.BLUE_GLOW_PANEL,
               MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL, MekanismBlock.LIGHT_GRAY_GLOW_PANEL, MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL,
               MekanismBlock.LIME_GLOW_PANEL, MekanismBlock.YELLOW_GLOW_PANEL, MekanismBlock.LIGHT_BLUE_GLOW_PANEL, MekanismBlock.MAGENTA_GLOW_PANEL, MekanismBlock.ORANGE_GLOW_PANEL,
               MekanismBlock.WHITE_GLOW_PANEL);
@@ -784,43 +790,43 @@ public class ClientProxy extends CommonProxy {
             ModelLoader.registerItemVariants(Item.getItemFromBlock(MekanismBlocks.Transmitter), modelsToAdd.toArray(new ModelResourceLocation[]{}));
         }*/
 
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=plastic"),
-              MekanismBlock.BLACK_PLASTIC_BLOCK, MekanismBlock.RED_PLASTIC_BLOCK, MekanismBlock.GREEN_PLASTIC_BLOCK, MekanismBlock.BROWN_PLASTIC_BLOCK,
-              MekanismBlock.BLUE_PLASTIC_BLOCK, MekanismBlock.PURPLE_PLASTIC_BLOCK, MekanismBlock.CYAN_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_BLOCK,
-              MekanismBlock.GRAY_PLASTIC_BLOCK, MekanismBlock.PINK_PLASTIC_BLOCK, MekanismBlock.LIME_PLASTIC_BLOCK, MekanismBlock.YELLOW_PLASTIC_BLOCK,
-              MekanismBlock.LIGHT_BLUE_PLASTIC_BLOCK, MekanismBlock.MAGENTA_PLASTIC_BLOCK, MekanismBlock.ORANGE_PLASTIC_BLOCK, MekanismBlock.WHITE_PLASTIC_BLOCK);
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=slick"),
-              MekanismBlock.BLACK_SLICK_PLASTIC_BLOCK, MekanismBlock.RED_SLICK_PLASTIC_BLOCK, MekanismBlock.GREEN_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.BROWN_SLICK_PLASTIC_BLOCK, MekanismBlock.BLUE_SLICK_PLASTIC_BLOCK, MekanismBlock.PURPLE_SLICK_PLASTIC_BLOCK, MekanismBlock.CYAN_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK, MekanismBlock.GRAY_SLICK_PLASTIC_BLOCK, MekanismBlock.PINK_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.LIME_SLICK_PLASTIC_BLOCK, MekanismBlock.YELLOW_SLICK_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.MAGENTA_SLICK_PLASTIC_BLOCK, MekanismBlock.ORANGE_SLICK_PLASTIC_BLOCK, MekanismBlock.WHITE_SLICK_PLASTIC_BLOCK);
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=glow"),
-              MekanismBlock.BLACK_PLASTIC_GLOW_BLOCK, MekanismBlock.RED_PLASTIC_GLOW_BLOCK, MekanismBlock.GREEN_PLASTIC_GLOW_BLOCK, MekanismBlock.BROWN_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.PURPLE_PLASTIC_GLOW_BLOCK, MekanismBlock.CYAN_PLASTIC_GLOW_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.GRAY_PLASTIC_GLOW_BLOCK, MekanismBlock.PINK_PLASTIC_GLOW_BLOCK, MekanismBlock.LIME_PLASTIC_GLOW_BLOCK, MekanismBlock.YELLOW_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.MAGENTA_PLASTIC_GLOW_BLOCK, MekanismBlock.ORANGE_PLASTIC_GLOW_BLOCK, MekanismBlock.WHITE_PLASTIC_GLOW_BLOCK);
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=reinforced"),
-              MekanismBlock.BLACK_REINFORCED_PLASTIC_BLOCK, MekanismBlock.RED_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GREEN_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.BROWN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.PURPLE_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.CYAN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GRAY_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.PINK_REINFORCED_PLASTIC_BLOCK, MekanismBlock.LIME_REINFORCED_PLASTIC_BLOCK, MekanismBlock.YELLOW_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.MAGENTA_REINFORCED_PLASTIC_BLOCK, MekanismBlock.ORANGE_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.WHITE_REINFORCED_PLASTIC_BLOCK);
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "type=road"),
-              MekanismBlock.BLACK_PLASTIC_ROAD, MekanismBlock.RED_PLASTIC_ROAD, MekanismBlock.GREEN_PLASTIC_ROAD, MekanismBlock.BROWN_PLASTIC_ROAD,
-              MekanismBlock.BLUE_PLASTIC_ROAD, MekanismBlock.PURPLE_PLASTIC_ROAD, MekanismBlock.CYAN_PLASTIC_ROAD, MekanismBlock.LIGHT_GRAY_PLASTIC_ROAD,
-              MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD, MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD,
-              MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD, MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD);
+        setCustomModelResourceLocation(getInventoryMRL("plastic_block"), MekanismBlock.BLACK_PLASTIC_BLOCK, MekanismBlock.RED_PLASTIC_BLOCK,
+              MekanismBlock.GREEN_PLASTIC_BLOCK, MekanismBlock.BROWN_PLASTIC_BLOCK, MekanismBlock.BLUE_PLASTIC_BLOCK, MekanismBlock.PURPLE_PLASTIC_BLOCK,
+              MekanismBlock.CYAN_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_BLOCK, MekanismBlock.GRAY_PLASTIC_BLOCK, MekanismBlock.PINK_PLASTIC_BLOCK,
+              MekanismBlock.LIME_PLASTIC_BLOCK, MekanismBlock.YELLOW_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_PLASTIC_BLOCK, MekanismBlock.MAGENTA_PLASTIC_BLOCK,
+              MekanismBlock.ORANGE_PLASTIC_BLOCK, MekanismBlock.WHITE_PLASTIC_BLOCK);
+        setCustomModelResourceLocation(getInventoryMRL("slick_plastic_block"), MekanismBlock.BLACK_SLICK_PLASTIC_BLOCK, MekanismBlock.RED_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.GREEN_SLICK_PLASTIC_BLOCK, MekanismBlock.BROWN_SLICK_PLASTIC_BLOCK, MekanismBlock.BLUE_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.PURPLE_SLICK_PLASTIC_BLOCK, MekanismBlock.CYAN_SLICK_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.GRAY_SLICK_PLASTIC_BLOCK, MekanismBlock.PINK_SLICK_PLASTIC_BLOCK, MekanismBlock.LIME_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.YELLOW_SLICK_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK, MekanismBlock.MAGENTA_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.ORANGE_SLICK_PLASTIC_BLOCK, MekanismBlock.WHITE_SLICK_PLASTIC_BLOCK);
+        setCustomModelResourceLocation(getInventoryMRL("plastic_glow_block"), MekanismBlock.BLACK_PLASTIC_GLOW_BLOCK, MekanismBlock.RED_PLASTIC_GLOW_BLOCK,
+              MekanismBlock.GREEN_PLASTIC_GLOW_BLOCK, MekanismBlock.BROWN_PLASTIC_GLOW_BLOCK, MekanismBlock.BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.PURPLE_PLASTIC_GLOW_BLOCK,
+              MekanismBlock.CYAN_PLASTIC_GLOW_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_GLOW_BLOCK, MekanismBlock.GRAY_PLASTIC_GLOW_BLOCK, MekanismBlock.PINK_PLASTIC_GLOW_BLOCK,
+              MekanismBlock.LIME_PLASTIC_GLOW_BLOCK, MekanismBlock.YELLOW_PLASTIC_GLOW_BLOCK, MekanismBlock.LIGHT_BLUE_PLASTIC_GLOW_BLOCK,
+              MekanismBlock.MAGENTA_PLASTIC_GLOW_BLOCK, MekanismBlock.ORANGE_PLASTIC_GLOW_BLOCK, MekanismBlock.WHITE_PLASTIC_GLOW_BLOCK);
+        setCustomModelResourceLocation(getInventoryMRL("reinforced_plastic_block"), MekanismBlock.BLACK_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.RED_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GREEN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.BROWN_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.PURPLE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.CYAN_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GRAY_REINFORCED_PLASTIC_BLOCK, MekanismBlock.PINK_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.LIME_REINFORCED_PLASTIC_BLOCK, MekanismBlock.YELLOW_REINFORCED_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.MAGENTA_REINFORCED_PLASTIC_BLOCK, MekanismBlock.ORANGE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.WHITE_REINFORCED_PLASTIC_BLOCK);
+        setCustomModelResourceLocation(getInventoryMRL("plastic_road"), MekanismBlock.BLACK_PLASTIC_ROAD, MekanismBlock.RED_PLASTIC_ROAD,
+              MekanismBlock.GREEN_PLASTIC_ROAD, MekanismBlock.BROWN_PLASTIC_ROAD, MekanismBlock.BLUE_PLASTIC_ROAD, MekanismBlock.PURPLE_PLASTIC_ROAD,
+              MekanismBlock.CYAN_PLASTIC_ROAD, MekanismBlock.LIGHT_GRAY_PLASTIC_ROAD, MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD,
+              MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD, MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD,
+              MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD);
         setCustomModelResourceLocation(getInventoryMRL("plastic_fence"), MekanismBlock.BLACK_PLASTIC_BARRIER, MekanismBlock.RED_PLASTIC_BARRIER, MekanismBlock.GREEN_PLASTIC_BARRIER,
               MekanismBlock.BROWN_PLASTIC_BARRIER, MekanismBlock.BLUE_PLASTIC_BARRIER, MekanismBlock.PURPLE_PLASTIC_BARRIER, MekanismBlock.CYAN_PLASTIC_BARRIER,
               MekanismBlock.LIGHT_GRAY_PLASTIC_BARRIER, MekanismBlock.GRAY_PLASTIC_BARRIER, MekanismBlock.PINK_PLASTIC_BARRIER, MekanismBlock.LIME_PLASTIC_BARRIER,
               MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
               MekanismBlock.WHITE_PLASTIC_BARRIER);
 
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "OreBlock"), "type=Osmium"), MekanismBlock.OSMIUM_ORE);
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "OreBlock"), "type=Copper"), MekanismBlock.COPPER_ORE);
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "OreBlock"), "type=Tin"), MekanismBlock.TIN_ORE);
+        //TODO: Split into their own json files
+        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ore_block"), "type=Osmium"), MekanismBlock.OSMIUM_ORE);
+        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ore_block"), "type=Copper"), MekanismBlock.COPPER_ORE);
+        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ore_block"), "type=Tin"), MekanismBlock.TIN_ORE);
 
         ModelLoader.setCustomMeshDefinition(MekanismBlock.BASIC_GAS_TANK.getItem(), stack ->
               new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.BASIC));
@@ -1156,43 +1162,73 @@ public class ClientProxy extends CommonProxy {
         doSparkle(tileEntity, new SparkleAnimation(tileEntity, corner1, corner2, checker));
     }
 
+    private void registerBlockColorHandler(IBlockColor blockColor, IItemColor itemColor, MekanismBlock... blocks) {
+        for (MekanismBlock mekanismBlock : blocks) {
+            Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColor, mekanismBlock.getBlock());
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColor, mekanismBlock.getItem());
+        }
+    }
+
     @Override
     public void init() {
         super.init();
 
         //TODO: Redo all these color handlers as needed
-        /*Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
-            //TODO: Evaluate if this can be removed
-            Block block = state.getBlock();
-            if (block instanceof BlockFluidTank) {
-                EnumColor color = ((BlockFluidTank) block).getTier().getBaseTier().getColor();
-                return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
-            }
-            return -1;
-        }, MekanismBlock.BASIC_FLUID_TANK.getBlock(), MekanismBlock.ADVANCED_FLUID_TANK.getBlock(), MekanismBlock.ELITE_FLUID_TANK.getBlock(),
-              MekanismBlock.ULTIMATE_FLUID_TANK.getBlock(), MekanismBlock.CREATIVE_FLUID_TANK.getBlock());
-        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
-                  EnumDyeColor color = state.getValue(colorProperty);
-                  EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
-                  return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
-              }, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock,
-              MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
-        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
-            //TODO: Proper way to evaluate this
-            if (MachineType.get(stack) == MachineType.FLUID_TANK) {
-                EnumColor color = ((ItemBlockMachine) stack.getItem()).getBaseTier(stack).getColor();
-                return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
-            }
-            return -1;
-        }, MekanismBlock.BASIC_FLUID_TANK.getBlock(), MekanismBlock.ADVANCED_FLUID_TANK.getBlock(), MekanismBlock.ELITE_FLUID_TANK.getBlock(),
-              MekanismBlock.ULTIMATE_FLUID_TANK.getBlock(), MekanismBlock.CREATIVE_FLUID_TANK.getBlock());
-        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
-                  EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getItemDamage() & 15);
-                  EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
-                  return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
-              }, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock,
-              MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
-        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
+        registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
+                  Block block = state.getBlock();
+                  if (block instanceof IColoredBlock) {
+                      EnumColor color = ((IColoredBlock) block).getColor();
+                      return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
+                  }
+                  return -1;
+              }, (stack, tintIndex) -> {
+                  Item item = stack.getItem();
+                  if (item instanceof ItemBlockMekanism) {
+                      ItemBlockMekanism itemBlock = (ItemBlockMekanism) item;
+                      if (itemBlock instanceof IColoredBlock) {
+                          EnumColor color = ((IColoredBlock) itemBlock).getColor();
+                          return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
+                      }
+                  }
+                  return -1;
+              },
+              //Fluid Tank
+              MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK, MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK, MekanismBlock.CREATIVE_FLUID_TANK,
+              //Plastic Blocks
+              MekanismBlock.BLACK_PLASTIC_BLOCK, MekanismBlock.RED_PLASTIC_BLOCK, MekanismBlock.GREEN_PLASTIC_BLOCK, MekanismBlock.BROWN_PLASTIC_BLOCK,
+              MekanismBlock.BLUE_PLASTIC_BLOCK, MekanismBlock.PURPLE_PLASTIC_BLOCK, MekanismBlock.CYAN_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_BLOCK,
+              MekanismBlock.GRAY_PLASTIC_BLOCK, MekanismBlock.PINK_PLASTIC_BLOCK, MekanismBlock.LIME_PLASTIC_BLOCK, MekanismBlock.YELLOW_PLASTIC_BLOCK,
+              MekanismBlock.LIGHT_BLUE_PLASTIC_BLOCK, MekanismBlock.MAGENTA_PLASTIC_BLOCK, MekanismBlock.ORANGE_PLASTIC_BLOCK, MekanismBlock.WHITE_PLASTIC_BLOCK,
+              //Slick Plastic Blocks
+              MekanismBlock.BLACK_SLICK_PLASTIC_BLOCK, MekanismBlock.RED_SLICK_PLASTIC_BLOCK, MekanismBlock.GREEN_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.BROWN_SLICK_PLASTIC_BLOCK, MekanismBlock.BLUE_SLICK_PLASTIC_BLOCK, MekanismBlock.PURPLE_SLICK_PLASTIC_BLOCK, MekanismBlock.CYAN_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK, MekanismBlock.GRAY_SLICK_PLASTIC_BLOCK, MekanismBlock.PINK_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.LIME_SLICK_PLASTIC_BLOCK, MekanismBlock.YELLOW_SLICK_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK,
+              MekanismBlock.MAGENTA_SLICK_PLASTIC_BLOCK, MekanismBlock.ORANGE_SLICK_PLASTIC_BLOCK, MekanismBlock.WHITE_SLICK_PLASTIC_BLOCK,
+              //Plastic Glow Blocks
+              MekanismBlock.BLACK_PLASTIC_GLOW_BLOCK, MekanismBlock.RED_PLASTIC_GLOW_BLOCK, MekanismBlock.GREEN_PLASTIC_GLOW_BLOCK, MekanismBlock.BROWN_PLASTIC_GLOW_BLOCK,
+              MekanismBlock.BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.PURPLE_PLASTIC_GLOW_BLOCK, MekanismBlock.CYAN_PLASTIC_GLOW_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_GLOW_BLOCK,
+              MekanismBlock.GRAY_PLASTIC_GLOW_BLOCK, MekanismBlock.PINK_PLASTIC_GLOW_BLOCK, MekanismBlock.LIME_PLASTIC_GLOW_BLOCK, MekanismBlock.YELLOW_PLASTIC_GLOW_BLOCK,
+              MekanismBlock.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.MAGENTA_PLASTIC_GLOW_BLOCK, MekanismBlock.ORANGE_PLASTIC_GLOW_BLOCK, MekanismBlock.WHITE_PLASTIC_GLOW_BLOCK,
+              //Reinforced Plastic Blocks
+              MekanismBlock.BLACK_REINFORCED_PLASTIC_BLOCK, MekanismBlock.RED_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GREEN_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.BROWN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.PURPLE_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.CYAN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GRAY_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.PINK_REINFORCED_PLASTIC_BLOCK, MekanismBlock.LIME_REINFORCED_PLASTIC_BLOCK, MekanismBlock.YELLOW_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.MAGENTA_REINFORCED_PLASTIC_BLOCK, MekanismBlock.ORANGE_REINFORCED_PLASTIC_BLOCK,
+              MekanismBlock.WHITE_REINFORCED_PLASTIC_BLOCK,
+              //Plastic Road
+              MekanismBlock.BLACK_PLASTIC_ROAD, MekanismBlock.RED_PLASTIC_ROAD, MekanismBlock.GREEN_PLASTIC_ROAD, MekanismBlock.BROWN_PLASTIC_ROAD,
+              MekanismBlock.BLUE_PLASTIC_ROAD, MekanismBlock.PURPLE_PLASTIC_ROAD, MekanismBlock.CYAN_PLASTIC_ROAD, MekanismBlock.LIGHT_GRAY_PLASTIC_ROAD,
+              MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD, MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD,
+              MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD, MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD,
+              //Plastic Fences
+              MekanismBlock.BLACK_PLASTIC_BARRIER, MekanismBlock.RED_PLASTIC_BARRIER, MekanismBlock.GREEN_PLASTIC_BARRIER,
+              MekanismBlock.BROWN_PLASTIC_BARRIER, MekanismBlock.BLUE_PLASTIC_BARRIER, MekanismBlock.PURPLE_PLASTIC_BARRIER, MekanismBlock.CYAN_PLASTIC_BARRIER,
+              MekanismBlock.LIGHT_GRAY_PLASTIC_BARRIER, MekanismBlock.GRAY_PLASTIC_BARRIER, MekanismBlock.PINK_PLASTIC_BARRIER, MekanismBlock.LIME_PLASTIC_BARRIER,
+              MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
+              MekanismBlock.WHITE_PLASTIC_BARRIER);
+        /*Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             EnumColor dye = EnumColor.DYES[stack.getItemDamage()];
             return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
         }, MekanismItems.Balloon);*/

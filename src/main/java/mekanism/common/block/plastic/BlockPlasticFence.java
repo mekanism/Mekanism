@@ -6,6 +6,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -18,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockPlasticFence extends BlockFence {
+public class BlockPlasticFence extends BlockFence implements IColoredBlock {
 
     private final EnumColor color;
     private final String name;
@@ -30,6 +31,11 @@ public class BlockPlasticFence extends BlockFence {
         this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_plastic_fence";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    @Override
+    public EnumColor getColor() {
+        return color;
     }
 
     @Nonnull

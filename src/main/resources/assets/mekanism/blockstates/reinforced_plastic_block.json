@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:cube_colour",
     "textures": {
-      "all": "mekanism:blocks/PlasticBlock"
+      "all": "mekanism:blocks/ReinforcedPlasticBlock"
     }
   },
   "variants": {

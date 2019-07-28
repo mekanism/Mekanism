@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.api.EnumColor;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -19,6 +20,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateFacing;
@@ -47,6 +49,7 @@ import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -69,7 +72,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IBlockDescriptive, IHasGui {
+public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IBlockDescriptive, IHasGui, IColoredBlock {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -85,6 +88,11 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_fluid_tank";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    public static boolean isInstance(ItemStack stack) {
+        //TODO: Do some better sort of isInstance check? Once we have separate ItemBlock implementations can compare the getItem() to that
+        return !stack.isEmpty() && stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockFluidTank;
     }
 
     public FluidTankTier getTier() {
@@ -487,5 +495,10 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     public int getGuiID() {
         return 41;
+    }
+
+    @Override
+    public EnumColor getColor() {
+        return getTier().getBaseTier().getColor();
     }
 }
