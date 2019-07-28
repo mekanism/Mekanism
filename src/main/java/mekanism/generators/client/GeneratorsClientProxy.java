@@ -3,7 +3,6 @@ package mekanism.generators.client;
 import java.util.function.Function;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.common.Mekanism;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -62,6 +61,7 @@ import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -103,20 +103,31 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         GeneratorsBlock.WIND_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderWindGeneratorItem());
     }
 
+    private void setCustomStateMapper(IStateMapper mapper, GeneratorsBlock... blocks) {
+        for (GeneratorsBlock generatorsBlock : blocks) {
+            ModelLoader.setCustomStateMapper(generatorsBlock.getBlock(), mapper);
+        }
+    }
+
+    private void setCustomModelResourceLocation(ModelResourceLocation model, GeneratorsBlock... blocks) {
+        for (GeneratorsBlock generatorsBlock : blocks) {
+            ModelLoader.setCustomModelResourceLocation(generatorsBlock.getItem(), 0, model);
+        }
+    }
+
     @Override
     public void registerBlockRenders() {
         //TODO
-        /*ModelLoader.setCustomStateMapper(GeneratorsBlocks.Generator, generatorMapper);
-        ModelLoader.setCustomStateMapper(GeneratorsBlocks.Reactor, reactorMapper);
-        ModelLoader.setCustomStateMapper(GeneratorsBlocks.ReactorGlass, reactorMapper);
+        setCustomStateMapper(generatorMapper, GeneratorsBlock.HEAT_GENERATOR, GeneratorsBlock.SOLAR_GENERATOR, GeneratorsBlock.GAS_BURNING_GENERATOR,
+              GeneratorsBlock.BIO_GENERATOR, GeneratorsBlock.ADVANCED_SOLAR_GENERATOR, GeneratorsBlock.WIND_GENERATOR, GeneratorsBlock.TURBINE_ROTOR,
+              GeneratorsBlock.ROTATIONAL_COMPLEX, GeneratorsBlock.ELECTROMAGNETIC_COIL, GeneratorsBlock.TURBINE_CASING, GeneratorsBlock.TURBINE_VALVE,
+              GeneratorsBlock.TURBINE_VENT, GeneratorsBlock.SATURATING_CONDENSER);
+        setCustomStateMapper(reactorMapper, GeneratorsBlock.REACTOR_CONTROLLER, GeneratorsBlock.REACTOR_FRAME, GeneratorsBlock.REACTOR_GLASS, GeneratorsBlock.REACTOR_PORT,
+              GeneratorsBlock.REACTOR_LOGIC_ADAPTER, GeneratorsBlock.LASER_FOCUS_MATRIX);
 
-        for (GeneratorType type : GeneratorType.values()) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation(new ResourceLocation(MekanismGenerators.MODID, type.getName()), "inventory"));
+        for (GeneratorsBlock generatorsBlock : GeneratorsBlock.values()) {
+            setCustomModelResourceLocation(getInventoryMRL(generatorsBlock.getBlock().getRegistryName().getPath()), generatorsBlock);
         }
-
-        for (ReactorBlockType type : ReactorBlockType.values()) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation(new ResourceLocation(MekanismGenerators.MODID, type.getName()), "inventory"));
-        }*/
     }
 
     public void registerItemRender(Item item) {
@@ -135,8 +146,12 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
     }
 
     private void registerItemStackModel(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
-        ModelResourceLocation resourceLocation = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, type), "inventory");
+        ModelResourceLocation resourceLocation = getInventoryMRL(type);
         modelRegistry.putObject(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.getObject(resourceLocation))));
+    }
+
+    private ModelResourceLocation getInventoryMRL(String type) {
+        return new ModelResourceLocation(new ResourceLocation(MekanismGenerators.MODID, type), "inventory");
     }
 
     @Override
