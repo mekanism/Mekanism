@@ -11,6 +11,7 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.BlockGlowPanel;
+import mekanism.common.block.BlockObsidianTNT;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.block.PortalHelper;
@@ -268,7 +269,7 @@ public enum MekanismBlock implements IBlockProvider {
     ELITE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ELITE), ItemBlockTransmitter::new),
     ULTIMATE_THERMODYNAMIC_CONDUCTOR(new BlockThermodynamicConductor(ConductorTier.ULTIMATE), ItemBlockTransmitter::new),
 
-    OBSIDIAN_TNT(new BlockBounding()),
+    OBSIDIAN_TNT(new BlockObsidianTNT()),
     BOUNDING_BLOCK(new BlockBounding()),
 
     BASIC_GAS_TANK(new BlockGasTank(GasTankTier.BASIC), ItemBlockGasTank::new),
