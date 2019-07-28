@@ -24,8 +24,7 @@ public class BlockStateCardboardBox extends BlockStateContainer {
         @Override
         protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             String property = "storage=" + state.getValue(storageProperty);
-            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "CardboardBox");
-            return new ModelResourceLocation(baseLocation, property);
+            return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), property);
         }
     }
 }

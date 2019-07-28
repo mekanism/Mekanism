@@ -106,7 +106,7 @@ public class BlockStateTransmitter extends ExtendedBlockState {
                 if (tier == BaseTier.CREATIVE) {
                     tier = BaseTier.ULTIMATE;
                 }
-                nameOverride = type.getName() + "_" + tier.getName();
+                nameOverride = tier.getName() + "_" + type.getName();
             }
             if (builder.length() == 0) {
                 builder.append("normal");

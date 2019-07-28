@@ -640,13 +640,9 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismBlock.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
 
         setCustomModelResourceLocation(getInventoryMRL("ObsidianTNT"), MekanismBlock.OBSIDIAN_TNT);
-        setCustomModelResourceLocation(getInventoryMRL("SaltBlock"), MekanismBlock.SALT_BLOCK);
-        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CardboardBox"), "storage=false"));
-        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CardboardBox"), "storage=true"));
-
-        //TODO: Does tier stuff matter
-        setCustomModelResourceLocation(getInventoryMRL("energy_cube"), MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE,
-              MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
+        setCustomModelResourceLocation(getInventoryMRL("salt_block"), MekanismBlock.SALT_BLOCK);
+        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=false"));
+        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=true"));
 
         setCustomModelResourceLocation(getInventoryMRL("digital_miner"), MekanismBlock.DIGITAL_MINER);
         setCustomModelResourceLocation(getInventoryMRL("personal_chest"), MekanismBlock.PERSONAL_CHEST);
@@ -655,9 +651,12 @@ public class ClientProxy extends CommonProxy {
         setCustomModelResourceLocation(getInventoryMRL("chemical_crystallizer"), MekanismBlock.CHEMICAL_CRYSTALLIZER);
         setCustomModelResourceLocation(getInventoryMRL("seismic_vibrator"), MekanismBlock.SEISMIC_VIBRATOR);
 
-        //TODO: Does tier stuff matter
+        setCustomModelResourceLocation(getInventoryMRL("energy_cube"), MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE,
+              MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
         setCustomModelResourceLocation(getInventoryMRL("fluid_tank"), MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK,
               MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK, MekanismBlock.CREATIVE_FLUID_TANK);
+        setCustomModelResourceLocation(getInventoryMRL("gas_tank"), MekanismBlock.BASIC_GAS_TANK, MekanismBlock.ADVANCED_GAS_TANK, MekanismBlock.ELITE_GAS_TANK,
+              MekanismBlock.ULTIMATE_GAS_TANK, MekanismBlock.CREATIVE_GAS_TANK);
 
         setCustomModelResourceLocation(getInventoryMRL("quantum_entangloporter"), MekanismBlock.QUANTUM_ENTANGLOPORTER);
         setCustomModelResourceLocation(getInventoryMRL("solar_neutron_activator"), MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
@@ -813,7 +812,7 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.BLUE_PLASTIC_ROAD, MekanismBlock.PURPLE_PLASTIC_ROAD, MekanismBlock.CYAN_PLASTIC_ROAD, MekanismBlock.LIGHT_GRAY_PLASTIC_ROAD,
               MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD, MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD,
               MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD, MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD);
-        setCustomModelResourceLocation(getInventoryMRL("PlasticFence"), MekanismBlock.BLACK_PLASTIC_BARRIER, MekanismBlock.RED_PLASTIC_BARRIER, MekanismBlock.GREEN_PLASTIC_BARRIER,
+        setCustomModelResourceLocation(getInventoryMRL("plastic_fence"), MekanismBlock.BLACK_PLASTIC_BARRIER, MekanismBlock.RED_PLASTIC_BARRIER, MekanismBlock.GREEN_PLASTIC_BARRIER,
               MekanismBlock.BROWN_PLASTIC_BARRIER, MekanismBlock.BLUE_PLASTIC_BARRIER, MekanismBlock.PURPLE_PLASTIC_BARRIER, MekanismBlock.CYAN_PLASTIC_BARRIER,
               MekanismBlock.LIGHT_GRAY_PLASTIC_BARRIER, MekanismBlock.GRAY_PLASTIC_BARRIER, MekanismBlock.PINK_PLASTIC_BARRIER, MekanismBlock.LIME_PLASTIC_BARRIER,
               MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
