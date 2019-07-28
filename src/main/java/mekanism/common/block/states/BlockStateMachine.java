@@ -4,25 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockActiveTextured;
-import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
@@ -128,42 +120,6 @@ public class BlockStateMachine extends ExtendedBlockState {
         @Override
         public String toString() {
             return getName();
-        }
-    }
-
-    public static class MachineBlockStateMapper extends StateMapperBase {
-
-        @Nonnull
-        @Override
-        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-            Block block = state.getBlock();
-            StringBuilder builder = new StringBuilder();
-            String nameOverride = null;
-
-            if (block instanceof IBlockActiveTextured) {
-                builder.append(activeProperty.getName());
-                builder.append("=");
-                builder.append(state.getValue(activeProperty));
-            }
-
-            if (block instanceof IRotatableBlock) {
-                EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
-                if (!((IRotatableBlock) block).canRotateTo(facing)) {
-                    facing = EnumFacing.NORTH;
-                }
-                if (builder.length() > 0) {
-                    builder.append(",");
-                }
-                builder.append(BlockStateFacing.facingProperty.getName());
-                builder.append("=");
-                builder.append(facing.getName());
-            }
-
-            if (builder.length() == 0) {
-                builder.append("normal");
-            }
-            ResourceLocation baseLocation = block.getRegistryName();
-            return new ModelResourceLocation(baseLocation, builder.toString());
         }
     }
 }
