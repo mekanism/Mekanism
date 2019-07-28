@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockGlowPanel;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.tile.TileEntityGlowPanel;
@@ -11,6 +12,7 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -26,13 +28,10 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
     @Override
     public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
           float hitZ, @Nonnull IBlockState state) {
-        if (stack.getItemDamage() >= EnumColor.DYES.length) {
-            return false;
-        }
         boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
         if (place) {
             TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
-            EnumColor col = EnumColor.DYES[stack.getItemDamage()];
+            EnumColor col = getColor(stack);
             BlockPos pos1 = pos.offset(side.getOpposite());
             if (world.isSideSolid(pos1, side)) {
                 tileEntity.setOrientation(side.getOpposite());
@@ -48,21 +47,26 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
     @Nonnull
     @Override
     public String getItemStackDisplayName(@Nonnull ItemStack stack) {
-        int itemDamage = stack.getItemDamage();
-        if (itemDamage >= EnumColor.DYES.length) {
-            return "Invalid Damage: " + itemDamage;
+        EnumColor color = getColor(stack);
+        String colorName;
+        if (LangUtils.canLocalize(getTranslationKey(stack) + "." + color.dyeName)) {
+            return LangUtils.localize(getTranslationKey(stack) + "." + color.dyeName);
         }
-        EnumColor colour = EnumColor.DYES[itemDamage];
-        String colourName;
-        if (LangUtils.canLocalize(getTranslationKey(stack) + "." + colour.dyeName)) {
-            return LangUtils.localize(getTranslationKey(stack) + "." + colour.dyeName);
-        }
-        if (colour == EnumColor.BLACK) {
-            colourName = EnumColor.DARK_GREY + colour.getDyeName();
+        if (color == EnumColor.BLACK) {
+            colorName = EnumColor.DARK_GREY + color.getDyeName();
         } else {
-            colourName = colour.getDyedName();
+            colorName = color.getDyedName();
         }
-        return colourName + " " + super.getItemStackDisplayName(stack);
+        return colorName + " " + super.getItemStackDisplayName(stack);
+    }
+
+    private EnumColor getColor(ItemStack stack) {
+        Item item = stack.getItem();
+        if (item instanceof ItemBlockGlowPanel) {
+            BlockGlowPanel glowPanel = (BlockGlowPanel) (((ItemBlockGlowPanel) item).block);
+            return glowPanel.getColor();
+        }
+        return EnumColor.BLACK;
     }
 
     @Override

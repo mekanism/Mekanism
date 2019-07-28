@@ -59,6 +59,10 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
+    public EnumColor getColor() {
+        return color;
+    }
+
     public static boolean canStay(IBlockAccess world, BlockPos pos) {
         boolean canStay = false;
         if (Mekanism.hooks.MCMPLoaded) {

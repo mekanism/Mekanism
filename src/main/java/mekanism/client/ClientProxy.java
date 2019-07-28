@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
@@ -133,7 +132,7 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.item.ItemBlockMekanism;
+import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -222,6 +221,7 @@ import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -1168,23 +1168,25 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
+    private void registerItemColorHandler(IItemColor itemColor, MekanismItem... blocks) {
+
+    }
+
     @Override
     public void init() {
         super.init();
         registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {
-                      EnumColor color = ((IColoredBlock) block).getColor();
-                      return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
+                      return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
                   }
                   return -1;
               }, (stack, tintIndex) -> {
                   Item item = stack.getItem();
-                  if (item instanceof ItemBlockMekanism) {
-                      ItemBlockMekanism itemBlock = (ItemBlockMekanism) item;
-                      if (itemBlock instanceof IColoredBlock) {
-                          EnumColor color = ((IColoredBlock) itemBlock).getColor();
-                          return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
+                  if (item instanceof ItemBlock) {
+                      Block block = ((ItemBlock) item).getBlock();
+                      if (block instanceof IColoredBlock) {
+                          return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
                       }
                   }
                   return -1;
@@ -1225,11 +1227,18 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.LIGHT_GRAY_PLASTIC_BARRIER, MekanismBlock.GRAY_PLASTIC_BARRIER, MekanismBlock.PINK_PLASTIC_BARRIER, MekanismBlock.LIME_PLASTIC_BARRIER,
               MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
               MekanismBlock.WHITE_PLASTIC_BARRIER);
-        //TODO
-        /*Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
-            EnumColor dye = EnumColor.DYES[stack.getItemDamage()];
-            return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
-        }, MekanismItems.Balloon);*/
+        //TODO: Fix this
+        registerItemColorHandler((stack, tintIndex) -> {
+                  Item item = stack.getItem();
+                  if (item instanceof ItemBalloon) {
+                      ItemBalloon balloon = (ItemBalloon) item;
+                      return MekanismRenderer.getColorARGB(balloon.getColor(), 1);
+                  }
+                  return -1;
+              }, MekanismItem.BLACK_BALLOON, MekanismItem.RED_BALLOON, MekanismItem.GREEN_BALLOON,
+              MekanismItem.BROWN_BALLOON, MekanismItem.BLUE_BALLOON, MekanismItem.PURPLE_BALLOON, MekanismItem.CYAN_BALLOON, MekanismItem.LIGHT_GREY_BALLOON,
+              MekanismItem.GREY_BALLOON, MekanismItem.PINK_BALLOON, MekanismItem.LIME_BALLOON, MekanismItem.YELLOW_BALLOON, MekanismItem.LIGHT_BLUE_BALLOON,
+              MekanismItem.MAGENTA_BALLOON, MekanismItem.ORANGE_BALLOON, MekanismItem.WHITE_BALLOON);
 
         MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
         MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());

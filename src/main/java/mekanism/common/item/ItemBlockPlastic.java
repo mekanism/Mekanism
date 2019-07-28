@@ -2,40 +2,40 @@ package mekanism.common.item;
 
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemBlockPlastic extends ItemBlockMekanism {
 
-    public Block metaBlock;
-
     public ItemBlockPlastic(Block block) {
         super(block);
-        metaBlock = block;
-        setHasSubtypes(true);
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
     }
 
     @Nonnull
     @Override
     public String getItemStackDisplayName(@Nonnull ItemStack stack) {
-        EnumDyeColor dyeColour = EnumDyeColor.byDyeDamage(stack.getItemDamage() & 15);
-        EnumColor colour = EnumColor.DYES[dyeColour.getDyeDamage()];
-        String colourName;
-        if (LangUtils.canLocalize(getTranslationKey(stack) + "." + colour.dyeName)) {
-            return LangUtils.localize(getTranslationKey(stack) + "." + colour.dyeName);
+        EnumColor color = getColor(stack);
+        String colorName;
+        if (LangUtils.canLocalize(getTranslationKey(stack) + "." + color.dyeName)) {
+            return LangUtils.localize(getTranslationKey(stack) + "." + color.dyeName);
         }
-        if (colour == EnumColor.BLACK) {
-            colourName = EnumColor.DARK_GREY + colour.getDyeName();
+        if (color == EnumColor.BLACK) {
+            colorName = EnumColor.DARK_GREY + color.getDyeName();
         } else {
-            colourName = colour.getDyedName();
+            colorName = color.getDyedName();
         }
-        return colourName + " " + super.getItemStackDisplayName(stack);
+        return colorName + " " + super.getItemStackDisplayName(stack);
+    }
+
+    private EnumColor getColor(ItemStack stack) {
+        Item item = stack.getItem();
+        if (item instanceof ItemBlockPlastic) {
+            IColoredBlock block = (IColoredBlock) (((ItemBlockPlastic) item).block);
+            return block.getColor();
+        }
+        return EnumColor.BLACK;
     }
 }
