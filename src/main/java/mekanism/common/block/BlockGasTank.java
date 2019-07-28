@@ -10,7 +10,6 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.block.states.BlockStateGasTank;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -63,7 +62,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
     @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateGasTank(this);
+        return new BlockStateFacing(this);
     }
 
     @Override
@@ -81,9 +80,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
             TileEntityGasTank tank = (TileEntityGasTank) tile;
             if (tank.facing != null) {
                 state = state.withProperty(BlockStateFacing.facingProperty, tank.facing);
-            }
-            if (tank.tier != null) {
-                state = state.withProperty(BlockStateGasTank.typeProperty, tank.tier);
             }
         }
         return state;

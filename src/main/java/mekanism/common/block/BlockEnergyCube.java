@@ -9,7 +9,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.BlockStateEnergyCube;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -68,7 +67,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateEnergyCube(this);
+        return new BlockStateFacing(this);
     }
 
     @Override
@@ -86,9 +85,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
             TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
             if (cube.facing != null) {
                 state = state.withProperty(BlockStateFacing.facingProperty, cube.facing);
-            }
-            if (cube.tier != null) {
-                state = state.withProperty(BlockStateEnergyCube.typeProperty, cube.tier);
             }
         }
         return state;

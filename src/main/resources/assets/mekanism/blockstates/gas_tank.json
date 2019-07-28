@@ -8,6 +8,7 @@
     }
   },
   "variants": {
+    "normal": [{}],
     "facing": {
       "up":    {"x": -90},
       "down":  {"x":  90},
@@ -15,13 +16,6 @@
       "south": {"y": 180},
       "east":  {"y":  90},
       "west":  {"y": -90}
-    },
-    "tier": {
-      "basic": {"textures": {"valve": "mekanism:blocks/models/gas_tank_basic_valve"}},
-      "advanced": {"textures": {"valve": "mekanism:blocks/models/gas_tank_advanced_valve"}},
-      "elite": {"textures": {"valve": "mekanism:blocks/models/gas_tank_elite_valve"}},
-      "ultimate": {"textures": {"valve": "mekanism:blocks/models/gas_tank_ultimate_valve"}},
-      "creative": {"textures": {"valve": "mekanism:blocks/models/gas_tank_creative_valve"}}
     },
     "inventory": [{}]
   }
