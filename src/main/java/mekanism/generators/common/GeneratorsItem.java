@@ -14,9 +14,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum GeneratorsItem implements IItemProvider {
-    SOLAR_PANEL(new ItemMekanism("solar_panel")),
+    SOLAR_PANEL(new ItemMekanism(MekanismGenerators.MODID, "solar_panel")),
     HOHLRAUM(new ItemHohlraum()),
-    TURBINE_BLADE(new ItemMekanism("turbine_blade") {
+    TURBINE_BLADE(new ItemMekanism(MekanismGenerators.MODID, "turbine_blade") {
         @Override
         public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
             return MekanismUtils.getTileEntitySafe(world, pos) instanceof TileEntityTurbineRotor;
@@ -27,9 +27,6 @@ public enum GeneratorsItem implements IItemProvider {
 
     GeneratorsItem(Item item) {
         this.item = item;
-        //TODO: This part is needed (or more accurately it being registered against MekanismGenerators instead of Mekanism)
-        //TODO: Make registering the name easier (cannot override once set)
-        //item.setRegistryName(new ResourceLocation(MekanismGenerators.MODID, item.getRegistryName().getPath()));
     }
 
     @Override

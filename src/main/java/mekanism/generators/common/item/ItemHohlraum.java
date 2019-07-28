@@ -10,6 +10,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
     public static final int TRANSFER_RATE = 1;
 
     public ItemHohlraum() {
-        super("hohlraum");
+        super(MekanismGenerators.MODID, "hohlraum");
         setMaxStackSize(1);
     }
 
