@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLModIdMappingEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -75,6 +76,11 @@ public class MekanismTools implements IModule {
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
+    }
+
+    @EventHandler
+    public void modRemapping(FMLModIdMappingEvent event) {
+        ToolsItem.remapItems();
     }
 
     @SubscribeEvent

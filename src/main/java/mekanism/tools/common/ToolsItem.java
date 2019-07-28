@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -107,7 +108,7 @@ public enum ToolsItem {
           LAPIS_LAZULI_PAXEL, LAPIS_LAZULI_HELMET, LAPIS_LAZULI_CHESTPLATE, LAPIS_LAZULI_LEGGINGS, LAPIS_LAZULI_BOOTS);
 
     @Nonnull
-    private final Item item;
+    private Item item;
 
     <ITEM extends Item & IHasRepairType> ToolsItem(@Nonnull String name, @Nonnull ITEM item) {
         //TODO: Make name be part of item instead of added on this extra layer.
@@ -119,6 +120,10 @@ public enum ToolsItem {
     @Nonnull
     public Item getItem() {
         return item;
+    }
+
+    private void updateItem(Item item) {
+        this.item = item;
     }
 
     @Nonnull
@@ -150,6 +155,13 @@ public enum ToolsItem {
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (ToolsItem toolsItem : values()) {
             registry.register(toolsItem.getItem());
+        }
+    }
+
+    public static void remapItems() {
+        for (ToolsItem toolsItem : values()) {
+            ResourceLocation registryName = toolsItem.getItem().getRegistryName();
+            toolsItem.updateItem(ForgeRegistries.ITEMS.getValue(registryName));
         }
     }
 }
