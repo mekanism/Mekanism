@@ -56,6 +56,11 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     }
 
     @Override
+    public void updateCapacity() {
+        //The capacity is always zero so no point in doing calculations.
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
 

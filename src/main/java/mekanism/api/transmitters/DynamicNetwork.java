@@ -33,6 +33,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Range4D packetRange = null;
     protected int capacity = 0;
     protected double doubleCapacity = 0;
+    @Deprecated
     protected double meanCapacity = 0;
     protected boolean needsUpdate = false;
     protected int updateDelay = 0;
@@ -255,20 +256,18 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public synchronized void updateCapacity() {
-        updateMeanCapacity();
-        doubleCapacity = meanCapacity * transmitters.size();
+        doubleCapacity = transmitters.stream().mapToDouble(IGridTransmitter::getCapacity).sum();
         capacity = doubleCapacity > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) doubleCapacity;
+        //TODO: Remove this at some point, but kept in for now in case something is using the API and requires the meanCapacity
+        updateMeanCapacity();
     }
 
     /**
      * Override this if things can have variable capacity along the network. An 'average' value of capacity. Calculate it how you will.
      */
+    @Deprecated
     protected synchronized void updateMeanCapacity() {
-        if (transmitters.size() > 0) {
-            meanCapacity = transmitters.iterator().next().getCapacity();
-        } else {
-            meanCapacity = 0;
-        }
+        meanCapacity = transmitters.size() > 0 ? doubleCapacity / transmitters.size() : 0;
     }
 
     public int getCapacity() {

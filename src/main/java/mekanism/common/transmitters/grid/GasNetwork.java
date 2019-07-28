@@ -116,16 +116,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         }
     }
 
-    @Override
-    protected void updateMeanCapacity() {
-        int numCables = transmitters.size();
-        double sum = 0;
-        for (IGridTransmitter<IGasHandler, GasNetwork, GasStack> tube : transmitters) {
-            sum += tube.getCapacity();
-        }
-        meanCapacity = sum / (double) numCables;
-    }
-
     public int getGasNeeded() {
         return getCapacity() - (buffer != null ? buffer.amount : 0);
     }

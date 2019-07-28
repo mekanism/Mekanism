@@ -79,16 +79,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         }
     }
 
-    @Override
-    protected void updateMeanCapacity() {
-        int numCables = transmitters.size();
-        double reciprocalSum = 0;
-        for (IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> cable : transmitters) {
-            reciprocalSum += 1.0 / (double) cable.getCapacity();
-        }
-        meanCapacity = (double) numCables / reciprocalSum;
-    }
-
     public double getEnergyNeeded() {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             return 0;
