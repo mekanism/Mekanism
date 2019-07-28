@@ -22,7 +22,7 @@ public class BlockPlasticRoad extends Block implements IColoredBlock {
         setHardness(5F);
         setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_plastic";
+        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_plastic_road";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }

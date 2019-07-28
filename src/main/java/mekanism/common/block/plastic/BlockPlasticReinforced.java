@@ -19,7 +19,7 @@ public class BlockPlasticReinforced extends Block implements IColoredBlock {
         setHardness(50F);
         setResistance(2000F);
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_plastic_reinforced";
+        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_reinforced_plastic";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }

@@ -20,7 +20,7 @@ public class BlockPlasticSlick extends Block implements IColoredBlock {
         setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
         slipperiness = 0.98F;
-        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_plastic";
+        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_slick_plastic";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
