@@ -125,6 +125,7 @@ public enum MekanismBlock implements IBlockProvider {
     ADVANCED_BIN(new BlockBin(BinTier.ADVANCED), ItemBlockBasic::new),
     ELITE_BIN(new BlockBin(BinTier.ELITE), ItemBlockBasic::new),
     ULTIMATE_BIN(new BlockBin(BinTier.ULTIMATE), ItemBlockBasic::new),
+    CREATIVE_BIN(new BlockBin(BinTier.CREATIVE), ItemBlockBasic::new),
 
     TELEPORTER_FRAME(new BlockTeleporterFrame(), ItemBlockBasic::new),
     STEEL_CASING(new BlockSteelCasing(), ItemBlockBasic::new),

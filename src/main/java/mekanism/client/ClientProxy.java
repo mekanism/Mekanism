@@ -373,15 +373,78 @@ public class ClientProxy extends CommonProxy {
         registerItemRender(MekanismItem.TIN_CRYSTAL);
         registerItemRender(MekanismItem.SILVER_CRYSTAL);
         registerItemRender(MekanismItem.LEAD_CRYSTAL);
-        //TODO
-        /*registerItemRender(MekanismItems.Shard);
-        registerItemRender(MekanismItems.Dust);
-        registerItemRender(MekanismItems.Ingot);
-        registerItemRender(MekanismItems.Nugget);
-        registerItemRender(MekanismItems.Clump);
-        registerItemRender(MekanismItems.DirtyDust);
-        registerItemRender(MekanismItems.OtherDust);
-        registerItemRender(MekanismItems.Balloon);//*/
+
+        registerItemRender(MekanismItem.IRON_SHARD);
+        registerItemRender(MekanismItem.GOLD_SHARD);
+        registerItemRender(MekanismItem.OSMIUM_SHARD);
+        registerItemRender(MekanismItem.COPPER_SHARD);
+        registerItemRender(MekanismItem.TIN_SHARD);
+        registerItemRender(MekanismItem.SILVER_SHARD);
+        registerItemRender(MekanismItem.LEAD_SHARD);
+
+        registerItemRender(MekanismItem.IRON_CLUMP);
+        registerItemRender(MekanismItem.GOLD_CLUMP);
+        registerItemRender(MekanismItem.OSMIUM_CLUMP);
+        registerItemRender(MekanismItem.COPPER_CLUMP);
+        registerItemRender(MekanismItem.TIN_CLUMP);
+        registerItemRender(MekanismItem.SILVER_CLUMP);
+        registerItemRender(MekanismItem.LEAD_CLUMP);
+
+        registerItemRender(MekanismItem.DIRTY_IRON_DUST);
+        registerItemRender(MekanismItem.DIRTY_GOLD_DUST);
+        registerItemRender(MekanismItem.DIRTY_OSMIUM_DUST);
+        registerItemRender(MekanismItem.DIRTY_COPPER_DUST);
+        registerItemRender(MekanismItem.DIRTY_TIN_DUST);
+        registerItemRender(MekanismItem.DIRTY_SILVER_DUST);
+        registerItemRender(MekanismItem.DIRTY_LEAD_DUST);
+
+        registerItemRender(MekanismItem.IRON_DUST);
+        registerItemRender(MekanismItem.GOLD_DUST);
+        registerItemRender(MekanismItem.OSMIUM_DUST);
+        registerItemRender(MekanismItem.COPPER_DUST);
+        registerItemRender(MekanismItem.TIN_DUST);
+        registerItemRender(MekanismItem.SILVER_DUST);
+        registerItemRender(MekanismItem.LEAD_DUST);
+
+        registerItemRender(MekanismItem.DIAMOND_DUST);
+        registerItemRender(MekanismItem.STEEL_DUST);
+        registerItemRender(MekanismItem.SULFUR_DUST);
+        registerItemRender(MekanismItem.LITHIUM_DUST);
+        registerItemRender(MekanismItem.REFINED_OBSIDIAN_DUST);
+        registerItemRender(MekanismItem.OBSIDIAN_DUST);
+
+        registerItemRender(MekanismItem.REFINED_OBSIDIAN_INGOT);
+        registerItemRender(MekanismItem.OSMIUM_INGOT);
+        registerItemRender(MekanismItem.BRONZE_INGOT);
+        registerItemRender(MekanismItem.REFINED_GLOWSTONE_INGOT);
+        registerItemRender(MekanismItem.STEEL_INGOT);
+        registerItemRender(MekanismItem.COPPER_INGOT);
+        registerItemRender(MekanismItem.TIN_INGOT);
+
+        registerItemRender(MekanismItem.REFINED_OBSIDIAN_NUGGET);
+        registerItemRender(MekanismItem.OSMIUM_NUGGET);
+        registerItemRender(MekanismItem.BRONZE_NUGGET);
+        registerItemRender(MekanismItem.REFINED_GLOWSTONE_NUGGET);
+        registerItemRender(MekanismItem.STEEL_NUGGET);
+        registerItemRender(MekanismItem.COPPER_NUGGET);
+        registerItemRender(MekanismItem.TIN_NUGGET);
+
+        registerItemRender(MekanismItem.BLACK_BALLOON);
+        registerItemRender(MekanismItem.RED_BALLOON);
+        registerItemRender(MekanismItem.GREEN_BALLOON);
+        registerItemRender(MekanismItem.BROWN_BALLOON);
+        registerItemRender(MekanismItem.BLUE_BALLOON);
+        registerItemRender(MekanismItem.PURPLE_BALLOON);
+        registerItemRender(MekanismItem.CYAN_BALLOON);
+        registerItemRender(MekanismItem.LIGHT_GREY_BALLOON);
+        registerItemRender(MekanismItem.GREY_BALLOON);
+        registerItemRender(MekanismItem.PINK_BALLOON);
+        registerItemRender(MekanismItem.LIME_BALLOON);
+        registerItemRender(MekanismItem.YELLOW_BALLOON);
+        registerItemRender(MekanismItem.LIGHT_BLUE_BALLOON);
+        registerItemRender(MekanismItem.MAGENTA_BALLOON);
+        registerItemRender(MekanismItem.ORANGE_BALLOON);
+        registerItemRender(MekanismItem.WHITE_BALLOON);
 
         ModelBakery.registerItemVariants(MekanismItem.WALKIE_TALKIE.getItem(), ItemWalkieTalkie.OFF_MODEL);
 
@@ -440,11 +503,32 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerBlockRenders() {
         //TODO: Redo all of these. Lots can probably just be done with json now
-        /*ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock, basicMapper);
-        ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock2, basicMapper);
-        ModelLoader.setCustomStateMapper(MekanismBlocks.MachineBlock3, basicMapper);
-        ModelLoader.setCustomStateMapper(MekanismBlocks.BasicBlock, basicMapper);
-        ModelLoader.setCustomStateMapper(MekanismBlocks.BasicBlock2, basicMapper);
+        //Basic blocks
+        setCustomStateMapper(basicMapper, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, MekanismBlock.SECURITY_DESK, MekanismBlock.BASIC_BIN,
+              MekanismBlock.ADVANCED_BIN, MekanismBlock.ELITE_BIN, MekanismBlock.ULTIMATE_BIN, MekanismBlock.CREATIVE_BIN, MekanismBlock.BOILER_CASING,
+              MekanismBlock.BOILER_VALVE, MekanismBlock.DYNAMIC_TANK, MekanismBlock.DYNAMIC_VALVE, MekanismBlock.INDUCTION_CASING, MekanismBlock.INDUCTION_PORT);
+        //Machine blocks
+        setCustomStateMapper(basicMapper, MekanismBlock.CHARGEPAD, MekanismBlock.CHEMICAL_CRYSTALLIZER, MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER,
+              MekanismBlock.CHEMICAL_INFUSER, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, MekanismBlock.CHEMICAL_OXIDIZER, MekanismBlock.CHEMICAL_WASHER,
+              MekanismBlock.COMBINER, MekanismBlock.CRUSHER, MekanismBlock.DIGITAL_MINER, MekanismBlock.ELECTRIC_PUMP, MekanismBlock.ELECTROLYTIC_SEPARATOR,
+              MekanismBlock.ENERGIZED_SMELTER, MekanismBlock.ENRICHMENT_CHAMBER, MekanismBlock.FLUIDIC_PLENISHER, MekanismBlock.FORMULAIC_ASSEMBLICATOR,
+              MekanismBlock.FUELWOOD_HEATER, MekanismBlock.LASER, MekanismBlock.LASER_AMPLIFIER, MekanismBlock.LASER_TRACTOR_BEAM, MekanismBlock.LOGISTICAL_SORTER,
+              MekanismBlock.METALLURGIC_INFUSER, MekanismBlock.OREDICTIONIFICATOR, MekanismBlock.OSMIUM_COMPRESSOR, MekanismBlock.PERSONAL_CHEST,
+              MekanismBlock.PRECISION_SAWMILL, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, MekanismBlock.PURIFICATION_CHAMBER, MekanismBlock.QUANTUM_ENTANGLOPORTER,
+              MekanismBlock.RESISTIVE_HEATER, MekanismBlock.ROTARY_CONDENSENTRATOR, MekanismBlock.SEISMIC_VIBRATOR, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR,
+              MekanismBlock.TELEPORTER);
+        //Basic Factories
+        setCustomStateMapper(basicMapper, MekanismBlock.BASIC_SMELTING_FACTORY, MekanismBlock.BASIC_ENRICHING_FACTORY, MekanismBlock.BASIC_CRUSHING_FACTORY,
+              MekanismBlock.BASIC_COMPRESSING_FACTORY, MekanismBlock.BASIC_COMBINING_FACTORY, MekanismBlock.BASIC_PURIFYING_FACTORY,
+              MekanismBlock.BASIC_INJECTING_FACTORY, MekanismBlock.BASIC_INFUSING_FACTORY, MekanismBlock.BASIC_SAWING_FACTORY);
+        //Advanced Factories
+        setCustomStateMapper(basicMapper, MekanismBlock.ADVANCED_SMELTING_FACTORY, MekanismBlock.ADVANCED_ENRICHING_FACTORY, MekanismBlock.ADVANCED_CRUSHING_FACTORY,
+              MekanismBlock.ADVANCED_COMPRESSING_FACTORY, MekanismBlock.ADVANCED_COMBINING_FACTORY, MekanismBlock.ADVANCED_PURIFYING_FACTORY,
+              MekanismBlock.ADVANCED_INJECTING_FACTORY, MekanismBlock.ADVANCED_INFUSING_FACTORY, MekanismBlock.ADVANCED_SAWING_FACTORY);
+        //Elite Factories
+        setCustomStateMapper(basicMapper, MekanismBlock.ELITE_SMELTING_FACTORY, MekanismBlock.ELITE_ENRICHING_FACTORY, MekanismBlock.ELITE_CRUSHING_FACTORY,
+              MekanismBlock.ELITE_COMPRESSING_FACTORY, MekanismBlock.ELITE_COMBINING_FACTORY, MekanismBlock.ELITE_PURIFYING_FACTORY,
+              MekanismBlock.ELITE_INJECTING_FACTORY, MekanismBlock.ELITE_INFUSING_FACTORY, MekanismBlock.ELITE_SAWING_FACTORY);
         /*ModelLoader.setCustomStateMapper(MekanismBlocks.PlasticBlock, plasticMapper);
         ModelLoader.setCustomStateMapper(MekanismBlocks.SlickPlasticBlock, plasticMapper);
         ModelLoader.setCustomStateMapper(MekanismBlocks.GlowPlasticBlock, plasticMapper);
@@ -512,10 +596,10 @@ public class ClientProxy extends CommonProxy {
             while (true) {
                 if (machineResources.get(resource) == null) {
                     List<String> entries = new ArrayList<>();
-                    if (block.hasActiveTexture()) {
+                    if (block instanceof IBlockActiveTextured) {
                         entries.add("active=false");
                     }
-                    if (block.hasRotations()) {
+                    if (block instanceof IRotatableBlock) {
                         entries.add("facing=north");
                     }
 
@@ -553,10 +637,10 @@ public class ClientProxy extends CommonProxy {
             while (true) {
                 if (basicResources.get(resource) == null) {
                     List<String> entries = new ArrayList<>();
-                    if (block.hasActiveTexture()) {
+                    if (block instanceof IBlockActiveTextured) {
                         entries.add("active=false");
                     }
-                    if (block.hasRotations() || type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER) {
+                    if (block instanceof IRotatableBlock) {
                         entries.add("facing=north");
                     }
 
