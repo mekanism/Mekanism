@@ -144,6 +144,7 @@ import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -429,22 +430,10 @@ public class ClientProxy extends CommonProxy {
         registerItemRender(MekanismItem.COPPER_NUGGET);
         registerItemRender(MekanismItem.TIN_NUGGET);
 
-        registerItemRender(MekanismItem.BLACK_BALLOON);
-        registerItemRender(MekanismItem.RED_BALLOON);
-        registerItemRender(MekanismItem.GREEN_BALLOON);
-        registerItemRender(MekanismItem.BROWN_BALLOON);
-        registerItemRender(MekanismItem.BLUE_BALLOON);
-        registerItemRender(MekanismItem.PURPLE_BALLOON);
-        registerItemRender(MekanismItem.CYAN_BALLOON);
-        registerItemRender(MekanismItem.LIGHT_GREY_BALLOON);
-        registerItemRender(MekanismItem.GREY_BALLOON);
-        registerItemRender(MekanismItem.PINK_BALLOON);
-        registerItemRender(MekanismItem.LIME_BALLOON);
-        registerItemRender(MekanismItem.YELLOW_BALLOON);
-        registerItemRender(MekanismItem.LIGHT_BLUE_BALLOON);
-        registerItemRender(MekanismItem.MAGENTA_BALLOON);
-        registerItemRender(MekanismItem.ORANGE_BALLOON);
-        registerItemRender(MekanismItem.WHITE_BALLOON);
+        setCustomModelResourceLocation(getInventoryMRL("balloon"), MekanismItem.BLACK_BALLOON,MekanismItem.RED_BALLOON, MekanismItem.GREEN_BALLOON,
+              MekanismItem.BROWN_BALLOON, MekanismItem.BLUE_BALLOON, MekanismItem.PURPLE_BALLOON, MekanismItem.CYAN_BALLOON, MekanismItem.LIGHT_GREY_BALLOON,
+              MekanismItem.GREY_BALLOON, MekanismItem.PINK_BALLOON, MekanismItem.LIME_BALLOON, MekanismItem.YELLOW_BALLOON, MekanismItem.LIGHT_BLUE_BALLOON,
+              MekanismItem.MAGENTA_BALLOON, MekanismItem.ORANGE_BALLOON, MekanismItem.WHITE_BALLOON);
 
         ModelBakery.registerItemVariants(MekanismItem.WALKIE_TALKIE.getItem(), ItemWalkieTalkie.OFF_MODEL);
 
@@ -491,6 +480,12 @@ public class ClientProxy extends CommonProxy {
     private void setCustomStateMapper(IStateMapper mapper, MekanismBlock... blocks) {
         for (MekanismBlock mekanismBlock : blocks) {
             ModelLoader.setCustomStateMapper(mekanismBlock.getBlock(), mapper);
+        }
+    }
+
+    private void setCustomModelResourceLocation(ModelResourceLocation model, MekanismItem... items) {
+        for (MekanismItem mekanismItem : items) {
+            ModelLoader.setCustomModelResourceLocation(mekanismItem.getItem(), 0, model);
         }
     }
 
@@ -607,6 +602,33 @@ public class ClientProxy extends CommonProxy {
             }
         }, MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK, MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK, MekanismBlock.CREATIVE_FLUID_TANK);
 
+        setCustomStateMapper(new StateMapperBase() {
+            @Nonnull
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
+                return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "");
+            }
+        }, MekanismBlock.BASIC_GAS_TANK, MekanismBlock.ADVANCED_GAS_TANK, MekanismBlock.ELITE_GAS_TANK, MekanismBlock.ULTIMATE_GAS_TANK, MekanismBlock.CREATIVE_GAS_TANK);
+
+        setCustomStateMapper(new StateMapperBase() {
+            @Nonnull
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
+                return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "energy_cube"), "");
+            }
+        }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
+
+        setCustomStateMapper(new StateMapperBase() {
+            @Nonnull
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
+                return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "glow_panel"), "");
+            }
+        }, MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL, MekanismBlock.BROWN_GLOW_PANEL, MekanismBlock.BLUE_GLOW_PANEL,
+              MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL, MekanismBlock.LIGHT_GRAY_GLOW_PANEL, MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL,
+              MekanismBlock.LIME_GLOW_PANEL, MekanismBlock.YELLOW_GLOW_PANEL, MekanismBlock.LIGHT_BLUE_GLOW_PANEL, MekanismBlock.MAGENTA_GLOW_PANEL, MekanismBlock.ORANGE_GLOW_PANEL,
+              MekanismBlock.WHITE_GLOW_PANEL);
+
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
         setCustomStateMapper(transmitterMapper, MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
@@ -623,7 +645,7 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "CardboardBox"), "storage=true"));
 
         //TODO: Does tier stuff matter
-        setCustomModelResourceLocation(getInventoryMRL("EnergyCube"), MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE,
+        setCustomModelResourceLocation(getInventoryMRL("energy_cube"), MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE,
               MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
 
         setCustomModelResourceLocation(getInventoryMRL("digital_miner"), MekanismBlock.DIGITAL_MINER);
@@ -643,7 +665,7 @@ public class ClientProxy extends CommonProxy {
 
         setCustomModelResourceLocation(getInventoryMRL("security_desk"), MekanismBlock.SECURITY_DESK);
 
-        setCustomModelResourceLocation(getInventoryMRL("glowpanel"), MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL,
+        setCustomModelResourceLocation(getInventoryMRL("glow_panel"), MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL,
               MekanismBlock.BROWN_GLOW_PANEL, MekanismBlock.BLUE_GLOW_PANEL, MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL,
               MekanismBlock.LIGHT_GRAY_GLOW_PANEL, MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL, MekanismBlock.LIME_GLOW_PANEL,
               MekanismBlock.YELLOW_GLOW_PANEL, MekanismBlock.LIGHT_BLUE_GLOW_PANEL, MekanismBlock.MAGENTA_GLOW_PANEL, MekanismBlock.ORANGE_GLOW_PANEL,
@@ -801,13 +823,18 @@ public class ClientProxy extends CommonProxy {
         setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "OreBlock"), "type=Copper"), MekanismBlock.COPPER_ORE);
         setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "OreBlock"), "type=Tin"), MekanismBlock.TIN_ORE);
 
-        /*ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), stack -> {
-            GasTankTier tier = GasTankTier.values()[((ItemBlockGasTank) stack.getItem()).getBaseTier(stack).ordinal()];
-            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "GasTank");
-            return new ModelResourceLocation(baseLocation, "facing=north,tier=" + tier);
-        });
+        ModelLoader.setCustomMeshDefinition(MekanismBlock.BASIC_GAS_TANK.getItem(), stack ->
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.BASIC));
+        ModelLoader.setCustomMeshDefinition(MekanismBlock.ADVANCED_GAS_TANK.getItem(), stack ->
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.ADVANCED));
+        ModelLoader.setCustomMeshDefinition(MekanismBlock.ELITE_GAS_TANK.getItem(), stack ->
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.ELITE));
+        ModelLoader.setCustomMeshDefinition(MekanismBlock.ULTIMATE_GAS_TANK.getItem(), stack ->
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.ULTIMATE));
+        ModelLoader.setCustomMeshDefinition(MekanismBlock.CREATIVE_GAS_TANK.getItem(), stack ->
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.CREATIVE));
 
-        ItemMeshDefinition machineMesher = stack -> {
+        /*ItemMeshDefinition machineMesher = stack -> {
             MachineType type = MachineType.get(stack);
             if (type != null) {
                 String resource = "mekanism:" + type.getName();
