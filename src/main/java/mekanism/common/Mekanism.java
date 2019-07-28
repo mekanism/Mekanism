@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.gas.Gas;
@@ -543,7 +542,32 @@ public class Mekanism {
                     //do the crystallizer only if it's one of our gases!
                     Resource gasResource = Resource.getFromName(oreGas.getName());
                     if (gasResource != null) {
-                        RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(MekanismItems.Crystal, 1, gasResource.ordinal()));
+                        //TODO: Better way to do this
+                        MekanismItem crystal = null;
+                        switch (gasResource) {
+                            case IRON:
+                                crystal = MekanismItem.IRON_CRYSTAL;
+                                break;
+                            case GOLD:
+                                crystal = MekanismItem.GOLD_CRYSTAL;
+                                break;
+                            case OSMIUM:
+                                crystal = MekanismItem.OSMIUM_CRYSTAL;
+                                break;
+                            case COPPER:
+                                crystal = MekanismItem.COPPER_CRYSTAL;
+                                break;
+                            case TIN:
+                                crystal = MekanismItem.TIN_CRYSTAL;
+                                break;
+                            case SILVER:
+                                crystal = MekanismItem.SILVER_CRYSTAL;
+                                break;
+                            case LEAD:
+                                crystal = MekanismItem.LEAD_CRYSTAL;
+                                break;
+                        }
+                        RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), crystal.getItemStack());
                     }
                 }
             }

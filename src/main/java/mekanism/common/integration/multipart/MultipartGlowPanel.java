@@ -5,7 +5,7 @@ import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.slot.EnumFaceSlot;
 import mcmultipart.api.slot.IPartSlot;
 import mekanism.api.EnumColor;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import mekanism.common.block.BlockGlowPanel;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.tile.TileEntityGlowPanel;
@@ -50,7 +50,8 @@ public class MultipartGlowPanel implements IMultipart {
         if (tile instanceof TileEntityGlowPanel && !BlockGlowPanel.canStay(part.getPartWorld(), part.getPartPos())) {
             BlockPos pos = part.getPartPos();
             TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
-            ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, glowPanel.colour.getMetaValue());
+            //TODO: Get correct color
+            ItemStack stack = MekanismBlock.BLACK_GLOW_PANEL.getItemStack();
             Block.spawnAsEntity(part.getActualWorld(), pos, stack);
             part.remove();
         }
@@ -68,6 +69,7 @@ public class MultipartGlowPanel implements IMultipart {
 
     @Override
     public Block getBlock() {
-        return MekanismBlocks.GlowPanel;
+        //TODO
+        return MekanismBlock.BLACK_GLOW_PANEL.getBlock();
     }
 }

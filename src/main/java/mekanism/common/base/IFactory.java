@@ -233,7 +233,8 @@ public interface IFactory {
         public TileEntityAdvancedElectricMachine getTile() {
             if (cacheTile == null) {
                 MachineType type = MachineType.get(getStack());
-                cacheTile = (TileEntityAdvancedElectricMachine) type.create();
+                //cacheTile = (TileEntityAdvancedElectricMachine) type.create();
+                //TODO: Move a bunch of factory stuff out
             }
             return cacheTile;
         }

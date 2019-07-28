@@ -4,7 +4,7 @@ import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.slot.EnumCenterSlot;
 import mcmultipart.api.slot.IPartSlot;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismBlock;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import net.minecraft.block.Block;
@@ -79,6 +79,7 @@ public class MultipartTransmitter implements IMultipart {
 
     @Override
     public Block getBlock() {
-        return MekanismBlocks.Transmitter;
+        //TODO
+        return MekanismBlock.BASIC_UNIVERSAL_CABLE.getBlock();
     }
 }
