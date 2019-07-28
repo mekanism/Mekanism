@@ -823,10 +823,9 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
               MekanismBlock.WHITE_PLASTIC_BARRIER);
 
-        //TODO: Split into their own json files
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ore_block"), "type=Osmium"), MekanismBlock.OSMIUM_ORE);
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ore_block"), "type=Copper"), MekanismBlock.COPPER_ORE);
-        setCustomModelResourceLocation(new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ore_block"), "type=Tin"), MekanismBlock.TIN_ORE);
+        setCustomModelResourceLocation(getInventoryMRL("osmium_ore"), MekanismBlock.OSMIUM_ORE);
+        setCustomModelResourceLocation(getInventoryMRL("copper_ore"), MekanismBlock.COPPER_ORE);
+        setCustomModelResourceLocation(getInventoryMRL("tin_ore"), MekanismBlock.TIN_ORE);
 
         ModelLoader.setCustomMeshDefinition(MekanismBlock.BASIC_GAS_TANK.getItem(), stack ->
               new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.BASIC));
