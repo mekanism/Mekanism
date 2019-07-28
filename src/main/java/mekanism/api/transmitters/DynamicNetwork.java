@@ -32,6 +32,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = new HashMap<>();
     protected Range4D packetRange = null;
     protected int capacity = 0;
+    protected double doubleCapacity = 0;
     protected double meanCapacity = 0;
     protected boolean needsUpdate = false;
     protected int updateDelay = 0;
@@ -255,9 +256,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public synchronized void updateCapacity() {
         updateMeanCapacity();
-        double newCapacity = meanCapacity * transmitters.size();
-        //TODO: Make EnergyNetwork use doubles for capacity rather than just integers
-        capacity = newCapacity > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) newCapacity;
+        doubleCapacity = meanCapacity * transmitters.size();
+        capacity = doubleCapacity > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) doubleCapacity;
     }
 
     /**
@@ -273,6 +273,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public int getCapacity() {
         return capacity;
+    }
+
+    public double getDoubleCapacity() {
+        return doubleCapacity;
     }
 
     public World getWorld() {

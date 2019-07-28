@@ -71,8 +71,8 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
     @Override
     public void clampBuffer() {
-        if (buffer.amount > getCapacity()) {
-            buffer.amount = getCapacity();
+        if (buffer.amount > getDoubleCapacity()) {
+            buffer.amount = getDoubleCapacity();
         }
         if (buffer.amount < 0) {
             buffer.amount = 0;
@@ -93,7 +93,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             return 0;
         }
-        return getCapacity() - buffer.amount;
+        return getDoubleCapacity() - buffer.amount;
     }
 
     private double tickEmit(double energyToSend) {
@@ -160,7 +160,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     public double getPowerScale() {
-        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1), getCapacity() == 0 ? 0 : buffer.amount / getCapacity());
+        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1), getDoubleCapacity() == 0 ? 0 : buffer.amount / getDoubleCapacity());
     }
 
     public void clearJoulesTransmitted() {

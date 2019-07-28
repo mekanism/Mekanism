@@ -259,7 +259,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     public double getMaxEnergy() {
         if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().getCapacity();
+            return getTransmitter().getTransmitterNetwork().getDoubleCapacity();
         }
         return getCapacity();
     }
