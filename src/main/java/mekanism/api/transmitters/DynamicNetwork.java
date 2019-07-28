@@ -255,7 +255,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public synchronized void updateCapacity() {
         updateMeanCapacity();
-        capacity = (int) meanCapacity * transmitters.size();
+        double newCapacity = meanCapacity * transmitters.size();
+        //TODO: Make EnergyNetwork use doubles for capacity rather than just integers
+        capacity = newCapacity > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) newCapacity;
     }
 
     /**
