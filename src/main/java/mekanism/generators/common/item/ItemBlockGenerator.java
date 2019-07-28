@@ -22,7 +22,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
-import mekanism.common.item.IItemMekanism;
+import mekanism.common.item.ItemBlockMekanism;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -40,7 +40,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -66,12 +65,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
       @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
       @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem,
-      ISecurityItem, IItemMekanism {
+public class ItemBlockGenerator extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem,
+      ISecurityItem {
 
     public ItemBlockGenerator(Block block) {
         super(block);
-        setHasSubtypes(true);
     }
 
     @Override
@@ -81,11 +79,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
             return 64;
         }
         return 1;
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
     }
 
     @Nonnull

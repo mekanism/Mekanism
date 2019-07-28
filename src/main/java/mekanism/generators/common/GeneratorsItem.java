@@ -9,7 +9,6 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -29,7 +28,8 @@ public enum GeneratorsItem implements IItemProvider {
     GeneratorsItem(Item item) {
         this.item = item;
         //TODO: This part is needed (or more accurately it being registered against MekanismGenerators instead of Mekanism)
-        item.setRegistryName(new ResourceLocation(MekanismGenerators.MODID, item.getRegistryName().getPath()));
+        //TODO: Make registering the name easier (cannot override once set)
+        //item.setRegistryName(new ResourceLocation(MekanismGenerators.MODID, item.getRegistryName().getPath()));
     }
 
     @Override
