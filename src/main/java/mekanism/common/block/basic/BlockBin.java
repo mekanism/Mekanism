@@ -76,6 +76,12 @@ public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IR
         return new BlockStateBasic(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @Nonnull
     @Override
     @Deprecated

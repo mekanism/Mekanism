@@ -5,10 +5,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -31,13 +29,6 @@ public class BlockTeleporterFrame extends BlockTileDrops implements IBlockDescri
         this.name = "teleporter_frame";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        //TODO: Split this so that ones that don't have facing/active don't have them show
-        return new BlockStateBasic(this);
     }
 
     @Override

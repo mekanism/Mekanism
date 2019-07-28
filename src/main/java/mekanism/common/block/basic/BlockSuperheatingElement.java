@@ -5,7 +5,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
@@ -21,7 +20,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -56,21 +54,11 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
 
     @Nonnull
     @Override
-    public BlockStateContainer createBlockState() {
-        //TODO: Split this so that ones that don't have facing/active don't have them show
-        return new BlockStateBasic(this);
-    }
-
-    @Nonnull
-    @Override
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
             state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        if (tile instanceof IActiveState) {
-            state = state.withProperty(BlockStateBasic.activeProperty, ((IActiveState) tile).getActive());
         }
         if (tile instanceof TileEntitySuperheatingElement) {
             TileEntitySuperheatingElement element = (TileEntitySuperheatingElement) tile;
@@ -217,11 +205,6 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tileEntity instanceof IActiveState) {
-            if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
-                return 15;
-            }
-        }
         if (tileEntity instanceof TileEntitySuperheatingElement) {
             TileEntitySuperheatingElement element = (TileEntitySuperheatingElement) tileEntity;
             if (element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null) {

@@ -1,13 +1,10 @@
 package mekanism.common.block.plastic;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStatePlastic;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -27,12 +24,6 @@ public class BlockPlasticGlow extends Block {
         this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_plastic_glow";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Nonnull
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStatePlastic(this);
     }
 
     @Override

@@ -103,6 +103,12 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         return new BlockStateMachine(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @Nonnull
     @Override
     @Deprecated

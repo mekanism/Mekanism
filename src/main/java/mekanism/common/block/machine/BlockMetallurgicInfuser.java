@@ -91,6 +91,12 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
         return new BlockStateMachine(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @Nonnull
     @Override
     @Deprecated

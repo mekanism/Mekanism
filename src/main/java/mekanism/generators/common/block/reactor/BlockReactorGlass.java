@@ -56,6 +56,12 @@ public class BlockReactorGlass extends Block implements ITileEntityProvider, IBl
     }
 
     @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
+    @Override
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {

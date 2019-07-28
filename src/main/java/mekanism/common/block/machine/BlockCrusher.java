@@ -91,6 +91,12 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
         return new BlockStateMachine(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @Nonnull
     @Override
     @Deprecated

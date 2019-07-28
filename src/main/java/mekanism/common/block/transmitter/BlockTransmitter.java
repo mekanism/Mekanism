@@ -89,6 +89,12 @@ public abstract class BlockTransmitter extends BlockTileDrops implements ITileEn
         return new BlockStateTransmitter(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override

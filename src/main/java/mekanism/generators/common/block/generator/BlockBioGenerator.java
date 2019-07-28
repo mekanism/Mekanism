@@ -81,6 +81,12 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
         return new BlockStateGenerator(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @Nonnull
     @Override
     @Deprecated

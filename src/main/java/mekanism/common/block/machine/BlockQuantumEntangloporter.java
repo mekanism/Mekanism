@@ -90,6 +90,12 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
         return new BlockStateMachine(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @Nonnull
     @Override
     @Deprecated

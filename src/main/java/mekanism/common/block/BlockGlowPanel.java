@@ -95,6 +95,12 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
         return new BlockStateGlowPanel(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @Nonnull
     @Override
     @Deprecated

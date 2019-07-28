@@ -89,6 +89,12 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
         return new BlockStateMachine(this);
     }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
     @Nonnull
     @Override
     @Deprecated

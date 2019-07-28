@@ -66,6 +66,12 @@ public class BlockReactorPort extends Block implements ITileEntityProvider, IBlo
     }
 
     @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
+    @Override
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
