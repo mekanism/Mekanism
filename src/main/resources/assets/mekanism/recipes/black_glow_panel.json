@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanism:black_glow_panel",
+    "count": 2
+  },
+  "pattern": [
+    "PSP",
+    "SDS",
+    "GSG"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "D": {
+      "ore": "dyeBlack",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "ore": "dustGlowstone",
+      "type": "forge:ore_dict"
+    }
+  }
+}

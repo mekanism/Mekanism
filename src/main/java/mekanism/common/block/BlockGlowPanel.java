@@ -1,9 +1,12 @@
 package mekanism.common.block;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGlowPanel;
@@ -32,7 +35,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvider {
+public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvider, IBlockOreDict {
 
     public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
 
@@ -56,6 +59,17 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
         this.name = color.registry_prefix + "_glow_panel";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    @Override
+    public List<String> getOredictEntries() {
+        List<String> entries = new ArrayList<>();
+        entries.add("glowPanel");
+        if (color.dyeName != null) {
+            //As of the moment none of the colors used have a null dye name but if the other ones get used this is needed
+            entries.add("glowPanel" + color.dyeName);
+        }
+        return entries;
     }
 
     public EnumColor getColor() {
