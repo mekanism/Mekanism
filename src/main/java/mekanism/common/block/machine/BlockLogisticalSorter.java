@@ -21,6 +21,7 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IRotatableBlock;
+import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig;
@@ -66,7 +67,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasGui {
+public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasGui, ISupportsUpgrades {
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -357,10 +358,8 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         }
         if (tileEntity instanceof ISecurityTile) {
             ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-            if (securityItem.hasSecurity(itemStack)) {
-                securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
-                securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
-            }
+            securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
+            securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
         }
         if (tileEntity instanceof IUpgradeTile) {
             ((IUpgradeTile) tileEntity).getComponent().write(ItemDataUtils.getDataMap(itemStack));

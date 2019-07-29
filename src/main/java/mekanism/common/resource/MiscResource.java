@@ -1,6 +1,6 @@
 package mekanism.common.resource;
 
-public enum  MiscResource implements INamedResource {
+public enum MiscResource implements INamedResource {
     DIAMOND("diamond", "Diamond"),
     STEEL("steel", "Steel"),
     REFINED_OBSIDIAN("refined_obsidian", "RefinedObsidian"),

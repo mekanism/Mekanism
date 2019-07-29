@@ -9,7 +9,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.ITierItem;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -37,11 +36,6 @@ public class RecipeUtils {
         }
         if (target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE) {
             return false;
-        }
-        if (target.getItem() instanceof ITierItem && input.getItem() instanceof ITierItem) {
-            if (((ITierItem) target.getItem()).getBaseTier(target) != ((ITierItem) input.getItem()).getBaseTier(input)) {
-                return false;
-            }
         }
 
         if (target.getItem() instanceof IFactory && input.getItem() instanceof IFactory) {

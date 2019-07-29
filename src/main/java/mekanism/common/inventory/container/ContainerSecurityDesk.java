@@ -22,8 +22,7 @@ public class ContainerSecurityDesk extends ContainerMekanism<TileEntitySecurityD
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (slotStack.getItem() instanceof ISecurityItem && ((ISecurityItem) slotStack.getItem())
-                  .hasSecurity(slotStack)) {
+            if (slotStack.getItem() instanceof ISecurityItem && ((ISecurityItem) slotStack.getItem()).hasSecurity(slotStack)) {
                 if (slotID != 0 && slotID != 1) {
                     if (!mergeItemStack(slotStack, 1, 2, false)) {
                         return ItemStack.EMPTY;

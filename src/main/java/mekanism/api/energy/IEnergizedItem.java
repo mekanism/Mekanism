@@ -51,6 +51,7 @@ public interface IEnergizedItem {
      *
      * @return if the item can receive energy
      */
+    //TODO: Is this still needed/useful
     boolean canReceive(ItemStack itemStack);
 
     /**

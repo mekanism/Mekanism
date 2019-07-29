@@ -41,8 +41,7 @@ public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble imple
     public TransporterTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockLogisticalTransporter) {
-            BlockLogisticalTransporter block = (BlockLogisticalTransporter) ((ItemBlockLogisticalTransporter) item).block;
-            return block.getTier();
+            return ((BlockLogisticalTransporter) ((ItemBlockLogisticalTransporter) item).block).getTier();
         }
         return null;
     }

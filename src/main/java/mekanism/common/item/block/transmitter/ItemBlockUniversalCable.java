@@ -42,8 +42,7 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble implements I
     public CableTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockUniversalCable) {
-            BlockUniversalCable block = (BlockUniversalCable) ((ItemBlockUniversalCable) item).block;
-            return block.getTier();
+            return ((BlockUniversalCable) ((ItemBlockUniversalCable) item).block).getTier();
         }
         return null;
     }

@@ -41,8 +41,7 @@ public class ItemBlockPressurizedTube extends ItemBlockMultipartAble implements 
     public TubeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockPressurizedTube) {
-            BlockPressurizedTube block = (BlockPressurizedTube) ((ItemBlockPressurizedTube) item).block;
-            return block.getTier();
+            return ((BlockPressurizedTube) ((ItemBlockPressurizedTube) item).block).getTier();
         }
         return null;
     }

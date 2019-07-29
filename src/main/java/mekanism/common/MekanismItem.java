@@ -5,8 +5,6 @@ import mekanism.api.EnumColor;
 import mekanism.common.base.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
-import mekanism.common.item.gear.ItemArmoredJetpack;
-import mekanism.common.item.gear.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -15,22 +13,24 @@ import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.gear.ItemFlamethrower;
-import mekanism.common.item.gear.ItemFreeRunners;
-import mekanism.common.item.gear.ItemGasMask;
 import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemResource;
 import mekanism.common.item.ItemRobit;
-import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.item.gear.ItemArmoredJetpack;
+import mekanism.common.item.gear.ItemAtomicDisassembler;
+import mekanism.common.item.gear.ItemFlamethrower;
+import mekanism.common.item.gear.ItemFreeRunners;
+import mekanism.common.item.gear.ItemGasMask;
+import mekanism.common.item.gear.ItemJetpack;
+import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.AlloyTier;
@@ -66,7 +66,7 @@ public enum MekanismItem implements IItemProvider {
     SUBSTRATE("substrate"),
     BIO_FUEL("bio_fuel"),
 
-    COMPRESSED_CARBON(new ItemResource(ResourceType.COMPRESSED,  MiscResource.CARBON)),
+    COMPRESSED_CARBON(new ItemResource(ResourceType.COMPRESSED, MiscResource.CARBON)),
     COMPRESSED_REDSTONE(new ItemResource(ResourceType.COMPRESSED, MiscResource.REDSTONE)),
     COMPRESSED_DIAMOND(new ItemResource(ResourceType.COMPRESSED, MiscResource.DIAMOND)),
     COMPRESSED_OBSIDIAN(new ItemResource(ResourceType.COMPRESSED, MiscResource.OBSIDIAN)),

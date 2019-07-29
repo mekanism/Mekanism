@@ -469,7 +469,7 @@ public final class OreDictManager {
                 addSawmillLog(tempCrafting, StackUtils.size(logEntry, 1), dummyWorld);
             }
             RecipeHandler.addPRCRecipe(StackUtils.size(logEntry, 1), new FluidStack(FluidRegistry.WATER, 100), new GasStack(MekanismFluids.Oxygen, 100), ItemStack.EMPTY,
-                    new GasStack(MekanismFluids.Hydrogen, 100), 0, 150);
+                  new GasStack(MekanismFluids.Hydrogen, 100), 0, 150);
         }
     }
 

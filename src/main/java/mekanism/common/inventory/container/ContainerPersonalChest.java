@@ -2,8 +2,8 @@ package mekanism.common.inventory.container;
 
 import invtweaks.api.container.ChestContainer;
 import javax.annotation.Nonnull;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.slot.SlotPersonalChest;
+import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -128,7 +128,7 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
         //Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)
         if (!isBlock && hotbarSlotId >= 0 && hotbarSlotId < 9 && player.inventory.currentItem == hotbarSlotId) {
             ItemStack itemStack = player.inventory.getStackInSlot(hotbarSlotId);
-            if (!itemStack.isEmpty() && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST) {
+            if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockPersonalChest) {
                 return ItemStack.EMPTY;
             }
         }

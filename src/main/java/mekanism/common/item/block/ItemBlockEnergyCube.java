@@ -72,8 +72,7 @@ public class ItemBlockEnergyCube extends ItemBlockMekanism implements IEnergized
     public EnergyCubeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockEnergyCube) {
-            BlockEnergyCube block = (BlockEnergyCube) ((ItemBlockEnergyCube) item).block;
-            return block.getTier();
+            return ((BlockEnergyCube) ((ItemBlockEnergyCube) item).block).getTier();
         }
         return null;
     }
@@ -91,12 +90,10 @@ public class ItemBlockEnergyCube extends ItemBlockMekanism implements IEnergized
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                      EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
         } else {
-            if (hasSecurity(itemstack)) {
-                list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-                list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
-                if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
-                    list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
-                }
+            list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+            list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
+            if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
+                list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
             }
             list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                      LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
@@ -118,9 +115,7 @@ public class ItemBlockEnergyCube extends ItemBlockMekanism implements IEnergized
                     tileEntity.configComponent.fillConfig(TransmissionType.ENERGY, tileEntity.getEnergy() > 0 ? 2 : 1);
                 }
                 ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(getOwnerUUID(stack));
-                if (hasSecurity(stack)) {
-                    ((ISecurityTile) tileEntity).getSecurity().setMode(getSecurity(stack));
-                }
+                ((ISecurityTile) tileEntity).getSecurity().setMode(getSecurity(stack));
                 if (getOwnerUUID(stack) == null) {
                     ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(player.getUniqueID());
                 }
@@ -278,16 +273,6 @@ public class ItemBlockEnergyCube extends ItemBlockMekanism implements IEnergized
     @Override
     public void setSecurity(ItemStack stack, SecurityMode mode) {
         ItemDataUtils.setInt(stack, "security", mode.ordinal());
-    }
-
-    @Override
-    public boolean hasSecurity(ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public boolean hasOwner(ItemStack stack) {
-        return hasSecurity(stack);
     }
 
     @Override

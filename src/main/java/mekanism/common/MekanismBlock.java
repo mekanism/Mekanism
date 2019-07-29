@@ -89,17 +89,52 @@ import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.item.block.ItemBlockGlowPanel;
-import mekanism.common.item.block.ItemBlockMachine;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.item.block.ItemBlockOre;
 import mekanism.common.item.block.ItemBlockPlastic;
 import mekanism.common.item.block.ItemBlockResource;
+import mekanism.common.item.block.machine.ItemBlockChargepad;
+import mekanism.common.item.block.machine.ItemBlockChemicalCrystallizer;
+import mekanism.common.item.block.machine.ItemBlockChemicalDissolutionChamber;
+import mekanism.common.item.block.machine.ItemBlockChemicalInfuser;
+import mekanism.common.item.block.machine.ItemBlockChemicalInjectionChamber;
+import mekanism.common.item.block.machine.ItemBlockChemicalOxidizer;
+import mekanism.common.item.block.machine.ItemBlockChemicalWasher;
+import mekanism.common.item.block.machine.ItemBlockCombiner;
+import mekanism.common.item.block.machine.ItemBlockCrusher;
+import mekanism.common.item.block.machine.ItemBlockDigitalMiner;
+import mekanism.common.item.block.machine.ItemBlockElectricPump;
+import mekanism.common.item.block.machine.ItemBlockElectrolyticSeparator;
+import mekanism.common.item.block.machine.ItemBlockEnergizedSmelter;
+import mekanism.common.item.block.machine.ItemBlockEnrichmentChamber;
+import mekanism.common.item.block.machine.ItemBlockFluidTank;
+import mekanism.common.item.block.machine.ItemBlockFluidicPlenisher;
+import mekanism.common.item.block.machine.ItemBlockFormulaicAssemblicator;
+import mekanism.common.item.block.machine.ItemBlockFuelwoodHeater;
+import mekanism.common.item.block.machine.ItemBlockLaser;
+import mekanism.common.item.block.machine.ItemBlockLaserAmplifier;
+import mekanism.common.item.block.machine.ItemBlockLaserTractorBeam;
+import mekanism.common.item.block.machine.ItemBlockLogisticalSorter;
+import mekanism.common.item.block.machine.ItemBlockMetallurgicInfuser;
+import mekanism.common.item.block.machine.ItemBlockOredictionificator;
+import mekanism.common.item.block.machine.ItemBlockOsmiumCompressor;
+import mekanism.common.item.block.machine.ItemBlockPersonalChest;
+import mekanism.common.item.block.machine.ItemBlockPrecisionSawmill;
+import mekanism.common.item.block.machine.ItemBlockPressurizedReactionChamber;
+import mekanism.common.item.block.machine.ItemBlockPurificationChamber;
+import mekanism.common.item.block.machine.ItemBlockQuantumEntangloporter;
+import mekanism.common.item.block.machine.ItemBlockResistiveHeater;
+import mekanism.common.item.block.machine.ItemBlockRotaryCondensentrator;
+import mekanism.common.item.block.machine.ItemBlockSeismicVibrator;
+import mekanism.common.item.block.machine.ItemBlockSolarNeutronActivator;
+import mekanism.common.item.block.machine.ItemBlockTeleporter;
+import mekanism.common.item.block.machine.factory.ItemBlockFactory;
+import mekanism.common.item.block.transmitter.ItemBlockDiversionTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockLogisticalTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockMechanicalPipe;
 import mekanism.common.item.block.transmitter.ItemBlockPressurizedTube;
 import mekanism.common.item.block.transmitter.ItemBlockRestrictiveTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockThermodynamicConductor;
-import mekanism.common.item.block.transmitter.ItemBlockDiversionTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockUniversalCable;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tier.BinTier;
@@ -164,78 +199,78 @@ public enum MekanismBlock implements IBlockProvider {
     BOILER_VALVE(new BlockBoilerValve(), ItemBlockBasic::new),
     SECURITY_DESK(new BlockSecurityDesk(), ItemBlockBasic::new),
 
-    ENRICHMENT_CHAMBER(new BlockEnrichmentChamber(), ItemBlockMachine::new),
-    OSMIUM_COMPRESSOR(new BlockOsmiumCompressor(), ItemBlockMachine::new),
-    COMBINER(new BlockCombiner(), ItemBlockMachine::new),
-    CRUSHER(new BlockCrusher(), ItemBlockMachine::new),
-    DIGITAL_MINER(new BlockDigitalMiner(), ItemBlockMachine::new),
+    ENRICHMENT_CHAMBER(new BlockEnrichmentChamber(), ItemBlockEnrichmentChamber::new),
+    OSMIUM_COMPRESSOR(new BlockOsmiumCompressor(), ItemBlockOsmiumCompressor::new),
+    COMBINER(new BlockCombiner(), ItemBlockCombiner::new),
+    CRUSHER(new BlockCrusher(), ItemBlockCrusher::new),
+    DIGITAL_MINER(new BlockDigitalMiner(), ItemBlockDigitalMiner::new),
 
-    BASIC_SMELTING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.SMELTING), ItemBlockMachine::new),
-    BASIC_ENRICHING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.ENRICHING), ItemBlockMachine::new),
-    BASIC_CRUSHING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.CRUSHING), ItemBlockMachine::new),
-    BASIC_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.COMPRESSING), ItemBlockMachine::new),
-    BASIC_COMBINING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.COMBINING), ItemBlockMachine::new),
-    BASIC_PURIFYING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.PURIFYING), ItemBlockMachine::new),
-    BASIC_INJECTING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.INJECTING), ItemBlockMachine::new),
-    BASIC_INFUSING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.INFUSING), ItemBlockMachine::new),
-    BASIC_SAWING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.SAWING), ItemBlockMachine::new),
+    BASIC_SMELTING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.SMELTING), ItemBlockFactory::new),
+    BASIC_ENRICHING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.ENRICHING), ItemBlockFactory::new),
+    BASIC_CRUSHING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.CRUSHING), ItemBlockFactory::new),
+    BASIC_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.COMPRESSING), ItemBlockFactory::new),
+    BASIC_COMBINING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.COMBINING), ItemBlockFactory::new),
+    BASIC_PURIFYING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.PURIFYING), ItemBlockFactory::new),
+    BASIC_INJECTING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.INJECTING), ItemBlockFactory::new),
+    BASIC_INFUSING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.INFUSING), ItemBlockFactory::new),
+    BASIC_SAWING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.SAWING), ItemBlockFactory::new),
 
-    ADVANCED_SMELTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.SMELTING), ItemBlockMachine::new),
-    ADVANCED_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.ENRICHING), ItemBlockMachine::new),
-    ADVANCED_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.CRUSHING), ItemBlockMachine::new),
-    ADVANCED_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.COMPRESSING), ItemBlockMachine::new),
-    ADVANCED_COMBINING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.COMBINING), ItemBlockMachine::new),
-    ADVANCED_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.PURIFYING), ItemBlockMachine::new),
-    ADVANCED_INJECTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.INJECTING), ItemBlockMachine::new),
-    ADVANCED_INFUSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.INFUSING), ItemBlockMachine::new),
-    ADVANCED_SAWING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.SAWING), ItemBlockMachine::new),
+    ADVANCED_SMELTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.SMELTING), ItemBlockFactory::new),
+    ADVANCED_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.ENRICHING), ItemBlockFactory::new),
+    ADVANCED_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.CRUSHING), ItemBlockFactory::new),
+    ADVANCED_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.COMPRESSING), ItemBlockFactory::new),
+    ADVANCED_COMBINING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.COMBINING), ItemBlockFactory::new),
+    ADVANCED_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.PURIFYING), ItemBlockFactory::new),
+    ADVANCED_INJECTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.INJECTING), ItemBlockFactory::new),
+    ADVANCED_INFUSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.INFUSING), ItemBlockFactory::new),
+    ADVANCED_SAWING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.SAWING), ItemBlockFactory::new),
 
-    ELITE_SMELTING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.SMELTING), ItemBlockMachine::new),
-    ELITE_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.ENRICHING), ItemBlockMachine::new),
-    ELITE_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.CRUSHING), ItemBlockMachine::new),
-    ELITE_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.COMPRESSING), ItemBlockMachine::new),
-    ELITE_COMBINING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.COMBINING), ItemBlockMachine::new),
-    ELITE_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.PURIFYING), ItemBlockMachine::new),
-    ELITE_INJECTING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.INJECTING), ItemBlockMachine::new),
-    ELITE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.INFUSING), ItemBlockMachine::new),
-    ELITE_SAWING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.SAWING), ItemBlockMachine::new),
+    ELITE_SMELTING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.SMELTING), ItemBlockFactory::new),
+    ELITE_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.ENRICHING), ItemBlockFactory::new),
+    ELITE_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.CRUSHING), ItemBlockFactory::new),
+    ELITE_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.COMPRESSING), ItemBlockFactory::new),
+    ELITE_COMBINING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.COMBINING), ItemBlockFactory::new),
+    ELITE_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.PURIFYING), ItemBlockFactory::new),
+    ELITE_INJECTING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.INJECTING), ItemBlockFactory::new),
+    ELITE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.INFUSING), ItemBlockFactory::new),
+    ELITE_SAWING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.SAWING), ItemBlockFactory::new),
 
-    METALLURGIC_INFUSER(new BlockMetallurgicInfuser(), ItemBlockMachine::new),
-    PURIFICATION_CHAMBER(new BlockPurificationChamber(), ItemBlockMachine::new),
-    ENERGIZED_SMELTER(new BlockEnergizedSmelter(), ItemBlockMachine::new),
-    TELEPORTER(new BlockTeleporter(), ItemBlockMachine::new),
-    ELECTRIC_PUMP(new BlockElectricPump(), ItemBlockMachine::new),
-    PERSONAL_CHEST(new BlockPersonalChest(), ItemBlockMachine::new),
-    CHARGEPAD(new BlockChargepad(), ItemBlockMachine::new),
-    LOGISTICAL_SORTER(new BlockLogisticalSorter(), ItemBlockMachine::new),
-    ROTARY_CONDENSENTRATOR(new BlockRotaryCondensentrator(), ItemBlockMachine::new),
-    CHEMICAL_OXIDIZER(new BlockChemicalOxidizer(), ItemBlockMachine::new),
-    CHEMICAL_INFUSER(new BlockChemicalInfuser(), ItemBlockMachine::new),
-    CHEMICAL_INJECTION_CHAMBER(new BlockChemicalInjectionChamber(), ItemBlockMachine::new),
-    ELECTROLYTIC_SEPARATOR(new BlockElectrolyticSeparator(), ItemBlockMachine::new),
-    PRECISION_SAWMILL(new BlockPrecisionSawmill(), ItemBlockMachine::new),
-    CHEMICAL_DISSOLUTION_CHAMBER(new BlockChemicalDissolutionChamber(), ItemBlockMachine::new),
-    CHEMICAL_WASHER(new BlockChemicalWasher(), ItemBlockMachine::new),
-    CHEMICAL_CRYSTALLIZER(new BlockChemicalCrystallizer(), ItemBlockMachine::new),
-    SEISMIC_VIBRATOR(new BlockSeismicVibrator(), ItemBlockMachine::new),
-    PRESSURIZED_REACTION_CHAMBER(new BlockPressurizedReactionChamber(), ItemBlockMachine::new),
+    METALLURGIC_INFUSER(new BlockMetallurgicInfuser(), ItemBlockMetallurgicInfuser::new),
+    PURIFICATION_CHAMBER(new BlockPurificationChamber(), ItemBlockPurificationChamber::new),
+    ENERGIZED_SMELTER(new BlockEnergizedSmelter(), ItemBlockEnergizedSmelter::new),
+    TELEPORTER(new BlockTeleporter(), ItemBlockTeleporter::new),
+    ELECTRIC_PUMP(new BlockElectricPump(), ItemBlockElectricPump::new),
+    PERSONAL_CHEST(new BlockPersonalChest(), ItemBlockPersonalChest::new),
+    CHARGEPAD(new BlockChargepad(), ItemBlockChargepad::new),
+    LOGISTICAL_SORTER(new BlockLogisticalSorter(), ItemBlockLogisticalSorter::new),
+    ROTARY_CONDENSENTRATOR(new BlockRotaryCondensentrator(), ItemBlockRotaryCondensentrator::new),
+    CHEMICAL_OXIDIZER(new BlockChemicalOxidizer(), ItemBlockChemicalOxidizer::new),
+    CHEMICAL_INFUSER(new BlockChemicalInfuser(), ItemBlockChemicalInfuser::new),
+    CHEMICAL_INJECTION_CHAMBER(new BlockChemicalInjectionChamber(), ItemBlockChemicalInjectionChamber::new),
+    ELECTROLYTIC_SEPARATOR(new BlockElectrolyticSeparator(), ItemBlockElectrolyticSeparator::new),
+    PRECISION_SAWMILL(new BlockPrecisionSawmill(), ItemBlockPrecisionSawmill::new),
+    CHEMICAL_DISSOLUTION_CHAMBER(new BlockChemicalDissolutionChamber(), ItemBlockChemicalDissolutionChamber::new),
+    CHEMICAL_WASHER(new BlockChemicalWasher(), ItemBlockChemicalWasher::new),
+    CHEMICAL_CRYSTALLIZER(new BlockChemicalCrystallizer(), ItemBlockChemicalCrystallizer::new),
+    SEISMIC_VIBRATOR(new BlockSeismicVibrator(), ItemBlockSeismicVibrator::new),
+    PRESSURIZED_REACTION_CHAMBER(new BlockPressurizedReactionChamber(), ItemBlockPressurizedReactionChamber::new),
 
-    BASIC_FLUID_TANK(new BlockFluidTank(FluidTankTier.BASIC), ItemBlockMachine::new),
-    ADVANCED_FLUID_TANK(new BlockFluidTank(FluidTankTier.ADVANCED), ItemBlockMachine::new),
-    ELITE_FLUID_TANK(new BlockFluidTank(FluidTankTier.ELITE), ItemBlockMachine::new),
-    ULTIMATE_FLUID_TANK(new BlockFluidTank(FluidTankTier.ULTIMATE), ItemBlockMachine::new),
-    CREATIVE_FLUID_TANK(new BlockFluidTank(FluidTankTier.CREATIVE), ItemBlockMachine::new),
+    BASIC_FLUID_TANK(new BlockFluidTank(FluidTankTier.BASIC), ItemBlockFluidTank::new),
+    ADVANCED_FLUID_TANK(new BlockFluidTank(FluidTankTier.ADVANCED), ItemBlockFluidTank::new),
+    ELITE_FLUID_TANK(new BlockFluidTank(FluidTankTier.ELITE), ItemBlockFluidTank::new),
+    ULTIMATE_FLUID_TANK(new BlockFluidTank(FluidTankTier.ULTIMATE), ItemBlockFluidTank::new),
+    CREATIVE_FLUID_TANK(new BlockFluidTank(FluidTankTier.CREATIVE), ItemBlockFluidTank::new),
 
-    FLUIDIC_PLENISHER(new BlockFluidicPlenisher(), ItemBlockMachine::new),
-    LASER(new BlockLaser(), ItemBlockMachine::new),
-    LASER_AMPLIFIER(new BlockLaserAmplifier(), ItemBlockMachine::new),
-    LASER_TRACTOR_BEAM(new BlockLaserTractorBeam(), ItemBlockMachine::new),
-    QUANTUM_ENTANGLOPORTER(new BlockQuantumEntangloporter(), ItemBlockMachine::new),
-    SOLAR_NEUTRON_ACTIVATOR(new BlockSolarNeutronActivator(), ItemBlockMachine::new),
-    OREDICTIONIFICATOR(new BlockOredictionificator(), ItemBlockMachine::new),
-    RESISTIVE_HEATER(new BlockResistiveHeater(), ItemBlockMachine::new),
-    FORMULAIC_ASSEMBLICATOR(new BlockFormulaicAssemblicator(), ItemBlockMachine::new),
-    FUELWOOD_HEATER(new BlockFuelwoodHeater(), ItemBlockMachine::new),
+    FLUIDIC_PLENISHER(new BlockFluidicPlenisher(), ItemBlockFluidicPlenisher::new),
+    LASER(new BlockLaser(), ItemBlockLaser::new),
+    LASER_AMPLIFIER(new BlockLaserAmplifier(), ItemBlockLaserAmplifier::new),
+    LASER_TRACTOR_BEAM(new BlockLaserTractorBeam(), ItemBlockLaserTractorBeam::new),
+    QUANTUM_ENTANGLOPORTER(new BlockQuantumEntangloporter(), ItemBlockQuantumEntangloporter::new),
+    SOLAR_NEUTRON_ACTIVATOR(new BlockSolarNeutronActivator(), ItemBlockSolarNeutronActivator::new),
+    OREDICTIONIFICATOR(new BlockOredictionificator(), ItemBlockOredictionificator::new),
+    RESISTIVE_HEATER(new BlockResistiveHeater(), ItemBlockResistiveHeater::new),
+    FORMULAIC_ASSEMBLICATOR(new BlockFormulaicAssemblicator(), ItemBlockFormulaicAssemblicator::new),
+    FUELWOOD_HEATER(new BlockFuelwoodHeater(), ItemBlockFuelwoodHeater::new),
 
     OSMIUM_ORE(new BlockOre(Resource.OSMIUM), ItemBlockOre::new),
     COPPER_ORE(new BlockOre(Resource.COPPER), ItemBlockOre::new),

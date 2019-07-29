@@ -41,8 +41,7 @@ public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble impl
     public ConductorTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockThermodynamicConductor) {
-            BlockThermodynamicConductor block = (BlockThermodynamicConductor) ((ItemBlockThermodynamicConductor) item).block;
-            return block.getTier();
+            return ((BlockThermodynamicConductor) ((ItemBlockThermodynamicConductor) item).block).getTier();
         }
         return null;
     }

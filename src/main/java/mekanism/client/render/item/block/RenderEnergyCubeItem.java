@@ -10,7 +10,7 @@ import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
-import mekanism.common.base.ITierItem;
+import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
@@ -33,7 +33,10 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
+        EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier(stack);
+        if (tier == null) {
+            return;
+        }
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, -1.0F, 0);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);

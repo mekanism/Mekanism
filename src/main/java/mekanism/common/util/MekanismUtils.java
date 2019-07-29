@@ -504,7 +504,7 @@ public final class MekanismUtils {
      * @param orig             - original block
      */
     public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
-        world.setBlockState(boundingLocation,  MekanismBlock.BOUNDING_BLOCK.getBlock().getStateFromMeta(1));
+        world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getStateFromMeta(1));
         if (!world.isRemote) {
             ((TileEntityAdvancedBoundingBlock) world.getTileEntity(boundingLocation)).setMainLocation(orig.getPos());
         }

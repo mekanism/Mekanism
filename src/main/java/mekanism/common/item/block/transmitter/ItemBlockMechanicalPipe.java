@@ -41,8 +41,7 @@ public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble implements I
     public PipeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockMechanicalPipe) {
-            BlockMechanicalPipe block = (BlockMechanicalPipe) ((ItemBlockMechanicalPipe) item).block;
-            return block.getTier();
+            return ((BlockMechanicalPipe) ((ItemBlockMechanicalPipe) item).block).getTier();
         }
         return null;
     }

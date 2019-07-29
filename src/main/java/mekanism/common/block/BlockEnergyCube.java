@@ -228,11 +228,8 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
                 itemStack.setTagCompound(new NBTTagCompound());
             }
             ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-
-            if (securityItem.hasSecurity(itemStack)) {
-                securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
-                securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
-            }
+            securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
+            securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
             ((ISideConfiguration) tileEntity).getConfig().write(ItemDataUtils.getDataMap(itemStack));
             ((ISideConfiguration) tileEntity).getEjector().write(ItemDataUtils.getDataMap(itemStack));
 

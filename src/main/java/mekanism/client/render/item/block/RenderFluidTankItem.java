@@ -10,7 +10,7 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.common.item.block.ItemBlockMachine;
+import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -37,13 +37,13 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
-        FluidTankTier tier = itemMachine.getFluidTankTier(stack);
+        ItemBlockFluidTank itemFluidTank = (ItemBlockFluidTank) stack.getItem();
+        FluidTankTier tier = itemFluidTank.getTier(stack);
         if (tier == null) {
             return;
         }
-        float fluidScale = (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0) / itemMachine.getCapacity(stack);
-        FluidStack fluid = itemMachine.getFluidStack(stack);
+        float fluidScale = (float) (itemFluidTank.getFluidStack(stack) != null ? itemFluidTank.getFluidStack(stack).amount : 0) / itemFluidTank.getCapacity(stack);
+        FluidStack fluid = itemFluidTank.getFluidStack(stack);
 
         GlStateManager.pushMatrix();
         if (fluid != null && fluidScale > 0) {

@@ -362,11 +362,6 @@ public class ItemBlockGenerator extends ItemBlockMekanism implements IEnergizedI
     }
 
     @Override
-    public boolean hasOwner(ItemStack stack) {
-        return hasSecurity(stack);
-    }
-
-    @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
         return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
     }

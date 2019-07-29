@@ -4,17 +4,16 @@ import java.util.Collections;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.item.block.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketFreeRunnerData.FreeRunnerDataMessage;
@@ -97,15 +96,13 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(newBowState)));
                 player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
                       .translation("mekanism.tooltip.fireMode", LangUtils.onOffColoured(newBowState)));
-            } else if (player.isSneaking() && item instanceof ItemBlockMachine) {
-                ItemBlockMachine machine = (ItemBlockMachine) item;
-                if (MachineType.get(toolStack) == MachineType.FLUID_TANK) {
-                    boolean newBucketMode = !machine.getBucketMode(toolStack);
-                    machine.setBucketMode(toolStack, newBucketMode);
-                    Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(machine.getBucketMode(toolStack))));
-                    player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                          .translation("mekanism.tooltip.portableTank.bucketMode", LangUtils.onOffColoured(newBucketMode)));
-                }
+            } else if (player.isSneaking() && item instanceof ItemBlockFluidTank) {
+                ItemBlockFluidTank fluidTank = (ItemBlockFluidTank) item;
+                boolean newBucketMode = !fluidTank.getBucketMode(toolStack);
+                fluidTank.setBucketMode(toolStack, newBucketMode);
+                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(fluidTank.getBucketMode(toolStack))));
+                player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
+                      .translation("mekanism.tooltip.portableTank.bucketMode", LangUtils.onOffColoured(newBucketMode)));
             } else if (player.isSneaking() && item instanceof ItemWalkieTalkie) {
                 ItemWalkieTalkie wt = (ItemWalkieTalkie) item;
                 if (wt.getOn(toolStack)) {

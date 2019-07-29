@@ -123,7 +123,6 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -137,6 +136,7 @@ import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.recipe.machines.CrusherRecipe;
@@ -908,7 +908,7 @@ public class ClientProxy extends CommonProxy {
                 }
                 break;
             case 19:
-                if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
+                if (stack.getItem() instanceof ItemBlockPersonalChest) {
                     //Ensure the item didn't change. From testing even if it did things still seemed to work properly but better safe than sorry
                     return new GuiPersonalChest(player.inventory, new InventoryPersonalChest(stack, hand));
                 }

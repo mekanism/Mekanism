@@ -46,10 +46,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISustainedInventory, ISecurityItem {
 
     /**
-     * How fast this tank can transfer gas.
-     */
-    public static final int TRANSFER_RATE = 256;
-    /**
      * The maximum amount of gas this tank can hold.
      */
     public int MAX_GAS = 96000;
@@ -57,12 +53,6 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
     public ItemBlockGasTank(Block block) {
         super(block);
         setMaxStackSize(1);
-    }
-
-    @Nonnull
-    @Override
-    public String getItemStackDisplayName(@Nonnull ItemStack itemstack) {
-        return LangUtils.localize("tile.GasTank" + getTier(itemstack).getBaseTier().getSimpleName() + ".name");
     }
 
     @Override
@@ -75,10 +65,7 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
             tileEntity.gasTank.setMaxGas(tileEntity.tier.getStorage());
             tileEntity.gasTank.setGas(getGas(stack));
             ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(getOwnerUUID(stack));
-
-            if (hasSecurity(stack)) {
-                ((ISecurityTile) tileEntity).getSecurity().setMode(getSecurity(stack));
-            }
+            ((ISecurityTile) tileEntity).getSecurity().setMode(getSecurity(stack));
             if (getOwnerUUID(stack) == null) {
                 ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(player.getUniqueID());
             }
@@ -113,14 +100,11 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                      EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
         } else {
-            if (hasSecurity(itemstack)) {
-                list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-                list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
-                if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
-                    list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
-                }
+            list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+            list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
+            if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
+                list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
             }
-
             list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                      LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
         }
@@ -284,15 +268,5 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
     @Override
     public void setSecurity(ItemStack stack, SecurityMode mode) {
         ItemDataUtils.setInt(stack, "security", mode.ordinal());
-    }
-
-    @Override
-    public boolean hasSecurity(ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public boolean hasOwner(ItemStack stack) {
-        return hasSecurity(stack);
     }
 }

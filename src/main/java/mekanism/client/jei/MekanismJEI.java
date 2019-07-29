@@ -27,7 +27,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.container.robit.ContainerRobitInventory;
 import mekanism.common.item.block.ItemBlockEnergyCube;
@@ -53,10 +52,6 @@ public class MekanismJEI implements IModPlugin {
 
     public static final ISubtypeInterpreter NBT_INTERPRETER = itemStack -> {
         String ret = Integer.toString(itemStack.getMetadata());
-
-        if (itemStack.getItem() instanceof ITierItem) {
-            ret += ":" + ((ITierItem) itemStack.getItem()).getBaseTier(itemStack).getSimpleName();
-        }
 
         if (itemStack.getItem() instanceof IFactory) {
             RecipeType recipeType = ((IFactory) itemStack.getItem()).getRecipeTypeOrNull(itemStack);

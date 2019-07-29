@@ -1,6 +1,6 @@
 package mekanism.common.inventory.slot;
 
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -17,14 +17,11 @@ public class SlotPersonalChest extends Slot {
         if (inventory.getStackInSlot(getSlotIndex()).isEmpty()) {
             return false;
         }
-        return MachineType.get(inventory.getStackInSlot(getSlotIndex())) != MachineType.PERSONAL_CHEST;
+        return !(inventory.getStackInSlot(getSlotIndex()).getItem() instanceof ItemBlockPersonalChest);
     }
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
-            return false;
-        }
-        return super.isItemValid(stack);
+        return !(stack.getItem() instanceof ItemBlockPersonalChest) && super.isItemValid(stack);
     }
 }
