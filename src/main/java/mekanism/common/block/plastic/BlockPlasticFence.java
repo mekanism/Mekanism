@@ -1,6 +1,5 @@
 package mekanism.common.block.plastic;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
@@ -22,7 +21,7 @@ public class BlockPlasticFence extends BlockFence implements IColoredBlock {
         super(Material.CLAY, Material.CLAY.getMaterialMapColor());
         this.color = color;
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_plastic_fence";
+        this.name = color.registry_prefix + "_plastic_fence";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }

@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import java.util.List;
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -21,15 +20,25 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemBalloon extends ItemMekanism {
 
     private final EnumColor color;
 
     public ItemBalloon(EnumColor color) {
-        super(color.dyeName.toLowerCase(Locale.ROOT) + "_balloon");
+        super(color.registry_prefix + "_balloon");
         this.color = color;
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, new DispenserBehavior());
+    }
+
+    @Override
+    public void registerOreDict() {
+        OreDictionary.registerOre("balloon", new ItemStack(this));
+        if (color.dyeName != null) {
+            //As of the moment none of the colors used have a null dye name but if the other ones get used this is needed
+            OreDictionary.registerOre("balloon" + color.dyeName, new ItemStack(this));
+        }
     }
 
     public EnumColor getColor() {

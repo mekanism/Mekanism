@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanism:balloon",
-    "data": 6,
+    "item": "mekanism:green_balloon",
     "count": 2
   },
   "ingredients": [
@@ -12,7 +11,7 @@
       "item": "minecraft:string"
     },
     {
-      "ore": "dyeCyan",
+      "ore": "dyeGreen",
       "type": "forge:ore_dict"
     }
   ],

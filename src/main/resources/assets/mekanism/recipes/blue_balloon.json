@@ -1,12 +1,14 @@
 {
   "result": {
-    "item": "mekanism:balloon",
-    "data": 4
+    "item": "mekanism:blue_balloon",
+    "count": 2
   },
   "ingredients": [
     {
-      "item": "mekanism:balloon",
-      "data": 32767
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
     },
     {
       "ore": "dyeBlue",

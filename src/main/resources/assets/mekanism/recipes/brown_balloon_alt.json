@@ -1,15 +1,14 @@
 {
   "result": {
-    "item": "mekanism:balloon",
-    "data": 15
+    "item": "mekanism:brown_balloon"
   },
   "ingredients": [
     {
-      "item": "mekanism:balloon",
-      "data": 32767
+      "ore": "balloon",
+      "type": "forge:ore_dict"
     },
     {
-      "ore": "dyeWhite",
+      "ore": "dyeBrown",
       "type": "forge:ore_dict"
     }
   ],

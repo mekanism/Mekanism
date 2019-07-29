@@ -1,6 +1,5 @@
 package mekanism.common.block.plastic;
 
-import java.util.Locale;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -20,7 +19,7 @@ public class BlockPlasticSlick extends Block implements IColoredBlock {
         setResistance(10F);
         setCreativeTab(Mekanism.tabMekanism);
         slipperiness = 0.98F;
-        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_slick_plastic";
+        this.name = color.registry_prefix + "_slick_plastic";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }

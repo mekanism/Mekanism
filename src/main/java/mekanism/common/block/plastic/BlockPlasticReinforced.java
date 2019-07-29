@@ -1,6 +1,5 @@
 package mekanism.common.block.plastic;
 
-import java.util.Locale;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -19,7 +18,7 @@ public class BlockPlasticReinforced extends Block implements IColoredBlock {
         setHardness(50F);
         setResistance(2000F);
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_reinforced_plastic";
+        this.name = color.registry_prefix + "_reinforced_plastic";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }

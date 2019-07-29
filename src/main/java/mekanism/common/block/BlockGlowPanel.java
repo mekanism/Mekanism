@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -54,7 +53,7 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
         setCreativeTab(Mekanism.tabMekanism);
         setHardness(1F);
         setResistance(10F);
-        this.name = color.dyeName.toLowerCase(Locale.ROOT) + "_glow_panel";
+        this.name = color.registry_prefix + "_glow_panel";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
