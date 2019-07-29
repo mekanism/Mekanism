@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:reactorglass",
-    "data": 0,
+    "item": "mekanismgenerators:reactor_glass",
     "count": 4
   },
   "pattern": [
@@ -16,8 +15,7 @@
       "type": "forge:ore_dict"
     },
     "I": {
-      "item": "mekanismgenerators:reactor",
-      "data": 1
+      "item": "mekanismgenerators:reactor_frame"
     }
   }
 }

@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 0
+    "item": "mekanismgenerators:heat_generator"
   },
   "pattern": [
     "III",

@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 12,
+    "item": "mekanismgenerators:turbine_vent",
     "count": 2
   },
   "pattern": [
@@ -15,8 +14,7 @@
       "item": "minecraft:iron_bars"
     },
     "I": {
-      "item": "mekanismgenerators:generator",
-      "data": 10
+      "item": "mekanismgenerators:turbine_casing"
     }
   }
 }

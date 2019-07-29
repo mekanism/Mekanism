@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 6
+    "item": "mekanismgenerators:wind_generator"
   },
   "pattern": [
     " O ",
@@ -17,13 +16,13 @@
   ],
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:enriched_alloy"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "O": {
       "ore": "ingotOsmium",

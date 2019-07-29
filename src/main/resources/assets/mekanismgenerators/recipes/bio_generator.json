@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 4
+    "item": "mekanismgenerators:bio_generator"
   },
   "pattern": [
     "RER",
@@ -21,13 +20,13 @@
       "type": "forge:ore_dict"
     },
     "B": {
-      "item": "mekanism:biofuel"
+      "item": "mekanism:bio_fuel"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "E": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:enriched_alloy"
     },
     "N": {
       "ore": "ingotIron",

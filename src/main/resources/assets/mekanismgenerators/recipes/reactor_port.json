@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:reactor",
-    "data": 2,
+    "item": "mekanismgenerators:reactor_port",
     "count": 2
   },
   "pattern": [
@@ -12,11 +11,10 @@
   "type": "forge:ore_shaped",
   "key": {
     "C": {
-      "item": "#CIRCUITULTIMATE"
+      "item": "#CIRCUIT_ULTIMATE"
     },
     "I": {
-      "item": "mekanismgenerators:reactor",
-      "data": 1
+      "item": "mekanismgenerators:reactor_frame"
     }
   }
 }

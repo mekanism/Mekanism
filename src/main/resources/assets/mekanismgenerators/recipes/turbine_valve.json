@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 11,
+    "item": "mekanismgenerators:turbine_valve",
     "count": 2
   },
   "pattern": [
@@ -12,11 +11,10 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "C": {
-      "item": "#CIRCUITADVANCED"
+      "item": "#CIRCUIT_ADVANCED"
     },
     "I": {
-      "item": "mekanismgenerators:generator",
-      "data": 10
+      "item": "mekanismgenerators:turbine_casing"
     }
   }
 }

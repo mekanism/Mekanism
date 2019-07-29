@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:turbineblade"
+    "item": "mekanismgenerators:turbine_blade"
   },
   "pattern": [
     " S ",
@@ -10,7 +10,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "S": {
       "ore": "ingotSteel",

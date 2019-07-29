@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 1
+    "item": "mekanismgenerators:solar_generator"
   },
   "pattern": [
     "SSS",
@@ -21,13 +20,13 @@
       "type": "forge:ore_dict"
     },
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:enriched_alloy"
     },
     "S": {
-      "item": "mekanismgenerators:solarpanel"
+      "item": "mekanismgenerators:solar_panel"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "I": {
       "ore": "ingotIron",

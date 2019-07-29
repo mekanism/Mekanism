@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 8
+    "item": "mekanismgenerators:rotational_complex"
   },
   "pattern": [
     "SAS",
@@ -11,14 +10,14 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "S": {
       "ore": "ingotSteel",
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "#CIRCUITADVANCED"
+      "item": "#CIRCUIT_ADVANCED"
     }
   }
 }

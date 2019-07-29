@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:solarpanel"
+    "item": "mekanismgenerators:solar_panel"
   },
   "pattern": [
     "GGG",
@@ -14,7 +14,7 @@
       "type": "forge:ore_dict"
     },
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "R": {
       "ore": "dustRedstone",

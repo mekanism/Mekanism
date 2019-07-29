@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanismgenerators:reactor_controller"
+  },
+  "pattern": [
+    "CGC",
+    "ITI",
+    "III"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "C": {
+      "item": "#CIRCUIT_ULTIMATE"
+    },
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    },
+    "G": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanismgenerators:reactor_frame"
+    }
+  }
+}

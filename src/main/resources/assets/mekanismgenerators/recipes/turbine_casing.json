@@ -1,12 +1,12 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 9
+    "item": "mekanismgenerators:turbine_casing",
+    "count": 4
   },
   "pattern": [
-    "SGS",
-    "GEG",
-    "SGS"
+    " S ",
+    "SOS",
+    " S "
   ],
   "type": "mekanism:ore_shaped",
   "key": {
@@ -14,11 +14,8 @@
       "ore": "ingotSteel",
       "type": "forge:ore_dict"
     },
-    "E": {
-      "item": "mekanism:energytablet"
-    },
-    "G": {
-      "ore": "ingotGold",
+    "O": {
+      "ore": "ingotOsmium",
       "type": "forge:ore_dict"
     }
   }

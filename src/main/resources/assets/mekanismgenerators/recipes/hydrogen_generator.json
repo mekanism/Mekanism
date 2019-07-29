@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 3
+    "item": "mekanismgenerators:hydrogen_generator"
   },
   "pattern": [
     "PEP",
@@ -21,14 +20,13 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "mekanism:electrolyticcore"
+      "item": "mekanism:electrolytic_core"
     },
     "E": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:enriched_alloy"
     },
     "I": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     }
   }
 }

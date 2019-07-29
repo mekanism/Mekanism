@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:reactor",
-    "data": 1,
+    "item": "mekanismgenerators:reactor_frame",
     "count": 4
   },
   "pattern": [
@@ -16,8 +15,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     }
   }
 }

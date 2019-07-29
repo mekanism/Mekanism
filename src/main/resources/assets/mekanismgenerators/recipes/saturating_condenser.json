@@ -1,22 +1,23 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 10,
-    "count": 4
+    "item": "mekanismgenerators:saturating_condenser"
   },
   "pattern": [
-    " S ",
-    "SOS",
-    " S "
+    "STS",
+    "TBT",
+    "STS"
   ],
   "type": "mekanism:ore_shaped",
   "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
     "S": {
       "ore": "ingotSteel",
       "type": "forge:ore_dict"
     },
-    "O": {
-      "ore": "ingotOsmium",
+    "T": {
+      "ore": "ingotTin",
       "type": "forge:ore_dict"
     }
   }

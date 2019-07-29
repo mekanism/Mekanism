@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:reactor",
-    "data": 3
+    "item": "mekanismgenerators:reactor_logic_adapter"
   },
   "pattern": [
     " R ",
@@ -15,8 +14,7 @@
       "type": "forge:ore_dict"
     },
     "F": {
-      "item": "mekanismgenerators:reactor",
-      "data": 1
+      "item": "mekanismgenerators:reactor_frame"
     }
   }
 }

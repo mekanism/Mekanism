@@ -6,7 +6,7 @@
         "circuitOredict": ""
       }
     ],
-    "name" : "CIRCUITBASIC",
+    "name" : "CIRCUIT_BASIC",
     "ingredient" : {
       "type" : "forge:ore_dict",
       "ore" : "circuitBasic"
@@ -22,10 +22,9 @@
         }
       }
     ],
-    "name": "CIRCUITBASIC",
+    "name": "CIRCUIT_BASIC",
     "ingredient" : {
-      "item" : "mekanism:controlcircuit",
-      "data" : 0
+      "item" : "mekanism:basic_control_circuit"
     }
   },
   {
@@ -35,7 +34,7 @@
         "circuitOredict": ""
       }
     ],
-    "name" : "CIRCUITADVANCED",
+    "name" : "CIRCUIT_ADVANCED",
     "ingredient" : {
       "type" : "forge:ore_dict",
       "ore" : "circuitAdvanced"
@@ -51,10 +50,9 @@
         }
       }
     ],
-    "name": "CIRCUITADVANCED",
+    "name": "CIRCUIT_ADVANCED",
     "ingredient" : {
-      "item" : "mekanism:controlcircuit",
-      "data" : 1
+      "item" : "mekanism:advanced_control_circuit"
     }
   },
   {
@@ -64,7 +62,7 @@
         "circuitOredict": ""
       }
     ],
-    "name" : "CIRCUITELITE",
+    "name" : "CIRCUIT_ELITE",
     "ingredient" : {
       "type" : "forge:ore_dict",
       "ore" : "circuitElite"
@@ -80,10 +78,9 @@
         }
       }
     ],
-    "name": "CIRCUITELITE",
+    "name": "CIRCUIT_ELITE",
     "ingredient" : {
-      "item" : "mekanism:controlcircuit",
-      "data" : 2
+      "item" : "mekanism:elite_control_circuit"
     }
   },
   {
@@ -93,7 +90,7 @@
         "circuitOredict": ""
       }
     ],
-    "name" : "CIRCUITULTIMATE",
+    "name" : "CIRCUIT_ULTIMATE",
     "ingredient" : {
       "type" : "forge:ore_dict",
       "ore" : "circuitUltimate"
@@ -109,10 +106,9 @@
         }
       }
     ],
-    "name": "CIRCUITULTIMATE",
+    "name": "CIRCUIT_ULTIMATE",
     "ingredient" : {
-      "item" : "mekanism:controlcircuit",
-      "data" : 3
+      "item" : "mekanism:ultimate_control_circuit"
     }
   }
 ]

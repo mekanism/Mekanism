@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 7
+    "item": "mekanismgenerators:turbine_rotor"
   },
   "pattern": [
     "SAS",
@@ -11,7 +10,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "S": {
       "ore": "ingotSteel",

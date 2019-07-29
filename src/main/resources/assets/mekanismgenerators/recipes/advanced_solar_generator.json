@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:generator",
-    "data": 5
+    "item": "mekanismgenerators:advanced_solar_generator"
   },
   "pattern": [
     "SES",
@@ -17,11 +16,10 @@
   ],
   "key": {
     "S": {
-      "item": "mekanismgenerators:generator",
-      "data": 1
+      "item": "mekanismgenerators:solar_generator"
     },
     "E": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:enriched_alloy"
     },
     "I": {
       "ore": "ingotIron",

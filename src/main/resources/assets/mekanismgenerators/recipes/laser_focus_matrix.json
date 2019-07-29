@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "mekanismgenerators:reactorglass",
-    "data": 1,
+    "item": "mekanismgenerators:laser_focus_matrix",
     "count": 2
   },
   "pattern": [
@@ -12,8 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "I": {
-      "item": "mekanismgenerators:reactorglass",
-      "data": 0
+      "item": "mekanismgenerators:reactor_glass"
     },
     "L": {
       "ore": "blockRedstone",
