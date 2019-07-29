@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanism:white_plastic_fence",
+    "count": 3
+  },
+  "pattern": [
+    "BSB",
+    "BSB"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "mekanism:white_plastic"
+    },
+    "S": {
+      "item": "mekanism:hdpe_stick"
+    }
+  }
+}

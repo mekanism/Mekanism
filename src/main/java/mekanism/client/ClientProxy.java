@@ -594,11 +594,11 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD, MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD,
               MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD, MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD);
 
-        setCustomStateMapper(fenceMapper, MekanismBlock.BLACK_PLASTIC_BARRIER, MekanismBlock.RED_PLASTIC_BARRIER, MekanismBlock.GREEN_PLASTIC_BARRIER,
-              MekanismBlock.BROWN_PLASTIC_BARRIER, MekanismBlock.BLUE_PLASTIC_BARRIER, MekanismBlock.PURPLE_PLASTIC_BARRIER, MekanismBlock.CYAN_PLASTIC_BARRIER,
-              MekanismBlock.LIGHT_GRAY_PLASTIC_BARRIER, MekanismBlock.GRAY_PLASTIC_BARRIER, MekanismBlock.PINK_PLASTIC_BARRIER, MekanismBlock.LIME_PLASTIC_BARRIER,
-              MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
-              MekanismBlock.WHITE_PLASTIC_BARRIER);
+        setCustomStateMapper(fenceMapper, MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
+              MekanismBlock.BROWN_PLASTIC_FENCE, MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE,
+              MekanismBlock.LIGHT_GRAY_PLASTIC_FENCE, MekanismBlock.GRAY_PLASTIC_FENCE, MekanismBlock.PINK_PLASTIC_FENCE, MekanismBlock.LIME_PLASTIC_FENCE,
+              MekanismBlock.YELLOW_PLASTIC_FENCE, MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE,
+              MekanismBlock.WHITE_PLASTIC_FENCE);
 
         setCustomStateMapper(new StateMapperBase() {
             @Nonnull
@@ -624,6 +624,7 @@ public class ClientProxy extends CommonProxy {
             }
         }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
 
+        //TODO: Fix coloring
         setCustomStateMapper(new StateMapperBase() {
                                  @Nonnull
                                  @Override
@@ -818,11 +819,11 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.CYAN_PLASTIC_ROAD, MekanismBlock.LIGHT_GRAY_PLASTIC_ROAD, MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD,
               MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD, MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD,
               MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD);
-        setCustomModelResourceLocation(getInventoryMRL("plastic_fence"), MekanismBlock.BLACK_PLASTIC_BARRIER, MekanismBlock.RED_PLASTIC_BARRIER, MekanismBlock.GREEN_PLASTIC_BARRIER,
-              MekanismBlock.BROWN_PLASTIC_BARRIER, MekanismBlock.BLUE_PLASTIC_BARRIER, MekanismBlock.PURPLE_PLASTIC_BARRIER, MekanismBlock.CYAN_PLASTIC_BARRIER,
-              MekanismBlock.LIGHT_GRAY_PLASTIC_BARRIER, MekanismBlock.GRAY_PLASTIC_BARRIER, MekanismBlock.PINK_PLASTIC_BARRIER, MekanismBlock.LIME_PLASTIC_BARRIER,
-              MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
-              MekanismBlock.WHITE_PLASTIC_BARRIER);
+        setCustomModelResourceLocation(getInventoryMRL("plastic_fence"), MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
+              MekanismBlock.BROWN_PLASTIC_FENCE, MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE,
+              MekanismBlock.LIGHT_GRAY_PLASTIC_FENCE, MekanismBlock.GRAY_PLASTIC_FENCE, MekanismBlock.PINK_PLASTIC_FENCE, MekanismBlock.LIME_PLASTIC_FENCE,
+              MekanismBlock.YELLOW_PLASTIC_FENCE, MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE,
+              MekanismBlock.WHITE_PLASTIC_FENCE);
 
         setCustomModelResourceLocation(getInventoryMRL("osmium_ore"), MekanismBlock.OSMIUM_ORE);
         setCustomModelResourceLocation(getInventoryMRL("copper_ore"), MekanismBlock.COPPER_ORE);
@@ -1225,11 +1226,11 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD, MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD,
               MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD, MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD,
               //Plastic Fences
-              MekanismBlock.BLACK_PLASTIC_BARRIER, MekanismBlock.RED_PLASTIC_BARRIER, MekanismBlock.GREEN_PLASTIC_BARRIER,
-              MekanismBlock.BROWN_PLASTIC_BARRIER, MekanismBlock.BLUE_PLASTIC_BARRIER, MekanismBlock.PURPLE_PLASTIC_BARRIER, MekanismBlock.CYAN_PLASTIC_BARRIER,
-              MekanismBlock.LIGHT_GRAY_PLASTIC_BARRIER, MekanismBlock.GRAY_PLASTIC_BARRIER, MekanismBlock.PINK_PLASTIC_BARRIER, MekanismBlock.LIME_PLASTIC_BARRIER,
-              MekanismBlock.YELLOW_PLASTIC_BARRIER, MekanismBlock.LIGHT_BLUE_PLASTIC_BARRIER, MekanismBlock.MAGENTA_PLASTIC_BARRIER, MekanismBlock.ORANGE_PLASTIC_BARRIER,
-              MekanismBlock.WHITE_PLASTIC_BARRIER);
+              MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
+              MekanismBlock.BROWN_PLASTIC_FENCE, MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE,
+              MekanismBlock.LIGHT_GRAY_PLASTIC_FENCE, MekanismBlock.GRAY_PLASTIC_FENCE, MekanismBlock.PINK_PLASTIC_FENCE, MekanismBlock.LIME_PLASTIC_FENCE,
+              MekanismBlock.YELLOW_PLASTIC_FENCE, MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE,
+              MekanismBlock.WHITE_PLASTIC_FENCE);
         //TODO: Fix this
         registerItemColorHandler((stack, tintIndex) -> {
                   Item item = stack.getItem();

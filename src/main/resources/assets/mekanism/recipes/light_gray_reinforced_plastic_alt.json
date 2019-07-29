@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:light_gray_reinforced_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "blockReinforcedPlastic",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "ore": "dyeLightGray",
+      "type": "forge:ore_dict"
+    }
+  }
+}

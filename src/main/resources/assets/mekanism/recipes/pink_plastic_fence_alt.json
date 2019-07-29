@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:pink_plastic_fence",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "fencePlastic",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "ore": "dyePink",
+      "type": "forge:ore_dict"
+    }
+  }
+}

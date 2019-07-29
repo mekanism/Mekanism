@@ -1,10 +1,13 @@
 package mekanism.common.block.basic;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
+import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
@@ -21,7 +24,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 //TODO: Make this not extend BlockBasic
-public class BlockResource extends BlockTileDrops implements IHasModel {
+public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOreDict {
 
     @Nonnull
     private final BlockResourceInfo resource;
@@ -39,6 +42,11 @@ public class BlockResource extends BlockTileDrops implements IHasModel {
         String name = "block_" + resource.getRegistrySuffix().toLowerCase(Locale.ROOT);
         setTranslationKey(name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, name));
+    }
+
+    @Override
+    public List<String> getOredictEntries() {
+        return Collections.singletonList("block" + resource.getOreSuffix());
     }
 
     @Nonnull

@@ -613,19 +613,6 @@ public class Mekanism {
         OreDictionary.registerOre("dustSalt", MekanismItem.SALT.getItemStack());
         OreDictionary.registerOre("foodSalt", MekanismItem.SALT.getItemStack());
 
-        OreDictionary.registerOre("blockOsmium", MekanismBlock.OSMIUM_BLOCK.getItemStack());
-        OreDictionary.registerOre("blockBronze", MekanismBlock.BRONZE_BLOCK.getItemStack());
-        OreDictionary.registerOre("blockRefinedObsidian", MekanismBlock.REFINED_OBSIDIAN_BLOCK.getItemStack());
-        OreDictionary.registerOre("blockCharcoal", MekanismBlock.CHARCOAL_BLOCK.getItemStack());
-        OreDictionary.registerOre("blockRefinedGlowstone", MekanismBlock.REFINED_GLOWSTONE_BLOCK.getItemStack());
-        OreDictionary.registerOre("blockSteel", MekanismBlock.STEEL_BLOCK.getItemStack());
-        OreDictionary.registerOre("blockCopper", MekanismBlock.COPPER_BLOCK.getItemStack());
-        OreDictionary.registerOre("blockTin", MekanismBlock.TIN_BLOCK.getItemStack());
-
-        OreDictionary.registerOre("oreOsmium", MekanismBlock.OSMIUM_ORE.getItemStack());
-        OreDictionary.registerOre("oreCopper", MekanismBlock.COPPER_ORE.getItemStack());
-        OreDictionary.registerOre("oreTin", MekanismBlock.TIN_ORE.getItemStack());
-
         OreDictionary.registerOre("itemEnrichedAlloy", MekanismItem.ENRICHED_ALLOY.getItemStack());
         OreDictionary.registerOre("itemBioFuel", MekanismItem.BIO_FUEL.getItemStack());
     }

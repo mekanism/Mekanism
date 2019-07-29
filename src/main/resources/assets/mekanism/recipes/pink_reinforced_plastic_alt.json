@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:pink_reinforced_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "blockReinforcedPlastic",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "ore": "dyePink",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:red_plastic_road",
+    "count": 3
+  },
+  "pattern": [
+    "SSS",
+    "PPP",
+    "SSS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:red_slick_plastic"
+    },
+    "S": {
+      "item": "minecraft:sand",
+      "data": 0
+    }
+  }
+}

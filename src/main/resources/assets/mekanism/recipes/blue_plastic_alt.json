@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:blue_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "blockPlastic",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "ore": "dyeBlue",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:lime_plastic_road",
+    "count": 3
+  },
+  "pattern": [
+    "SSS",
+    "PPP",
+    "SSS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:lime_slick_plastic"
+    },
+    "S": {
+      "item": "minecraft:sand",
+      "data": 0
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:orange_slick_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "blockSlickPlastic",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "ore": "dyeOrange",
+      "type": "forge:ore_dict"
+    }
+  }
+}

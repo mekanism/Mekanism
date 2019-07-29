@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:black_slick_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PSP",
+    " P "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:black_plastic"
+    },
+    "S": {
+      "ore": "slimeball",
+      "type": "forge:ore_dict"
+    }
+  }
+}
