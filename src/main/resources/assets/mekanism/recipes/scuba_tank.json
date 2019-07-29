@@ -1,7 +1,7 @@
 {
   "result": {
     "nbt": {},
-    "item": "mekanism:scubatank",
+    "item": "mekanism:scuba_tank",
     "type": "mekanism:item_nbt"
   },
   "pattern": [
