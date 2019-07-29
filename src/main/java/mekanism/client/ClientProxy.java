@@ -670,6 +670,7 @@ public class ClientProxy extends CommonProxy {
 
         setCustomModelResourceLocation(getInventoryMRL("security_desk"), MekanismBlock.SECURITY_DESK);
 
+        //TODO: FixME
         setCustomModelResourceLocation(getInventoryMRL("glow_panel"), MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL,
               MekanismBlock.BROWN_GLOW_PANEL, MekanismBlock.BLUE_GLOW_PANEL, MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL,
               MekanismBlock.LIGHT_GRAY_GLOW_PANEL, MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL, MekanismBlock.LIME_GLOW_PANEL,
@@ -1168,8 +1169,10 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    private void registerItemColorHandler(IItemColor itemColor, MekanismItem... blocks) {
-
+    private void registerItemColorHandler(IItemColor itemColor, MekanismItem... items) {
+        for (MekanismItem mekanismItem : items) {
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColor, mekanismItem.getItem());
+        }
     }
 
     @Override
@@ -1235,10 +1238,10 @@ public class ClientProxy extends CommonProxy {
                       return MekanismRenderer.getColorARGB(balloon.getColor(), 1);
                   }
                   return -1;
-              }, MekanismItem.BLACK_BALLOON, MekanismItem.RED_BALLOON, MekanismItem.GREEN_BALLOON,
-              MekanismItem.BROWN_BALLOON, MekanismItem.BLUE_BALLOON, MekanismItem.PURPLE_BALLOON, MekanismItem.CYAN_BALLOON, MekanismItem.LIGHT_GREY_BALLOON,
-              MekanismItem.GREY_BALLOON, MekanismItem.PINK_BALLOON, MekanismItem.LIME_BALLOON, MekanismItem.YELLOW_BALLOON, MekanismItem.LIGHT_BLUE_BALLOON,
-              MekanismItem.MAGENTA_BALLOON, MekanismItem.ORANGE_BALLOON, MekanismItem.WHITE_BALLOON);
+              }, MekanismItem.BLACK_BALLOON, MekanismItem.RED_BALLOON, MekanismItem.GREEN_BALLOON, MekanismItem.BROWN_BALLOON, MekanismItem.BLUE_BALLOON,
+              MekanismItem.PURPLE_BALLOON, MekanismItem.CYAN_BALLOON, MekanismItem.LIGHT_GREY_BALLOON, MekanismItem.GREY_BALLOON, MekanismItem.PINK_BALLOON,
+              MekanismItem.LIME_BALLOON, MekanismItem.YELLOW_BALLOON, MekanismItem.LIGHT_BLUE_BALLOON, MekanismItem.MAGENTA_BALLOON, MekanismItem.ORANGE_BALLOON,
+              MekanismItem.WHITE_BALLOON);
 
         MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
         MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
