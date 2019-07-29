@@ -38,8 +38,11 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
+        FluidTankTier tier = itemMachine.getFluidTankTier(stack);
+        if (tier == null) {
+            return;
+        }
         float fluidScale = (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0) / itemMachine.getCapacity(stack);
-        FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
         FluidStack fluid = itemMachine.getFluidStack(stack);
 
         GlStateManager.pushMatrix();

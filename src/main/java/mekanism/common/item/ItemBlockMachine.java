@@ -33,6 +33,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
+import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -115,6 +116,19 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
         super(block);
         setNoRepair();
         setMaxStackSize(1);
+    }
+
+    @Nullable
+    public FluidTankTier getFluidTankTier(ItemStack stack) {
+        //TODO: This shouldn't be needed after splitting ItemBlockMachine into multiple item classes
+        Item item = stack.getItem();
+        if (item instanceof ItemBlockMachine) {
+            Block block = ((ItemBlockMachine) item).block;
+            if (block instanceof BlockFluidTank) {
+                return ((BlockFluidTank) block).getTier();
+            }
+        }
+        return null;
     }
 
     @Nonnull
