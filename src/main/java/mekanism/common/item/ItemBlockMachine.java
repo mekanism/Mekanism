@@ -67,6 +67,8 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -521,15 +523,19 @@ public class ItemBlockMachine extends ItemBlockMekanism implements IEnergizedIte
 
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
-        MachineType machineType = MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage());
-        if (BlockFactory.isInstance(itemStack)) {
-            RecipeType recipeType = getRecipeTypeOrNull(itemStack);
-            //TODO: Get tier from stack
-            int tierProcess = FactoryTier.BASIC.processes;
-            double baseMaxEnergy = tierProcess * (recipeType == null ? 1 : Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage()));
-            return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
+        Item item = itemStack.getItem();
+        double storage = 0;
+        if (item instanceof ItemBlock) {
+            Block block = ((ItemBlock) item).getBlock();
+            if (block instanceof BlockFactory) {
+                RecipeType recipeType = getRecipeTypeOrNull(itemStack);
+                int tierProcess = ((BlockFactory) block).getTier().processes;
+                storage = tierProcess * (recipeType == null ? 1 : Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage()));
+            } else if (block instanceof IBlockElectric) {
+                storage = ((IBlockElectric) block).getStorage();
+            }
         }
-        return MekanismUtils.getMaxEnergy(itemStack, machineType.getStorage());
+        return MekanismUtils.getMaxEnergy(itemStack, storage);
     }
 
     @Override
