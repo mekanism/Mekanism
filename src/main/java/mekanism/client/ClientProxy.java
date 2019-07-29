@@ -124,7 +124,6 @@ import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -259,10 +258,8 @@ public class ClientProxy extends CommonProxy {
     private static final IStateMapper basicMapper = new BasicBlockStateMapper();
     private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
     private static final IStateMapper boxMapper = new CardboardBoxStateMapper();
-    private static final IStateMapper transmitterMapper = new TransmitterStateMapper();
     public static Map<String, ModelResourceLocation> machineResources = new HashMap<>();
     public static Map<String, ModelResourceLocation> basicResources = new HashMap<>();
-    public static Map<String, ModelResourceLocation> transmitterResources = new HashMap<>();
 
     @Override
     public void loadConfiguration() {
@@ -638,14 +635,6 @@ public class ClientProxy extends CommonProxy {
 
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
-        setCustomStateMapper(transmitterMapper, MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
-              MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, MekanismBlock.BASIC_MECHANICAL_PIPE, MekanismBlock.ADVANCED_MECHANICAL_PIPE, MekanismBlock.ELITE_MECHANICAL_PIPE,
-              MekanismBlock.ULTIMATE_MECHANICAL_PIPE, MekanismBlock.BASIC_PRESSURIZED_TUBE, MekanismBlock.ADVANCED_PRESSURIZED_TUBE, MekanismBlock.ELITE_PRESSURIZED_TUBE,
-              MekanismBlock.ULTIMATE_PRESSURIZED_TUBE, MekanismBlock.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlock.ADVANCED_LOGISTICAL_TRANSPORTER,
-              MekanismBlock.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlock.ULTIMATE_LOGISTICAL_TRANSPORTER, MekanismBlock.RESTRICTIVE_TRANSPORTER,
-              MekanismBlock.DIVERSION_TRANSPORTER, MekanismBlock.BASIC_THERMODYNAMIC_CONDUCTOR, MekanismBlock.ADVANCED_THERMODYNAMIC_CONDUCTOR,
-              MekanismBlock.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismBlock.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
-
         setCustomModelResourceLocation(getInventoryMRL("ObsidianTNT"), MekanismBlock.OBSIDIAN_TNT);
         setCustomModelResourceLocation(getInventoryMRL("salt_block"), MekanismBlock.SALT_BLOCK);
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=false"));
@@ -758,38 +747,6 @@ public class ClientProxy extends CommonProxy {
                 break;
             }
             ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[]{}));
-        }
-
-        for (TransmitterType type : TransmitterType.values()) {
-            List<ModelResourceLocation> modelsToAdd = new ArrayList<>();
-            String resource = "mekanism:" + type.getName();
-            BaseTier tierPointer = null;
-
-            if (type.hasTiers()) {
-                tierPointer = BaseTier.values()[0];
-                resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
-            }
-
-            while (true) {
-                if (transmitterResources.get(resource) == null) {
-                    String properties = "inventory";
-                    ModelResourceLocation model = new ModelResourceLocation(resource, properties);
-                    transmitterResources.put(resource, model);
-                    modelsToAdd.add(model);
-                    if (type.hasTiers()) {
-                        if (tierPointer.ordinal() < BaseTier.values().length - 1) {
-                            tierPointer = BaseTier.values()[tierPointer.ordinal() + 1];
-                            if (tierPointer.isObtainable()) {
-                                resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
-                                continue;
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-
-            ModelLoader.registerItemVariants(Item.getItemFromBlock(MekanismBlocks.Transmitter), modelsToAdd.toArray(new ModelResourceLocation[]{}));
         }*/
 
         setCustomModelResourceLocation(getInventoryMRL("plastic_block"), MekanismBlock.BLACK_PLASTIC_BLOCK, MekanismBlock.RED_PLASTIC_BLOCK,
@@ -873,23 +830,15 @@ public class ClientProxy extends CommonProxy {
         };
 
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
+        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);*/
 
-        ItemMeshDefinition transmitterMesher = stack -> {
-            TransmitterType type = TransmitterType.get(stack.getItemDamage());
-
-            if (type != null) {
-                String resource = "mekanism:" + type.getName();
-                if (type.hasTiers()) {
-                    BaseTier tier = ((ItemBlockTransmitter) stack.getItem()).getBaseTier(stack);
-                    resource = "mekanism:" + type.getName() + "_" + tier.getName();
-                }
-                return transmitterResources.get(resource);
-            }
-            return null;
-        };
-
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.Transmitter), transmitterMesher);*/
+        setCustomTransmitterMeshDefinition(MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
+              MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, MekanismBlock.BASIC_MECHANICAL_PIPE, MekanismBlock.ADVANCED_MECHANICAL_PIPE, MekanismBlock.ELITE_MECHANICAL_PIPE,
+              MekanismBlock.ULTIMATE_MECHANICAL_PIPE, MekanismBlock.BASIC_PRESSURIZED_TUBE, MekanismBlock.ADVANCED_PRESSURIZED_TUBE, MekanismBlock.ELITE_PRESSURIZED_TUBE,
+              MekanismBlock.ULTIMATE_PRESSURIZED_TUBE, MekanismBlock.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlock.ADVANCED_LOGISTICAL_TRANSPORTER,
+              MekanismBlock.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlock.ULTIMATE_LOGISTICAL_TRANSPORTER, MekanismBlock.RESTRICTIVE_TRANSPORTER,
+              MekanismBlock.DIVERSION_TRANSPORTER, MekanismBlock.BASIC_THERMODYNAMIC_CONDUCTOR, MekanismBlock.ADVANCED_THERMODYNAMIC_CONDUCTOR,
+              MekanismBlock.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismBlock.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
 
         //Walkie Talkie dynamic texture
         ModelLoader.setCustomMeshDefinition(MekanismItem.WALKIE_TALKIE.getItem(), stack -> {
@@ -915,6 +864,12 @@ public class ClientProxy extends CommonProxy {
         });
 
         OBJLoader.INSTANCE.addDomain(Mekanism.MODID);
+    }
+
+    private void setCustomTransmitterMeshDefinition(MekanismBlock... transmitters) {
+        for (MekanismBlock transmitter : transmitters) {
+            ModelLoader.setCustomMeshDefinition(transmitter.getItem(), stack -> new ModelResourceLocation(transmitter.getBlock().getRegistryName(), "inventory"));
+        }
     }
 
     public void registerItemRender(MekanismItem item) {

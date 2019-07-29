@@ -18,6 +18,10 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter {
         this.tier = tier;
     }
 
+    public TransporterTier getTier() {
+        return tier;
+    }
+
     @Override
     public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         return new TileEntityLogisticalTransporter();

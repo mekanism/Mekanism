@@ -16,6 +16,10 @@ public class BlockPressurizedTube extends BlockSmallTransmitter {
         this.tier = tier;
     }
 
+    public TubeTier getTier() {
+        return tier;
+    }
+
     @Override
     public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         return new TileEntityPressurizedTube();

@@ -1,20 +1,14 @@
 package mekanism.common.block.states;
 
 import java.util.Locale;
-import javax.annotation.Nonnull;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
-import mekanism.common.block.transmitter.BlockTransmitter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
+import mekanism.common.block.transmitter.BlockTransmitter;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -25,7 +19,7 @@ public class BlockStateTransmitter extends ExtendedBlockState {
     public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 
     public BlockStateTransmitter(BlockTransmitter block) {
-        super(block, new IProperty[]{typeProperty, tierProperty}, new IUnlistedProperty[]{OBJProperty.INSTANCE, PropertyColor.INSTANCE, PropertyConnection.INSTANCE});
+        super(block, new IProperty[0], new IUnlistedProperty[]{OBJProperty.INSTANCE, PropertyColor.INSTANCE, PropertyConnection.INSTANCE});
     }
 
     public enum TransmitterType implements IStringSerializable {
@@ -89,30 +83,6 @@ public class BlockStateTransmitter extends ExtendedBlockState {
             Size(int size) {
                 centerSize = size;
             }
-        }
-    }
-
-    public static class TransmitterStateMapper extends StateMapperBase {
-
-        @Nonnull
-        @Override
-        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-            TransmitterType type = state.getValue(typeProperty);
-            StringBuilder builder = new StringBuilder();
-            String nameOverride = null;
-
-            if (type.tiers) {
-                BaseTier tier = state.getValue(tierProperty);
-                if (tier == BaseTier.CREATIVE) {
-                    tier = BaseTier.ULTIMATE;
-                }
-                nameOverride = tier.getName() + "_" + type.getName();
-            }
-            if (builder.length() == 0) {
-                builder.append("normal");
-            }
-            ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, nameOverride != null ? nameOverride : type.getName());
-            return new ModelResourceLocation(baseLocation, builder.toString());
         }
     }
 }

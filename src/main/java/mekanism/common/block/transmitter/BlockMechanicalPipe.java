@@ -16,6 +16,10 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter {
         this.tier = tier;
     }
 
+    public PipeTier getTier() {
+        return tier;
+    }
+
     @Override
     public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         return new TileEntityMechanicalPipe();

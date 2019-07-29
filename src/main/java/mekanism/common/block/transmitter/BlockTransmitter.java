@@ -74,17 +74,6 @@ public abstract class BlockTransmitter extends BlockTileDrops implements ITileEn
 
     @Nonnull
     @Override
-    @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntitySidedPipe tile = getTileEntitySidedPipe(worldIn, pos);
-        if (tile != null) {
-            state = state.withProperty(BlockStateTransmitter.tierProperty, tile.getBaseTier());
-        }
-        return state;
-    }
-
-    @Nonnull
-    @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateTransmitter(this);
     }

@@ -16,6 +16,10 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter {
         this.tier = tier;
     }
 
+    public ConductorTier getTier() {
+        return tier;
+    }
+
     @Override
     public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         return new TileEntityThermodynamicConductor();

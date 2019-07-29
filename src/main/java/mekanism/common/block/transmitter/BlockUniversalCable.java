@@ -18,6 +18,10 @@ public class BlockUniversalCable extends BlockSmallTransmitter {
         this.tier = tier;
     }
 
+    public CableTier getTier() {
+        return tier;
+    }
+
     @Override
     public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         return new TileEntityUniversalCable();
