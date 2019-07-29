@@ -14,8 +14,8 @@
       "item": "mekanism:black_slick_plastic"
     },
     "S": {
-      "item": "minecraft:sand",
-      "data": 0
+      "ore": "sand",
+      "type": "forge:ore_dict"
     }
   }
 }
