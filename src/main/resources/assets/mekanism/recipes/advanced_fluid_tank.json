@@ -3,25 +3,28 @@
     "item": "mekanism:advanced_fluid_tank"
   },
   "pattern": [
-    "SCS",
-    "ABA",
-    "SSS"
+    "AIA",
+    "ITI",
+    "AIA"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "FluidTank"
+    }
+  ],
   "key": {
     "A": {
       "ore": "alloyAdvanced",
       "type": "forge:ore_dict"
     },
-    "B": {
+    "T": {
       "item": "mekanism:basic_fluid_tank"
     },
-    "S": {
-      "ore": "cobblestone",
+    "I": {
+      "ore": "ingotIron",
       "type": "forge:ore_dict"
-    },
-    "C": {
-      "item": "#CIRCUIT_ADVANCED"
     }
   }
 }

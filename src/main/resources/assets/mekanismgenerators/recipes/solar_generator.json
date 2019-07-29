@@ -20,7 +20,7 @@
       "type": "forge:ore_dict"
     },
     "A": {
-      "item": "mekanism:enriched_alloy"
+      "item": "mekanism:alloy_enriched"
     },
     "S": {
       "item": "mekanismgenerators:solar_panel"

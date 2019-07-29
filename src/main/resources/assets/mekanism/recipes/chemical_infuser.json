@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:chemical_infuser"
+  },
+  "pattern": [
+    "ACA",
+    "GRG",
+    "ACA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ChemicalInfuser"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "R": {
+      "item": "mekanism:steel_casing"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "G": {
+      "item": "mekanism:basic_gas_tank"
+    }
+  }
+}

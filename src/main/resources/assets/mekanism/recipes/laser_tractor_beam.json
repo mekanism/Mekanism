@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "mekanism:laser_tractor_beam"
+  },
+  "pattern": [
+    "C",
+    "F"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "LaserTractorBeam"
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "mekanism:personal_chest"
+    },
+    "F": {
+      "item": "mekanism:laser_amplifier"
+    }
+  }
+}

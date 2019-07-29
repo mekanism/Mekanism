@@ -23,7 +23,8 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
         if (JsonUtils.hasField(json, "machineType")) {
             String machineType = JsonUtils.getString(json, "machineType");
             final MachineType type = MekanismConfig.current().general.machinesManager.typeFromName(machineType);
-            return () -> MekanismConfig.current().general.machinesManager.isEnabled(type);
+            //TODO: Check config
+            return () -> true;//() -> MekanismConfig.current().general.machinesManager.isEnabled(type);
         }
 
         if (Loader.isModLoaded(MekanismGenerators.MODID) && JsonUtils.hasField(json, "generatorType")) {
@@ -33,7 +34,8 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
             return new BooleanSupplier() {
                 @Override
                 public boolean getAsBoolean() {
-                    return MekanismConfig.current().generators.generatorsManager.isEnabled(type);
+                    //TODO: Check config
+                    return true;//MekanismConfig.current().generators.generatorsManager.isEnabled(type);
                 }
             };
         }

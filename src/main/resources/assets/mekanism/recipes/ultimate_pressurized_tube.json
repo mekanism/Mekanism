@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:ultimate_pressurized_tube",
+    "count": 8
+  },
+  "pattern": [
+    "TTT",
+    "TAT",
+    "TTT"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyUltimate",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:elite_pressurized_tube"
+    }
+  }
+}

@@ -19,7 +19,7 @@
       "item": "mekanismgenerators:solar_generator"
     },
     "E": {
-      "item": "mekanism:enriched_alloy"
+      "item": "mekanism:alloy_enriched"
     },
     "I": {
       "ore": "ingotIron",

@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "mekanism:basic_bin"
+  },
+  "pattern": [
+    "SCS",
+    "A A",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "cobblestone",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    }
+  }
+}

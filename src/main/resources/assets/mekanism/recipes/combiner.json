@@ -1,0 +1,33 @@
+{
+  "result": {
+    "item": "mekanism:combiner"
+  },
+  "pattern": [
+    "RCR",
+    "SIS",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Combiner"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "cobblestone",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_ELITE"
+    },
+    "I": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

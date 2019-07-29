@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanism:electric_pump"
+  },
+  "pattern": [
+    " B ",
+    "ECE",
+    "OOO"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ElectricPump"
+    }
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "mekanism:steel_casing"
+    },
+    "E": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "O": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanism:hdpe_sheet"
+  },
+  "pattern": [
+    "PPP",
+    "P P",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:hdpe_pellet"
+    }
+  }
+}

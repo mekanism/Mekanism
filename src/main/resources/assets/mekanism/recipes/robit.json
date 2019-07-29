@@ -20,8 +20,7 @@
       "item": "mekanism:energy_tablet"
     },
     "I": {
-      "item": "mekanism:machineblock",
-      "data": 13
+      "item": "mekanism:personal_chest"
     },
     "O": {
       "ore": "ingotRefinedObsidian",

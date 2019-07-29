@@ -16,8 +16,7 @@
       "type": "forge:ore_dict"
     },
     "S": {
-      "item": "mekanism:polyethene",
-      "data": 2
+      "item": "mekanism:hdpe_sheet"
     },
     "D": {
       "ore": "dyeYellow",

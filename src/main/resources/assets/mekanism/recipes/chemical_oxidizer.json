@@ -1,0 +1,34 @@
+{
+  "result": {
+    "item": "mekanism:chemical_oxidizer"
+  },
+  "pattern": [
+    "ACA",
+    "ERG",
+    "ACA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ChemicalOxidizer"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "R": {
+      "item": "mekanism:dynamic_tank"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "E": {
+      "item": "mekanism:personal_chest"
+    },
+    "G": {
+      "item": "mekanism:basic_gas_tank"
+    }
+  }
+}

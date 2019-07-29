@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanism:logistical_sorter"
+  },
+  "pattern": [
+    "IPI",
+    "ICI",
+    "III"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "LogisticalSorter"
+    }
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "I": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

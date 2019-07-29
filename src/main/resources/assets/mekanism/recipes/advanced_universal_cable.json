@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:advanced_universal_cable",
+    "count": 8
+  },
+  "pattern": [
+    "TTT",
+    "TET",
+    "TTT"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "T": {
+      "item": "mekanism:basic_universal_cable"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    }
+  }
+}

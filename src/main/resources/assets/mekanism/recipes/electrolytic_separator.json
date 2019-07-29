@@ -1,0 +1,33 @@
+{
+  "result": {
+    "item": "mekanism:electrolytic_separator"
+  },
+  "pattern": [
+    "IRI",
+    "ECE",
+    "IRI"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ElectrolyticSeparator"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "dustRedstone",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "mekanism:electrolytic_core"
+    },
+    "E": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "I": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanism:diversion_transporter",
+    "count": 2
+  },
+  "pattern": [
+    "RRR",
+    "SBS",
+    "RRR"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "R": {
+      "ore": "dustRedstone",
+      "type": "forge:ore_dict"
+    },
+    "B": {
+      "item": "minecraft:iron_bars"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

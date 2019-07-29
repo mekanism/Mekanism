@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:advanced_mechanical_pipe",
+    "count": 8
+  },
+  "pattern": [
+    "TTT",
+    "TET",
+    "TTT"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "T": {
+      "item": "mekanism:basic_mechanical_pipe"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    }
+  }
+}

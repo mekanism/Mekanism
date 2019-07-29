@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:basic_pressurized_tube",
+    "count": 8
+  },
+  "pattern": [
+    "SGS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

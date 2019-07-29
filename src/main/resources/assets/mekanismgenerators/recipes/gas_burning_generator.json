@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanismgenerators:gas_burning_generator"
+  },
+  "pattern": [
+    "PEP",
+    "ICI",
+    "PEP"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "generatorType": "GasGenerator"
+    }
+  ],
+  "key": {
+    "P": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "mekanism:electrolytic_core"
+    },
+    "E": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "I": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

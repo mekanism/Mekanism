@@ -59,13 +59,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 })
 public class ItemBlockEnergyCube extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem, ITierItem {
 
-    public Block metaBlock;
-
     public ItemBlockEnergyCube(Block block) {
         super(block);
-        metaBlock = block;
         setMaxStackSize(1);
-        setHasSubtypes(true);
         setNoRepair();
     }
 

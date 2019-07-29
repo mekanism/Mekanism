@@ -3,22 +3,25 @@
     "item": "mekanism:basic_fluid_tank"
   },
   "pattern": [
-    "SCS",
-    "A A",
-    "SSS"
+    "AIA",
+    "I I",
+    "AIA"
   ],
   "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "FluidTank"
+    }
+  ],
   "key": {
     "A": {
       "ore": "alloyBasic",
       "type": "forge:ore_dict"
     },
-    "S": {
-      "ore": "cobblestone",
+    "I": {
+      "ore": "ingotIron",
       "type": "forge:ore_dict"
-    },
-    "C": {
-      "item": "#CIRCUIT_BASIC"
     }
   }
 }

@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanism:teleporter"
+  },
+  "pattern": [
+    "COC",
+    "OTO",
+    "COC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Teleporter"
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    },
+    "O": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

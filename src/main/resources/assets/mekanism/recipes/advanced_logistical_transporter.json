@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:advanced_logistical_transporter",
+    "count": 8
+  },
+  "pattern": [
+    "TTT",
+    "TET",
+    "TTT"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "T": {
+      "item": "mekanism:basic_logistical_transporter"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    }
+  }
+}

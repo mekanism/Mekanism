@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanism:restrictive_transporter",
+    "count": 2
+  },
+  "pattern": [
+    "SBS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:iron_bars"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

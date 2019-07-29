@@ -1,0 +1,33 @@
+{
+  "result": {
+    "item": "mekanism:energized_smelter"
+  },
+  "pattern": [
+    "RCR",
+    "GIG",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "EnergizedSmelter"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

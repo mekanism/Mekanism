@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanism:advanced_tier_installer"
+  },
+  "pattern": [
+    "ECE",
+    "oWo",
+    "ECE"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "C": {
+      "item": "#CIRCUIT_ADVANCED"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "W": {
+      "ore": "plankWood",
+      "type": "forge:ore_dict"
+    },
+    "o": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

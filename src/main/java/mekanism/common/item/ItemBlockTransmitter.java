@@ -37,18 +37,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITierItem {
 
-    public Block metaBlock;
-
     public ItemBlockTransmitter(Block block) {
         super(block);
-        metaBlock = block;
-        setHasSubtypes(true);
         setCreativeTab(Mekanism.tabMekanism);
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
     }
 
     @Override

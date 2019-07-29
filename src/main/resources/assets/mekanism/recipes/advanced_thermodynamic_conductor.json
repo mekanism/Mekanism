@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:advanced_thermodynamic_conductor",
+    "count": 8
+  },
+  "pattern": [
+    "TTT",
+    "TET",
+    "TTT"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "T": {
+      "item": "mekanism:basic_thermodynamic_conductor"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    }
+  }
+}

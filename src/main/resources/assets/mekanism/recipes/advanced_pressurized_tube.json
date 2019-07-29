@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:advanced_pressurized_tube",
+    "count": 8
+  },
+  "pattern": [
+    "TTT",
+    "TET",
+    "TTT"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "T": {
+      "item": "mekanism:basic_pressurized_tube"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    }
+  }
+}

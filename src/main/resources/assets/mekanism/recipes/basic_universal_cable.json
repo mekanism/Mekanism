@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:basic_universal_cable",
+    "count": 8
+  },
+  "pattern": [
+    "SRS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "R": {
+      "ore": "dustRedstone",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

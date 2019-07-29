@@ -22,12 +22,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemBlockOre extends ItemBlockMekanism {
 
-    public Block metaBlock;
-
     public ItemBlockOre(Block block) {
         super(block);
-        metaBlock = block;
-        setHasSubtypes(true);
     }
 
     @Override
@@ -40,11 +36,6 @@ public class ItemBlockOre extends ItemBlockMekanism {
         } else {
             list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip." + getTranslationKey(itemstack).replace("tile.OreBlock.", "")), itemstack));
         }
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
     }
 
     @Nonnull

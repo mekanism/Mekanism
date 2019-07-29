@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanism:basic_mechanical_pipe",
+    "count": 8
+  },
+  "pattern": [
+    "SBS"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

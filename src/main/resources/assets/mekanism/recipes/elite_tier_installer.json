@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanism:elite_tier_installer"
+  },
+  "pattern": [
+    "RCR",
+    "gWg",
+    "RCR"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_ELITE"
+    },
+    "g": {
+      "ore": "ingotGold",
+      "type": "forge:ore_dict"
+    },
+    "W": {
+      "ore": "plankWood",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:chemical_crystallizer"
+  },
+  "pattern": [
+    "CGC",
+    "ASA",
+    "CGC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ChemicalCrystallizer"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_atomic"
+    },
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "S": {
+      "item": "mekanism:steel_casing"
+    },
+    "G": {
+      "item": "mekanism:basic_gas_tank"
+    }
+  }
+}

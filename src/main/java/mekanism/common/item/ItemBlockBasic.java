@@ -49,7 +49,6 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
 
     public ItemBlockBasic(Block block) {
         super(block);
-        setHasSubtypes(true);
         setTranslationKey(block.getTranslationKey());
     }
 
@@ -75,11 +74,6 @@ public class ItemBlockBasic extends ItemBlockMekanism implements IEnergizedItem,
             itemstack.setTagCompound(new NBTTagCompound());
         }
         itemstack.getTagCompound().setInteger("tier", tier.ordinal());
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
     }
 
     @Override
