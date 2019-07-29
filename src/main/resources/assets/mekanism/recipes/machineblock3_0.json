@@ -21,10 +21,10 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "#CIRCUITULTIMATE"
+      "item": "#CIRCUIT_ULTIMATE"
     },
     "T": {
-      "item": "mekanism:teleportationcore"
+      "item": "mekanism:teleportation_core"
     },
     "O": {
       "ore": "ingotRefinedObsidian",

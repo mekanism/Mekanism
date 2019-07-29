@@ -21,10 +21,10 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "E": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "F": {
       "item": "mekanism:basicblock",

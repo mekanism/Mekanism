@@ -20,7 +20,7 @@
       "item": "minecraft:piston"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "I": {
       "ore": "ingotIron",

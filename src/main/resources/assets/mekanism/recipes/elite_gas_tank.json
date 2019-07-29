@@ -1,11 +1,6 @@
 {
   "result": {
-    "nbt": {
-      "tier": 2
-    },
-    "item": "mekanism:gastank",
-    "data": 0,
-    "type": "mekanism:item_nbt"
+    "item": "mekanism:elite_gas_tank"
   },
   "pattern": [
     "APA",
@@ -23,12 +18,7 @@
       "type": "forge:ore_dict"
     },
     "T": {
-      "nbt": {
-        "tier": 1
-      },
-      "item": "mekanism:gastank",
-      "data": 0,
-      "type": "mekanism:item_nbt"
+      "item": "mekanism:advanced_gas_tank"
     }
   }
 }

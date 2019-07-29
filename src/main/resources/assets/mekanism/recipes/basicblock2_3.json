@@ -15,7 +15,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "T": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "E": {
       "nbt": {

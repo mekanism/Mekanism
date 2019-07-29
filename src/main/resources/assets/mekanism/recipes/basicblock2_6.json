@@ -11,7 +11,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "S": {
       "ore": "ingotSteel",

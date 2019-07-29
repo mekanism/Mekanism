@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanism:gasupgrade"
+    "item": "mekanism:upgrade_filter"
   },
   "pattern": [
     " G ",
@@ -10,10 +10,10 @@
   "type": "forge:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "D": {
-      "ore": "dustIron",
+      "ore": "dustTin",
       "type": "forge:ore_dict"
     },
     "G": {

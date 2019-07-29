@@ -12,7 +12,7 @@
       "item": "minecraft:book"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     }
   }
 }

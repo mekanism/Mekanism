@@ -27,7 +27,7 @@
       "type": "forge:ore_dict"
     },
     "T": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "g": {
       "ore": "ingotGold",

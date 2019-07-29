@@ -12,7 +12,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "I": {
       "item": "mekanism:basicblock",

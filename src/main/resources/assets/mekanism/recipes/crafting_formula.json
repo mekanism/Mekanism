@@ -1,13 +1,13 @@
 {
   "result": {
-    "item": "mekanism:craftingformula"
+    "item": "mekanism:crafting_formula"
   },
   "ingredients": [
     {
       "item": "minecraft:paper"
     },
     {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     }
   ],
   "type": "forge:ore_shapeless"

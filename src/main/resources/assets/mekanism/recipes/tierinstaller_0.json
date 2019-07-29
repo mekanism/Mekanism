@@ -15,7 +15,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "W": {
       "ore": "plankWood",

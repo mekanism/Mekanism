@@ -23,7 +23,7 @@
       "type": "mekanism:item_nbt"
     },
     "C": {
-      "item": "#CIRCUITULTIMATE"
+      "item": "#CIRCUIT_ULTIMATE"
     },
     "E": {
       "nbt": {

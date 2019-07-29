@@ -10,13 +10,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "B": {
       "item": "minecraft:string"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     }
   }
 }

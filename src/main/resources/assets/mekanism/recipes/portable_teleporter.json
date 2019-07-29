@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanism:portableteleporter"
+    "item": "mekanism:portable_teleporter"
   },
   "pattern": [
     " E ",
@@ -10,13 +10,13 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "T": {
-      "item": "mekanism:teleportationcore"
+      "item": "mekanism:teleportation_core"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     }
   }
 }

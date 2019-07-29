@@ -16,7 +16,7 @@
       "type": "forge:ore_dict"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     }
   }
 }

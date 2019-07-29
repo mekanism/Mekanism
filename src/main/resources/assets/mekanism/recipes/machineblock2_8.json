@@ -20,7 +20,7 @@
       "item": "mekanism:atomicalloy"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "S": {
       "item": "mekanism:basicblock",

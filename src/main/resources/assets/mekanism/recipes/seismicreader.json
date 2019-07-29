@@ -14,7 +14,7 @@
       "type": "forge:ore_dict"
     },
     "T": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "L": {
       "item": "minecraft:dye",

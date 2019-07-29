@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanism:electrolyticcore"
+    "item": "mekanism:electrolytic_core"
   },
   "pattern": [
     "EPE",
@@ -14,7 +14,7 @@
       "type": "forge:ore_dict"
     },
     "E": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "G": {
       "ore": "dustGold",

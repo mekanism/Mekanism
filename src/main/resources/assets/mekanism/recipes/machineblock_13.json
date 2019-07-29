@@ -25,7 +25,7 @@
       "type": "forge:ore_dict"
     },
     "c": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "G": {
       "ore": "blockGlass",

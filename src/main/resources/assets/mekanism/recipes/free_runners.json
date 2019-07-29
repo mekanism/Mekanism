@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanism:freerunners"
+    "item": "mekanism:free_runners"
   },
   "pattern": [
     "C C",
@@ -10,13 +10,13 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "T": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     }
   }
 }

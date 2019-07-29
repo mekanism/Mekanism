@@ -11,7 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "C": {
-      "item": "#CIRCUITADVANCED"
+      "item": "#CIRCUIT_ADVANCED"
     },
     "E": {
       "ore": "alloyAdvanced",

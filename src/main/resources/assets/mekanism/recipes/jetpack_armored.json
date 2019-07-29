@@ -1,7 +1,7 @@
 {
   "result": {
     "nbt": {},
-    "item": "mekanism:armoredjetpack",
+    "item": "mekanism:jetpack_armored",
     "type": "mekanism:item_nbt"
   },
   "pattern": [

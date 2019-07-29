@@ -20,14 +20,14 @@
       "item": "mekanism:atomicalloy"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "S": {
       "item": "mekanism:machineblock",
       "data": 15
     },
     "T": {
-      "item": "mekanism:teleportationcore"
+      "item": "mekanism:teleportation_core"
     },
     "E": {
       "item": "mekanism:robit"

@@ -23,7 +23,7 @@
       "type": "mekanism:item_nbt"
     },
     "C": {
-      "item": "#CIRCUITELITE"
+      "item": "#CIRCUIT_ELITE"
     },
     "E": {
       "nbt": {

@@ -17,7 +17,7 @@
   ],
   "key": {
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "t": {
       "nbt": {
@@ -28,7 +28,7 @@
       "type": "mekanism:item_nbt"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "G": {
       "ore": "blockGlass",

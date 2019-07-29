@@ -17,10 +17,10 @@
   ],
   "key": {
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "T": {
-      "item": "mekanism:teleportationcore"
+      "item": "mekanism:teleportation_core"
     },
     "O": {
       "item": "mekanism:basicblock",

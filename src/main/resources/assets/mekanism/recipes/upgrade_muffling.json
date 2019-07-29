@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanism:energyupgrade"
+    "item": "mekanism:upgrade_muffling"
   },
   "pattern": [
     " G ",
@@ -10,10 +10,10 @@
   "type": "forge:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "D": {
-      "ore": "dustGold",
+      "ore": "dustSteel",
       "type": "forge:ore_dict"
     },
     "G": {

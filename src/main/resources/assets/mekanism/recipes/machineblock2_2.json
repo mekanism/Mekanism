@@ -17,14 +17,14 @@
   ],
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "R": {
       "item": "mekanism:basicblock",
       "data": 9
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "G": {
       "nbt": {

@@ -15,10 +15,10 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "#CIRCUITELITE"
+      "item": "#CIRCUIT_ELITE"
     },
     "T": {
-      "item": "mekanism:teleportationcore"
+      "item": "mekanism:teleportation_core"
     },
     "G": {
       "ore": "blockGlass",

@@ -1,25 +1,22 @@
 {
   "result": {
-    "nbt": {
-      "tier": 0
-    },
-    "item": "mekanism:gastank",
-    "data": 0,
+    "nbt": {},
+    "item": "mekanism:gauge_dropper",
     "type": "mekanism:item_nbt"
   },
   "pattern": [
-    "APA",
-    "P P",
-    "APA"
+    " O ",
+    "G G",
+    "GGG"
   ],
   "type": "mekanism:ore_shaped",
   "key": {
-    "P": {
-      "ore": "ingotOsmium",
+    "G": {
+      "ore": "paneGlass",
       "type": "forge:ore_dict"
     },
-    "A": {
-      "ore": "alloyBasic",
+    "O": {
+      "ore": "ingotOsmium",
       "type": "forge:ore_dict"
     }
   }

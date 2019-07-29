@@ -15,7 +15,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "#CIRCUITULTIMATE"
+      "item": "#CIRCUIT_ULTIMATE"
     },
     "d": {
       "ore": "gemDiamond",

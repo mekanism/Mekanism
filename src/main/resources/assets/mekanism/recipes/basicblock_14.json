@@ -14,7 +14,7 @@
       "item": "minecraft:bucket"
     },
     "C": {
-      "item": "#CIRCUITADVANCED"
+      "item": "#CIRCUIT_ADVANCED"
     },
     "G": {
       "ore": "paneGlass",

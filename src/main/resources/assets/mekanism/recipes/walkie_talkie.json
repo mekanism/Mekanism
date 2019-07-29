@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanism:walkietalkie"
+    "item": "mekanism:walkie_talkie"
   },
   "pattern": [
     "  O",
@@ -14,7 +14,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "O": {
       "ore": "ingotOsmium",

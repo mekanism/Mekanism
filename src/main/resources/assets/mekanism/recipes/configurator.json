@@ -10,13 +10,13 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "S": {
       "item": "minecraft:stick"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "L": {
       "item": "minecraft:dye",

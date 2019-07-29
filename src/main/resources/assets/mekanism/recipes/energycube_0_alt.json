@@ -23,7 +23,7 @@
       "type": "mekanism:item_nbt"
     },
     "T": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "E": {
       "ore": "alloyAdvanced",

@@ -20,10 +20,10 @@
       "item": "mekanism:atomicalloy"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "E": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "G": {
       "nbt": {

@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "mekanism:networkreader"
+    "item": "mekanism:network_reader"
   },
   "pattern": [
     " G ",
@@ -10,10 +10,10 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "G": {
       "ore": "blockGlass",

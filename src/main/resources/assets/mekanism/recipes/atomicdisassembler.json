@@ -10,13 +10,13 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:enrichedalloy"
+      "item": "mekanism:alloy_enriched"
     },
     "C": {
       "item": "mekanism:atomicalloy"
     },
     "E": {
-      "item": "mekanism:energytablet"
+      "item": "mekanism:energy_tablet"
     },
     "O": {
       "ore": "ingotRefinedObsidian",

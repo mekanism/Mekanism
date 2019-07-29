@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "mekanism:upgrade_gas"
+  },
+  "pattern": [
+    " G ",
+    "ADA",
+    " G "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:alloy_enriched"
+    },
+    "D": {
+      "ore": "dustIron",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

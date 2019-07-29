@@ -23,7 +23,7 @@
       "type": "mekanism:item_nbt"
     },
     "C": {
-      "item": "#CIRCUITADVANCED"
+      "item": "#CIRCUIT_ADVANCED"
     },
     "E": {
       "nbt": {

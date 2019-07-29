@@ -16,7 +16,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "#CIRCUITBASIC"
+      "item": "#CIRCUIT_BASIC"
     },
     "T": {
       "ore": "ingotTin",
