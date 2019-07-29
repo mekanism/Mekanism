@@ -1,4 +1,4 @@
-package mekanism.common.item.transmitter;
+package mekanism.common.item.block.transmitter;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -8,16 +8,15 @@ import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.block.transmitter.BlockUniversalCable;
+import mekanism.common.block.transmitter.BlockThermodynamicConductor;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.ITieredItem;
-import mekanism.common.item.ItemBlockMultipartAble;
+import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.CableTier;
+import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
@@ -31,18 +30,18 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockUniversalCable extends ItemBlockMultipartAble implements ITieredItem<CableTier> {
+public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble implements ITieredItem<ConductorTier> {
 
-    public ItemBlockUniversalCable(BlockUniversalCable block) {
+    public ItemBlockThermodynamicConductor(BlockThermodynamicConductor block) {
         super(block);
     }
 
     @Nullable
     @Override
-    public CableTier getTier(@Nonnull ItemStack stack) {
+    public ConductorTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockUniversalCable) {
-            BlockUniversalCable block = (BlockUniversalCable) ((ItemBlockUniversalCable) item).block;
+        if (item instanceof ItemBlockThermodynamicConductor) {
+            BlockThermodynamicConductor block = (BlockThermodynamicConductor) ((ItemBlockThermodynamicConductor) item).block;
             return block.getTier();
         }
         return null;
@@ -70,17 +69,17 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble implements I
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            CableTier tier = getTier(itemstack);
+            ConductorTier tier = getTier(itemstack);
             if (tier != null) {
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getCableCapacity()) + "/t");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.conduction") + ": " + EnumColor.GREY + tier.getInverseConduction());
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.insulation") + ": " + EnumColor.GREY + tier.getBaseConductionInsulation());
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.heatCapacity") + ": " + EnumColor.GREY + tier.getInverseHeatCapacity());
             }
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                      EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
         } else {
             list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-            list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
-            list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY + "(IndustrialCraft)");
-            list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY + "(Mekanism)");
+            list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.heat") + " (Mekanism)");
         }
     }
 

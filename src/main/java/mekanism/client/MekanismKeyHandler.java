@@ -5,7 +5,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.block.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemElectricBow;

@@ -1,4 +1,4 @@
-package mekanism.common.item.transmitter;
+package mekanism.common.item.block.transmitter;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -6,10 +6,10 @@ import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
-import mekanism.common.block.transmitter.BlockRestrictiveTransporter;
+import mekanism.common.block.transmitter.BlockDiversionTransporter;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
-import mekanism.common.item.ItemBlockMultipartAble;
+import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
@@ -19,9 +19,9 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockRestrictiveTransporter extends ItemBlockMultipartAble {
+public class ItemBlockDiversionTransporter extends ItemBlockMultipartAble {
 
-    public ItemBlockRestrictiveTransporter(BlockRestrictiveTransporter block) {
+    public ItemBlockDiversionTransporter(BlockDiversionTransporter block) {
         super(block);
     }
 
@@ -35,7 +35,7 @@ public class ItemBlockRestrictiveTransporter extends ItemBlockMultipartAble {
             list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
             list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
             list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
-            list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.restrictiveDesc"));
+            list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.diversionDesc"));
         }
     }
 

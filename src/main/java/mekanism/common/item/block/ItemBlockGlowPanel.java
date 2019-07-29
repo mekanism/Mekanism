@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
 import mcmultipart.api.multipart.IMultipart;

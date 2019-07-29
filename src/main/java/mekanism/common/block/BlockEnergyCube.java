@@ -7,11 +7,10 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ITierItem;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.item.ItemBlockEnergyCube;
+import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.EnergyCubeTier;
@@ -62,6 +61,10 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
         this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_energy_cube";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    public EnergyCubeTier getTier() {
+        return tier;
     }
 
     @Nonnull
@@ -138,11 +141,10 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
 
     @Override
     public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
-        ItemStack discharged = new ItemStack(this);
-        ((ItemBlockEnergyCube) discharged.getItem()).setBaseTier(discharged, tier.getBaseTier());
-        list.add(discharged);
+        //Empty
+        list.add(new ItemStack(this));
+        //Charged
         ItemStack charged = new ItemStack(this);
-        ((ItemBlockEnergyCube) charged.getItem()).setBaseTier(charged, tier.getBaseTier());
         ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.getMaxEnergy());
         list.add(charged);
     }
@@ -219,13 +221,12 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this);
-
-        if (!itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
+        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
         if (tileEntity != null) {
+            if (!itemStack.hasTagCompound()) {
+                itemStack.setTagCompound(new NBTTagCompound());
+            }
             ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
 
             if (securityItem.hasSecurity(itemStack)) {
@@ -234,16 +235,13 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
             }
             ((ISideConfiguration) tileEntity).getConfig().write(ItemDataUtils.getDataMap(itemStack));
             ((ISideConfiguration) tileEntity).getEjector().write(ItemDataUtils.getDataMap(itemStack));
+
+            IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
+            energizedItem.setEnergy(itemStack, tileEntity.electricityStored);
+
+            ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
+            inventory.setInventory(tileEntity.getInventory(), itemStack);
         }
-
-        ITierItem tierItem = (ITierItem) itemStack.getItem();
-        tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
-
-        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
-        energizedItem.setEnergy(itemStack, tileEntity.electricityStored);
-
-        ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-        inventory.setInventory(tileEntity.getInventory(), itemStack);
         return itemStack;
     }
 

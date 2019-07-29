@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.block;
 
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.resource.BlockResourceInfo;

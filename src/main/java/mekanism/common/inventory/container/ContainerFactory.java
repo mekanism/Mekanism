@@ -5,7 +5,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.block.ItemBlockMachine;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;

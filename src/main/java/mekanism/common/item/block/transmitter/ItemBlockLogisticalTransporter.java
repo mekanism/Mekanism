@@ -1,4 +1,4 @@
-package mekanism.common.item.transmitter;
+package mekanism.common.item.block.transmitter;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -8,13 +8,13 @@ import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.block.transmitter.BlockMechanicalPipe;
+import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.ITieredItem;
-import mekanism.common.item.ItemBlockMultipartAble;
+import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.PipeTier;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.state.IBlockState;
@@ -30,18 +30,18 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble implements ITieredItem<PipeTier> {
+public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble implements ITieredItem<TransporterTier> {
 
-    public ItemBlockMechanicalPipe(BlockMechanicalPipe block) {
+    public ItemBlockLogisticalTransporter(BlockLogisticalTransporter block) {
         super(block);
     }
 
     @Nullable
     @Override
-    public PipeTier getTier(@Nonnull ItemStack stack) {
+    public TransporterTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockMechanicalPipe) {
-            BlockMechanicalPipe block = (BlockMechanicalPipe) ((ItemBlockMechanicalPipe) item).block;
+        if (item instanceof ItemBlockLogisticalTransporter) {
+            BlockLogisticalTransporter block = (BlockLogisticalTransporter) ((ItemBlockLogisticalTransporter) item).block;
             return block.getTier();
         }
         return null;
@@ -69,16 +69,17 @@ public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble implements I
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            PipeTier tier = getTier(itemstack);
+            TransporterTier tier = getTier(itemstack);
             if (tier != null) {
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + tier.getPipeCapacity() + "mB/t");
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + tier.getPipePullAmount() + "mB/t");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (tier.getSpeed() / (100 / 20)) + " m/s");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + tier.getPullAmount() * 2 + "/s");
             }
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                      EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
         } else {
             list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-            list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.fluids") + " " + EnumColor.GREY + "(MinecraftForge)");
+            list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
+            list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
         }
     }
 

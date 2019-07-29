@@ -7,7 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateCardboardBox;
-import mekanism.common.item.ItemBlockCardboardBox;
+import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

@@ -14,7 +14,7 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
-import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.block.ItemBlockBasic;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;

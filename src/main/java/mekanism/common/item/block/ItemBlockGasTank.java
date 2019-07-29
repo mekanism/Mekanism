@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.block;
 
 import java.util.List;
 import java.util.UUID;

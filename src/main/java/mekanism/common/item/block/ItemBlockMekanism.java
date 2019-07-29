@@ -1,7 +1,8 @@
-package mekanism.common.item;
+package mekanism.common.item.block;
 
 import java.util.List;
 import mekanism.common.block.interfaces.IBlockOreDict;
+import mekanism.common.item.IItemMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;

@@ -1,4 +1,4 @@
-package mekanism.common.item.transmitter;
+package mekanism.common.item.block.transmitter;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -12,7 +12,7 @@ import mekanism.common.block.transmitter.BlockPressurizedTube;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.ITieredItem;
-import mekanism.common.item.ItemBlockMultipartAble;
+import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;

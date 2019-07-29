@@ -15,7 +15,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
-import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
@@ -377,10 +376,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         ItemStack itemStack = new ItemStack(this);
         if (itemStack.getTagCompound() == null) {
             itemStack.setTagCompound(new NBTTagCompound());
-        }
-        if (tileEntity instanceof TileEntityFluidTank) {
-            ITierItem tierItem = (ITierItem) itemStack.getItem();
-            tierItem.setBaseTier(itemStack, ((TileEntityFluidTank) tileEntity).tier.getBaseTier());
         }
         if (tileEntity instanceof ISecurityTile) {
             ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();

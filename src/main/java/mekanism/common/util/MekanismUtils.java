@@ -31,7 +31,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
-import mekanism.common.item.ItemBlockGasTank;
+import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;

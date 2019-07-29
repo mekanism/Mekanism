@@ -10,7 +10,7 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.block.ItemBlockMachine;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

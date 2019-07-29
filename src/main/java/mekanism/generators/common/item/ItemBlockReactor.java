@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.item.ItemBlockMekanism;
+import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
