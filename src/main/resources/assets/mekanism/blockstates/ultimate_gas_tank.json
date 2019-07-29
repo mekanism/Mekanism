@@ -1,0 +1,23 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:gas_tank",
+    "textures": {
+      "body": "mekanism:blocks/models/gas_tank",
+      "valve": "mekanism:blocks/models/gas_tank_ultimate_valve"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "facing": {
+      "up":    {"x": -90},
+      "down":  {"x":  90},
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y":  90},
+      "west":  {"y": -90}
+    },
+    "inventory": [{}]
+  }
+}
+

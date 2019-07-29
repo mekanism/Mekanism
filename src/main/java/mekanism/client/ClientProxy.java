@@ -609,14 +609,6 @@ public class ClientProxy extends CommonProxy {
             @Nonnull
             @Override
             protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "");
-            }
-        }, MekanismBlock.BASIC_GAS_TANK, MekanismBlock.ADVANCED_GAS_TANK, MekanismBlock.ELITE_GAS_TANK, MekanismBlock.ULTIMATE_GAS_TANK, MekanismBlock.CREATIVE_GAS_TANK);
-
-        setCustomStateMapper(new StateMapperBase() {
-            @Nonnull
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
                 return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "energy_cube"), "");
             }
         }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
@@ -635,7 +627,7 @@ public class ClientProxy extends CommonProxy {
 
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
-        setCustomModelResourceLocation(getInventoryMRL("ObsidianTNT"), MekanismBlock.OBSIDIAN_TNT);
+        setCustomModelResourceLocation(getInventoryMRL("obsidian_tnt"), MekanismBlock.OBSIDIAN_TNT);
         setCustomModelResourceLocation(getInventoryMRL("salt_block"), MekanismBlock.SALT_BLOCK);
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=false"));
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=true"));
@@ -651,8 +643,12 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
         setCustomModelResourceLocation(getInventoryMRL("fluid_tank"), MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK,
               MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK, MekanismBlock.CREATIVE_FLUID_TANK);
-        setCustomModelResourceLocation(getInventoryMRL("gas_tank"), MekanismBlock.BASIC_GAS_TANK, MekanismBlock.ADVANCED_GAS_TANK, MekanismBlock.ELITE_GAS_TANK,
-              MekanismBlock.ULTIMATE_GAS_TANK, MekanismBlock.CREATIVE_GAS_TANK);
+
+        setCustomModelResourceLocation(getInventoryMRL("basic_gas_tank"), MekanismBlock.BASIC_GAS_TANK);
+        setCustomModelResourceLocation(getInventoryMRL("advanced_gas_tank"), MekanismBlock.ADVANCED_GAS_TANK);
+        setCustomModelResourceLocation(getInventoryMRL("elite_gas_tank"), MekanismBlock.ELITE_GAS_TANK);
+        setCustomModelResourceLocation(getInventoryMRL("ultimate_gas_tank"), MekanismBlock.ULTIMATE_GAS_TANK);
+        setCustomModelResourceLocation(getInventoryMRL("creative_gas_tank"), MekanismBlock.CREATIVE_GAS_TANK);
 
         setCustomModelResourceLocation(getInventoryMRL("quantum_entangloporter"), MekanismBlock.QUANTUM_ENTANGLOPORTER);
         setCustomModelResourceLocation(getInventoryMRL("solar_neutron_activator"), MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
@@ -787,15 +783,15 @@ public class ClientProxy extends CommonProxy {
         setCustomModelResourceLocation(getInventoryMRL("tin_ore"), MekanismBlock.TIN_ORE);
 
         ModelLoader.setCustomMeshDefinition(MekanismBlock.BASIC_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.BASIC));
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "basic_gas_tank"), "facing=north" + GasTankTier.BASIC));
         ModelLoader.setCustomMeshDefinition(MekanismBlock.ADVANCED_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.ADVANCED));
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "advanced_gas_tank"), "facing=north" + GasTankTier.ADVANCED));
         ModelLoader.setCustomMeshDefinition(MekanismBlock.ELITE_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.ELITE));
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "elite_gas_tank"), "facing=north" + GasTankTier.ELITE));
         ModelLoader.setCustomMeshDefinition(MekanismBlock.ULTIMATE_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.ULTIMATE));
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ultimate_gas_tank"), "facing=north" + GasTankTier.ULTIMATE));
         ModelLoader.setCustomMeshDefinition(MekanismBlock.CREATIVE_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "gas_tank"), "facing=north,tier=" + GasTankTier.CREATIVE));
+              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "creative_gas_tank"), "facing=north" + GasTankTier.CREATIVE));
 
         /*ItemMeshDefinition machineMesher = stack -> {
             MachineType type = MachineType.get(stack);

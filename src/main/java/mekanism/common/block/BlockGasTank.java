@@ -7,7 +7,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ITierItem;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -200,12 +199,12 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this);
-        if (itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
+        TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
         if (tileEntity != null) {
+            if (itemStack.hasTagCompound()) {
+                itemStack.setTagCompound(new NBTTagCompound());
+            }
             ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
             if (securityItem.hasSecurity(itemStack)) {
                 securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
@@ -213,15 +212,11 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
             }
             ((ISideConfiguration) tileEntity).getConfig().write(ItemDataUtils.getDataMap(itemStack));
             ((ISideConfiguration) tileEntity).getEjector().write(ItemDataUtils.getDataMap(itemStack));
+            IGasItem storageTank = (IGasItem) itemStack.getItem();
+            storageTank.setGas(itemStack, tileEntity.gasTank.getGas());
+            ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
+            inventory.setInventory(tileEntity.getInventory(), itemStack);
         }
-        ITierItem tierItem = (ITierItem) itemStack.getItem();
-        tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
-
-        IGasItem storageTank = (IGasItem) itemStack.getItem();
-        storageTank.setGas(itemStack, tileEntity.gasTank.getGas());
-
-        ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-        inventory.setInventory(tileEntity.getInventory(), itemStack);
         return itemStack;
     }
 
