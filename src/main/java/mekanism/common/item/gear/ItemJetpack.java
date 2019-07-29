@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.gear;
 
 import java.util.List;
 import javax.annotation.Nonnull;

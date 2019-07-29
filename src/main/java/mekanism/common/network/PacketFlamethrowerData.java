@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.item.ItemFlamethrower;
+import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

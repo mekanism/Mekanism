@@ -1,7 +1,8 @@
-package mekanism.common.item;
+package mekanism.common.item.gear;
 
 import java.util.Locale;
 import mekanism.common.Mekanism;
+import mekanism.common.item.IItemMekanism;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.util.ResourceLocation;

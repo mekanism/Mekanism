@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.item.ItemFreeRunners;
+import mekanism.common.item.gear.ItemFreeRunners;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;

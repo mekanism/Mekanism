@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.gear;
 
 import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;

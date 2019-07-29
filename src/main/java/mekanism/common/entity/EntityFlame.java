@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.ItemFlamethrower;
+import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;

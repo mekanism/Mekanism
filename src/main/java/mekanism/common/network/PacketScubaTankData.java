@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;

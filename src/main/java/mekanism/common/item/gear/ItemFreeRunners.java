@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.gear;
 
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.IElectricItemManager;

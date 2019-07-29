@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.gear;
 
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;

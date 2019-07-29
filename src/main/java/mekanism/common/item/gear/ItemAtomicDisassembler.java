@@ -1,4 +1,4 @@
-package mekanism.common.item;
+package mekanism.common.item.gear;
 
 import com.google.common.collect.Multimap;
 import java.util.Arrays;
@@ -14,6 +14,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
