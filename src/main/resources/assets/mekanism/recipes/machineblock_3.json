@@ -24,8 +24,7 @@
       "item": "#CIRCUIT_BASIC"
     },
     "I": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     },
     "L": {
       "item": "minecraft:lava_bucket"

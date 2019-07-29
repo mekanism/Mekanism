@@ -17,7 +17,7 @@
   ],
   "key": {
     "A": {
-      "item": "mekanism:atomicalloy"
+      "item": "mekanism:alloy_atomic"
     },
     "C": {
       "item": "#CIRCUIT_BASIC"
@@ -33,8 +33,7 @@
       "item": "mekanism:robit"
     },
     "I": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     }
   }
 }

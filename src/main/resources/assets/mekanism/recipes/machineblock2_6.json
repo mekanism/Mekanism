@@ -17,7 +17,7 @@
   ],
   "key": {
     "A": {
-      "item": "mekanism:atomicalloy"
+      "item": "mekanism:alloy_atomic"
     },
     "C": {
       "item": "#CIRCUIT_BASIC"
@@ -26,12 +26,7 @@
       "item": "mekanism:alloy_enriched"
     },
     "G": {
-      "nbt": {
-        "tier": 0
-      },
-      "item": "mekanism:gastank",
-      "data": 0,
-      "type": "mekanism:item_nbt"
+      "item": "mekanism:basic_gas_tank"
     }
   }
 }

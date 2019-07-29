@@ -23,8 +23,7 @@
       "item": "#CIRCUIT_BASIC"
     },
     "S": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     },
     "I": {
       "ore": "ingotIron",

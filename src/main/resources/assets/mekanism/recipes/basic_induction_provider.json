@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:basic_induction_port"
+  },
+  "pattern": [
+    "LCL",
+    "CEC",
+    "LCL"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "item": "#CIRCUIT_BASIC"
+    },
+    "E": {
+      "item": "mekanism:basic_energy_cube"
+    },
+    "L": {
+      "ore": "dustLithium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

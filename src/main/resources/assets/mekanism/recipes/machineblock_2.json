@@ -28,8 +28,7 @@
       "item": "#CIRCUIT_ELITE"
     },
     "I": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     }
   }
 }

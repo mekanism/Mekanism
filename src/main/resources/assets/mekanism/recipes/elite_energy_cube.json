@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "mekanism:elite_energy_cube"
+  },
+  "pattern": [
+    "RTR",
+    "gAg",
+    "RTR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:advanced_energy_cube"
+    },
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:energy_tablet"
+    },
+    "g": {
+      "ore": "ingotGold",
+      "type": "forge:ore_dict"
+    }
+  }
+}

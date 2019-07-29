@@ -10,7 +10,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "A": {
-      "item": "mekanism:atomicalloy"
+      "item": "mekanism:alloy_atomic"
     },
     "D": {
       "item": "minecraft:diamond"

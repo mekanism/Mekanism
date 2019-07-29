@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanism:ingot_tin",
+    "count": 9
+  },
+  "pattern": [
+    "*"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "item": "mekanism:block_tin"
+    }
+  }
+}

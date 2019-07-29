@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:thermal_evaporation_block",
+    "count": 4
+  },
+  "pattern": [
+    " S ",
+    "SCS",
+    " S "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "ingotCopper",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

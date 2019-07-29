@@ -20,8 +20,7 @@
       "item": "mekanism:alloy_enriched"
     },
     "R": {
-      "item": "mekanism:basicblock",
-      "data": 9
+      "item": "mekanism:dynamic_tank"
     },
     "C": {
       "item": "#CIRCUIT_BASIC"
@@ -31,12 +30,7 @@
       "data": 13
     },
     "G": {
-      "nbt": {
-        "tier": 0
-      },
-      "item": "mekanism:gastank",
-      "data": 0,
-      "type": "mekanism:item_nbt"
+      "item": "mekanism:basic_gas_tank"
     }
   }
 }

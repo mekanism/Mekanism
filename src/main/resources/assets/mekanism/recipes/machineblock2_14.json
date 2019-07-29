@@ -25,12 +25,7 @@
       "type": "forge:ore_dict"
     },
     "E": {
-      "nbt": {
-        "tier": 0
-      },
-      "item": "mekanism:energycube",
-      "data": 0,
-      "type": "mekanism:item_nbt"
+      "item": "mekanism:basic_energy_cube"
     }
   }
 }

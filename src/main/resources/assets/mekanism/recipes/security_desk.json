@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "mekanism:security_desk"
+  },
+  "pattern": [
+    "SGS",
+    "CIC",
+    "STS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUIT_ELITE"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:steel_casing"
+    }
+  }
+}

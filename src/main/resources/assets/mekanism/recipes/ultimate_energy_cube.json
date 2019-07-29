@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "mekanism:ultimate_energy_cube"
+  },
+  "pattern": [
+    "ATA",
+    "dEd",
+    "ATA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyUltimate",
+      "type": "forge:ore_dict"
+    },
+    "d": {
+      "ore": "gemDiamond",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:energy_tablet"
+    },
+    "E": {
+      "item": "mekanism:elite_energy_cube"
+    }
+  }
+}

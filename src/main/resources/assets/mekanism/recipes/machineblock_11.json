@@ -23,8 +23,7 @@
       "item": "mekanism:teleportation_core"
     },
     "O": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     }
   }
 }

@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanism:dynamic_tank",
+    "count": 4
+  },
+  "pattern": [
+    " I ",
+    "IBI",
+    " I "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "I": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -21,8 +21,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     },
     "D": {
       "ore": "gemDiamond",

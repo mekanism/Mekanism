@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:ultimate_induction_cell"
+  },
+  "pattern": [
+    "TCT",
+    "CEC",
+    "TCT"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "item": "mekanism:elite_induction_cell"
+    },
+    "T": {
+      "item": "mekanism:energy_tablet"
+    },
+    "E": {
+      "item": "mekanism:ultimate_energy_cube"
+    }
+  }
+}

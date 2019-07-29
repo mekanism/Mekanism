@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanism:thermal_evaporation_controller"
+  },
+  "pattern": [
+    "CGC",
+    "IBI",
+    "III"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "#CIRCUIT_ADVANCED"
+    },
+    "G": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:thermal_evaporation_block"
+    }
+  }
+}

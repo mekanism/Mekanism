@@ -14,7 +14,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "item": "mekanism:atomicalloy"
+      "item": "mekanism:alloy_atomic"
     },
     "E": {
       "item": "mekanism:energy_tablet"

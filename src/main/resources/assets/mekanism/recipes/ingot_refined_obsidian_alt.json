@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:ingot_refined_obsidian"
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "nuggetRefinedObsidian",
+      "type": "forge:ore_dict"
+    }
+  }
+}

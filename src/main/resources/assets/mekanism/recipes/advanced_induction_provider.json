@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:advanced_induction_provider"
+  },
+  "pattern": [
+    "CPC",
+    "PEP",
+    "CPC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:basic_induction_provider"
+    },
+    "C": {
+      "item": "#CIRCUIT_ADVANCED"
+    },
+    "E": {
+      "item": "mekanism:advanced_energy_cube"
+    }
+  }
+}

@@ -27,8 +27,7 @@
       "item": "minecraft:furnace"
     },
     "H": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     }
   }
 }

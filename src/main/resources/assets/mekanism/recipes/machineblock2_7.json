@@ -26,16 +26,10 @@
       "item": "minecraft:bucket"
     },
     "G": {
-      "nbt": {
-        "tier": 0
-      },
-      "item": "mekanism:gastank",
-      "data": 0,
-      "type": "mekanism:item_nbt"
+      "item": "mekanism:basic_gas_tank"
     },
     "I": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     }
   }
 }

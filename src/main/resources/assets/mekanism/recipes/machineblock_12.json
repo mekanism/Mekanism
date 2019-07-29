@@ -20,8 +20,7 @@
       "item": "minecraft:bucket"
     },
     "C": {
-      "item": "mekanism:basicblock",
-      "data": 8
+      "item": "mekanism:steel_casing"
     },
     "E": {
       "item": "mekanism:alloy_enriched"

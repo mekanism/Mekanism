@@ -20,12 +20,7 @@
       "item": "#CIRCUIT_BASIC"
     },
     "t": {
-      "nbt": {
-        "tier": 0
-      },
-      "item": "mekanism:gastank",
-      "data": 0,
-      "type": "mekanism:item_nbt"
+      "item": "mekanism:basic_gas_tank"
     },
     "E": {
       "item": "mekanism:energy_tablet"

@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:ingot_tin"
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "nuggetTin",
+      "type": "forge:ore_dict"
+    }
+  }
+}

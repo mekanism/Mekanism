@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:ultimate_induction_provider"
+  },
+  "pattern": [
+    "CPC",
+    "PEP",
+    "CPC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:elite_induction_provider"
+    },
+    "C": {
+      "item": "#CIRCUIT_ULTIMATE"
+    },
+    "E": {
+      "item": "mekanism:ultimate_energy_cube"
+    }
+  }
+}

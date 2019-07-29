@@ -28,8 +28,7 @@
       "item": "mekanism:energy_tablet"
     },
     "H": {
-      "item": "mekanism:basicblock2",
-      "data": 5
+      "item": "mekanism:steel_casing"
     }
   }
 }

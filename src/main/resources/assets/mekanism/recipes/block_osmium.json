@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:block_osmium"
+  },
+  "pattern": [
+    "XXX",
+    "XXX",
+    "XXX"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "X": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

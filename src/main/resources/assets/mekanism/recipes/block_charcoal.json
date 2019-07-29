@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:block_charcoal"
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "item": "minecraft:coal",
+      "data": 1
+    }
+  }
+}
