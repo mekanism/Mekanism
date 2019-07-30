@@ -1,7 +1,6 @@
 package mekanism.generators.client;
 
 import java.util.function.Function;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
@@ -131,7 +130,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
     }
 
     public void registerItemRender(Item item) {
-        MekanismRenderer.registerItemRender(MekanismGenerators.MODID, item);
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     @SubscribeEvent

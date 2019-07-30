@@ -19,6 +19,7 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.security.ISecurityItem;
@@ -62,7 +63,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBlockFluidTank extends ItemBlockMekanism implements ISustainedInventory, ISustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
-      ITieredItem<FluidTankTier> {
+      ITieredItem<FluidTankTier>, IItemRedirectedModel {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
         super(block);
@@ -383,5 +384,11 @@ public class ItemBlockFluidTank extends ItemBlockMekanism implements ISustainedI
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             setBucketMode(stack, dataStream.readBoolean());
         }
+    }
+
+    @Nonnull
+    @Override
+    public String getRedirectLocation() {
+        return "fluid_tank";
     }
 }

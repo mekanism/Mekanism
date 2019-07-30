@@ -130,6 +130,7 @@ import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryPersonalChest;
+import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemDictionary;
@@ -480,23 +481,19 @@ public class ClientProxy extends CommonProxy {
         //Used to be basic blocks
         MekanismBlock.SECURITY_DESK.getItem().setTileEntityItemStackRenderer(new RenderSecurityDeskItem());
 
-        //Register the item renderer for the various blocks
-        registerBlockItemRender(MekanismBlock.OBSIDIAN_TNT);
-        registerBlockItemRender(MekanismBlock.SALT_BLOCK);
-        registerBlockItemRender(MekanismBlock.QUANTUM_ENTANGLOPORTER);
-        registerBlockItemRender(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
-        registerBlockItemRender(MekanismBlock.RESISTIVE_HEATER);
-        registerBlockItemRender(MekanismBlock.SECURITY_DESK);
-        registerBlockItemRender(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER);
-        registerBlockItemRender(MekanismBlock.CHEMICAL_CRYSTALLIZER);
-        registerBlockItemRender(MekanismBlock.SEISMIC_VIBRATOR);
-        registerBlockItemRender(MekanismBlock.DIGITAL_MINER);
-        registerBlockItemRender(MekanismBlock.PERSONAL_CHEST);
-        registerBlockItemRender(MekanismBlock.BASIC_GAS_TANK);
-        registerBlockItemRender(MekanismBlock.ADVANCED_GAS_TANK);
-        registerBlockItemRender(MekanismBlock.ELITE_GAS_TANK);
-        registerBlockItemRender(MekanismBlock.ULTIMATE_GAS_TANK);
-        registerBlockItemRender(MekanismBlock.CREATIVE_GAS_TANK);
+        //Register the item inventory model locations for the various blocks
+        for (MekanismBlock mekanismBlock : MekanismBlock.values()) {
+            ItemBlock item = mekanismBlock.getItem();
+            if (item instanceof IItemRedirectedModel) {
+                //TODO: Fix Glow panel item coloring
+                ModelLoader.setCustomModelResourceLocation(item, 0, getInventoryMRL(((IItemRedirectedModel) item).getRedirectLocation()));
+            } else {
+                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+            }
+        }
+        //TODO: Figure this out
+        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=false"));
+        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=true"));
     }
 
     private void setCustomStateMapper(IStateMapper mapper, MekanismBlock... blocks) {
@@ -508,12 +505,6 @@ public class ClientProxy extends CommonProxy {
     private void setCustomModelResourceLocation(ModelResourceLocation model, MekanismItem... items) {
         for (MekanismItem mekanismItem : items) {
             ModelLoader.setCustomModelResourceLocation(mekanismItem.getItem(), 0, model);
-        }
-    }
-
-    private void setCustomModelResourceLocation(ModelResourceLocation model, MekanismBlock... blocks) {
-        for (MekanismBlock mekanismBlock : blocks) {
-            ModelLoader.setCustomModelResourceLocation(mekanismBlock.getItem(), 0, model);
         }
     }
 
@@ -645,21 +636,6 @@ public class ClientProxy extends CommonProxy {
 
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
-        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=false"));
-        ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=true"));
-
-        setCustomModelResourceLocation(getInventoryMRL("energy_cube"), MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE,
-              MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
-        setCustomModelResourceLocation(getInventoryMRL("fluid_tank"), MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK,
-              MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK, MekanismBlock.CREATIVE_FLUID_TANK);
-
-        //TODO: FixME
-        setCustomModelResourceLocation(getInventoryMRL("glow_panel"), MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL,
-              MekanismBlock.BROWN_GLOW_PANEL, MekanismBlock.BLUE_GLOW_PANEL, MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL,
-              MekanismBlock.LIGHT_GRAY_GLOW_PANEL, MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL, MekanismBlock.LIME_GLOW_PANEL,
-              MekanismBlock.YELLOW_GLOW_PANEL, MekanismBlock.LIGHT_BLUE_GLOW_PANEL, MekanismBlock.MAGENTA_GLOW_PANEL, MekanismBlock.ORANGE_GLOW_PANEL,
-              MekanismBlock.WHITE_GLOW_PANEL);
-
         /*for (MachineType type : MachineType.values()) {
             List<ModelResourceLocation> modelsToAdd = new ArrayList<>();
             String resource = "mekanism:" + type.getName();
@@ -741,43 +717,6 @@ public class ClientProxy extends CommonProxy {
             }
             ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[]{}));
         }*/
-
-        setCustomModelResourceLocation(getInventoryMRL("plastic_block"), MekanismBlock.BLACK_PLASTIC_BLOCK, MekanismBlock.RED_PLASTIC_BLOCK,
-              MekanismBlock.GREEN_PLASTIC_BLOCK, MekanismBlock.BROWN_PLASTIC_BLOCK, MekanismBlock.BLUE_PLASTIC_BLOCK, MekanismBlock.PURPLE_PLASTIC_BLOCK,
-              MekanismBlock.CYAN_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_BLOCK, MekanismBlock.GRAY_PLASTIC_BLOCK, MekanismBlock.PINK_PLASTIC_BLOCK,
-              MekanismBlock.LIME_PLASTIC_BLOCK, MekanismBlock.YELLOW_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_PLASTIC_BLOCK, MekanismBlock.MAGENTA_PLASTIC_BLOCK,
-              MekanismBlock.ORANGE_PLASTIC_BLOCK, MekanismBlock.WHITE_PLASTIC_BLOCK);
-        setCustomModelResourceLocation(getInventoryMRL("slick_plastic_block"), MekanismBlock.BLACK_SLICK_PLASTIC_BLOCK, MekanismBlock.RED_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.GREEN_SLICK_PLASTIC_BLOCK, MekanismBlock.BROWN_SLICK_PLASTIC_BLOCK, MekanismBlock.BLUE_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.PURPLE_SLICK_PLASTIC_BLOCK, MekanismBlock.CYAN_SLICK_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.GRAY_SLICK_PLASTIC_BLOCK, MekanismBlock.PINK_SLICK_PLASTIC_BLOCK, MekanismBlock.LIME_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.YELLOW_SLICK_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK, MekanismBlock.MAGENTA_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.ORANGE_SLICK_PLASTIC_BLOCK, MekanismBlock.WHITE_SLICK_PLASTIC_BLOCK);
-        setCustomModelResourceLocation(getInventoryMRL("plastic_glow_block"), MekanismBlock.BLACK_PLASTIC_GLOW_BLOCK, MekanismBlock.RED_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.GREEN_PLASTIC_GLOW_BLOCK, MekanismBlock.BROWN_PLASTIC_GLOW_BLOCK, MekanismBlock.BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.PURPLE_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.CYAN_PLASTIC_GLOW_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_GLOW_BLOCK, MekanismBlock.GRAY_PLASTIC_GLOW_BLOCK, MekanismBlock.PINK_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.LIME_PLASTIC_GLOW_BLOCK, MekanismBlock.YELLOW_PLASTIC_GLOW_BLOCK, MekanismBlock.LIGHT_BLUE_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.MAGENTA_PLASTIC_GLOW_BLOCK, MekanismBlock.ORANGE_PLASTIC_GLOW_BLOCK, MekanismBlock.WHITE_PLASTIC_GLOW_BLOCK);
-        setCustomModelResourceLocation(getInventoryMRL("reinforced_plastic_block"), MekanismBlock.BLACK_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.RED_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GREEN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.BROWN_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.PURPLE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.CYAN_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GRAY_REINFORCED_PLASTIC_BLOCK, MekanismBlock.PINK_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.LIME_REINFORCED_PLASTIC_BLOCK, MekanismBlock.YELLOW_REINFORCED_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.MAGENTA_REINFORCED_PLASTIC_BLOCK, MekanismBlock.ORANGE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.WHITE_REINFORCED_PLASTIC_BLOCK);
-        setCustomModelResourceLocation(getInventoryMRL("plastic_road"), MekanismBlock.BLACK_PLASTIC_ROAD, MekanismBlock.RED_PLASTIC_ROAD,
-              MekanismBlock.GREEN_PLASTIC_ROAD, MekanismBlock.BROWN_PLASTIC_ROAD, MekanismBlock.BLUE_PLASTIC_ROAD, MekanismBlock.PURPLE_PLASTIC_ROAD,
-              MekanismBlock.CYAN_PLASTIC_ROAD, MekanismBlock.LIGHT_GRAY_PLASTIC_ROAD, MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD,
-              MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD, MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD,
-              MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD);
-        setCustomModelResourceLocation(getInventoryMRL("plastic_fence"), MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
-              MekanismBlock.BROWN_PLASTIC_FENCE, MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE,
-              MekanismBlock.LIGHT_GRAY_PLASTIC_FENCE, MekanismBlock.GRAY_PLASTIC_FENCE, MekanismBlock.PINK_PLASTIC_FENCE, MekanismBlock.LIME_PLASTIC_FENCE,
-              MekanismBlock.YELLOW_PLASTIC_FENCE, MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE,
-              MekanismBlock.WHITE_PLASTIC_FENCE);
-
-        setCustomModelResourceLocation(getInventoryMRL("osmium_ore"), MekanismBlock.OSMIUM_ORE);
-        setCustomModelResourceLocation(getInventoryMRL("copper_ore"), MekanismBlock.COPPER_ORE);
-        setCustomModelResourceLocation(getInventoryMRL("tin_ore"), MekanismBlock.TIN_ORE);
 
         ModelLoader.setCustomMeshDefinition(MekanismBlock.BASIC_GAS_TANK.getItem(), stack ->
               new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "basic_gas_tank"), "facing=north" + GasTankTier.BASIC));
@@ -866,11 +805,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     public void registerItemRender(MekanismItem item) {
-        MekanismRenderer.registerItemRender(Mekanism.MODID, item.getItem());
-    }
-
-    public void registerBlockItemRender(MekanismBlock block) {
-        MekanismRenderer.registerItemRender(Mekanism.MODID, block.getItem());
+        ModelLoader.setCustomModelResourceLocation(item.getItem(), 0, new ModelResourceLocation(item.getItem().getRegistryName(), "inventory"));
     }
 
     private String getProperties(List<String> entries) {

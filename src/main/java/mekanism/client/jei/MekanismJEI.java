@@ -1,7 +1,6 @@
 package mekanism.client.jei;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -25,18 +24,12 @@ import mekanism.client.jei.machine.other.SolarNeutronRecipeCategory;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeCategory;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
-import mekanism.common.base.IFactory;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.container.robit.ContainerRobitInventory;
-import mekanism.common.item.block.ItemBlockEnergyCube;
-import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
-import mezz.jei.api.ISubtypeRegistry;
-import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IIngredientBlacklist;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
@@ -49,44 +42,6 @@ import net.minecraftforge.fluids.Fluid;
 public class MekanismJEI implements IModPlugin {
 
     public static final IIngredientType<GasStack> TYPE_GAS = () -> GasStack.class;
-
-    public static final ISubtypeInterpreter NBT_INTERPRETER = itemStack -> {
-        String ret = Integer.toString(itemStack.getMetadata());
-
-        if (itemStack.getItem() instanceof IFactory) {
-            RecipeType recipeType = ((IFactory) itemStack.getItem()).getRecipeTypeOrNull(itemStack);
-            if (recipeType != null) {
-                ret += ":" + recipeType.getName();
-            }
-        }
-
-        if (itemStack.getItem() instanceof ItemBlockGasTank) {
-            GasStack gasStack = ((ItemBlockGasTank) itemStack.getItem()).getGas(itemStack);
-            if (gasStack != null) {
-                ret += ":" + gasStack.getGas().getName();
-            }
-        }
-
-        if (itemStack.getItem() instanceof ItemBlockEnergyCube) {
-            ret += ":" + (((ItemBlockEnergyCube) itemStack.getItem()).getEnergy(itemStack) > 0 ? "filled" : "empty");
-        }
-
-        return ret.toLowerCase(Locale.ROOT);
-    };
-
-    @Override
-    public void registerItemSubtypes(ISubtypeRegistry registry) {
-        //TODO: Enable this as needed
-        /*registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.EnergyCube), NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock), NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.BasicBlock), NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.GasTank), NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.CardboardBox), NBT_INTERPRETER);
-        registry.registerSubtypeInterpreter(Item.getItemFromBlock(MekanismBlocks.Transmitter), NBT_INTERPRETER);*/
-    }
 
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
@@ -148,6 +103,7 @@ public class MekanismJEI implements IModPlugin {
 
         //Blacklist
         IIngredientBlacklist ingredientBlacklist = registry.getJeiHelpers().getIngredientBlacklist();
+        //TODO: Why do these still show up in JEI (Is it due to an error with category types?)
         ingredientBlacklist.addIngredientToBlacklist(MekanismItem.ITEM_PROXY.getItemStack());
         ingredientBlacklist.addIngredientToBlacklist(MekanismBlock.BOUNDING_BLOCK.getItemStack());
 

@@ -24,6 +24,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
+import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -59,7 +60,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
       @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
 public class ItemBlockEnergyCube extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem,
-      ITieredItem<EnergyCubeTier> {
+      ITieredItem<EnergyCubeTier>, IItemRedirectedModel {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
         super(block);
@@ -278,5 +279,11 @@ public class ItemBlockEnergyCube extends ItemBlockMekanism implements IEnergized
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
         return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
+    }
+
+    @Nonnull
+    @Override
+    public String getRedirectLocation() {
+        return "energy_cube";
     }
 }

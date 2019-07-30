@@ -7,8 +7,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockGlowPanel;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
+import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.tile.TileEntityGlowPanel;
-import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
+//TODO: Maybe somehow make this extend ItemBlockColoredName
+public class ItemBlockGlowPanel extends ItemBlockMultipartAble implements IItemRedirectedModel {
 
     public ItemBlockGlowPanel(Block block) {
         super(block);
@@ -48,23 +49,16 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
     @Override
     public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         EnumColor color = getColor(stack);
-        String colorName;
-        if (LangUtils.canLocalize(getTranslationKey(stack) + "." + color.dyeName)) {
-            return LangUtils.localize(getTranslationKey(stack) + "." + color.dyeName);
-        }
         if (color == EnumColor.BLACK) {
-            colorName = EnumColor.DARK_GREY + color.getDyeName();
-        } else {
-            colorName = color.getDyedName();
+            color = EnumColor.DARK_GREY;
         }
-        return colorName + " " + super.getItemStackDisplayName(stack);
+        return color + super.getItemStackDisplayName(stack);
     }
 
     private EnumColor getColor(ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockGlowPanel) {
-            BlockGlowPanel glowPanel = (BlockGlowPanel) (((ItemBlockGlowPanel) item).block);
-            return glowPanel.getColor();
+            return ((BlockGlowPanel) (((ItemBlockGlowPanel) item).block)).getColor();
         }
         return EnumColor.BLACK;
     }
@@ -78,5 +72,11 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
     @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
     protected IMultipart getMultiPart() {
         return MultipartMekanism.GLOWPANEL_MP;
+    }
+
+    @Nonnull
+    @Override
+    public String getRedirectLocation() {
+        return "glow_panel";
     }
 }

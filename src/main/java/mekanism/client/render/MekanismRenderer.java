@@ -18,7 +18,6 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.block.Block;
@@ -29,19 +28,15 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -72,25 +67,6 @@ public class MekanismRenderer {
     @SuppressWarnings("unchecked")
     public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
         return machineRenderer;
-    }
-
-    public static void registerItemRender(String domain, Item item) {
-        if (item instanceof IMetaItem) {
-            IMetaItem metaItem = (IMetaItem) item;
-            for (int i = 0; i < metaItem.getVariants(); i++) {
-                if (metaItem.getTexture(i) == null) {
-                    continue;
-                }
-
-                ModelResourceLocation loc = new ModelResourceLocation(new ResourceLocation(domain, metaItem.getTexture(i)), "inventory");
-                ModelLoader.setCustomModelResourceLocation(item, i, loc);
-                ModelBakery.registerItemVariants(item, new ResourceLocation(domain, metaItem.getTexture(i)));
-            }
-
-            return;
-        }
-
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     public static void initFluidTextures(TextureMap map) {
