@@ -37,7 +37,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble implements IItemR
             if (world.isSideSolid(pos1, side)) {
                 tileEntity.setOrientation(side.getOpposite());
             }
-            tileEntity.setColour(col);
+            tileEntity.setColor(col);
             if (!world.isRemote) {
                 Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
@@ -55,7 +55,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble implements IItemR
         return color + super.getItemStackDisplayName(stack);
     }
 
-    private EnumColor getColor(ItemStack stack) {
+    public EnumColor getColor(ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockGlowPanel) {
             return ((BlockGlowPanel) (((ItemBlockGlowPanel) item).block)).getColor();

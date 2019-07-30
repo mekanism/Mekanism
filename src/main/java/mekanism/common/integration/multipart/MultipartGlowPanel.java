@@ -40,7 +40,7 @@ public class MultipartGlowPanel implements IMultipart {
             EnumColor col = EnumColor.DYES[stack.getItemDamage()];
             TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
             glowPanel.setOrientation(facing);
-            glowPanel.setColour(col);
+            glowPanel.setColor(col);
         }
     }
 

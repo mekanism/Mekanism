@@ -119,6 +119,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.BlockStateHelper.MekanismBlockStateMapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
@@ -505,7 +506,8 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerBlockRenders() {
-        //TODO: Redo all of these. Lots can probably just be done with json now
+        //TODO: Redo all of these. Lots can probably just be done with json now. It is probably a good idea to do the ones, that can be done
+        // in json with it, EVEN if it requires more skeleton json files.
         //Basic blocks
         setCustomStateMapper(basicMapper, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, MekanismBlock.SECURITY_DESK, MekanismBlock.BASIC_BIN,
               MekanismBlock.ADVANCED_BIN, MekanismBlock.ELITE_BIN, MekanismBlock.ULTIMATE_BIN, MekanismBlock.CREATIVE_BIN, MekanismBlock.BOILER_CASING,
@@ -617,12 +619,18 @@ public class ClientProxy extends CommonProxy {
             }
         }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
 
-        //TODO: Fix coloring
         setCustomStateMapper(new StateMapperBase() {
                                  @Nonnull
                                  @Override
                                  protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "glow_panel"), "");
+                                     //Make sure it renders in the world with the correct direction. Given we need a custom state mapper to tell it the
+                                     // blockstate file is a different name
+                                     StringBuilder builder = new StringBuilder();
+                                     EnumFacing facing = state.getValue(BlockStateHelper.facingProperty);
+                                     builder.append(BlockStateHelper.facingProperty.getName());
+                                     builder.append("=");
+                                     builder.append(facing.getName());
+                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "glow_panel"), builder.toString());
                                  }
                              }, MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL, MekanismBlock.BROWN_GLOW_PANEL, MekanismBlock.BLUE_GLOW_PANEL,
               MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL, MekanismBlock.LIGHT_GRAY_GLOW_PANEL, MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL,

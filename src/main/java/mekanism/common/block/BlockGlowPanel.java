@@ -7,9 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
-import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateColor;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.tile.TileEntityGlowPanel;
@@ -32,12 +30,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-//TODO: Remove IStateColor as it really shouldn't be here as each glow panel has its own color
-public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvider, IBlockOreDict, IStateFacing, IStateColor {
+public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvider, IBlockOreDict, IStateFacing {
 
     public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
 
@@ -126,20 +120,6 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
         return tileEntity != null ? state.withProperty(BlockStateHelper.facingProperty, tileEntity.side) : state;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Nonnull
-    @Override
-    public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-        if (tileEntity != null) {
-            state = state.withProperty(BlockStateHelper.facingProperty, tileEntity.side);
-            if (state instanceof IExtendedBlockState) {
-                return ((IExtendedBlockState) state).withProperty(PropertyColor.INSTANCE, new PropertyColor(tileEntity.colour));
-            }
-        }
-        return state;
     }
 
     @Override

@@ -7,34 +7,35 @@ import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.property.PropertyColor;
+import mekanism.common.block.BlockGlowPanel;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
 
-    public EnumColor colour = EnumColor.WHITE;
+    private EnumColor color = EnumColor.WHITE;
     public EnumFacing side = EnumFacing.DOWN;
 
-    public static int hash(IExtendedBlockState state) {
+    public static int hash(IBlockState state) {
         int hash = 1;
-        PropertyColor propColor = state.getValue(PropertyColor.INSTANCE);
-        EnumColor color = propColor != null ? propColor.color : EnumColor.WHITE;
-        hash = 31 * hash + color.ordinal();
+        if (state.getBlock() instanceof BlockGlowPanel) {
+            //Hash the color
+            hash = 31 * hash + ((BlockGlowPanel) state.getBlock()).getColor().ordinal();
+        }
         hash = 31 * hash + state.getValue(BlockStateHelper.facingProperty).ordinal();
         return hash;
     }
 
-    public void setColour(EnumColor newColour) {
-        colour = newColour;
+    public void setColor(EnumColor newColor) {
+        color = newColor;
     }
 
     public void setOrientation(EnumFacing newSide) {
@@ -44,7 +45,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         side = EnumFacing.byIndex(dataStream.readInt());
-        colour = EnumColor.DYES[dataStream.readInt()];
+        color = EnumColor.DYES[dataStream.readInt()];
         MekanismUtils.updateBlock(world, pos);
     }
 
@@ -54,7 +55,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, side);
         }
         data.add(side.ordinal());
-        data.add(colour.getMetaValue());
+        data.add(color.getMetaValue());
         return data;
     }
 
@@ -71,7 +72,8 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setInteger("side", side.ordinal());
-        nbt.setInteger("colour", colour.getMetaValue());
+        //TODO: Potentially rename nbt to color in port to 1.14
+        nbt.setInteger("colour", color.getMetaValue());
         return nbt;
     }
 
@@ -85,7 +87,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         side = EnumFacing.byIndex(nbt.getInteger("side"));
-        colour = EnumColor.DYES[nbt.getInteger("colour")];
+        color = EnumColor.DYES[nbt.getInteger("colour")];
     }
 
     @Override
