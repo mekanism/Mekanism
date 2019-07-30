@@ -3,18 +3,19 @@ package mekanism.client.render.obj;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import mekanism.api.EnumColor;
 import mekanism.common.block.BlockGlowPanel;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.item.block.ItemBlockGlowPanel;
-import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -26,10 +27,8 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.Face;
 import net.minecraftforge.common.model.IModelState;
@@ -52,10 +51,9 @@ public class GlowPanelModel extends OBJBakedModelBase {
           .put(TransformType.NONE, get(0, 0, 0, 0, 0, 0, 0))
           .build();
     private static Map<Integer, List<BakedQuad>> glowPanelCache = new HashMap<>();
-    private static Map<EnumColor, GlowPanelModel> glowPanelItemCache = new HashMap<>();
-    private IBlockState tempState;
-    //TODO: Instead of tempStack store the stack's color?? Then instead of storing the blockstate, it can just store direction
-    private ItemStack tempStack = ItemStack.EMPTY;
+    private static Map<EnumColor, GlowPanelModel> glowPanelItemCache = new EnumMap<>(EnumColor.class);
+    @Nullable
+    private EnumColor color;
     private GlowPanelOverride override = new GlowPanelOverride();
 
     public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures,
@@ -74,12 +72,8 @@ public class GlowPanelModel extends OBJBakedModelBase {
     }
 
     public EnumColor getColor() {
-        if (!tempStack.isEmpty() && tempStack.getItem() instanceof ItemBlockGlowPanel) {
-            return ((ItemBlockGlowPanel) tempStack.getItem()).getColor(tempStack);
-        }
-
-        if (tempState != null && tempState.getBlock() instanceof BlockGlowPanel) {
-            return ((BlockGlowPanel) tempState.getBlock()).getColor();
+        if (color != null) {
+            return color;
         }
 
         return EnumColor.WHITE;
@@ -91,6 +85,13 @@ public class GlowPanelModel extends OBJBakedModelBase {
         return override;
     }
 
+    private static int hash(EnumColor color, EnumFacing facing) {
+        int hash = 1;
+        hash = 31 * hash + color.ordinal();
+        hash = 31 * hash + facing.ordinal();
+        return hash;
+    }
+
     @Nonnull
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
@@ -98,11 +99,12 @@ public class GlowPanelModel extends OBJBakedModelBase {
             return ImmutableList.of();
         }
 
-        if (state != null && tempState == null) {
-            int hash = TileEntityGlowPanel.hash(state);
+        if (state != null && color == null && state.getBlock() instanceof BlockGlowPanel) {
+            EnumColor color = ((BlockGlowPanel) state.getBlock()).getColor();
+            int hash = hash(color, state.getValue(BlockStateHelper.facingProperty));;
             if (!glowPanelCache.containsKey(hash)) {
                 GlowPanelModel model = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, textureMap, transformationMap);
-                model.tempState = state;
+                model.color = color;
                 glowPanelCache.put(hash, model.getQuads(state, side, rand));
             }
             return glowPanelCache.get(hash);
@@ -155,7 +157,8 @@ public class GlowPanelModel extends OBJBakedModelBase {
             if (glowPanelItemCache.containsKey(color)) {
                 return glowPanelItemCache.get(color);
             }
-            ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
+            //TODO: It seems this builder stuff is nt needed, this should be confirmed at some point
+            /*ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
             builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
             TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
 
@@ -164,8 +167,9 @@ public class GlowPanelModel extends OBJBakedModelBase {
             }
 
             builder.put("missingno", missing);
-            GlowPanelModel bakedModel = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, builder.build(), transformationMap);
-            bakedModel.tempStack = stack;
+            GlowPanelModel bakedModel = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, builder.build(), transformationMap);*/
+            GlowPanelModel bakedModel = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, textureMap, transformationMap);
+            bakedModel.color = color;
             glowPanelItemCache.put(color, bakedModel);
             return bakedModel;
         }

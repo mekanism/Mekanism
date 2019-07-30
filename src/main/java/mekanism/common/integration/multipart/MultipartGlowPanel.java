@@ -4,7 +4,6 @@ import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.slot.EnumFaceSlot;
 import mcmultipart.api.slot.IPartSlot;
-import mekanism.api.EnumColor;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.BlockGlowPanel;
 import mekanism.common.block.states.BlockStateHelper;
@@ -37,10 +36,11 @@ public class MultipartGlowPanel implements IMultipart {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntityGlowPanel) {
             EnumFacing facing = EnumFacing.VALUES[((EnumFaceSlot) part.getSlot()).ordinal()];
-            EnumColor col = EnumColor.DYES[stack.getItemDamage()];
+            //EnumColor col = EnumColor.DYES[stack.getItemDamage()];
             TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
             glowPanel.setOrientation(facing);
-            glowPanel.setColor(col);
+            //TODO: Is this needed or can it work fine due to block. Look at once multipart is reimplemented
+            //glowPanel.setColor(col);
         }
     }
 
@@ -49,8 +49,8 @@ public class MultipartGlowPanel implements IMultipart {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntityGlowPanel && !BlockGlowPanel.canStay(part.getPartWorld(), part.getPartPos())) {
             BlockPos pos = part.getPartPos();
-            TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
-            //TODO: Get correct color
+            //TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
+            //TODO: Get correct color if it is unaware of it the tile will have to store it
             ItemStack stack = MekanismBlock.BLACK_GLOW_PANEL.getItemStack();
             Block.spawnAsEntity(part.getActualWorld(), pos, stack);
             part.remove();

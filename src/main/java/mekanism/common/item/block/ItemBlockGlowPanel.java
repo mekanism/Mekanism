@@ -32,12 +32,10 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble implements IItemR
         boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
         if (place) {
             TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
-            EnumColor col = getColor(stack);
             BlockPos pos1 = pos.offset(side.getOpposite());
             if (world.isSideSolid(pos1, side)) {
                 tileEntity.setOrientation(side.getOpposite());
             }
-            tileEntity.setColor(col);
             if (!world.isRemote) {
                 Mekanism.packetHandler.sendUpdatePacket(tileEntity);
             }
