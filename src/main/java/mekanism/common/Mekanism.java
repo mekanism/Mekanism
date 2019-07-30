@@ -27,8 +27,7 @@ import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.base.IModule;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.command.CommandMek;
@@ -63,7 +62,6 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
@@ -134,7 +132,6 @@ import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
@@ -599,7 +596,7 @@ public class Mekanism {
      */
     public static void registerOreDict() {
         //Add specific items to ore dictionary for recipe usage in other mods.
-        OreDictionary.registerOre("universalCable", MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.BASIC, 1));
+        OreDictionary.registerOre("universalCable", MekanismBlock.BASIC_UNIVERSAL_CABLE.getItem());
         OreDictionary.registerOre("battery", MekanismItem.ENERGY_TABLET.getItemStack());
         OreDictionary.registerOre("pulpWood", MekanismItem.SAWDUST.getItemStack());
         OreDictionary.registerOre("dustWood", MekanismItem.SAWDUST.getItemStack());

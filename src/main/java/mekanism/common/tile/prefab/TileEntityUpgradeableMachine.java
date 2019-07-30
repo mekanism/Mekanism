@@ -5,7 +5,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;

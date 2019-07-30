@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;

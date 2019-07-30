@@ -23,7 +23,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.BlockGlowPanel;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
+import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.block.transmitter.BlockTransmitter;

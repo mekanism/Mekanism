@@ -8,7 +8,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.ConductorTier;

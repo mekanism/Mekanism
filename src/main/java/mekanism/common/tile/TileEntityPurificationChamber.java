@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.PurificationRecipe;

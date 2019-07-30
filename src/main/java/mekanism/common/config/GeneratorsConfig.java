@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.IntOption;
 import mekanism.common.config.options.IntSetOption;
-import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
+import mekanism.generators.common.block.states.GeneratorType;
 import net.minecraftforge.common.config.Configuration;
 
 /**

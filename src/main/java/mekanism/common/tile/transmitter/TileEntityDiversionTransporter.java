@@ -8,7 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;

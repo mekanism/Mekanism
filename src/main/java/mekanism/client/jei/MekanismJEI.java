@@ -24,7 +24,7 @@ import mekanism.client.jei.machine.other.SolarNeutronRecipeCategory;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeCategory;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.inventory.container.robit.ContainerRobitInventory;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mezz.jei.api.IGuiHelper;

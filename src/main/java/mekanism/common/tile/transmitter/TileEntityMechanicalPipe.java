@@ -8,7 +8,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.PipeTier;

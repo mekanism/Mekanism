@@ -13,7 +13,7 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
+import mekanism.generators.common.block.states.GeneratorType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;

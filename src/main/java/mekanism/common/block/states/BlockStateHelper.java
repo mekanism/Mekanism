@@ -7,6 +7,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.property.PropertyColor;
+import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -17,6 +18,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
@@ -34,8 +36,14 @@ public class BlockStateHelper {
         if (block instanceof IStateActive) {
             properties.add(activeProperty);
         }
+        if (block instanceof IStateOBJ) {
+            unlistedProperties.add(OBJProperty.INSTANCE);
+        }
         if (block instanceof IStateColor) {
             unlistedProperties.add(PropertyColor.INSTANCE);
+        }
+        if (block instanceof IStateConnection) {
+            unlistedProperties.add(PropertyConnection.INSTANCE);
         }
         if (properties.isEmpty() && unlistedProperties.isEmpty()) {
             return new BlockStateContainer(block);

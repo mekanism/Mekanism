@@ -26,13 +26,11 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.item.block.ItemBlockGasTank;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -120,11 +118,6 @@ public final class MekanismUtils {
             case CREATIVE:
                 return MekanismBlock.CREATIVE_GAS_TANK.getItemStack();
         }
-        return ItemStack.EMPTY;
-    }
-
-    public static ItemStack getTransmitter(TransmitterType type, BaseTier tier, int amount) {
-        //TODO
         return ItemStack.EMPTY;
     }
 

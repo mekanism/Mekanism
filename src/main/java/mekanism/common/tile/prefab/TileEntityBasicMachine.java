@@ -5,7 +5,7 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.inputs.MachineInput;

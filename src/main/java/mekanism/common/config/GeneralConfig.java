@@ -1,7 +1,7 @@
 package mekanism.common.config;
 
 import java.util.EnumMap;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.config.options.BooleanOption;
 import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.EnumOption;

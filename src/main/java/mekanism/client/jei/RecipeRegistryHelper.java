@@ -44,7 +44,7 @@ import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.recipe.RecipeHandler.Recipe;

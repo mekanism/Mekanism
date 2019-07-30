@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.block.states.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
