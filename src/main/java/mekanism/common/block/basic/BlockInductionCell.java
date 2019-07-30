@@ -9,8 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateFacing;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tier.InductionCellTier;
@@ -18,7 +16,6 @@ import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -33,7 +30,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockTileDrops implements IBlockDescriptive, IStateFacing {
+public class BlockInductionCell extends BlockTileDrops implements IBlockDescriptive {
 
     private final InductionCellTier tier;
     private final String name;
@@ -51,17 +48,6 @@ public class BlockInductionCell extends BlockTileDrops implements IBlockDescript
 
     public InductionCellTier getTier() {
         return tier;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        return state;
     }
 
     @Override

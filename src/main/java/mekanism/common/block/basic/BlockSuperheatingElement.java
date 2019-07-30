@@ -10,7 +10,6 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
-import mekanism.common.block.states.IStateFacing;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
@@ -21,6 +20,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDescriptive, IStateFacing, IStateActive {
+public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDescriptive, IStateActive {
 
     private final String name;
 
@@ -55,21 +55,26 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
 
     @Nonnull
     @Override
+    public BlockStateContainer createBlockState() {
+        return BlockStateHelper.getBlockState(this);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
+    @Nonnull
+    @Override
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
+        TileEntitySuperheatingElement tile = (TileEntitySuperheatingElement) MekanismUtils.getTileEntitySafe(worldIn, pos);
+        boolean active = false;
+        if (tile.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(tile.multiblockUUID) != null) {
+            active = SynchronizedBoilerData.clientHotMap.get(tile.multiblockUUID);
         }
-        if (tile instanceof TileEntitySuperheatingElement) {
-            TileEntitySuperheatingElement element = (TileEntitySuperheatingElement) tile;
-            boolean active = false;
-            if (element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null) {
-                active = SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID);
-            }
-            state = state.withProperty(BlockStateHelper.activeProperty, active);
-        }
-        return state;
+        return state.withProperty(BlockStateHelper.activeProperty, active);
     }
 
     @Override

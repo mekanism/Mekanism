@@ -9,11 +9,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateFacing;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -21,7 +18,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,7 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescriptive, IStateFacing {
+public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescriptive {
 
     private final String name;
 
@@ -58,32 +54,6 @@ public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescri
     public String getDescription() {
         //TODO: Should name just be gotten from registry name
         return LangUtils.localize("tooltip.mekanism." + this.name);
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        //TODO
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        if (tile instanceof TileEntityInductionPort) {
-            state = state.withProperty(BlockStateHelper.activeProperty, ((TileEntityInductionPort) tile).mode);
-        }
-        return state;
     }
 
     @Override

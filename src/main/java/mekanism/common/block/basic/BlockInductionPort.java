@@ -4,12 +4,12 @@ import javax.annotation.Nonnull;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -21,10 +21,6 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IBlockAc
         super("induction_port");
     }
 
-    public static boolean isInstance(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockInductionPort;
-    }
-
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
@@ -34,6 +30,26 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IBlockAc
             }
         }
         return super.getLightValue(state, world, pos);
+    }
+
+    @Nonnull
+    @Override
+    public BlockStateContainer createBlockState() {
+        return BlockStateHelper.getBlockState(this);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntityInductionPort tile = (TileEntityInductionPort) MekanismUtils.getTileEntitySafe(worldIn, pos);
+        return state.withProperty(BlockStateHelper.activeProperty, tile.mode);
     }
 
     @Override

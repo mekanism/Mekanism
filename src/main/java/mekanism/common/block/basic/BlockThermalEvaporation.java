@@ -9,15 +9,12 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateFacing;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -34,7 +31,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporation extends BlockTileDrops implements IBlockDescriptive, IHasModel, IStateFacing {
+public class BlockThermalEvaporation extends BlockTileDrops implements IBlockDescriptive, IHasModel {
 
     private final String name;
 
@@ -46,17 +43,6 @@ public class BlockThermalEvaporation extends BlockTileDrops implements IBlockDes
         this.name = "thermal_evaporation_block";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        return state;
     }
 
     @Override
