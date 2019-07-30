@@ -61,6 +61,7 @@ public class BlockStateHelper {
         return state;
     }
 
+    //TODO: Does having this actually do anything, or does it grab stuff by default anyways
     public static class MekanismBlockStateMapper extends StateMapperBase {
 
         @Nonnull

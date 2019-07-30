@@ -74,6 +74,7 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
         if (tile.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(tile.multiblockUUID) != null) {
             active = SynchronizedBoilerData.clientHotMap.get(tile.multiblockUUID);
         }
+        //TODO: Make there actually be an active texture since it seems like there was supposed to be one
         return state.withProperty(BlockStateHelper.activeProperty, active);
     }
 

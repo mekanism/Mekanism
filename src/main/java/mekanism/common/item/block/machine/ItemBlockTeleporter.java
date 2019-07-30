@@ -1,15 +1,11 @@
 package mekanism.common.item.block.machine;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
@@ -20,11 +16,9 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
-import mekanism.common.integration.ic2.IC2ItemManager;
-import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
+import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -46,17 +40,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@InterfaceList({
-      @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
-      @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
-})
-public class ItemBlockTeleporter extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem {
+public class ItemBlockTeleporter extends ItemBlockMekanism implements IItemEnergized, ISustainedInventory, ISecurityItem {
 
     public ItemBlockTeleporter(BlockTeleporter block) {
         super(block);
@@ -167,52 +154,6 @@ public class ItemBlockTeleporter extends ItemBlockMekanism implements IEnergized
     @Override
     public boolean canSend(ItemStack itemStack) {
         return false;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
-        if (canReceive(theItem)) {
-            double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
-            double toReceive = Math.min(RFIntegration.fromRF(energy), energyNeeded);
-            if (!simulate) {
-                setEnergy(theItem, getEnergy(theItem) + toReceive);
-            }
-            return RFIntegration.toRF(toReceive);
-        }
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
-        if (canSend(theItem)) {
-            double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min(RFIntegration.fromRF(energy), energyRemaining);
-            if (!simulate) {
-                setEnergy(theItem, getEnergy(theItem) - toSend);
-            }
-            return RFIntegration.toRF(toSend);
-        }
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getEnergyStored(ItemStack theItem) {
-        return RFIntegration.toRF(getEnergy(theItem));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getMaxEnergyStored(ItemStack theItem) {
-        return RFIntegration.toRF(getMaxEnergy(theItem));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public IElectricItemManager getManager(ItemStack itemStack) {
-        return IC2ItemManager.getManager(this);
     }
 
     @Override

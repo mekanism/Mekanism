@@ -1,18 +1,12 @@
 package mekanism.common.item;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
-import mekanism.common.integration.ic2.IC2ItemManager;
-import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -25,18 +19,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@InterfaceList({
-      @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID),
-      @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
-      @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
-})
-public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem {
+public class ItemEnergized extends ItemMekanism implements IItemEnergized {
 
     /**
      * The maximum amount of energy this item can hold.
@@ -115,50 +101,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
     @Override
     public boolean canSend(ItemStack itemStack) {
         return getEnergy(itemStack) > 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
-        if (canReceive(theItem)) {
-            double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
-            double toReceive = Math.min(RFIntegration.fromRF(energy), energyNeeded);
-            if (!simulate) {
-                setEnergy(theItem, getEnergy(theItem) + toReceive);
-            }
-            return RFIntegration.toRF(toReceive);
-        }
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
-        if (canSend(theItem)) {
-            double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min(RFIntegration.fromRF(energy), energyRemaining);
-            if (!simulate) {
-                setEnergy(theItem, getEnergy(theItem) - toSend);
-            }
-            return RFIntegration.toRF(toSend);
-        }
-        return 0;
-    }
-
-    @Override
-    public int getEnergyStored(ItemStack theItem) {
-        return RFIntegration.toRF(getEnergy(theItem));
-    }
-
-    @Override
-    public int getMaxEnergyStored(ItemStack theItem) {
-        return RFIntegration.toRF(getMaxEnergy(theItem));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public IElectricItemManager getManager(ItemStack itemStack) {
-        return IC2ItemManager.getManager(this);
     }
 
     @Override
