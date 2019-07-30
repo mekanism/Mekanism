@@ -3,7 +3,6 @@ package mekanism.common.item.block.machine;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
@@ -14,14 +13,12 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.machine.BlockQuantumEntangloporter;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -168,36 +165,6 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockMekanism implements
     @Override
     public boolean canSend(ItemStack itemStack) {
         return false;
-    }
-
-    @Override
-    public UUID getOwnerUUID(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, "ownerUUID")) {
-            return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
-        }
-        return null;
-    }
-
-    @Override
-    public void setOwnerUUID(ItemStack stack, UUID owner) {
-        if (owner == null) {
-            ItemDataUtils.removeData(stack, "ownerUUID");
-            return;
-        }
-        ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
-    }
-
-    @Override
-    public SecurityMode getSecurity(ItemStack stack) {
-        if (!MekanismConfig.current().general.allowProtection.val()) {
-            return SecurityMode.PUBLIC;
-        }
-        return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
-    }
-
-    @Override
-    public void setSecurity(ItemStack stack, SecurityMode mode) {
-        ItemDataUtils.setInt(stack, "security", mode.ordinal());
     }
 
     @Override

@@ -52,7 +52,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
                 ItemStack itemStack = inventory.get(0);
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) itemStack.getItem();
-                    if (item.hasOwner(itemStack) && item.getOwnerUUID(itemStack) != null) {
+                    if (item.getOwnerUUID(itemStack) != null) {
                         if (item.getOwnerUUID(itemStack).equals(ownerUUID)) {
                             item.setOwnerUUID(itemStack, null);
                             if (item instanceof ISecurityItem) {
@@ -65,14 +65,13 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
                 ItemStack stack = inventory.get(1);
                 if (!stack.isEmpty() && stack.getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) stack.getItem();
-                    if (item.hasOwner(stack)) {
-                        if (item.getOwnerUUID(stack) == null) {
-                            item.setOwnerUUID(stack, ownerUUID);
-                        }
-                        if (item.getOwnerUUID(stack).equals(ownerUUID)) {
-                            if (item instanceof ISecurityItem) {
-                                ((ISecurityItem) item).setSecurity(stack, frequency.securityMode);
-                            }
+                    UUID stackOwner = item.getOwnerUUID(stack);
+                    if (stackOwner == null) {
+                        item.setOwnerUUID(stack, stackOwner = this.ownerUUID);
+                    }
+                    if (stackOwner.equals(this.ownerUUID)) {
+                        if (item instanceof ISecurityItem) {
+                            ((ISecurityItem) item).setSecurity(stack, frequency.securityMode);
                         }
                     }
                 }

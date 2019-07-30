@@ -1,7 +1,6 @@
 package mekanism.common.item.block;
 
 import java.util.List;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
@@ -14,7 +13,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -22,7 +20,6 @@ import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ItemDataUtils;
@@ -136,9 +133,6 @@ public class ItemBlockEnergyCube extends ItemBlockMekanism implements IItemEnerg
 
     @Override
     public double getEnergy(ItemStack itemStack) {
-        if (!itemStack.hasTagCompound()) {
-            return 0;
-        }
         return ItemDataUtils.getDouble(itemStack, "energyStored");
     }
 
@@ -184,36 +178,6 @@ public class ItemBlockEnergyCube extends ItemBlockMekanism implements IItemEnerg
     @Override
     public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
-    }
-
-    @Override
-    public UUID getOwnerUUID(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, "ownerUUID")) {
-            return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
-        }
-        return null;
-    }
-
-    @Override
-    public void setOwnerUUID(ItemStack stack, UUID owner) {
-        if (owner == null) {
-            ItemDataUtils.removeData(stack, "ownerUUID");
-        } else {
-            ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
-        }
-    }
-
-    @Override
-    public SecurityMode getSecurity(ItemStack stack) {
-        if (!MekanismConfig.current().general.allowProtection.val()) {
-            return SecurityMode.PUBLIC;
-        }
-        return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
-    }
-
-    @Override
-    public void setSecurity(ItemStack stack, SecurityMode mode) {
-        ItemDataUtils.setInt(stack, "security", mode.ordinal());
     }
 
     @Override

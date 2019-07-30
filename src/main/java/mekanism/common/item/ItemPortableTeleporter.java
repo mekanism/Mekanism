@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
@@ -85,26 +86,14 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     }
 
     @Override
-    public UUID getOwnerUUID(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, "ownerUUID")) {
-            return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
-        }
-        return null;
-    }
-
-    @Override
-    public void setOwnerUUID(ItemStack stack, UUID owner) {
+    public void setOwnerUUID(@Nonnull ItemStack stack, @Nullable UUID owner) {
         setFrequency(stack, null);
+        //TODO: Should setFrequency be pulled out of this method and then it can just use default impl from the interface
         if (owner == null) {
             ItemDataUtils.removeData(stack, "ownerUUID");
-            return;
+        } else {
+            ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
         }
-        ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
-    }
-
-    @Override
-    public boolean hasOwner(ItemStack stack) {
-        return true;
     }
 
     public Frequency.Identity getFrequency(ItemStack stack) {

@@ -1,7 +1,6 @@
 package mekanism.common.item.block;
 
 import java.util.List;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
@@ -18,7 +17,6 @@ import mekanism.common.block.BlockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.ItemDataUtils;
@@ -238,35 +236,5 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
     @Override
     public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
-    }
-
-    @Override
-    public UUID getOwnerUUID(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, "ownerUUID")) {
-            return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
-        }
-        return null;
-    }
-
-    @Override
-    public void setOwnerUUID(ItemStack stack, UUID owner) {
-        if (owner == null) {
-            ItemDataUtils.removeData(stack, "ownerUUID");
-        } else {
-            ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
-        }
-    }
-
-    @Override
-    public SecurityMode getSecurity(ItemStack stack) {
-        if (!MekanismConfig.current().general.allowProtection.val()) {
-            return SecurityMode.PUBLIC;
-        }
-        return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
-    }
-
-    @Override
-    public void setSecurity(ItemStack stack, SecurityMode mode) {
-        ItemDataUtils.setInt(stack, "security", mode.ordinal());
     }
 }

@@ -1,7 +1,6 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
@@ -11,10 +10,8 @@ import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.machine.BlockLaserAmplifier;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -96,35 +93,5 @@ public class ItemBlockLaserAmplifier extends ItemBlockMekanism implements ISusta
             return ItemDataUtils.getList((ItemStack) data[0], "Items");
         }
         return null;
-    }
-
-    @Override
-    public UUID getOwnerUUID(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, "ownerUUID")) {
-            return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
-        }
-        return null;
-    }
-
-    @Override
-    public void setOwnerUUID(ItemStack stack, UUID owner) {
-        if (owner == null) {
-            ItemDataUtils.removeData(stack, "ownerUUID");
-            return;
-        }
-        ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
-    }
-
-    @Override
-    public SecurityMode getSecurity(ItemStack stack) {
-        if (!MekanismConfig.current().general.allowProtection.val()) {
-            return SecurityMode.PUBLIC;
-        }
-        return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
-    }
-
-    @Override
-    public void setSecurity(ItemStack stack, SecurityMode mode) {
-        ItemDataUtils.setInt(stack, "security", mode.ordinal());
     }
 }
