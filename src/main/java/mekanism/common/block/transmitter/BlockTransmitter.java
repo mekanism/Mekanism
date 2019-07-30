@@ -7,14 +7,12 @@ import javax.annotation.Nullable;
 import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateConnection;
 import mekanism.common.block.states.IStateOBJ;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -83,6 +81,13 @@ public abstract class BlockTransmitter extends BlockTileDrops implements ITileEn
         return 0;
     }
 
+    @Nonnull
+    @Override
+    @Deprecated
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        return BlockStateHelper.getActualState(this, state, getTileEntitySidedPipe(world, pos));
+    }
+
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
@@ -91,10 +96,10 @@ public abstract class BlockTransmitter extends BlockTileDrops implements ITileEn
         if (tile != null) {
             return tile.getExtendedState(state);
         }
-        ConnectionType[] typeArray = new ConnectionType[]{ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
+        /*ConnectionType[] typeArray = new ConnectionType[]{ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                           ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
-        PropertyConnection connectionProp = new PropertyConnection((byte) 0, (byte) 0, typeArray, true);
-        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
+        PropertyConnectionOld connectionProp = new PropertyConnectionOld((byte) 0, (byte) 0, typeArray, true);*/
+        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true));//.withProperty(PropertyConnectionOld.INSTANCE, connectionProp);
     }
 
     @Override
@@ -134,16 +139,6 @@ public abstract class BlockTransmitter extends BlockTileDrops implements ITileEn
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         return new ItemStack(this);
     }
-
-    /*@Override
-    @SideOnly(Side.CLIENT)
-    public boolean addHitEffects(IBlockState state, World world, RayTraceResult target, ParticleManager manager) {
-        //TODO: This probably isn't needed anymore?
-        if (!target.typeOfHit.equals(Type.BLOCK)) {
-            return super.addHitEffects(state, world, target, manager);
-        }
-        return MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager) || super.addHitEffects(state, world, target, manager);
-    }*/
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {

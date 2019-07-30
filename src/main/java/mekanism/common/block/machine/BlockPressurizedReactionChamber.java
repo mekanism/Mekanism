@@ -29,7 +29,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
@@ -105,7 +104,7 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
     @Override
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, (TileEntityPRC) MekanismUtils.getTileEntitySafe(world, pos));
+        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

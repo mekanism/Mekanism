@@ -104,7 +104,7 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
     @Override
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, (TileEntityChemicalOxidizer) MekanismUtils.getTileEntitySafe(world, pos));
+        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

@@ -112,7 +112,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, (TileEntityLogisticalSorter) MekanismUtils.getTileEntitySafe(world, pos));
+        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

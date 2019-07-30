@@ -28,6 +28,42 @@
       "magenta": {},
       "yellow": {}
     },
+    "down": {
+      "normal": {},
+      "push": {},
+      "pull": {},
+      "none": {}
+    },
+    "up": {
+      "normal": {},
+      "push": {},
+      "pull": {},
+      "none": {}
+    },
+    "north": {
+      "normal": {},
+      "push": {},
+      "pull": {},
+      "none": {}
+    },
+    "south": {
+      "normal": {},
+      "push": {},
+      "pull": {},
+      "none": {}
+    },
+    "west": {
+      "normal": {},
+      "push": {},
+      "pull": {},
+      "none": {}
+    },
+    "east": {
+      "normal": {},
+      "push": {},
+      "pull": {},
+      "none": {}
+    },
     "normal": [{}],
     "inventory": [{}]
   }

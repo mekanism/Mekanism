@@ -104,7 +104,7 @@ public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlo
     @Override
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, (TileEntityChemicalInfuser) MekanismUtils.getTileEntitySafe(world, pos));
+        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

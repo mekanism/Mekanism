@@ -103,7 +103,7 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
     @Override
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
-        return BlockStateHelper.getActualState(this, state, (TileEntityCombiner) MekanismUtils.getTileEntitySafe(world, pos));
+        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

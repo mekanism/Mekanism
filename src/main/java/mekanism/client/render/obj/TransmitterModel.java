@@ -16,11 +16,9 @@ import javax.vecmath.Vector3f;
 import mekanism.api.EnumColor;
 import mekanism.api.IColor;
 import mekanism.common.Mekanism;
-import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateColor;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -136,7 +134,10 @@ public class TransmitterModel extends OBJBakedModelBase {
             IExtendedBlockState extended = (IExtendedBlockState) state;
             OBJState obj = extended.getValue(OBJProperty.INSTANCE);
             try {
-                int hash = Objects.hash(layer.ordinal(), color, PropertyConnection.INSTANCE.valueToString(extended.getValue(PropertyConnection.INSTANCE)));
+                //int hash = Objects.hash(layer.ordinal(), color, PropertyConnectionOld.INSTANCE.valueToString(extended.getValue(PropertyConnectionOld.INSTANCE)));
+                int hash = Objects.hash(layer.ordinal(), color, state.getValue(BlockStateHelper.downConnectionProperty), state.getValue(BlockStateHelper.upConnectionProperty),
+                      state.getValue(BlockStateHelper.northConnectionProperty), state.getValue(BlockStateHelper.southConnectionProperty),
+                      state.getValue(BlockStateHelper.westConnectionProperty), state.getValue(BlockStateHelper.eastConnectionProperty), obj.getVisibilityMap());
 
                 if (obj.getVisibilityMap().containsKey(Group.ALL) || obj.getVisibilityMap().containsKey(Group.ALL_EXCEPT)) {
                     updateStateVisibilityMap(obj);
@@ -174,9 +175,7 @@ public class TransmitterModel extends OBJBakedModelBase {
     @Override
     public TextureAtlasSprite getOverrideTexture(Face f, String groupName) {
         if (tempState != null) {
-            EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
-            PropertyConnection connection = ((IExtendedBlockState) tempState).getValue(PropertyConnection.INSTANCE);
-            boolean sideIconOverride = connection != null && getIconStatus(side, connection) > 0;
+            boolean sideIconOverride = getIconStatus(f, tempState) > 0;
 
             if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
                 int opaqueVal = MekanismConfig.current().client.opaqueTransmitters.val() ? 1 : 0;
@@ -204,28 +203,74 @@ public class TransmitterModel extends OBJBakedModelBase {
     @Override
     public boolean shouldRotate(Face f, String groupName) {
         if (tempState != null) {
-            EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
-            PropertyConnection connection = ((IExtendedBlockState) tempState).getValue(PropertyConnection.INSTANCE);
-            return connection != null && groupName.endsWith("NONE") && getIconStatus(side, connection) == 2;
+            return groupName.endsWith("NONE") && getIconStatus(f, tempState) == 2;
         }
         return false;
     }
 
-    public byte getIconStatus(EnumFacing side, PropertyConnection connection) {
-        ConnectionType type = TileEntitySidedPipe.getConnectionType(side, connection.connectionByte, connection.transmitterConnections, connection.connectionTypes);
+    public byte getIconStatus(Face f, @Nonnull IBlockState state) {
+        return getIconStatus(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z), state);
+    }
+
+    public byte getIconStatus(EnumFacing side, @Nonnull IBlockState state) {
+        ConnectionType down = state.getValue(BlockStateHelper.downConnectionProperty);
+        ConnectionType up = state.getValue(BlockStateHelper.upConnectionProperty);
+        ConnectionType north = state.getValue(BlockStateHelper.northConnectionProperty);
+        ConnectionType south = state.getValue(BlockStateHelper.southConnectionProperty);
+        ConnectionType west = state.getValue(BlockStateHelper.westConnectionProperty);
+        ConnectionType east = state.getValue(BlockStateHelper.eastConnectionProperty);
+
+        ConnectionType type = ConnectionType.NORMAL;
+        if (side == EnumFacing.DOWN) {
+            type = down;
+        } else if (side == EnumFacing.UP) {
+            type = up;
+        } else if (side == EnumFacing.NORTH) {
+            type = north;
+        } else if (side == EnumFacing.SOUTH) {
+            type = south;
+        } else if (side == EnumFacing.WEST) {
+            type = west;
+        } else if (side == EnumFacing.EAST) {
+            type = east;
+        }
+
+        //type = TileEntitySidedPipe.getConnectionType(side, connection.connectionByte, connection.transmitterConnections, connection.connectionTypes);
 
         if (type == ConnectionType.NONE) {
-            if (connection.renderCenter) {
+            //TODO: Render center is only true for diversion transporter
+            //if down and up &&
+
+            /*if (connection.renderCenter) {
                 return (byte) 0;
-            } else if (connection.connectionByte == 3 && side != EnumFacing.DOWN && side != EnumFacing.UP) {
+            } else */
+
+            if (down != ConnectionType.NONE && up != ConnectionType.NONE ||
+                (north != ConnectionType.NONE && south != ConnectionType.NONE && (side == EnumFacing.DOWN || side == EnumFacing.UP))) {
                 return (byte) 1;
-            } else if (connection.connectionByte == 12 && (side == EnumFacing.DOWN || side == EnumFacing.UP)) {
-                return (byte) 1;
-            } else if (connection.connectionByte == 12 && (side == EnumFacing.EAST || side == EnumFacing.WEST)) {
-                return (byte) 2;
-            } else if (connection.connectionByte == 48 && side != EnumFacing.EAST && side != EnumFacing.WEST) {
+            } else if (north != ConnectionType.NONE && south != ConnectionType.NONE || west != ConnectionType.NONE && east != ConnectionType.NONE) {
                 return (byte) 2;
             }
+
+            /*if (connection.connectionByte == 3 && side != EnumFacing.DOWN && side != EnumFacing.UP) {
+                //If connectionByte == 3, then map has DOWN and UP connections
+                //Because type is NONE though, that means we don't have them
+
+                //north, south, west, east
+                return (byte) 1;
+            } else if (connection.connectionByte == 12) {
+                //If connectionByte == 12, then map has NORTH and SOUTH connections
+                if (side == EnumFacing.DOWN || side == EnumFacing.UP) {
+                    return (byte) 1;
+                } else if (side == EnumFacing.EAST || side == EnumFacing.WEST) {
+                    return (byte) 2;
+                }
+            } else if (connection.connectionByte == 48 && side != EnumFacing.EAST && side != EnumFacing.WEST) {
+                //If connectionByte == 48, then map has WEST and EAST connections
+
+                //down, up, north, south
+                return (byte) 2;
+            }*/
         }
         return (byte) 0;
     }
@@ -255,4 +300,19 @@ public class TransmitterModel extends OBJBakedModelBase {
             return itemCache;
         }
     }
+
+    /*private class TransmitterInfo {
+
+        private final ConnectionType down, up, north, south, west, east;
+
+        private TransmitterInfo(BlockRenderLayer layer, IColor color, IBlockState state) {
+            down = state.getValue(BlockStateHelper.downConnectionProperty);
+            up = state.getValue(BlockStateHelper.upConnectionProperty);
+            north = state.getValue(BlockStateHelper.northConnectionProperty);
+            south = state.getValue(BlockStateHelper.southConnectionProperty);
+            west = state.getValue(BlockStateHelper.westConnectionProperty);
+            east = state.getValue(BlockStateHelper.eastConnectionProperty);
+            int hash = Objects.hash(layer.ordinal(), color, down, up, north, south, west, east);
+        }
+    }*/
 }

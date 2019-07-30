@@ -363,11 +363,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return false;
     }
 
-    /*@Override
-    public IBlockState getExtendedState(IBlockState state) {
-        return ((IExtendedBlockState) super.getExtendedState(state)).withProperty(PropertyColor.INSTANCE, new PropertyColor(getRenderColor()));
-    }*/
-
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY || super.hasCapability(capability, side);

@@ -1,7 +1,6 @@
 package mekanism.generators.common;
 
 import java.util.function.Function;
-import mekanism.common.block.PortalHelper;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.generators.common.block.generator.BlockAdvancedSolarGenerator;
@@ -88,7 +87,6 @@ public enum GeneratorsBlock {
         for (GeneratorsBlock generatorsBlock : values()) {
             registry.register(generatorsBlock.getBlock());
         }
-        registry.register(PortalHelper.BlockPortalOverride.instance);
     }
 
     public static void registerItemBlocks(IForgeRegistry<Item> registry) {

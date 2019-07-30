@@ -118,8 +118,7 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     @Override
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-        return tileEntity != null ? state.withProperty(BlockStateHelper.facingProperty, tileEntity.side) : state;
+        return BlockStateHelper.getActualState(this, state, getTileEntityGlowPanel(world, pos));
     }
 
     @Override

@@ -15,7 +15,6 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
@@ -598,14 +597,15 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         List<String> visible = new ArrayList<>();
         for (EnumFacing side : EnumFacing.VALUES) {
             visible.add(side.getName() + getConnectionType(side).getName().toUpperCase());
+            System.out.println("VISIBLE: " + side.getName() + getConnectionType(side).getName().toUpperCase() + " at " + getPos());
         }
         return visible;
     }
 
     public IBlockState getExtendedState(IBlockState state) {
         //TODO: Why is this here instead of calling the block's one, does it have to do with multipart
-        PropertyConnection connectionProp = new PropertyConnection(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
-        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
+        //PropertyConnectionOld connectionProp = new PropertyConnectionOld(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
+        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true));//.withProperty(PropertyConnectionOld.INSTANCE, connectionProp);
     }
 
     public void notifyTileChange() {
