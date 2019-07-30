@@ -164,7 +164,6 @@ public class MekanismGenerators implements IModule {
     @Override
     public void resetClient() {
         SynchronizedTurbineData.clientRotationMap.clear();
-        proxy.setGasGeneratorMaxEnergy();
     }
 
     @SubscribeEvent

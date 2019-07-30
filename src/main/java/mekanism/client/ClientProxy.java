@@ -479,6 +479,24 @@ public class ClientProxy extends CommonProxy {
 
         //Used to be basic blocks
         MekanismBlock.SECURITY_DESK.getItem().setTileEntityItemStackRenderer(new RenderSecurityDeskItem());
+
+        //Register the item renderer for the various blocks
+        registerBlockItemRender(MekanismBlock.OBSIDIAN_TNT);
+        registerBlockItemRender(MekanismBlock.SALT_BLOCK);
+        registerBlockItemRender(MekanismBlock.QUANTUM_ENTANGLOPORTER);
+        registerBlockItemRender(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
+        registerBlockItemRender(MekanismBlock.RESISTIVE_HEATER);
+        registerBlockItemRender(MekanismBlock.SECURITY_DESK);
+        registerBlockItemRender(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER);
+        registerBlockItemRender(MekanismBlock.CHEMICAL_CRYSTALLIZER);
+        registerBlockItemRender(MekanismBlock.SEISMIC_VIBRATOR);
+        registerBlockItemRender(MekanismBlock.DIGITAL_MINER);
+        registerBlockItemRender(MekanismBlock.PERSONAL_CHEST);
+        registerBlockItemRender(MekanismBlock.BASIC_GAS_TANK);
+        registerBlockItemRender(MekanismBlock.ADVANCED_GAS_TANK);
+        registerBlockItemRender(MekanismBlock.ELITE_GAS_TANK);
+        registerBlockItemRender(MekanismBlock.ULTIMATE_GAS_TANK);
+        registerBlockItemRender(MekanismBlock.CREATIVE_GAS_TANK);
     }
 
     private void setCustomStateMapper(IStateMapper mapper, MekanismBlock... blocks) {
@@ -627,34 +645,13 @@ public class ClientProxy extends CommonProxy {
 
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
-        setCustomModelResourceLocation(getInventoryMRL("obsidian_tnt"), MekanismBlock.OBSIDIAN_TNT);
-        setCustomModelResourceLocation(getInventoryMRL("salt_block"), MekanismBlock.SALT_BLOCK);
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=false"));
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=true"));
-
-        setCustomModelResourceLocation(getInventoryMRL("digital_miner"), MekanismBlock.DIGITAL_MINER);
-        setCustomModelResourceLocation(getInventoryMRL("personal_chest"), MekanismBlock.PERSONAL_CHEST);
-
-        setCustomModelResourceLocation(getInventoryMRL("chemical_dissolution_chamber"), MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER);
-        setCustomModelResourceLocation(getInventoryMRL("chemical_crystallizer"), MekanismBlock.CHEMICAL_CRYSTALLIZER);
-        setCustomModelResourceLocation(getInventoryMRL("seismic_vibrator"), MekanismBlock.SEISMIC_VIBRATOR);
 
         setCustomModelResourceLocation(getInventoryMRL("energy_cube"), MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE,
               MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
         setCustomModelResourceLocation(getInventoryMRL("fluid_tank"), MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK,
               MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK, MekanismBlock.CREATIVE_FLUID_TANK);
-
-        setCustomModelResourceLocation(getInventoryMRL("basic_gas_tank"), MekanismBlock.BASIC_GAS_TANK);
-        setCustomModelResourceLocation(getInventoryMRL("advanced_gas_tank"), MekanismBlock.ADVANCED_GAS_TANK);
-        setCustomModelResourceLocation(getInventoryMRL("elite_gas_tank"), MekanismBlock.ELITE_GAS_TANK);
-        setCustomModelResourceLocation(getInventoryMRL("ultimate_gas_tank"), MekanismBlock.ULTIMATE_GAS_TANK);
-        setCustomModelResourceLocation(getInventoryMRL("creative_gas_tank"), MekanismBlock.CREATIVE_GAS_TANK);
-
-        setCustomModelResourceLocation(getInventoryMRL("quantum_entangloporter"), MekanismBlock.QUANTUM_ENTANGLOPORTER);
-        setCustomModelResourceLocation(getInventoryMRL("solar_neutron_activator"), MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
-        setCustomModelResourceLocation(getInventoryMRL("resistive_heater"), MekanismBlock.RESISTIVE_HEATER);
-
-        setCustomModelResourceLocation(getInventoryMRL("security_desk"), MekanismBlock.SECURITY_DESK);
 
         //TODO: FixME
         setCustomModelResourceLocation(getInventoryMRL("glow_panel"), MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL,
@@ -870,6 +867,10 @@ public class ClientProxy extends CommonProxy {
 
     public void registerItemRender(MekanismItem item) {
         MekanismRenderer.registerItemRender(Mekanism.MODID, item.getItem());
+    }
+
+    public void registerBlockItemRender(MekanismBlock block) {
+        MekanismRenderer.registerItemRender(Mekanism.MODID, block.getItem());
     }
 
     private String getProperties(List<String> entries) {
