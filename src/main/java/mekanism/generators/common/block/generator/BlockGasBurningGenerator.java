@@ -10,9 +10,11 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -49,7 +51,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IRotatableBlock {
+public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IRotatableBlock, IBlockElectric {
 
     private final String name;
 
@@ -237,10 +239,8 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
         }
         if (tileEntity instanceof ISecurityTile) {
             ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-            if (securityItem.hasSecurity(itemStack)) {
-                securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
-                securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
-            }
+            securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
+            securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
         }
 
         if (tileEntity instanceof TileEntityElectricBlock) {
@@ -318,5 +318,10 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
     @Override
     public int getGuiID() {
         return 3;
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return 100 * MekanismConfig.local().general.FROM_H2.val();
     }
 }

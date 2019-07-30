@@ -59,7 +59,6 @@ public class ItemBlockPersonalChest extends ItemBlockMekanism implements IEnergi
 
     public ItemBlockPersonalChest(BlockPersonalChest block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

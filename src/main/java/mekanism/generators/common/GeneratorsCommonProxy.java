@@ -6,7 +6,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
@@ -102,14 +101,9 @@ public class GeneratorsCommonProxy implements IGuiProvider {
      */
     public void loadConfiguration() {
         MekanismConfig.local().generators.load(Mekanism.configuration);
-        setGasGeneratorMaxEnergy();
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
         }
-    }
-
-    protected void setGasGeneratorMaxEnergy() {
-        GeneratorType.GAS_GENERATOR.maxEnergy = MekanismConfig.local().general.FROM_H2.val() * 100;
     }
 
     @Override

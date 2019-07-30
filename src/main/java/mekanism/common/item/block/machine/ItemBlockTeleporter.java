@@ -60,7 +60,6 @@ public class ItemBlockTeleporter extends ItemBlockMekanism implements IEnergized
 
     public ItemBlockTeleporter(BlockTeleporter block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

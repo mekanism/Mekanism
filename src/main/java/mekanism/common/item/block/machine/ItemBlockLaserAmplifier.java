@@ -37,7 +37,6 @@ public class ItemBlockLaserAmplifier extends ItemBlockMekanism implements ISusta
 
     public ItemBlockLaserAmplifier(BlockLaserAmplifier block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

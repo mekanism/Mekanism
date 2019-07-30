@@ -60,7 +60,6 @@ public class ItemBlockEnrichmentChamber extends ItemBlockMekanism implements IEn
 
     public ItemBlockEnrichmentChamber(BlockEnrichmentChamber block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

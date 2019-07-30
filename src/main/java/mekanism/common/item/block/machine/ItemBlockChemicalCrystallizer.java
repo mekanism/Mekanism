@@ -60,7 +60,6 @@ public class ItemBlockChemicalCrystallizer extends ItemBlockMekanism implements 
 
     public ItemBlockChemicalCrystallizer(BlockChemicalCrystallizer block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

@@ -63,7 +63,6 @@ public class ItemBlockFluidicPlenisher extends ItemBlockMekanism implements IEne
 
     public ItemBlockFluidicPlenisher(BlockFluidicPlenisher block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

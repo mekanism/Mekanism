@@ -40,7 +40,6 @@ public class ItemBlockLogisticalSorter extends ItemBlockMekanism implements ISus
 
     public ItemBlockLogisticalSorter(BlockLogisticalSorter block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

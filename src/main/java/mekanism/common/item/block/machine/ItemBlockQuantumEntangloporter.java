@@ -61,7 +61,6 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockMekanism implements
 
     public ItemBlockQuantumEntangloporter(BlockQuantumEntangloporter block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

@@ -37,7 +37,6 @@ public class ItemBlockOredictionificator extends ItemBlockMekanism implements IS
 
     public ItemBlockOredictionificator(BlockOredictionificator block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

@@ -60,7 +60,6 @@ public class ItemBlockCombiner extends ItemBlockMekanism implements IEnergizedIt
 
     public ItemBlockCombiner(BlockCombiner block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

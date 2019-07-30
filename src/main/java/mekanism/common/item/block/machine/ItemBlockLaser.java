@@ -49,7 +49,6 @@ public class ItemBlockLaser extends ItemBlockMekanism implements IEnergizedItem,
 
     public ItemBlockLaser(BlockLaser block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

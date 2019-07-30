@@ -60,7 +60,6 @@ public class ItemBlockChemicalInfuser extends ItemBlockMekanism implements IEner
 
     public ItemBlockChemicalInfuser(BlockChemicalInfuser block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

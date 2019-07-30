@@ -60,7 +60,6 @@ public class ItemBlockMetallurgicInfuser extends ItemBlockMekanism implements IE
 
     public ItemBlockMetallurgicInfuser(BlockMetallurgicInfuser block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

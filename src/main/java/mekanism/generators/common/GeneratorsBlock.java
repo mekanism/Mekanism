@@ -22,8 +22,16 @@ import mekanism.generators.common.block.reactor.BlockReactorFrame;
 import mekanism.generators.common.block.reactor.BlockReactorGlass;
 import mekanism.generators.common.block.reactor.BlockReactorLogicAdapter;
 import mekanism.generators.common.block.reactor.BlockReactorPort;
-import mekanism.generators.common.item.ItemBlockGenerator;
-import mekanism.generators.common.item.ItemBlockReactor;
+import mekanism.generators.common.item.ItemBlockTooltip;
+import mekanism.generators.common.item.generator.ItemBlockAdvancedSolarGenerator;
+import mekanism.generators.common.item.generator.ItemBlockBioGenerator;
+import mekanism.generators.common.item.generator.ItemBlockGasBurningGenerator;
+import mekanism.generators.common.item.generator.ItemBlockHeatGenerator;
+import mekanism.generators.common.item.generator.ItemBlockSolarGenerator;
+import mekanism.generators.common.item.generator.ItemBlockTurbineCasing;
+import mekanism.generators.common.item.generator.ItemBlockTurbineValve;
+import mekanism.generators.common.item.generator.ItemBlockTurbineVent;
+import mekanism.generators.common.item.generator.ItemBlockWindGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -31,25 +39,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum GeneratorsBlock {
-    HEAT_GENERATOR(new BlockHeatGenerator(), ItemBlockGenerator::new),
-    SOLAR_GENERATOR(new BlockSolarGenerator(), ItemBlockGenerator::new),
-    GAS_BURNING_GENERATOR(new BlockGasBurningGenerator(), ItemBlockGenerator::new),
-    BIO_GENERATOR(new BlockBioGenerator(), ItemBlockGenerator::new),
-    ADVANCED_SOLAR_GENERATOR(new BlockAdvancedSolarGenerator(), ItemBlockGenerator::new),
-    WIND_GENERATOR(new BlockWindGenerator(), ItemBlockGenerator::new),
-    TURBINE_ROTOR(new BlockTurbineRotor(), ItemBlockGenerator::new),
-    ROTATIONAL_COMPLEX(new BlockRotationalComplex(), ItemBlockGenerator::new),
-    ELECTROMAGNETIC_COIL(new BlockElectromagneticCoil(), ItemBlockGenerator::new),
-    TURBINE_CASING(new BlockTurbineCasing(), ItemBlockGenerator::new),
-    TURBINE_VALVE(new BlockTurbineValve(), ItemBlockGenerator::new),
-    TURBINE_VENT(new BlockTurbineVent(), ItemBlockGenerator::new),
-    SATURATING_CONDENSER(new BlockSaturatingCondenser(), ItemBlockGenerator::new),
-    REACTOR_CONTROLLER(new BlockReactorController(), ItemBlockReactor::new),
-    REACTOR_FRAME(new BlockReactorFrame(), ItemBlockReactor::new),
-    REACTOR_PORT(new BlockReactorPort(), ItemBlockReactor::new),
-    REACTOR_LOGIC_ADAPTER(new BlockReactorLogicAdapter(), ItemBlockReactor::new),
-    REACTOR_GLASS(new BlockReactorGlass(), ItemBlockReactor::new),
-    LASER_FOCUS_MATRIX(new BlockLaserFocusMatrix(), ItemBlockReactor::new);
+    HEAT_GENERATOR(new BlockHeatGenerator(), ItemBlockHeatGenerator::new),
+    SOLAR_GENERATOR(new BlockSolarGenerator(), ItemBlockSolarGenerator::new),
+    GAS_BURNING_GENERATOR(new BlockGasBurningGenerator(), ItemBlockGasBurningGenerator::new),
+    BIO_GENERATOR(new BlockBioGenerator(), ItemBlockBioGenerator::new),
+    ADVANCED_SOLAR_GENERATOR(new BlockAdvancedSolarGenerator(), ItemBlockAdvancedSolarGenerator::new),
+    WIND_GENERATOR(new BlockWindGenerator(), ItemBlockWindGenerator::new),
+    TURBINE_ROTOR(new BlockTurbineRotor(), ItemBlockTooltip::new),
+    ROTATIONAL_COMPLEX(new BlockRotationalComplex(), ItemBlockTooltip::new),
+    ELECTROMAGNETIC_COIL(new BlockElectromagneticCoil(), ItemBlockTooltip::new),
+    TURBINE_CASING(new BlockTurbineCasing(), ItemBlockTurbineCasing::new),
+    TURBINE_VALVE(new BlockTurbineValve(), ItemBlockTurbineValve::new),
+    TURBINE_VENT(new BlockTurbineVent(), ItemBlockTurbineVent::new),
+    SATURATING_CONDENSER(new BlockSaturatingCondenser(), ItemBlockTooltip::new),
+    REACTOR_CONTROLLER(new BlockReactorController(), ItemBlockTooltip::new),
+    REACTOR_FRAME(new BlockReactorFrame(), ItemBlockTooltip::new),
+    REACTOR_PORT(new BlockReactorPort(), ItemBlockTooltip::new),
+    REACTOR_LOGIC_ADAPTER(new BlockReactorLogicAdapter(), ItemBlockTooltip::new),
+    REACTOR_GLASS(new BlockReactorGlass(), ItemBlockTooltip::new),
+    LASER_FOCUS_MATRIX(new BlockLaserFocusMatrix(), ItemBlockTooltip::new);
 
     private final ItemBlock item;
     private final Block block;

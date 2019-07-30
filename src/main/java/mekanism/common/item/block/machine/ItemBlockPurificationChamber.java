@@ -60,7 +60,6 @@ public class ItemBlockPurificationChamber extends ItemBlockMekanism implements I
 
     public ItemBlockPurificationChamber(BlockPurificationChamber block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

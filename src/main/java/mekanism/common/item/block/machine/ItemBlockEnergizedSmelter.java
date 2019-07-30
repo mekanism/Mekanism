@@ -60,7 +60,6 @@ public class ItemBlockEnergizedSmelter extends ItemBlockMekanism implements IEne
 
     public ItemBlockEnergizedSmelter(BlockEnergizedSmelter block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

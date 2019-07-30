@@ -60,7 +60,6 @@ public class ItemBlockChemicalDissolutionChamber extends ItemBlockMekanism imple
 
     public ItemBlockChemicalDissolutionChamber(BlockChemicalDissolutionChamber block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

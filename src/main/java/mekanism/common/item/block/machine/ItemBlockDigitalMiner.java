@@ -61,7 +61,6 @@ public class ItemBlockDigitalMiner extends ItemBlockMekanism implements IEnergiz
 
     public ItemBlockDigitalMiner(BlockDigitalMiner block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

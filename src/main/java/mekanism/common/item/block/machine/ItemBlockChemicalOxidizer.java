@@ -60,7 +60,6 @@ public class ItemBlockChemicalOxidizer extends ItemBlockMekanism implements IEne
 
     public ItemBlockChemicalOxidizer(BlockChemicalOxidizer block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

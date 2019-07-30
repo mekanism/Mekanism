@@ -60,7 +60,6 @@ public class ItemBlockChemicalInjectionChamber extends ItemBlockMekanism impleme
 
     public ItemBlockChemicalInjectionChamber(BlockChemicalInjectionChamber block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

@@ -36,7 +36,6 @@ public class ItemBlockFuelwoodHeater extends ItemBlockMekanism implements ISusta
 
     public ItemBlockFuelwoodHeater(BlockFuelwoodHeater block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

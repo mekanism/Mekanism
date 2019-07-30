@@ -1,11 +1,9 @@
-package mekanism.common.item.block.machine;
+package mekanism.generators.common.item.generator;
 
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
@@ -13,11 +11,8 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
-import mekanism.common.Upgrade;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.machine.BlockElectrolyticSeparator;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
@@ -28,11 +23,12 @@ import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile.SecurityMode;
-import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.generators.common.block.generator.BlockHeatGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
@@ -56,9 +52,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
       @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
       @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class ItemBlockElectrolyticSeparator extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem {
+public class ItemBlockHeatGenerator extends ItemBlockMekanism implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem {
 
-    public ItemBlockElectrolyticSeparator(BlockElectrolyticSeparator block) {
+    public ItemBlockHeatGenerator(BlockHeatGenerator block) {
         super(block);
         setMaxStackSize(1);
     }
@@ -82,12 +78,6 @@ public class ItemBlockElectrolyticSeparator extends ItemBlockMekanism implements
                      + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
             list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                      LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
-            if (ItemDataUtils.hasData(itemstack, "upgrades")) {
-                Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
-                for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-                    list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
-                }
-            }
         } else {
             list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
         }
@@ -97,28 +87,21 @@ public class ItemBlockElectrolyticSeparator extends ItemBlockMekanism implements
     public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityElectrolyticSeparator tile = (TileEntityElectrolyticSeparator) world.getTileEntity(pos);
+            TileEntityHeatGenerator tile = (TileEntityHeatGenerator) world.getTileEntity(pos);
+            //Security
             tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
             tile.getSecurity().setMode(getSecurity(stack));
             if (getOwnerUUID(stack) == null) {
                 tile.getSecurity().setOwnerUUID(player.getUniqueID());
             }
-            //Upgrades
-            if (ItemDataUtils.hasData(stack, "upgrades")) {
-                tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-            }
+            //Electric
+            tile.electricityStored = getEnergy(stack);
+            //Sustained Inventory
+            tile.setInventory(getInventory(stack));
             //Sustained Data
             if (stack.getTagCompound() != null) {
                 tile.readSustainedData(stack);
             }
-            //Redstone Control
-            if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-            }
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
-            //Electric Block
-            tile.electricityStored = getEnergy(stack);
             return true;
         }
         return false;
@@ -152,8 +135,8 @@ public class ItemBlockElectrolyticSeparator extends ItemBlockMekanism implements
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        if (item instanceof ItemBlockElectrolyticSeparator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((BlockElectrolyticSeparator) (((ItemBlockElectrolyticSeparator) item).block)).getStorage());
+        if (item instanceof ItemBlockHeatGenerator) {
+            return MekanismUtils.getMaxEnergy(itemStack, ((BlockHeatGenerator) (((ItemBlockHeatGenerator) item).block)).getStorage());
         }
         return 0;
     }
@@ -165,12 +148,12 @@ public class ItemBlockElectrolyticSeparator extends ItemBlockMekanism implements
 
     @Override
     public boolean canReceive(ItemStack itemStack) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean canSend(ItemStack itemStack) {
-        return false;
+        return true;
     }
 
     @Override

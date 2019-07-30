@@ -66,7 +66,6 @@ public class ItemBlockFluidTank extends ItemBlockMekanism implements ISustainedI
 
     public ItemBlockFluidTank(BlockFluidTank block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

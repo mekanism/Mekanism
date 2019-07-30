@@ -60,7 +60,6 @@ public class ItemBlockChemicalWasher extends ItemBlockMekanism implements IEnerg
 
     public ItemBlockChemicalWasher(BlockChemicalWasher block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

@@ -12,8 +12,6 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -211,14 +209,6 @@ public class BlockTurbineCasing extends BlockMekanismContainer implements IBlock
         if (tileEntity == null) {
             return ItemStack.EMPTY;
         }
-        if (tileEntity instanceof ISecurityTile) {
-            ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-            if (securityItem.hasSecurity(itemStack)) {
-                securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
-                securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
-            }
-        }
-
         if (tileEntity instanceof TileEntityElectricBlock) {
             IEnergizedItem electricItem = (IEnergizedItem) itemStack.getItem();
             electricItem.setEnergy(itemStack, ((TileEntityElectricBlock) tileEntity).electricityStored);

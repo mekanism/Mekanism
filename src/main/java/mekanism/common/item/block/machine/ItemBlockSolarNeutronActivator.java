@@ -40,7 +40,6 @@ public class ItemBlockSolarNeutronActivator extends ItemBlockMekanism implements
 
     public ItemBlockSolarNeutronActivator(BlockSolarNeutronActivator block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

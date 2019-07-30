@@ -60,7 +60,6 @@ public class ItemBlockFormulaicAssemblicator extends ItemBlockMekanism implement
 
     public ItemBlockFormulaicAssemblicator(BlockFormulaicAssemblicator block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

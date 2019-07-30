@@ -36,7 +36,6 @@ public class ItemBlockLaserTractorBeam extends ItemBlockMekanism implements ISus
 
     public ItemBlockLaserTractorBeam(BlockLaserTractorBeam block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

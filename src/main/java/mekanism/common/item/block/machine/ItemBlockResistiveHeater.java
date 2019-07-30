@@ -57,7 +57,6 @@ public class ItemBlockResistiveHeater extends ItemBlockMekanism implements IEner
 
     public ItemBlockResistiveHeater(BlockResistiveHeater block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

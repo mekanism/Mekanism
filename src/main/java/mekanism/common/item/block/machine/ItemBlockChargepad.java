@@ -49,7 +49,6 @@ public class ItemBlockChargepad extends ItemBlockMekanism implements IEnergizedI
 
     public ItemBlockChargepad(BlockChargepad block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

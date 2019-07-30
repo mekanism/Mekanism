@@ -67,7 +67,6 @@ public class ItemBlockFactory extends ItemBlockMekanism implements IEnergizedIte
 
     public ItemBlockFactory(BlockFactory block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

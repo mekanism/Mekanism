@@ -9,13 +9,8 @@ public interface ISecurityItem extends IOwnerItem {
 
     void setSecurity(ItemStack stack, SecurityMode mode);
 
-    //TODO: Is this still needed/useful
-    default boolean hasSecurity(ItemStack stack) {
-        return true;
-    }
-
     @Override
     default boolean hasOwner(ItemStack stack) {
-        return hasSecurity(stack);
+        return true;
     }
 }

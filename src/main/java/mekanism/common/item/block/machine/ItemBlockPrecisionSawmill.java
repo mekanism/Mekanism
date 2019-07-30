@@ -60,7 +60,6 @@ public class ItemBlockPrecisionSawmill extends ItemBlockMekanism implements IEne
 
     public ItemBlockPrecisionSawmill(BlockPrecisionSawmill block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

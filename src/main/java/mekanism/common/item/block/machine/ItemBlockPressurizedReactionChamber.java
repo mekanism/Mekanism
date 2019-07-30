@@ -60,7 +60,6 @@ public class ItemBlockPressurizedReactionChamber extends ItemBlockMekanism imple
 
     public ItemBlockPressurizedReactionChamber(BlockPressurizedReactionChamber block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

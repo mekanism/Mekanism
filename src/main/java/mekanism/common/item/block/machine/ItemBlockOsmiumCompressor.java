@@ -60,7 +60,6 @@ public class ItemBlockOsmiumCompressor extends ItemBlockMekanism implements IEne
 
     public ItemBlockOsmiumCompressor(BlockOsmiumCompressor block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

@@ -60,7 +60,6 @@ public class ItemBlockCrusher extends ItemBlockMekanism implements IEnergizedIte
 
     public ItemBlockCrusher(BlockCrusher block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

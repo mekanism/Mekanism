@@ -49,27 +49,29 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
     public void onUpdate() {
         if (!world.isRemote) {
             if (ownerUUID != null && frequency != null) {
-                if (!inventory.get(0).isEmpty() && inventory.get(0).getItem() instanceof IOwnerItem) {
-                    IOwnerItem item = (IOwnerItem) inventory.get(0).getItem();
-                    if (item.hasOwner(inventory.get(0)) && item.getOwnerUUID(inventory.get(0)) != null) {
-                        if (item.getOwnerUUID(inventory.get(0)).equals(ownerUUID)) {
-                            item.setOwnerUUID(inventory.get(0), null);
-                            if (item instanceof ISecurityItem && ((ISecurityItem) item).hasSecurity(inventory.get(0))) {
-                                ((ISecurityItem) item).setSecurity(inventory.get(0), SecurityMode.PUBLIC);
+                ItemStack itemStack = inventory.get(0);
+                if (!itemStack.isEmpty() && itemStack.getItem() instanceof IOwnerItem) {
+                    IOwnerItem item = (IOwnerItem) itemStack.getItem();
+                    if (item.hasOwner(itemStack) && item.getOwnerUUID(itemStack) != null) {
+                        if (item.getOwnerUUID(itemStack).equals(ownerUUID)) {
+                            item.setOwnerUUID(itemStack, null);
+                            if (item instanceof ISecurityItem) {
+                                ((ISecurityItem) item).setSecurity(itemStack, SecurityMode.PUBLIC);
                             }
                         }
                     }
                 }
 
-                if (!inventory.get(1).isEmpty() && inventory.get(1).getItem() instanceof IOwnerItem) {
-                    IOwnerItem item = (IOwnerItem) inventory.get(1).getItem();
-                    if (item.hasOwner(inventory.get(1))) {
-                        if (item.getOwnerUUID(inventory.get(1)) == null) {
-                            item.setOwnerUUID(inventory.get(1), ownerUUID);
+                ItemStack stack = inventory.get(1);
+                if (!stack.isEmpty() && stack.getItem() instanceof IOwnerItem) {
+                    IOwnerItem item = (IOwnerItem) stack.getItem();
+                    if (item.hasOwner(stack)) {
+                        if (item.getOwnerUUID(stack) == null) {
+                            item.setOwnerUUID(stack, ownerUUID);
                         }
-                        if (item.getOwnerUUID(inventory.get(1)).equals(ownerUUID)) {
-                            if (item instanceof ISecurityItem && ((ISecurityItem) item).hasSecurity(inventory.get(1))) {
-                                ((ISecurityItem) item).setSecurity(inventory.get(1), frequency.securityMode);
+                        if (item.getOwnerUUID(stack).equals(ownerUUID)) {
+                            if (item instanceof ISecurityItem) {
+                                ((ISecurityItem) item).setSecurity(stack, frequency.securityMode);
                             }
                         }
                     }

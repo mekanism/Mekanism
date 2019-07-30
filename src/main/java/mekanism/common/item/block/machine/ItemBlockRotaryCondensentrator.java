@@ -60,7 +60,6 @@ public class ItemBlockRotaryCondensentrator extends ItemBlockMekanism implements
 
     public ItemBlockRotaryCondensentrator(BlockRotaryCondensentrator block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

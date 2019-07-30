@@ -63,7 +63,6 @@ public class ItemBlockElectricPump extends ItemBlockMekanism implements IEnergiz
 
     public ItemBlockElectricPump(BlockElectricPump block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 

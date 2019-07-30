@@ -57,7 +57,6 @@ public class ItemBlockSeismicVibrator extends ItemBlockMekanism implements IEner
 
     public ItemBlockSeismicVibrator(BlockSeismicVibrator block) {
         super(block);
-        setNoRepair();
         setMaxStackSize(1);
     }
 
