@@ -26,6 +26,9 @@ public class BlockStateHelper {
 
     public static final PropertyDirection facingProperty = PropertyDirection.create("facing");
     public static final PropertyBool activeProperty = PropertyBool.create("active");
+    //NOTE: This currently is only using the set of colors the transporter supports as it is the only thing that needs this
+    // There is a method to create this supporting all colors but it is currently unused
+    public static final PropertyColor colorProperty = PropertyColor.createTransporter("color");
 
     public static BlockStateContainer getBlockState(Block block) {
         List<IUnlistedProperty> unlistedProperties = new ArrayList<>();
@@ -36,13 +39,14 @@ public class BlockStateHelper {
         if (block instanceof IStateActive) {
             properties.add(activeProperty);
         }
+        if (block instanceof IStateColor) {
+            properties.add(colorProperty);
+        }
         if (block instanceof IStateOBJ) {
             unlistedProperties.add(OBJProperty.INSTANCE);
         }
-        if (block instanceof IStateColor) {
-            unlistedProperties.add(PropertyColor.INSTANCE);
-        }
         if (block instanceof IStateConnection) {
+            //TODO: Make the connection be fully qualified into the blockstate
             unlistedProperties.add(PropertyConnection.INSTANCE);
         }
         if (properties.isEmpty() && unlistedProperties.isEmpty()) {

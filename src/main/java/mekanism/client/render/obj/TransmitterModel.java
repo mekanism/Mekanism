@@ -14,9 +14,10 @@ import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import mekanism.api.EnumColor;
+import mekanism.api.IColor;
 import mekanism.common.Mekanism;
-import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateColor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
@@ -120,20 +121,20 @@ public class TransmitterModel extends OBJBakedModelBase {
         }
 
         if (state != null && tempState == null) {
-            IExtendedBlockState extended = (IExtendedBlockState) state;
             BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
             EnumColor color = null;
 
             if (state.getBlock() instanceof IStateColor && layer == BlockRenderLayer.TRANSLUCENT) {
                 //Only try getting the color property for ones that will have a color
-                PropertyColor colorProp = extended.getValue(PropertyColor.INSTANCE);
-                if (colorProp != null && colorProp.color != null) {
-                    color = colorProp.color;
+
+                IColor iColor = (IColor) state.getValue(BlockStateHelper.colorProperty);
+                if (iColor != EnumColor.NONE) {
+                    color = (EnumColor) iColor;
                 }
             }
 
+            IExtendedBlockState extended = (IExtendedBlockState) state;
             OBJState obj = extended.getValue(OBJProperty.INSTANCE);
-
             try {
                 int hash = Objects.hash(layer.ordinal(), color, PropertyConnection.INSTANCE.valueToString(extended.getValue(PropertyConnection.INSTANCE)));
 

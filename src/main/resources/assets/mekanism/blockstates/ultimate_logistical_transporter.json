@@ -13,6 +13,21 @@
     }
   },
   "variants": {
+    "color": {
+      "none": {},
+      "black": {},
+      "blue": {},
+      "green": {},
+      "cyan": {},
+      "dark_red": {},
+      "purple": {},
+      "light_blue": {},
+      "lime": {},
+      "aqua": {},
+      "red": {},
+      "magenta": {},
+      "yellow": {}
+    },
     "normal": [{}],
     "inventory": [{}]
   }

@@ -6,13 +6,14 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
  *
  * @author AidanBrady
  */
-public enum EnumColor implements IStringSerializable {
+public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
     BLACK("\u00a70", "black", "Black", "black", new int[]{0, 0, 0}, 0, TextFormatting.BLACK),
     DARK_BLUE("\u00a71", "darkBlue", "Blue", "blue", new int[]{0, 0, 170}, 4, TextFormatting.DARK_BLUE),
     DARK_GREEN("\u00a72", "darkGreen", "Green", "green", new int[]{0, 170, 0}, 2, TextFormatting.DARK_GREEN),
@@ -35,6 +36,19 @@ public enum EnumColor implements IStringSerializable {
 
     public static EnumColor[] DYES = new EnumColor[]{BLACK, RED, DARK_GREEN, BROWN, DARK_BLUE, PURPLE, DARK_AQUA, GREY, DARK_GREY, BRIGHT_PINK, BRIGHT_GREEN, YELLOW,
                                                      INDIGO, PINK, ORANGE, WHITE};
+
+    //TODO: Switch more things over to using this
+    public static final IColor NONE = new IColor<IColor>() {
+        @Override
+        public String getRegistryPrefix() {
+            return "none";
+        }
+
+        @Override
+        public int compareTo(@NotNull IColor o) {
+            return o == this ? 0 : -1;
+        }
+    };
 
     /**
      * The color code that will be displayed
@@ -144,5 +158,10 @@ public enum EnumColor implements IStringSerializable {
     @Override
     public String toString() {
         return code;
+    }
+
+    @Override
+    public String getRegistryPrefix() {
+        return registry_prefix;
     }
 }
