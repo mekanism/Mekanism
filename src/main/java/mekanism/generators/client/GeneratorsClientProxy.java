@@ -2,6 +2,7 @@ package mekanism.generators.client;
 
 import java.util.function.Function;
 import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.common.item.IItemRedirectedModel;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -53,6 +54,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -100,17 +102,22 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         GeneratorsBlock.HEAT_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderHeatGeneratorItem());
         GeneratorsBlock.SOLAR_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderSolarGeneratorItem());
         GeneratorsBlock.WIND_GENERATOR.getItem().setTileEntityItemStackRenderer(new RenderWindGeneratorItem());
+
+        //Register the item inventory model locations for the various blocks
+        for (GeneratorsBlock generatorsBlock : GeneratorsBlock.values()) {
+            ItemBlock item = generatorsBlock.getItem();
+            if (item instanceof IItemRedirectedModel) {
+                //TODO: Fix Glow panel item coloring
+                ModelLoader.setCustomModelResourceLocation(item, 0, getInventoryMRL(((IItemRedirectedModel) item).getRedirectLocation()));
+            } else {
+                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+            }
+        }
     }
 
     private void setCustomStateMapper(IStateMapper mapper, GeneratorsBlock... blocks) {
         for (GeneratorsBlock generatorsBlock : blocks) {
             ModelLoader.setCustomStateMapper(generatorsBlock.getBlock(), mapper);
-        }
-    }
-
-    private void setCustomModelResourceLocation(ModelResourceLocation model, GeneratorsBlock... blocks) {
-        for (GeneratorsBlock generatorsBlock : blocks) {
-            ModelLoader.setCustomModelResourceLocation(generatorsBlock.getItem(), 0, model);
         }
     }
 
@@ -123,10 +130,6 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
               GeneratorsBlock.TURBINE_VENT, GeneratorsBlock.SATURATING_CONDENSER);
         setCustomStateMapper(reactorMapper, GeneratorsBlock.REACTOR_CONTROLLER, GeneratorsBlock.REACTOR_FRAME, GeneratorsBlock.REACTOR_GLASS, GeneratorsBlock.REACTOR_PORT,
               GeneratorsBlock.REACTOR_LOGIC_ADAPTER, GeneratorsBlock.LASER_FOCUS_MATRIX);
-
-        for (GeneratorsBlock generatorsBlock : GeneratorsBlock.values()) {
-            setCustomModelResourceLocation(getInventoryMRL(generatorsBlock.getBlock().getRegistryName().getPath()), generatorsBlock);
-        }
     }
 
     public void registerItemRender(Item item) {
