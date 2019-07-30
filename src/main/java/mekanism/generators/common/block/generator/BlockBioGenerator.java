@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
@@ -91,12 +90,8 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
     @Nonnull
     @Override
     @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        return state;
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        return BlockStateHelper.getActualState(this, state, (TileEntityBioGenerator) MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override
@@ -272,14 +267,6 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
         }
         if (tileEntity instanceof ISustainedData) {
             ((ISustainedData) tileEntity).writeSustainedData(itemStack);
-        }
-        if (((ISustainedTank) itemStack.getItem()).hasTank(itemStack)) {
-            if (tileEntity instanceof ISustainedTank) {
-                ISustainedTank tank = (ISustainedTank) tileEntity;
-                if (tank.getFluidStack() != null) {
-                    ((ISustainedTank) itemStack.getItem()).setFluidStack(tank.getFluidStack(), itemStack);
-                }
-            }
         }
         return itemStack;
     }

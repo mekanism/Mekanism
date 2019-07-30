@@ -103,15 +103,8 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     @Nonnull
     @Override
     @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        if (tile instanceof IActiveState) {
-            state = state.withProperty(BlockStateHelper.activeProperty, ((IActiveState) tile).getActive());
-        }
-        return state;
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        return BlockStateHelper.getActualState(this, state, (TileEntityElectricPump) MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

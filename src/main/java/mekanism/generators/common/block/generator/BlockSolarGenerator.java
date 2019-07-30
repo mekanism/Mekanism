@@ -7,14 +7,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IRotatableBlock;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -30,7 +26,6 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,7 +34,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -52,7 +46,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IRotatableBlock, IBlockElectric, IStateFacing {
+public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IBlockElectric {
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
 
@@ -71,34 +65,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     @Override
     public String getDescription() {
         return LangUtils.localize("tooltip.mekanism." + name);
-    }
-
-    @Override
-    public boolean canRotateTo(EnumFacing side) {
-        return Plane.HORIZONTAL.test(side);
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        //TODO
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        return state;
     }
 
     @Override
@@ -272,14 +238,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
         }
         if (tileEntity instanceof ISustainedData) {
             ((ISustainedData) tileEntity).writeSustainedData(itemStack);
-        }
-        if (((ISustainedTank) itemStack.getItem()).hasTank(itemStack)) {
-            if (tileEntity instanceof ISustainedTank) {
-                ISustainedTank tank = (ISustainedTank) tileEntity;
-                if (tank.getFluidStack() != null) {
-                    ((ISustainedTank) itemStack.getItem()).setFluidStack(tank.getFluidStack(), itemStack);
-                }
-            }
         }
         return itemStack;
     }

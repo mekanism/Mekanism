@@ -6,7 +6,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -258,14 +257,6 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IBlockD
         }
         if (tileEntity instanceof ISustainedData) {
             ((ISustainedData) tileEntity).writeSustainedData(itemStack);
-        }
-        if (((ISustainedTank) itemStack.getItem()).hasTank(itemStack)) {
-            if (tileEntity instanceof ISustainedTank) {
-                ISustainedTank tank = (ISustainedTank) tileEntity;
-                if (tank.getFluidStack() != null) {
-                    ((ISustainedTank) itemStack.getItem()).setFluidStack(tank.getFluidStack(), itemStack);
-                }
-            }
         }
         return itemStack;
     }

@@ -83,15 +83,8 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     @Nonnull
     @Override
     @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityEnergyCube) {
-            TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
-            if (cube.facing != null) {
-                state = state.withProperty(BlockStateHelper.facingProperty, cube.facing);
-            }
-        }
-        return state;
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        return BlockStateHelper.getActualState(this, state, (TileEntityEnergyCube) MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

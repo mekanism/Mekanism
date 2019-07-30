@@ -3,9 +3,11 @@ package mekanism.common.block.states;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.property.PropertyColor;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -41,6 +43,16 @@ public class BlockStateHelper {
         return new ExtendedBlockState(block, properties.toArray(new IProperty[0]), unlistedProperties.toArray(new IUnlistedProperty[0]));
     }
 
+    public static IBlockState getActualState(@Nonnull Block block, @Nonnull IBlockState state, @Nonnull TileEntityBasicBlock tile) {
+        if (block instanceof IStateFacing && tile.facing != null) {
+            state = state.withProperty(facingProperty, tile.facing);
+        }
+        if (block instanceof IStateActive && tile instanceof IActiveState) {
+            state = state.withProperty(activeProperty, ((IActiveState) tile).getActive());
+        }
+        return state;
+    }
+
     public static class MekanismBlockStateMapper extends StateMapperBase {
 
         @Nonnull
@@ -56,7 +68,7 @@ public class BlockStateHelper {
             }
 
             if (block instanceof IRotatableBlock) {
-                EnumFacing facing = state.getValue(BlockStateHelper.facingProperty);
+                EnumFacing facing = state.getValue(facingProperty);
 
                 if (!((IRotatableBlock) block).canRotateTo(facing)) {
                     facing = EnumFacing.NORTH;
@@ -66,7 +78,7 @@ public class BlockStateHelper {
                     builder.append(",");
                 }
 
-                builder.append(BlockStateHelper.facingProperty.getName());
+                builder.append(facingProperty.getName());
                 builder.append("=");
                 builder.append(facing.getName());
             }

@@ -78,15 +78,8 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     @Nonnull
     @Override
     @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityGasTank) {
-            TileEntityGasTank tank = (TileEntityGasTank) tile;
-            if (tank.facing != null) {
-                state = state.withProperty(BlockStateHelper.facingProperty, tank.facing);
-            }
-        }
-        return state;
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        return BlockStateHelper.getActualState(this, state, (TileEntityGasTank) MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override
