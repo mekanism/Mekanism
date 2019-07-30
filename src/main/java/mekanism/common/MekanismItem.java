@@ -118,7 +118,6 @@ public enum MekanismItem implements IItemProvider {
     ELITE_TIER_INSTALLER(new ItemTierInstaller(BaseTier.ELITE)),
     ULTIMATE_TIER_INSTALLER(new ItemTierInstaller(BaseTier.ULTIMATE)),
 
-    //TODO: Have below stuff auto register oredict entry on constructor creation
     IRON_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.IRON)),
     GOLD_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.GOLD)),
     OSMIUM_CRYSTAL(new ItemResource(ResourceType.CRYSTAL, Resource.OSMIUM)),

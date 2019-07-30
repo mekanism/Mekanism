@@ -22,7 +22,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -49,8 +48,8 @@ public class BlockInductionCell extends BlockTileDrops implements IBlockDescript
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
-    public static boolean isInstance(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockInductionCell;
+    public InductionCellTier getTier() {
+        return tier;
     }
 
     @Nonnull

@@ -22,7 +22,7 @@ import mekanism.generators.common.block.reactor.BlockReactorFrame;
 import mekanism.generators.common.block.reactor.BlockReactorGlass;
 import mekanism.generators.common.block.reactor.BlockReactorLogicAdapter;
 import mekanism.generators.common.block.reactor.BlockReactorPort;
-import mekanism.generators.common.item.ItemBlockTooltip;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.generators.common.item.generator.ItemBlockAdvancedSolarGenerator;
 import mekanism.generators.common.item.generator.ItemBlockBioGenerator;
 import mekanism.generators.common.item.generator.ItemBlockGasBurningGenerator;

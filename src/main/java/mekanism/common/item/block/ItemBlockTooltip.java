@@ -1,4 +1,4 @@
-package mekanism.generators.common.item;
+package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -6,7 +6,6 @@ import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;

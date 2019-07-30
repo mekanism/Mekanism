@@ -14,7 +14,7 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
-import mekanism.common.item.block.ItemBlockBasic;
+import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -110,10 +110,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     }
 
     public boolean isValid(ItemStack stack) {
-        if (stack.isEmpty() || stack.getCount() <= 0) {
-            return false;
-        }
-        if (stack.getItem() instanceof ItemBlockBasic && stack.getItemDamage() == 6) {
+        if (stack.isEmpty() || stack.getItem() instanceof ItemBlockBin) {
             return false;
         }
         if (itemType.isEmpty()) {

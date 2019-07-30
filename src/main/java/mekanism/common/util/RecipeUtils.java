@@ -9,10 +9,10 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.security.ISecurityItem;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -134,12 +134,12 @@ public class RecipeUtils {
             }
         }
 
-        if (BlockBin.isInstance(toReturn)) {
+        if (!toReturn.isEmpty() && toReturn.getItem() instanceof ItemBlockBin) {
             int foundCount = 0;
             ItemStack foundType = ItemStack.EMPTY;
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-                if (BlockBin.isInstance(itemstack)) {
+                if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemBlockBin) {
                     InventoryBin binInv = new InventoryBin(itemstack);
                     foundCount = binInv.getItemCount();
                     foundType = binInv.getItemType();

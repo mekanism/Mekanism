@@ -84,15 +84,19 @@ import mekanism.common.block.transmitter.BlockRestrictiveTransporter;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
 import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.item.IItemMekanism;
-import mekanism.common.item.block.ItemBlockBasic;
+import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.item.block.ItemBlockGlowPanel;
+import mekanism.common.item.block.ItemBlockInductionCell;
+import mekanism.common.item.block.ItemBlockInductionProvider;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.item.block.ItemBlockOre;
 import mekanism.common.item.block.ItemBlockPlastic;
 import mekanism.common.item.block.ItemBlockResource;
+import mekanism.common.item.block.ItemBlockSecurityDesk;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.block.machine.ItemBlockChargepad;
 import mekanism.common.item.block.machine.ItemBlockChemicalCrystallizer;
 import mekanism.common.item.block.machine.ItemBlockChemicalDissolutionChamber;
@@ -163,41 +167,41 @@ public enum MekanismBlock implements IBlockProvider {
     REFINED_GLOWSTONE_BLOCK(new BlockResource(BlockResourceInfo.REFINED_GLOWSTONE), ItemBlockResource::new),
     STEEL_BLOCK(new BlockResource(BlockResourceInfo.STEEL), ItemBlockResource::new),
 
-    BASIC_BIN(new BlockBin(BinTier.BASIC), ItemBlockBasic::new),
-    ADVANCED_BIN(new BlockBin(BinTier.ADVANCED), ItemBlockBasic::new),
-    ELITE_BIN(new BlockBin(BinTier.ELITE), ItemBlockBasic::new),
-    ULTIMATE_BIN(new BlockBin(BinTier.ULTIMATE), ItemBlockBasic::new),
-    CREATIVE_BIN(new BlockBin(BinTier.CREATIVE), ItemBlockBasic::new),
+    BASIC_BIN(new BlockBin(BinTier.BASIC), ItemBlockBin::new),
+    ADVANCED_BIN(new BlockBin(BinTier.ADVANCED), ItemBlockBin::new),
+    ELITE_BIN(new BlockBin(BinTier.ELITE), ItemBlockBin::new),
+    ULTIMATE_BIN(new BlockBin(BinTier.ULTIMATE), ItemBlockBin::new),
+    CREATIVE_BIN(new BlockBin(BinTier.CREATIVE), ItemBlockBin::new),
 
-    TELEPORTER_FRAME(new BlockTeleporterFrame(), ItemBlockBasic::new),
-    STEEL_CASING(new BlockSteelCasing(), ItemBlockBasic::new),
-    DYNAMIC_TANK(new BlockDynamicTank(), ItemBlockBasic::new),
-    STRUCTURAL_GLASS(new BlockStructuralGlass(), ItemBlockBasic::new),
-    DYNAMIC_VALVE(new BlockDynamicValve(), ItemBlockBasic::new),
+    TELEPORTER_FRAME(new BlockTeleporterFrame(), ItemBlockTooltip::new),
+    STEEL_CASING(new BlockSteelCasing(), ItemBlockTooltip::new),
+    DYNAMIC_TANK(new BlockDynamicTank(), ItemBlockTooltip::new),
+    STRUCTURAL_GLASS(new BlockStructuralGlass(), ItemBlockTooltip::new),
+    DYNAMIC_VALVE(new BlockDynamicValve(), ItemBlockTooltip::new),
     COPPER_BLOCK(new BlockResource(BlockResourceInfo.COPPER), ItemBlockResource::new),
     TIN_BLOCK(new BlockResource(BlockResourceInfo.TIN), ItemBlockResource::new),
-    THERMAL_EVAPORATION_CONTROLLER(new BlockThermalEvaporationController(), ItemBlockBasic::new),
-    THERMAL_EVAPORATION_VALVE(new BlockThermalEvaporationValve(), ItemBlockBasic::new),
+    THERMAL_EVAPORATION_CONTROLLER(new BlockThermalEvaporationController(), ItemBlockTooltip::new),
+    THERMAL_EVAPORATION_VALVE(new BlockThermalEvaporationValve(), ItemBlockTooltip::new),
 
-    THERMAL_EVAPORATION_BLOCK(new BlockThermalEvaporation(), ItemBlockBasic::new),
-    INDUCTION_CASING(new BlockInductionCasing(), ItemBlockBasic::new),
-    INDUCTION_PORT(new BlockInductionPort(), ItemBlockBasic::new),
+    THERMAL_EVAPORATION_BLOCK(new BlockThermalEvaporation(), ItemBlockTooltip::new),
+    INDUCTION_CASING(new BlockInductionCasing(), ItemBlockTooltip::new),
+    INDUCTION_PORT(new BlockInductionPort(), ItemBlockTooltip::new),
 
-    BASIC_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.BASIC), ItemBlockBasic::new),
-    ADVANCED_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ADVANCED), ItemBlockBasic::new),
-    ELITE_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ELITE), ItemBlockBasic::new),
-    ULTIMATE_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ULTIMATE), ItemBlockBasic::new),
+    BASIC_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.BASIC), ItemBlockInductionCell::new),
+    ADVANCED_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ADVANCED), ItemBlockInductionCell::new),
+    ELITE_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ELITE), ItemBlockInductionCell::new),
+    ULTIMATE_INDUCTION_CELL(new BlockInductionCell(InductionCellTier.ULTIMATE), ItemBlockInductionCell::new),
 
-    BASIC_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.BASIC), ItemBlockBasic::new),
-    ADVANCED_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ADVANCED), ItemBlockBasic::new),
-    ELITE_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ELITE), ItemBlockBasic::new),
-    ULTIMATE_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ULTIMATE), ItemBlockBasic::new),
+    BASIC_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.BASIC), ItemBlockInductionProvider::new),
+    ADVANCED_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ADVANCED), ItemBlockInductionProvider::new),
+    ELITE_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ELITE), ItemBlockInductionProvider::new),
+    ULTIMATE_INDUCTION_PROVIDER(new BlockInductionProvider(InductionProviderTier.ULTIMATE), ItemBlockInductionProvider::new),
 
-    SUPERHEATING_ELEMENT(new BlockSuperheatingElement(), ItemBlockBasic::new),
-    PRESSURE_DISPERSER(new BlockPressureDisperser(), ItemBlockBasic::new),
-    BOILER_CASING(new BlockBoilerCasing(), ItemBlockBasic::new),
-    BOILER_VALVE(new BlockBoilerValve(), ItemBlockBasic::new),
-    SECURITY_DESK(new BlockSecurityDesk(), ItemBlockBasic::new),
+    SUPERHEATING_ELEMENT(new BlockSuperheatingElement(), ItemBlockTooltip::new),
+    PRESSURE_DISPERSER(new BlockPressureDisperser(), ItemBlockTooltip::new),
+    BOILER_CASING(new BlockBoilerCasing(), ItemBlockTooltip::new),
+    BOILER_VALVE(new BlockBoilerValve(), ItemBlockTooltip::new),
+    SECURITY_DESK(new BlockSecurityDesk(), ItemBlockSecurityDesk::new),
 
     ENRICHMENT_CHAMBER(new BlockEnrichmentChamber(), ItemBlockEnrichmentChamber::new),
     OSMIUM_COMPRESSOR(new BlockOsmiumCompressor(), ItemBlockOsmiumCompressor::new),

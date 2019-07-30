@@ -48,6 +48,10 @@ public class BlockInductionProvider extends BlockTileDrops implements IBlockDesc
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
+    public InductionProviderTier getTier() {
+        return tier;
+    }
+
     @Nonnull
     @Override
     @Deprecated
