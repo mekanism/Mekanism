@@ -10,7 +10,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateColor;
 import mekanism.common.block.states.IStateConnection;
 import mekanism.common.block.states.IStateOBJ;
 import mekanism.common.integration.multipart.MultipartMekanism;
@@ -47,9 +46,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-//State color seems to be needed for TransmitterModel#getQuads
-//TODO: Verify this at some point
-public abstract class BlockTransmitter extends BlockTileDrops implements ITileEntityProvider, IStateColor, IStateConnection, IStateOBJ {
+public abstract class BlockTransmitter extends BlockTileDrops implements ITileEntityProvider, IStateConnection, IStateOBJ {
 
     protected final String name;
 

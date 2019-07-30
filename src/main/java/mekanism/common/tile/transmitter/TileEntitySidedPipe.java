@@ -603,6 +603,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     public IBlockState getExtendedState(IBlockState state) {
+        //TODO: Why is this here instead of calling the block's one, does it have to do with multipart
         PropertyConnection connectionProp = new PropertyConnection(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
         return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
     }

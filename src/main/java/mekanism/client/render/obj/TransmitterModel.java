@@ -10,11 +10,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
+import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
+import mekanism.common.block.states.IStateColor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
@@ -67,7 +70,8 @@ public class TransmitterModel extends OBJBakedModelBase {
     private Map<Integer, List<BakedQuad>> modelCache = new HashMap<>();
     private TransmitterModel itemCache;
     private IBlockState tempState;
-    private ItemStack tempStack;
+    @Nullable
+    private EnumColor color;
     private TextureAtlasSprite particle;
     private TransmitterOverride override = new TransmitterOverride();
 
@@ -118,18 +122,17 @@ public class TransmitterModel extends OBJBakedModelBase {
         if (state != null && tempState == null) {
             IExtendedBlockState extended = (IExtendedBlockState) state;
             BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-            PropertyColor colorProp = extended.getValue(PropertyColor.INSTANCE);
-            int color = -1;
+            EnumColor color = null;
 
-            if (colorProp != null && colorProp.color != null) {
-                color = colorProp.color.ordinal();
+            if (state.getBlock() instanceof IStateColor && layer == BlockRenderLayer.TRANSLUCENT) {
+                //Only try getting the color property for ones that will have a color
+                PropertyColor colorProp = extended.getValue(PropertyColor.INSTANCE);
+                if (colorProp != null && colorProp.color != null) {
+                    color = colorProp.color;
+                }
             }
 
             OBJState obj = extended.getValue(OBJProperty.INSTANCE);
-
-            if (layer != BlockRenderLayer.TRANSLUCENT) {
-                color = -1;
-            }
 
             try {
                 int hash = Objects.hash(layer.ordinal(), color, PropertyConnection.INSTANCE.valueToString(extended.getValue(PropertyConnection.INSTANCE)));
@@ -141,6 +144,7 @@ public class TransmitterModel extends OBJBakedModelBase {
                 if (!modelCache.containsKey(hash)) {
                     TransmitterModel model = new TransmitterModel(baseModel, getModel(), obj, vertexFormat, textureMap, transformationMap);
                     model.tempState = state;
+                    model.color = color;
                     modelCache.put(hash, model.getQuads(state, side, rand));
                 }
 
@@ -154,12 +158,8 @@ public class TransmitterModel extends OBJBakedModelBase {
 
     @Override
     public float[] getOverrideColor(Face f, String groupName) {
-        if (tempState != null) {
-            PropertyColor prop = ((IExtendedBlockState) tempState).getValue(PropertyColor.INSTANCE);
-
-            if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT && prop != null && prop.color != null) {
-                return new float[]{prop.color.getColor(0), prop.color.getColor(1), prop.color.getColor(2), 1};
-            }
+        if (tempState != null && color != null && MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
+            return new float[]{color.getColor(0), color.getColor(1), color.getColor(2), 1};
         }
         return null;
     }
@@ -174,13 +174,12 @@ public class TransmitterModel extends OBJBakedModelBase {
     public TextureAtlasSprite getOverrideTexture(Face f, String groupName) {
         if (tempState != null) {
             EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
-            PropertyColor prop = ((IExtendedBlockState) tempState).getValue(PropertyColor.INSTANCE);
             PropertyConnection connection = ((IExtendedBlockState) tempState).getValue(PropertyConnection.INSTANCE);
             boolean sideIconOverride = connection != null && getIconStatus(side, connection) > 0;
 
             if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
                 int opaqueVal = MekanismConfig.current().client.opaqueTransmitters.val() ? 1 : 0;
-                if (prop != null && prop.color != null) {
+                if (color != null) {
                     return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center_color[opaqueVal] : transporter_side_color[opaqueVal];
                 }
                 return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center[opaqueVal] : transporter_side[opaqueVal];
@@ -247,13 +246,10 @@ public class TransmitterModel extends OBJBakedModelBase {
         public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
-
                 for (EnumFacing side : EnumFacing.VALUES) {
                     visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
                 }
-
                 itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), vertexFormat, textureMap, transformationMap);
-                itemCache.tempStack = stack;
             }
             return itemCache;
         }
