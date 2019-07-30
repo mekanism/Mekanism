@@ -13,7 +13,6 @@ import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.machine.BlockChemicalDissolutionChamber;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
@@ -22,7 +21,6 @@ import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.block.ItemBlockMekanism;
-import mekanism.common.item.block.machine.ItemBlockChemicalDissolutionChamber;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.util.ItemDataUtils;
@@ -96,7 +94,8 @@ public class ItemBlockAdvancedSolarGenerator extends ItemBlockMekanism implement
         }
         for (int xPos = -1; xPos <= 1; xPos++) {
             for (int zPos = -1; zPos <= 1; zPos++) {
-                if (!world.isAirBlock(pos.add(xPos, 2, zPos)) || pos.getY() + 2 > 255) {
+                BlockPos toCheck = pos.add(xPos, 2, zPos);
+                if (world.isOutsideBuildHeight(toCheck) || !world.getBlockState(toCheck).getBlock().isReplaceable(world, toCheck)) {
                     //If there is not enough room, fail
                     return false;
                 }

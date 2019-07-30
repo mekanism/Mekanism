@@ -92,7 +92,9 @@ public class ItemBlockWindGenerator extends ItemBlockMekanism implements IEnergi
             return false;
         }
         for (int yPos = 1; yPos <= 4; yPos++) {
-            if (!world.isAirBlock(pos.up(yPos)) || pos.getY() + yPos > 255) {
+            BlockPos toCheck = pos.up(yPos);
+            if (world.isOutsideBuildHeight(toCheck) || !world.getBlockState(toCheck).getBlock().isReplaceable(world, toCheck)) {
+                //If there is not enough room, fail
                 return false;
             }
         }
