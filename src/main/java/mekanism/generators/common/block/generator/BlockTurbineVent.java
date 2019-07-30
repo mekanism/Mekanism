@@ -9,7 +9,6 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
@@ -61,17 +60,6 @@ public class BlockTurbineVent extends BlockMekanismContainer implements IBlockDe
     @Override
     public String getDescription() {
         return LangUtils.localize("tooltip.mekanism." + name);
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-        if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
-        }
-        return state;
     }
 
     @Override

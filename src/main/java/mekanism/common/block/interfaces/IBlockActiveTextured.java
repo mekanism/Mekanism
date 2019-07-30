@@ -1,4 +1,6 @@
 package mekanism.common.block.interfaces;
 
-public interface IBlockActiveTextured {
+import mekanism.common.block.states.IStateActive;
+
+public interface IBlockActiveTextured extends IStateActive {
 }

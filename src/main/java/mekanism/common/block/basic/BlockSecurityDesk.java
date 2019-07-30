@@ -10,8 +10,8 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IRotatableBlock;
-import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -40,7 +40,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDesk extends BlockTileDrops implements IRotatableBlock, IBlockDescriptive {
+public class BlockSecurityDesk extends BlockTileDrops implements IRotatableBlock, IBlockDescriptive, IStateFacing {
 
     private final String name;
 
@@ -67,8 +67,7 @@ public class BlockSecurityDesk extends BlockTileDrops implements IRotatableBlock
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        //TODO: Split this so that ones that don't have facing/active don't have them show
-        return new BlockStateBasic(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -83,7 +82,7 @@ public class BlockSecurityDesk extends BlockTileDrops implements IRotatableBlock
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
+            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
         return state;
     }

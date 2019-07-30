@@ -7,7 +7,7 @@ import mcmultipart.api.slot.IPartSlot;
 import mekanism.api.EnumColor;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.BlockGlowPanel;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -29,7 +29,7 @@ public class MultipartGlowPanel implements IMultipart {
 
     @Override
     public IPartSlot getSlotFromWorld(IBlockAccess world, BlockPos pos, IBlockState state) {
-        return EnumFaceSlot.values()[state.getValue(BlockStateFacing.facingProperty).ordinal()];
+        return EnumFaceSlot.values()[state.getValue(BlockStateHelper.facingProperty).ordinal()];
     }
 
     @Override

@@ -9,7 +9,8 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -37,7 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescriptive, IHasModel {
+public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescriptive, IHasModel, IStateFacing {
 
     private final String name;
 
@@ -63,7 +64,7 @@ public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescri
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
+            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
         return state;
     }

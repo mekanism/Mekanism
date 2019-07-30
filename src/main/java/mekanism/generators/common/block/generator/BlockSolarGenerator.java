@@ -13,7 +13,8 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IRotatableBlock;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -25,7 +26,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.states.BlockStateGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -52,7 +52,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IRotatableBlock, IBlockElectric {
+public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IRotatableBlock, IBlockElectric, IStateFacing {
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
 
@@ -81,7 +81,7 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateGenerator(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
+            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
         return state;
     }

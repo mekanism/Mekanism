@@ -8,8 +8,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateActive;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
@@ -32,7 +33,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDescriptive {
+public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDescriptive, IStateFacing, IStateActive {
 
     private final String name;
 
@@ -58,7 +59,7 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
+            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
         if (tile instanceof TileEntitySuperheatingElement) {
             TileEntitySuperheatingElement element = (TileEntitySuperheatingElement) tile;
@@ -66,7 +67,7 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
             if (element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null) {
                 active = SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID);
             }
-            state = state.withProperty(BlockStateBasic.activeProperty, active);
+            state = state.withProperty(BlockStateHelper.activeProperty, active);
         }
         return state;
     }

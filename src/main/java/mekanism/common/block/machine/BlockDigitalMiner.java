@@ -23,8 +23,9 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
-import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateActive;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
@@ -63,7 +64,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IBlockActiveTextured, IRotatableBlock,
-      IBlockDescriptive, IHasGui {
+      IBlockDescriptive, IHasGui, IStateFacing, IStateActive {
 
     private final String name;
 
@@ -91,7 +92,7 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateMachine(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -106,10 +107,10 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
+            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
         if (tile instanceof IActiveState) {
-            state = state.withProperty(BlockStateMachine.activeProperty, ((IActiveState) tile).getActive());
+            state = state.withProperty(BlockStateHelper.activeProperty, ((IActiveState) tile).getActive());
         }
         return state;
     }

@@ -8,7 +8,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.security.ISecurityItem;
@@ -47,7 +48,7 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
+public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing {
 
     private final EnergyCubeTier tier;
     private final String name;
@@ -70,7 +71,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateFacing(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui {
         if (tile instanceof TileEntityEnergyCube) {
             TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
             if (cube.facing != null) {
-                state = state.withProperty(BlockStateFacing.facingProperty, cube.facing);
+                state = state.withProperty(BlockStateHelper.facingProperty, cube.facing);
             }
         }
         return state;

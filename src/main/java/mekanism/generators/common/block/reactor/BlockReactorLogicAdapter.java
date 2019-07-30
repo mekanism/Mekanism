@@ -5,11 +5,11 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.states.BlockStateReactor;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -51,7 +51,7 @@ public class BlockReactorLogicAdapter extends Block implements ITileEntityProvid
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateReactor(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override

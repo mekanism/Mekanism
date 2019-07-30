@@ -5,11 +5,11 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.states.BlockStateReactor;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -54,7 +54,7 @@ public class BlockReactorPort extends Block implements ITileEntityProvider, IBlo
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityReactorPort) {
-            state = state.withProperty(BlockStateReactor.activeProperty, ((TileEntityReactorPort) tile).fluidEject);
+            state = state.withProperty(BlockStateHelper.activeProperty, ((TileEntityReactorPort) tile).fluidEject);
         }
         return state;
     }
@@ -62,7 +62,7 @@ public class BlockReactorPort extends Block implements ITileEntityProvider, IBlo
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateReactor(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override

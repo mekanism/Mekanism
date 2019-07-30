@@ -12,8 +12,9 @@ import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IRotatableBlock;
-import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateActive;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -41,7 +42,8 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationController extends BlockTileDrops implements IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasModel {
+public class BlockThermalEvaporationController extends BlockTileDrops implements IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasModel, IStateFacing,
+      IStateActive {
 
     private final String name;
 
@@ -58,8 +60,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        //TODO: Split this so that ones that don't have facing/active don't have them show
-        return new BlockStateBasic(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -74,10 +75,10 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
+            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
         if (tile instanceof IActiveState) {
-            state = state.withProperty(BlockStateBasic.activeProperty, ((IActiveState) tile).getActive());
+            state = state.withProperty(BlockStateHelper.activeProperty, ((IActiveState) tile).getActive());
         }
         return state;
     }

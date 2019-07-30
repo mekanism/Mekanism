@@ -8,7 +8,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.property.PropertyColor;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
@@ -29,7 +29,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
         PropertyColor propColor = state.getValue(PropertyColor.INSTANCE);
         EnumColor color = propColor != null ? propColor.color : EnumColor.WHITE;
         hash = 31 * hash + color.ordinal();
-        hash = 31 * hash + state.getValue(BlockStateFacing.facingProperty).ordinal();
+        hash = 31 * hash + state.getValue(BlockStateHelper.facingProperty).ordinal();
         return hash;
     }
 

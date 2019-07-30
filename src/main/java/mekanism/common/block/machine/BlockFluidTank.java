@@ -22,8 +22,9 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateActive;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
@@ -71,7 +72,8 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IBlockDescriptive, IHasGui, IColoredBlock {
+public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IBlockDescriptive, IHasGui, IColoredBlock, IStateFacing,
+      IStateActive {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -107,7 +109,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateMachine(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -122,13 +124,10 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
+            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
         if (tile instanceof IActiveState) {
-            state = state.withProperty(BlockStateMachine.activeProperty, ((IActiveState) tile).getActive());
-        }
-        if (tile instanceof TileEntityFluidTank) {
-            state = state.withProperty(BlockStateMachine.tierProperty, ((TileEntityFluidTank) tile).tier.getBaseTier());
+            state = state.withProperty(BlockStateHelper.activeProperty, ((IActiveState) tile).getActive());
         }
         return state;
     }

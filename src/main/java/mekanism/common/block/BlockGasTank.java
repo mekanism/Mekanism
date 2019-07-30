@@ -8,7 +8,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -40,7 +41,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
+public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
@@ -65,7 +66,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
     @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateFacing(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui {
         if (tile instanceof TileEntityGasTank) {
             TileEntityGasTank tank = (TileEntityGasTank) tile;
             if (tank.facing != null) {
-                state = state.withProperty(BlockStateFacing.facingProperty, tank.facing);
+                state = state.withProperty(BlockStateHelper.facingProperty, tank.facing);
             }
         }
         return state;

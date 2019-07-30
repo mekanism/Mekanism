@@ -10,9 +10,9 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.block.ItemBlockBin;
+import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.security.ISecurityItem;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -49,7 +49,7 @@ public class RecipeUtils {
     }
 
     private static boolean isFactory(ItemStack stack) {
-        return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
+        return stack.getItem() instanceof ItemBlockFactory;
     }
 
     public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn) {

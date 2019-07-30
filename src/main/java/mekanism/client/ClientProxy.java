@@ -1,9 +1,6 @@
 package mekanism.client;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -121,8 +118,8 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockStateMapper;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
+import mekanism.common.block.states.BlockStateHelper.MekanismBlockStateMapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -256,11 +253,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
-    private static final IStateMapper basicMapper = new BasicBlockStateMapper();
+    private static final IStateMapper basicMapper = new MekanismBlockStateMapper();
     private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
     private static final IStateMapper boxMapper = new CardboardBoxStateMapper();
-    public static Map<String, ModelResourceLocation> machineResources = new HashMap<>();
-    public static Map<String, ModelResourceLocation> basicResources = new HashMap<>();
 
     @Override
     public void loadConfiguration() {
@@ -636,88 +631,7 @@ public class ClientProxy extends CommonProxy {
 
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
-        /*for (MachineType type : MachineType.values()) {
-            List<ModelResourceLocation> modelsToAdd = new ArrayList<>();
-            String resource = "mekanism:" + type.getName();
-            RecipeType recipePointer = null;
-
-            if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                recipePointer = RecipeType.values()[0];
-                resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
-            }
-
-            while (true) {
-                if (machineResources.get(resource) == null) {
-                    List<String> entries = new ArrayList<>();
-                    if (block instanceof IBlockActiveTextured) {
-                        entries.add("active=false");
-                    }
-                    if (block instanceof IRotatableBlock) {
-                        entries.add("facing=north");
-                    }
-
-                    String properties = getProperties(entries);
-                    ModelResourceLocation model = new ModelResourceLocation(resource, properties);
-                    machineResources.put(resource, model);
-                    modelsToAdd.add(model);
-
-                    if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                        if (recipePointer.ordinal() < RecipeType.values().length - 1) {
-                            recipePointer = RecipeType.values()[recipePointer.ordinal() + 1];
-                            resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
-                            continue;
-                        }
-                    }
-                }
-                break;
-            }
-
-            //TODO: Only register the ones that need it
-            ModelLoader.registerItemVariants(Item.getItemFromBlock(type.typeBlock.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[]{}));
-        }
-
-        for (BasicBlockType type : BasicBlockType.values()) {
-            List<ModelResourceLocation> modelsToAdd = new ArrayList<>();
-            //TODO: Get proper block info such as registry name, can probably loop over MekanismBlock.values()
-            String resource = "mekanism:" + type.getName();
-            BaseTier tierPointer = null;
-
-            if (type.tiers) {
-                tierPointer = BaseTier.values()[0];
-                resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
-            }
-
-            while (true) {
-                if (basicResources.get(resource) == null) {
-                    List<String> entries = new ArrayList<>();
-                    if (block instanceof IBlockActiveTextured) {
-                        entries.add("active=false");
-                    }
-                    if (block instanceof IRotatableBlock) {
-                        entries.add("facing=north");
-                    }
-
-                    //TODO: Is this check against bin's needed
-                    String properties = type == BasicBlockType.BIN ? "inventory" : getProperties(entries);
-                    ModelResourceLocation model = new ModelResourceLocation(resource, properties);
-                    basicResources.put(resource, model);
-                    modelsToAdd.add(model);
-
-                    if (type.tiers) {
-                        if (tierPointer.ordinal() < BaseTier.values().length - 1) {
-                            tierPointer = BaseTier.values()[tierPointer.ordinal() + 1];
-                            if (type == BasicBlockType.BIN || tierPointer.isObtainable()) {
-                                resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
-                                continue;
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-            ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[]{}));
-        }*/
-
+        //TODO: Are the gas tank meshes even needed
         ModelLoader.setCustomMeshDefinition(MekanismBlock.BASIC_GAS_TANK.getItem(), stack ->
               new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "basic_gas_tank"), "facing=north" + GasTankTier.BASIC));
         ModelLoader.setCustomMeshDefinition(MekanismBlock.ADVANCED_GAS_TANK.getItem(), stack ->
@@ -728,41 +642,6 @@ public class ClientProxy extends CommonProxy {
               new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ultimate_gas_tank"), "facing=north" + GasTankTier.ULTIMATE));
         ModelLoader.setCustomMeshDefinition(MekanismBlock.CREATIVE_GAS_TANK.getItem(), stack ->
               new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "creative_gas_tank"), "facing=north" + GasTankTier.CREATIVE));
-
-        /*ItemMeshDefinition machineMesher = stack -> {
-            MachineType type = MachineType.get(stack);
-            if (type != null) {
-                String resource = "mekanism:" + type.getName();
-                if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
-                    RecipeType recipe = ((ItemBlockMachine) stack.getItem()).getRecipeTypeOrNull(stack);
-                    if (recipe != null) {
-                        resource = "mekanism:" + type.getName() + "_" + recipe.getName();
-                    }
-                }
-                return machineResources.get(resource);
-            }
-            return null;
-        };
-
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock), machineMesher);
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), machineMesher);
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), machineMesher);
-
-        ItemMeshDefinition basicMesher = stack -> {
-            BasicBlockType type = BasicBlockType.get(stack);
-            if (type != null) {
-                String resource = "mekanism:" + type.getName();
-                if (type.tiers) {
-                    BaseTier tier = ((ItemBlockBasic) stack.getItem()).getBaseTier(stack);
-                    resource = "mekanism:" + type.getName() + "_" + tier.getName();
-                }
-                return basicResources.get(resource);
-            }
-            return null;
-        };
-
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);*/
 
         setCustomTransmitterMeshDefinition(MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
               MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, MekanismBlock.BASIC_MECHANICAL_PIPE, MekanismBlock.ADVANCED_MECHANICAL_PIPE, MekanismBlock.ELITE_MECHANICAL_PIPE,
@@ -806,17 +685,6 @@ public class ClientProxy extends CommonProxy {
 
     public void registerItemRender(MekanismItem item) {
         ModelLoader.setCustomModelResourceLocation(item.getItem(), 0, new ModelResourceLocation(item.getItem().getRegistryName(), "inventory"));
-    }
-
-    private String getProperties(List<String> entries) {
-        StringBuilder properties = new StringBuilder();
-        for (int i = 0; i < entries.size(); i++) {
-            properties.append(entries.get(i));
-            if (i < entries.size() - 1) {
-                properties.append(",");
-            }
-        }
-        return properties.toString();
     }
 
     private GuiScreen getClientItemGui(EntityPlayer player, BlockPos pos) {

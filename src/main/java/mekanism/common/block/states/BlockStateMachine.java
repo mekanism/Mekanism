@@ -5,29 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import mekanism.common.base.IBlockType;
-import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tier.BaseTier;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class BlockStateMachine extends ExtendedBlockState {
-
-    public static final PropertyBool activeProperty = PropertyBool.create("active");
-    public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
-    public static final PropertyEnum<RecipeType> recipeProperty = PropertyEnum.create("recipe", RecipeType.class);
-
-    public BlockStateMachine(BlockMekanismContainer block) {
-        //TODO: Should tier stay part of blockstate or be extracted into its own block
-        super(block, new IProperty[]{BlockStateFacing.facingProperty, activeProperty, tierProperty, recipeProperty}, new IUnlistedProperty[]{});
-    }
+public class BlockStateMachine {
 
     public enum MachineType implements IStringSerializable, IBlockType {
         ENRICHMENT_CHAMBER,

@@ -7,11 +7,12 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.states.BlockStateReactor;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -31,7 +32,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorController extends Block implements ITileEntityProvider, IHasGui, IBlockActiveTextured, IBlockDescriptive {
+public class BlockReactorController extends Block implements ITileEntityProvider, IHasGui, IBlockActiveTextured, IBlockDescriptive, IStateActive {
 
     private final String name;
 
@@ -56,7 +57,7 @@ public class BlockReactorController extends Block implements ITileEntityProvider
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityReactorController) {
-            state = state.withProperty(BlockStateReactor.activeProperty, ((IActiveState) tile).getActive());
+            state = state.withProperty(BlockStateHelper.activeProperty, ((IActiveState) tile).getActive());
         }
         return state;
     }
@@ -64,7 +65,7 @@ public class BlockReactorController extends Block implements ITileEntityProvider
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateReactor(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override

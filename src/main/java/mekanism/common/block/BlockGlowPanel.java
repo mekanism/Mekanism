@@ -8,8 +8,9 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.property.PropertyColor;
-import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.block.states.BlockStateGlowPanel;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateColor;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.MekanismUtils;
@@ -35,7 +36,8 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvider, IBlockOreDict {
+//TODO: Remove IStateColor as it really shouldn't be here as each glow panel has its own color
+public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvider, IBlockOreDict, IStateFacing, IStateColor {
 
     public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
 
@@ -109,7 +111,7 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        return new BlockStateGlowPanel(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -123,7 +125,7 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-        return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
+        return tileEntity != null ? state.withProperty(BlockStateHelper.facingProperty, tileEntity.side) : state;
     }
 
     @SideOnly(Side.CLIENT)
@@ -132,7 +134,7 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
         if (tileEntity != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
+            state = state.withProperty(BlockStateHelper.facingProperty, tileEntity.side);
             if (state instanceof IExtendedBlockState) {
                 return ((IExtendedBlockState) state).withProperty(PropertyColor.INSTANCE, new PropertyColor(tileEntity.colour));
             }

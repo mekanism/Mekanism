@@ -1,66 +1,47 @@
 package mekanism.common.block.states;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
+import mekanism.common.block.property.PropertyColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class BlockStateBasic extends ExtendedBlockState {
+public class BlockStateHelper {
 
+    public static final PropertyDirection facingProperty = PropertyDirection.create("facing");
     public static final PropertyBool activeProperty = PropertyBool.create("active");
 
-    public BlockStateBasic(BlockTileDrops block) {
-        super(block, new IProperty[]{BlockStateFacing.facingProperty, activeProperty}, new IUnlistedProperty[]{});
-    }
-
-    public enum BasicBlockType {
-        OSMIUM_BLOCK,
-        BRONZE_BLOCK,
-        REFINED_OBSIDIAN,
-        COAL_BLOCK,
-        REFINED_GLOWSTONE,
-        STEEL_BLOCK,
-        COPPER_BLOCK,
-        TIN_BLOCK,
-        //Ones that still are "Basic Blocks"
-        BIN,
-        TELEPORTER_FRAME,
-        STEEL_CASING,
-        DYNAMIC_TANK,
-        STRUCTURAL_GLASS,
-        DYNAMIC_VALVE,
-        THERMAL_EVAPORATION_CONTROLLER,
-        THERMAL_EVAPORATION_VALVE,
-        THERMAL_EVAPORATION_BLOCK,
-        INDUCTION_CASING,
-        INDUCTION_PORT,
-        INDUCTION_CELL,
-        INDUCTION_PROVIDER,
-        SUPERHEATING_ELEMENT,
-        PRESSURE_DISPERSER,
-        BOILER_CASING,
-        BOILER_VALVE,
-        SECURITY_DESK;
-
-        @Nullable
-        public static BasicBlockType get(ItemStack stack) {
-            return null;
+    public static BlockStateContainer getBlockState(Block block) {
+        List<IUnlistedProperty> unlistedProperties = new ArrayList<>();
+        List<IProperty> properties = new ArrayList<>();
+        if (block instanceof IStateFacing) {
+            properties.add(facingProperty);
         }
+        if (block instanceof IStateActive) {
+            properties.add(activeProperty);
+        }
+        if (block instanceof IStateColor) {
+            unlistedProperties.add(PropertyColor.INSTANCE);
+        }
+        if (properties.isEmpty() && unlistedProperties.isEmpty()) {
+            return new BlockStateContainer(block);
+        }
+        return new ExtendedBlockState(block, properties.toArray(new IProperty[0]), unlistedProperties.toArray(new IUnlistedProperty[0]));
     }
 
-    public static class BasicBlockStateMapper extends StateMapperBase {
+    public static class MekanismBlockStateMapper extends StateMapperBase {
 
         @Nonnull
         @Override
@@ -75,7 +56,7 @@ public class BlockStateBasic extends ExtendedBlockState {
             }
 
             if (block instanceof IRotatableBlock) {
-                EnumFacing facing = state.getValue(BlockStateFacing.facingProperty);
+                EnumFacing facing = state.getValue(BlockStateHelper.facingProperty);
 
                 if (!((IRotatableBlock) block).canRotateTo(facing)) {
                     facing = EnumFacing.NORTH;
@@ -85,7 +66,7 @@ public class BlockStateBasic extends ExtendedBlockState {
                     builder.append(",");
                 }
 
-                builder.append(BlockStateFacing.facingProperty.getName());
+                builder.append(BlockStateHelper.facingProperty.getName());
                 builder.append("=");
                 builder.append(facing.getName());
             }
@@ -93,8 +74,7 @@ public class BlockStateBasic extends ExtendedBlockState {
             if (builder.length() == 0) {
                 builder.append("normal");
             }
-            ResourceLocation baseLocation = block.getRegistryName();
-            return new ModelResourceLocation(baseLocation, builder.toString());
+            return new ModelResourceLocation(block.getRegistryName(), builder.toString());
         }
     }
 }

@@ -9,8 +9,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityInductionPort;
@@ -39,7 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescriptive {
+public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescriptive, IStateFacing {
 
     private final String name;
 
@@ -63,8 +63,7 @@ public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescri
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
-        //TODO: Split this so that ones that don't have facing/active don't have them show
-        return new BlockStateBasic(this);
+        return BlockStateHelper.getBlockState(this);
     }
 
     @Override
@@ -79,10 +78,10 @@ public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescri
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
-            state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
+            state = state.withProperty(BlockStateHelper.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
         if (tile instanceof TileEntityInductionPort) {
-            state = state.withProperty(BlockStateBasic.activeProperty, ((TileEntityInductionPort) tile).mode);
+            state = state.withProperty(BlockStateHelper.activeProperty, ((TileEntityInductionPort) tile).mode);
         }
         return state;
     }

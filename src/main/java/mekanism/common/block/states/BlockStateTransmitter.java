@@ -5,18 +5,13 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.transmitter.BlockTransmitter;
-import mekanism.common.tier.BaseTier;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class BlockStateTransmitter extends ExtendedBlockState {
-
-    public static final PropertyEnum<TransmitterType> typeProperty = PropertyEnum.create("type", TransmitterType.class);
-    public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 
     public BlockStateTransmitter(BlockTransmitter block) {
         super(block, new IProperty[0], new IUnlistedProperty[]{OBJProperty.INSTANCE, PropertyColor.INSTANCE, PropertyConnection.INSTANCE});
