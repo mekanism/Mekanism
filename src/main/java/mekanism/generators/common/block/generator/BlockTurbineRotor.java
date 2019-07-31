@@ -215,12 +215,6 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IBlockD
         return BlockRenderLayer.CUTOUT;
     }
 
-    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
-    @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
-        return null;
-    }
-
     @Nonnull
     @Override
     @Deprecated

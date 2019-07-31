@@ -24,7 +24,7 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     }
 
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityLogisticalTransporter();
     }
 

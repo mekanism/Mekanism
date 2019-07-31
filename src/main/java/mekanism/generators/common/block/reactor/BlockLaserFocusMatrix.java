@@ -11,7 +11,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -30,7 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLaserFocusMatrix extends Block implements ITileEntityProvider, IBlockDescriptive {
+public class BlockLaserFocusMatrix extends Block implements IBlockDescriptive {
 
     private final String name;
 
@@ -114,10 +113,9 @@ public class BlockLaserFocusMatrix extends Block implements ITileEntityProvider,
         return false;
     }
 
-    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
-        return null;
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
     }
 
     @Override

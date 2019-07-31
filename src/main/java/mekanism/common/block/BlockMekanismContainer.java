@@ -91,4 +91,15 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player) {
         return getDropItem(state, world, pos);
     }
+
+    @Override
+    public abstract TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state);
+
+    /**
+     * Unused, Use {@link #createTileEntity(World, IBlockState)} instead.
+     */
+    @Override
+    public TileEntity createNewTileEntity(@Nonnull World world, int metadata) {
+        return null;
+    }
 }

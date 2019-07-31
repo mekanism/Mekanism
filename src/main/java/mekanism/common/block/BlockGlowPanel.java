@@ -14,7 +14,6 @@ import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
@@ -30,7 +29,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvider, IBlockOreDict, IStateFacing {
+public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing {
 
     public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
 
@@ -51,6 +50,8 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
         setCreativeTab(Mekanism.tabMekanism);
         setHardness(1F);
         setResistance(10F);
+        //It gets multiplied by 15 when being set
+        setLightLevel(1);
         this.name = color.registry_prefix + "_glow_panel";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
@@ -147,13 +148,12 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     }
 
     @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        //TODO: Set
-        return 15;
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
     }
 
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityGlowPanel();
     }
 

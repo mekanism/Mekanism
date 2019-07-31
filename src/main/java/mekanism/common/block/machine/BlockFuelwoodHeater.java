@@ -228,11 +228,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IBloc
     }
 
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int metadata) {
-        return null;
-    }
-
-    @Override
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;

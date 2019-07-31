@@ -229,11 +229,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int metadata) {
-        return null;
-    }
-
-    @Override
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;

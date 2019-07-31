@@ -131,12 +131,6 @@ public class BlockRotationalComplex extends BlockMekanismContainer implements IB
         return BlockRenderLayer.CUTOUT;
     }
 
-    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
-    @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
-        return null;
-    }
-
     @Override
     @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {

@@ -228,12 +228,6 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
         return BlockRenderLayer.CUTOUT;
     }
 
-    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
-    @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
-        return null;
-    }
-
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {

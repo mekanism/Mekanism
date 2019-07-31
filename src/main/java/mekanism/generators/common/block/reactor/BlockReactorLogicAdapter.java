@@ -12,7 +12,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -29,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorLogicAdapter extends Block implements ITileEntityProvider, IHasGui, IBlockDescriptive {
+public class BlockReactorLogicAdapter extends Block implements IHasGui, IBlockDescriptive {
 
     private final String name;
 
@@ -117,10 +116,9 @@ public class BlockReactorLogicAdapter extends Block implements ITileEntityProvid
         return false;
     }
 
-    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
-        return null;
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
     }
 
     @Override

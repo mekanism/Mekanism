@@ -109,7 +109,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
     }
 
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityCardboardBox();
     }
 

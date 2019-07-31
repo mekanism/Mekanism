@@ -14,7 +14,7 @@ public class BlockDiversionTransporter extends BlockLargeTransmitter {
     }
 
     @Override
-    public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityDiversionTransporter();
     }
 
