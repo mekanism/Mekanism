@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.multipart.MultipartMekanism;
@@ -29,7 +30,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing {
+public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing, IColoredBlock {
 
     public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
 
@@ -68,6 +69,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
         return entries;
     }
 
+    @Override
     public EnumColor getColor() {
         return color;
     }

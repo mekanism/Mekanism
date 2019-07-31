@@ -119,7 +119,6 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.BlockStateHelper.MekanismBlockStateMapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
@@ -480,7 +479,6 @@ public class ClientProxy extends CommonProxy {
         for (MekanismBlock mekanismBlock : MekanismBlock.values()) {
             ItemBlock item = mekanismBlock.getItem();
             if (item instanceof IItemRedirectedModel) {
-                //TODO: Fix Glow panel item coloring
                 ModelLoader.setCustomModelResourceLocation(item, 0, getInventoryMRL(((IItemRedirectedModel) item).getRedirectLocation()));
             } else {
                 ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
@@ -507,10 +505,10 @@ public class ClientProxy extends CommonProxy {
     public void registerBlockRenders() {
         //TODO: Redo all of these. Lots can probably just be done with json now. It is probably a good idea to do the ones, that can be done
         // in json with it, EVEN if it requires more skeleton json files.
-        //Basic blocks
+        //Most of these need the state mapper because they cannot face up or down.
+        //TODO: Make a reduced facing properties that some blocks can use when they can't face all directions
         setCustomStateMapper(basicMapper, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, MekanismBlock.SECURITY_DESK, MekanismBlock.BASIC_BIN,
-              MekanismBlock.ADVANCED_BIN, MekanismBlock.ELITE_BIN, MekanismBlock.ULTIMATE_BIN, MekanismBlock.CREATIVE_BIN, MekanismBlock.BOILER_CASING,
-              MekanismBlock.BOILER_VALVE, MekanismBlock.DYNAMIC_TANK, MekanismBlock.DYNAMIC_VALVE, MekanismBlock.INDUCTION_CASING, MekanismBlock.INDUCTION_PORT);
+              MekanismBlock.ADVANCED_BIN, MekanismBlock.ELITE_BIN, MekanismBlock.ULTIMATE_BIN, MekanismBlock.CREATIVE_BIN);
         //Machine blocks
         setCustomStateMapper(basicMapper, MekanismBlock.CHARGEPAD, MekanismBlock.CHEMICAL_CRYSTALLIZER, MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER,
               MekanismBlock.CHEMICAL_INFUSER, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, MekanismBlock.CHEMICAL_OXIDIZER, MekanismBlock.CHEMICAL_WASHER,
@@ -617,24 +615,6 @@ public class ClientProxy extends CommonProxy {
                 return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "energy_cube"), "");
             }
         }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
-
-        setCustomStateMapper(new StateMapperBase() {
-                                 @Nonnull
-                                 @Override
-                                 protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                                     //Make sure it renders in the world with the correct direction. Given we need a custom state mapper to tell it the
-                                     // blockstate file is a different name
-                                     StringBuilder builder = new StringBuilder();
-                                     EnumFacing facing = state.getValue(BlockStateHelper.facingProperty);
-                                     builder.append(BlockStateHelper.facingProperty.getName());
-                                     builder.append("=");
-                                     builder.append(facing.getName());
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "glow_panel"), builder.toString());
-                                 }
-                             }, MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL, MekanismBlock.BROWN_GLOW_PANEL, MekanismBlock.BLUE_GLOW_PANEL,
-              MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL, MekanismBlock.LIGHT_GRAY_GLOW_PANEL, MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL,
-              MekanismBlock.LIME_GLOW_PANEL, MekanismBlock.YELLOW_GLOW_PANEL, MekanismBlock.LIGHT_BLUE_GLOW_PANEL, MekanismBlock.MAGENTA_GLOW_PANEL, MekanismBlock.ORANGE_GLOW_PANEL,
-              MekanismBlock.WHITE_GLOW_PANEL);
 
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
@@ -938,6 +918,7 @@ public class ClientProxy extends CommonProxy {
               }, (stack, tintIndex) -> {
                   Item item = stack.getItem();
                   if (item instanceof ItemBlock) {
+                      //TODO: Fix Glow panel item coloring
                       Block block = ((ItemBlock) item).getBlock();
                       if (block instanceof IColoredBlock) {
                           return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
@@ -976,12 +957,15 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD, MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD,
               MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD, MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD,
               //Plastic Fences
-              MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
-              MekanismBlock.BROWN_PLASTIC_FENCE, MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE,
-              MekanismBlock.LIGHT_GRAY_PLASTIC_FENCE, MekanismBlock.GRAY_PLASTIC_FENCE, MekanismBlock.PINK_PLASTIC_FENCE, MekanismBlock.LIME_PLASTIC_FENCE,
-              MekanismBlock.YELLOW_PLASTIC_FENCE, MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE,
-              MekanismBlock.WHITE_PLASTIC_FENCE);
-        //TODO: Fix this
+              MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE, MekanismBlock.BROWN_PLASTIC_FENCE,
+              MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE, MekanismBlock.LIGHT_GRAY_PLASTIC_FENCE,
+              MekanismBlock.GRAY_PLASTIC_FENCE, MekanismBlock.PINK_PLASTIC_FENCE, MekanismBlock.LIME_PLASTIC_FENCE, MekanismBlock.YELLOW_PLASTIC_FENCE,
+              MekanismBlock.LIGHT_BLUE_PLASTIC_FENCE, MekanismBlock.MAGENTA_PLASTIC_FENCE, MekanismBlock.ORANGE_PLASTIC_FENCE, MekanismBlock.WHITE_PLASTIC_FENCE,
+              //Glow Panels
+              MekanismBlock.BLACK_GLOW_PANEL, MekanismBlock.RED_GLOW_PANEL, MekanismBlock.GREEN_GLOW_PANEL, MekanismBlock.BROWN_GLOW_PANEL,
+              MekanismBlock.BLUE_GLOW_PANEL, MekanismBlock.PURPLE_GLOW_PANEL, MekanismBlock.CYAN_GLOW_PANEL, MekanismBlock.LIGHT_GRAY_GLOW_PANEL,
+              MekanismBlock.GRAY_GLOW_PANEL, MekanismBlock.PINK_GLOW_PANEL, MekanismBlock.LIME_GLOW_PANEL, MekanismBlock.YELLOW_GLOW_PANEL,
+              MekanismBlock.LIGHT_BLUE_GLOW_PANEL, MekanismBlock.MAGENTA_GLOW_PANEL, MekanismBlock.ORANGE_GLOW_PANEL, MekanismBlock.WHITE_GLOW_PANEL);
         registerItemColorHandler((stack, tintIndex) -> {
                   Item item = stack.getItem();
                   if (item instanceof ItemBalloon) {
