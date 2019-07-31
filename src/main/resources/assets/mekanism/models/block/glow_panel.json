@@ -1,4 +1,5 @@
 {
+	"parent": "block/cube_all",
 	"textures": {
 		"particle": "#all"
 	},

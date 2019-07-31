@@ -1,7 +1,0 @@
-# Blender MTL File: 'glow_panel.blend'
-# Material Count: 1
-
-newmtl Material
-Kd 1.000000 1.000000 1.000000
-d 1.000000
-map_Kd mekanism:blocks/models/multipart/GlowPanel

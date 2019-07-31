@@ -13,14 +13,13 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 
+//TODO: Should this be renamed to be more transmitter specific
 public class MekanismOBJModel extends OBJModel {
 
-    private OBJModelType modelType;
     private ResourceLocation location;
 
-    public MekanismOBJModel(OBJModelType type, MaterialLibrary matLib, ResourceLocation modelLocation) {
+    public MekanismOBJModel(MaterialLibrary matLib, ResourceLocation modelLocation) {
         super(matLib, modelLocation);
-        modelType = type;
         location = modelLocation;
     }
 
@@ -28,35 +27,24 @@ public class MekanismOBJModel extends OBJModel {
     @Override
     public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
         IBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
-        if (modelType == OBJModelType.GLOW_PANEL) {
-            return new GlowPanelModel(preBaked, this, state, format, GlowPanelModel.getTexturesForOBJModel(preBaked), null);
-        } else if (modelType == OBJModelType.TRANSMITTER) {
-            return new TransmitterModel(preBaked, this, state, format, TransmitterModel.getTexturesForOBJModel(preBaked), null);
-        }
-
-        return preBaked;
+        return new TransmitterModel(preBaked, this, state, format, TransmitterModel.getTexturesForOBJModel(preBaked), null);
     }
 
     @Nonnull
     @Override
     public IModel process(@Nonnull ImmutableMap<String, String> customData) {
-        return new MekanismOBJModel(modelType, getMatLib(), location);
+        return new MekanismOBJModel(getMatLib(), location);
     }
 
     @Nonnull
     @Override
     public IModel retexture(@Nonnull ImmutableMap<String, String> textures) {
-        return new MekanismOBJModel(modelType, getMatLib().makeLibWithReplacements(textures), location);
+        return new MekanismOBJModel(getMatLib().makeLibWithReplacements(textures), location);
     }
 
     @Nonnull
     @Override
     public Collection<ResourceLocation> getTextures() {
         return super.getTextures().stream().filter(r -> !r.getPath().startsWith("#")).collect(Collectors.toList());
-    }
-
-    public enum OBJModelType {
-        GLOW_PANEL,
-        TRANSMITTER
     }
 }
