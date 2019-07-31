@@ -62,6 +62,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         }
     };
 
+    public TileEntityPressurizedTube() {
+        this(TubeTier.BASIC);
+    }
+
     public TileEntityPressurizedTube(TubeTier tier) {
         this.tier = tier;
         buffer = new GasTank(getCapacity());

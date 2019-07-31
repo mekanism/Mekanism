@@ -67,6 +67,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
 
+    public TileEntityGasTank() {
+        this(GasTankTier.BASIC);
+    }
+
     public TileEntityGasTank(GasTankTier tier) {
         super("GasTank");
         this.tier = tier;

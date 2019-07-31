@@ -29,6 +29,10 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public double clientTemperature = 0;
     public double heatToAbsorb = 0;
 
+    public TileEntityThermodynamicConductor() {
+        this(ConductorTier.BASIC);
+    }
+
     public TileEntityThermodynamicConductor(ConductorTier tier) {
         this.tier = tier;
     }

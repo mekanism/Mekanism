@@ -77,6 +77,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
+    public TileEntityFluidTank() {
+        this(FluidTankTier.BASIC);
+    }
+
     public TileEntityFluidTank(FluidTankTier tier) {
         super("FluidTank");
         this.tier = tier;

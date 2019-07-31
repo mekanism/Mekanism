@@ -36,6 +36,10 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public FluidStack lastWrite;
     public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
+    public TileEntityMechanicalPipe() {
+        this(PipeTier.BASIC);
+    }
+
     public TileEntityMechanicalPipe(PipeTier tier) {
         this.tier = tier;
         buffer = new FluidTank(getCapacity());

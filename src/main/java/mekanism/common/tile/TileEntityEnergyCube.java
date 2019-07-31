@@ -54,6 +54,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
 
+    public TileEntityEnergyCube() {
+        this(EnergyCubeTier.BASIC);
+    }
+
     /**
      * A block used to store and transfer electricity.
      */

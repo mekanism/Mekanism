@@ -1,12 +1,12 @@
 package mekanism.api;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
@@ -45,7 +45,7 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
         }
 
         @Override
-        public int compareTo(@NotNull IColor o) {
+        public int compareTo(@Nonnull IColor o) {
             return o == this ? 0 : -1;
         }
     };

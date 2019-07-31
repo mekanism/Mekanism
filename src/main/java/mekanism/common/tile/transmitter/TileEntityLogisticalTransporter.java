@@ -47,6 +47,10 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private int delay = 0;
     private int delayCount = 0;
 
+    public TileEntityLogisticalTransporter() {
+        this(TransporterTier.BASIC);
+    }
+
     public TileEntityLogisticalTransporter(TransporterTier tier) {
         transmitterDelegate = new TransporterImpl(this);
         this.tier = tier;

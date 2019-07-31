@@ -55,6 +55,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager<>(getClass(), TeslaCableIntegration.class);
     private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(), ForgeEnergyCableIntegration.class);
 
+    public TileEntityUniversalCable() {
+        this(CableTier.BASIC);
+    }
+
     public TileEntityUniversalCable(CableTier tier) {
         this.tier = tier;
     }
