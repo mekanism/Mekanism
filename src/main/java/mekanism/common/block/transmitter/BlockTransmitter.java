@@ -1,6 +1,5 @@
 package mekanism.common.block.transmitter;
 
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateConnection;
-import mekanism.common.block.states.IStateOBJ;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
@@ -35,13 +33,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BlockTransmitter extends BlockTileDrops implements ITileEntityProvider, IStateConnection, IStateOBJ {
+public abstract class BlockTransmitter extends BlockTileDrops implements ITileEntityProvider, IStateConnection {
 
     protected final String name;
 
@@ -86,20 +79,6 @@ public abstract class BlockTransmitter extends BlockTileDrops implements ITileEn
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, getTileEntitySidedPipe(world, pos));
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Nonnull
-    @Override
-    public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess w, BlockPos pos) {
-        TileEntitySidedPipe tile = getTileEntitySidedPipe(w, pos);
-        if (tile != null) {
-            return tile.getExtendedState(state);
-        }
-        /*ConnectionType[] typeArray = new ConnectionType[]{ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
-                                                          ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
-        PropertyConnectionOld connectionProp = new PropertyConnectionOld((byte) 0, (byte) 0, typeArray, true);*/
-        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true));//.withProperty(PropertyConnectionOld.INSTANCE, connectionProp);
     }
 
     @Override

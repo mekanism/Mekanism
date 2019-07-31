@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
@@ -45,7 +44,6 @@ public class BlockStateHelper {
     public static final PropertyConnection eastConnectionProperty = PropertyConnection.create("east");
 
     public static BlockStateContainer getBlockState(Block block) {
-        List<IUnlistedProperty> unlistedProperties = new ArrayList<>();
         List<IProperty> properties = new ArrayList<>();
         if (block instanceof IStateFacing) {
             properties.add(facingProperty);
@@ -63,16 +61,11 @@ public class BlockStateHelper {
             properties.add(southConnectionProperty);
             properties.add(westConnectionProperty);
             properties.add(eastConnectionProperty);
-            //TODO: Delete once fully transitioned over
-            //unlistedProperties.add(PropertyConnectionOld.INSTANCE);
         }
-        if (block instanceof IStateOBJ) {
-            unlistedProperties.add(OBJProperty.INSTANCE);
-        }
-        if (properties.isEmpty() && unlistedProperties.isEmpty()) {
+        if (properties.isEmpty()) {
             return new BlockStateContainer(block);
         }
-        return new ExtendedBlockState(block, properties.toArray(new IProperty[0]), unlistedProperties.toArray(new IUnlistedProperty[0]));
+        return new ExtendedBlockState(block, properties.toArray(new IProperty[0]), new IUnlistedProperty[0]);
     }
 
     public static IBlockState getActualState(@Nonnull Block block, @Nonnull IBlockState state, @Nonnull TileEntity tile) {
@@ -130,14 +123,9 @@ public class BlockStateHelper {
     @Nonnull
     private static ConnectionType getStateConnection(@Nonnull TileEntity tile, @Nonnull EnumFacing side) {
         if (tile instanceof TileEntitySidedPipe) {
-            TileEntitySidedPipe sidedPipe = (TileEntitySidedPipe) tile;
-            //sidedPipe.getAllCurrentConnections();
-            //byte currentTransmitterConnections = sidedPipe.currentTransmitterConnections;
-            ConnectionType[] connectionTypes = sidedPipe.connectionTypes;
-            //sidedPipe.renderCenter();
-            return connectionTypes[side.ordinal()];
+            return ((TileEntitySidedPipe) tile).getConnectionType(side);
         }
-        return ConnectionType.NORMAL;
+        return ConnectionType.NONE;
     }
 
     //TODO: Does having this actually do anything, or does it grab stuff by default anyways (I think this can be used on the transmitters to fix them needing all the variants)

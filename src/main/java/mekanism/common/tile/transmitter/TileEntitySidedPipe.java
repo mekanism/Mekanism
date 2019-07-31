@@ -28,7 +28,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.TextComponentGroup;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -42,10 +41,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -117,10 +113,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public boolean handlesRedstone() {
         return true;
-    }
-
-    public boolean renderCenter() {
-        return false;
     }
 
     public byte getPossibleTransmitterConnections() {
@@ -591,21 +583,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                                                        + (redstoneReactive ? "on." : "off.")));
         }
         return EnumActionResult.SUCCESS;
-    }
-
-    public List<String> getVisibleGroups() {
-        List<String> visible = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.VALUES) {
-            visible.add(side.getName() + getConnectionType(side).getName().toUpperCase());
-            System.out.println("VISIBLE: " + side.getName() + getConnectionType(side).getName().toUpperCase() + " at " + getPos());
-        }
-        return visible;
-    }
-
-    public IBlockState getExtendedState(IBlockState state) {
-        //TODO: Why is this here instead of calling the block's one, does it have to do with multipart
-        //PropertyConnectionOld connectionProp = new PropertyConnectionOld(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
-        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true));//.withProperty(PropertyConnectionOld.INSTANCE, connectionProp);
     }
 
     public void notifyTileChange() {

@@ -639,21 +639,6 @@ public class ClientProxy extends CommonProxy {
 
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
-        //TODO: Custom state mappers are slow, adjust the blockstate file so this is not needed
-        setCustomStateMapper(new StateMapperBase() {
-                                 @Nonnull
-                                 @Override
-                                 protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                                     return new ModelResourceLocation(state.getBlock().getRegistryName(), "normal");
-                                 }
-                             }, MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
-              MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, MekanismBlock.BASIC_MECHANICAL_PIPE, MekanismBlock.ADVANCED_MECHANICAL_PIPE, MekanismBlock.ELITE_MECHANICAL_PIPE,
-              MekanismBlock.ULTIMATE_MECHANICAL_PIPE, MekanismBlock.BASIC_PRESSURIZED_TUBE, MekanismBlock.ADVANCED_PRESSURIZED_TUBE, MekanismBlock.ELITE_PRESSURIZED_TUBE,
-              MekanismBlock.ULTIMATE_PRESSURIZED_TUBE, MekanismBlock.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlock.ADVANCED_LOGISTICAL_TRANSPORTER,
-              /*MekanismBlock.ELITE_LOGISTICAL_TRANSPORTER, */MekanismBlock.ULTIMATE_LOGISTICAL_TRANSPORTER, MekanismBlock.RESTRICTIVE_TRANSPORTER,
-              MekanismBlock.DIVERSION_TRANSPORTER, MekanismBlock.BASIC_THERMODYNAMIC_CONDUCTOR, MekanismBlock.ADVANCED_THERMODYNAMIC_CONDUCTOR,
-              MekanismBlock.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismBlock.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
-
         //TODO: Are the gas tank meshes even needed
         ModelLoader.setCustomMeshDefinition(MekanismBlock.BASIC_GAS_TANK.getItem(), stack ->
               new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "basic_gas_tank"), "facing=north" + GasTankTier.BASIC));

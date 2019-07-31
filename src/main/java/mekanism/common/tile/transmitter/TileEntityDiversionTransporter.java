@@ -28,11 +28,6 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public boolean renderCenter() {
-        return true;
-    }
-
-    @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("modes")) {
