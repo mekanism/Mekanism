@@ -113,12 +113,6 @@ public abstract class BlockTransmitter extends BlockTileDrops implements ITileEn
         return false;
     }
 
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        return new ItemStack(this);
-    }
-
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);

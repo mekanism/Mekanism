@@ -2,10 +2,8 @@ package mekanism.generators.common.block.generator;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
@@ -13,8 +11,6 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -27,7 +23,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -157,25 +152,15 @@ public class BlockTurbineValve extends BlockMekanismContainer implements IBlockD
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        TileEntityTurbineValve tile = (TileEntityTurbineValve) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this);
-
-        if (itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock)) {
-            itemStack.setTagCompound(new NBTTagCompound());
+        if (tile == null) {
+            return itemStack;
         }
-        if (tileEntity == null) {
-            return ItemStack.EMPTY;
-        }
-        if (tileEntity instanceof TileEntityElectricBlock) {
-            IEnergizedItem electricItem = (IEnergizedItem) itemStack.getItem();
-            electricItem.setEnergy(itemStack, ((TileEntityElectricBlock) tileEntity).electricityStored);
-        }
-        if (tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock) tileEntity).handleInventory()) {
+        //Sustained Inventory
+        if (tile.handleInventory()) {
             ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-            inventory.setInventory(((TileEntityContainerBlock) tileEntity).getInventory(), itemStack);
-        }
-        if (tileEntity instanceof ISustainedData) {
-            ((ISustainedData) tileEntity).writeSustainedData(itemStack);
+            inventory.setInventory(tile.getInventory(), itemStack);
         }
         return itemStack;
     }

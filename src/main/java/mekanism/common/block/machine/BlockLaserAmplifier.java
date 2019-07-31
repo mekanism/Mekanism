@@ -4,16 +4,10 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.base.ISustainedTank;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
@@ -26,10 +20,8 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -307,47 +299,28 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        TileEntityLaserAmplifier tile = (TileEntityLaserAmplifier) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this);
-        if (itemStack.getTagCompound() == null) {
+        if (tile == null) {
+            return itemStack;
+        }
+        if (!itemStack.hasTagCompound()) {
             itemStack.setTagCompound(new NBTTagCompound());
         }
-        if (tileEntity instanceof ISecurityTile) {
-            ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-            securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
-            securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
-        }
-        if (tileEntity instanceof IUpgradeTile) {
-            ((IUpgradeTile) tileEntity).getComponent().write(ItemDataUtils.getDataMap(itemStack));
-        }
-        if (tileEntity instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tileEntity;
-            config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-            config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
-        }
-        if (tileEntity instanceof ISustainedData) {
-            ((ISustainedData) tileEntity).writeSustainedData(itemStack);
-        }
-        if (tileEntity instanceof IRedstoneControl) {
-            IRedstoneControl control = (IRedstoneControl) tileEntity;
-            ItemDataUtils.setInt(itemStack, "controlType", control.getControlType().ordinal());
-        }
-        if (tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock) tileEntity).inventory.size() > 0) {
+        //Security
+        ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
+        securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
+        securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
+        //Redstone Config
+        ItemDataUtils.setInt(itemStack, "controlType", tile.getControlType().ordinal());
+        //Sustained Inventory
+        if (tile.inventory.size() > 0) {
             ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-            inventory.setInventory(((ISustainedInventory) tileEntity).getInventory(), itemStack);
+            inventory.setInventory(tile.getInventory(), itemStack);
         }
-        if (((ISustainedTank) itemStack.getItem()).hasTank(itemStack)) {
-            if (tileEntity instanceof ISustainedTank) {
-                if (((ISustainedTank) tileEntity).getFluidStack() != null) {
-                    ((ISustainedTank) itemStack.getItem()).setFluidStack(((ISustainedTank) tileEntity).getFluidStack(), itemStack);
-                }
-            }
-        }
-        //this MUST be done after the factory info is saved, as it caps the energy to max, which is based on the recipe type
-        if (tileEntity instanceof IStrictEnergyStorage) {
-            IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
-            energizedItem.setEnergy(itemStack, ((IStrictEnergyStorage) tileEntity).getEnergy());
-        }
+        //Energy
+        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
+        energizedItem.setEnergy(itemStack, tile.getEnergy());
         return itemStack;
     }
 

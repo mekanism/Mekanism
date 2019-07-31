@@ -4,7 +4,6 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
@@ -65,12 +64,15 @@ public class BlockInductionCell extends BlockTileDrops implements IBlockDescript
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        ItemStack ret = new ItemStack(this);
-        TileEntityInductionCell tileEntity = (TileEntityInductionCell) world.getTileEntity(pos);
+        TileEntityInductionCell tile = (TileEntityInductionCell) world.getTileEntity(pos);
+        ItemStack itemStack = new ItemStack(this);
+        if (tile == null) {
+            return itemStack;
+        }
         //This can probably be moved upwards
-        IEnergizedItem energizedItem = (IEnergizedItem) ret.getItem();
-        energizedItem.setEnergy(ret, ((IStrictEnergyStorage) tileEntity).getEnergy());
-        return ret;
+        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
+        energizedItem.setEnergy(itemStack, tile.getEnergy());
+        return itemStack;
     }
 
     @Override

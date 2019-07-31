@@ -265,14 +265,17 @@ public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IR
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        ItemStack ret = new ItemStack(this);
-        TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
-        if (tileEntity.getItemCount() > 0) {
-            InventoryBin inv = new InventoryBin(ret);
-            inv.setItemCount(tileEntity.getItemCount());
-            inv.setItemType(tileEntity.itemType);
+        TileEntityBin tile = (TileEntityBin) world.getTileEntity(pos);
+        ItemStack itemStack = new ItemStack(this);
+        if (tile == null) {
+            return itemStack;
         }
-        return ret;
+        if (tile.getItemCount() > 0) {
+            InventoryBin inv = new InventoryBin(itemStack);
+            inv.setItemCount(tile.getItemCount());
+            inv.setItemType(tile.itemType);
+        }
+        return itemStack;
     }
 
     @Override

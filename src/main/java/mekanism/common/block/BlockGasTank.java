@@ -5,14 +5,12 @@ import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -193,22 +191,27 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+        TileEntityGasTank tile = (TileEntityGasTank) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this);
-        TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
-        if (tileEntity != null) {
-            if (itemStack.hasTagCompound()) {
-                itemStack.setTagCompound(new NBTTagCompound());
-            }
-            ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-            securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
-            securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
-            ((ISideConfiguration) tileEntity).getConfig().write(ItemDataUtils.getDataMap(itemStack));
-            ((ISideConfiguration) tileEntity).getEjector().write(ItemDataUtils.getDataMap(itemStack));
-            IGasItem storageTank = (IGasItem) itemStack.getItem();
-            storageTank.setGas(itemStack, tileEntity.gasTank.getGas());
-            ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-            inventory.setInventory(tileEntity.getInventory(), itemStack);
+        if (tile == null) {
+            return itemStack;
         }
+        if (itemStack.hasTagCompound()) {
+            itemStack.setTagCompound(new NBTTagCompound());
+        }
+        //Security
+        ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
+        securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
+        securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
+        //Side Config
+        tile.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+        tile.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+        //Gas
+        IGasItem storageTank = (IGasItem) itemStack.getItem();
+        storageTank.setGas(itemStack, tile.gasTank.getGas());
+        //Sustained Inventory
+        ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
+        inventory.setInventory(tile.getInventory(), itemStack);
         return itemStack;
     }
 

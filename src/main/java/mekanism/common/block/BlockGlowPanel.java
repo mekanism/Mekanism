@@ -19,7 +19,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
@@ -149,13 +148,8 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
 
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        //TODO: Set
         return 15;
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        return new ItemStack(this);
     }
 
     @Override
