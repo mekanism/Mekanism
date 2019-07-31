@@ -177,12 +177,6 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
 
     @Override
     @Deprecated
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
     public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
@@ -253,13 +247,8 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
 
     @Override
     @Deprecated
-    public boolean isFullCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
+        //Short circuit
         return true;
     }
 

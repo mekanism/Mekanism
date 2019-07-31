@@ -517,8 +517,7 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.FUELWOOD_HEATER, MekanismBlock.LASER, MekanismBlock.LASER_AMPLIFIER, MekanismBlock.LASER_TRACTOR_BEAM, MekanismBlock.LOGISTICAL_SORTER,
               MekanismBlock.METALLURGIC_INFUSER, MekanismBlock.OREDICTIONIFICATOR, MekanismBlock.OSMIUM_COMPRESSOR, MekanismBlock.PERSONAL_CHEST,
               MekanismBlock.PRECISION_SAWMILL, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, MekanismBlock.PURIFICATION_CHAMBER, MekanismBlock.QUANTUM_ENTANGLOPORTER,
-              MekanismBlock.RESISTIVE_HEATER, MekanismBlock.ROTARY_CONDENSENTRATOR, MekanismBlock.SEISMIC_VIBRATOR, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR,
-              MekanismBlock.TELEPORTER);
+              MekanismBlock.RESISTIVE_HEATER, MekanismBlock.ROTARY_CONDENSENTRATOR, MekanismBlock.SEISMIC_VIBRATOR, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
         //Basic Factories
         setCustomStateMapper(basicMapper, MekanismBlock.BASIC_SMELTING_FACTORY, MekanismBlock.BASIC_ENRICHING_FACTORY, MekanismBlock.BASIC_CRUSHING_FACTORY,
               MekanismBlock.BASIC_COMPRESSING_FACTORY, MekanismBlock.BASIC_COMBINING_FACTORY, MekanismBlock.BASIC_PURIFYING_FACTORY,

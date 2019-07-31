@@ -374,20 +374,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         return itemStack;
     }
 
-    /*@Override
-    @SideOnly(Side.CLIENT)
-    public boolean addHitEffects(IBlockState state, World world, RayTraceResult target, ParticleManager manager) {
-        if (!target.typeOfHit.equals(Type.BLOCK)) {
-            return super.addHitEffects(state, world, target, manager);
-        }
-        //TODO: This shouldn't even be needed I think due to having things have their own id
-        //If it is one of the types that block state won't have a color for
-        if (MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager)) {
-            return true;
-        }
-        return super.addHitEffects(state, world, target, manager);
-    }*/
-
     @Nonnull
     @Override
     @Deprecated

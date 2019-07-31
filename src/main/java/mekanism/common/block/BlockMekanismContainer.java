@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -101,5 +102,13 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     @Override
     public TileEntity createNewTileEntity(@Nonnull World world, int metadata) {
         return null;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public EnumBlockRenderType getRenderType(@Nonnull IBlockState state) {
+        //This is needed because BlockContainer sets it to invisible, except we are not using TESRs for rendering most implementers of this class
+        return EnumBlockRenderType.MODEL;
     }
 }

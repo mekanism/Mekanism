@@ -37,7 +37,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -235,13 +234,6 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
     }
 
     @SideOnly(Side.CLIENT)
