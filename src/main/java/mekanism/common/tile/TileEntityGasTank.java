@@ -356,8 +356,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
     public enum GasMode {
         IDLE("gui.idle"),
-        DUMPING_EXCESS("gui.dumping"),
-        DUMPING("gui.dumping_excess");
+        DUMPING_EXCESS("gui.dumping_excess"),
+        DUMPING("gui.dumping");
 
         private final String langKey;
 
