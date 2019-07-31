@@ -613,6 +613,8 @@ public final class MekanismUtils {
 
     /**
      * Encodes current item info as a gui, and opens it.
+     *
+     * @apiNote Should only be used from the server side
      */
     public static void openItemGui(EntityPlayer player, EnumHand hand, int guiID) {
         //current item, hand, gui type
@@ -621,6 +623,8 @@ public final class MekanismUtils {
 
     /**
      * Encodes entity info as a gui, and opens it.
+     *
+     * @apiNote Should only be used from the server side
      */
     public static void openEntityGui(EntityPlayer player, Entity entity, int guiID) {
         //entity id, gui type

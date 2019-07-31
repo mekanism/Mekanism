@@ -1,10 +1,11 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -19,6 +20,9 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
             EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
             if (robit != null) {
                 switch (message.activeType) {
+                    case GUI:
+                        MekanismUtils.openEntityGui(player, robit, message.guiID);
+                        break;
                     case FOLLOW:
                         robit.setFollowing(!robit.getFollowing());
                         break;
@@ -38,6 +42,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
     }
 
     public enum RobitPacketType {
+        GUI,
         FOLLOW,
         NAME,
         GO_HOME,
@@ -49,18 +54,27 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
         public RobitPacketType activeType;
 
         public int entityId;
-
+        public int guiID;
         public String name;
 
         public RobitMessage() {
         }
 
-        public RobitMessage(RobitPacketType type, int entityId, @Nullable String name) {
+        public RobitMessage(RobitPacketType type, int entityId) {
             activeType = type;
             this.entityId = entityId;
-            if (activeType == RobitPacketType.NAME) {
-                this.name = name;
-            }
+        }
+
+        public RobitMessage(int entityId, @Nonnull String name) {
+            activeType = RobitPacketType.NAME;
+            this.entityId = entityId;
+            this.name = name;
+        }
+
+        public RobitMessage(int entityId, int guiID) {
+            activeType = RobitPacketType.GUI;
+            this.entityId = entityId;
+            this.guiID = guiID;
         }
 
         @Override
@@ -69,6 +83,8 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
             dataStream.writeInt(entityId);
             if (activeType == RobitPacketType.NAME) {
                 PacketHandler.writeString(dataStream, name);
+            } else if (activeType == RobitPacketType.GUI) {
+                dataStream.writeInt(guiID);
             }
         }
 
@@ -78,6 +94,8 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
             entityId = dataStream.readInt();
             if (activeType == RobitPacketType.NAME) {
                 name = PacketHandler.readString(dataStream);
+            } else if (activeType == RobitPacketType.GUI) {
+                guiID = dataStream.readInt();
             }
         }
     }
