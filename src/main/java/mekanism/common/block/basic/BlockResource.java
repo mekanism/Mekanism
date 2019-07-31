@@ -14,16 +14,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockFire;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-//TODO: Make this not extend BlockBasic
+//TODO: Should we even be extending BlockTileDrops for BlockResource (probably not), as it doesn't have a tile
 public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOreDict {
 
     @Nonnull
@@ -68,27 +64,5 @@ public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOr
                 BlockPortalOverride.instance.trySpawnPortal(world, fromPos);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-        //TODO: Figure out if this short circuit is good
-        return true;
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        //TODO: Is this needed at all, was in BlockBasic
-        world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
-        world.checkLightFor(EnumSkyBlock.SKY, pos);
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        //TODO: Should we even be extending BlockTileDrops for BlockResource (probably not), as it doesn't have a tile
-        return new ItemStack(this);
     }
 }

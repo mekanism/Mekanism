@@ -1,7 +1,6 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.tile.TileEntityBoilerValve;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -26,10 +25,6 @@ public class BlockBoilerValve extends BlockBasicMultiblock {
 
     @Override
     public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof IComparatorSupport) {
-            return ((IComparatorSupport) tile).getRedstoneLevel();
-        }
-        return 0;
+        return ((TileEntityBoilerValve) world.getTileEntity(pos)).getRedstoneLevel();
     }
 }

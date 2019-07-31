@@ -11,7 +11,9 @@ import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
+import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.tile.TileEntityGlowPanel;
+import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
@@ -106,8 +108,12 @@ public class BlockStateHelper {
     private static boolean getActive(@Nonnull TileEntity tile) {
         if (tile instanceof IActiveState) {
             return ((IActiveState) tile).getActive();
+        } else if (tile instanceof TileEntitySuperheatingElement) {
+            TileEntitySuperheatingElement heating = (TileEntitySuperheatingElement) tile;
+            if (heating.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(heating.multiblockUUID) != null) {
+                return SynchronizedBoilerData.clientHotMap.get(heating.multiblockUUID);
+            }
         }
-        //TODO: Ideally no branches remain that get to here
         return false;
     }
 

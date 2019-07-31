@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
@@ -96,13 +95,6 @@ public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IR
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-        //TODO: Figure out if this short circuit is good
-        return true;
     }
 
     @Override
@@ -300,11 +292,7 @@ public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IR
 
     @Override
     public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof IComparatorSupport) {
-            return ((IComparatorSupport) tile).getRedstoneLevel();
-        }
-        return 0;
+        return ((TileEntityBin) world.getTileEntity(pos)).getRedstoneLevel();
     }
 
     @Override

@@ -2,11 +2,8 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
@@ -17,7 +14,6 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
@@ -37,7 +33,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -94,13 +89,6 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    @Deprecated
-    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-        //TODO: Figure out if this short circuit is good
-        return true;
-    }
-
-    @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity instanceof IActiveState) {
@@ -144,40 +132,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
             }
             tileEntity.setFacing(change);
             tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-
-            if (tileEntity instanceof TileEntitySecurityDesk) {
-                ((TileEntitySecurityDesk) tileEntity).ownerUUID = placer.getUniqueID();
-            }
-            if (tileEntity instanceof IBoundingBlock) {
-                ((IBoundingBlock) tileEntity).onPlace();
-            }
         }
-
-        world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
-        world.checkLightFor(EnumSkyBlock.SKY, pos);
-
-        if (!world.isRemote && te != null) {
-            if (te instanceof IMultiblock) {
-                ((IMultiblock<?>) te).doUpdate();
-            }
-            if (te instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) te).doUpdate();
-            }
-        }
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        ItemStack ret = new ItemStack(this);
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IStrictEnergyStorage) {
-            //This can probably be moved upwards
-            IEnergizedItem energizedItem = (IEnergizedItem) ret.getItem();
-            energizedItem.setEnergy(ret, ((IStrictEnergyStorage) tileEntity).getEnergy());
-        }
-        return ret;
     }
 
     @Override

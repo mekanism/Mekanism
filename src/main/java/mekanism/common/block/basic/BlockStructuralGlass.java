@@ -2,16 +2,12 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
@@ -29,7 +25,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -77,42 +72,7 @@ public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescri
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) te;
-            EnumFacing change = EnumFacing.SOUTH;
-            if (tileEntity.canSetFacing(EnumFacing.DOWN) && tileEntity.canSetFacing(EnumFacing.UP)) {
-                int height = Math.round(placer.rotationPitch);
-                if (height >= 65) {
-                    change = EnumFacing.UP;
-                } else if (height <= -65) {
-                    change = EnumFacing.DOWN;
-                }
-            }
-            if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
-                int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                switch (side) {
-                    case 0:
-                        change = EnumFacing.NORTH;
-                        break;
-                    case 1:
-                        change = EnumFacing.EAST;
-                        break;
-                    case 2:
-                        change = EnumFacing.SOUTH;
-                        break;
-                    case 3:
-                        change = EnumFacing.WEST;
-                        break;
-                }
-            }
-            tileEntity.setFacing(change);
-            tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-
-            if (tileEntity instanceof TileEntitySecurityDesk) {
-                ((TileEntitySecurityDesk) tileEntity).ownerUUID = placer.getUniqueID();
-            }
-            if (tileEntity instanceof IBoundingBlock) {
-                ((IBoundingBlock) tileEntity).onPlace();
-            }
+            ((TileEntityBasicBlock) te).redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
         }
 
         world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
@@ -127,47 +87,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescri
                 ((IStructuralMultiblock) te).doUpdate();
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        ItemStack ret = new ItemStack(this);
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IStrictEnergyStorage) {
-            //This can probably be moved upwards
-            IEnergizedItem energizedItem = (IEnergizedItem) ret.getItem();
-            energizedItem.setEnergy(ret, ((IStrictEnergyStorage) tileEntity).getEnergy());
-        }
-        return ret;
-    }
-
-    @Override
-    public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        EnumFacing[] valid = new EnumFacing[6];
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            for (EnumFacing dir : EnumFacing.VALUES) {
-                if (basicTile.canSetFacing(dir)) {
-                    valid[dir.ordinal()] = dir;
-                }
-            }
-        }
-        return valid;
-    }
-
-    @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            if (basicTile.canSetFacing(axis)) {
-                basicTile.setFacing(axis);
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

@@ -1,8 +1,6 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -23,11 +21,9 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IBlockAc
 
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tileEntity instanceof IActiveState) {
-            if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
-                return 15;
-            }
+        TileEntityInductionPort tile = (TileEntityInductionPort) MekanismUtils.getTileEntitySafe(world, pos);
+        if (tile.getActive() && tile.lightUpdate()) {
+            return 15;
         }
         return super.getLightValue(state, world, pos);
     }
@@ -47,9 +43,8 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IBlockAc
     @Nonnull
     @Override
     @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        TileEntityInductionPort tile = (TileEntityInductionPort) MekanismUtils.getTileEntitySafe(worldIn, pos);
-        return state.withProperty(BlockStateHelper.activeProperty, tile.mode);
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override
@@ -64,10 +59,6 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IBlockAc
 
     @Override
     public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof IComparatorSupport) {
-            return ((IComparatorSupport) tile).getRedstoneLevel();
-        }
-        return 0;
+        return ((TileEntityInductionPort) world.getTileEntity(pos)).getRedstoneLevel();
     }
 }

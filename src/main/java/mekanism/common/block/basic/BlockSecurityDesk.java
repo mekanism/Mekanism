@@ -3,8 +3,6 @@ package mekanism.common.block.basic;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
@@ -12,8 +10,6 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
@@ -88,92 +84,49 @@ public class BlockSecurityDesk extends BlockTileDrops implements IRotatableBlock
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
-            if (tileEntity instanceof IMultiblock) {
-                ((IMultiblock<?>) tileEntity).doUpdate();
-            }
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
-            if (tileEntity instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tileEntity).doUpdate();
-            }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-        //TODO: Figure out if this short circuit is good
-        return true;
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntity te = world.getTileEntity(pos);
-        if (te instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) te;
-            EnumFacing change = EnumFacing.SOUTH;
-            if (tileEntity.canSetFacing(EnumFacing.DOWN) && tileEntity.canSetFacing(EnumFacing.UP)) {
-                int height = Math.round(placer.rotationPitch);
-                if (height >= 65) {
-                    change = EnumFacing.UP;
-                } else if (height <= -65) {
-                    change = EnumFacing.DOWN;
-                }
-            }
-            if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
-                int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                switch (side) {
-                    case 0:
-                        change = EnumFacing.NORTH;
-                        break;
-                    case 1:
-                        change = EnumFacing.EAST;
-                        break;
-                    case 2:
-                        change = EnumFacing.SOUTH;
-                        break;
-                    case 3:
-                        change = EnumFacing.WEST;
-                        break;
-                }
-            }
-            tileEntity.setFacing(change);
-            tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-
-            if (tileEntity instanceof TileEntitySecurityDesk) {
-                ((TileEntitySecurityDesk) tileEntity).ownerUUID = placer.getUniqueID();
-            }
-            if (tileEntity instanceof IBoundingBlock) {
-                ((IBoundingBlock) tileEntity).onPlace();
+        TileEntitySecurityDesk tile = (TileEntitySecurityDesk) world.getTileEntity(pos);
+        EnumFacing change = EnumFacing.SOUTH;
+        if (tile.canSetFacing(EnumFacing.DOWN) && tile.canSetFacing(EnumFacing.UP)) {
+            int height = Math.round(placer.rotationPitch);
+            if (height >= 65) {
+                change = EnumFacing.UP;
+            } else if (height <= -65) {
+                change = EnumFacing.DOWN;
             }
         }
+        if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
+            int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+            switch (side) {
+                case 0:
+                    change = EnumFacing.NORTH;
+                    break;
+                case 1:
+                    change = EnumFacing.EAST;
+                    break;
+                case 2:
+                    change = EnumFacing.SOUTH;
+                    break;
+                case 3:
+                    change = EnumFacing.WEST;
+                    break;
+            }
+        }
+        tile.setFacing(change);
+        tile.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
+        tile.ownerUUID = placer.getUniqueID();
+        tile.onPlace();
 
         world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
         world.checkLightFor(EnumSkyBlock.BLOCK, pos);
         world.checkLightFor(EnumSkyBlock.SKY, pos);
-
-        if (!world.isRemote && te != null) {
-            if (te instanceof IMultiblock) {
-                ((IMultiblock<?>) te).doUpdate();
-            }
-            if (te instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) te).doUpdate();
-            }
-        }
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        ItemStack ret = new ItemStack(this);
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IStrictEnergyStorage) {
-            //This can probably be moved upwards
-            IEnergizedItem energizedItem = (IEnergizedItem) ret.getItem();
-            energizedItem.setEnergy(ret, ((IStrictEnergyStorage) tileEntity).getEnergy());
-        }
-        return ret;
     }
 
     @Override

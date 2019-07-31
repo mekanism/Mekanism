@@ -24,7 +24,9 @@ public abstract class BlockTileDrops extends Block {
     }
 
     @Nonnull
-    protected abstract ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos);
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+        return new ItemStack(this);
+    }
 
     /**
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)}.

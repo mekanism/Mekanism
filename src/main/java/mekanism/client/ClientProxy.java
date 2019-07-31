@@ -144,7 +144,6 @@ import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
-import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -638,18 +637,6 @@ public class ClientProxy extends CommonProxy {
               MekanismBlock.WHITE_GLOW_PANEL);
 
         setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
-
-        //TODO: Are the gas tank meshes even needed
-        ModelLoader.setCustomMeshDefinition(MekanismBlock.BASIC_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "basic_gas_tank"), "facing=north" + GasTankTier.BASIC));
-        ModelLoader.setCustomMeshDefinition(MekanismBlock.ADVANCED_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "advanced_gas_tank"), "facing=north" + GasTankTier.ADVANCED));
-        ModelLoader.setCustomMeshDefinition(MekanismBlock.ELITE_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "elite_gas_tank"), "facing=north" + GasTankTier.ELITE));
-        ModelLoader.setCustomMeshDefinition(MekanismBlock.ULTIMATE_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "ultimate_gas_tank"), "facing=north" + GasTankTier.ULTIMATE));
-        ModelLoader.setCustomMeshDefinition(MekanismBlock.CREATIVE_GAS_TANK.getItem(), stack ->
-              new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "creative_gas_tank"), "facing=north" + GasTankTier.CREATIVE));
 
         setCustomTransmitterMeshDefinition(MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
               MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, MekanismBlock.BASIC_MECHANICAL_PIPE, MekanismBlock.ADVANCED_MECHANICAL_PIPE, MekanismBlock.ELITE_MECHANICAL_PIPE,

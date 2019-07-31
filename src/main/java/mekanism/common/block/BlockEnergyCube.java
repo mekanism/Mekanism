@@ -245,14 +245,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     @Override
     @Deprecated
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
-        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
-        return tileEntity.getRedstoneLevel();
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-        return true;
+        return ((TileEntityEnergyCube) world.getTileEntity(pos)).getRedstoneLevel();
     }
 
     @Override

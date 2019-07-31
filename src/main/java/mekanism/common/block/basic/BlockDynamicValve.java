@@ -1,7 +1,6 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.tile.TileEntityDynamicValve;
 import net.minecraft.block.state.IBlockState;
@@ -27,10 +26,6 @@ public class BlockDynamicValve extends BlockBasicMultiblock implements IHasModel
 
     @Override
     public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof IComparatorSupport) {
-            return ((IComparatorSupport) tile).getRedstoneLevel();
-        }
-        return 0;
+        return ((TileEntityDynamicValve) world.getTileEntity(pos)).getRedstoneLevel();
     }
 }
