@@ -185,7 +185,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityGasTank();
+        return new TileEntityGasTank(tier);
     }
 
     @Nonnull

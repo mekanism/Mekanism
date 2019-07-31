@@ -23,6 +23,6 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter {
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityMechanicalPipe();
+        return new TileEntityMechanicalPipe(tier);
     }
 }

@@ -78,26 +78,28 @@ public class ItemBlockSolarNeutronActivator extends ItemBlockMekanism implements
         }
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntitySolarNeutronActivator tile = (TileEntitySolarNeutronActivator) world.getTileEntity(pos);
-            //Security
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
+            if (tile != null) {
+                //Security
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Upgrade Tile
+                if (ItemDataUtils.hasData(stack, "upgrades")) {
+                    tile.getComponent().read(ItemDataUtils.getDataMap(stack));
+                }
+                //Sustained Data
+                if (stack.getTagCompound() != null) {
+                    tile.readSustainedData(stack);
+                }
+                //Redstone Control
+                if (ItemDataUtils.hasData(stack, "controlType")) {
+                    tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
+                }
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
             }
-            //Upgrade Tile
-            if (ItemDataUtils.hasData(stack, "upgrades")) {
-                tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-            }
-            //Sustained Data
-            if (stack.getTagCompound() != null) {
-                tile.readSustainedData(stack);
-            }
-            //Redstone Control
-            if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-            }
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
             return true;
         }
         return false;

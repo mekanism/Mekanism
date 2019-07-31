@@ -63,10 +63,12 @@ public class ItemBlockLaser extends ItemBlockMekanism implements IItemEnergized,
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityLaser tile = (TileEntityLaser) world.getTileEntity(pos);
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
-            //Electric
-            tile.electricityStored = getEnergy(stack);
+            if (tile != null) {
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
+                //Electric
+                tile.electricityStored = getEnergy(stack);
+            }
             return true;
         }
         return false;

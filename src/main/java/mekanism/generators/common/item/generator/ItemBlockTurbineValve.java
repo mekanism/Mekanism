@@ -47,8 +47,10 @@ public class ItemBlockTurbineValve extends ItemBlockMekanism implements ISustain
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityTurbineValve tile = (TileEntityTurbineValve) world.getTileEntity(pos);
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
+            if (tile != null) {
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
+            }
             return true;
         }
         return false;

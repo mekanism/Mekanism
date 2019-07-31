@@ -64,17 +64,19 @@ public class ItemBlockLaserAmplifier extends ItemBlockMekanism implements ISusta
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityLaserAmplifier tile = (TileEntityLaserAmplifier) world.getTileEntity(pos);
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
+            if (tile != null) {
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Redstone Control
+                if (ItemDataUtils.hasData(stack, "controlType")) {
+                    tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
+                }
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
             }
-            //Redstone Control
-            if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-            }
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
             return true;
         }
         return false;

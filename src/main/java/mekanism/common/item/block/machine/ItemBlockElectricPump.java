@@ -91,28 +91,30 @@ public class ItemBlockElectricPump extends ItemBlockMekanism implements IItemEne
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityElectricPump tile = (TileEntityElectricPump) world.getTileEntity(pos);
-            //Security
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
+            if (tile != null) {
+                //Security
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Upgrades
+                if (ItemDataUtils.hasData(stack, "upgrades")) {
+                    tile.getComponent().read(ItemDataUtils.getDataMap(stack));
+                }
+                //Redstone Control
+                if (ItemDataUtils.hasData(stack, "controlType")) {
+                    tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
+                }
+                //Sustained Tank
+                if (hasTank(stack) && getFluidStack(stack) != null) {
+                    tile.setFluidStack(getFluidStack(stack));
+                }
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
+                //Electric Block
+                tile.electricityStored = getEnergy(stack);
             }
-            //Upgrades
-            if (ItemDataUtils.hasData(stack, "upgrades")) {
-                tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-            }
-            //Redstone Control
-            if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-            }
-            //Sustained Tank
-            if (hasTank(stack) && getFluidStack(stack) != null) {
-                tile.setFluidStack(getFluidStack(stack));
-            }
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
-            //Electric Block
-            tile.electricityStored = getEnergy(stack);
             return true;
         }
         return false;

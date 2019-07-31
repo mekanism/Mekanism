@@ -40,7 +40,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     /**
      * This Energy Cube's tier.
      */
-    public EnergyCubeTier tier = EnergyCubeTier.BASIC;
+    public EnergyCubeTier tier;
     /**
      * The redstone level this Energy Cube is outputting at.
      */
@@ -57,8 +57,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     /**
      * A block used to store and transfer electricity.
      */
-    public TileEntityEnergyCube() {
-        super("EnergyCube", 0);
+    public TileEntityEnergyCube(EnergyCubeTier tier) {
+        super("EnergyCube", tier.getMaxEnergy());
+        this.tier = tier;
+
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));

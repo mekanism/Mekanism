@@ -82,28 +82,30 @@ public class ItemBlockEnergizedSmelter extends ItemBlockMekanism implements IIte
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityEnergizedSmelter tile = (TileEntityEnergizedSmelter) world.getTileEntity(pos);
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
+            if (tile != null) {
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Upgrades
+                if (ItemDataUtils.hasData(stack, "upgrades")) {
+                    tile.getComponent().read(ItemDataUtils.getDataMap(stack));
+                }
+                //Side config
+                if (ItemDataUtils.hasData(stack, "sideDataStored")) {
+                    tile.getConfig().read(ItemDataUtils.getDataMap(stack));
+                    tile.getEjector().read(ItemDataUtils.getDataMap(stack));
+                }
+                //Redstone Control
+                if (ItemDataUtils.hasData(stack, "controlType")) {
+                    tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
+                }
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
+                //Electric Block
+                tile.electricityStored = getEnergy(stack);
             }
-            //Upgrades
-            if (ItemDataUtils.hasData(stack, "upgrades")) {
-                tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-            }
-            //Side config
-            if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                tile.getConfig().read(ItemDataUtils.getDataMap(stack));
-                tile.getEjector().read(ItemDataUtils.getDataMap(stack));
-            }
-            //Redstone Control
-            if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-            }
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
-            //Electric Block
-            tile.electricityStored = getEnergy(stack);
             return true;
         }
         return false;

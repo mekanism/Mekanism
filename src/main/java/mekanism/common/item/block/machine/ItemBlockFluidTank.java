@@ -128,11 +128,8 @@ public class ItemBlockFluidTank extends ItemBlockMekanism implements ISustainedI
     public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            FluidTankTier tier = getTier(stack);
-            if (tier != null) {
-                TileEntityFluidTank tile = (TileEntityFluidTank) world.getTileEntity(pos);
-                tile.tier = tier;
-                tile.fluidTank.setCapacity(tile.tier.getStorage());
+            TileEntityFluidTank tile = (TileEntityFluidTank) world.getTileEntity(pos);
+            if (tile != null) {
                 //Security
                 tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
                 tile.getSecurity().setMode(getSecurity(stack));

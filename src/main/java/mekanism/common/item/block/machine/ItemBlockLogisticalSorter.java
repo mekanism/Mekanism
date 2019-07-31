@@ -71,26 +71,28 @@ public class ItemBlockLogisticalSorter extends ItemBlockMekanism implements ISus
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityLogisticalSorter tile = (TileEntityLogisticalSorter) world.getTileEntity(pos);
-            //Security
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
+            if (tile != null) {
+                //Security
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Upgrades
+                if (ItemDataUtils.hasData(stack, "upgrades")) {
+                    tile.getComponent().read(ItemDataUtils.getDataMap(stack));
+                }
+                //Sustained Data
+                if (stack.getTagCompound() != null) {
+                    tile.readSustainedData(stack);
+                }
+                //Redstone Control
+                if (ItemDataUtils.hasData(stack, "controlType")) {
+                    tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
+                }
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
             }
-            //Upgrades
-            if (ItemDataUtils.hasData(stack, "upgrades")) {
-                tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-            }
-            //Sustained Data
-            if (stack.getTagCompound() != null) {
-                tile.readSustainedData(stack);
-            }
-            //Redstone Control
-            if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-            }
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
             return true;
         }
         return false;

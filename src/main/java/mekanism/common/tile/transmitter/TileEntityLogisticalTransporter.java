@@ -42,13 +42,14 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private final int SYNC_PACKET = 1;
     private final int BATCH_PACKET = 2;
 
-    public TransporterTier tier = TransporterTier.BASIC;
+    public TransporterTier tier;
 
     private int delay = 0;
     private int delayCount = 0;
 
-    public TileEntityLogisticalTransporter() {
+    public TileEntityLogisticalTransporter(TransporterTier tier) {
         transmitterDelegate = new TransporterImpl(this);
+        this.tier = tier;
     }
 
     @Override

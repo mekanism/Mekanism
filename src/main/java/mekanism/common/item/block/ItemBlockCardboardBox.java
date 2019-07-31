@@ -109,14 +109,14 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
         if (world.isRemote) {
             return true;
         }
-        boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
-        if (place) {
+        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
             if (tileEntity != null) {
                 tileEntity.storedData = getBlockData(stack);
             }
+            return true;
         }
-        return place;
+        return false;
     }
 
     public void setBlockData(ItemStack itemstack, BlockData data) {

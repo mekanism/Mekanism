@@ -23,6 +23,6 @@ public class BlockPressurizedTube extends BlockSmallTransmitter {
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityPressurizedTube();
+        return new TileEntityPressurizedTube(tier);
     }
 }

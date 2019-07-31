@@ -72,16 +72,18 @@ public class ItemBlockSolarGenerator extends ItemBlockMekanism implements IItemE
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntitySolarGenerator tile = (TileEntitySolarGenerator) world.getTileEntity(pos);
-            //Security
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
+            if (tile != null) {
+                //Security
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Electric
+                tile.electricityStored = getEnergy(stack);
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
             }
-            //Electric
-            tile.electricityStored = getEnergy(stack);
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
             return true;
         }
         return false;

@@ -50,7 +50,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
      */
     public GasTank gasTank;
 
-    public GasTankTier tier = GasTankTier.BASIC;
+    public GasTankTier tier;
 
     public GasMode dumping;
 
@@ -67,8 +67,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
 
-    public TileEntityGasTank() {
+    public TileEntityGasTank(GasTankTier tier) {
         super("GasTank");
+        this.tier = tier;
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));

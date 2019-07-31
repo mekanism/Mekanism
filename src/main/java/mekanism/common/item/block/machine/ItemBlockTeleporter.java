@@ -82,23 +82,25 @@ public class ItemBlockTeleporter extends ItemBlockMekanism implements IItemEnerg
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityTeleporter tile = (TileEntityTeleporter) world.getTileEntity(pos);
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
+            if (tile != null) {
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Upgrades
+                if (ItemDataUtils.hasData(stack, "upgrades")) {
+                    tile.getComponent().read(ItemDataUtils.getDataMap(stack));
+                }
+                //Redstone Control
+                if (ItemDataUtils.hasData(stack, "controlType")) {
+                    tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
+                }
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
+                //Electric Block
+                tile.electricityStored = getEnergy(stack);
             }
-            //Upgrades
-            if (ItemDataUtils.hasData(stack, "upgrades")) {
-                tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-            }
-            //Redstone Control
-            if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-            }
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
-            //Electric Block
-            tile.electricityStored = getEnergy(stack);
             return true;
         }
         return false;

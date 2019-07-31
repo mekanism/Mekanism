@@ -23,11 +23,15 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork, Void> implements IHeatTransfer {
 
-    public ConductorTier tier = ConductorTier.BASIC;
+    public ConductorTier tier;
 
     public double temperature = 0;
     public double clientTemperature = 0;
     public double heatToAbsorb = 0;
+
+    public TileEntityThermodynamicConductor(ConductorTier tier) {
+        this.tier = tier;
+    }
 
     @Override
     public BaseTier getBaseTier() {

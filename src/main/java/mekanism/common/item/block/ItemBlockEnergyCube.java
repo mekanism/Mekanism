@@ -9,7 +9,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -19,7 +18,6 @@ import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ItemDataUtils;
@@ -87,33 +85,30 @@ public class ItemBlockEnergyCube extends ItemBlockMekanism implements IItemEnerg
     @Override
     public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
           float hitZ, @Nonnull IBlockState state) {
-        boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
-
-        if (place) {
-            EnergyCubeTier tier = getTier(stack);
-            if (tier != null) {
-                TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
-                tileEntity.tier = tier;
-                tileEntity.electricityStored = getEnergy(stack);
-                if (tileEntity.tier == EnergyCubeTier.CREATIVE) {
-                    tileEntity.configComponent.fillConfig(TransmissionType.ENERGY, tileEntity.getEnergy() > 0 ? 2 : 1);
+        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
+            TileEntityEnergyCube tile = (TileEntityEnergyCube) world.getTileEntity(pos);
+            if (tile != null) {
+                tile.electricityStored = getEnergy(stack);
+                if (tile.tier == EnergyCubeTier.CREATIVE) {
+                    tile.configComponent.fillConfig(TransmissionType.ENERGY, tile.getEnergy() > 0 ? 2 : 1);
                 }
-                ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(getOwnerUUID(stack));
-                ((ISecurityTile) tileEntity).getSecurity().setMode(getSecurity(stack));
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
                 if (getOwnerUUID(stack) == null) {
-                    ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(player.getUniqueID());
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
                 }
                 if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                    ((ISideConfiguration) tileEntity).getConfig().read(ItemDataUtils.getDataMap(stack));
-                    ((ISideConfiguration) tileEntity).getEjector().read(ItemDataUtils.getDataMap(stack));
+                    tile.getConfig().read(ItemDataUtils.getDataMap(stack));
+                    tile.getEjector().read(ItemDataUtils.getDataMap(stack));
                 }
-                ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
+                tile.setInventory(getInventory(stack));
                 if (!world.isRemote) {
-                    Mekanism.packetHandler.sendUpdatePacket(tileEntity);
+                    Mekanism.packetHandler.sendUpdatePacket(tile);
                 }
             }
+            return true;
         }
-        return place;
+        return false;
     }
 
     @Override

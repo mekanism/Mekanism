@@ -88,29 +88,31 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockMekanism implements
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityQuantumEntangloporter tile = (TileEntityQuantumEntangloporter) world.getTileEntity(pos);
-            //Security
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
-            }
-            //Upgrades
-            if (ItemDataUtils.hasData(stack, "upgrades")) {
-                tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-            }
-            //Side config
-            if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                tile.getConfig().read(ItemDataUtils.getDataMap(stack));
-                tile.getEjector().read(ItemDataUtils.getDataMap(stack));
-            }
-            //Sustained inventory
-            tile.setInventory(getInventory(stack));
-            //Electricity
-            tile.electricityStored = getEnergy(stack);
-            if (!world.isRemote && ItemDataUtils.hasData(stack, "entangleporter_frequency")) {
-                Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
-                if (freq != null) {
-                    tile.setFrequency(freq.name, freq.publicFreq);
+            if (tile != null) {
+                //Security
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Upgrades
+                if (ItemDataUtils.hasData(stack, "upgrades")) {
+                    tile.getComponent().read(ItemDataUtils.getDataMap(stack));
+                }
+                //Side config
+                if (ItemDataUtils.hasData(stack, "sideDataStored")) {
+                    tile.getConfig().read(ItemDataUtils.getDataMap(stack));
+                    tile.getEjector().read(ItemDataUtils.getDataMap(stack));
+                }
+                //Sustained inventory
+                tile.setInventory(getInventory(stack));
+                //Electricity
+                tile.electricityStored = getEnergy(stack);
+                if (!world.isRemote && ItemDataUtils.hasData(stack, "entangleporter_frequency")) {
+                    Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
+                    if (freq != null) {
+                        tile.setFrequency(freq.name, freq.publicFreq);
+                    }
                 }
             }
             return true;

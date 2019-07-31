@@ -63,13 +63,15 @@ public class ItemBlockLaserTractorBeam extends ItemBlockMekanism implements ISus
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityLaserTractorBeam tile = (TileEntityLaserTractorBeam) world.getTileEntity(pos);
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
+            if (tile != null) {
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
             }
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
             return true;
         }
         return false;

@@ -30,6 +30,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+//TODO: Kill metadata
 public class BlockCardboardBox extends BlockMekanismContainer implements IHasModel {
 
     private static boolean testingPlace = false;

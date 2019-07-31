@@ -61,10 +61,12 @@ public class ItemBlockChargepad extends ItemBlockMekanism implements IItemEnergi
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityChargepad tile = (TileEntityChargepad) world.getTileEntity(pos);
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
-            //Electricity
-            tile.electricityStored = getEnergy(stack);
+            if (tile != null) {
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
+                //Electricity
+                tile.electricityStored = getEnergy(stack);
+            }
             return true;
         }
         return false;

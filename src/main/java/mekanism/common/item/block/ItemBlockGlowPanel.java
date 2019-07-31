@@ -29,18 +29,20 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble implements IItemR
     @Override
     public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
           float hitZ, @Nonnull IBlockState state) {
-        boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
-        if (place) {
-            TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
-            BlockPos pos1 = pos.offset(side.getOpposite());
-            if (world.isSideSolid(pos1, side)) {
-                tileEntity.setOrientation(side.getOpposite());
+        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
+            TileEntityGlowPanel tile = (TileEntityGlowPanel) world.getTileEntity(pos);
+            if (tile != null) {
+                BlockPos pos1 = pos.offset(side.getOpposite());
+                if (world.isSideSolid(pos1, side)) {
+                    tile.setOrientation(side.getOpposite());
+                }
+                if (!world.isRemote) {
+                    Mekanism.packetHandler.sendUpdatePacket(tile);
+                }
             }
-            if (!world.isRemote) {
-                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
-            }
+            return true;
         }
-        return place;
+        return false;
     }
 
     @Nonnull

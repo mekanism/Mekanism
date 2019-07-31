@@ -24,7 +24,7 @@ public class BlockUniversalCable extends BlockSmallTransmitter {
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityUniversalCable();
+        return new TileEntityUniversalCable(tier);
     }
 
     @Override

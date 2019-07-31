@@ -23,6 +23,6 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter {
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityThermodynamicConductor();
+        return new TileEntityThermodynamicConductor(tier);
     }
 }

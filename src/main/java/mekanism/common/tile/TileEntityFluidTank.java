@@ -60,7 +60,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-    public FluidTankTier tier = FluidTankTier.BASIC;
+    public FluidTankTier tier;
 
     public int updateDelay;
 
@@ -77,9 +77,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-    public TileEntityFluidTank() {
+    public TileEntityFluidTank(FluidTankTier tier) {
         super("FluidTank");
-        fluidTank = new FluidTank(tier.getStorage());
+        this.tier = tier;
+        fluidTank = new FluidTank(this.tier.getStorage());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     }
 

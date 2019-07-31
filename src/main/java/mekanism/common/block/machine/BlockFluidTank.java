@@ -216,7 +216,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityFluidTank();
+        return new TileEntityFluidTank(tier);
     }
 
     @Override

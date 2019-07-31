@@ -11,12 +11,10 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.ItemDataUtils;
@@ -56,29 +54,28 @@ public class ItemBlockGasTank extends ItemBlockMekanism implements IGasItem, ISu
     @Override
     public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
           float hitZ, @Nonnull IBlockState state) {
-        boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
-        if (place) {
-            TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
-            tileEntity.tier = getTier(stack);
-            tileEntity.gasTank.setMaxGas(tileEntity.tier.getStorage());
-            tileEntity.gasTank.setGas(getGas(stack));
-            ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            ((ISecurityTile) tileEntity).getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                ((ISecurityTile) tileEntity).getSecurity().setOwnerUUID(player.getUniqueID());
+        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
+            TileEntityGasTank tile = (TileEntityGasTank) world.getTileEntity(pos);
+            if (tile != null) {
+                tile.gasTank.setMaxGas(tile.tier.getStorage());
+                tile.gasTank.setGas(getGas(stack));
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                if (ItemDataUtils.hasData(stack, "sideDataStored")) {
+                    tile.getConfig().read(ItemDataUtils.getDataMap(stack));
+                    tile.getEjector().read(ItemDataUtils.getDataMap(stack));
+                }
+                tile.setInventory(getInventory(stack));
+                if (!world.isRemote) {
+                    Mekanism.packetHandler.sendUpdatePacket(tile);
+                }
             }
-
-            if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                ((ISideConfiguration) tileEntity).getConfig().read(ItemDataUtils.getDataMap(stack));
-                ((ISideConfiguration) tileEntity).getEjector().read(ItemDataUtils.getDataMap(stack));
-            }
-
-            ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
-            if (!world.isRemote) {
-                Mekanism.packetHandler.sendUpdatePacket(tileEntity);
-            }
+            return true;
         }
-        return place;
+        return false;
     }
 
     @Override

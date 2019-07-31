@@ -66,8 +66,10 @@ public class ItemBlockInductionCell extends ItemBlockMekanism implements IEnergi
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityInductionCell tile = (TileEntityInductionCell) world.getTileEntity(pos);
-            //Set the energy
-            tile.setEnergy(getEnergy(stack));
+            if (tile != null) {
+                //Set the energy
+                tile.setEnergy(getEnergy(stack));
+            }
             return true;
         }
         return false;

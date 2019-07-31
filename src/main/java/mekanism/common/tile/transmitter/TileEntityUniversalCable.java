@@ -46,7 +46,7 @@ import net.minecraftforge.fml.common.Optional;
 public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements IStrictEnergyAcceptor,
       IStrictEnergyStorage, IEnergyReceiver {
 
-    public CableTier tier = CableTier.BASIC;
+    public CableTier tier;
 
     public double currentPower = 0;
     public double lastWrite = 0;
@@ -54,6 +54,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     public EnergyStack buffer = new EnergyStack(0);
     private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager<>(getClass(), TeslaCableIntegration.class);
     private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(), ForgeEnergyCableIntegration.class);
+
+    public TileEntityUniversalCable(CableTier tier) {
+        this.tier = tier;
+    }
 
     @Override
     public BaseTier getBaseTier() {

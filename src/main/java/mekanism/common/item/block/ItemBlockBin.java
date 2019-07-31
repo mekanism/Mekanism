@@ -93,12 +93,14 @@ public class ItemBlockBin extends ItemBlockMekanism implements ITieredItem<BinTi
     public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            if (stack.getTagCompound() != null) {
+            if (stack.hasTagCompound()) {
                 InventoryBin inv = new InventoryBin(stack);
                 if (!inv.getItemType().isEmpty()) {
                     TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
-                    tileEntity.setItemType(inv.getItemType());
-                    tileEntity.setItemCount(inv.getItemCount());
+                    if (tileEntity != null) {
+                        tileEntity.setItemType(inv.getItemType());
+                        tileEntity.setItemCount(inv.getItemCount());
+                    }
                 }
             }
             return true;

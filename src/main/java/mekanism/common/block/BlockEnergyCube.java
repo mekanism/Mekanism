@@ -194,7 +194,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityEnergyCube();
+        return new TileEntityEnergyCube(tier);
     }
 
     @Override

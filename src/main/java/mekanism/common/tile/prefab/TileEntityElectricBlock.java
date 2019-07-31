@@ -38,6 +38,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     /**
      * Maximum amount of energy this machine can hold.
      */
+    //TODO: What is the point of this
     public double BASE_MAX_ENERGY;
 
     /**

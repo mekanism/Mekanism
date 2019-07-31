@@ -72,19 +72,21 @@ public class ItemBlockBioGenerator extends ItemBlockMekanism implements IItemEne
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityBioGenerator tile = (TileEntityBioGenerator) world.getTileEntity(pos);
-            //Security
-            tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-            tile.getSecurity().setMode(getSecurity(stack));
-            if (getOwnerUUID(stack) == null) {
-                tile.getSecurity().setOwnerUUID(player.getUniqueID());
-            }
-            //Electric
-            tile.electricityStored = getEnergy(stack);
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
-            //Sustained Data
-            if (stack.getTagCompound() != null) {
-                tile.readSustainedData(stack);
+            if (tile != null) {
+                //Security
+                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+                tile.getSecurity().setMode(getSecurity(stack));
+                if (getOwnerUUID(stack) == null) {
+                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+                //Electric
+                tile.electricityStored = getEnergy(stack);
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
+                //Sustained Data
+                if (stack.getTagCompound() != null) {
+                    tile.readSustainedData(stack);
+                }
             }
             return true;
         }

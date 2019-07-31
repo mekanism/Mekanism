@@ -25,11 +25,11 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
 
-    public TubeTier tier = TubeTier.BASIC;
+    public TubeTier tier;
 
     public float currentScale;
 
-    public GasTank buffer = new GasTank(getCapacity());
+    public GasTank buffer;
 
     public GasStack lastWrite;
 
@@ -61,6 +61,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
             return TileEntityPressurizedTube.this.getTankInfo();
         }
     };
+
+    public TileEntityPressurizedTube(TubeTier tier) {
+        this.tier = tier;
+        buffer = new GasTank(getCapacity());
+    }
 
     @Override
     public BaseTier getBaseTier() {

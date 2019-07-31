@@ -19,7 +19,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -28,14 +27,19 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IFluidHandlerWrapper {
 
-    public PipeTier tier = PipeTier.BASIC;
+    public PipeTier tier;
 
     public float currentScale;
 
-    public FluidTank buffer = new FluidTank(Fluid.BUCKET_VOLUME);
+    public FluidTank buffer;
 
     public FluidStack lastWrite;
     public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
+
+    public TileEntityMechanicalPipe(PipeTier tier) {
+        this.tier = tier;
+        buffer = new FluidTank(getCapacity());
+    }
 
     @Override
     public BaseTier getBaseTier() {

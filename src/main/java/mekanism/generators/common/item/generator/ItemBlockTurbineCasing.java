@@ -47,8 +47,10 @@ public class ItemBlockTurbineCasing extends ItemBlockMekanism implements ISustai
           float hitZ, @Nonnull IBlockState state) {
         if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityTurbineCasing tile = (TileEntityTurbineCasing) world.getTileEntity(pos);
-            //Sustained Inventory
-            tile.setInventory(getInventory(stack));
+            if (tile != null) {
+                //Sustained Inventory
+                tile.setInventory(getInventory(stack));
+            }
             return true;
         }
         return false;
