@@ -42,6 +42,7 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFire;
 import net.minecraft.block.BlockPortal;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -820,6 +821,9 @@ public abstract class BlockBasic extends BlockTileDrops {
         public BlockPortalOverride() {
             super();
             setRegistryName(new ResourceLocation("minecraft", "portal"));
+            setHardness(-1.0F);
+            setSoundType(SoundType.GLASS);
+            setLightLevel(0.75F);
         }
 
         @Nonnull
