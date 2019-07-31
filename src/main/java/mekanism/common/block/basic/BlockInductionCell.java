@@ -8,8 +8,6 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -22,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -51,14 +48,8 @@ public class BlockInductionCell extends BlockTileDrops implements IBlockDescript
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
-            if (tileEntity instanceof IMultiblock) {
-                ((IMultiblock<?>) tileEntity).doUpdate();
-            }
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
-            }
-            if (tileEntity instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tileEntity).doUpdate();
             }
         }
     }
@@ -68,19 +59,6 @@ public class BlockInductionCell extends BlockTileDrops implements IBlockDescript
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityBasicBlock) {
             ((TileEntityBasicBlock) te).redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-        }
-
-        world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
-        world.checkLightFor(EnumSkyBlock.SKY, pos);
-
-        if (!world.isRemote && te != null) {
-            if (te instanceof IMultiblock) {
-                ((IMultiblock<?>) te).doUpdate();
-            }
-            if (te instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) te).doUpdate();
-            }
         }
     }
 

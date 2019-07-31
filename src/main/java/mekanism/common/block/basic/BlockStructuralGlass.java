@@ -6,7 +6,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -56,9 +55,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescri
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
-            if (tileEntity instanceof IMultiblock) {
-                ((IMultiblock<?>) tileEntity).doUpdate();
-            }
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
@@ -80,9 +76,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescri
         world.checkLightFor(EnumSkyBlock.SKY, pos);
 
         if (!world.isRemote && te != null) {
-            if (te instanceof IMultiblock) {
-                ((IMultiblock<?>) te).doUpdate();
-            }
             if (te instanceof IStructuralMultiblock) {
                 ((IStructuralMultiblock) te).doUpdate();
             }

@@ -8,8 +8,6 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
@@ -23,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -71,14 +68,8 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
-            if (tileEntity instanceof IMultiblock) {
-                ((IMultiblock<?>) tileEntity).doUpdate();
-            }
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
-            }
-            if (tileEntity instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tileEntity).doUpdate();
             }
         }
     }
@@ -88,19 +79,6 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityBasicBlock) {
             ((TileEntityBasicBlock) te).redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-        }
-
-        world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
-        world.checkLightFor(EnumSkyBlock.SKY, pos);
-
-        if (!world.isRemote && te != null) {
-            if (te instanceof IMultiblock) {
-                ((IMultiblock<?>) te).doUpdate();
-            }
-            if (te instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) te).doUpdate();
-            }
         }
     }
 
@@ -116,13 +94,18 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDe
 
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-        if (tileEntity instanceof TileEntitySuperheatingElement) {
-            TileEntitySuperheatingElement element = (TileEntitySuperheatingElement) tileEntity;
-            if (element.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) != null) {
-                return SynchronizedBoilerData.clientHotMap.get(element.multiblockUUID) ? 15 : 0;
+        return isActive(state, world, pos) ? 15 : super.getLightValue(state, world, pos);
+    }
+
+    @Override
+    public boolean isActive(@Nonnull TileEntity tile) {
+        if (tile instanceof TileEntitySuperheatingElement) {
+            //Should be true
+            TileEntitySuperheatingElement heating = (TileEntitySuperheatingElement) tile;
+            if (heating.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(heating.multiblockUUID) != null) {
+                return SynchronizedBoilerData.clientHotMap.get(heating.multiblockUUID);
             }
         }
-        return 0;
+        return false;
     }
 }

@@ -6,14 +6,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.IColor;
-import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
-import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.tile.TileEntityGlowPanel;
-import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
@@ -78,7 +75,7 @@ public class BlockStateHelper {
             }
         }
         if (block instanceof IStateActive) {
-            state = state.withProperty(activeProperty, getActive(tile));
+            state = state.withProperty(activeProperty, ((IStateActive) block).isActive(tile));
         }
         if (block instanceof IStateColor) {
             state = state.withProperty(BlockStateHelper.colorProperty, getColor(tile));
@@ -105,18 +102,6 @@ public class BlockStateHelper {
         return null;
     }
 
-    private static boolean getActive(@Nonnull TileEntity tile) {
-        if (tile instanceof IActiveState) {
-            return ((IActiveState) tile).getActive();
-        } else if (tile instanceof TileEntitySuperheatingElement) {
-            TileEntitySuperheatingElement heating = (TileEntitySuperheatingElement) tile;
-            if (heating.multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(heating.multiblockUUID) != null) {
-                return SynchronizedBoilerData.clientHotMap.get(heating.multiblockUUID);
-            }
-        }
-        return false;
-    }
-
     @Nonnull
     private static IColor getColor(@Nonnull TileEntity tile) {
         EnumColor color = null;
@@ -134,7 +119,6 @@ public class BlockStateHelper {
         return ConnectionType.NONE;
     }
 
-    //TODO: Does having this actually do anything, or does it grab stuff by default anyways (I think this can be used on the transmitters to fix them needing all the variants)
     public static class MekanismBlockStateMapper extends StateMapperBase {
 
         @Nonnull

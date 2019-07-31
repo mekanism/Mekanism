@@ -1,6 +1,7 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -21,9 +22,11 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IBlockAc
 
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        TileEntityInductionPort tile = (TileEntityInductionPort) MekanismUtils.getTileEntitySafe(world, pos);
-        if (tile.getActive() && tile.lightUpdate()) {
-            return 15;
+        TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
+        if (tileEntity instanceof IActiveState) {
+            if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
+                return 15;
+            }
         }
         return super.getLightValue(state, world, pos);
     }

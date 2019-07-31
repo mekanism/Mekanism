@@ -7,7 +7,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
@@ -62,9 +61,6 @@ public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescri
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
-            if (tileEntity instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tileEntity).doUpdate();
-            }
         }
     }
 
@@ -82,9 +78,6 @@ public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescri
         if (!world.isRemote && te != null) {
             if (te instanceof IMultiblock) {
                 ((IMultiblock<?>) te).doUpdate();
-            }
-            if (te instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) te).doUpdate();
             }
         }
     }

@@ -8,10 +8,7 @@ import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 
 public class BlockPlasticGlow extends Block implements IColoredBlock, IBlockOreDict {
 
@@ -23,6 +20,8 @@ public class BlockPlasticGlow extends Block implements IColoredBlock, IBlockOreD
         this.color = color;
         setHardness(5F);
         setResistance(10F);
+        //It gets multiplied by 15 when being set
+        setLightLevel(10F / 15.0F);
         setCreativeTab(Mekanism.tabMekanism);
         this.name = color.registry_prefix + "_plastic_glow";
         setTranslationKey(this.name);
@@ -32,11 +31,6 @@ public class BlockPlasticGlow extends Block implements IColoredBlock, IBlockOreD
     @Override
     public EnumColor getColor() {
         return color;
-    }
-
-    @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return 10;
     }
 
     @Override
