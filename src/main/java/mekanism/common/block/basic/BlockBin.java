@@ -7,7 +7,6 @@ import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.ITieredBlock;
@@ -46,7 +45,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IBlockDescriptive, IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier> {
+public class BlockBin extends BlockTileDrops implements IBlockDescriptive, IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier> {
 
     private final String name;
     private final BinTier tier;

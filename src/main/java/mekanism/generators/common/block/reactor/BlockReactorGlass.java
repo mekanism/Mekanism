@@ -35,6 +35,7 @@ public class BlockReactorGlass extends Block implements IBlockDescriptive {
 
     public BlockReactorGlass() {
         super(Material.IRON);
+        //TODO: Should the material be glass? check other materials of various blocks as well
         setHardness(3.5F);
         setResistance(8F);
         setCreativeTab(Mekanism.tabMekanism);

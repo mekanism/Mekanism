@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -13,12 +12,10 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -45,18 +42,6 @@ public class BlockReactorLogicAdapter extends Block implements IHasGui, IBlockDe
     @Override
     public String getDescription() {
         return LangUtils.localize("tooltip.mekanism." + name);
-    }
-
-    @Nonnull
-    @Override
-    public BlockStateContainer createBlockState() {
-        return BlockStateHelper.getBlockState(this);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        //TODO
-        return 0;
     }
 
     @Override
@@ -98,24 +83,6 @@ public class BlockReactorLogicAdapter extends Block implements IHasGui, IBlockDe
         return new TileEntityReactorLogicAdapter();
     }
 
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(IBlockState state) {
-        return false;
-    }
-
     @Override
     public boolean hasTileEntity(IBlockState state) {
         return true;
@@ -129,13 +96,6 @@ public class BlockReactorLogicAdapter extends Block implements IHasGui, IBlockDe
             return ((TileEntityReactorLogicAdapter) tile).checkMode() ? 15 : 0;
         }
         return 0;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
-        //TODO
-        return true;
     }
 
     @Override

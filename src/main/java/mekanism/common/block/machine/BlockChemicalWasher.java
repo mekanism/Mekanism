@@ -9,7 +9,6 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
@@ -52,8 +51,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockChemicalWasher extends BlockMekanismContainer implements IBlockElectric, IHasModel, IBlockActiveTextured, IBlockDescriptive, IHasGui,
-      ISupportsUpgrades, IStateFacing, IStateActive {
+public class BlockChemicalWasher extends BlockMekanismContainer implements IBlockElectric, IHasModel, IBlockDescriptive, IHasGui, ISupportsUpgrades, IStateFacing,
+      IStateActive {
 
     private final String name;
 

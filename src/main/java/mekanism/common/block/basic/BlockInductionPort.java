@@ -2,7 +2,6 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.TileEntityInductionPort;
@@ -14,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockInductionPort extends BlockBasicMultiblock implements IBlockActiveTextured, IStateActive {
+public class BlockInductionPort extends BlockBasicMultiblock implements IStateActive {
 
     public BlockInductionPort() {
         super("induction_port");

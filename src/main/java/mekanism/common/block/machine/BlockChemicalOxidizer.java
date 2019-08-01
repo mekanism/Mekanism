@@ -9,7 +9,6 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
@@ -52,8 +51,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IBlockActiveTextured, IBlockDescriptive,
-      IHasGui, IStateFacing, IStateActive {
+public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IBlockDescriptive, IHasGui, IStateFacing,
+      IStateActive {
 
     private final String name;
 

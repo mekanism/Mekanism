@@ -10,7 +10,6 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasGui;
@@ -61,8 +60,8 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IBlockDescriptive, IHasGui, IColoredBlock, IStateFacing,
-      IStateActive, ITieredBlock<FluidTankTier> {
+public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IBlockDescriptive, IHasGui, IColoredBlock, IStateFacing, IStateActive,
+      ITieredBlock<FluidTankTier> {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
