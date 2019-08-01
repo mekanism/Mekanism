@@ -227,34 +227,5 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IBlockD
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         //TODO
         return false;
-
-    }
-
-    @Override
-    public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        EnumFacing[] valid = new EnumFacing[6];
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            for (EnumFacing dir : EnumFacing.VALUES) {
-                if (basicTile.canSetFacing(dir)) {
-                    valid[dir.ordinal()] = dir;
-                }
-            }
-        }
-        return valid;
-    }
-
-    @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            if (basicTile.canSetFacing(axis)) {
-                basicTile.setFacing(axis);
-                return true;
-            }
-        }
-        return false;
     }
 }

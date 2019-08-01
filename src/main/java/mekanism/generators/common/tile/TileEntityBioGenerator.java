@@ -151,11 +151,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
-    }
-
-    @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {

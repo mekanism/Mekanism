@@ -41,12 +41,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
-    }
-
-
-    @Override
     public void validate() {
         super.validate();
         Biome b = world.provider.getBiomeForCoords(getPos());

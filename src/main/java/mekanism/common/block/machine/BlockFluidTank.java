@@ -402,35 +402,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     }
 
     @Override
-    public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
-        EnumFacing[] valid = new EnumFacing[6];
-
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            for (EnumFacing dir : EnumFacing.VALUES) {
-                if (basicTile.canSetFacing(dir)) {
-                    valid[dir.ordinal()] = dir;
-                }
-            }
-        }
-        return valid;
-    }
-
-    @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            if (basicTile.canSetFacing(axis)) {
-                basicTile.setFacing(axis);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public int getGuiID() {
         return 41;
     }
