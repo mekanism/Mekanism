@@ -22,7 +22,6 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
@@ -31,7 +30,6 @@ import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.item.block.ItemBlockGasTank;
-import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -118,19 +116,6 @@ public final class MekanismUtils {
             case CREATIVE:
                 return MekanismBlock.CREATIVE_GAS_TANK.getItemStack();
         }
-        return ItemStack.EMPTY;
-    }
-
-    /**
-     * Retrieves a Factory with a defined tier and recipe type.
-     *
-     * @param tier - tier to add to the Factory
-     * @param type - recipe type to add to the Factory
-     *
-     * @return factory with defined tier and recipe type
-     */
-    public static ItemStack getFactory(FactoryTier tier, RecipeType type) {
-        //TODO
         return ItemStack.EMPTY;
     }
 

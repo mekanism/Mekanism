@@ -3,7 +3,7 @@ package mekanism.client.jei.machine.chemical;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiIngredientGroup;
@@ -15,8 +15,7 @@ import net.minecraft.client.Minecraft;
 public class ChemicalCrystallizerRecipeCategory<WRAPPER extends ChemicalCrystallizerRecipeWrapper<CrystallizerRecipe>> extends BaseRecipeCategory<WRAPPER> {
 
     public ChemicalCrystallizerRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiChemicalCrystallizer.png", Recipe.CHEMICAL_CRYSTALLIZER.getJEICategory(),
-              "tile.MachineBlock2.ChemicalCrystallizer.name", null, 5, 3, 147, 79);
+        super(helper, "mekanism:gui/nei/GuiChemicalCrystallizer.png", MekanismBlock.CHEMICAL_CRYSTALLIZER, null, 5, 3, 147, 79);
     }
 
     @Override

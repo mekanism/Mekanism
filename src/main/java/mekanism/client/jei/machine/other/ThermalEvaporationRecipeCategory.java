@@ -1,7 +1,7 @@
 package mekanism.client.jei.machine.other;
 
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
@@ -12,8 +12,7 @@ import net.minecraft.client.Minecraft;
 public class ThermalEvaporationRecipeCategory<WRAPPER extends ThermalEvaporationRecipeWrapper<ThermalEvaporationRecipe>> extends BaseRecipeCategory<WRAPPER> {
 
     public ThermalEvaporationRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png",
-              Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory(), "gui.thermalEvaporationController.short", null, 3, 12, 170, 62);
+        super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png", MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, null, 3, 12, 170, 62);
     }
 
     @Override

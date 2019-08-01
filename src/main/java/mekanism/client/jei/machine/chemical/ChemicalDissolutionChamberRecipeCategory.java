@@ -3,8 +3,8 @@ package mekanism.client.jei.machine.chemical;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismFluids;
-import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.IGuiHelper;
@@ -17,8 +17,8 @@ import net.minecraft.client.Minecraft;
 public class ChemicalDissolutionChamberRecipeCategory<WRAPPER extends ChemicalDissolutionChamberRecipeWrapper<DissolutionRecipe>> extends BaseRecipeCategory<WRAPPER> {
 
     public ChemicalDissolutionChamberRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png",
-              Recipe.CHEMICAL_DISSOLUTION_CHAMBER.getJEICategory(), "gui.chemicalDissolutionChamber.short", null, 3, 3, 170, 79);
+        //TODO: previously had a lang entry for a shorter path
+        super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png", MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, null, 3, 3, 170, 79);
     }
 
     @Override

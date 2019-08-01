@@ -5,7 +5,6 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
@@ -518,8 +517,6 @@ public final class RecipeHandler {
 
         private final HashMap<INPUT, RECIPE> recipes = new HashMap<>();
         private final String recipeName;
-        @Nonnull
-        private final String jeiCategory;
 
         private Class<INPUT> inputClass;
         private Class<OUTPUT> outputClass;
@@ -531,7 +528,6 @@ public final class RecipeHandler {
 
         private Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe) {
             recipeName = name;
-            jeiCategory = "mekanism." + recipeName.toLowerCase(Locale.ROOT);
 
             inputClass = input;
             outputClass = output;
@@ -550,11 +546,6 @@ public final class RecipeHandler {
 
         public String getRecipeName() {
             return recipeName;
-        }
-
-        @Nonnull
-        public String getJEICategory() {
-            return jeiCategory;
         }
 
         @Nullable

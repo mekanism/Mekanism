@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mezz.jei.api.IGuiHelper;
@@ -18,8 +19,8 @@ import mezz.jei.api.ingredients.IIngredients;
 
 public class ChanceMachineRecipeCategory<RECIPE extends ChanceMachineRecipe<RECIPE>, WRAPPER extends ChanceMachineRecipeWrapper<RECIPE>> extends BaseRecipeCategory<WRAPPER> {
 
-    public ChanceMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
-        super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress, 28, 16, 144, 54);
+    public ChanceMachineRecipeCategory(IGuiHelper helper, MekanismBlock mekanismBlock, ProgressBar progress) {
+        super(helper, "mekanism:gui/GuiBasicMachine.png", mekanismBlock, progress, 28, 16, 144, 54);
     }
 
     @Override

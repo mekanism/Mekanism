@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -45,6 +46,10 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
     private String unlocalizedName;
 
     private final IDrawable background;
+
+    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, MekanismBlock mekanismBlock, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
+        this(helper, guiTexture, mekanismBlock.getJEICategory(), mekanismBlock.getTranslationKey(), progress, xOffset, yOffset, width, height);
+    }
 
     protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         guiHelper = helper;

@@ -6,15 +6,16 @@ import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
+import mekanism.common.base.FactoryType;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.interfaces.ITieredBlock;
@@ -59,20 +60,20 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IBlockDescriptive, IHasGui, IStateFacing, IStateActive,
-      ITieredBlock<FactoryTier> {
+      ITieredBlock<FactoryTier>, IHasFactoryType {
 
     private final FactoryTier tier;
-    private final RecipeType type;
+    private final FactoryType type;
     private final String name;
 
-    public BlockFactory(FactoryTier tier, RecipeType type) {
+    public BlockFactory(@Nonnull FactoryTier tier, @Nonnull FactoryType type) {
         super(Material.IRON);
         this.tier = tier;
         this.type = type;
         setHardness(3.5F);
         setResistance(16F);
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_" + type.getTranslationKey().toLowerCase(Locale.ROOT) + "_factory";
+        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_" + type.getRegistryNameComponent() + "_factory";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
@@ -80,6 +81,12 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Override
     public FactoryTier getTier() {
         return tier;
+    }
+
+    @Nonnull
+    @Override
+    public FactoryType getFactoryType() {
+        return type;
     }
 
     @Override

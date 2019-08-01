@@ -4,8 +4,8 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
+import mekanism.common.base.FactoryType;
 import mekanism.common.base.IBlockProvider;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -34,6 +34,7 @@ import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.block.basic.BlockThermalEvaporation;
 import mekanism.common.block.basic.BlockThermalEvaporationController;
 import mekanism.common.block.basic.BlockThermalEvaporationValve;
+import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.machine.BlockChargepad;
 import mekanism.common.block.machine.BlockChemicalCrystallizer;
 import mekanism.common.block.machine.BlockChemicalDissolutionChamber;
@@ -214,35 +215,35 @@ public enum MekanismBlock implements IBlockProvider {
     CRUSHER(new BlockCrusher(), ItemBlockCrusher::new),
     DIGITAL_MINER(new BlockDigitalMiner(), ItemBlockDigitalMiner::new),
 
-    BASIC_SMELTING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.SMELTING), ItemBlockFactory::new),
-    BASIC_ENRICHING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.ENRICHING), ItemBlockFactory::new),
-    BASIC_CRUSHING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.CRUSHING), ItemBlockFactory::new),
-    BASIC_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.COMPRESSING), ItemBlockFactory::new),
-    BASIC_COMBINING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.COMBINING), ItemBlockFactory::new),
-    BASIC_PURIFYING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.PURIFYING), ItemBlockFactory::new),
-    BASIC_INJECTING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.INJECTING), ItemBlockFactory::new),
-    BASIC_INFUSING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.INFUSING), ItemBlockFactory::new),
-    BASIC_SAWING_FACTORY(new BlockFactory(FactoryTier.BASIC, RecipeType.SAWING), ItemBlockFactory::new),
+    BASIC_SMELTING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.SMELTING), ItemBlockFactory::new),
+    BASIC_ENRICHING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.ENRICHING), ItemBlockFactory::new),
+    BASIC_CRUSHING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.CRUSHING), ItemBlockFactory::new),
+    BASIC_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.COMPRESSING), ItemBlockFactory::new),
+    BASIC_COMBINING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.COMBINING), ItemBlockFactory::new),
+    BASIC_PURIFYING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.PURIFYING), ItemBlockFactory::new),
+    BASIC_INJECTING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.INJECTING), ItemBlockFactory::new),
+    BASIC_INFUSING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.INFUSING), ItemBlockFactory::new),
+    BASIC_SAWING_FACTORY(new BlockFactory(FactoryTier.BASIC, FactoryType.SAWING), ItemBlockFactory::new),
 
-    ADVANCED_SMELTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.SMELTING), ItemBlockFactory::new),
-    ADVANCED_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.ENRICHING), ItemBlockFactory::new),
-    ADVANCED_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.CRUSHING), ItemBlockFactory::new),
-    ADVANCED_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.COMPRESSING), ItemBlockFactory::new),
-    ADVANCED_COMBINING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.COMBINING), ItemBlockFactory::new),
-    ADVANCED_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.PURIFYING), ItemBlockFactory::new),
-    ADVANCED_INJECTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.INJECTING), ItemBlockFactory::new),
-    ADVANCED_INFUSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.INFUSING), ItemBlockFactory::new),
-    ADVANCED_SAWING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, RecipeType.SAWING), ItemBlockFactory::new),
+    ADVANCED_SMELTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.SMELTING), ItemBlockFactory::new),
+    ADVANCED_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.ENRICHING), ItemBlockFactory::new),
+    ADVANCED_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.CRUSHING), ItemBlockFactory::new),
+    ADVANCED_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.COMPRESSING), ItemBlockFactory::new),
+    ADVANCED_COMBINING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.COMBINING), ItemBlockFactory::new),
+    ADVANCED_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.PURIFYING), ItemBlockFactory::new),
+    ADVANCED_INJECTING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.INJECTING), ItemBlockFactory::new),
+    ADVANCED_INFUSING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.INFUSING), ItemBlockFactory::new),
+    ADVANCED_SAWING_FACTORY(new BlockFactory(FactoryTier.ADVANCED, FactoryType.SAWING), ItemBlockFactory::new),
 
-    ELITE_SMELTING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.SMELTING), ItemBlockFactory::new),
-    ELITE_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.ENRICHING), ItemBlockFactory::new),
-    ELITE_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.CRUSHING), ItemBlockFactory::new),
-    ELITE_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.COMPRESSING), ItemBlockFactory::new),
-    ELITE_COMBINING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.COMBINING), ItemBlockFactory::new),
-    ELITE_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.PURIFYING), ItemBlockFactory::new),
-    ELITE_INJECTING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.INJECTING), ItemBlockFactory::new),
-    ELITE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.INFUSING), ItemBlockFactory::new),
-    ELITE_SAWING_FACTORY(new BlockFactory(FactoryTier.ELITE, RecipeType.SAWING), ItemBlockFactory::new),
+    ELITE_SMELTING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.SMELTING), ItemBlockFactory::new),
+    ELITE_ENRICHING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.ENRICHING), ItemBlockFactory::new),
+    ELITE_CRUSHING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.CRUSHING), ItemBlockFactory::new),
+    ELITE_COMPRESSING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.COMPRESSING), ItemBlockFactory::new),
+    ELITE_COMBINING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.COMBINING), ItemBlockFactory::new),
+    ELITE_PURIFYING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.PURIFYING), ItemBlockFactory::new),
+    ELITE_INJECTING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.INJECTING), ItemBlockFactory::new),
+    ELITE_INFUSING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.INFUSING), ItemBlockFactory::new),
+    ELITE_SAWING_FACTORY(new BlockFactory(FactoryTier.ELITE, FactoryType.SAWING), ItemBlockFactory::new),
 
     METALLURGIC_INFUSER(new BlockMetallurgicInfuser(), ItemBlockMetallurgicInfuser::new),
     PURIFICATION_CHAMBER(new BlockPurificationChamber(), ItemBlockPurificationChamber::new),
@@ -478,6 +479,26 @@ public enum MekanismBlock implements IBlockProvider {
         return item;
     }
 
+    public String getName() {
+        return block.getRegistryName().getPath();
+    }
+
+    public String getJEICategory() {
+        return Mekanism.MODID + "." + getName();
+    }
+
+    public String getTranslationKey() {
+        return block.getTranslationKey();
+    }
+
+    @Nullable
+    public FactoryType getFactoryType() {
+        if (block instanceof IHasFactoryType) {
+            return ((IHasFactoryType) block).getFactoryType();
+        }
+        return null;
+    }
+
     @Nullable
     public MekanismBlock getUpgradedBlock() {
         //TODO: Have this be dynamic/built up automatically
@@ -506,5 +527,87 @@ public enum MekanismBlock implements IBlockProvider {
                 ((IItemMekanism) item).registerOreDict();
             }
         }
+    }
+
+    /**
+     * Retrieves a Factory with a defined tier and recipe type.
+     *
+     * @param tier - tier to add to the Factory
+     * @param type - recipe type to add to the Factory
+     *
+     * @return factory with defined tier and recipe type
+     */
+    public static MekanismBlock getFactory(@Nonnull FactoryTier tier, @Nonnull FactoryType type) {
+        //TODO: Clean this up and make it more dynamic styled. So that a map gets built at the end of registerBlocks
+        switch (tier) {
+            case BASIC:
+                switch (type) {
+                    case SMELTING:
+                        return BASIC_SMELTING_FACTORY;
+                    case ENRICHING:
+                        return BASIC_ENRICHING_FACTORY;
+                    case CRUSHING:
+                        return BASIC_CRUSHING_FACTORY;
+                    case COMPRESSING:
+                        return BASIC_COMPRESSING_FACTORY;
+                    case COMBINING:
+                        return BASIC_COMBINING_FACTORY;
+                    case PURIFYING:
+                        return BASIC_PURIFYING_FACTORY;
+                    case INJECTING:
+                        return BASIC_INJECTING_FACTORY;
+                    case INFUSING:
+                        return BASIC_INFUSING_FACTORY;
+                    case SAWING:
+                        return BASIC_SAWING_FACTORY;
+                }
+                break;
+            case ADVANCED:
+                switch (type) {
+                    case SMELTING:
+                        return ADVANCED_SMELTING_FACTORY;
+                    case ENRICHING:
+                        return ADVANCED_ENRICHING_FACTORY;
+                    case CRUSHING:
+                        return ADVANCED_CRUSHING_FACTORY;
+                    case COMPRESSING:
+                        return ADVANCED_COMPRESSING_FACTORY;
+                    case COMBINING:
+                        return ADVANCED_COMBINING_FACTORY;
+                    case PURIFYING:
+                        return ADVANCED_PURIFYING_FACTORY;
+                    case INJECTING:
+                        return ADVANCED_INJECTING_FACTORY;
+                    case INFUSING:
+                        return ADVANCED_INFUSING_FACTORY;
+                    case SAWING:
+                        return ADVANCED_SAWING_FACTORY;
+                }
+                break;
+            case ELITE:
+                switch (type) {
+                    case SMELTING:
+                        return ELITE_SMELTING_FACTORY;
+                    case ENRICHING:
+                        return ELITE_ENRICHING_FACTORY;
+                    case CRUSHING:
+                        return ELITE_CRUSHING_FACTORY;
+                    case COMPRESSING:
+                        return ELITE_COMPRESSING_FACTORY;
+                    case COMBINING:
+                        return ELITE_COMBINING_FACTORY;
+                    case PURIFYING:
+                        return ELITE_PURIFYING_FACTORY;
+                    case INJECTING:
+                        return ELITE_INJECTING_FACTORY;
+                    case INFUSING:
+                        return ELITE_INFUSING_FACTORY;
+                    case SAWING:
+                        return ELITE_SAWING_FACTORY;
+                }
+                break;
+        }
+        //It should never be able to reach here
+        return BASIC_SMELTING_FACTORY;
     }
 }

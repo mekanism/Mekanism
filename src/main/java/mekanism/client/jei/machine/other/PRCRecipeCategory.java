@@ -14,7 +14,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
@@ -26,8 +26,8 @@ import mezz.jei.api.ingredients.IIngredients;
 public class PRCRecipeCategory<WRAPPER extends PRCRecipeWrapper<PressurizedRecipe>> extends BaseRecipeCategory<WRAPPER> {
 
     public PRCRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiPRC.png", Recipe.PRESSURIZED_REACTION_CHAMBER.getJEICategory(),
-              "tile.MachineBlock2.PressurizedReactionChamber.short.name", ProgressBar.MEDIUM, 3, 11, 170, 68);
+        //TODO: Had a lang key for shorter name
+        super(helper, "mekanism:gui/nei/GuiPRC.png", MekanismBlock.PRESSURIZED_REACTION_CHAMBER, ProgressBar.MEDIUM, 3, 11, 170, 68);
     }
 
     @Override

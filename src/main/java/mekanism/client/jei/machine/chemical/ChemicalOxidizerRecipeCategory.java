@@ -10,7 +10,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiIngredientGroup;
@@ -21,8 +21,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ChemicalOxidizerRecipeCategory<WRAPPER extends ChemicalOxidizerRecipeWrapper<OxidationRecipe>> extends BaseRecipeCategory<WRAPPER> {
 
     public ChemicalOxidizerRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/GuiChemicalOxidizer.png", Recipe.CHEMICAL_OXIDIZER.getJEICategory(),
-              "tile.MachineBlock2.ChemicalOxidizer.name", ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
+        super(helper, "mekanism:gui/GuiChemicalOxidizer.png", MekanismBlock.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
     }
 
     @Override

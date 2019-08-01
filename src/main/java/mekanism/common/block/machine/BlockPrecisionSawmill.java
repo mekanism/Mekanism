@@ -5,12 +5,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
+import mekanism.common.base.FactoryType;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
@@ -51,7 +53,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IBlockDescriptive, IHasGui, IStateFacing, IStateActive {
+public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IBlockDescriptive, IHasGui, IStateFacing, IStateActive,
+      IHasFactoryType {
 
     private final String name;
 
@@ -63,6 +66,12 @@ public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBl
         this.name = "precision_sawmill";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+    }
+
+    @Nonnull
+    @Override
+    public FactoryType getFactoryType() {
+        return FactoryType.SAWING;
     }
 
     @Override

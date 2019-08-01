@@ -74,6 +74,7 @@ public enum MachineType implements IBlockType {
 
     @Override
     public boolean isEnabled() {
+        //TODO: Replace with IBlockDisableable
         return MekanismConfig.current().general.machinesManager.isEnabled(this);
     }
 
