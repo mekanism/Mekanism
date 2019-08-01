@@ -214,19 +214,23 @@ public class TransporterStack {
     }
 
     public EnumFacing getSide(ILogisticalTransporter transporter) {
+        EnumFacing side = null;
         if (progress < 50) {
             Coord4D prev = getPrev(transporter);
             if (prev != null) {
-                return transporter.coord().sideDifference(prev);
+                side = transporter.coord().sideDifference(prev);
             }
         } else {
             Coord4D next = getNext(transporter);
             if (next != null) {
-                return next.sideDifference(transporter.coord());
+                side = next.sideDifference(transporter.coord());
             }
         }
-
-        return EnumFacing.DOWN;
+        //sideDifference can return null
+        //TODO: Look into implications further about what side should be returned.
+        // This is mainly to stop a crash I randomly encountered but was unable to reproduce.
+        // (I believe the difference returns null when it is the "same" transporter somehow or something)
+        return side == null ? EnumFacing.DOWN : side;
     }
 
     public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from) {
