@@ -18,6 +18,7 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -59,7 +60,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IBlockActiveTextured, IBlockDescriptive, IHasGui, IStateFacing,
-      IStateActive {
+      IStateActive, ITieredBlock<FactoryTier> {
 
     private final FactoryTier tier;
     private final RecipeType type;
@@ -77,6 +78,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
+    @Override
     public FactoryTier getTier() {
         return tier;
     }

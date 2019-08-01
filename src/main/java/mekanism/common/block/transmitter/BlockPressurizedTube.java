@@ -2,13 +2,14 @@ package mekanism.common.block.transmitter;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockPressurizedTube extends BlockSmallTransmitter {
+public class BlockPressurizedTube extends BlockSmallTransmitter implements ITieredBlock<TubeTier> {
 
     private final TubeTier tier;
 
@@ -17,6 +18,7 @@ public class BlockPressurizedTube extends BlockSmallTransmitter {
         this.tier = tier;
     }
 
+    @Override
     public TubeTier getTier() {
         return tier;
     }

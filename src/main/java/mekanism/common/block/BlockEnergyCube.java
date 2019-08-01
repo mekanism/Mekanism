@@ -7,6 +7,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -45,7 +46,7 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing {
+public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<EnergyCubeTier> {
 
     private final EnergyCubeTier tier;
     private final String name;
@@ -61,6 +62,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
+    @Override
     public EnergyCubeTier getTier() {
         return tier;
     }

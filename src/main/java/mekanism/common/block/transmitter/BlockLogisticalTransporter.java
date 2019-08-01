@@ -2,6 +2,7 @@ package mekanism.common.block.transmitter;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateColor;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
@@ -10,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.World;
 
-public class BlockLogisticalTransporter extends BlockLargeTransmitter implements IStateColor {
+public class BlockLogisticalTransporter extends BlockLargeTransmitter implements IStateColor, ITieredBlock<TransporterTier> {
 
     private final TransporterTier tier;
 
@@ -19,6 +20,7 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
         this.tier = tier;
     }
 
+    @Override
     public TransporterTier getTier() {
         return tier;
     }

@@ -2,13 +2,14 @@ package mekanism.common.block.transmitter;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockMechanicalPipe extends BlockLargeTransmitter {
+public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITieredBlock<PipeTier> {
 
     private final PipeTier tier;
 
@@ -17,6 +18,7 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter {
         this.tier = tier;
     }
 
+    @Override
     public PipeTier getTier() {
         return tier;
     }

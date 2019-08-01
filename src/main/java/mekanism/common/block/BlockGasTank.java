@@ -7,6 +7,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -38,7 +39,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing {
+public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<GasTankTier> {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
@@ -56,6 +57,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
+    @Override
     public GasTankTier getTier() {
         return tier;
     }

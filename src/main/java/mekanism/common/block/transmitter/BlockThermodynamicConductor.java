@@ -2,13 +2,14 @@ package mekanism.common.block.transmitter;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockThermodynamicConductor extends BlockSmallTransmitter {
+public class BlockThermodynamicConductor extends BlockSmallTransmitter implements ITieredBlock<ConductorTier> {
 
     private final ConductorTier tier;
 
@@ -17,6 +18,7 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter {
         this.tier = tier;
     }
 
+    @Override
     public ConductorTier getTier() {
         return tier;
     }

@@ -15,6 +15,7 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -61,7 +62,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IBlockDescriptive, IHasGui, IColoredBlock, IStateFacing,
-      IStateActive {
+      IStateActive, ITieredBlock<FluidTankTier> {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -84,6 +85,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         return !stack.isEmpty() && stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockFluidTank;
     }
 
+    @Override
     public FluidTankTier getTier() {
         return tier;
     }

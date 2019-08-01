@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -20,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockInductionProvider extends BlockTileDrops implements IBlockDescriptive {
+public class BlockInductionProvider extends BlockTileDrops implements IBlockDescriptive, ITieredBlock<InductionProviderTier> {
 
     private final InductionProviderTier tier;
     private final String name;
@@ -36,6 +37,7 @@ public class BlockInductionProvider extends BlockTileDrops implements IBlockDesc
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
+    @Override
     public InductionProviderTier getTier() {
         return tier;
     }

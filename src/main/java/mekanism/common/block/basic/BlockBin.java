@@ -10,6 +10,7 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -45,7 +46,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IBlockDescriptive, IHasModel, IStateFacing, IStateActive {
+public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IBlockDescriptive, IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier> {
 
     private final String name;
     private final BinTier tier;
@@ -61,6 +62,7 @@ public class BlockBin extends BlockTileDrops implements IBlockActiveTextured, IB
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }
 
+    @Override
     public BinTier getTier() {
         return tier;
     }
