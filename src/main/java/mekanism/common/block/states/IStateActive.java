@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 public interface IStateActive {
 
     default boolean isActive(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);;
+        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         return tile != null && isActive(tile);
     }
 

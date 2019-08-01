@@ -69,7 +69,7 @@ public class ItemBlockFluidTank extends ItemBlockMekanism implements ISustainedI
 
     @Nullable
     @Override
-    public FluidTankTier getTier(ItemStack stack) {
+    public FluidTankTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockFluidTank) {
             return ((BlockFluidTank) ((ItemBlockFluidTank) item).block).getTier();

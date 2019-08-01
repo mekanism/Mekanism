@@ -36,7 +36,7 @@ public class ItemBlockBin extends ItemBlockMekanism implements ITieredItem<BinTi
 
     @Nullable
     @Override
-    public BinTier getTier(ItemStack stack) {
+    public BinTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockBin) {
             return ((BlockBin) ((ItemBlockBin) item).block).getTier();

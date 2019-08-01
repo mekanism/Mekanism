@@ -35,7 +35,7 @@ public class ItemBlockInductionCell extends ItemBlockMekanism implements IEnergi
 
     @Nullable
     @Override
-    public InductionCellTier getTier(ItemStack stack) {
+    public InductionCellTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockInductionCell) {
             return ((BlockInductionCell) ((ItemBlockInductionCell) item).block).getTier();

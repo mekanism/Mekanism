@@ -22,8 +22,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class BlockStateHelper {
 
@@ -72,7 +70,7 @@ public class BlockStateHelper {
         if (properties.isEmpty()) {
             return new BlockStateContainer(block);
         }
-        return new ExtendedBlockState(block, properties.toArray(new IProperty[0]), new IUnlistedProperty[0]);
+        return new BlockStateContainer(block, properties.toArray(new IProperty[0]));
     }
 
     public static IBlockState getActualState(@Nonnull Block block, @Nonnull IBlockState state, @Nonnull TileEntity tile) {

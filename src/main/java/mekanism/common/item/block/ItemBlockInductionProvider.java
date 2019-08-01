@@ -28,7 +28,7 @@ public class ItemBlockInductionProvider extends ItemBlockMekanism implements ITi
 
     @Nullable
     @Override
-    public InductionProviderTier getTier(ItemStack stack) {
+    public InductionProviderTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockInductionProvider) {
             return ((BlockInductionProvider) ((ItemBlockInductionProvider) item).block).getTier();

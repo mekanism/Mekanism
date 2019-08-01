@@ -152,7 +152,6 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
             return true;
         }
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        int metadata = state.getBlock().getMetaFromState(state);
         ItemStack stack = entityplayer.getHeldItem(hand);
 
         if (!stack.isEmpty()) {

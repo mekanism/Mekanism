@@ -55,7 +55,7 @@ public class ItemBlockFactory extends ItemBlockMekanism implements IItemEnergize
 
     @Nullable
     @Override
-    public FactoryTier getTier(ItemStack stack) {
+    public FactoryTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBlockFactory) {
             return ((BlockFactory) ((ItemBlockFactory) item).block).getTier();

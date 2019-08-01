@@ -147,7 +147,7 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
             if (tileEntity.facing == EnumFacing.WEST) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, (double) yRandom, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
             } else if (tileEntity.facing == EnumFacing.EAST) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
                 world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
