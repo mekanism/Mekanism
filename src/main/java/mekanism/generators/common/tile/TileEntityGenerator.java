@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
@@ -13,7 +14,7 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.block.states.GeneratorType;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -52,9 +53,10 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
         super.onUpdate();
         if (!world.isRemote) {
             if (MekanismConfig.current().general.destroyDisabledBlocks.val()) {
-                GeneratorType type = GeneratorType.get(getBlockType(), getBlockMetadata());
-                if (type != null && !type.isEnabled()) {
-                    Mekanism.logger.info("Destroying generator of type '" + type.getBlockName() + "' at coords " + Coord4D.get(this) + " as according to config.");
+                Block block = getBlockType();
+                if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
+                    //TODO: Better way of doing name?
+                    Mekanism.logger.info("Destroying generator of type '" + block.getClass().getSimpleName() + "' at coords " + Coord4D.get(this) + " as according to config.");
                     world.setBlockToAir(getPos());
                     return;
                 }

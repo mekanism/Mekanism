@@ -1,12 +1,9 @@
 package mekanism.common.block.states;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import mekanism.common.base.IBlockType;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 public enum MachineType implements IBlockType {
@@ -49,18 +46,8 @@ public enum MachineType implements IBlockType {
     FORMULAIC_ASSEMBLICATOR,
     FUELWOOD_HEATER;
 
-    private static final List<MachineType> VALID_MACHINES = new ArrayList<>();
-
-    static {
-        VALID_MACHINES.addAll(Arrays.asList(MachineType.values()));
-    }
-
     public static List<MachineType> getValidMachines() {
-        return VALID_MACHINES;
-    }
-
-    public static MachineType get(Block block, int meta) {
-        return null;
+        return Arrays.asList(values());
     }
 
     public static MachineType get(ItemStack stack) {
@@ -78,23 +65,17 @@ public enum MachineType implements IBlockType {
         return MekanismConfig.current().general.machinesManager.isEnabled(this);
     }
 
-    //TODO: Put this as part of IBlockElectric?
     public double getUsage() {
-        //TODO
+        //TODO: Use IBlockElectric instead
         return 0;
     }
 
     public double getStorage() {
-        //TODO
+        //TODO: Use IBlockElectric instead
         return 0;
     }
 
     public ItemStack getStack() {
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    public String toString() {
-        return name().toLowerCase(Locale.ROOT);
     }
 }

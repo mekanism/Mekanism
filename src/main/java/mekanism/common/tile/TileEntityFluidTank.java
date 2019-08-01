@@ -15,7 +15,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.base.ITieredTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
@@ -50,7 +49,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
-      ITankManager, ISecurityTile, ITierUpgradeable, ITieredTile, IComparatorSupport {
+      ITankManager, ISecurityTile, ITierUpgradeable, IComparatorSupport {
 
     public boolean isActive;
 
@@ -482,10 +481,5 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     @Override
     public TileComponentSecurity getSecurity() {
         return securityComponent;
-    }
-
-    @Override
-    public BaseTier getTier() {
-        return tier.getBaseTier();
     }
 }

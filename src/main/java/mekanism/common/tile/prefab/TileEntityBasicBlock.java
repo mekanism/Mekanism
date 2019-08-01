@@ -11,7 +11,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -71,9 +71,10 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public void update() {
         if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
-            MachineType type = MachineType.get(getBlockType(), getBlockMetadata());
-            if (type != null && !type.isEnabled()) {
-                Mekanism.logger.info("Destroying machine of type '" + type.getBlockName() + "' at coords " + Coord4D.get(this) + " as according to config.");
+            Block block = getBlockType();
+            if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
+                //TODO: Better way of doing name?
+                Mekanism.logger.info("Destroying machine of type '" + block.getClass().getSimpleName() + "' at coords " + Coord4D.get(this) + " as according to config.");
                 world.setBlockToAir(getPos());
                 return;
             }
