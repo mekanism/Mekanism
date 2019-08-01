@@ -14,7 +14,6 @@ import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -60,8 +59,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasGui,
-      ISupportsUpgrades, IStateFacing, IStateActive {
+public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IBlockActiveTextured, IBlockDescriptive, IHasGui, ISupportsUpgrades, IStateFacing,
+      IStateActive {
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -84,7 +83,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public boolean canRotateTo(EnumFacing side) {
+    public boolean supportsAll() {
         return true;
     }
 

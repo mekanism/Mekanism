@@ -7,7 +7,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
-import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -26,7 +25,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +34,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDesk extends BlockTileDrops implements IRotatableBlock, IBlockDescriptive, IStateFacing {
+public class BlockSecurityDesk extends BlockTileDrops implements IBlockDescriptive, IStateFacing {
 
     private final String name;
 
@@ -155,11 +153,6 @@ public class BlockSecurityDesk extends BlockTileDrops implements IRotatableBlock
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean canRotateTo(EnumFacing side) {
-        return Plane.HORIZONTAL.test(side);
     }
 
     @Override

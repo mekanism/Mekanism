@@ -119,7 +119,6 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
 import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
-import mekanism.common.block.states.BlockStateHelper.MekanismBlockStateMapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -252,7 +251,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
-    private static final IStateMapper basicMapper = new MekanismBlockStateMapper();
     private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
     private static final IStateMapper boxMapper = new CardboardBoxStateMapper();
 
@@ -505,31 +503,6 @@ public class ClientProxy extends CommonProxy {
     public void registerBlockRenders() {
         //TODO: Redo all of these. Lots can probably just be done with json now. It is probably a good idea to do the ones, that can be done
         // in json with it, EVEN if it requires more skeleton json files.
-        //Most of these need the state mapper because they cannot face up or down.
-        //TODO: Make a reduced facing properties that some blocks can use when they can't face all directions
-        setCustomStateMapper(basicMapper, MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, MekanismBlock.SECURITY_DESK, MekanismBlock.BASIC_BIN,
-              MekanismBlock.ADVANCED_BIN, MekanismBlock.ELITE_BIN, MekanismBlock.ULTIMATE_BIN, MekanismBlock.CREATIVE_BIN);
-        //Machine blocks
-        setCustomStateMapper(basicMapper, MekanismBlock.CHARGEPAD, MekanismBlock.CHEMICAL_CRYSTALLIZER, MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER,
-              MekanismBlock.CHEMICAL_INFUSER, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, MekanismBlock.CHEMICAL_OXIDIZER, MekanismBlock.CHEMICAL_WASHER,
-              MekanismBlock.COMBINER, MekanismBlock.CRUSHER, MekanismBlock.DIGITAL_MINER, MekanismBlock.ELECTRIC_PUMP, MekanismBlock.ELECTROLYTIC_SEPARATOR,
-              MekanismBlock.ENERGIZED_SMELTER, MekanismBlock.ENRICHMENT_CHAMBER, MekanismBlock.FLUIDIC_PLENISHER, MekanismBlock.FORMULAIC_ASSEMBLICATOR,
-              MekanismBlock.FUELWOOD_HEATER, MekanismBlock.LASER, MekanismBlock.LASER_AMPLIFIER, MekanismBlock.LASER_TRACTOR_BEAM, MekanismBlock.LOGISTICAL_SORTER,
-              MekanismBlock.METALLURGIC_INFUSER, MekanismBlock.OREDICTIONIFICATOR, MekanismBlock.OSMIUM_COMPRESSOR, MekanismBlock.PERSONAL_CHEST,
-              MekanismBlock.PRECISION_SAWMILL, MekanismBlock.PRESSURIZED_REACTION_CHAMBER, MekanismBlock.PURIFICATION_CHAMBER, MekanismBlock.QUANTUM_ENTANGLOPORTER,
-              MekanismBlock.RESISTIVE_HEATER, MekanismBlock.ROTARY_CONDENSENTRATOR, MekanismBlock.SEISMIC_VIBRATOR, MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
-        //Basic Factories
-        setCustomStateMapper(basicMapper, MekanismBlock.BASIC_SMELTING_FACTORY, MekanismBlock.BASIC_ENRICHING_FACTORY, MekanismBlock.BASIC_CRUSHING_FACTORY,
-              MekanismBlock.BASIC_COMPRESSING_FACTORY, MekanismBlock.BASIC_COMBINING_FACTORY, MekanismBlock.BASIC_PURIFYING_FACTORY,
-              MekanismBlock.BASIC_INJECTING_FACTORY, MekanismBlock.BASIC_INFUSING_FACTORY, MekanismBlock.BASIC_SAWING_FACTORY);
-        //Advanced Factories
-        setCustomStateMapper(basicMapper, MekanismBlock.ADVANCED_SMELTING_FACTORY, MekanismBlock.ADVANCED_ENRICHING_FACTORY, MekanismBlock.ADVANCED_CRUSHING_FACTORY,
-              MekanismBlock.ADVANCED_COMPRESSING_FACTORY, MekanismBlock.ADVANCED_COMBINING_FACTORY, MekanismBlock.ADVANCED_PURIFYING_FACTORY,
-              MekanismBlock.ADVANCED_INJECTING_FACTORY, MekanismBlock.ADVANCED_INFUSING_FACTORY, MekanismBlock.ADVANCED_SAWING_FACTORY);
-        //Elite Factories
-        setCustomStateMapper(basicMapper, MekanismBlock.ELITE_SMELTING_FACTORY, MekanismBlock.ELITE_ENRICHING_FACTORY, MekanismBlock.ELITE_CRUSHING_FACTORY,
-              MekanismBlock.ELITE_COMPRESSING_FACTORY, MekanismBlock.ELITE_COMBINING_FACTORY, MekanismBlock.ELITE_PURIFYING_FACTORY,
-              MekanismBlock.ELITE_INJECTING_FACTORY, MekanismBlock.ELITE_INFUSING_FACTORY, MekanismBlock.ELITE_SAWING_FACTORY);
         setCustomStateMapper(new StateMapperBase() {
 
                                  @Nonnull

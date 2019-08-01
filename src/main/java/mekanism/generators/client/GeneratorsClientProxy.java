@@ -2,7 +2,6 @@ package mekanism.generators.client;
 
 import java.util.function.Function;
 import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.common.block.states.BlockStateHelper.MekanismBlockStateMapper;
 import mekanism.common.item.IItemRedirectedModel;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
@@ -50,7 +49,6 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -70,8 +68,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GeneratorsClientProxy extends GeneratorsCommonProxy {
-
-    private static final IStateMapper basicMapper = new MekanismBlockStateMapper();
 
     @Override
     public void registerTESRs() {
@@ -113,20 +109,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         }
     }
 
-    private void setCustomStateMapper(IStateMapper mapper, GeneratorsBlock... blocks) {
-        for (GeneratorsBlock generatorsBlock : blocks) {
-            ModelLoader.setCustomStateMapper(generatorsBlock.getBlock(), mapper);
-        }
-    }
-
     @Override
     public void registerBlockRenders() {
-        //TODO
-        setCustomStateMapper(basicMapper, GeneratorsBlock.HEAT_GENERATOR, GeneratorsBlock.SOLAR_GENERATOR, GeneratorsBlock.GAS_BURNING_GENERATOR,
-              GeneratorsBlock.BIO_GENERATOR, GeneratorsBlock.ADVANCED_SOLAR_GENERATOR, GeneratorsBlock.WIND_GENERATOR, GeneratorsBlock.TURBINE_ROTOR,
-              GeneratorsBlock.ROTATIONAL_COMPLEX, GeneratorsBlock.ELECTROMAGNETIC_COIL, GeneratorsBlock.TURBINE_CASING, GeneratorsBlock.TURBINE_VALVE,
-              GeneratorsBlock.TURBINE_VENT, GeneratorsBlock.SATURATING_CONDENSER, GeneratorsBlock.REACTOR_CONTROLLER, GeneratorsBlock.REACTOR_FRAME,
-              GeneratorsBlock.REACTOR_GLASS, GeneratorsBlock.REACTOR_PORT, GeneratorsBlock.REACTOR_LOGIC_ADAPTER, GeneratorsBlock.LASER_FOCUS_MATRIX);
     }
 
     public void registerItemRender(Item item) {

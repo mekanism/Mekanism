@@ -17,7 +17,6 @@ import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -46,7 +45,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -60,8 +58,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasGui,
-      IStateFacing, IStateActive {
+public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IBlockActiveTextured, IBlockDescriptive, IHasGui, IStateFacing,
+      IStateActive {
 
     private final FactoryTier tier;
     private final RecipeType type;
@@ -87,11 +85,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     public String getDescription() {
         //TODO: Should name just be gotten from registry name
         return LangUtils.localize("tooltip.mekanism." + this.name);
-    }
-
-    @Override
-    public boolean canRotateTo(EnumFacing side) {
-        return Plane.HORIZONTAL.test(side);
     }
 
     @Nonnull

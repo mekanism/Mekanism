@@ -65,6 +65,11 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
         return tier;
     }
 
+    @Override
+    public boolean supportsAll() {
+        return true;
+    }
+
     @Nonnull
     @Override
     public BlockStateContainer createBlockState() {

@@ -10,7 +10,6 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -33,7 +32,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +43,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockWindGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IRotatableBlock, IBlockElectric, IStateFacing {
+public class BlockWindGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IBlockElectric, IStateFacing {
 
     private final String name;
 
@@ -62,11 +60,6 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public String getDescription() {
         return LangUtils.localize("tooltip.mekanism." + name);
-    }
-
-    @Override
-    public boolean canRotateTo(EnumFacing side) {
-        return Plane.HORIZONTAL.test(side);
     }
 
     @Nonnull

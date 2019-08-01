@@ -12,9 +12,7 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -51,7 +49,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IRotatableBlock, IBlockDescriptive, IStateFacing, IStateActive {
+//TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
+public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IBlockDescriptive, IStateFacing {
 
     private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
 
@@ -74,7 +73,7 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     }
 
     @Override
-    public boolean canRotateTo(EnumFacing side) {
+    public boolean supportsAll() {
         return true;
     }
 

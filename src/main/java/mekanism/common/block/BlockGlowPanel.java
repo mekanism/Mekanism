@@ -69,6 +69,11 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     }
 
     @Override
+    public boolean supportsAll() {
+        return true;
+    }
+
+    @Override
     public EnumColor getColor() {
         return color;
     }

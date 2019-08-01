@@ -11,10 +11,8 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
@@ -51,8 +49,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockQuantumEntangloporter extends BlockMekanismContainer implements IBlockElectric, IRotatableBlock, IBlockDescriptive, IHasGui, ISupportsUpgrades,
-      IStateFacing, IStateActive {
+//TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
+public class BlockQuantumEntangloporter extends BlockMekanismContainer implements IBlockElectric, IBlockDescriptive, IHasGui, ISupportsUpgrades, IStateFacing {
 
     private final String name;
 
@@ -73,7 +71,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     }
 
     @Override
-    public boolean canRotateTo(EnumFacing side) {
+    public boolean supportsAll() {
         return true;
     }
 

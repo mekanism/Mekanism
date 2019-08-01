@@ -8,7 +8,6 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockActiveTextured;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.interfaces.IRotatableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -26,7 +25,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -35,7 +33,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationController extends BlockTileDrops implements IBlockActiveTextured, IRotatableBlock, IBlockDescriptive, IHasModel, IStateFacing,
+public class BlockThermalEvaporationController extends BlockTileDrops implements IBlockActiveTextured, IBlockDescriptive, IHasModel, IStateFacing,
       IStateActive {
 
     private final String name;
@@ -159,11 +157,6 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     public String getDescription() {
         //TODO: Should name just be gotten from registry name
         return LangUtils.localize("tooltip.mekanism." + this.name);
-    }
-
-    @Override
-    public boolean canRotateTo(EnumFacing side) {
-        return Plane.HORIZONTAL.test(side);
     }
 
     @Override
