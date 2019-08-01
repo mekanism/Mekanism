@@ -3,9 +3,6 @@ package mekanism.generators.common.tile.turbine;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -40,8 +37,7 @@ import net.minecraftforge.fml.common.Optional.Method;
 
 public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration, IComparatorSupport {
 
-    private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow",
-                                                         "getSteamInput"};
+    private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow", "getSteamInput"};
     public boolean ic2Registered = false;
     public TurbineFluidTank fluidTank;
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
@@ -74,15 +70,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean sideIsOutput(EnumFacing side) {
-        if (structure != null) {
-            return !structure.locations.contains(Coord4D.get(this).offset(side));
-        }
-        return false;
+    public boolean canOutputEnergy(EnumFacing side) {
+        return structure != null && !structure.locations.contains(Coord4D.get(this).offset(side));
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         return false;
     }
 
@@ -151,7 +144,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        if (sideIsOutput(from)) {
+        if (canOutputEnergy(from)) {
             double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), RFIntegration.fromRF(maxExtract)));
             if (!simulate) {
                 setEnergy(getEnergy() - toSend);
@@ -168,30 +161,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getEnergyStored(EnumFacing from) {
-        return RFIntegration.toRF(getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getMaxEnergyStored(EnumFacing from) {
-        return RFIntegration.toRF(getMaxEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getSinkTier() {
-        return 4;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getSourceTier() {
-        return 4;
-    }
-
-    @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
         return 0;
@@ -199,72 +168,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean isTeleporterCompatible(EnumFacing side) {
-        return canOutputEnergy(side);
-    }
-
-    @Override
-    public boolean canOutputEnergy(EnumFacing side) {
-        return sideIsOutput(side);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction) {
-        return false;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction) {
-        return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getStored() {
-        return IC2Integration.toEUAsInt(getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void setStored(int energy) {
-        setEnergy(IC2Integration.fromEU(energy));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getCapacity() {
-        return IC2Integration.toEUAsInt(getMaxEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getOutput() {
-        return IC2Integration.toEUAsInt(getMaxOutput());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getDemandedEnergy() {
         return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getOfferedEnergy() {
-        return IC2Integration.toEU(Math.min(getEnergy(), getMaxOutput()));
-    }
-
-    @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
-        return false;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getOutputEnergyUnitsPerTick() {
-        return IC2Integration.toEU(getMaxOutput());
     }
 
     @Override
@@ -290,7 +195,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
         double toGive = Math.min(getEnergy(), amount);
-        if (toGive < 0.0001 || (side != null && !sideIsOutput(side))) {
+        if (toGive < 0.0001 || (side != null && !canOutputEnergy(side))) {
             return 0;
         }
         if (!simulate) {
@@ -369,7 +274,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
                 || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.TESLA_HOLDER_CAPABILITY
-                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing)) || capability == CapabilityEnergy.ENERGY) {
+                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(facing)) || capability == CapabilityEnergy.ENERGY) {
                 return true;
             }
         }
@@ -383,7 +288,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 return (T) this;
             } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
-            } else if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(facing))) {
+            } else if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(facing))) {
                 return (T) teslaManager.getWrapper(this, facing);
             } else if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));

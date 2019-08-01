@@ -3,9 +3,6 @@ package mekanism.common.tile;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
@@ -41,16 +38,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-@InterfaceList({
-      @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID),
-      @Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = MekanismHooks.IC2_MOD_ID),
-      @Interface(iface = "ic2.api.tile.IEnergyStorage", modid = MekanismHooks.IC2_MOD_ID)
-})
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState, IComparatorSupport {
 
     private boolean ic2Registered = false;
@@ -86,7 +76,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public boolean sideIsOutput(EnumFacing side) {
+    public boolean canOutputEnergy(EnumFacing side) {
         if (structure != null && mode) {
             return !structure.locations.contains(Coord4D.get(this).offset(side));
         }
@@ -94,7 +84,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         return (structure != null && !mode);
     }
 
@@ -190,9 +180,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        if (sideIsConsumer(from)) {
-            double received = addEnergy(RFIntegration.fromRF(maxReceive), simulate);
-            return RFIntegration.toRF(received);
+        if (canReceiveEnergy(from)) {
+            return RFIntegration.toRF(addEnergy(RFIntegration.fromRF(maxReceive), simulate));
         }
         return 0;
     }
@@ -200,7 +189,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        if (sideIsOutput(from)) {
+        if (canOutputEnergy(from)) {
             double sent = removeEnergy(RFIntegration.fromRF(maxExtract), simulate);
             return RFIntegration.toRF(sent);
         }
@@ -214,30 +203,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getEnergyStored(EnumFacing from) {
-        return RFIntegration.toRF(getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getMaxEnergyStored(EnumFacing from) {
-        return RFIntegration.toRF(getMaxEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getSinkTier() {
-        return 4;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getSourceTier() {
-        return 4;
-    }
-
-    @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
         addEnergy(IC2Integration.fromEU(amount), false);
@@ -247,72 +212,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean isTeleporterCompatible(EnumFacing side) {
-        return canOutputEnergy(side);
-    }
-
-    @Override
-    public boolean canOutputEnergy(EnumFacing side) {
-        return sideIsOutput(side);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction) {
-        return sideIsConsumer(direction);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction) {
-        return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getStored() {
-        return IC2Integration.toEUAsInt(getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void setStored(int energy) {
-        setEnergy(IC2Integration.fromEU(energy));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getCapacity() {
-        return IC2Integration.toEUAsInt(getMaxEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getOutput() {
-        return IC2Integration.toEUAsInt(getMaxOutput());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getDemandedEnergy() {
         return IC2Integration.toEU(getMaxEnergy() - getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getOfferedEnergy() {
-        return IC2Integration.toEU(Math.min(getEnergy(), getMaxOutput()));
-    }
-
-    @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
-        return sideIsConsumer(side);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getOutputEnergyUnitsPerTick() {
-        return IC2Integration.toEU(getMaxOutput());
     }
 
     @Override
@@ -333,12 +234,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-        return side == null || sideIsConsumer(side) ? addEnergy(amount, simulate) : 0;
+        return side == null || canReceiveEnergy(side) ? addEnergy(amount, simulate) : 0;
     }
 
     @Override
     public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
-        return side == null || sideIsOutput(side) ? removeEnergy(amount, simulate) : 0;
+        return side == null || canOutputEnergy(side) ? removeEnergy(amount, simulate) : 0;
     }
 
     @Override
@@ -402,8 +303,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     private boolean isTesla(@Nonnull Capability capability, EnumFacing side) {
-        return capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(side))
-               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(side));
+        return capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && canReceiveEnergy(side))
+               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(side));
     }
 
     @Nonnull

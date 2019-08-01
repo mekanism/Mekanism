@@ -323,7 +323,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         return facing.getOpposite() == side;
     }
 

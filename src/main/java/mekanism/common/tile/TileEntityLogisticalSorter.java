@@ -417,7 +417,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         return false;
     }
 

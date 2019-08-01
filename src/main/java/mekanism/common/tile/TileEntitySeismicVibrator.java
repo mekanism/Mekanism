@@ -172,7 +172,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         return side == facing.getOpposite();
     }
 

@@ -101,7 +101,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
     }
 

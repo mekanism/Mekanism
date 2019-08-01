@@ -64,12 +64,12 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
     }
 
     @Override
-    public boolean sideIsOutput(EnumFacing side) {
+    public boolean canOutputEnergy(EnumFacing side) {
         return false;
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         return false;
     }
 

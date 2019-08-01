@@ -326,7 +326,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean sideIsOutput(EnumFacing side) {
+    public boolean canOutputEnergy(EnumFacing side) {
         if (!hasFrequency()) {
             return false;
         }
@@ -334,7 +334,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         if (!hasFrequency()) {
             return false;
         }

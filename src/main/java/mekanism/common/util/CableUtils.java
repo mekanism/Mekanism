@@ -132,7 +132,7 @@ public final class CableUtils {
                 // This allows us to have slightly better performance
                 EnergyAcceptorTarget target = new EnergyAcceptorTarget();
                 for (EnumFacing side : EnumFacing.VALUES) {
-                    if (emitter.sideIsOutput(side)) {
+                    if (emitter.canOutputEnergy(side)) {
                         TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
                         //If it can accept energy or it is a cable
                         if (tile != null && (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile))) {

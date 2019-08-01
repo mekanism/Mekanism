@@ -2,9 +2,6 @@ package mekanism.common.tile.prefab;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.energy.tile.IEnergyEmitter;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
@@ -36,9 +33,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     public double electricityStored;
 
     /**
-     * Maximum amount of energy this machine can hold.
+     * Maximum amount of energy this machine can hold. Used for resetting after removing upgrades
      */
-    //TODO: What is the point of this
     public double BASE_MAX_ENERGY;
 
     /**
@@ -94,12 +90,12 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     }
 
     @Override
-    public boolean sideIsOutput(EnumFacing side) {
+    public boolean canOutputEnergy(EnumFacing side) {
         return false;
     }
 
     @Override
-    public boolean sideIsConsumer(EnumFacing side) {
+    public boolean canReceiveEnergy(EnumFacing side) {
         return true;
     }
 
@@ -204,31 +200,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public boolean canConnectEnergy(EnumFacing from) {
-        return sideIsConsumer(from) || sideIsOutput(from);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getEnergyStored(EnumFacing from) {
-        return RFIntegration.toRF(getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getMaxEnergyStored(EnumFacing from) {
-        return RFIntegration.toRF(getMaxEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getSinkTier() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? 4 : 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getSourceTier() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? 4 : 0;
+        return canReceiveEnergy(from) || canOutputEnergy(from);
     }
 
     @Override
@@ -243,74 +215,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean isTeleporterCompatible(EnumFacing side) {
-        return !MekanismConfig.current().general.blacklistIC2.val() && sideIsOutput(side);
-    }
-
-    @Override
-    public boolean canOutputEnergy(EnumFacing side) {
-        return sideIsOutput(side);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction) {
-        return !MekanismConfig.current().general.blacklistIC2.val() && sideIsConsumer(direction);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction) {
-        return !MekanismConfig.current().general.blacklistIC2.val() && sideIsOutput(direction) && receiver instanceof IEnergyConductor;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getStored() {
-        return IC2Integration.toEUAsInt(getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void setStored(int energy) {
-        if (!MekanismConfig.current().general.blacklistIC2.val()) {
-            setEnergy(IC2Integration.fromEU(energy));
-        }
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getCapacity() {
-        return IC2Integration.toEUAsInt(getMaxEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getOutput() {
-        return IC2Integration.toEUAsInt(getMaxOutput());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getDemandedEnergy() {
         return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU((getMaxEnergy() - getEnergy())) : 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getOfferedEnergy() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU(Math.min(getEnergy(), getMaxOutput())) : 0;
-    }
-
-    @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
-        return sideIsConsumer(side);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getOutputEnergyUnitsPerTick() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU(getMaxOutput()) : 0;
     }
 
     @Override
@@ -333,7 +239,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
         double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
-        if (toUse < 0.0001 || (side != null && !sideIsConsumer(side))) {
+        if (toUse < 0.0001 || (side != null && !canReceiveEnergy(side))) {
             return 0;
         }
         if (!simulate) {
@@ -345,7 +251,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
         double toGive = Math.min(getEnergy(), amount);
-        if (toGive < 0.0001 || (side != null && !sideIsOutput(side))) {
+        if (toGive < 0.0001 || (side != null && !canOutputEnergy(side))) {
             return 0;
         }
         if (!simulate) {
@@ -381,8 +287,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     }
 
     protected boolean isTesla(@Nonnull Capability capability, EnumFacing side) {
-        return capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(side))
-               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(side));
+        return capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && canReceiveEnergy(side))
+               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(side));
     }
 
     protected ForgeEnergyIntegration getForgeEnergyWrapper(EnumFacing side) {
@@ -396,7 +302,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
-            return side != null && !sideIsConsumer(side) && !sideIsOutput(side);
+            return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
         }
         return super.isCapabilityDisabled(capability, side);
     }
