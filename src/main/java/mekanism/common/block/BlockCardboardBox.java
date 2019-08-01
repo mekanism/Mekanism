@@ -1,14 +1,14 @@
 package mekanism.common.block;
 
-import static mekanism.common.block.states.BlockStateCardboardBox.storageProperty;
-
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.interfaces.IHasModel;
-import mekanism.common.block.states.BlockStateCardboardBox;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -29,8 +29,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-//TODO: Kill metadata
-public class BlockCardboardBox extends BlockMekanismContainer implements IHasModel {
+public class BlockCardboardBox extends BlockMekanismContainer implements IHasModel, IStateStorage {
 
     private static boolean testingPlace = false;
 
@@ -49,20 +48,21 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
 
     @Nonnull
     @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateCardboardBox(this);
+    public BlockStateContainer createBlockState() {
+        return BlockStateHelper.getBlockState(this);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        //TODO
+        return 0;
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(storageProperty, meta == 1);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(storageProperty) ? 1 : 0;
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override

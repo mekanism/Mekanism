@@ -32,12 +32,9 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
 
     private static boolean isMonitoring;
 
-    public Block metaBlock;
-
     public ItemBlockCardboardBox(Block block) {
         super(block);
         setMaxStackSize(16);
-        metaBlock = block;
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -56,11 +53,6 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
             } catch (Exception ignored) {
             }
         }
-    }
-
-    @Override
-    public int getMetadata(int i) {
-        return i;
     }
 
     @Nonnull

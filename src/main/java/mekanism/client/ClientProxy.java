@@ -118,7 +118,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.plastic.BlockPlasticFence.PlasticFenceStateMapper;
-import mekanism.common.block.states.BlockStateCardboardBox.CardboardBoxStateMapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -252,7 +251,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ClientProxy extends CommonProxy {
 
     private static final IStateMapper fenceMapper = new PlasticFenceStateMapper();
-    private static final IStateMapper boxMapper = new CardboardBoxStateMapper();
 
     @Override
     public void loadConfiguration() {
@@ -587,8 +585,6 @@ public class ClientProxy extends CommonProxy {
                 return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "energy_cube"), "");
             }
         }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
-
-        setCustomStateMapper(boxMapper, MekanismBlock.CARDBOARD_BOX);
 
         setCustomTransmitterMeshDefinition(MekanismBlock.BASIC_UNIVERSAL_CABLE, MekanismBlock.ADVANCED_UNIVERSAL_CABLE, MekanismBlock.ELITE_UNIVERSAL_CABLE,
               MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, MekanismBlock.BASIC_MECHANICAL_PIPE, MekanismBlock.ADVANCED_MECHANICAL_PIPE, MekanismBlock.ELITE_MECHANICAL_PIPE,

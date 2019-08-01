@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IColor;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
+import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
@@ -39,6 +40,8 @@ public class BlockStateHelper {
     public static final PropertyConnection southConnectionProperty = PropertyConnection.create("south");
     public static final PropertyConnection westConnectionProperty = PropertyConnection.create("west");
     public static final PropertyConnection eastConnectionProperty = PropertyConnection.create("east");
+    //Cardboard Box storage
+    public static final PropertyBool storageProperty = PropertyBool.create("storage");
 
     public static BlockStateContainer getBlockState(Block block) {
         List<IProperty> properties = new ArrayList<>();
@@ -54,6 +57,9 @@ public class BlockStateHelper {
         }
         if (block instanceof IStateColor) {
             properties.add(colorProperty);
+        }
+        if (block instanceof IStateStorage) {
+            properties.add(storageProperty);
         }
         if (block instanceof IStateConnection) {
             properties.add(downConnectionProperty);
@@ -86,6 +92,9 @@ public class BlockStateHelper {
         if (block instanceof IStateColor) {
             state = state.withProperty(BlockStateHelper.colorProperty, getColor(tile));
         }
+        if (block instanceof IStateStorage) {
+            state = state.withProperty(storageProperty, isStoring(tile));
+        }
         if (block instanceof IStateConnection) {
             //Add all the different connection types
             state = state.withProperty(downConnectionProperty, getStateConnection(tile, EnumFacing.DOWN));
@@ -115,6 +124,13 @@ public class BlockStateHelper {
             color = ((TileEntitySidedPipe) tile).getRenderColor();
         }
         return color == null ? EnumColor.NONE : color;
+    }
+
+    private static boolean isStoring(@Nonnull TileEntity tile) {
+        if (tile instanceof TileEntityCardboardBox) {
+            return  ((TileEntityCardboardBox) tile).storedData != null;
+        }
+        return false;
     }
 
     @Nonnull
