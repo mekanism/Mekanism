@@ -479,16 +479,8 @@ public enum MekanismBlock implements IBlockProvider {
         return item;
     }
 
-    public String getName() {
-        return block.getRegistryName().getPath();
-    }
-
     public String getJEICategory() {
         return Mekanism.MODID + "." + getName();
-    }
-
-    public String getTranslationKey() {
-        return block.getTranslationKey();
     }
 
     @Nullable

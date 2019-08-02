@@ -195,10 +195,6 @@ public enum MekanismItem implements IItemProvider {
         this.item = item;
     }
 
-    public String getName() {
-        return item.getRegistryName().getPath();
-    }
-
     @Override
     @Nonnull
     public Item getItem() {

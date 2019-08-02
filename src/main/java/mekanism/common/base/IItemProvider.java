@@ -3,6 +3,7 @@ package mekanism.common.base;
 import javax.annotation.Nonnull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public interface IItemProvider {
 
@@ -25,5 +26,17 @@ public interface IItemProvider {
 
     default boolean itemMatches(Item other) {
         return getItem() == other;
+    }
+
+    default ResourceLocation getRegistryName() {
+        return getItem().getRegistryName();
+    }
+
+    default String getName() {
+        return getRegistryName().getPath();
+    }
+
+    default String getTranslationKey() {
+        return getItem().getTranslationKey();
     }
 }
