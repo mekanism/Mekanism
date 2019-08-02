@@ -57,16 +57,6 @@ public class ItemBlockElectrolyticSeparator extends ItemBlockAdvancedTooltip imp
     }
 
     @Override
-    public double getEnergy(ItemStack itemStack) {
-        return ItemDataUtils.getDouble(itemStack, "energyStored");
-    }
-
-    @Override
-    public void setEnergy(ItemStack itemStack, double amount) {
-        ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
-    }
-
-    @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item instanceof ItemBlockElectrolyticSeparator) {

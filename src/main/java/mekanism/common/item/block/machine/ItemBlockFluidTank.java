@@ -10,11 +10,11 @@ import mekanism.client.MekanismClient;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.IItemSustainedInventory;
+import mekanism.common.item.IItemSustainedTank;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
@@ -52,7 +52,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, ISustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
+public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
       ITieredItem<FluidTankTier>, IItemRedirectedModel {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
@@ -191,35 +191,6 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
             }
         }
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
-    }
-
-    @Override
-    public void setFluidStack(FluidStack fluidStack, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemStack itemStack = (ItemStack) data[0];
-            if (fluidStack == null || fluidStack.amount == 0) {
-                ItemDataUtils.removeData(itemStack, "fluidTank");
-            } else {
-                ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
-            }
-        }
-    }
-
-    @Override
-    public FluidStack getFluidStack(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemStack itemStack = (ItemStack) data[0];
-            if (!ItemDataUtils.hasData(itemStack, "fluidTank")) {
-                return null;
-            }
-            return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank"));
-        }
-        return null;
-    }
-
-    @Override
-    public boolean hasTank(Object... data) {
-        return data[0] instanceof ItemStack && ((ItemStack) data[0]).getItem() instanceof ISustainedTank;
     }
 
     public void setBucketMode(ItemStack itemStack, boolean bucketMode) {

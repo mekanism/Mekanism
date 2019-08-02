@@ -102,16 +102,6 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip implements IItemE
     }
 
     @Override
-    public double getEnergy(ItemStack itemStack) {
-        return ItemDataUtils.getDouble(itemStack, "energyStored");
-    }
-
-    @Override
-    public void setEnergy(ItemStack itemStack, double amount) {
-        ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
-    }
-
-    @Override
     public double getMaxEnergy(ItemStack itemStack) {
         FactoryTier tier = getTier(itemStack);
         if (tier != null) {

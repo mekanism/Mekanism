@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+//TODO: Should this implement IItemEnergized instead of IEnergizedItem
 public class ItemBlockInductionCell extends ItemBlockTooltip implements IEnergizedItem, ITieredItem<InductionCellTier> {
 
     public ItemBlockInductionCell(BlockInductionCell block) {

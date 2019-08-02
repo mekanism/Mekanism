@@ -73,11 +73,6 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip implements IItemEnergi
     }
 
     @Override
-    public double getEnergy(ItemStack itemStack) {
-        return ItemDataUtils.getDouble(itemStack, "energyStored");
-    }
-
-    @Override
     public void setEnergy(ItemStack itemStack, double amount) {
         if (getTier(itemStack) == EnergyCubeTier.CREATIVE && amount != Double.MAX_VALUE) {
             return;

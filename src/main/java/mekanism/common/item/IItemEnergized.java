@@ -7,6 +7,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.redstoneflux.RFIntegration;
+import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -21,6 +22,18 @@ import net.minecraftforge.fml.common.Optional.Method;
 })
 public interface IItemEnergized extends IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem {
 
+    //Mekanism
+    @Override
+    default double getEnergy(ItemStack itemStack) {
+        return ItemDataUtils.getDouble(itemStack, "energyStored");
+    }
+
+    @Override
+    default void setEnergy(ItemStack itemStack, double amount) {
+        ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
+    }
+
+    //Redstone Flux
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     default int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
@@ -61,6 +74,7 @@ public interface IItemEnergized extends IEnergizedItem, ISpecialElectricItem, IE
         return RFIntegration.toRF(getMaxEnergy(theItem));
     }
 
+    //IC2
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     default IElectricItemManager getManager(ItemStack itemStack) {

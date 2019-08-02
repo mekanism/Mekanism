@@ -7,13 +7,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Upgrade;
-import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.machine.BlockElectricPump;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
+import mekanism.common.item.IItemSustainedTank;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
@@ -31,7 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockElectricPump extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISustainedTank, ISecurityItem {
+public class ItemBlockElectricPump extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, IItemSustainedTank, ISecurityItem {
 
     public ItemBlockElectricPump(BlockElectricPump block) {
         super(block);
@@ -63,45 +63,6 @@ public class ItemBlockElectricPump extends ItemBlockAdvancedTooltip implements I
                 list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
             }
         }
-    }
-
-    @Override
-    public void setFluidStack(FluidStack fluidStack, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemStack itemStack = (ItemStack) data[0];
-            if (fluidStack == null || fluidStack.amount == 0) {
-                ItemDataUtils.removeData(itemStack, "fluidTank");
-            } else {
-                ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
-            }
-        }
-    }
-
-    @Override
-    public FluidStack getFluidStack(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemStack itemStack = (ItemStack) data[0];
-            if (!ItemDataUtils.hasData(itemStack, "fluidTank")) {
-                return null;
-            }
-            return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank"));
-        }
-        return null;
-    }
-
-    @Override
-    public boolean hasTank(Object... data) {
-        return data[0] instanceof ItemStack && ((ItemStack) data[0]).getItem() instanceof ISustainedTank;
-    }
-
-    @Override
-    public double getEnergy(ItemStack itemStack) {
-        return ItemDataUtils.getDouble(itemStack, "energyStored");
-    }
-
-    @Override
-    public void setEnergy(ItemStack itemStack, double amount) {
-        ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
     }
 
     @Override
