@@ -281,8 +281,8 @@ public class Mekanism {
         // Register items and itemBlocks
         MekanismItem.registerItems(event.getRegistry());
         MekanismBlock.registerItemBlocks(event.getRegistry());
-        //Integrate certain OreDictionary recipes
-        registerOreDict();
+        //Ore dict entries that are for items not added by mekanism
+        OreDictionary.registerOre("alloyBasic", new ItemStack(Items.REDSTONE));
     }
 
     @SubscribeEvent
@@ -589,29 +589,6 @@ public class Mekanism {
 
         //Fuel Gases
         FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfig.current().general.FROM_H2.val());
-    }
-
-    /**
-     * Registers specified items with the Ore Dictionary.
-     */
-    public static void registerOreDict() {
-        //Add specific items to ore dictionary for recipe usage in other mods.
-        OreDictionary.registerOre("universalCable", MekanismBlock.BASIC_UNIVERSAL_CABLE.getItem());
-        OreDictionary.registerOre("battery", MekanismItem.ENERGY_TABLET.getItemStack());
-        OreDictionary.registerOre("pulpWood", MekanismItem.SAWDUST.getItemStack());
-        OreDictionary.registerOre("dustWood", MekanismItem.SAWDUST.getItemStack());
-        OreDictionary.registerOre("blockSalt", MekanismBlock.SALT_BLOCK.getItemStack());
-
-        //Alloys!
-        OreDictionary.registerOre("alloyBasic", new ItemStack(Items.REDSTONE));
-
-        //GregoriousT?
-        OreDictionary.registerOre("itemSalt", MekanismItem.SALT.getItemStack());
-        OreDictionary.registerOre("dustSalt", MekanismItem.SALT.getItemStack());
-        OreDictionary.registerOre("foodSalt", MekanismItem.SALT.getItemStack());
-
-        OreDictionary.registerOre("itemEnrichedAlloy", MekanismItem.ENRICHED_ALLOY.getItemStack());
-        OreDictionary.registerOre("itemBioFuel", MekanismItem.BIO_FUEL.getItemStack());
     }
 
     private static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {

@@ -1,6 +1,5 @@
 package mekanism.common.item.block;
 
-import java.util.List;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.item.IItemMekanism;
 import net.minecraft.block.Block;
@@ -19,8 +18,7 @@ public class ItemBlockMekanism extends ItemBlock implements IItemMekanism {
     @Override
     public void registerOreDict() {
         if (block instanceof IBlockOreDict) {
-            List<String> oredictEntries = ((IBlockOreDict) block).getOredictEntries();
-            for (String entry : oredictEntries) {
+            for (String entry : ((IBlockOreDict) block).getOredictEntries()) {
                 OreDictionary.registerOre(entry, new ItemStack(this));
             }
         }

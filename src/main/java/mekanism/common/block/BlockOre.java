@@ -2,7 +2,6 @@ package mekanism.common.block;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.resource.INamedResource;
@@ -26,7 +25,7 @@ public class BlockOre extends Block implements IBlockOreDict {
         setHardness(3F);
         setResistance(5F);
         setCreativeTab(Mekanism.tabMekanism);
-        this.name = this.resource.getRegistrySuffix().toLowerCase(Locale.ROOT) + "_ore";
+        this.name = this.resource.getRegistrySuffix() + "_ore";
         setTranslationKey(this.name);
         setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
     }

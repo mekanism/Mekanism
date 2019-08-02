@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemEnergized extends ItemMekanism implements IItemEnergized {
 
@@ -34,6 +35,11 @@ public class ItemEnergized extends ItemMekanism implements IItemEnergized {
         MAX_ELECTRICITY = maxElectricity;
         setMaxStackSize(1);
         setCreativeTab(Mekanism.tabMekanism);
+    }
+
+    @Override
+    public void registerOreDict() {
+        OreDictionary.registerOre("battery", new ItemStack(this));
     }
 
     @Override

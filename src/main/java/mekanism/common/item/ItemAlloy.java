@@ -47,5 +47,8 @@ public class ItemAlloy extends ItemMekanism {
     @Override
     public void registerOreDict() {
         OreDictionary.registerOre("alloy" + tier.getBaseTier().getSimpleName(), new ItemStack(this));
+        if (tier == AlloyTier.ENRICHED) {
+            OreDictionary.registerOre("itemEnrichedAlloy", new ItemStack(this));
+        }
     }
 }

@@ -6,6 +6,7 @@ import mekanism.common.base.IItemProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemBalloon;
+import mekanism.common.item.ItemBioFuel;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemControlCircuit;
@@ -20,6 +21,8 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemResource;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.item.ItemSalt;
+import mekanism.common.item.ItemSawdust;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
@@ -61,10 +64,10 @@ public enum MekanismItem implements IItemProvider {
     TELEPORTATION_CORE("teleportation_core"),
     ENRICHED_IRON("enriched_iron"),
     ELECTROLYTIC_CORE("electrolytic_core"),
-    SAWDUST("sawdust"),
-    SALT("salt"),
+    SAWDUST(new ItemSawdust()),
+    SALT(new ItemSalt()),
     SUBSTRATE("substrate"),
-    BIO_FUEL("bio_fuel"),
+    BIO_FUEL(new ItemBioFuel()),
 
     COMPRESSED_CARBON(new ItemResource(ResourceType.COMPRESSED, MiscResource.CARBON)),
     COMPRESSED_REDSTONE(new ItemResource(ResourceType.COMPRESSED, MiscResource.REDSTONE)),
