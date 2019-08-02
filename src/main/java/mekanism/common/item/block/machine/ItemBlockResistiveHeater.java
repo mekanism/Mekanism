@@ -4,12 +4,12 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.machine.BlockResistiveHeater;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
+import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
@@ -21,13 +21,12 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockResistiveHeater extends ItemBlockAdvancedTooltip implements IItemEnergized, ISustainedInventory, ISecurityItem {
+public class ItemBlockResistiveHeater extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockResistiveHeater(BlockResistiveHeater block) {
         super(block);
@@ -46,21 +45,6 @@ public class ItemBlockResistiveHeater extends ItemBlockAdvancedTooltip implement
                  + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
         list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                  LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
-    }
-
-    @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
-        }
-    }
-
-    @Override
-    public NBTTagList getInventory(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            return ItemDataUtils.getList((ItemStack) data[0], "Items");
-        }
-        return null;
     }
 
     @Override

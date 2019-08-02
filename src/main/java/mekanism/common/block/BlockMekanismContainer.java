@@ -50,6 +50,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
         super(materialIn);
     }
 
+    //TODO: Make this check instances of things for building the default
     @Nonnull
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         return new ItemStack(this);

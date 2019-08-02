@@ -7,13 +7,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Upgrade;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.machine.BlockQuantumEntangloporter;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
+import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
@@ -25,13 +25,12 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip implements IItemEnergized, ISustainedInventory, ISecurityItem {
+public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockQuantumEntangloporter(BlockQuantumEntangloporter block) {
         super(block);
@@ -66,21 +65,6 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip imp
                 list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
             }
         }
-    }
-
-    @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
-        }
-    }
-
-    @Override
-    public NBTTagList getInventory(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            return ItemDataUtils.getList((ItemStack) data[0], "Items");
-        }
-        return null;
     }
 
     @Override

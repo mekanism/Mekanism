@@ -7,8 +7,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Upgrade;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.machine.BlockLogisticalSorter;
+import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
@@ -17,12 +17,11 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockLogisticalSorter extends ItemBlockAdvancedTooltip implements ISustainedInventory, ISecurityItem {
+public class ItemBlockLogisticalSorter extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockLogisticalSorter(BlockLogisticalSorter block) {
         super(block);
@@ -43,20 +42,5 @@ public class ItemBlockLogisticalSorter extends ItemBlockAdvancedTooltip implemen
                 list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
             }
         }
-    }
-
-    @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
-        }
-    }
-
-    @Override
-    public NBTTagList getInventory(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            return ItemDataUtils.getList((ItemStack) data[0], "Items");
-        }
-        return null;
     }
 }

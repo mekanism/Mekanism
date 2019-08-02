@@ -4,11 +4,11 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
+import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
@@ -24,7 +24,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,7 +31,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip implements IItemEnergized, ISustainedInventory, ISecurityItem {
+public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockAdvancedSolarGenerator(BlockAdvancedSolarGenerator block) {
         super(block);
@@ -70,21 +69,6 @@ public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip im
             }
         }
         return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
-    }
-
-    @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
-        }
-    }
-
-    @Override
-    public NBTTagList getInventory(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            return ItemDataUtils.getList((ItemStack) data[0], "Items");
-        }
-        return null;
     }
 
     @Override

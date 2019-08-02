@@ -8,9 +8,9 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.MekanismClient;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.ItemDataUtils;
@@ -23,14 +23,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, ISustainedInventory, ISecurityItem {
+public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IItemSustainedInventory, ISecurityItem {
 
     /**
      * The maximum amount of gas this tank can hold.
@@ -167,21 +166,6 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, ISus
     @Override
     public boolean canProvideGas(ItemStack itemstack, Gas type) {
         return getGas(itemstack) != null && (type == null || getGas(itemstack).getGas() == type);
-    }
-
-    @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
-        }
-    }
-
-    @Override
-    public NBTTagList getInventory(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            return ItemDataUtils.getList((ItemStack) data[0], "Items");
-        }
-        return null;
     }
 
     @Override

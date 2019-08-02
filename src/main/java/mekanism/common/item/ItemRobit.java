@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.ItemDataUtils;
@@ -12,7 +11,6 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -22,7 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemRobit extends ItemEnergized implements ISustainedInventory {
+public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
     public ItemRobit() {
         super("robit", 100000);
@@ -72,20 +70,5 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory {
     public String getName(ItemStack itemstack) {
         String name = ItemDataUtils.getString(itemstack, "name");
         return name.isEmpty() ? "Robit" : name;
-    }
-
-    @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
-        }
-    }
-
-    @Override
-    public NBTTagList getInventory(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            return ItemDataUtils.getList((ItemStack) data[0], "Items");
-        }
-        return null;
     }
 }

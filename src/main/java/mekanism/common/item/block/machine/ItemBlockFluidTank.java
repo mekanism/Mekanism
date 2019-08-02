@@ -10,11 +10,11 @@ import mekanism.client.MekanismClient;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.IItemRedirectedModel;
+import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
@@ -33,7 +33,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -53,7 +52,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements ISustainedInventory, ISustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
+public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, ISustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
       ITieredItem<FluidTankTier>, IItemRedirectedModel {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
@@ -192,21 +191,6 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements ISus
             }
         }
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
-    }
-
-    @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
-        if (data[0] instanceof ItemStack) {
-            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
-        }
-    }
-
-    @Override
-    public NBTTagList getInventory(Object... data) {
-        if (data[0] instanceof ItemStack) {
-            return ItemDataUtils.getList((ItemStack) data[0], "Items");
-        }
-        return null;
     }
 
     @Override
