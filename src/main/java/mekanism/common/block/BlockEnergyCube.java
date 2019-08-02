@@ -126,6 +126,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
             return true;
         }
 
+        //TODO
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (!stack.isEmpty()) {
@@ -154,7 +155,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
         if (tileEntity != null) {
             if (!entityplayer.isSneaking()) {
                 if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(Mekanism.instance, 8, world, pos.getX(), pos.getY(), pos.getZ());
+                    entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
@@ -185,19 +186,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     @Deprecated
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
         return ((TileEntityEnergyCube) world.getTileEntity(pos)).getRedstoneLevel();
-    }
-
-    @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            if (basicTile.canSetFacing(axis)) {
-                basicTile.setFacing(axis);
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

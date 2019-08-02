@@ -131,7 +131,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
         if (tileEntity != null) {
             if (!entityplayer.isSneaking()) {
                 if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(Mekanism.instance, 10, world, pos.getX(), pos.getY(), pos.getZ());
+                    entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
@@ -170,20 +170,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
         TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
         return tileEntity.getRedstoneLevel();
-    }
-
-    @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-
-            if (basicTile.canSetFacing(axis)) {
-                basicTile.setFacing(axis);
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

@@ -316,4 +316,19 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
 
     }
+
+    @Override
+    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
+        if (this instanceof IStateFacing) {
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileEntityBasicBlock) {
+                TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
+                if (basicTile.canSetFacing(axis)) {
+                    basicTile.setFacing(axis);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

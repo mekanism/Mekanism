@@ -112,19 +112,6 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     }
 
     @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            if (basicTile.canSetFacing(axis)) {
-                basicTile.setFacing(axis);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public void onBlockClicked(World world, BlockPos pos, EntityPlayer player) {
         if (!world.isRemote) {
             TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);

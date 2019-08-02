@@ -78,19 +78,6 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            if (basicTile.canSetFacing(axis)) {
-                basicTile.setFacing(axis);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         return 9F;
     }

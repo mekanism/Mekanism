@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -30,7 +31,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing {
+public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui {
 
     public BlockSecurityDesk() {
         super(Material.IRON);
@@ -81,19 +82,6 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing {
     }
 
     @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-            if (basicTile.canSetFacing(axis)) {
-                basicTile.setFacing(axis);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         return 9F;
     }
@@ -139,7 +127,7 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing {
                 if (!world.isRemote) {
                     UUID ownerUUID = tile.ownerUUID;
                     if (ownerUUID == null || entityplayer.getUniqueID().equals(ownerUUID)) {
-                        entityplayer.openGui(Mekanism.instance, 57, world, pos.getX(), pos.getY(), pos.getZ());
+                        entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
                     } else {
                         SecurityUtils.displayNoAccess(entityplayer);
                     }
@@ -157,5 +145,10 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing {
             ((IBoundingBlock) tileEntity).onBreak();
         }
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    public int getGuiID() {
+        return 57;
     }
 }
