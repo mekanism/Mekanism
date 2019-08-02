@@ -3,7 +3,6 @@ package mekanism.generators.common.block.reactor;
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -27,7 +26,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorController extends Block implements IHasGui, IBlockDescriptive, IStateActive {
+public class BlockReactorController extends Block implements IHasGui, IStateActive {
 
     public BlockReactorController() {
         super(Material.IRON);
@@ -102,6 +101,7 @@ public class BlockReactorController extends Block implements IHasGui, IBlockDesc
     public boolean hasTileEntity(IBlockState state) {
         return true;
     }
+
     @Override
     public int getGuiID() {
         return 10;

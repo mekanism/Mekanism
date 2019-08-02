@@ -2,7 +2,6 @@ package mekanism.generators.common.block.reactor;
 
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorLogicAdapter extends Block implements IHasGui, IBlockDescriptive {
+public class BlockReactorLogicAdapter extends Block implements IHasGui {
 
     public BlockReactorLogicAdapter() {
         super(Material.IRON);

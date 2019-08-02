@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -28,7 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescriptive {
+public class BlockBasicMultiblock extends BlockTileDrops {
 
     public BlockBasicMultiblock(String name) {
         super(Material.IRON);

@@ -126,7 +126,7 @@ public class BlockStateHelper {
 
     private static boolean isStoring(@Nonnull TileEntity tile) {
         if (tile instanceof TileEntityCardboardBox) {
-            return  ((TileEntityCardboardBox) tile).storedData != null;
+            return ((TileEntityCardboardBox) tile).storedData != null;
         }
         return false;
     }

@@ -2,7 +2,6 @@ package mekanism.generators.common.block.reactor;
 
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -25,7 +24,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorPort extends Block implements IBlockDescriptive, IStateActive {
+public class BlockReactorPort extends Block implements IStateActive {
 
     public BlockReactorPort() {
         super(Material.IRON);

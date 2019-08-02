@@ -6,7 +6,6 @@ import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
@@ -15,9 +14,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockTooltip extends ItemBlockMekanism {
+//TODO: Should this just be merged with ItemBlockTooltip somehow, or maybe not extend it at all
+public abstract class ItemBlockAdvancedTooltip extends ItemBlockTooltip {
 
-    public ItemBlockTooltip(Block block) {
+    public ItemBlockAdvancedTooltip(Block block) {
         super(block);
     }
 
@@ -28,17 +28,16 @@ public class ItemBlockTooltip extends ItemBlockMekanism {
             addStats(itemstack, world, list, flag);
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                      EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
+            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
+                     EnumColor.GREY + " " + LangUtils.localize("tooltip.and") + " " + EnumColor.AQUA +
+                     GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDesc") + ".");
+        } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
+            addDetails(itemstack, world, list, flag);
         } else {
             addDescription(itemstack, world, list, flag);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
-    }
+    public abstract void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag);
 }

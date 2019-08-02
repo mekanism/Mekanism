@@ -5,10 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.client.MekKeyHandler;
-import mekanism.client.MekanismKeyHandler;
 import mekanism.common.block.basic.BlockInductionCell;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -16,7 +13,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -27,7 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockInductionCell extends ItemBlockMekanism implements IEnergizedItem, ITieredItem<InductionCellTier> {
+public class ItemBlockInductionCell extends ItemBlockTooltip implements IEnergizedItem, ITieredItem<InductionCellTier> {
 
     public ItemBlockInductionCell(BlockInductionCell block) {
         super(block);
@@ -45,19 +41,11 @@ public class ItemBlockInductionCell extends ItemBlockMekanism implements IEnergi
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        if (block instanceof IBlockDescriptive) {
-            if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-                InductionCellTier tier = getTier(itemstack);
-                if (tier != null) {
-                    list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getMaxEnergy()));
-                    list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
-                }
-                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
-                         EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
-            } else {
-                list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
-            }
+    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
+        InductionCellTier tier = getTier(itemstack);
+        if (tier != null) {
+            list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getMaxEnergy()));
+            list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
         }
     }
 

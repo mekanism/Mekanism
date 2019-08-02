@@ -6,9 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
-import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IItemNetwork;
@@ -18,7 +16,7 @@ import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.ITieredItem;
-import mekanism.common.item.block.ItemBlockMekanism;
+import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
@@ -31,7 +29,6 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -58,7 +55,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockFluidTank extends ItemBlockMekanism implements ISustainedInventory, ISustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
+public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements ISustainedInventory, ISustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
       ITieredItem<FluidTankTier>, IItemRedirectedModel {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
@@ -78,39 +75,33 @@ public class ItemBlockFluidTank extends ItemBlockMekanism implements ISustainedI
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            FluidStack fluidStack = getFluidStack(itemstack);
-            if (fluidStack != null) {
-                int amount = getFluidStack(itemstack).amount;
-                String amountStr = amount == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : amount + "mB";
-                list.add(EnumColor.AQUA + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + amountStr);
-            } else {
-                list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
-            }
-            FluidTankTier tier = getTier(itemstack);
-            if (tier != null) {
-                int cap = tier.getStorage();
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap + " mB"));
-            }
-
-            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
-                     EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
-            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
-                     EnumColor.GREY + " " + LangUtils.localize("tooltip.and") + " " + EnumColor.AQUA +
-                     GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDesc") + ".");
-        } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
-            list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-            list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
-            if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
-                list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
-            }
-            list.add(EnumColor.INDIGO + LangUtils.localizeWithFormat("mekanism.tooltip.portableTank.bucketMode", LangUtils.transYesNo(getBucketMode(itemstack))));
-            list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
-                     LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
+        FluidStack fluidStack = getFluidStack(itemstack);
+        if (fluidStack != null) {
+            int amount = getFluidStack(itemstack).amount;
+            String amountStr = amount == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : amount + "mB";
+            list.add(EnumColor.AQUA + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + amountStr);
         } else {
-            list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
+            list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
         }
+        FluidTankTier tier = getTier(itemstack);
+        if (tier != null) {
+            int cap = tier.getStorage();
+            list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap + " mB"));
+        }
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
+        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+        list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
+        if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
+            list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
+        }
+        list.add(EnumColor.INDIGO + LangUtils.localizeWithFormat("mekanism.tooltip.portableTank.bucketMode", LangUtils.transYesNo(getBucketMode(itemstack))));
+        list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
+                 LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
     }
 
     @Nonnull

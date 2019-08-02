@@ -1,44 +1,23 @@
 package mekanism.generators.common.item.generator;
 
-import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.EnumColor;
-import mekanism.client.MekKeyHandler;
-import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.item.block.ItemBlockMekanism;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.generator.BlockTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockTurbineValve extends ItemBlockMekanism implements ISustainedInventory {
+public class ItemBlockTurbineValve extends ItemBlockTooltip implements ISustainedInventory {
 
     public ItemBlockTurbineValve(BlockTurbineValve block) {
         super(block);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
-                     EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
-        } else {
-            list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
-        }
     }
 
     @Override

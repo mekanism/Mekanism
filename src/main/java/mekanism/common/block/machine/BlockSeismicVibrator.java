@@ -10,7 +10,6 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
@@ -50,7 +49,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IBlockDescriptive, IHasGui, IStateFacing, IStateActive {
+public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, IStateFacing, IStateActive {
 
     public BlockSeismicVibrator() {
         super(Material.IRON);

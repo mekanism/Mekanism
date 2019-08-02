@@ -6,7 +6,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
@@ -41,7 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IBlockElectric, IStateFacing {
+public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing {
 
     public BlockGasBurningGenerator() {
         super(Material.IRON);

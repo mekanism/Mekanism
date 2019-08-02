@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -33,7 +32,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDesk extends BlockTileDrops implements IBlockDescriptive, IStateFacing {
+public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing {
 
     public BlockSecurityDesk() {
         super(Material.IRON);

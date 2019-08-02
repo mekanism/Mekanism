@@ -10,7 +10,6 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.interfaces.IHasGui;
@@ -52,8 +51,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockMetallurgicInfuser extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IBlockDescriptive, IHasGui, IStateFacing,
-      IHasFactoryType {
+public class BlockMetallurgicInfuser extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui, IStateFacing, IHasFactoryType {
 
     public BlockMetallurgicInfuser() {
         super(Material.IRON);

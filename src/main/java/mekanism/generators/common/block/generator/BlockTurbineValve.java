@@ -5,7 +5,6 @@ import mekanism.api.IMekWrench;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
@@ -33,7 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class BlockTurbineValve extends BlockMekanismContainer implements IBlockDescriptive {
+public class BlockTurbineValve extends BlockMekanismContainer {
 
     public BlockTurbineValve() {
         super(Material.IRON);

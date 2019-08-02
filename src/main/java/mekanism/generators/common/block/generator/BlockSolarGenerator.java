@@ -6,7 +6,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -39,7 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IBlockElectric {
+public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric {
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
 

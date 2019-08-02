@@ -7,7 +7,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateHelper;
@@ -46,7 +45,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockChargepad extends BlockMekanismContainer implements IBlockElectric, IHasModel, IBlockDescriptive, IStateFacing {
+public class BlockChargepad extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing {
 
     private static final AxisAlignedBB CHARGEPAD_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
 

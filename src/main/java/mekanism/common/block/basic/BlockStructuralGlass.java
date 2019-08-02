@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityStructuralGlass;
@@ -29,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescriptive, IHasModel {
+public class BlockStructuralGlass extends BlockTileDrops implements IHasModel {
 
     public BlockStructuralGlass() {
         super(Material.IRON);

@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
@@ -17,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockPressureDisperser extends BlockTileDrops implements IBlockDescriptive {
+public class BlockPressureDisperser extends BlockTileDrops {
 
     public BlockPressureDisperser() {
         super(Material.IRON);

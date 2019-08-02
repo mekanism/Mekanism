@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -23,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDescriptive, IStateActive {
+public class BlockSuperheatingElement extends BlockTileDrops implements IStateActive {
 
     public BlockSuperheatingElement() {
         super(Material.IRON);

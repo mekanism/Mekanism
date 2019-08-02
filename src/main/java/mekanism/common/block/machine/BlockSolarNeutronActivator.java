@@ -9,7 +9,6 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
@@ -48,7 +47,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IBlockDescriptive, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive {
+public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive {
 
     public BlockSolarNeutronActivator() {
         super(Material.IRON);

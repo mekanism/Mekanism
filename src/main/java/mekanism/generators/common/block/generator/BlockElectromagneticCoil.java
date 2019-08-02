@@ -3,7 +3,6 @@ package mekanism.generators.common.block.generator;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
@@ -25,7 +24,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class BlockElectromagneticCoil extends BlockMekanismContainer implements IBlockDescriptive {
+public class BlockElectromagneticCoil extends BlockMekanismContainer {
 
     public BlockElectromagneticCoil() {
         super(Material.IRON);

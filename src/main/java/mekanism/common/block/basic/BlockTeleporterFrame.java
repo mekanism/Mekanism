@@ -2,12 +2,11 @@ package mekanism.common.block.basic;
 
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockTeleporterFrame extends BlockTileDrops implements IBlockDescriptive, IHasModel {
+public class BlockTeleporterFrame extends BlockTileDrops implements IHasModel {
 
     public BlockTeleporterFrame() {
         super(Material.IRON);

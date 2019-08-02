@@ -2,7 +2,6 @@ package mekanism.generators.common.block.reactor;
 
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +22,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class BlockReactorFrame extends Block implements IBlockDescriptive {
+public class BlockReactorFrame extends Block {
 
     public BlockReactorFrame() {
         super(Material.IRON);

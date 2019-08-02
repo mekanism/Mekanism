@@ -8,7 +8,6 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -46,7 +45,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockOredictionificator extends BlockMekanismContainer implements IBlockDescriptive, IHasGui, IStateFacing, IStateActive {
+public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive {
 
     public BlockOredictionificator() {
         super(Material.IRON);

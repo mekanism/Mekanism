@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -22,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockTileDrops implements IBlockDescriptive, ITieredBlock<InductionCellTier> {
+public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier> {
 
     private final InductionCellTier tier;
 

@@ -93,7 +93,6 @@ import mekanism.common.item.block.ItemBlockGlowPanel;
 import mekanism.common.item.block.ItemBlockInductionCell;
 import mekanism.common.item.block.ItemBlockInductionProvider;
 import mekanism.common.item.block.ItemBlockMekanism;
-import mekanism.common.item.block.ItemBlockOre;
 import mekanism.common.item.block.ItemBlockResource;
 import mekanism.common.item.block.ItemBlockSecurityDesk;
 import mekanism.common.item.block.ItemBlockTooltip;
@@ -282,9 +281,9 @@ public enum MekanismBlock implements IBlockProvider {
     FORMULAIC_ASSEMBLICATOR(new BlockFormulaicAssemblicator(), ItemBlockFormulaicAssemblicator::new),
     FUELWOOD_HEATER(new BlockFuelwoodHeater(), ItemBlockFuelwoodHeater::new),
 
-    OSMIUM_ORE(new BlockOre(Resource.OSMIUM), ItemBlockOre::new),
-    COPPER_ORE(new BlockOre(Resource.COPPER), ItemBlockOre::new),
-    TIN_ORE(new BlockOre(Resource.TIN), ItemBlockOre::new),
+    OSMIUM_ORE(new BlockOre(Resource.OSMIUM), ItemBlockTooltip::new),
+    COPPER_ORE(new BlockOre(Resource.COPPER), ItemBlockTooltip::new),
+    TIN_ORE(new BlockOre(Resource.TIN), ItemBlockTooltip::new),
 
     BASIC_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.BASIC), ItemBlockEnergyCube::new),
     ADVANCED_ENERGY_CUBE(new BlockEnergyCube(EnergyCubeTier.ADVANCED), ItemBlockEnergyCube::new),

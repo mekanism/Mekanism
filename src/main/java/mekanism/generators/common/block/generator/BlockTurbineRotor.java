@@ -3,7 +3,6 @@ package mekanism.generators.common.block.generator;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanismContainer;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
@@ -33,7 +32,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTurbineRotor extends BlockMekanismContainer implements IBlockDescriptive {
+public class BlockTurbineRotor extends BlockMekanismContainer {
 
     private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
 

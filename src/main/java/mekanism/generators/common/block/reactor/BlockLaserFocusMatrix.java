@@ -2,7 +2,6 @@ package mekanism.generators.common.block.reactor;
 
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
@@ -27,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLaserFocusMatrix extends Block implements IBlockDescriptive {
+public class BlockLaserFocusMatrix extends Block {
 
     public BlockLaserFocusMatrix() {
         super(Material.IRON);

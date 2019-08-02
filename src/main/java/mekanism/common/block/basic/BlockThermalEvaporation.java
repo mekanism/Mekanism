@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -20,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporation extends BlockTileDrops implements IBlockDescriptive, IHasModel {
+public class BlockThermalEvaporation extends BlockTileDrops implements IHasModel {
 
     public BlockThermalEvaporation() {
         super(Material.IRON);
