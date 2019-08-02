@@ -26,8 +26,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -76,42 +74,10 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntitySecurityDesk tile = (TileEntitySecurityDesk) world.getTileEntity(pos);
-        EnumFacing change = EnumFacing.SOUTH;
-        if (tile.canSetFacing(EnumFacing.DOWN) && tile.canSetFacing(EnumFacing.UP)) {
-            int height = Math.round(placer.rotationPitch);
-            if (height >= 65) {
-                change = EnumFacing.UP;
-            } else if (height <= -65) {
-                change = EnumFacing.DOWN;
-            }
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+        if (tile instanceof TileEntitySecurityDesk) {
+            ((TileEntitySecurityDesk) tile).ownerUUID = placer.getUniqueID();
         }
-        if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
-            int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            switch (side) {
-                case 0:
-                    change = EnumFacing.NORTH;
-                    break;
-                case 1:
-                    change = EnumFacing.EAST;
-                    break;
-                case 2:
-                    change = EnumFacing.SOUTH;
-                    break;
-                case 3:
-                    change = EnumFacing.WEST;
-                    break;
-            }
-        }
-        tile.setFacing(change);
-        tile.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-        tile.ownerUUID = placer.getUniqueID();
-        tile.onPlace();
-
-        world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
-        world.checkLightFor(EnumSkyBlock.SKY, pos);
     }
 
     @Override

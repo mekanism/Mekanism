@@ -11,8 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -37,12 +35,6 @@ public class BlockThermalEvaporation extends BlockTileDrops implements IHasModel
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntityThermalEvaporationBlock tile = (TileEntityThermalEvaporationBlock) world.getTileEntity(pos);
-        tile.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
     }
 
     @Override

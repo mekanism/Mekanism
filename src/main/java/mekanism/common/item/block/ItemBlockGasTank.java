@@ -8,29 +8,23 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.MekanismClient;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.GasTankTier;
-import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,33 +40,6 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, ISus
     public ItemBlockGasTank(Block block) {
         super(block);
         setMaxStackSize(1);
-    }
-
-    @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, @Nonnull IBlockState state) {
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityGasTank tile = (TileEntityGasTank) world.getTileEntity(pos);
-            if (tile != null) {
-                tile.gasTank.setMaxGas(tile.tier.getStorage());
-                tile.gasTank.setGas(getGas(stack));
-                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-                tile.getSecurity().setMode(getSecurity(stack));
-                if (getOwnerUUID(stack) == null) {
-                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
-                }
-                if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                    tile.getConfig().read(ItemDataUtils.getDataMap(stack));
-                    tile.getEjector().read(ItemDataUtils.getDataMap(stack));
-                }
-                tile.setInventory(getInventory(stack));
-                if (!world.isRemote) {
-                    Mekanism.packetHandler.sendUpdatePacket(tile);
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override

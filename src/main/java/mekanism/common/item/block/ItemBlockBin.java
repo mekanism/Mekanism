@@ -8,16 +8,11 @@ import mekanism.common.block.basic.BlockBin;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.BinTier;
-import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -74,24 +69,5 @@ public class ItemBlockBin extends ItemBlockTooltip implements ITieredItem<BinTie
         ItemStack ret = stack.copy();
         ItemDataUtils.setInt(ret, "itemCount", newCount);
         return ret;
-    }
-
-    @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, @Nonnull IBlockState state) {
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            if (stack.hasTagCompound()) {
-                InventoryBin inv = new InventoryBin(stack);
-                if (!inv.getItemType().isEmpty()) {
-                    TileEntityBin tileEntity = (TileEntityBin) world.getTileEntity(pos);
-                    if (tileEntity != null) {
-                        tileEntity.setItemType(inv.getItemType());
-                        tileEntity.setItemCount(inv.getItemCount());
-                    }
-                }
-            }
-            return true;
-        }
-        return false;
     }
 }

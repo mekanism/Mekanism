@@ -20,14 +20,12 @@ import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -112,30 +110,6 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements ISus
             return EnumActionResult.PASS;
         }
         return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
-    }
-
-    @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, @Nonnull IBlockState state) {
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityFluidTank tile = (TileEntityFluidTank) world.getTileEntity(pos);
-            if (tile != null) {
-                //Security
-                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-                tile.getSecurity().setMode(getSecurity(stack));
-                if (getOwnerUUID(stack) == null) {
-                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
-                }
-                //Sustained Tank
-                if (hasTank(stack) && getFluidStack(stack) != null) {
-                    tile.setFluidStack(getFluidStack(stack));
-                }
-                //Sustained Inventory
-                tile.setInventory(getInventory(stack));
-            }
-            return true;
-        }
-        return false;
     }
 
     public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, BlockPos pos) {

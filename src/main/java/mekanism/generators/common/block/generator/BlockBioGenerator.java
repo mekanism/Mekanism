@@ -22,7 +22,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,7 +32,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
@@ -78,41 +76,6 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityliving, ItemStack itemstack) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        EnumFacing change = EnumFacing.SOUTH;
-        if (tileEntity.canSetFacing(EnumFacing.DOWN) && tileEntity.canSetFacing(EnumFacing.UP)) {
-            int height = Math.round(entityliving.rotationPitch);
-            if (height >= 65) {
-                change = EnumFacing.UP;
-            } else if (height <= -65) {
-                change = EnumFacing.DOWN;
-            }
-        }
-
-        if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
-            int side = MathHelper.floor((double) (entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            switch (side) {
-                case 0:
-                    change = EnumFacing.NORTH;
-                    break;
-                case 1:
-                    change = EnumFacing.EAST;
-                    break;
-                case 2:
-                    change = EnumFacing.SOUTH;
-                    break;
-                case 3:
-                    change = EnumFacing.WEST;
-                    break;
-            }
-        }
-
-        tileEntity.setFacing(change);
-        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
     }
 
     @Override

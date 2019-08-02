@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.machine.BlockDigitalMiner;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -16,7 +15,6 @@ import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -74,36 +72,7 @@ public class ItemBlockDigitalMiner extends ItemBlockAdvancedTooltip implements I
                 return false;
             }
         }
-
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityDigitalMiner tile = (TileEntityDigitalMiner) world.getTileEntity(pos);
-            if (tile != null) {
-                //Security
-                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-                tile.getSecurity().setMode(getSecurity(stack));
-                if (getOwnerUUID(stack) == null) {
-                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
-                }
-                //Upgrades
-                if (ItemDataUtils.hasData(stack, "upgrades")) {
-                    tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-                }
-                //Sustained Data
-                if (stack.getTagCompound() != null) {
-                    tile.readSustainedData(stack);
-                }
-                //Redstone Control
-                if (ItemDataUtils.hasData(stack, "controlType")) {
-                    tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-                }
-                //Sustained Inventory
-                tile.setInventory(getInventory(stack));
-                //Electric
-                tile.electricityStored = getEnergy(stack);
-            }
-            return true;
-        }
-        return false;
+        return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
     }
 
     @Override

@@ -17,7 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -52,15 +51,6 @@ public class BlockTurbineValve extends BlockMekanismContainer {
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
-        }
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityliving, ItemStack itemstack) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-        if (!world.isRemote && tileEntity instanceof IMultiblock) {
-            ((IMultiblock<?>) tileEntity).doUpdate();
         }
     }
 

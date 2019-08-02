@@ -11,6 +11,7 @@ import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
@@ -33,7 +34,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
@@ -78,26 +78,12 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        EnumFacing change = EnumFacing.SOUTH;
-        int side = MathHelper.floor((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-        switch (side) {
-            case 0:
-                change = EnumFacing.NORTH;
-                break;
-            case 1:
-                change = EnumFacing.EAST;
-                break;
-            case 2:
-                change = EnumFacing.SOUTH;
-                break;
-            case 3:
-                change = EnumFacing.WEST;
-                break;
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+        if (tile instanceof TileEntityGasTank) {
+            TileEntityGasTank gasTank = (TileEntityGasTank) tile;
+            gasTank.gasTank.setMaxGas(gasTank.tier.getStorage());
+            gasTank.gasTank.setGas(((ItemBlockGasTank) stack.getItem()).getGas(stack));
         }
-        tileEntity.setFacing(change);
-        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
     }
 
     @Override

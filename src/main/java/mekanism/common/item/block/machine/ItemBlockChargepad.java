@@ -10,19 +10,14 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
-import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
@@ -40,22 +35,6 @@ public class ItemBlockChargepad extends ItemBlockAdvancedTooltip implements IIte
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
                  + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
-    }
-
-    @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, @Nonnull IBlockState state) {
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityChargepad tile = (TileEntityChargepad) world.getTileEntity(pos);
-            if (tile != null) {
-                //Sustained Inventory
-                tile.setInventory(getInventory(stack));
-                //Electricity
-                tile.electricityStored = getEnergy(stack);
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override

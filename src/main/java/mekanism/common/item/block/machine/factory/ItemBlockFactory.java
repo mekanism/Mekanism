@@ -7,10 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
-import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.machine.factory.BlockFactory;
@@ -22,21 +20,16 @@ import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
@@ -81,53 +74,6 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip implements IItemE
                 list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue() : ""));
             }
         }
-    }
-
-    @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, @Nonnull IBlockState state) {
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityFactory tile = (TileEntityFactory) world.getTileEntity(pos);
-            if (tile != null) {
-                //Security
-                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-                tile.getSecurity().setMode(getSecurity(stack));
-                if (getOwnerUUID(stack) == null) {
-                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
-                }
-                //Upgrade tile
-                if (ItemDataUtils.hasData(stack, "upgrades")) {
-                    tile.getComponent().read(ItemDataUtils.getDataMap(stack));
-                }
-                //Side data
-                if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                    tile.getConfig().read(ItemDataUtils.getDataMap(stack));
-                    tile.getEjector().read(ItemDataUtils.getDataMap(stack));
-                }
-                //Sustained data
-                if (stack.getTagCompound() != null) {
-                    tile.readSustainedData(stack);
-                }
-                //Redstone control
-                if (ItemDataUtils.hasData(stack, "controlType")) {
-                    tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
-                }
-                //Factory
-                RecipeType recipeType = getRecipeTypeOrNull(stack);
-                if (recipeType != null) {
-                    tile.setRecipeType(recipeType);
-                }
-                world.notifyNeighborsOfStateChange(pos, tile.getBlockType(), true);
-                Mekanism.packetHandler.sendUpdatePacket(tile);
-                //TODO: Is this stuff really supposed to be below it
-                //Sustained Inventory
-                tile.setInventory(getInventory(stack));
-                //Electric Block
-                tile.electricityStored = getEnergy(stack);
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override

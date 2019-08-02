@@ -26,7 +26,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -70,12 +69,6 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
     }
 
     @Override

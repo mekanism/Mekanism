@@ -16,7 +16,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.block.generator.BlockAdvancedSolarGenerator;
-import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -70,24 +69,7 @@ public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip im
                 }
             }
         }
-
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityAdvancedSolarGenerator tile = (TileEntityAdvancedSolarGenerator) world.getTileEntity(pos);
-            if (tile != null) {
-                //Security
-                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-                tile.getSecurity().setMode(getSecurity(stack));
-                if (getOwnerUUID(stack) == null) {
-                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
-                }
-                //Electric
-                tile.electricityStored = getEnergy(stack);
-                //Sustained Inventory
-                tile.setInventory(getInventory(stack));
-            }
-            return true;
-        }
-        return false;
+        return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
     }
 
     @Override

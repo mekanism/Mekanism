@@ -14,7 +14,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -104,11 +103,13 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
     @Nonnull
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
-        Item item = Item.getItemFromBlock(state.getBlock());
-        ItemStack itemStack = new ItemStack(item, 1, state.getBlock().getMetaFromState(state));
-        if (tileEntity.storedData != null) {
-            ((ItemBlockCardboardBox) item).setBlockData(itemStack, tileEntity.storedData);
+        TileEntityCardboardBox tile = (TileEntityCardboardBox) world.getTileEntity(pos);
+        ItemStack itemStack = new ItemStack(this);
+        if (tile == null) {
+            return itemStack;
+        }
+        if (tile.storedData != null) {
+            ((ItemBlockCardboardBox) itemStack.getItem()).setBlockData(itemStack, tile.storedData);
         }
         return itemStack;
     }

@@ -4,6 +4,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IHasGui;
@@ -34,7 +35,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
@@ -99,38 +99,13 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        //TODO
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        if (tileEntity == null) {
-            return;
-        }
-        int height = Math.round(placer.rotationPitch);
-        EnumFacing change = EnumFacing.SOUTH;
-
-        if (height >= 65) {
-            change = EnumFacing.UP;
-        } else if (height <= -65) {
-            change = EnumFacing.DOWN;
-        } else {
-            int side = MathHelper.floor((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            switch (side) {
-                case 0:
-                    change = EnumFacing.NORTH;
-                    break;
-                case 1:
-                    change = EnumFacing.EAST;
-                    break;
-                case 2:
-                    change = EnumFacing.SOUTH;
-                    break;
-                case 3:
-                    change = EnumFacing.WEST;
-                    break;
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+        if (tile instanceof TileEntityEnergyCube) {
+            TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
+            if (cube.tier == EnergyCubeTier.CREATIVE) {
+                cube.configComponent.fillConfig(TransmissionType.ENERGY, ((ItemBlockEnergyCube) stack.getItem()).getEnergy(stack) > 0 ? 2 : 1);
             }
         }
-        tileEntity.setFacing(change);
-        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
     }
 
     @Override

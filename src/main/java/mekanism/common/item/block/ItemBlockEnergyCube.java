@@ -4,9 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -17,21 +15,16 @@ import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -77,35 +70,6 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip implements IItemEnergi
         }
         list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                  LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
-    }
-
-    @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, @Nonnull IBlockState state) {
-        if (super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
-            TileEntityEnergyCube tile = (TileEntityEnergyCube) world.getTileEntity(pos);
-            if (tile != null) {
-                tile.electricityStored = getEnergy(stack);
-                if (tile.tier == EnergyCubeTier.CREATIVE) {
-                    tile.configComponent.fillConfig(TransmissionType.ENERGY, tile.getEnergy() > 0 ? 2 : 1);
-                }
-                tile.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-                tile.getSecurity().setMode(getSecurity(stack));
-                if (getOwnerUUID(stack) == null) {
-                    tile.getSecurity().setOwnerUUID(player.getUniqueID());
-                }
-                if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                    tile.getConfig().read(ItemDataUtils.getDataMap(stack));
-                    tile.getEjector().read(ItemDataUtils.getDataMap(stack));
-                }
-                tile.setInventory(getInventory(stack));
-                if (!world.isRemote) {
-                    Mekanism.packetHandler.sendUpdatePacket(tile);
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override

@@ -47,7 +47,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
@@ -92,50 +91,14 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        if (tileEntity == null) {
-            return;
-        }
-
-        EnumFacing change = EnumFacing.SOUTH;
-        if (tileEntity.canSetFacing(EnumFacing.DOWN) && tileEntity.canSetFacing(EnumFacing.UP)) {
-            int height = Math.round(placer.rotationPitch);
-            if (height >= 65) {
-                change = EnumFacing.UP;
-            } else if (height <= -65) {
-                change = EnumFacing.DOWN;
-            }
-        }
-
-        if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
-            int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            switch (side) {
-                case 0:
-                    change = EnumFacing.NORTH;
-                    break;
-                case 1:
-                    change = EnumFacing.EAST;
-                    break;
-                case 2:
-                    change = EnumFacing.SOUTH;
-                    break;
-                case 3:
-                    change = EnumFacing.WEST;
-                    break;
-            }
-        }
-
-        tileEntity.setFacing(change);
-        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-
-        if (tileEntity instanceof TileEntityLogisticalSorter) {
-            TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tileEntity;
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+        if (tile instanceof TileEntityLogisticalSorter) {
+            TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
             if (!transporter.hasInventory()) {
                 for (EnumFacing dir : EnumFacing.VALUES) {
-                    TileEntity tile = Coord4D.get(transporter).offset(dir).getTileEntity(world);
-                    if (InventoryUtils.isItemHandler(tile, dir)) {
-                        tileEntity.setFacing(dir.getOpposite());
+                    TileEntity tileEntity = Coord4D.get(transporter).offset(dir).getTileEntity(world);
+                    if (InventoryUtils.isItemHandler(tileEntity, dir)) {
+                        tile.setFacing(dir.getOpposite());
                         break;
                     }
                 }

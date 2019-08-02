@@ -9,8 +9,6 @@ import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -33,14 +31,6 @@ public class BlockPressureDisperser extends BlockTileDrops {
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
-        }
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntity te = world.getTileEntity(pos);
-        if (te instanceof TileEntityBasicBlock) {
-            ((TileEntityBasicBlock) te).redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
         }
     }
 

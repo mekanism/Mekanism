@@ -36,10 +36,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -102,43 +100,15 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntity te = world.getTileEntity(pos);
-        if (te instanceof TileEntityBasicBlock) {
-            TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) te;
-            EnumFacing change = EnumFacing.SOUTH;
-            if (tileEntity.canSetFacing(EnumFacing.DOWN) && tileEntity.canSetFacing(EnumFacing.UP)) {
-                int height = Math.round(placer.rotationPitch);
-                if (height >= 65) {
-                    change = EnumFacing.UP;
-                } else if (height <= -65) {
-                    change = EnumFacing.DOWN;
-                }
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+        if (stack.hasTagCompound() && tile instanceof TileEntityBin) {
+            InventoryBin inv = new InventoryBin(stack);
+            if (!inv.getItemType().isEmpty()) {
+                TileEntityBin bin = (TileEntityBin) tile;
+                bin.setItemType(inv.getItemType());
+                bin.setItemCount(inv.getItemCount());
             }
-            if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
-                int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                switch (side) {
-                    case 0:
-                        change = EnumFacing.NORTH;
-                        break;
-                    case 1:
-                        change = EnumFacing.EAST;
-                        break;
-                    case 2:
-                        change = EnumFacing.SOUTH;
-                        break;
-                    case 3:
-                        change = EnumFacing.WEST;
-                        break;
-                }
-            }
-            tileEntity.setFacing(change);
-            tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
         }
-
-        world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
-        world.checkLightFor(EnumSkyBlock.SKY, pos);
     }
 
     @Override

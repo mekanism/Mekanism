@@ -10,6 +10,7 @@ import mekanism.common.base.FactoryType;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
@@ -23,6 +24,7 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -48,7 +50,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
@@ -104,42 +105,15 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        if (tileEntity == null) {
-            return;
-        }
-
-        EnumFacing change = EnumFacing.SOUTH;
-        if (tileEntity.canSetFacing(EnumFacing.DOWN) && tileEntity.canSetFacing(EnumFacing.UP)) {
-            int height = Math.round(placer.rotationPitch);
-            if (height >= 65) {
-                change = EnumFacing.UP;
-            } else if (height <= -65) {
-                change = EnumFacing.DOWN;
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+        if (tile instanceof TileEntityFactory) {
+            RecipeType recipeType = ((ItemBlockFactory) stack.getItem()).getRecipeTypeOrNull(stack);
+            if (recipeType != null) {
+                ((TileEntityFactory) tile).setRecipeType(recipeType);
             }
+            world.notifyNeighborsOfStateChange(pos, tile.getBlockType(), true);
+            Mekanism.packetHandler.sendUpdatePacket(tile);
         }
-
-        if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
-            int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-            switch (side) {
-                case 0:
-                    change = EnumFacing.NORTH;
-                    break;
-                case 1:
-                    change = EnumFacing.EAST;
-                    break;
-                case 2:
-                    change = EnumFacing.SOUTH;
-                    break;
-                case 3:
-                    change = EnumFacing.WEST;
-                    break;
-            }
-        }
-
-        tileEntity.setFacing(change);
-        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
     }
 
     @Override
