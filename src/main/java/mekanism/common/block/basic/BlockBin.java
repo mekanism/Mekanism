@@ -201,18 +201,16 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
 
     @Nonnull
     @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityBin tile = (TileEntityBin) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
+    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityBasicBlock tile, @Nonnull ItemStack stack) {
+        if (tile instanceof TileEntityBin) {
+            TileEntityBin bin = (TileEntityBin) tile;
+            if (bin.getItemCount() > 0) {
+                InventoryBin inv = new InventoryBin(stack);
+                inv.setItemCount(bin.getItemCount());
+                inv.setItemType(bin.itemType);
+            }
         }
-        if (tile.getItemCount() > 0) {
-            InventoryBin inv = new InventoryBin(itemStack);
-            inv.setItemCount(tile.getItemCount());
-            inv.setItemType(tile.itemType);
-        }
-        return itemStack;
+        return stack;
     }
 
     @Override

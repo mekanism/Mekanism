@@ -3,20 +3,16 @@ package mekanism.common.block;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.block.ItemBlockGasTank;
-import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -27,7 +23,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -78,7 +73,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
         if (tile instanceof TileEntityGasTank) {
             TileEntityGasTank gasTank = (TileEntityGasTank) tile;
             gasTank.gasTank.setMaxGas(gasTank.tier.getStorage());
@@ -162,33 +157,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityGasTank(tier);
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityGasTank tile = (TileEntityGasTank) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
-        }
-        if (itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        //Security
-        ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-        securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
-        securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
-        //Side Config
-        tile.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-        tile.getEjector().write(ItemDataUtils.getDataMap(itemStack));
-        //Gas
-        IGasItem storageTank = (IGasItem) itemStack.getItem();
-        storageTank.setGas(itemStack, tile.gasTank.getGas());
-        //Sustained Inventory
-        ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-        inventory.setInventory(tile.getInventory(), itemStack);
-        return itemStack;
     }
 
     @Override

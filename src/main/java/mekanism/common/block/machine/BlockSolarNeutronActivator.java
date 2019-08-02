@@ -7,7 +7,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
@@ -17,10 +16,8 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -30,7 +27,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -221,35 +217,6 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntitySolarNeutronActivator tile = (TileEntitySolarNeutronActivator) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
-        }
-        if (!itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        //Security
-        ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-        securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
-        securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
-        //Upgrades
-        tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
-        //Sustained Data
-        tile.writeSustainedData(itemStack);
-        //Redstone Control
-        ItemDataUtils.setInt(itemStack, "controlType", tile.getControlType().ordinal());
-        //Sustained Inventory
-        if (tile.inventory.size() > 0) {
-            ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-            inventory.setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
-        }
-        return itemStack;
     }
 
     @Override

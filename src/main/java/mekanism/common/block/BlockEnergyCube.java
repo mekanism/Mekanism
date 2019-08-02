@@ -3,21 +3,17 @@ package mekanism.common.block;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.block.ItemBlockEnergyCube;
-import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -28,7 +24,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -99,7 +94,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
         if (tile instanceof TileEntityEnergyCube) {
             TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
             if (cube.tier == EnergyCubeTier.CREATIVE) {
@@ -178,33 +173,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityEnergyCube tile = (TileEntityEnergyCube) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
-        }
-        if (!itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        //SEcurity
-        ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-        securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
-        securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
-        //Side Config
-        tile.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-        tile.getEjector().write(ItemDataUtils.getDataMap(itemStack));
-        //Energy
-        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
-        energizedItem.setEnergy(itemStack, tile.electricityStored);
-        //Sustained Inventory
-        ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-        inventory.setInventory(tile.getInventory(), itemStack);
-        return itemStack;
     }
 
     @Override

@@ -3,16 +3,13 @@ package mekanism.generators.common.block.generator;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -24,7 +21,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -177,34 +173,6 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityHeatGenerator tile = (TileEntityHeatGenerator) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
-        }
-        if (!itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        //Security
-        ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-        securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
-        securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
-        //Energy
-        IEnergizedItem electricItem = (IEnergizedItem) itemStack.getItem();
-        electricItem.setEnergy(itemStack, tile.electricityStored);
-        //Sustained Inventory
-        if (tile.handleInventory()) {
-            ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-            inventory.setInventory(tile.getInventory(), itemStack);
-        }
-        //Sustained Data
-        tile.writeSustainedData(itemStack);
-        return itemStack;
     }
 
     @Override

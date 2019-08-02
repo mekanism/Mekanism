@@ -3,11 +3,9 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasModel;
@@ -28,7 +26,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -216,28 +213,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityLaser tile = (TileEntityLaser) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
-        }
-        if (!itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        //Sustained Inventory
-        if (tile.inventory.size() > 0) {
-            ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-            inventory.setInventory(tile.getInventory(), itemStack);
-        }
-        //Energy
-        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
-        energizedItem.setEnergy(itemStack, tile.getEnergy());
-        return itemStack;
     }
 
     @Nonnull

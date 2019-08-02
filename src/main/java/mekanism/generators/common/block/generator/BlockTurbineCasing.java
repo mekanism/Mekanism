@@ -2,7 +2,6 @@ package mekanism.generators.common.block.generator;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
@@ -97,22 +96,6 @@ public class BlockTurbineCasing extends BlockMekanismContainer {
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityTurbineCasing();
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityTurbineCasing tile = (TileEntityTurbineCasing) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
-        }
-        //Sustained Inventory
-        if (tile.handleInventory()) {
-            ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-            inventory.setInventory(tile.getInventory(), itemStack);
-        }
-        return itemStack;
     }
 
     @Override

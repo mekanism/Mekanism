@@ -4,15 +4,12 @@ import java.util.Locale;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.FactoryType;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasFactoryType;
@@ -25,13 +22,11 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
-import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -42,7 +37,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -105,7 +99,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
         if (tile instanceof TileEntityFactory) {
             RecipeType recipeType = ((ItemBlockFactory) stack.getItem()).getRecipeTypeOrNull(stack);
             if (recipeType != null) {
@@ -275,42 +269,11 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
 
     @Nonnull
     @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityFactory tile = (TileEntityFactory) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
+    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityBasicBlock tile, @Nonnull ItemStack stack) {
+        if (tile instanceof TileEntityFactory) {
+            ((IFactory) stack.getItem()).setRecipeType(((TileEntityFactory) tile).getRecipeType().ordinal(), stack);
         }
-        if (!itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        //Security
-        ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-        securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
-        securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
-        //Upgrades
-        tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
-        //Config
-        tile.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-        tile.getEjector().write(ItemDataUtils.getDataMap(itemStack));
-        //Sustained Data
-        ((ISustainedData) tile).writeSustainedData(itemStack);
-        //Redstone Control
-        ItemDataUtils.setInt(itemStack, "controlType", tile.getControlType().ordinal());
-        //Sustained Inventory
-        if (tile.inventory.size() > 0) {
-            ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
-            inventory.setInventory(tile.getInventory(), itemStack);
-        }
-        //Factory
-        IFactory factoryItem = (IFactory) itemStack.getItem();
-        factoryItem.setRecipeType(tile.getRecipeType().ordinal(), itemStack);
-        //this MUST be done after the factory info is saved, as it caps the energy to max, which is based on the recipe type
-        //TODO: Figure out if that comment is still accurate
-        //Energy
-        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
-        energizedItem.setEnergy(itemStack, tile.getEnergy());
-        return itemStack;
+        return stack;
     }
 
     @Override

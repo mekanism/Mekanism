@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
@@ -20,6 +21,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlowerPot;
@@ -50,7 +52,62 @@ public abstract class BlockTileDrops extends Block {
 
     @Nonnull
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        return new ItemStack(this);
+        ItemStack itemStack = new ItemStack(this);
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity == null) {
+            return itemStack;
+        }
+        if (!(tileEntity instanceof TileEntityBasicBlock)) {
+            //TODO let it do the down below checks anyways
+            return itemStack;
+        }
+        TileEntityBasicBlock tile = (TileEntityBasicBlock) tileEntity;
+        //TODO: If crashes happen here because of lack of NBT make things use ItemDataUtils
+        Item item = itemStack.getItem();
+
+        //Set any data that is block specific rather than tile specific
+        itemStack = setItemData(state, world, pos, tile, itemStack);
+
+        if (item instanceof ISecurityItem && tile instanceof ISecurityTile) {
+            ISecurityItem securityItem = (ISecurityItem) item;
+            ISecurityTile securityTile = (ISecurityTile) tile;
+            securityItem.setOwnerUUID(itemStack, securityTile.getSecurity().getOwnerUUID());
+            securityItem.setSecurity(itemStack, securityTile.getSecurity().getMode());
+        }
+        if (tile instanceof IUpgradeTile) {
+            ((IUpgradeTile) tile).getComponent().write(ItemDataUtils.getDataMap(itemStack));
+        }
+        if (tile instanceof ISideConfiguration) {
+            ISideConfiguration config = (ISideConfiguration) tile;
+            config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+            config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+        }
+        if (tile instanceof ISustainedData) {
+            ((ISustainedData) tile).writeSustainedData(itemStack);
+        }
+        if (tile instanceof IRedstoneControl) {
+            ItemDataUtils.setInt(itemStack, "controlType", ((IRedstoneControl) tile).getControlType().ordinal());
+        }
+        if (item instanceof ISustainedInventory && tile instanceof TileEntityContainerBlock && ((TileEntityContainerBlock) tile).inventory.size() > 0) {
+            ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
+        }
+        if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
+            FluidStack fluidStack = ((ISustainedTank) tile).getFluidStack();
+            if (fluidStack != null) {
+                ISustainedTank sustainedTank = (ISustainedTank) item;
+                if (sustainedTank.hasTank(itemStack)) {
+                    sustainedTank.setFluidStack(fluidStack, itemStack);
+                }
+            }
+        }
+        if (item instanceof IEnergizedItem && tile instanceof IStrictEnergyStorage && !(tile instanceof TileEntityMultiblock<?>)) {
+            ((IEnergizedItem) item).setEnergy(itemStack, ((IStrictEnergyStorage) tile).getEnergy());
+        }
+        return itemStack;
+    }
+
+    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityBasicBlock tile, @Nonnull ItemStack stack) {
+        return stack;
     }
 
     /**
@@ -100,7 +157,6 @@ public abstract class BlockTileDrops extends Block {
     public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player) {
         return getDropItem(state, world, pos);
     }
-
 
     //TODO: Try to merge BlockMekanismContainer and this class
 

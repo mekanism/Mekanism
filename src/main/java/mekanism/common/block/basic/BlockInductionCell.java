@@ -3,7 +3,6 @@ package mekanism.common.block.basic;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.ITieredBlock;
@@ -13,11 +12,9 @@ import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier> {
@@ -46,20 +43,6 @@ public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<I
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityInductionCell tile = (TileEntityInductionCell) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
-        }
-        //This can probably be moved upwards
-        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
-        energizedItem.setEnergy(itemStack, tile.getEnergy());
-        return itemStack;
     }
 
     @Override

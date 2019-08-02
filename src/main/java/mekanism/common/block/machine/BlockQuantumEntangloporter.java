@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -17,7 +16,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
@@ -31,7 +29,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -82,7 +79,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
         if (tile instanceof TileEntityQuantumEntangloporter) {
             if (!world.isRemote && ItemDataUtils.hasData(stack, "entangleporter_frequency")) {
                 Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
@@ -243,33 +240,14 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
 
     @Nonnull
     @Override
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        TileEntityQuantumEntangloporter tile = (TileEntityQuantumEntangloporter) world.getTileEntity(pos);
-        ItemStack itemStack = new ItemStack(this);
-        if (tile == null) {
-            return itemStack;
+    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityBasicBlock tile, @Nonnull ItemStack stack) {
+        if (tile instanceof TileEntityQuantumEntangloporter) {
+            InventoryFrequency frequency = ((TileEntityQuantumEntangloporter) tile).frequency;
+            if (frequency != null) {
+                ItemDataUtils.setCompound(stack, "entangleporter_frequency", frequency.getIdentity().serialize());
+            }
         }
-        if (!itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        //Security
-        ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-        securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
-        securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
-        //Upgrades
-        tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
-        //Config
-        tile.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-        tile.getEjector().write(ItemDataUtils.getDataMap(itemStack));
-        //Energu
-        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
-        energizedItem.setEnergy(itemStack, tile.getEnergy());
-        //Quantum Entangloporter
-        InventoryFrequency frequency = tile.frequency;
-        if (frequency != null) {
-            ItemDataUtils.setCompound(itemStack, "entangleporter_frequency", frequency.getIdentity().serialize());
-        }
-        return itemStack;
+        return stack;
     }
 
     @Override
