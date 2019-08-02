@@ -23,7 +23,6 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -54,22 +53,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockPressurizedReactionChamber extends BlockMekanismContainer implements IBlockElectric, IHasModel, IBlockDescriptive, IHasGui, ISupportsUpgrades,
       IStateFacing, IStateActive {
 
-    private final String name;
-
     public BlockPressurizedReactionChamber() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "pressurized_reaction_chamber";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "pressurized_reaction_chamber"));
     }
 
     @Nonnull

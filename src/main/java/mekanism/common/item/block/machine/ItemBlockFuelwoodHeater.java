@@ -7,7 +7,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.machine.BlockFuelwoodHeater;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.security.ISecurityItem;
@@ -54,7 +53,7 @@ public class ItemBlockFuelwoodHeater extends ItemBlockMekanism implements ISusta
             list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                      LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
         } else {
-            list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
+            list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
         }
     }
 

@@ -35,16 +35,11 @@ import net.minecraft.world.World;
 
 public abstract class BlockTransmitter extends BlockTileDrops implements IStateConnection {
 
-    protected final String name;
-
     protected BlockTransmitter(String name) {
         super(Material.PISTON);
-        setCreativeTab(Mekanism.tabMekanism);
         setHardness(1F);
         setResistance(10F);
-        this.name = name;
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
     protected static TileEntitySidedPipe getTileEntitySidedPipe(IBlockAccess world, BlockPos pos) {

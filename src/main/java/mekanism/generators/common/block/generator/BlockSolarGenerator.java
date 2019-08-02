@@ -3,7 +3,6 @@ package mekanism.generators.common.block.generator;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
@@ -13,7 +12,6 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -45,21 +43,11 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
 
-    private final String name;
-
     public BlockSolarGenerator() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "solar_generator";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        return LangUtils.localize("tooltip.mekanism." + name);
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "solar_generator"));
     }
 
     @Override

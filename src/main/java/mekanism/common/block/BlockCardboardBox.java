@@ -33,17 +33,12 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
 
     private static boolean testingPlace = false;
 
-    private final String name;
-
     public BlockCardboardBox() {
         super(Material.CLOTH);
-        setCreativeTab(Mekanism.tabMekanism);
         setHardness(0.5F);
         setResistance(1F);
         MinecraftForge.EVENT_BUS.register(this);
-        this.name = "cardboard_box";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "cardboard_box"));
     }
 
     @Nonnull
@@ -75,7 +70,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
         if (!world.isRemote && entityplayer.isSneaking()) {
             TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
 
-            if (tileEntity.storedData != null) {
+            if (tileEntity != null && tileEntity.storedData != null) {
                 BlockData data = tileEntity.storedData;
                 testingPlace = true;
                 if (!data.block.canPlaceBlockAt(world, pos)) {

@@ -13,7 +13,6 @@ import net.minecraft.util.ResourceLocation;
 public class BlockPlasticGlow extends Block implements IColoredBlock, IBlockOreDict {
 
     private final EnumColor color;
-    private final String name;
 
     public BlockPlasticGlow(EnumColor color) {
         super(Material.WOOD);
@@ -22,10 +21,7 @@ public class BlockPlasticGlow extends Block implements IColoredBlock, IBlockOreD
         setResistance(10F);
         //It gets multiplied by 15 when being set
         setLightLevel(10F / 15.0F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = color.registry_prefix + "_plastic_glow";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_plastic_glow"));
     }
 
     @Override

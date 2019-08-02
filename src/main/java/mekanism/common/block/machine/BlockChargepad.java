@@ -16,7 +16,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -51,22 +50,11 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
 
     private static final AxisAlignedBB CHARGEPAD_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
 
-    private final String name;
-
     public BlockChargepad() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "chargepad";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "chargepad"));
     }
 
     @Nonnull

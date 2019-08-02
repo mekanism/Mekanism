@@ -14,7 +14,6 @@ import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.IItemRedirectedModel;
@@ -110,7 +109,7 @@ public class ItemBlockFluidTank extends ItemBlockMekanism implements ISustainedI
             list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
                      LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
         } else {
-            list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
+            list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
         }
     }
 

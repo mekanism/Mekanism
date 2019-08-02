@@ -21,7 +21,6 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -51,22 +50,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockResistiveHeater extends BlockMekanismContainer implements IBlockElectric, IBlockDescriptive, IHasGui, IStateFacing, IStateActive {
 
-    private final String name;
-
     public BlockResistiveHeater() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "resistive_heater";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "resistive_heater"));
     }
 
     @Nonnull

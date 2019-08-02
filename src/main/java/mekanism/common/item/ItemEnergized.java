@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
@@ -34,7 +33,6 @@ public class ItemEnergized extends ItemMekanism implements IItemEnergized {
         super(name);
         MAX_ELECTRICITY = maxElectricity;
         setMaxStackSize(1);
-        setCreativeTab(Mekanism.tabMekanism);
     }
 
     @Override

@@ -12,7 +12,6 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -34,16 +33,11 @@ import net.minecraft.world.World;
 
 public class BlockThermalEvaporationController extends BlockTileDrops implements IBlockDescriptive, IHasModel, IStateFacing, IStateActive {
 
-    private final String name;
-
     public BlockThermalEvaporationController() {
         super(Material.IRON);
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "thermal_evaporation_controller";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "thermal_evaporation_controller"));
     }
 
     @Nonnull
@@ -134,12 +128,6 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
             }
         }
         return false;
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Override

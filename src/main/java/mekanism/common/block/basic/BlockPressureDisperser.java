@@ -7,7 +7,6 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -20,22 +19,11 @@ import net.minecraft.world.World;
 
 public class BlockPressureDisperser extends BlockTileDrops implements IBlockDescriptive {
 
-    private final String name;
-
     public BlockPressureDisperser() {
         super(Material.IRON);
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "pressure_disperser";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "pressure_disperser"));
     }
 
     @Override

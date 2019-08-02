@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.Mekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -35,7 +34,6 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     public ItemGaugeDropper() {
         super("gauge_dropper");
         setMaxStackSize(1);
-        setCreativeTab(Mekanism.tabMekanism);
     }
 
     public ItemStack getEmptyItem() {

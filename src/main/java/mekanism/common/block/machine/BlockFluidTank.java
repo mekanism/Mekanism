@@ -25,7 +25,6 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
@@ -66,17 +65,13 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
     private final FluidTankTier tier;
-    private final String name;
 
     public BlockFluidTank(FluidTankTier tier) {
         super(Material.IRON);
         this.tier = tier;
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_fluid_tank";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_fluid_tank"));
     }
 
     public static boolean isInstance(ItemStack stack) {
@@ -87,12 +82,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     public FluidTankTier getTier() {
         return tier;
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Nonnull

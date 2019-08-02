@@ -26,7 +26,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
@@ -62,22 +61,11 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
-    private final String name;
-
     public BlockLogisticalSorter() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "logistical_sorter";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "logistical_sorter"));
     }
 
     @Override

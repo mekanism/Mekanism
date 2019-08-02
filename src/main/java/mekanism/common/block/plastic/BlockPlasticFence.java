@@ -18,15 +18,11 @@ import net.minecraft.util.ResourceLocation;
 public class BlockPlasticFence extends BlockFence implements IColoredBlock, IBlockOreDict {
 
     private final EnumColor color;
-    private final String name;
 
     public BlockPlasticFence(EnumColor color) {
         super(Material.CLAY, Material.CLAY.getMaterialMapColor());
         this.color = color;
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = color.registry_prefix + "_plastic_fence";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_plastic_fence"));
     }
 
     @Override

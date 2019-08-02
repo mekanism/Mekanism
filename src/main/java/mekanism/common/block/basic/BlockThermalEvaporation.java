@@ -8,7 +8,6 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -23,16 +22,11 @@ import net.minecraft.world.World;
 
 public class BlockThermalEvaporation extends BlockTileDrops implements IBlockDescriptive, IHasModel {
 
-    private final String name;
-
     public BlockThermalEvaporation() {
         super(Material.IRON);
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "thermal_evaporation_block";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "thermal_evaporation_block"));
     }
 
     @Override
@@ -50,12 +44,6 @@ public class BlockThermalEvaporation extends BlockTileDrops implements IBlockDes
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntityThermalEvaporationBlock tile = (TileEntityThermalEvaporationBlock) world.getTileEntity(pos);
         tile.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Override

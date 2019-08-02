@@ -16,17 +16,13 @@ import net.minecraft.world.World;
 public class BlockPlasticRoad extends Block implements IColoredBlock, IBlockOreDict {
 
     private final EnumColor color;
-    private final String name;
 
     public BlockPlasticRoad(EnumColor color) {
         super(Material.WOOD);
         this.color = color;
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = color.registry_prefix + "_plastic_road";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_plastic_road"));
     }
 
     @Override

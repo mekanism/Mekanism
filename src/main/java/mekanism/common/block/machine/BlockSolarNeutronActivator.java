@@ -22,7 +22,6 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -51,22 +50,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IBlockDescriptive, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive {
 
-    private final String name;
-
     public BlockSolarNeutronActivator() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "solar_neutron_activator";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "solar_neutron_activator"));
     }
 
     @Nonnull

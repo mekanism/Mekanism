@@ -10,7 +10,6 @@ import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -24,17 +23,13 @@ import net.minecraft.world.World;
 public class BlockInductionProvider extends BlockTileDrops implements IBlockDescriptive, ITieredBlock<InductionProviderTier> {
 
     private final InductionProviderTier tier;
-    private final String name;
 
     public BlockInductionProvider(InductionProviderTier tier) {
         super(Material.IRON);
         this.tier = tier;
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_induction_provider";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_induction_provider"));
     }
 
     @Override
@@ -59,12 +54,6 @@ public class BlockInductionProvider extends BlockTileDrops implements IBlockDesc
         if (te instanceof TileEntityBasicBlock) {
             ((TileEntityBasicBlock) te).redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
         }
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Override

@@ -3,7 +3,6 @@ package mekanism.generators.common.block.generator;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
@@ -15,7 +14,6 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -46,21 +44,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 //TODO: Maybe make this extend BlockSolarGenerator
 public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockDescriptive, IBlockElectric, IStateFacing {
 
-    private final String name;
-
     public BlockAdvancedSolarGenerator() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "advanced_solar_generator";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        return LangUtils.localize("tooltip.mekanism." + name);
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "advanced_solar_generator"));
     }
 
     @Nonnull

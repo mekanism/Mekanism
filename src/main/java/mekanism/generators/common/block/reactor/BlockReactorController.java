@@ -2,14 +2,12 @@ package mekanism.generators.common.block.reactor;
 
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -31,21 +29,11 @@ import net.minecraft.world.World;
 
 public class BlockReactorController extends Block implements IHasGui, IBlockDescriptive, IStateActive {
 
-    private final String name;
-
     public BlockReactorController() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "reactor_controller";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        return LangUtils.localize("tooltip.mekanism." + name);
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "reactor_controller"));
     }
 
     @Nonnull

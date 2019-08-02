@@ -2,7 +2,6 @@ package mekanism.generators.common.block.generator;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
@@ -10,7 +9,6 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -36,21 +34,11 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class BlockTurbineVent extends BlockMekanismContainer implements IBlockDescriptive {
 
-    private final String name;
-
     public BlockTurbineVent() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "turbine_vent";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        return LangUtils.localize("tooltip.mekanism." + name);
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "turbine_vent"));
     }
 
     @Override

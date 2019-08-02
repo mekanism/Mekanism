@@ -18,7 +18,6 @@ import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -47,7 +46,6 @@ import net.minecraft.world.World;
 
 public class BlockBin extends BlockTileDrops implements IBlockDescriptive, IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier> {
 
-    private final String name;
     private final BinTier tier;
 
     public BlockBin(BinTier tier) {
@@ -55,10 +53,7 @@ public class BlockBin extends BlockTileDrops implements IBlockDescriptive, IHasM
         this.tier = tier;
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_bin";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_bin"));
     }
 
     @Override
@@ -158,12 +153,6 @@ public class BlockBin extends BlockTileDrops implements IBlockDescriptive, IHasM
             }
         }
         return false;
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Override

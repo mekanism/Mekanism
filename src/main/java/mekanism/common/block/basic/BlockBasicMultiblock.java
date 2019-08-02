@@ -9,7 +9,6 @@ import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -31,23 +30,12 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class BlockBasicMultiblock extends BlockTileDrops implements IBlockDescriptive {
 
-    private final String name;
-
     public BlockBasicMultiblock(String name) {
         super(Material.IRON);
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        this.name = name.toLowerCase(Locale.ROOT);
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, name.toLowerCase(Locale.ROOT)));
     }
 
     @Override

@@ -33,11 +33,8 @@ public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOr
         setResistance(this.resource.getResistance());
         //It gets multiplied by 15 when being set
         setLightLevel(this.resource.getLightValue() / 15.0F);
-        setCreativeTab(Mekanism.tabMekanism);
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        String name = "block_" + resource.getRegistrySuffix().toLowerCase(Locale.ROOT);
-        setTranslationKey(name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "block_" + resource.getRegistrySuffix().toLowerCase(Locale.ROOT)));
     }
 
     @Override

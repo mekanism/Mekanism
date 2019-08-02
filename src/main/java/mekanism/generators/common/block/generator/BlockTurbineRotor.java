@@ -2,12 +2,10 @@ package mekanism.generators.common.block.generator;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsItem;
@@ -39,21 +37,11 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IBlockD
 
     private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
 
-    private final String name;
-
     public BlockTurbineRotor() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "turbine_rotor";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        return LangUtils.localize("tooltip.mekanism." + name);
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "turbine_rotor"));
     }
 
     @Override

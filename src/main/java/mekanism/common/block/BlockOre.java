@@ -17,17 +17,13 @@ import net.minecraft.util.ResourceLocation;
 public class BlockOre extends Block implements IBlockOreDict {
 
     private final INamedResource resource;
-    private final String name;
 
     public BlockOre(INamedResource resource) {
         super(Material.ROCK);
         this.resource = resource;
         setHardness(3F);
         setResistance(5F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = this.resource.getRegistrySuffix() + "_ore";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, this.resource.getRegistrySuffix() + "_ore"));
     }
 
     @Override

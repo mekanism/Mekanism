@@ -2,11 +2,9 @@ package mekanism.generators.common.block.reactor;
 
 import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
@@ -31,21 +29,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockLaserFocusMatrix extends Block implements IBlockDescriptive {
 
-    private final String name;
-
     public BlockLaserFocusMatrix() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "laser_focus_matrix";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        return LangUtils.localize("tooltip.mekanism." + name);
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "laser_focus_matrix"));
     }
 
     @Nonnull

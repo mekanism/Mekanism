@@ -49,17 +49,13 @@ import net.minecraft.world.World;
 public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<EnergyCubeTier> {
 
     private final EnergyCubeTier tier;
-    private final String name;
 
     public BlockEnergyCube(EnergyCubeTier tier) {
         super(Material.IRON);
         this.tier = tier;
         setHardness(2F);
         setResistance(4F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_energy_cube";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_energy_cube"));
     }
 
     @Override

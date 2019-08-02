@@ -13,17 +13,13 @@ import net.minecraft.util.ResourceLocation;
 public class BlockPlasticReinforced extends Block implements IColoredBlock, IBlockOreDict {
 
     private final EnumColor color;
-    private final String name;
 
     public BlockPlasticReinforced(EnumColor color) {
         super(Material.WOOD);
         this.color = color;
         setHardness(50F);
         setResistance(2000F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = color.registry_prefix + "_reinforced_plastic";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_reinforced_plastic"));
     }
 
     @Override

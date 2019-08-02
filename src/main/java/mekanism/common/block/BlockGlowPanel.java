@@ -42,19 +42,15 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     }
 
     private final EnumColor color;
-    private final String name;
 
     public BlockGlowPanel(EnumColor color) {
         super(Material.PISTON);
         this.color = color;
-        setCreativeTab(Mekanism.tabMekanism);
         setHardness(1F);
         setResistance(10F);
         //It gets multiplied by 15 when being set
         setLightLevel(1);
-        this.name = color.registry_prefix + "_glow_panel";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_glow_panel"));
     }
 
     @Override

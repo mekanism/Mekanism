@@ -24,7 +24,6 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -55,22 +54,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IBlockDescriptive, IHasGui, IStateFacing,
       IStateActive {
 
-    private final String name;
-
     public BlockDigitalMiner() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "digital_miner";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "digital_miner"));
     }
 
     @Nonnull

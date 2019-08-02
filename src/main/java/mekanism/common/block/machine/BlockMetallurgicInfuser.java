@@ -24,7 +24,6 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -56,28 +55,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockMetallurgicInfuser extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IBlockDescriptive, IHasGui, IStateFacing,
       IHasFactoryType {
 
-    private final String name;
-
     public BlockMetallurgicInfuser() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "metallurgic_infuser";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "metallurgic_infuser"));
     }
 
     @Nonnull
     @Override
     public FactoryType getFactoryType() {
         return FactoryType.INFUSING;
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Nonnull

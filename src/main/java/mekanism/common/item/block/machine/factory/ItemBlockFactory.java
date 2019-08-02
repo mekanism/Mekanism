@@ -14,7 +14,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -93,7 +92,7 @@ public class ItemBlockFactory extends ItemBlockMekanism implements IItemEnergize
                 }
             }
         } else {
-            list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
+            list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
         }
     }
 

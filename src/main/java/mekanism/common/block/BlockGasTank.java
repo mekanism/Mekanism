@@ -44,17 +44,13 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
     private final GasTankTier tier;
-    private final String name;
 
     public BlockGasTank(GasTankTier tier) {
         super(Material.IRON);
         this.tier = tier;
         setHardness(3.5F);
         setResistance(8F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_gas_tank";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_gas_tank"));
     }
 
     @Override

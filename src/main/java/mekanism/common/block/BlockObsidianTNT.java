@@ -19,16 +19,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
+//TODO: Extend BlockTNT?
 public class BlockObsidianTNT extends Block {
-
-    private final String name;
 
     public BlockObsidianTNT() {
         super(Material.TNT);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "obsidian_tnt";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "obsidian_tnt"));
     }
 
     @Override

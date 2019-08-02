@@ -9,7 +9,6 @@ import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -32,22 +31,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockStructuralGlass extends BlockTileDrops implements IBlockDescriptive, IHasModel {
 
-    private final String name;
-
     public BlockStructuralGlass() {
         super(Material.IRON);
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "structural_glass";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "structural_glass"));
     }
 
     @Override

@@ -31,7 +31,6 @@ import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -64,7 +63,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
 
     private final FactoryTier tier;
     private final FactoryType type;
-    private final String name;
 
     public BlockFactory(@Nonnull FactoryTier tier, @Nonnull FactoryType type) {
         super(Material.IRON);
@@ -72,10 +70,8 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         this.type = type;
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_" + type.getRegistryNameComponent() + "_factory";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        String name = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + "_" + type.getRegistryNameComponent() + "_factory";
+        setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
     @Override
@@ -87,12 +83,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Override
     public FactoryType getFactoryType() {
         return type;
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Nonnull

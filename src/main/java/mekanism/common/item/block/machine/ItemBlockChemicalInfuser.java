@@ -11,7 +11,6 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.machine.BlockChemicalInfuser;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -73,7 +72,7 @@ public class ItemBlockChemicalInfuser extends ItemBlockMekanism implements IItem
                 }
             }
         } else {
-            list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
+            list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
         }
     }
 

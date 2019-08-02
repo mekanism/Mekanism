@@ -25,7 +25,6 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -56,28 +55,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockPrecisionSawmill extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IBlockDescriptive, IHasGui, IStateFacing, IStateActive,
       IHasFactoryType {
 
-    private final String name;
-
     public BlockPrecisionSawmill() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(16F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "precision_sawmill";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "precision_sawmill"));
     }
 
     @Nonnull
     @Override
     public FactoryType getFactoryType() {
         return FactoryType.SAWING;
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
     }
 
     @Nonnull

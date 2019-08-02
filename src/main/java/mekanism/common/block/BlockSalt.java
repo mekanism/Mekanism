@@ -16,16 +16,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class BlockSalt extends Block implements IBlockOreDict {
 
-    private final String name;
-
     public BlockSalt() {
         super(Material.SAND);
-        setCreativeTab(Mekanism.tabMekanism);
         setHardness(0.5F);
         setSoundType(SoundType.SAND);
-        this.name = "salt_block";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "salt_block"));
     }
 
     @Nonnull

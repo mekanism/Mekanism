@@ -10,7 +10,6 @@ import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.block.interfaces.IBlockDescriptive;
 import mekanism.common.block.machine.BlockQuantumEntangloporter;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.frequency.Frequency;
@@ -79,7 +78,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockMekanism implements
                 }
             }
         } else {
-            list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
+            list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
         }
     }
 

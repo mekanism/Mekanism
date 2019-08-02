@@ -13,18 +13,14 @@ import net.minecraft.util.ResourceLocation;
 public class BlockPlasticSlick extends Block implements IColoredBlock, IBlockOreDict {
 
     private final EnumColor color;
-    private final String name;
 
     public BlockPlasticSlick(EnumColor color) {
         super(Material.WOOD);
         this.color = color;
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
         slipperiness = 0.98F;
-        this.name = color.registry_prefix + "_slick_plastic";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
+        setRegistryName(new ResourceLocation(Mekanism.MODID, color.registry_prefix + "_slick_plastic"));
     }
 
     @Override

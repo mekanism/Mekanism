@@ -10,7 +10,6 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -26,22 +25,11 @@ import net.minecraft.world.World;
 
 public class BlockSuperheatingElement extends BlockTileDrops implements IBlockDescriptive, IStateActive {
 
-    private final String name;
-
     public BlockSuperheatingElement() {
         super(Material.IRON);
         setHardness(5F);
         setResistance(10F);
-        setCreativeTab(Mekanism.tabMekanism);
-        this.name = "superheating_element";
-        setTranslationKey(this.name);
-        setRegistryName(new ResourceLocation(Mekanism.MODID, this.name));
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: Should name just be gotten from registry name
-        return LangUtils.localize("tooltip.mekanism." + this.name);
+        setRegistryName(new ResourceLocation(Mekanism.MODID, "superheating_element"));
     }
 
     @Nonnull

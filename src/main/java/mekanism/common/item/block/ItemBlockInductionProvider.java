@@ -48,7 +48,7 @@ public class ItemBlockInductionProvider extends ItemBlockMekanism implements ITi
                 list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
                          EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
             } else {
-                list.addAll(MekanismUtils.splitTooltip(((IBlockDescriptive) block).getDescription(), itemstack));
+                list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
             }
         }
     }

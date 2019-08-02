@@ -1,6 +1,9 @@
 package mekanism.generators.common;
 
 import java.util.function.Function;
+import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.generators.common.block.generator.BlockAdvancedSolarGenerator;
@@ -34,10 +37,9 @@ import mekanism.generators.common.item.generator.ItemBlockWindGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistry;
 
-public enum GeneratorsBlock {
+public enum GeneratorsBlock implements IBlockProvider {
     HEAT_GENERATOR(new BlockHeatGenerator(), ItemBlockHeatGenerator::new),
     SOLAR_GENERATOR(new BlockSolarGenerator(), ItemBlockSolarGenerator::new),
     GAS_BURNING_GENERATOR(new BlockGasBurningGenerator(), ItemBlockGasBurningGenerator::new),
@@ -67,25 +69,24 @@ public enum GeneratorsBlock {
         //TODO: Fix all translation keys so that they have mekanism in them
     }
 
+    @Nonnull
+    @Override
     public Block getBlock() {
         return block;
     }
 
+    @Nonnull
+    @Override
     public ItemBlock getItem() {
         return item;
     }
 
-    public ItemStack getItemStack() {
-        return getItemStack(1);
-    }
-
-    public ItemStack getItemStack(int size) {
-        return new ItemStack(getItem(), size);
-    }
-
     public static void registerBlocks(IForgeRegistry<Block> registry) {
         for (GeneratorsBlock generatorsBlock : values()) {
-            registry.register(generatorsBlock.getBlock());
+            Block block = generatorsBlock.getBlock();
+            block.setCreativeTab(Mekanism.tabMekanism);
+            block.setTranslationKey("mekanism." + generatorsBlock.getName());
+            registry.register(block);
         }
     }
 
