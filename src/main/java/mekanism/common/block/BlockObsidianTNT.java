@@ -28,15 +28,9 @@ public class BlockObsidianTNT extends Block {
     }
 
     @Override
-    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
-        super.breakBlock(world, pos, state);
-        world.removeTileEntity(pos);
-    }
-
-    @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
         super.onBlockAdded(world, pos, state);
-        if (world.getRedstonePowerFromNeighbors(pos) > 0) {
+        if (world.isBlockPowered(pos)) {
             explode(world, pos);
             world.setBlockToAir(pos);
         }
@@ -45,7 +39,7 @@ public class BlockObsidianTNT extends Block {
     @Override
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
-        if (world.getRedstonePowerFromNeighbors(pos) > 0) {
+        if (world.isBlockPowered(pos)) {
             explode(world, pos);
             world.setBlockToAir(pos);
         }
@@ -71,9 +65,14 @@ public class BlockObsidianTNT extends Block {
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = entityplayer.getHeldItem(hand);
-        if (!stack.isEmpty() && stack.getItem() == Items.FLINT_AND_STEEL) {
+        if (!stack.isEmpty() && (stack.getItem() == Items.FLINT_AND_STEEL || stack.getItem() == Items.FIRE_CHARGE)) {
             explode(world, pos);
             world.setBlockToAir(pos);
+            if (stack.getItem() == Items.FLINT_AND_STEEL) {
+                stack.damageItem(1, entityplayer);
+            } else if (!entityplayer.capabilities.isCreativeMode) {
+                stack.shrink(1);
+            }
             return true;
         }
         return super.onBlockActivated(world, pos, state, entityplayer, hand, side, hitX, hitY, hitZ);
@@ -81,12 +80,6 @@ public class BlockObsidianTNT extends Block {
 
     @Override
     public boolean canDropFromExplosion(Explosion explosion) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
