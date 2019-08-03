@@ -4,16 +4,18 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.util.InventoryUtils;
 import mekanism.generators.common.FusionReactor;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
+public abstract class TileEntityReactorBlock extends TileEntityElectric {
 
     public FusionReactor fusionReactor;
 
@@ -22,12 +24,13 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
     public boolean changed;
 
     public TileEntityReactorBlock() {
-        super("ReactorBlock", 0);
+        //TODO: Does hierarchy have to be done this way
+        this((IBlockElectric) GeneratorsBlock.REACTOR_FRAME.getBlock());
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 
-    public TileEntityReactorBlock(String name, double maxEnergy) {
-        super(name, maxEnergy);
+    public TileEntityReactorBlock(IBlockElectric electricBlock) {
+        super(electricBlock);
     }
 
     public abstract boolean isFrame();

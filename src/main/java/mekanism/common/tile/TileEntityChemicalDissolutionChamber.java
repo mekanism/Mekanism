@@ -292,7 +292,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()); // incorporate speed upgrades
                 break;
             case GAS:
                 injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);

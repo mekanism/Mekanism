@@ -11,13 +11,14 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.basic.BlockTeleporterFrame;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -27,10 +28,10 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
@@ -49,7 +50,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile,
+public class TileEntityTeleporter extends TileEntityElectric implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile,
       IUpgradeTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
@@ -80,7 +81,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     public TileComponentUpgrade<TileEntityTeleporter> upgradeComponent;
 
     public TileEntityTeleporter() {
-        super("Teleporter", MachineType.TELEPORTER.getStorage());
+        super((IBlockElectric) MekanismBlock.TELEPORTER.getBlock());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
         securityComponent = new TileComponentSecurity(this);

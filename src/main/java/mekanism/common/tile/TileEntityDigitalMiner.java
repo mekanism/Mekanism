@@ -18,6 +18,7 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
@@ -25,6 +26,7 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -40,10 +42,10 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -83,7 +85,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader,
+public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader,
       IAdvancedBoundingBlock {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
@@ -145,7 +147,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     public TileEntityDigitalMiner() {
-        super("DigitalMiner", MachineType.DIGITAL_MINER.getStorage());
+        super((IBlockElectric) MekanismBlock.DIGITAL_MINER.getBlock());
         inventory = NonNullList.withSize(INV_SLOTS.length + 1, ItemStack.EMPTY);
         radius = 10;
         upgradeComponent.setSupported(Upgrade.ANCHOR);
@@ -1102,7 +1104,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                 delayLength = MekanismUtils.getTicks(this, BASE_DELAY);
             case ENERGY:
                 energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
-                maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+                maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:
                 break;

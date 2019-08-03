@@ -9,6 +9,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -19,7 +20,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock implements IActiveState {
+public abstract class TileEntityEffectsBlock extends TileEntityElectric implements IActiveState {
 
     private SoundEvent soundEvent;
 

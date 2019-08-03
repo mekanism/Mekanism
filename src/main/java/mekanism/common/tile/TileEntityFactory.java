@@ -323,10 +323,20 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         return recipeType;
     }
 
+    @Override
+    public double getBaseStorage() {
+        return tier.processes * Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage());
+    }
+
+    @Override
+    public double getBaseEnergyPerTick() {
+        return recipeType.getEnergyUsage();
+    }
+
     public void setRecipeType(@Nonnull RecipeType type) {
         recipeType = Objects.requireNonNull(type);
-        BASE_MAX_ENERGY = maxEnergy = tier.processes * Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage());
-        BASE_ENERGY_PER_TICK = energyPerTick = recipeType.getEnergyUsage();
+        maxEnergy = getBaseStorage();
+        energyPerTick = getBaseEnergyPerTick();
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
@@ -954,14 +964,14 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()); // incorporate speed upgrades
                 break;
             case GAS:
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
                 break;
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
                 break;
             default:

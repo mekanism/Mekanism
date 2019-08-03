@@ -5,14 +5,15 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.BlockFaceShape;
@@ -26,7 +27,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl, ISecurityTile, IBoundingBlock {
+public class TileEntitySeismicVibrator extends TileEntityElectric implements IActiveState, IRedstoneControl, ISecurityTile, IBoundingBlock {
 
     private static final int[] SLOTS = {0};
 
@@ -38,14 +39,12 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 
     public int clientPiston;
 
-    public double BASE_ENERGY_PER_TICK = MachineType.SEISMIC_VIBRATOR.getUsage();
-
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySeismicVibrator() {
-        super("SeismicVibrator", MachineType.SEISMIC_VIBRATOR.getStorage());
+        super((IBlockElectric) MekanismBlock.SEISMIC_VIBRATOR.getBlock());
         inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
@@ -72,9 +71,9 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
             }
 
             ChargeUtils.discharge(0, this);
-            if (MekanismUtils.canFunction(this) && getEnergy() >= BASE_ENERGY_PER_TICK) {
+            if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseEnergyPerTick()) {
                 setActive(true);
-                setEnergy(getEnergy() - BASE_ENERGY_PER_TICK);
+                setEnergy(getEnergy() - getBaseEnergyPerTick());
             } else {
                 setActive(false);
             }

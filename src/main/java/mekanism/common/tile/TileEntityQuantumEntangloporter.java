@@ -17,6 +17,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData.IOState;
 import mekanism.common.Upgrade;
@@ -25,6 +26,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -34,12 +36,12 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -61,7 +63,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
+public class TileEntityQuantumEntangloporter extends TileEntityElectric implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
       IGasHandler, IHeatTransfer, IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile {
 
     private static final int INV_SIZE = 1;//this.inventory size, used for upgrades. Manually handled
@@ -79,7 +81,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     public TileComponentUpgrade<TileEntityQuantumEntangloporter> upgradeComponent;
 
     public TileEntityQuantumEntangloporter() {
-        super("QuantumEntangloporter", 0);
+        super((IBlockElectric) MekanismBlock.QUANTUM_ENTANGLOPORTER.getBlock());
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 
         for (TransmissionType type : TransmissionType.values()) {

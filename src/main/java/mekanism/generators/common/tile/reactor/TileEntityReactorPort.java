@@ -17,6 +17,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -26,6 +27,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -50,7 +52,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     public boolean fluidEject;
 
     public TileEntityReactorPort() {
-        super("name", 1);
+        super((IBlockElectric) GeneratorsBlock.REACTOR_PORT.getBlock());
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 

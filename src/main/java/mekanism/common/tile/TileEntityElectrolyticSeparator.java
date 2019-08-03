@@ -323,9 +323,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             case 1:
                 return new Object[]{output};
             case 2:
-                return new Object[]{BASE_MAX_ENERGY};
+                return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{BASE_MAX_ENERGY - electricityStored};
+                return new Object[]{getBaseStorage() - electricityStored};
             case 4:
                 return new Object[]{fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0};
             case 5:
@@ -463,7 +463,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.ENERGY) {
-            maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+            maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
             energyPerTick = MachineType.ELECTROLYTIC_SEPARATOR.getUsage();
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }

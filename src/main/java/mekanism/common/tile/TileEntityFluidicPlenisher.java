@@ -11,6 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
@@ -18,14 +19,14 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
@@ -51,7 +52,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
+public class TileEntityFluidicPlenisher extends TileEntityElectric implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
       IUpgradeTile, IRedstoneControl, ISecurityTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"reset"};
@@ -60,11 +61,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     public Set<Coord4D> usedNodes = new HashSet<>();
     public boolean finishedCalc = false;
     public FluidTank fluidTank = new FluidTank(10000);
-    /**
-     * How much energy this machine consumes per-tick.
-     */
-    public double BASE_ENERGY_PER_TICK = MachineType.FLUIDIC_PLENISHER.getUsage();
-    public double energyPerTick = BASE_ENERGY_PER_TICK;
     /**
      * How many ticks it takes to run an operation.
      */
@@ -81,7 +77,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     private int currentRedstoneLevel;
 
     public TileEntityFluidicPlenisher() {
-        super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.getStorage());
+        super((IBlockElectric) MekanismBlock.FLUIDIC_PLENISHER.getBlock());
         inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     }
 
@@ -402,8 +398,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
-                maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:
                 break;

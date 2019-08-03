@@ -64,11 +64,11 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
         super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()); // incorporate speed upgrades
                 break;
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
                 break;
             default:
                 break;

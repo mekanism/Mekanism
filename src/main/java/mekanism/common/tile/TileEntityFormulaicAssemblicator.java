@@ -7,22 +7,23 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -37,7 +38,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess,
+public class TileEntityFormulaicAssemblicator extends TileEntityElectric implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess,
       ISecurityTile {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
@@ -52,10 +53,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     public static final int SLOT_CRAFT_MATRIX_LAST = 35;
 
     public InventoryCrafting dummyInv = MekanismUtils.getDummyCraftingInv();
-
-    public double BASE_ENERGY_PER_TICK = MachineType.FORMULAIC_ASSEMBLICATOR.getUsage();
-
-    public double energyPerTick = BASE_ENERGY_PER_TICK;
 
     public int BASE_TICKS_REQUIRED = 40;
 
@@ -88,7 +85,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     public ItemStack lastOutputStack = ItemStack.EMPTY;
 
     public TileEntityFormulaicAssemblicator() {
-        super("FormulaicAssemblicator", MachineType.FORMULAIC_ASSEMBLICATOR.getStorage());
+        super((IBlockElectric) MekanismBlock.FORMULAIC_ASSEMBLICATOR.getBlock());
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -631,11 +628,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
         switch (upgrade) {
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
                 break;
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
-                maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
                 break;
             default:

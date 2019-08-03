@@ -9,11 +9,13 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
+import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -57,7 +59,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     private int playSoundCooldown = 0;
 
     public TileEntityReactorController() {
-        super("ReactorController", 1000000000);
+        super((IBlockElectric) GeneratorsBlock.REACTOR_CONTROLLER.getBlock());
         inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     }
 

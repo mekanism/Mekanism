@@ -13,6 +13,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -22,14 +23,14 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -58,7 +59,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile,
+public class TileEntityElectricPump extends TileEntityElectric implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile,
       ITankManager, IComputerIntegration, ISecurityTile, IComparatorSupport {
 
     private static final int[] UPSLOTS = {0};
@@ -75,11 +76,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
      */
     public Fluid activeType;
     public boolean suckedLastOperation;
-    /**
-     * How much energy this machine consumes per-tick.
-     */
-    public double BASE_ENERGY_PER_TICK = MachineType.ELECTRIC_PUMP.getUsage();
-    public double energyPerTick = BASE_ENERGY_PER_TICK;
     /**
      * How many ticks it takes to run an operation.
      */
@@ -103,7 +99,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     private int currentRedstoneLevel;
 
     public TileEntityElectricPump() {
-        super("ElectricPump", MachineType.ELECTRIC_PUMP.getStorage());
+        super((IBlockElectric) MekanismBlock.ELECTRIC_PUMP.getBlock());
         inventory = NonNullList.withSize(4, ItemStack.EMPTY);
         upgradeComponent.setSupported(Upgrade.FILTER);
     }
@@ -461,8 +457,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
-                maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:
                 break;

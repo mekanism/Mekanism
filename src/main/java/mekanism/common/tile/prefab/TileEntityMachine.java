@@ -21,10 +21,6 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
 
     public double prevEnergy;
 
-    public double BASE_ENERGY_PER_TICK;
-
-    public double energyPerTick;
-
     /**
      * This machine's current RedstoneControl type.
      */
@@ -35,8 +31,6 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
 
     public TileEntityMachine(String sound, MachineType type, int upgradeSlot) {
         super(sound, type.getBlockName(), type.getStorage());
-        energyPerTick = BASE_ENERGY_PER_TICK = type.getUsage();
-
         upgradeComponent = new TileComponentUpgrade<>(this, upgradeSlot);
         upgradeComponent.setSupported(Upgrade.MUFFLING);
     }
@@ -119,8 +113,8 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     public void recalculateUpgrades(Upgrade upgrade) {
         //TODO: Should this go away
         if (upgrade == Upgrade.ENERGY) {
-            maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-            energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+            maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
+            energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, getBaseEnergyPerTick());
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
     }

@@ -2,14 +2,14 @@ package mekanism.generators.common.inventory.container;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.ContainerMekanism;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerFuelGenerator<TILE extends TileEntityElectricBlock> extends ContainerMekanism<TILE> {
+public abstract class ContainerFuelGenerator<TILE extends TileEntityElectric> extends ContainerMekanism<TILE> {
 
     protected ContainerFuelGenerator(InventoryPlayer inventory, TILE tile) {
         super(tile, inventory);
