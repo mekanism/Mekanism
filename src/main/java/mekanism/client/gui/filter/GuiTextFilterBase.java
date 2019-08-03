@@ -3,7 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends TileEntityContainerBlock> extends GuiFilterBase<FILTER, TILE> {
+public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends TileEntityContainer> extends GuiFilterBase<FILTER, TILE> {
 
     protected ItemStack renderStack = ItemStack.EMPTY;
     protected GuiTextField text;

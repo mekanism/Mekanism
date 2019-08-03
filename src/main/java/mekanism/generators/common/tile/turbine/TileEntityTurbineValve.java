@@ -45,7 +45,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     private int currentRedstoneLevel;
 
     public TileEntityTurbineValve() {
-        super("TurbineValve");
         fluidTank = new TurbineFluidTank(this);
     }
 

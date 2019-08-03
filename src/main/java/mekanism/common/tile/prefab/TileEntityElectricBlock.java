@@ -14,6 +14,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +26,8 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IEnergyWrapper {
+//TODO
+public abstract class TileEntityElectricBlock extends TileEntityContainer implements IEnergyWrapper {
 
     /**
      * How much energy is stored in this block.
@@ -53,7 +55,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
      * @param baseMaxEnergy - how much energy this block can store
      */
     public TileEntityElectricBlock(String name, double baseMaxEnergy) {
-        super(name);
         BASE_MAX_ENERGY = baseMaxEnergy;
         maxEnergy = BASE_MAX_ENERGY;
     }

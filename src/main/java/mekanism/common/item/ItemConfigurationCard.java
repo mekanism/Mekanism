@@ -9,7 +9,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
@@ -114,8 +114,8 @@ public class ItemConfigurationCard extends ItemMekanism {
 
     private String getNameFromTile(TileEntity tile, EnumFacing side) {
         String ret = Integer.toString(tile.hashCode());
-        if (tile instanceof TileEntityContainerBlock) {
-            ret = tile.getBlockType().getTranslationKey() + "." + ((TileEntityContainerBlock) tile).fullName + ".name";
+        if (tile instanceof TileEntityContainer) {
+            ret = tile.getBlockType().getTranslationKey() + ".name";
         }
         if (CapabilityUtils.hasCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side)) {
             ISpecialConfigData special = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);

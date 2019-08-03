@@ -10,8 +10,8 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -24,7 +24,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implements IHeatTransfer, ISecurityTile, IActiveState {
+public class TileEntityFuelwoodHeater extends TileEntityContainer implements IHeatTransfer, ISecurityTile, IActiveState {
 
     public double temperature;
     public double heatToAbsorb = 0;
@@ -52,7 +52,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityFuelwoodHeater() {
-        super("FuelwoodHeater");
         inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     }
 

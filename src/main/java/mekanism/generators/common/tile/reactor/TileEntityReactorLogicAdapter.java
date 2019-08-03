@@ -19,11 +19,6 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     public boolean activeCooled;
     public boolean prevOutputting;
 
-    public TileEntityReactorLogicAdapter() {
-        super();
-        fullName = "ReactorLogicAdapter";
-    }
-
     @Override
     public void onUpdate() {
         super.onUpdate();

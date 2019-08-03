@@ -60,8 +60,8 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
     }
 
     @Override
-    public void recalculateUpgradables(Upgrade upgrade) {
-        super.recalculateUpgradables(upgrade);
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
                 energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades

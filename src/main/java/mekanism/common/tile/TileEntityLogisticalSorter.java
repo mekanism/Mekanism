@@ -62,7 +62,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     public boolean singleItem;
     public int rrIndex = 0;
     public int delayTicks;
-    public TileComponentUpgrade upgradeComponent;
+    public TileComponentUpgrade<TileEntityLogisticalSorter> upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "setSingleItem"};
     private int currentRedstoneLevel;
@@ -71,7 +71,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
         super("machine.logisticalsorter", "LogisticalSorter", MachineType.LOGISTICAL_SORTER.getStorage(), 3);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;
-        upgradeComponent = new TileComponentUpgrade(this, 1);
+        upgradeComponent = new TileComponentUpgrade<>(this, 1);
         upgradeComponent.clearSupportedTypes();
         upgradeComponent.setSupported(Upgrade.MUFFLING);
     }
@@ -473,7 +473,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey() + "." + fullName + ".name";
+        return getBlockType().getTranslationKey() + ".name";
     }
 
     @Override
@@ -645,6 +645,11 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     @Override
     public TileComponentUpgrade getComponent() {
         return upgradeComponent;
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgradeType) {
+
     }
 
     @Override

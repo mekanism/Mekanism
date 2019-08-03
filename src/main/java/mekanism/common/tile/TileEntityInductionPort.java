@@ -53,10 +53,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
-    public TileEntityInductionPort() {
-        super("InductionPort");
-    }
-
     @Override
     public void onUpdate() {
         super.onUpdate();

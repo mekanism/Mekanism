@@ -3,7 +3,7 @@ package mekanism.client.gui.filter;
 import java.io.IOException;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiFilterSelect<TILE extends TileEntityContainerBlock> extends GuiFilter<TILE> {
+public abstract class GuiFilterSelect<TILE extends TileEntityContainer> extends GuiFilter<TILE> {
 
     protected GuiButton itemStackButton;
     protected GuiButton oredictButton;

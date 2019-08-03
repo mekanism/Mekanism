@@ -6,7 +6,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -63,8 +63,8 @@ public class BlockReactorController extends Block implements IHasGui, IStateActi
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
     }

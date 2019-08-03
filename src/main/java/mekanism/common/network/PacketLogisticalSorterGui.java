@@ -14,7 +14,7 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -101,11 +101,11 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
             playerMP.closeContainer();
 
             if (guiType == 0) {
-                container = new ContainerNull(playerMP, (TileEntityContainerBlock) obj.getTileEntity(world));
+                container = new ContainerNull(playerMP, (TileEntityContainer) obj.getTileEntity(world));
             } else if (guiType == 4) {
-                container = new ContainerNull(playerMP, (TileEntityContainerBlock) obj.getTileEntity(world));
+                container = new ContainerNull(playerMP, (TileEntityContainer) obj.getTileEntity(world));
             } else if (guiType == 1 || guiType == 2 || guiType == 3 || guiType == 5) {
-                container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock) obj.getTileEntity(world));
+                container = new ContainerFilter(playerMP.inventory, (TileEntityContainer) obj.getTileEntity(world));
             }
             playerMP.getNextWindowId();
             int window = playerMP.currentWindowId;

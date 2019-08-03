@@ -37,7 +37,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile {
+public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess,
+      ISecurityTile {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
     public static final int SLOT_UPGRADE = 0;
@@ -77,7 +78,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-    public TileComponentUpgrade upgradeComponent;
+    public TileComponentUpgrade<TileEntityFormulaicAssemblicator> upgradeComponent;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
@@ -101,7 +102,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
         inventory = NonNullList.withSize(36, ItemStack.EMPTY);
 
-        upgradeComponent = new TileComponentUpgrade(this, SLOT_UPGRADE);
+        upgradeComponent = new TileComponentUpgrade<>(this, SLOT_UPGRADE);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
@@ -626,8 +627,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     }
 
     @Override
-    public void recalculateUpgradables(Upgrade upgrade) {
-        super.recalculateUpgradables(upgrade);
+    public void recalculateUpgrades(Upgrade upgrade) {
         switch (upgrade) {
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);

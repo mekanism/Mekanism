@@ -19,7 +19,8 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityDirectional;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
@@ -86,14 +87,14 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityLogisticalSorter) {
             TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
             if (!transporter.hasInventory()) {
                 for (EnumFacing dir : EnumFacing.values()) {
                     TileEntity tileEntity = Coord4D.get(transporter).offset(dir).getTileEntity(world);
                     if (InventoryUtils.isItemHandler(tileEntity, dir)) {
-                        tile.setFacing(dir.getOpposite());
+                        transporter.setFacing(dir.getOpposite());
                         break;
                     }
                 }
@@ -104,7 +105,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -152,7 +153,8 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         if (world.isRemote) {
             return true;
         }
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        //TODO: Make this be moved into the logistical sorter tile
+        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);
@@ -189,15 +191,13 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
             }
         }
 
-        if (tileEntity != null) {
-            if (!entityplayer.isSneaking()) {
-                if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP) entityplayer, Coord4D.get(tileEntity), -1);
-                } else {
-                    SecurityUtils.displayNoAccess(entityplayer);
-                }
-                return true;
+        if (!entityplayer.isSneaking()) {
+            if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP) entityplayer, Coord4D.get(tileEntity), -1);
+            } else {
+                SecurityUtils.displayNoAccess(entityplayer);
             }
+            return true;
         }
         return false;
     }
@@ -254,8 +254,8 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
             if (tileEntity instanceof TileEntityLogisticalSorter) {
                 TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tileEntity;

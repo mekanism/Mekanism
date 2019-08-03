@@ -15,8 +15,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -31,7 +31,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, IStrictEnergyOutputter, IStrictEnergyStorage,
+public class TileEntityLaserAmplifier extends TileEntityContainer implements ILaserReceptor, IRedstoneControl, IStrictEnergyOutputter, IStrictEnergyStorage,
       IComputerIntegration, ISecurityTile {
 
     public static final double MAX_ENERGY = 5E9;
@@ -52,7 +52,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityLaserAmplifier() {
-        super("LaserAmplifier");
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 

@@ -6,7 +6,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,9 +16,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityContainerBlock> {
+public class GuiContainerEditMode extends GuiTileEntityElement<TileEntityContainer> {
 
-    public GuiContainerEditMode(IGuiWrapper gui, TileEntityContainerBlock tile, ResourceLocation def) {
+    public GuiContainerEditMode(IGuiWrapper gui, TileEntityContainer tile, ResourceLocation def) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiContainerEditMode.png"), gui, def, tile);
     }
 

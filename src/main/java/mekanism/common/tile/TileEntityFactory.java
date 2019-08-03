@@ -218,7 +218,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         }
 
         for (Upgrade upgrade : factory.upgradeComponent.getSupportedTypes()) {
-            factory.recalculateUpgradables(upgrade);
+            factory.recalculateUpgrades(upgrade);
         }
 
         factory.upgraded = true;
@@ -338,7 +338,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         }
 
         for (Upgrade upgrade : upgradeComponent.getSupportedTypes()) {
-            recalculateUpgradables(upgrade);
+            recalculateUpgrades(upgrade);
         }
         if (hasWorld() && world.isRemote) {
             setSoundEvent(type.getSound());
@@ -950,8 +950,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     @Override
-    public void recalculateUpgradables(Upgrade upgrade) {
-        super.recalculateUpgradables(upgrade);
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
                 energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades

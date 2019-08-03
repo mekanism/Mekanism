@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
@@ -29,11 +29,11 @@ public final class FluidContainerUtils {
         return tankFluid == null || tankFluid.isFluidEqual(fillFluid);
     }
 
-    public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainerBlock tile, int slotID) {
+    public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainer tile, int slotID) {
         return extractFluid(tileTank, tile, slotID, FluidChecker.check(tileTank.getFluid()));
     }
 
-    public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainerBlock tile, int slotID, FluidChecker checker) {
+    public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainer tile, int slotID, FluidChecker checker) {
         IFluidHandlerItem handler = FluidUtil.getFluidHandler(tile.inventory.get(slotID));
         FluidStack ret = null;
         if (handler != null) {
@@ -68,7 +68,7 @@ public final class FluidContainerUtils {
         return handler.fill(fluid, true);
     }
 
-    public static void handleContainerItemFill(TileEntityContainerBlock tileEntity, FluidTank tank, int inSlot, int outSlot) {
+    public static void handleContainerItemFill(TileEntityContainer tileEntity, FluidTank tank, int inSlot, int outSlot) {
         tank.setFluid(handleContainerItemFill(tileEntity, tileEntity.inventory, tank.getFluid(), inSlot, outSlot));
     }
 
@@ -97,11 +97,11 @@ public final class FluidContainerUtils {
         return stack;
     }
 
-    public static void handleContainerItemEmpty(TileEntityContainerBlock tileEntity, FluidTank tank, int inSlot, int outSlot) {
+    public static void handleContainerItemEmpty(TileEntityContainer tileEntity, FluidTank tank, int inSlot, int outSlot) {
         handleContainerItemEmpty(tileEntity, tank, inSlot, outSlot, null);
     }
 
-    public static void handleContainerItemEmpty(TileEntityContainerBlock tileEntity, FluidTank tank, int inSlot, int outSlot, FluidChecker checker) {
+    public static void handleContainerItemEmpty(TileEntityContainer tileEntity, FluidTank tank, int inSlot, int outSlot, FluidChecker checker) {
         tank.setFluid(handleContainerItemEmpty(tileEntity, tileEntity.inventory, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
     }
 
@@ -155,11 +155,11 @@ public final class FluidContainerUtils {
         return stored;
     }
 
-    public static void handleContainerItem(TileEntityContainerBlock tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot) {
+    public static void handleContainerItem(TileEntityContainer tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot) {
         handleContainerItem(tileEntity, editMode, tank, inSlot, outSlot, null);
     }
 
-    public static void handleContainerItem(TileEntityContainerBlock tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot, FluidChecker checker) {
+    public static void handleContainerItem(TileEntityContainer tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot, FluidChecker checker) {
         tank.setFluid(handleContainerItem(tileEntity, tileEntity.inventory, editMode, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
     }
 

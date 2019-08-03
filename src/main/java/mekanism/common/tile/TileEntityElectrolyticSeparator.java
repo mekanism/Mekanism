@@ -126,7 +126,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
                 boolean update = BASE_ENERGY_PER_TICK != recipe.energyUsage;
                 BASE_ENERGY_PER_TICK = recipe.energyUsage;
                 if (update) {
-                    recalculateUpgradables(Upgrade.ENERGY);
+                    recalculateUpgrades(Upgrade.ENERGY);
                 }
                 int operations = operate(recipe);
                 double prev = getEnergy();
@@ -460,8 +460,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public void recalculateUpgradables(Upgrade upgrade) {
-        super.recalculateUpgradables(upgrade);
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.ENERGY) {
             maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
             energyPerTick = MachineType.ELECTROLYTIC_SEPARATOR.getUsage();

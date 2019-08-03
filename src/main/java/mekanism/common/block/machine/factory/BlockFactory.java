@@ -26,7 +26,8 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityFactory;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityDirectional;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -99,7 +100,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityFactory) {
             RecipeType recipeType = ((ItemBlockFactory) stack.getItem()).getRecipeTypeOrNull(stack);
             if (recipeType != null) {
@@ -113,7 +114,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -161,7 +162,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         if (world.isRemote) {
             return true;
         }
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);
@@ -261,15 +262,15 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
     }
 
     @Nonnull
     @Override
-    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityBasicBlock tile, @Nonnull ItemStack stack) {
+    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
         if (tile instanceof TileEntityFactory) {
             ((IFactory) stack.getItem()).setRecipeType(((TileEntityFactory) tile).getRecipeType().ordinal(), stack);
         }

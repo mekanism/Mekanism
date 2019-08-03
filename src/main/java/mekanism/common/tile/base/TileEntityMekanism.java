@@ -1,12 +1,14 @@
-package mekanism.common.tile.prefab;
+package mekanism.common.tile.base;
 
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.IMekWrench;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
@@ -17,31 +19,29 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Optional.Interface;
 
-@Interface(iface = "ic2.api.tile.IWrenchable", modid = MekanismHooks.IC2_MOD_ID)
-public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable {
-
-    /**
-     * The direction this block is facing.
-     */
-    public EnumFacing facing = EnumFacing.NORTH;
-
-    public EnumFacing clientFacing = facing;
+//TODO: Is the IWrenchable needed, seems unused
+//@Interface(iface = "ic2.api.tile.IWrenchable", modid = MekanismHooks.IC2_MOD_ID)
+public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable {
 
     /**
      * The players currently using this block.
@@ -58,7 +58,38 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
     public boolean doAutoSync = true;
 
-    public List<ITileComponent> components = new ArrayList<>();
+    private List<ITileComponent> components = new ArrayList<>();
+
+    public void addComponent(ITileComponent component) {
+        components.add(component);
+    }
+
+    public List<ITileComponent> getComponents() {
+        return components;
+    }
+
+    public WrenchResult tryWrench(IBlockState state, EntityPlayer player, EnumHand hand, Supplier<RayTraceResult> rayTraceSupplier) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (!stack.isEmpty()) {
+            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+            if (wrenchHandler != null) {
+                RayTraceResult raytrace = rayTraceSupplier.get();
+                if (wrenchHandler.canUseWrench(player, hand, stack, raytrace)) {
+                    if (!SecurityUtils.canAccess(player, this)) {
+                        SecurityUtils.displayNoAccess(player);
+                        return WrenchResult.NO_SECURITY;
+                    }
+                    wrenchHandler.wrenchUsed(player, hand, stack, raytrace);
+                    if (player.isSneaking()) {
+                        MekanismUtils.dismantleBlock(getBlockType(), state, world, pos);
+                        return WrenchResult.DISMANTLED;
+                    }
+                    return WrenchResult.SUCCESS;
+                }
+            }
+        }
+        return WrenchResult.PASS;
+    }
 
     @Override
     public void onLoad() {
@@ -87,8 +118,9 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         onUpdate();
         if (!world.isRemote) {
             if (doAutoSync && playersUsing.size() > 0) {
+                TileEntityMessage updateMessage = new TileEntityMessage(this);
                 for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(updateMessage, (EntityPlayerMP) player);
                 }
             }
         }
@@ -113,13 +145,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            facing = EnumFacing.byIndex(dataStream.readInt());
             redstone = dataStream.readBoolean();
-            if (clientFacing != facing) {
-                MekanismUtils.updateBlock(world, getPos());
-                world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
-                clientFacing = facing;
-            }
             for (ITileComponent component : components) {
                 component.read(dataStream);
             }
@@ -128,7 +154,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(facing == null ? -1 : facing.ordinal());
         data.add(redstone);
         for (ITileComponent component : components) {
             component.write(data);
@@ -160,9 +185,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("facing")) {
-            facing = EnumFacing.byIndex(nbtTags.getInteger("facing"));
-        }
         redstone = nbtTags.getBoolean("redstone");
         for (ITileComponent component : components) {
             component.read(nbtTags);
@@ -173,9 +195,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        if (facing != null) {
-            nbtTags.setInteger("facing", facing.ordinal());
-        }
         nbtTags.setBoolean("redstone", redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags);
@@ -196,28 +215,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         return super.getCapability(capability, facing);
     }
 
-    public void setFacing(@Nonnull EnumFacing direction) {
-        if (canSetFacing(direction)) {
-            facing = direction;
-        }
-        if (facing != clientFacing && !world.isRemote) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            markDirty();
-            clientFacing = facing;
-        }
-    }
-
-    /**
-     * Whether or not this block's orientation can be changed to a specific direction. True by default.
-     *
-     * @param facing - facing to check
-     *
-     * @return if the block's orientation can be changed
-     */
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return true;
-    }
-
     public boolean isPowered() {
         return redstone;
     }
@@ -236,7 +233,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     }
 
     private void updatePower() {
-        boolean power = world.getRedstonePowerFromNeighbors(getPos()) > 0;
+        boolean power = world.isBlockPowered(getPos());
         if (redstone != power) {
             redstone = power;
             Mekanism.packetHandler.sendUpdatePacket(this);
@@ -253,6 +250,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
     @Override
     public Frequency getFrequency(FrequencyManager manager) {
+        //TODO: I don't think this is needed, only thing that uses this method is querying the quantum entangloporter
         if (manager == Mekanism.securityFrequencies && this instanceof ISecurityTile) {
             return ((ISecurityTile) this).getSecurity().getFrequency();
         }

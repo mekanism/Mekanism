@@ -47,11 +47,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public float prevWaterScale;
 
     public TileEntityBoilerCasing() {
-        this("BoilerCasing");
-    }
-
-    public TileEntityBoilerCasing(String name) {
-        super(name);
         inventory = NonNullList.withSize(INV_SLOTS.length, ItemStack.EMPTY);
     }
 

@@ -30,14 +30,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage {
 
-    public TileEntityTurbineCasing() {
-        this("TurbineCasing");
-    }
-
-    public TileEntityTurbineCasing(String name) {
-        super(name);
-    }
-
     @Override
     public void onUpdate() {
         super.onUpdate();

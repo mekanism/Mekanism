@@ -18,7 +18,7 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -102,21 +102,21 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
             playerMP.closeContainer();
             switch (guiType) {
                 case 0:
-                    container = new ContainerNull(playerMP, (TileEntityContainerBlock) obj.getTileEntity(world));
+                    container = new ContainerNull(playerMP, (TileEntityContainer) obj.getTileEntity(world));
                     break;
                 case 4:
                     container = new ContainerDigitalMiner(playerMP.inventory,
                           (TileEntityDigitalMiner) obj.getTileEntity(world));
                     break;
                 case 5:
-                    container = new ContainerNull(playerMP, (TileEntityContainerBlock) obj.getTileEntity(world));
+                    container = new ContainerNull(playerMP, (TileEntityContainer) obj.getTileEntity(world));
                     break;
 //				case 1:
 //				case 2:
 //				case 3:
 //				case 6:
                 default:
-                    container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock) obj.getTileEntity(world));
+                    container = new ContainerFilter(playerMP.inventory, (TileEntityContainer) obj.getTileEntity(world));
                     break;
             }
 

@@ -97,7 +97,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
      * This machine's current RedstoneControl type.
      */
     public RedstoneControl controlType = RedstoneControl.DISABLED;
-    public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+    public TileComponentUpgrade<TileEntityElectricPump> upgradeComponent = new TileComponentUpgrade<>(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     private int currentRedstoneLevel;
@@ -456,8 +456,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public void recalculateUpgradables(Upgrade upgrade) {
-        super.recalculateUpgradables(upgrade);
+    public void recalculateUpgrades(Upgrade upgrade) {
         switch (upgrade) {
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);

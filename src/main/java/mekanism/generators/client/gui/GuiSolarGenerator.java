@@ -11,6 +11,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.common.block.generator.BlockAdvancedSolarGenerator;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -32,7 +33,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator>
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(tileEntity.getName(), !tileEntity.fullName.contains("Advanced") ? 45 : 30, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.getName(), tileEntity.getBlockType() instanceof BlockAdvancedSolarGenerator ? 30 : 45, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         renderCenteredText(48, 80, 28, 0x00CD00, LangUtils.localize("gui.producing"));
         renderCenteredText(48, 80, 42, 0x00CD00, MekanismUtils.getEnergyDisplay(tileEntity.getProduction()) + "/t");

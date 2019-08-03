@@ -6,7 +6,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityContainerBlock> extends GuiTypeFilter<FILTER, TILE> {
+public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityContainer> extends GuiTypeFilter<FILTER, TILE> {
 
     protected GuiItemStackFilter(EntityPlayer player, TILE tile) {
         super(player, tile);

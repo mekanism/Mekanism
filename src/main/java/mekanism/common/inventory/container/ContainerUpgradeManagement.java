@@ -6,7 +6,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.InventoryList;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -27,7 +27,7 @@ public class ContainerUpgradeManagement extends Container {
         if (tileEntity instanceof TileEntityQuantumEntangloporter) {
             upgradeInv = new InventoryList(((TileEntityQuantumEntangloporter) tileEntity).inventory, (TileEntity) tileEntity);
         } else {
-            upgradeInv = (TileEntityContainerBlock) tile;
+            upgradeInv = (TileEntityContainer) tile;
         }
         addSlotToContainer(new SlotMachineUpgrade(upgradeInv, tileEntity.getComponent().getUpgradeSlot(), 154, 7));
         for (int slotY = 0; slotY < 3; slotY++) {
@@ -38,20 +38,20 @@ public class ContainerUpgradeManagement extends Container {
         for (int slotY = 0; slotY < 9; slotY++) {
             addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
         }
-        ((TileEntityContainerBlock) tileEntity).open(inventory.player);
-        ((TileEntityContainerBlock) tileEntity).openInventory(inventory.player);
+        ((TileEntityContainer) tileEntity).open(inventory.player);
+        ((TileEntityContainer) tileEntity).openInventory(inventory.player);
     }
 
     @Override
     public void onContainerClosed(EntityPlayer entityplayer) {
         super.onContainerClosed(entityplayer);
-        ((TileEntityContainerBlock) tileEntity).close(entityplayer);
-        ((TileEntityContainerBlock) tileEntity).closeInventory(entityplayer);
+        ((TileEntityContainer) tileEntity).close(entityplayer);
+        ((TileEntityContainer) tileEntity).closeInventory(entityplayer);
     }
 
     @Override
     public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return ((TileEntityContainerBlock) tileEntity).isUsableByPlayer(entityplayer);
+        return ((TileEntityContainer) tileEntity).isUsableByPlayer(entityplayer);
     }
 
     @Nonnull

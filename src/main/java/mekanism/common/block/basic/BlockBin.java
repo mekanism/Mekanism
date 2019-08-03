@@ -16,7 +16,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -82,8 +82,8 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
     }
@@ -100,7 +100,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityMekanism tile) {
         if (stack.hasTagCompound() && tile instanceof TileEntityBin) {
             InventoryBin inv = new InventoryBin(stack);
             if (!inv.getItemType().isEmpty()) {
@@ -188,7 +188,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
 
     @Nonnull
     @Override
-    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityBasicBlock tile, @Nonnull ItemStack stack) {
+    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
         if (tile instanceof TileEntityBin) {
             TileEntityBin bin = (TileEntityBin) tile;
             if (bin.getItemCount() > 0) {

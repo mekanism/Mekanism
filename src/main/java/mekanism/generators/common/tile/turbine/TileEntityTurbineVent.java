@@ -20,10 +20,6 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 
     public FluidTankInfo fakeInfo = new FluidTankInfo(null, 1000);
 
-    public TileEntityTurbineVent() {
-        super("TurbineVent");
-    }
-
     @Override
     public void onUpdate() {
         super.onUpdate();

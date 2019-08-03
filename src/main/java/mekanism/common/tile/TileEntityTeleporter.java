@@ -77,7 +77,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
     public TileComponentSecurity securityComponent;
     public TileComponentChunkLoader chunkLoaderComponent;
-    public TileComponentUpgrade upgradeComponent;
+    public TileComponentUpgrade<TileEntityTeleporter> upgradeComponent;
 
     public TileEntityTeleporter() {
         super("Teleporter", MachineType.TELEPORTER.getStorage());
@@ -85,7 +85,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
         securityComponent = new TileComponentSecurity(this);
         chunkLoaderComponent = new TileComponentChunkLoader(this);
-        upgradeComponent = new TileComponentUpgrade(this, 1);
+        upgradeComponent = new TileComponentUpgrade<>(this, 1);
         upgradeComponent.clearSupportedTypes();
         upgradeComponent.setSupported(Upgrade.ANCHOR);
     }
@@ -555,6 +555,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     @Override
     public TileComponentUpgrade getComponent() {
         return upgradeComponent;
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgradeType) {
+
     }
 
     @Override

@@ -4,13 +4,13 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.tier.InductionProviderTier;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityInductionProvider extends TileEntityBasicBlock {
+public class TileEntityInductionProvider extends TileEntityMekanism {
 
     public InductionProviderTier tier = InductionProviderTier.BASIC;
 

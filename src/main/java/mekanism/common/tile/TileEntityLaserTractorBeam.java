@@ -13,8 +13,8 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
@@ -28,7 +28,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor, ISecurityTile, IComparatorSupport {
+public class TileEntityLaserTractorBeam extends TileEntityContainer implements ILaserReceptor, ISecurityTile, IComparatorSupport {
 
     public static final double MAX_ENERGY = 5E9;
     public static int[] availableSlotIDs = InventoryUtils.getIntRange(0, 26);
@@ -40,7 +40,6 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityLaserTractorBeam() {
-        super("LaserTractorBeam");
         inventory = NonNullList.withSize(27, ItemStack.EMPTY);
     }
 

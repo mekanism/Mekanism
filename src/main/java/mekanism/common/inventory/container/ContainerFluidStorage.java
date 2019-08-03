@@ -1,14 +1,14 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerFluidStorage<TILE extends TileEntityContainerBlock> extends ContainerMekanism<TILE> {
+public abstract class ContainerFluidStorage<TILE extends TileEntityContainer> extends ContainerMekanism<TILE> {
 
     protected ContainerFluidStorage(TILE tank, InventoryPlayer inventory) {
         super(tank, inventory);

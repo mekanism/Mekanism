@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -19,19 +19,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock implements IComputerIntegration {
+public class TileEntityThermalEvaporationBlock extends TileEntityContainer implements IComputerIntegration {
 
     private static final String[] methods = new String[]{"getTemperature", "getHeight", "isFormed", "getInput", "getOutput"};
     public Coord4D master;
     public boolean attempted;
 
     public TileEntityThermalEvaporationBlock() {
-        super("ThermalEvaporationBlock");
-        inventory = NonNullList.withSize(0, ItemStack.EMPTY);
-    }
-
-    public TileEntityThermalEvaporationBlock(String fullName) {
-        super(fullName);
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 

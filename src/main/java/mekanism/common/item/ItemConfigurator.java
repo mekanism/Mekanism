@@ -21,9 +21,9 @@ import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 import mekanism.common.util.ItemDataUtils;
@@ -101,8 +101,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                     player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
                                                                                + getToggleModeText(transmissionType) + ": " + data.color + data.localize() + " (" +
                                                                                data.color.getColoredName() + ")"));
-                                    if (config instanceof TileEntityBasicBlock) {
-                                        Mekanism.packetHandler.sendUpdatePacket((TileEntityBasicBlock) config);
+                                    if (config instanceof TileEntityMekanism) {
+                                        Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
                                     }
                                 } else {
                                     SecurityUtils.displayNoAccess(player);
@@ -125,7 +125,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                     }
                 }
             } else if (getState(stack) == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof TileEntityContainerBlock) {
+                if (tile instanceof TileEntityContainer) {
                     if (SecurityUtils.canAccess(player, tile)) {
                         //TODO: Switch this to items being handled by TECB, energy handled here (via lambdas?)
                         IInventory inv = (IInventory) tile;

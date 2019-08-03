@@ -31,7 +31,6 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     private int currentRedstoneLevel;
 
     public TileEntityBoilerValve() {
-        super("BoilerValve");
         waterTank = new BoilerWaterTank(this);
         steamTank = new BoilerSteamTank(this);
     }

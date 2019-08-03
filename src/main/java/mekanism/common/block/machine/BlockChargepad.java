@@ -2,7 +2,6 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
-import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockMekanismContainer;
@@ -11,9 +10,10 @@ import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityDirectional;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -23,7 +23,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -74,7 +73,7 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -122,30 +121,9 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
         if (world.isRemote) {
             return true;
         }
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        ItemStack stack = entityplayer.getHeldItem(hand);
-        if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
-            if (wrenchHandler != null) {
-                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-                    if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-                        if (entityplayer.isSneaking()) {
-                            MekanismUtils.dismantleBlock(this, state, world, pos);
-                            return true;
-                        }
-                        if (tileEntity != null) {
-                            EnumFacing change = tileEntity.facing.rotateY();
-                            tileEntity.setFacing(change);
-                            world.notifyNeighborsOfStateChange(pos, this, true);
-                        }
-                    } else {
-                        SecurityUtils.displayNoAccess(entityplayer);
-                    }
-                    return true;
-                }
-            }
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+            return true;
         }
         return false;
     }
@@ -186,8 +164,8 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
     }

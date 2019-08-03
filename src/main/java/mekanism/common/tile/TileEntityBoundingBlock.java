@@ -9,7 +9,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -60,9 +60,8 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
 
     public void onNeighborChange(Block block) {
         final TileEntity tile = getMainTile();
-        if (tile instanceof TileEntityBasicBlock) {
-
-            final TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) tile;
+        if (tile instanceof TileEntityMekanism) {
+            TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
             int power = world.getRedstonePowerFromNeighbors(getPos());
             if (prevPower != power) {
                 if (power > 0) {

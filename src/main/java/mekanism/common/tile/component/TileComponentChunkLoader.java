@@ -12,7 +12,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,7 +27,7 @@ public class TileComponentChunkLoader implements ITileComponent {
     /**
      * TileEntity implementing this component.
      */
-    public TileEntityContainerBlock tileEntity;
+    public TileEntityContainer tileEntity;
 
     public Ticket chunkTicket;
 
@@ -35,9 +35,9 @@ public class TileComponentChunkLoader implements ITileComponent {
 
     public Coord4D prevCoord;
 
-    public TileComponentChunkLoader(TileEntityContainerBlock tile) {
+    public TileComponentChunkLoader(TileEntityContainer tile) {
         tileEntity = tile;
-        tile.components.add(this);
+        tile.addComponent(this);
     }
 
     public void setTicket(Ticket t) {

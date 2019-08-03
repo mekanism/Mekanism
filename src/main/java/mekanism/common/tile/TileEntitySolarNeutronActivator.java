@@ -26,9 +26,9 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -42,7 +42,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, IActiveState, ISustainedData,
+public class TileEntitySolarNeutronActivator extends TileEntityContainer implements IRedstoneControl, IBoundingBlock, IGasHandler, IActiveState, ISustainedData,
       ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler, IComparatorSupport {
 
     public static final int MAX_GAS = 10000;
@@ -62,11 +62,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-    public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+    public TileComponentUpgrade<TileEntitySolarNeutronActivator> upgradeComponent = new TileComponentUpgrade<>(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySolarNeutronActivator() {
-        super("SolarNeutronActivator");
         upgradeComponent.setSupported(Upgrade.ENERGY, false);
         inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     }
@@ -326,6 +325,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public TileComponentUpgrade getComponent() {
         return upgradeComponent;
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgradeType) {
+
     }
 
     @Override

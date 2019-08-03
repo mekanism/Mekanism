@@ -84,7 +84,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public float totalLoss = 0;
 
     public TileEntityThermalEvaporationController() {
-        super("ThermalEvaporationController");
         inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 

@@ -83,7 +83,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader,
+      IAdvancedBoundingBlock {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
@@ -138,7 +139,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
      */
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-    public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, INV_SLOTS.length);
+    public TileComponentUpgrade<TileEntityDigitalMiner> upgradeComponent = new TileComponentUpgrade<>(this, INV_SLOTS.length);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
@@ -1048,7 +1049,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey() + "." + fullName + ".name";
+        return getBlockType().getTranslationKey() + ".name";
     }
 
     @Override
@@ -1095,8 +1096,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public void recalculateUpgradables(Upgrade upgrade) {
-        super.recalculateUpgradables(upgrade);
+    public void recalculateUpgrades(Upgrade upgrade) {
         switch (upgrade) {
             case SPEED:
                 delayLength = MekanismUtils.getTicks(this, BASE_DELAY);

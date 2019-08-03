@@ -23,10 +23,10 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -41,7 +41,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
+public class TileEntityGasTank extends TileEntityContainer implements IGasHandler, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
       IComputerIntegration, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
@@ -72,7 +72,6 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     }
 
     public TileEntityGasTank(GasTankTier tier) {
-        super("GasTank");
         this.tier = tier;
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
 

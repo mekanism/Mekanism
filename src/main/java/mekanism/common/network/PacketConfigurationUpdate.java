@@ -10,8 +10,8 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -72,7 +72,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                 } else if (message.packetType == ConfigurationPacket.STRICT_INPUT) {
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
-                for (EntityPlayer p : ((TileEntityBasicBlock) config).playersUsing) {
+                for (EntityPlayer p : ((TileEntityMekanism) config).playersUsing) {
                     Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData()), (EntityPlayerMP) p);
                 }
             }

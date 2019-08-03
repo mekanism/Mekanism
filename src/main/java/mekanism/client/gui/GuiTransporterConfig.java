@@ -20,8 +20,8 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentConfig;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -36,7 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlock> {
+public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainer> {
 
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private ISideConfiguration configurable;
@@ -47,7 +47,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityContainerBlo
     private int buttonID = 0;
 
     public GuiTransporterConfig(EntityPlayer player, ISideConfiguration tile) {
-        super((TileEntityContainerBlock) tile, new ContainerNull(player, (TileEntityContainerBlock) tile));
+        super((TileEntityContainer) tile, new ContainerNull(player, (TileEntityContainer) tile));
         ySize = 95;
         configurable = tile;
         slotPosMap.put(0, new GuiPos(54, 64));

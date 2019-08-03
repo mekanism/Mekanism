@@ -12,7 +12,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.init.Items;
@@ -38,7 +38,7 @@ public final class ChargeUtils {
      * @param storer - TileEntity the item is being charged in
      */
     public static void discharge(int slotID, IStrictEnergyStorage storer) {
-        IInventory inv = (TileEntityContainerBlock) storer;
+        IInventory inv = (TileEntityContainer) storer;
         ItemStack stack = inv.getStackInSlot(slotID);
         if (!stack.isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
             if (stack.getItem() instanceof IEnergizedItem) {
@@ -74,7 +74,7 @@ public final class ChargeUtils {
      * @param storer - TileEntity the item is being discharged in
      */
     public static void charge(int slotID, IStrictEnergyStorage storer) {
-        IInventory inv = (TileEntityContainerBlock) storer;
+        IInventory inv = (TileEntityContainer) storer;
         charge(inv.getStackInSlot(slotID), storer);
     }
 

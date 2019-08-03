@@ -20,8 +20,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -48,7 +48,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
+public class TileEntityFluidTank extends TileEntityContainer implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
       ITankManager, ISecurityTile, ITierUpgradeable, IComparatorSupport {
 
     public boolean isActive;
@@ -81,7 +81,6 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     }
 
     public TileEntityFluidTank(FluidTankTier tier) {
-        super("FluidTank");
         this.tier = tier;
         fluidTank = new FluidTank(this.tier.getStorage());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);

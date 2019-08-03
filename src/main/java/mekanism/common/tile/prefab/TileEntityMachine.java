@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+//TODO
 public abstract class TileEntityMachine extends TileEntityEffectsBlock implements IUpgradeTile, IRedstoneControl, ISecurityTile {
 
     public double prevEnergy;
@@ -29,14 +30,14 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
      */
     private RedstoneControl controlType = RedstoneControl.DISABLED;
 
-    public TileComponentUpgrade upgradeComponent;
+    public TileComponentUpgrade<TileEntityMachine> upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityMachine(String sound, MachineType type, int upgradeSlot) {
         super(sound, type.getBlockName(), type.getStorage());
         energyPerTick = BASE_ENERGY_PER_TICK = type.getUsage();
 
-        upgradeComponent = new TileComponentUpgrade(this, upgradeSlot);
+        upgradeComponent = new TileComponentUpgrade<>(this, upgradeSlot);
         upgradeComponent.setSupported(Upgrade.MUFFLING);
     }
 
@@ -115,8 +116,8 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     }
 
     @Override
-    public void recalculateUpgradables(Upgrade upgrade) {
-        super.recalculateUpgradables(upgrade);
+    public void recalculateUpgrades(Upgrade upgrade) {
+        //TODO: Should this go away
         if (upgrade == Upgrade.ENERGY) {
             maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
             energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_PER_TICK);

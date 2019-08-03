@@ -1,12 +1,11 @@
 package mekanism.generators.common.block.generator;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -16,7 +15,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -47,8 +45,8 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             final TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
     }
@@ -65,41 +63,18 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
         if (world.isRemote) {
             return true;
         }
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        ItemStack stack = entityplayer.getHeldItem(hand);
-
-        if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
-            if (wrenchHandler != null) {
-                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-                    if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-                        if (entityplayer.isSneaking()) {
-                            MekanismUtils.dismantleBlock(this, state, world, pos);
-                            return true;
-                        }
-                        if (tileEntity != null) {
-                            tileEntity.setFacing(tileEntity.facing.rotateY());
-                            world.notifyNeighborsOfStateChange(pos, this, true);
-                        }
-                    } else {
-                        SecurityUtils.displayNoAccess(entityplayer);
-                    }
-                    return true;
-                }
-            }
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+            return true;
         }
 
-        if (tileEntity != null) {
-            if (!entityplayer.isSneaking()) {
-                if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(MekanismGenerators.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
-                } else {
-                    SecurityUtils.displayNoAccess(entityplayer);
-                }
-                return true;
+        if (!entityplayer.isSneaking()) {
+            if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                entityplayer.openGui(MekanismGenerators.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+            } else {
+                SecurityUtils.displayNoAccess(entityplayer);
             }
+            return true;
         }
         return false;
     }

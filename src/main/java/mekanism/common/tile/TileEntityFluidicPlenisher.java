@@ -75,7 +75,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
      */
     public int operatingTicks;
     public RedstoneControl controlType = RedstoneControl.DISABLED;
-    public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+    public TileComponentUpgrade<TileEntityFluidicPlenisher> upgradeComponent = new TileComponentUpgrade<>(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     private int currentRedstoneLevel;
@@ -397,8 +397,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public void recalculateUpgradables(Upgrade upgrade) {
-        super.recalculateUpgradables(upgrade);
+    public void recalculateUpgrades(Upgrade upgrade) {
         switch (upgrade) {
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);

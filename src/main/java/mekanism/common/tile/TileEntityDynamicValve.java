@@ -25,7 +25,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     private int currentRedstoneLevel;
 
     public TileEntityDynamicValve() {
-        super("Dynamic Valve");
         fluidTank = new DynamicFluidTank(this);
     }
 

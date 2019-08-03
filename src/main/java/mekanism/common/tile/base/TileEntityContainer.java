@@ -1,7 +1,6 @@
-package mekanism.common.tile.prefab;
+package mekanism.common.tile.base;
 
 import javax.annotation.Nonnull;
-import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ItemHandlerWrapper;
 import mekanism.common.capabilities.CapabilityWrapperManager;
@@ -14,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -24,17 +22,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory, ITickable, IToggleableCapability {
+//TODO: Ideally we want this to not have to be Directional and can just extend TileEntityMekanism
+public abstract class TileEntityContainer extends TileEntityDirectional implements ISidedInventory, ISustainedInventory, IToggleableCapability {
 
     /**
      * The inventory slot itemstacks used by this block.
      */
     public NonNullList<ItemStack> inventory;
 
-    /**
-     * The full name of this machine.
-     */
-    public String fullName;
     private CapabilityWrapperManager<ISidedInventory, ItemHandlerWrapper> itemManager = new CapabilityWrapperManager<>(ISidedInventory.class, ItemHandlerWrapper.class);
     /**
      * Read only itemhandler for the null facing.
@@ -57,15 +52,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
             //no
         }
     };
-
-    /**
-     * A simple tile entity with a container and facing state.
-     *
-     * @param name - full name of this tile entity
-     */
-    public TileEntityContainerBlock(String name) {
-        fullName = name;
-    }
 
     @Override
     public boolean isEmpty() {
@@ -164,7 +150,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     @Nonnull
     @Override
     public String getName() {
-        return LangUtils.localize(getBlockType().getTranslationKey() + "." + fullName + ".name");
+        return LangUtils.localize(getBlockType().getTranslationKey() + ".name");
     }
 
     @Override
@@ -237,9 +223,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
     public boolean handleInventory() {
         return true;
-    }
-
-    public void recalculateUpgradables(Upgrade upgradeType) {
     }
 
     @Override

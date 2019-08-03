@@ -6,7 +6,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.PacketHandler;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -73,7 +73,7 @@ public class TileUtils {
         }
     }
 
-    public static void emitGas(TileEntityBasicBlock tile, GasTank tank, int gasOutput, EnumFacing facing) {
+    public static void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, EnumFacing facing) {
         if (tank.getGas() != null) {
             GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), gasOutput));
             tank.draw(GasUtils.emit(toSend, tile, EnumSet.of(facing)), true);

@@ -2,14 +2,14 @@ package mekanism.client.gui.filter;
 
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiFilter<TILE extends TileEntityContainerBlock> extends GuiMekanismTile<TILE> {
+public abstract class GuiFilter<TILE extends TileEntityContainer> extends GuiMekanismTile<TILE> {
 
     protected GuiFilter(TILE tile, Container container) {
         super(tile, container);

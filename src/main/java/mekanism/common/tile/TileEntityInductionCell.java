@@ -6,7 +6,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.InductionCellTier;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityInductionCell extends TileEntityBasicBlock implements IStrictEnergyStorage {
+public class TileEntityInductionCell extends TileEntityMekanism implements IStrictEnergyStorage {
 
     public InductionCellTier tier = InductionCellTier.BASIC;
 

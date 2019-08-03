@@ -12,7 +12,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -21,7 +21,7 @@ public class TileComponentSecurity implements ITileComponent {
     /**
      * TileEntity implementing this component.
      */
-    public TileEntityContainerBlock tileEntity;
+    public TileEntityContainer tileEntity;
 
     private UUID ownerUUID;
     private String clientOwner;
@@ -30,9 +30,9 @@ public class TileComponentSecurity implements ITileComponent {
 
     private SecurityFrequency frequency;
 
-    public TileComponentSecurity(TileEntityContainerBlock tile) {
+    public TileComponentSecurity(TileEntityContainer tile) {
         tileEntity = tile;
-        tile.components.add(this);
+        tile.addComponent(this);
     }
 
     public void readFrom(TileComponentSecurity security) {

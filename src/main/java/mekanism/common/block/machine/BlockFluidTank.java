@@ -3,7 +3,6 @@ package mekanism.common.block.machine;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
-import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -16,10 +15,10 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -111,48 +110,26 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         if (world.isRemote) {
             return true;
         }
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        ItemStack stack = entityplayer.getHeldItem(hand);
-        if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
-            if (wrenchHandler != null) {
-                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-                    if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-                        if (entityplayer.isSneaking()) {
-                            MekanismUtils.dismantleBlock(this, state, world, pos);
-                            return true;
-                        }
-                        if (tileEntity != null) {
-                            EnumFacing change = tileEntity.facing.rotateY();
-                            tileEntity.setFacing(change);
-                            world.notifyNeighborsOfStateChange(pos, this, true);
-                        }
-                    } else {
-                        SecurityUtils.displayNoAccess(entityplayer);
-                    }
-                    return true;
-                }
-            }
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+            return true;
         }
 
-        if (tileEntity != null) {
-            if (!entityplayer.isSneaking()) {
-                if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack)) {
-                        if (manageInventory(entityplayer, (TileEntityFluidTank) tileEntity, hand, stack)) {
-                            entityplayer.inventory.markDirty();
-                            return true;
-                        }
-                    } else {
-                        entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+        ItemStack stack = entityplayer.getHeldItem(hand);
+        if (!entityplayer.isSneaking()) {
+            if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack)) {
+                    if (manageInventory(entityplayer, (TileEntityFluidTank) tileEntity, hand, stack)) {
+                        entityplayer.inventory.markDirty();
+                        return true;
                     }
                 } else {
-                    SecurityUtils.displayNoAccess(entityplayer);
+                    entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
                 }
-                return true;
+            } else {
+                SecurityUtils.displayNoAccess(entityplayer);
             }
+            return true;
         }
         return false;
     }
@@ -281,8 +258,8 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
     }

@@ -3,7 +3,7 @@ package mekanism.common.item;
 import javax.annotation.Nonnull;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.tier.BaseTier;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +29,7 @@ public class ItemTierInstaller extends ItemMekanismTiered {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof ITierUpgradeable) {
             //TODO: Replace this?? Or will instance case still be true
-            if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).playersUsing.size() > 0) {
+            if (tile instanceof TileEntityMekanism && ((TileEntityMekanism) tile).playersUsing.size() > 0) {
                 return EnumActionResult.FAIL;
             }
             if (((ITierUpgradeable) tile).upgrade(getTier())) {

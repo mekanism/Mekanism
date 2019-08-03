@@ -168,7 +168,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         factory.inventory.set(4, inventory.get(1));
 
         for (Upgrade upgrade : factory.upgradeComponent.getSupportedTypes()) {
-            factory.recalculateUpgradables(upgrade);
+            factory.recalculateUpgrades(upgrade);
         }
         factory.upgraded = true;
         factory.markDirty();

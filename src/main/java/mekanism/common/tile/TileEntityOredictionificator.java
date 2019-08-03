@@ -12,13 +12,12 @@ import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -37,7 +36,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile {
+public class TileEntityOredictionificator extends TileEntityContainer implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile {
 
     public static final int MAX_LENGTH = 24;
     private static final int[] SLOTS = {0, 1};
@@ -50,7 +49,6 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityOredictionificator() {
-        super(MachineType.OREDICTIONIFICATOR.getBlockName());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;
     }
@@ -265,7 +263,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey() + "." + fullName + ".name";
+        return getBlockType().getTranslationKey();
     }
 
     @Override

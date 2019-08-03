@@ -97,7 +97,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
                 boolean update = BASE_TICKS_REQUIRED != recipe.ticks;
                 BASE_TICKS_REQUIRED = recipe.ticks;
                 if (update) {
-                    recalculateUpgradables(Upgrade.SPEED);
+                    recalculateUpgrades(Upgrade.SPEED);
                 }
                 setActive(true);
                 if ((operatingTicks + 1) < ticksRequired) {
@@ -207,7 +207,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     @Nonnull
     @Override
     public String getName() {
-        return LangUtils.localize(getBlockType().getTranslationKey() + "." + fullName + ".short.name");
+        return LangUtils.localize(getBlockType().getTranslationKey() + ".short.name");
     }
 
     @Override

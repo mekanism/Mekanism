@@ -1,13 +1,13 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 
-public abstract class ContainerMekanism<TILE extends TileEntityContainerBlock> extends Container {
+public abstract class ContainerMekanism<TILE extends TileEntityContainer> extends Container {
 
     protected TILE tileEntity;
 

@@ -13,7 +13,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -87,14 +87,14 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityEnergyCube) {
             TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
             if (cube.tier == EnergyCubeTier.CREATIVE) {
@@ -126,7 +126,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
             return true;
         }
 
-        //TODO
+        //TODO: Put the wrench logic in TileEntityMekanism??
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (!stack.isEmpty()) {

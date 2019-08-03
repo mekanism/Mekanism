@@ -74,7 +74,7 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         upgradeInventory(factory);
 
         for (Upgrade upgrade : factory.upgradeComponent.getSupportedTypes()) {
-            factory.recalculateUpgradables(upgrade);
+            factory.recalculateUpgrades(upgrade);
         }
 
         factory.upgraded = true;

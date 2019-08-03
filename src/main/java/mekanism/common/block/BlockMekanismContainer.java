@@ -20,8 +20,9 @@ import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityDirectional;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -59,11 +60,11 @@ public abstract class BlockMekanismContainer extends BlockContainer {
         if (tileEntity == null) {
             return itemStack;
         }
-        if (!(tileEntity instanceof TileEntityBasicBlock)) {
+        if (!(tileEntity instanceof TileEntityMekanism)) {
             //TODO let it do the down below checks anyways
             return itemStack;
         }
-        TileEntityBasicBlock tile = (TileEntityBasicBlock) tileEntity;
+        TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
         //TODO: If crashes happen here because of lack of NBT make things use ItemDataUtils
 
         Item item = itemStack.getItem();
@@ -91,7 +92,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
         if (tile instanceof IRedstoneControl) {
             ItemDataUtils.setInt(itemStack, "controlType", ((IRedstoneControl) tile).getControlType().ordinal());
         }
-        if (item instanceof ISustainedInventory && tile instanceof TileEntityContainerBlock && ((TileEntityContainerBlock) tile).inventory.size() > 0) {
+        if (item instanceof ISustainedInventory && tile instanceof TileEntityContainer && ((TileEntityContainer) tile).inventory.size() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
@@ -109,7 +110,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
         return itemStack;
     }
 
-    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityBasicBlock tile, @Nonnull ItemStack stack) {
+    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
         return stack;
     }
 
@@ -202,16 +203,17 @@ public abstract class BlockMekanismContainer extends BlockContainer {
         if (tileEntity == null) {
             return;
         }
-        if (!(tileEntity instanceof TileEntityBasicBlock)) {
+        if (!(tileEntity instanceof TileEntityMekanism)) {
             //TODO: Allow TileEntity to check against below things
             return;
         }
         //TODO: Remove most implementations of ItemBlock#placeBlockAt and use this method instead
         //TODO: Should this just be TileEntity and then check instance of and abstract things further
-        TileEntityBasicBlock tile = (TileEntityBasicBlock) tileEntity;
-        if (this instanceof IStateFacing) {
+        TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
+        if (this instanceof IStateFacing && tile instanceof TileEntityDirectional) {
+            TileEntityDirectional tileDirectional = (TileEntityDirectional) tile;
             EnumFacing change = EnumFacing.SOUTH;
-            if (tile.canSetFacing(EnumFacing.DOWN) && tile.canSetFacing(EnumFacing.UP)) {
+            if (tileDirectional.canSetFacing(EnumFacing.DOWN) && tileDirectional.canSetFacing(EnumFacing.UP)) {
                 int height = Math.round(placer.rotationPitch);
                 if (height >= 65) {
                     change = EnumFacing.UP;
@@ -236,7 +238,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
                         break;
                 }
             }
-            tile.setFacing(change);
+            tileDirectional.setFacing(change);
         }
         tile.redstone = world.isBlockPowered(pos);
 
@@ -313,7 +315,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     }
 
     //TODO: Method to override for setting some simple tile specific stuff
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
 
     }
 
@@ -321,14 +323,23 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
         if (this instanceof IStateFacing) {
             TileEntity tile = world.getTileEntity(pos);
-            if (tile instanceof TileEntityBasicBlock) {
-                TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-                if (basicTile.canSetFacing(axis)) {
-                    basicTile.setFacing(axis);
+            if (tile instanceof TileEntityDirectional) {
+                TileEntityDirectional tileDirectional = (TileEntityDirectional) tile;
+                if (tileDirectional.canSetFacing(axis)) {
+                    tileDirectional.setFacing(axis);
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    @Override
+    public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof IBoundingBlock) {
+            ((IBoundingBlock) tile).onBreak();
+        }
+        super.breakBlock(world, pos, state);
     }
 }

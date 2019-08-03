@@ -1,8 +1,8 @@
 package mekanism.generators.common.tile.turbine;
 
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 
-public class TileEntityElectromagneticCoil extends TileEntityBasicBlock {
+public class TileEntityElectromagneticCoil extends TileEntityMekanism {
 
     @Override
     public void onUpdate() {

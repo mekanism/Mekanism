@@ -2,7 +2,7 @@ package mekanism.common.inventory.container;
 
 import ic2.api.item.IElectricItem;
 import javax.annotation.Nonnull;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +11,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerEnergyStorage<TILE extends TileEntityContainerBlock> extends ContainerMekanism<TILE> {
+public abstract class ContainerEnergyStorage<TILE extends TileEntityContainer> extends ContainerMekanism<TILE> {
 
     protected ContainerEnergyStorage(TILE tile, InventoryPlayer inventory) {
         super(tile, inventory);

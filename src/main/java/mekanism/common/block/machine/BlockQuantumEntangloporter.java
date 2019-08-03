@@ -2,7 +2,6 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
-import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -15,9 +14,10 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityDirectional;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -79,7 +79,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityBasicBlock tile) {
+    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityQuantumEntangloporter) {
             if (!world.isRemote && ItemDataUtils.hasData(stack, "entangleporter_frequency")) {
                 Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
@@ -93,7 +93,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -141,41 +141,18 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
         if (world.isRemote) {
             return true;
         }
-        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        ItemStack stack = entityplayer.getHeldItem(hand);
-        if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
-            if (wrenchHandler != null) {
-                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-                    if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-                        if (entityplayer.isSneaking()) {
-                            MekanismUtils.dismantleBlock(this, state, world, pos);
-                            return true;
-                        }
-                        if (tileEntity != null) {
-                            EnumFacing change = tileEntity.facing.rotateY();
-                            tileEntity.setFacing(change);
-                            world.notifyNeighborsOfStateChange(pos, this, true);
-                        }
-                    } else {
-                        SecurityUtils.displayNoAccess(entityplayer);
-                    }
-                    return true;
-                }
-            }
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+            return true;
         }
 
-        if (tileEntity != null) {
-            if (!entityplayer.isSneaking()) {
-                if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
-                } else {
-                    SecurityUtils.displayNoAccess(entityplayer);
-                }
-                return true;
+        if (!entityplayer.isSneaking()) {
+            if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+            } else {
+                SecurityUtils.displayNoAccess(entityplayer);
             }
+            return true;
         }
         return false;
     }
@@ -232,15 +209,15 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityBasicBlock) {
-                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            if (tileEntity instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
     }
 
     @Nonnull
     @Override
-    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityBasicBlock tile, @Nonnull ItemStack stack) {
+    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
         if (tile instanceof TileEntityQuantumEntangloporter) {
             InventoryFrequency frequency = ((TileEntityQuantumEntangloporter) tile).frequency;
             if (frequency != null) {

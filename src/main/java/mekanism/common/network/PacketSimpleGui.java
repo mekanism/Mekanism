@@ -8,7 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
-import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,7 +30,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
-                if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock) {
+                if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityMekanism) {
                     if (message.guiId == -1) {
                         return;
                     }

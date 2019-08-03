@@ -11,10 +11,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.base.IUpgradeTile;
+import mekanism.common.tile.base.TileEntityContainer;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileComponentUpgrade implements ITileComponent {
+public class TileComponentUpgrade<TILE extends TileEntityContainer & IUpgradeTile> implements ITileComponent {
 
     /**
      * How long it takes this machine to install an upgrade.
@@ -27,7 +28,7 @@ public class TileComponentUpgrade implements ITileComponent {
     /**
      * TileEntity implementing this component.
      */
-    public TileEntityContainerBlock tileEntity;
+    public TILE tileEntity;
     private Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
     private Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
     /**
@@ -35,12 +36,12 @@ public class TileComponentUpgrade implements ITileComponent {
      */
     private int upgradeSlot;
 
-    public TileComponentUpgrade(TileEntityContainerBlock tile, int slot) {
+    public TileComponentUpgrade(TILE tile, int slot) {
         tileEntity = tile;
         upgradeSlot = slot;
         setSupported(Upgrade.SPEED);
         setSupported(Upgrade.ENERGY);
-        tile.components.add(this);
+        tile.addComponent(this);
     }
 
     public void readFrom(TileComponentUpgrade upgrade) {
@@ -97,7 +98,7 @@ public class TileComponentUpgrade implements ITileComponent {
 
     public void addUpgrade(Upgrade upgrade) {
         upgrades.put(upgrade, Math.min(upgrade.getMax(), getUpgrades(upgrade) + 1));
-        tileEntity.recalculateUpgradables(upgrade);
+        tileEntity.recalculateUpgrades(upgrade);
     }
 
     public void removeUpgrade(Upgrade upgrade) {
@@ -105,7 +106,7 @@ public class TileComponentUpgrade implements ITileComponent {
         if (upgrades.get(upgrade) == 0) {
             upgrades.remove(upgrade);
         }
-        tileEntity.recalculateUpgradables(upgrade);
+        tileEntity.recalculateUpgrades(upgrade);
     }
 
     public void setSupported(Upgrade upgrade) {
@@ -146,7 +147,7 @@ public class TileComponentUpgrade implements ITileComponent {
         }
         upgradeTicks = dataStream.readInt();
         for (Upgrade upgrade : getSupportedTypes()) {
-            tileEntity.recalculateUpgradables(upgrade);
+            tileEntity.recalculateUpgrades(upgrade);
         }
     }
 
@@ -164,7 +165,7 @@ public class TileComponentUpgrade implements ITileComponent {
     public void read(NBTTagCompound nbtTags) {
         upgrades = Upgrade.buildMap(nbtTags);
         for (Upgrade upgrade : getSupportedTypes()) {
-            tileEntity.recalculateUpgradables(upgrade);
+            tileEntity.recalculateUpgrades(upgrade);
         }
     }
 

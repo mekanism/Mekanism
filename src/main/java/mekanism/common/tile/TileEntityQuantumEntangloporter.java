@@ -76,7 +76,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
     public TileComponentChunkLoader chunkLoaderComponent;
-    public TileComponentUpgrade upgradeComponent;
+    public TileComponentUpgrade<TileEntityQuantumEntangloporter> upgradeComponent;
 
     public TileEntityQuantumEntangloporter() {
         super("QuantumEntangloporter", 0);
@@ -104,7 +104,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
         securityComponent = new TileComponentSecurity(this);
         chunkLoaderComponent = new TileComponentChunkLoader(this);
 
-        upgradeComponent = new TileComponentUpgrade(this, 0);
+        upgradeComponent = new TileComponentUpgrade<>(this, 0);
         upgradeComponent.clearSupportedTypes();
         upgradeComponent.setSupported(Upgrade.ANCHOR);
     }
@@ -612,5 +612,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     @Override
     public TileComponentUpgrade getComponent() {
         return this.upgradeComponent;
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgradeType) {
+
     }
 }

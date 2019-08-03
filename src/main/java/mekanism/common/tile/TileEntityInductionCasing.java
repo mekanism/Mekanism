@@ -31,11 +31,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
 
     public TileEntityInductionCasing() {
-        this("InductionCasing");
-    }
-
-    public TileEntityInductionCasing(String name) {
-        super(name);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     }
 

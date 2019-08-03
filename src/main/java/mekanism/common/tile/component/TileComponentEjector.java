@@ -19,7 +19,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -37,16 +37,16 @@ public class TileComponentEjector implements ITileComponent {
 
     private static final int GAS_OUTPUT = 256;
     private static final int FLUID_OUTPUT = 256;
-    private TileEntityContainerBlock tileEntity;
+    private TileEntityContainer tileEntity;
     private boolean strictInput;
     private EnumColor outputColor;
     private EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
     private int tickDelay = 0;
     private Map<TransmissionType, SideData> sideData = new EnumMap<>(TransmissionType.class);
 
-    public TileComponentEjector(TileEntityContainerBlock tile) {
+    public TileComponentEjector(TileEntityContainer tile) {
         tileEntity = tile;
-        tile.components.add(this);
+        tile.addComponent(this);
     }
 
     public TileComponentEjector setOutputData(TransmissionType type, SideData data) {

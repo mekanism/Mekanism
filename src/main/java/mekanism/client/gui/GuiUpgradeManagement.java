@@ -102,8 +102,9 @@ public class GuiUpgradeManagement extends GuiMekanism {
                 renderText(s, 92, 22 + (6 * text++), 0.6F, true);
             }
         }
-        if (!tileEntity.getComponent().getSupportedTypes().isEmpty()) {
-            Upgrade[] supported = tileEntity.getComponent().getSupportedTypes().toArray(new Upgrade[0]);
+        Set<Upgrade> supportedTypes = tileEntity.getComponent().getSupportedTypes();
+        if (!supportedTypes.isEmpty()) {
+            Upgrade[] supported = supportedTypes.toArray(new Upgrade[0]);
             if (supported.length > supportedIndex) {
                 renderUpgrade(supported[supportedIndex], 80, 57, 0.8F, true);
                 fontRenderer.drawString(supported[supportedIndex].getName(), 96, 59, 0x404040);

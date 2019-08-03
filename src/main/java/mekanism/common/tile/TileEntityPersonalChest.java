@@ -2,8 +2,8 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.init.SoundEvents;
@@ -15,7 +15,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityPersonalChest extends TileEntityContainerBlock implements ISecurityTile {
+public class TileEntityPersonalChest extends TileEntityContainer implements ISecurityTile {
 
     public static int[] INV;
 
@@ -26,7 +26,6 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
     public TileComponentSecurity securityComponent;
 
     public TileEntityPersonalChest() {
-        super("PersonalChest");
         inventory = NonNullList.withSize(54, ItemStack.EMPTY);
         securityComponent = new TileComponentSecurity(this);
     }
