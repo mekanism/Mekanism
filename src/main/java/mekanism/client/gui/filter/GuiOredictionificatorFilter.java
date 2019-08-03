@@ -28,9 +28,6 @@ import net.minecraftforge.oredict.OreDictionary;
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator> {
 
-    private GuiButton saveButton;
-    private GuiButton deleteButton;
-    private GuiButton backButton;
     private GuiButton prevButton;
     private GuiButton nextButton;
     private GuiButton checkboxButton;
