@@ -401,7 +401,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 return;
             }
             found.add(pointer);
-            for (EnumFacing side : EnumFacing.VALUES) {
+            for (EnumFacing side : EnumFacing.values()) {
                 Coord4D coord = pointer.offset(side);
                 if (maxRange > 0 && location.distanceTo(coord) > maxRange) {
                     continue;

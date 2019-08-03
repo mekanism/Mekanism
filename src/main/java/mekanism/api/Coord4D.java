@@ -272,7 +272,7 @@ public class Coord4D {
      */
     public EnumFacing sideDifference(Coord4D other) {
         Coord4D diff = difference(other);
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             if (side.getXOffset() == diff.x && side.getYOffset() == diff.y && side.getZOffset() == diff.z) {
                 return side;
             }

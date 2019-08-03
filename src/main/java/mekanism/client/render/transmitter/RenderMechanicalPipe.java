@@ -79,7 +79,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             GlStateManager.translate((float) x, (float) y, (float) z);
 
             boolean gas = fluidStack == null ? fluid.isGaseous() : fluid.isGaseous(fluidStack);
-            for (EnumFacing side : EnumFacing.VALUES) {
+            for (EnumFacing side : EnumFacing.values()) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
                     renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {

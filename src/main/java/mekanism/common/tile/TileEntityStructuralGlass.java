@@ -65,7 +65,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
                 return;
             }
             iterated.add(pos);
-            for (EnumFacing side : EnumFacing.VALUES) {
+            for (EnumFacing side : EnumFacing.values()) {
                 Coord4D coord = pos.offset(side);
                 TileEntity tile = coord.getTileEntity(world);
                 if (!iterated.contains(coord)) {

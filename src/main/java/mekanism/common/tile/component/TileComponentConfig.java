@@ -68,7 +68,7 @@ public class TileComponentConfig implements ITileComponent {
         SideConfig config = getConfig(type);
         EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
 
-        for (EnumFacing sideToCheck : EnumFacing.VALUES) {
+        for (EnumFacing sideToCheck : EnumFacing.values()) {
             if (config.get(translatedFacings[sideToCheck.ordinal()]) == dataIndex) {
                 ret.add(sideToCheck);
             }
@@ -130,7 +130,7 @@ public class TileComponentConfig implements ITileComponent {
     }
 
     public void setConfig(TransmissionType type, byte[] config) {
-        assert config.length == EnumFacing.VALUES.length;
+        assert config.length == EnumFacing.values().length;
         setConfig(type, config[0], config[1], config[2], config[3], config[4], config[5]);
     }
 

@@ -76,7 +76,7 @@ public class ItemNetworkReader extends ItemEnergized {
                     }
                     Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
 
-                    for (EnumFacing iterSide : EnumFacing.VALUES) {
+                    for (EnumFacing iterSide : EnumFacing.values()) {
                         Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
                         TileEntity tile = coord.getTileEntity(world);
                         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite())) {

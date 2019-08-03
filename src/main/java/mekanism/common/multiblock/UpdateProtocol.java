@@ -140,7 +140,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             return;
         }
 
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             Coord4D sideCoord = coord.offset(side);
             if (isViableNode(sideCoord.getPos())) {
                 if (!iteratedNodes.contains(sideCoord)) {
@@ -446,7 +446,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                 return;
             }
 
-            for (EnumFacing side : EnumFacing.VALUES) {
+            for (EnumFacing side : EnumFacing.values()) {
                 Coord4D coord = pos.offset(side);
 
                 if (!iterated.contains(coord) && checker.isValid(coord)) {

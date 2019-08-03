@@ -88,12 +88,12 @@ public final class MekanismUtils {
     /**
      * Pre-calculated cache of translated block orientations
      */
-    private static final EnumFacing[][] baseOrientations = new EnumFacing[EnumFacing.VALUES.length][EnumFacing.VALUES.length];
+    private static final EnumFacing[][] baseOrientations = new EnumFacing[EnumFacing.values().length][EnumFacing.values().length];
 
     static {
-        for (int blockFacing = 0; blockFacing < EnumFacing.VALUES.length; blockFacing++) {
-            for (int side = 0; side < EnumFacing.VALUES.length; side++) {
-                baseOrientations[blockFacing][side] = getBaseOrientation(EnumFacing.VALUES[side], EnumFacing.VALUES[blockFacing]);
+        for (int blockFacing = 0; blockFacing < EnumFacing.values().length; blockFacing++) {
+            for (int side = 0; side < EnumFacing.values().length; side++) {
+                baseOrientations[blockFacing][side] = getBaseOrientation(EnumFacing.values()[side], EnumFacing.values()[blockFacing]);
             }
         }
     }
@@ -175,7 +175,7 @@ public final class MekanismUtils {
      *
      * @param blockFacing - what orientation the block is facing
      *
-     * @return EnumFacing.VALUES, translated to machine orientation
+     * @return EnumFacing.values(), translated to machine orientation
      */
     public static EnumFacing[] getBaseOrientations(EnumFacing blockFacing) {
         return baseOrientations[blockFacing.ordinal()];
@@ -374,7 +374,7 @@ public final class MekanismUtils {
      * @return if the block is indirectly getting powered by LOADED chunks
      */
     public static boolean isGettingPowered(World world, Coord4D coord) {
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             Coord4D sideCoord = coord.offset(side);
             if (sideCoord.exists(world) && sideCoord.offset(side).exists(world)) {
                 IBlockState blockState = sideCoord.getBlockState(world);
@@ -398,7 +398,7 @@ public final class MekanismUtils {
      * @return if the block is directly getting powered
      */
     public static boolean isDirectlyGettingPowered(World world, Coord4D coord) {
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             Coord4D sideCoord = coord.offset(side);
             if (sideCoord.exists(world)) {
                 if (world.getRedstonePower(coord.getPos(), side) > 0) {
@@ -416,7 +416,7 @@ public final class MekanismUtils {
      * @param coord - Coord4D to perform the operation on
      */
     public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord) {
-        for (EnumFacing dir : EnumFacing.VALUES) {
+        for (EnumFacing dir : EnumFacing.values()) {
             Coord4D offset = coord.offset(dir);
             if (offset.exists(world)) {
                 notifyNeighborofChange(world, offset, coord.getPos());

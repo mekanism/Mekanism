@@ -228,7 +228,7 @@ public class TransmitterNetworkRegistry {
                     connectedTransmitters.add(transmitter);
                     transmitter.setOrphan(false);
 
-                    for (EnumFacing direction : EnumFacing.VALUES) {
+                    for (EnumFacing direction : EnumFacing.values()) {
                         if (direction.getAxis().isHorizontal() && !transmitter.world().isBlockLoaded(from.getPos().offset(direction))) {
                             continue;
                         }

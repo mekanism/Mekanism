@@ -108,7 +108,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 }
 
                 Coord4D thisCoord = Coord4D.get(this);
-                for (EnumFacing side : EnumFacing.VALUES) {
+                for (EnumFacing side : EnumFacing.values()) {
                     Coord4D obj = thisCoord.offset(side);
                     if (structure != null && (structure.locations.contains(obj) || structure.internalLocations.contains(obj))) {
                         continue;

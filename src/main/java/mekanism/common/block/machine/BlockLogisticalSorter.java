@@ -90,7 +90,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         if (tile instanceof TileEntityLogisticalSorter) {
             TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
             if (!transporter.hasInventory()) {
-                for (EnumFacing dir : EnumFacing.VALUES) {
+                for (EnumFacing dir : EnumFacing.values()) {
                     TileEntity tileEntity = Coord4D.get(transporter).offset(dir).getTileEntity(world);
                     if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                         tile.setFacing(dir.getOpposite());
@@ -169,7 +169,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                             EnumFacing change = tileEntity.facing.rotateY();
                             if (tileEntity instanceof TileEntityLogisticalSorter) {
                                 if (!((TileEntityLogisticalSorter) tileEntity).hasInventory()) {
-                                    for (EnumFacing dir : EnumFacing.VALUES) {
+                                    for (EnumFacing dir : EnumFacing.values()) {
                                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
                                         if (InventoryUtils.isItemHandler(tile, dir)) {
                                             change = dir.getOpposite();
@@ -260,7 +260,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
             if (tileEntity instanceof TileEntityLogisticalSorter) {
                 TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tileEntity;
                 if (!sorter.hasInventory()) {
-                    for (EnumFacing dir : EnumFacing.VALUES) {
+                    for (EnumFacing dir : EnumFacing.values()) {
                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
                         if (InventoryUtils.isItemHandler(tile, dir)) {
                             sorter.setFacing(dir.getOpposite());

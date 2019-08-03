@@ -169,7 +169,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         Collections.shuffle(tempPumpList);
 
         //First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
-        for (EnumFacing orientation : EnumFacing.VALUES) {
+        for (EnumFacing orientation : EnumFacing.values()) {
             Coord4D wrapper = Coord4D.get(this).offset(orientation);
             FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
             if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid))) {
@@ -201,7 +201,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
             }
 
             //Add all the blocks surrounding this recurring node to the recurring node list
-            for (EnumFacing orientation : EnumFacing.VALUES) {
+            for (EnumFacing orientation : EnumFacing.values()) {
                 Coord4D side = wrapper.offset(orientation);
                 if (Coord4D.get(this).distanceTo(side) <= MekanismConfig.current().general.maxPumpRange.val()) {
                     fluid = MekanismUtils.getFluid(world, side, hasFilter());

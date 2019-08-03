@@ -88,7 +88,7 @@ public class RenderResizableCuboid {
     public static EnumFacing[] getNeighbours(EnumFacing face) {
         EnumFacing[] faces = new EnumFacing[4];
         int ordinal = 0;
-        for (EnumFacing next : EnumFacing.VALUES) {
+        for (EnumFacing next : EnumFacing.values()) {
             if (next.getAxis() != face.getAxis()) {
                 faces[ordinal] = next;
                 ordinal++;
@@ -166,7 +166,7 @@ public class RenderResizableCuboid {
 
         wr.begin(GL11.GL_QUADS, shadeTypes.vertexFormat);
 
-        for (EnumFacing face : EnumFacing.VALUES) {
+        for (EnumFacing face : EnumFacing.values()) {
             if (cube.shouldSideRender(face)) {
                 renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
             }
@@ -262,7 +262,7 @@ public class RenderResizableCuboid {
         distances[0] = transVertex.distanceTo(convertMiddle(pos));
 
         int index = 0;
-        EnumFacing[] testArray = allAround ? EnumFacing.VALUES : getNeighbours(face);
+        EnumFacing[] testArray = allAround ? EnumFacing.values() : getNeighbours(face);
         for (EnumFacing otherFace : testArray) {
             Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));

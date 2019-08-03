@@ -64,7 +64,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
             renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
         }
 
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             for (BakedQuad quad : cc.getQuads(null, side, 0)) {
                 quad = MekanismRenderer.iconTransform(quad, icon);
                 LightUtil.renderQuadColor(renderer, quad, color.argb());

@@ -128,7 +128,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
             }
 
             iterated.add(pos);
-            for (EnumFacing side : EnumFacing.VALUES) {
+            for (EnumFacing side : EnumFacing.values()) {
                 Coord4D coord = pos.offset(side);
                 if (!iterated.contains(coord) && coord.getTileEntity(world) instanceof TileEntityReactorBlock) {
                     ((TileEntityReactorBlock) coord.getTileEntity(world)).attempted = true;

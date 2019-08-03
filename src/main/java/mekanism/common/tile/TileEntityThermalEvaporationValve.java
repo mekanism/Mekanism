@@ -27,7 +27,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         super.onUpdate();
         if (!world.isRemote) {
             if ((master == null) == prevMaster) {
-                for (EnumFacing side : EnumFacing.VALUES) {
+                for (EnumFacing side : EnumFacing.values()) {
                     Coord4D obj = Coord4D.get(this).offset(side);
                     if (obj.exists(world) && !obj.isAirBlock(world) && !(obj.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock)) {
                         MekanismUtils.notifyNeighborofChange(world, obj, this.pos);

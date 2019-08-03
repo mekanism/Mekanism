@@ -36,7 +36,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     static {
         AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
         Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             bounds[side.ordinal()] = MultipartUtils.rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side).offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z);
         }
     }

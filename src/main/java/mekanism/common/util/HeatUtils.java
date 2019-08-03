@@ -9,7 +9,7 @@ public class HeatUtils {
 
     public static double[] simulate(IHeatTransfer source) {
         double[] heatTransferred = new double[]{0, 0};
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             IHeatTransfer sink = source.getAdjacent(side);
             if (sink != null) {
                 double invConduction = sink.getInverseConductionCoefficient() + source.getInverseConductionCoefficient();

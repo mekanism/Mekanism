@@ -281,7 +281,7 @@ public class TransmitterModel extends OBJBakedModelBase {
         public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
-                for (EnumFacing side : EnumFacing.VALUES) {
+                for (EnumFacing side : EnumFacing.values()) {
                     visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
                 }
                 itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), vertexFormat, textureMap, transformationMap);

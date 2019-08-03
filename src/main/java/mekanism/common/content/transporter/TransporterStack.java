@@ -118,7 +118,7 @@ public class TransporterStack {
         originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
 
         if (nbtTags.hasKey("idleDir")) {
-            idleDir = EnumFacing.VALUES[nbtTags.getInteger("idleDir")];
+            idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
         }
         if (nbtTags.hasKey("homeLocation")) {
             homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));

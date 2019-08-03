@@ -157,7 +157,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public double getBoost() {
         int lavaBoost = 0;
         double netherBoost = 0D;
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             Coord4D coord = Coord4D.get(this).offset(side);
             if (isLava(coord.getPos())) {
                 lavaBoost++;

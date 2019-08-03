@@ -120,7 +120,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return connections;
         }
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             if (canConnectMutual(side)) {
                 TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
@@ -174,7 +174,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return connections;
         }
 
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             if (canConnectMutual(side)) {
                 Coord4D coord = new Coord4D(getPos(), getWorld()).offset(side);
                 if (!getWorld().isRemote && !coord.exists(getWorld())) {
@@ -210,7 +210,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<AxisAlignedBB> getCollisionBoxes() {
         List<AxisAlignedBB> list = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             int ord = side.ordinal();
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
@@ -225,7 +225,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<AxisAlignedBB> getCollisionBoxes(AxisAlignedBB entityBox) {
         List<AxisAlignedBB> list = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             int ord = side.ordinal();
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
@@ -413,7 +413,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     protected void recheckConnections(byte newlyEnabledTransmitters) {
         //If our connectivity changed on a side and it is also a sided pipe, inform it to recheck its connections
         //This fixes pipes not reconnecting cross chunk
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
                 TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
                 if (tileEntity instanceof TileEntitySidedPipe) {
@@ -505,7 +505,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<EnumFacing> getConnections(ConnectionType type) {
         List<EnumFacing> sides = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             if (getConnectionType(side) == type) {
                 sides.add(side);
             }
@@ -553,7 +553,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     protected EnumFacing sideHit(int boxIndex) {
         List<EnumFacing> list = new ArrayList<>();
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             byte connections = getAllCurrentConnections();
             if (connectionMapContainsSide(connections, side)) {
                 list.add(side);

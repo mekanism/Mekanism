@@ -24,7 +24,7 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
         BufferBuilder worldRenderer = tessellator.getBuffer();
         GlStateManager.translate((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
 
-        for (EnumFacing side : EnumFacing.VALUES) {
+        for (EnumFacing side : EnumFacing.values()) {
             renderSide(worldRenderer, side, transmitter);
         }
 

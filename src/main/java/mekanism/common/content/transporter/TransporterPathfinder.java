@@ -195,7 +195,7 @@ public final class TransporterPathfinder {
 
         private EnumFacing findSide() {
             if (transportStack.idleDir == null) {
-                for (EnumFacing side : EnumFacing.VALUES) {
+                for (EnumFacing side : EnumFacing.values()) {
                     TileEntity tile = start.offset(side).getTileEntity(world);
                     if (transportStack.canInsertToTransporter(tile, side)) {
                         return side;
@@ -329,7 +329,7 @@ public final class TransporterPathfinder {
 
             int blockCount = 0;
 
-            for (EnumFacing direction : EnumFacing.VALUES) {
+            for (EnumFacing direction : EnumFacing.values()) {
                 Coord4D neighbor = start.offset(direction);
                 if (!transportStack.canInsertToTransporter(neighbor.getTileEntity(world), direction) &&
                     (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, direction, neighbor.getTileEntity(world)))) {
@@ -342,7 +342,7 @@ public final class TransporterPathfinder {
 
             double maxSearchDistance = start.distanceTo(finalNode) * 2;
             List<EnumFacing> directionsToCheck = new ArrayList<>();
-            Coord4D[] neighbors = new Coord4D[EnumFacing.VALUES.length];
+            Coord4D[] neighbors = new Coord4D[EnumFacing.values().length];
             TileEntity[] neighborEntities = new TileEntity[neighbors.length];
             while (!openSet.isEmpty()) {
                 Coord4D currentNode = null;
@@ -363,7 +363,7 @@ public final class TransporterPathfinder {
                 TileEntity currentNodeTile = currentNode.getTileEntity(world);
                 ILogisticalTransporter currentNodeTransporter = CapabilityUtils.getCapability(currentNodeTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
                 directionsToCheck.clear();
-                for (EnumFacing direction : EnumFacing.VALUES) {
+                for (EnumFacing direction : EnumFacing.values()) {
                     Coord4D neighbor = currentNode.offset(direction);
                     neighbors[direction.ordinal()] = neighbor;
                     TileEntity neighborEntity = neighbor.getTileEntity(world);

@@ -53,7 +53,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                         world = transmitter.world();
                     }
 
-                    for (EnumFacing side : EnumFacing.VALUES) {
+                    for (EnumFacing side : EnumFacing.values()) {
                         updateTransmitterOnSide(transmitter, side);
                     }
 
