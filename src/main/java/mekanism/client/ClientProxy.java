@@ -480,7 +480,7 @@ public class ClientProxy extends CommonProxy {
                 ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
             }
         }
-        //TODO: Figure this out
+        //TODO: Maybe have it be two different items/blocks one for full one for not given metadata is going away?
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 0, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=false"));
         ModelLoader.setCustomModelResourceLocation(MekanismBlock.CARDBOARD_BOX.getItem(), 1, new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "cardboard_box"), "storage=true"));
     }
@@ -501,68 +501,6 @@ public class ClientProxy extends CommonProxy {
     public void registerBlockRenders() {
         //TODO: Redo all of these. Lots can probably just be done with json now. It is probably a good idea to do the ones, that can be done
         // in json with it, EVEN if it requires more skeleton json files.
-        setCustomStateMapper(new StateMapperBase() {
-
-                                 @Nonnull
-                                 @Override
-                                 protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                                     //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_block"), "");
-                                 }
-                             }, MekanismBlock.BLACK_PLASTIC_BLOCK, MekanismBlock.RED_PLASTIC_BLOCK, MekanismBlock.GREEN_PLASTIC_BLOCK, MekanismBlock.BROWN_PLASTIC_BLOCK,
-              MekanismBlock.BLUE_PLASTIC_BLOCK, MekanismBlock.PURPLE_PLASTIC_BLOCK, MekanismBlock.CYAN_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_BLOCK,
-              MekanismBlock.GRAY_PLASTIC_BLOCK, MekanismBlock.PINK_PLASTIC_BLOCK, MekanismBlock.LIME_PLASTIC_BLOCK, MekanismBlock.YELLOW_PLASTIC_BLOCK,
-              MekanismBlock.LIGHT_BLUE_PLASTIC_BLOCK, MekanismBlock.MAGENTA_PLASTIC_BLOCK, MekanismBlock.ORANGE_PLASTIC_BLOCK, MekanismBlock.WHITE_PLASTIC_BLOCK);
-        setCustomStateMapper(new StateMapperBase() {
-
-                                 @Nonnull
-                                 @Override
-                                 protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                                     //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "slick_plastic_block"), "");
-                                 }
-                             }, MekanismBlock.BLACK_SLICK_PLASTIC_BLOCK, MekanismBlock.RED_SLICK_PLASTIC_BLOCK, MekanismBlock.GREEN_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.BROWN_SLICK_PLASTIC_BLOCK, MekanismBlock.BLUE_SLICK_PLASTIC_BLOCK, MekanismBlock.PURPLE_SLICK_PLASTIC_BLOCK, MekanismBlock.CYAN_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK, MekanismBlock.GRAY_SLICK_PLASTIC_BLOCK, MekanismBlock.PINK_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.LIME_SLICK_PLASTIC_BLOCK, MekanismBlock.YELLOW_SLICK_PLASTIC_BLOCK, MekanismBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK,
-              MekanismBlock.MAGENTA_SLICK_PLASTIC_BLOCK, MekanismBlock.ORANGE_SLICK_PLASTIC_BLOCK, MekanismBlock.WHITE_SLICK_PLASTIC_BLOCK);
-        setCustomStateMapper(new StateMapperBase() {
-
-                                 @Nonnull
-                                 @Override
-                                 protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                                     //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_glow_block"), "");
-                                 }
-                             }, MekanismBlock.BLACK_PLASTIC_GLOW_BLOCK, MekanismBlock.RED_PLASTIC_GLOW_BLOCK, MekanismBlock.GREEN_PLASTIC_GLOW_BLOCK, MekanismBlock.BROWN_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.PURPLE_PLASTIC_GLOW_BLOCK, MekanismBlock.CYAN_PLASTIC_GLOW_BLOCK, MekanismBlock.LIGHT_GRAY_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.GRAY_PLASTIC_GLOW_BLOCK, MekanismBlock.PINK_PLASTIC_GLOW_BLOCK, MekanismBlock.LIME_PLASTIC_GLOW_BLOCK, MekanismBlock.YELLOW_PLASTIC_GLOW_BLOCK,
-              MekanismBlock.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, MekanismBlock.MAGENTA_PLASTIC_GLOW_BLOCK, MekanismBlock.ORANGE_PLASTIC_GLOW_BLOCK, MekanismBlock.WHITE_PLASTIC_GLOW_BLOCK);
-        setCustomStateMapper(new StateMapperBase() {
-
-                                 @Nonnull
-                                 @Override
-                                 protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                                     //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "reinforced_plastic_block"), "");
-                                 }
-                             }, MekanismBlock.BLACK_REINFORCED_PLASTIC_BLOCK, MekanismBlock.RED_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GREEN_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.BROWN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.PURPLE_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.CYAN_REINFORCED_PLASTIC_BLOCK, MekanismBlock.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK, MekanismBlock.GRAY_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.PINK_REINFORCED_PLASTIC_BLOCK, MekanismBlock.LIME_REINFORCED_PLASTIC_BLOCK, MekanismBlock.YELLOW_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK, MekanismBlock.MAGENTA_REINFORCED_PLASTIC_BLOCK, MekanismBlock.ORANGE_REINFORCED_PLASTIC_BLOCK,
-              MekanismBlock.WHITE_REINFORCED_PLASTIC_BLOCK);
-        setCustomStateMapper(new StateMapperBase() {
-                                 @Nonnull
-                                 @Override
-                                 protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-                                     //TODO
-                                     return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "plastic_road"), "");
-                                 }
-                             }, MekanismBlock.BLACK_PLASTIC_ROAD, MekanismBlock.RED_PLASTIC_ROAD, MekanismBlock.GREEN_PLASTIC_ROAD, MekanismBlock.BROWN_PLASTIC_ROAD,
-              MekanismBlock.BLUE_PLASTIC_ROAD, MekanismBlock.PURPLE_PLASTIC_ROAD, MekanismBlock.CYAN_PLASTIC_ROAD, MekanismBlock.LIGHT_GRAY_PLASTIC_ROAD,
-              MekanismBlock.GRAY_PLASTIC_ROAD, MekanismBlock.PINK_PLASTIC_ROAD, MekanismBlock.LIME_PLASTIC_ROAD, MekanismBlock.YELLOW_PLASTIC_ROAD,
-              MekanismBlock.LIGHT_BLUE_PLASTIC_ROAD, MekanismBlock.MAGENTA_PLASTIC_ROAD, MekanismBlock.ORANGE_PLASTIC_ROAD, MekanismBlock.WHITE_PLASTIC_ROAD);
 
         setCustomStateMapper(fenceMapper, MekanismBlock.BLACK_PLASTIC_FENCE, MekanismBlock.RED_PLASTIC_FENCE, MekanismBlock.GREEN_PLASTIC_FENCE,
               MekanismBlock.BROWN_PLASTIC_FENCE, MekanismBlock.BLUE_PLASTIC_FENCE, MekanismBlock.PURPLE_PLASTIC_FENCE, MekanismBlock.CYAN_PLASTIC_FENCE,
