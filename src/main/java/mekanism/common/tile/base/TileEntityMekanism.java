@@ -18,6 +18,7 @@ import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
@@ -29,6 +30,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.interfaces.ITileContainer;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -49,7 +51,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
-public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, ITileDirectional {
+public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, ITileDirectional, ITileContainer {
 
     /**
      * The players currently using this block.
@@ -72,6 +74,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     private boolean supportsUpgrades;
     private boolean isDirectional;
+    private boolean hasInventory;
     private boolean isElectric;
     private boolean hasSound;
     private boolean hasGui;
@@ -95,6 +98,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         isDirectional = block instanceof IStateFacing;
         hasSound = block instanceof IBlockSound;
         hasGui = block instanceof IHasGui;
+        hasInventory = block instanceof IHasInventory;
     }
 
     public final boolean supportsUpgrades() {
@@ -116,6 +120,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     public final boolean hasGui() {
         return hasGui;
+    }
+
+    @Override
+    public final boolean hasInventory() {
+        return hasInventory;
     }
 
     public void addComponent(ITileComponent component) {

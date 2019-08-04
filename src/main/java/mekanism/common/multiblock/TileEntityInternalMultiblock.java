@@ -3,12 +3,17 @@ package mekanism.common.multiblock;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInternalMultiblock extends TileEntityMekanism {
 
     public String multiblockUUID;
+
+    public TileEntityInternalMultiblock(IBlockProvider blockProvider) {
+        super(blockProvider);
+    }
 
     @Override
     public void onUpdate() {

@@ -16,34 +16,22 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInductionCell extends TileEntityMekanism implements IStrictEnergyStorage {
 
-    public InductionCellTier tier = InductionCellTier.BASIC;
-
     public double electricityStored;
 
     @Override
     public void onUpdate() {
     }
 
-    public String getName() {
-        return LangUtils.localize(getBlockType().getTranslationKey() + ".InductionCell" + tier.getBaseTier().getSimpleName() + ".name");
-    }
-
     @Override
     public void handlePacketData(ByteBuf dataStream) {
+        super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            InductionCellTier prevTier = tier;
-            tier = InductionCellTier.values()[dataStream.readInt()];
-            super.handlePacketData(dataStream);
             electricityStored = dataStream.readDouble();
-            if (prevTier != tier) {
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(tier.ordinal());
         super.getNetworkedData(data);
         data.add(electricityStored);
         return data;
@@ -52,7 +40,6 @@ public class TileEntityInductionCell extends TileEntityMekanism implements IStri
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        tier = InductionCellTier.values()[nbtTags.getInteger("tier")];
         electricityStored = nbtTags.getDouble("electricityStored");
     }
 
@@ -60,7 +47,6 @@ public class TileEntityInductionCell extends TileEntityMekanism implements IStri
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setInteger("tier", tier.ordinal());
         nbtTags.setDouble("electricityStored", electricityStored);
         return nbtTags;
     }

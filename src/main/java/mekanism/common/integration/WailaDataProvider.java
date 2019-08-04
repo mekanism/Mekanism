@@ -6,8 +6,6 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
-import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -18,7 +16,6 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -57,8 +54,8 @@ public class WailaDataProvider implements IWailaDataProvider {
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
     public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         TileEntity tile = accessor.getTileEntity();
-
-        if (tile instanceof TileEntityInductionCell) {
+        //TODO
+        /*if (tile instanceof TileEntityInductionCell) {
             currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionCell) tile).getName());
         } else if (tile instanceof TileEntityInductionProvider) {
             currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionProvider) tile).getName());
@@ -79,7 +76,7 @@ public class WailaDataProvider implements IWailaDataProvider {
             if (bound.receivedCoords && coord.getTileEntity(tile.getWorld()) instanceof IInventory) {
                 currenttip.set(0, EnumColor.WHITE + ((IInventory) coord.getTileEntity(tile.getWorld())).getName());
             }
-        }
+        }*/
         return currenttip;
     }
 

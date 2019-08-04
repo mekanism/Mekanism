@@ -65,7 +65,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             if (isOutputSlot(slotID)) {
-                if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
+                if (!mergeItemStack(slotStack, tileEntity.getSizeInventory() - 1, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (slotID != 1 && slotID != 2 && isProperMachine(slotStack) && !ItemHandlerHelper.canItemStacksStack(slotStack, tileEntity.getMachineStack())) {
@@ -73,12 +73,12 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             } else if (slotID == 2) {
-                if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
+                if (!mergeItemStack(slotStack, tileEntity.getSizeInventory() - 1, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (tileEntity.getRecipeType().getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null) {
                 if (isInputSlot(slotID)) {
-                    if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
+                    if (!mergeItemStack(slotStack, tileEntity.getSizeInventory() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (!mergeItemStack(slotStack, 4, 4 + tileEntity.tier.processes, false)) {
@@ -86,7 +86,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                 }
             } else if (ChargeUtils.canBeDischarged(slotStack)) {
                 if (slotID == 0) {
-                    if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
+                    if (!mergeItemStack(slotStack, tileEntity.getSizeInventory() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (!mergeItemStack(slotStack, 0, 1, false)) {
@@ -102,7 +102,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             } else {
-                int slotEnd = tileEntity.inventory.size() - 1;
+                int slotEnd = tileEntity.getSizeInventory() - 1;
                 if (slotID >= slotEnd && slotID <= (slotEnd + 26)) {
                     if (!mergeItemStack(slotStack, slotEnd + 27, inventorySlots.size(), false)) {
                         return ItemStack.EMPTY;
@@ -129,10 +129,10 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
     }
 
     private boolean transferExtraSlot(int slotID, ItemStack slotStack) {
-        if (slotID >= tileEntity.inventory.size() - 1) {
+        if (slotID >= tileEntity.getSizeInventory() - 1) {
             return !mergeItemStack(slotStack, 3, 4, false);
         }
-        return !mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true);
+        return !mergeItemStack(slotStack, tileEntity.getSizeInventory() - 1, inventorySlots.size(), true);
     }
 
     public boolean isProperMachine(ItemStack itemStack) {

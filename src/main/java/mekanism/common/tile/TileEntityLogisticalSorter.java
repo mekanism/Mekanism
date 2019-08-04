@@ -350,7 +350,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
         return InventoryUtils.canInsert(back, null, stack, getOppositeDirection(), true);
     }
 
-    public boolean hasInventory() {
+    public boolean hasConnectedInventory() {
         TileEntity tile = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
         return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
     }

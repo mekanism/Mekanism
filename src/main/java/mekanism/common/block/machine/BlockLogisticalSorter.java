@@ -92,7 +92,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityLogisticalSorter) {
             TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
-            if (!transporter.hasInventory()) {
+            if (!transporter.hasConnectedInventory()) {
                 for (EnumFacing dir : EnumFacing.values()) {
                     TileEntity tileEntity = Coord4D.get(transporter).offset(dir).getTileEntity(world);
                     if (InventoryUtils.isItemHandler(tileEntity, dir)) {
@@ -172,7 +172,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                         if (tileEntity != null) {
                             EnumFacing change = tileEntity.getDirection().rotateY();
                             if (tileEntity instanceof TileEntityLogisticalSorter) {
-                                if (!((TileEntityLogisticalSorter) tileEntity).hasInventory()) {
+                                if (!((TileEntityLogisticalSorter) tileEntity).hasConnectedInventory()) {
                                     for (EnumFacing dir : EnumFacing.values()) {
                                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
                                         if (InventoryUtils.isItemHandler(tile, dir)) {
@@ -261,7 +261,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
             }
             if (tileEntity instanceof TileEntityLogisticalSorter) {
                 TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tileEntity;
-                if (!sorter.hasInventory()) {
+                if (!sorter.hasConnectedInventory()) {
                     for (EnumFacing dir : EnumFacing.values()) {
                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
                         if (InventoryUtils.isItemHandler(tile, dir)) {

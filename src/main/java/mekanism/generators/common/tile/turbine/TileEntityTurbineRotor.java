@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +26,10 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     // Rendering helpers
     public float rotationLower;
     public float rotationUpper;
+
+    public TileEntityTurbineRotor() {
+        super(GeneratorsBlock.TURBINE_ROTOR);
+    }
 
     @Override
     public void onNeighborChange(Block block) {
