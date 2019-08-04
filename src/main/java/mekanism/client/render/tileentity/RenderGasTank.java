@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

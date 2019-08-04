@@ -12,6 +12,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -38,7 +39,6 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -57,7 +57,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     public GasTank outputGasTank = new GasTank(10000);
 
     public TileEntityPRC() {
-        super("prc", MachineType.PRESSURIZED_REACTION_CHAMBER, 3, 100, new ResourceLocation(Mekanism.MODID, "gui/GuiPRC.png"));
+        super("prc", MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 3, 100, new ResourceLocation(Mekanism.MODID, "gui/GuiPRC.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -77,8 +77,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
         configComponent.setConfig(TransmissionType.GAS, new byte[]{0, 0, 0, 0, 1, 2});
 
         configComponent.setInputConfig(TransmissionType.ENERGY);
-
-        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
@@ -145,18 +143,18 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
     @Override
     public PressurizedInput getInput() {
-        return new PressurizedInput(inventory.get(0), inputFluidTank.getFluid(), inputGasTank.getGas());
+        return new PressurizedInput(getInventory().get(0), inputFluidTank.getFluid(), inputGasTank.getGas());
     }
 
     @Override
     public void operate(PressurizedRecipe recipe) {
-        recipe.operate(inventory, inputFluidTank, inputGasTank, outputGasTank);
+        recipe.operate(getInventory(), inputFluidTank, inputGasTank, outputGasTank);
         markDirty();
     }
 
     @Override
     public boolean canOperate(PressurizedRecipe recipe) {
-        return recipe != null && recipe.canOperate(inventory, inputFluidTank, inputGasTank, outputGasTank);
+        return recipe != null && recipe.canOperate(getInventory(), inputFluidTank, inputGasTank, outputGasTank);
     }
 
     @Override

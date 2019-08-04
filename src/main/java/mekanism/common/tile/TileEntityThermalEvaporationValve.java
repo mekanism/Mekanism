@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -21,6 +22,10 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 
     public boolean prevMaster = false;
     private int currentRedstoneLevel;
+
+    public TileEntityThermalEvaporationValve() {
+        super(MekanismBlock.THERMAL_EVAPORATION_VALVE);
+    }
 
     @Override
     public void onUpdate() {

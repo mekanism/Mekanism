@@ -22,7 +22,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

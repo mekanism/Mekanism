@@ -9,7 +9,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityElectric;
@@ -20,7 +19,6 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -44,8 +42,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectric implements IAc
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySeismicVibrator() {
-        super((IBlockElectric) MekanismBlock.SEISMIC_VIBRATOR.getBlock());
-        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+        super(MekanismBlock.SEISMIC_VIBRATOR);
     }
 
     @Override

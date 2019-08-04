@@ -22,7 +22,7 @@ import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

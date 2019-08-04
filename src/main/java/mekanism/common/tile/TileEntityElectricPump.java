@@ -23,7 +23,6 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -45,7 +44,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -99,8 +97,7 @@ public class TileEntityElectricPump extends TileEntityElectric implements IFluid
     private int currentRedstoneLevel;
 
     public TileEntityElectricPump() {
-        super((IBlockElectric) MekanismBlock.ELECTRIC_PUMP.getBlock());
-        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+        super(MekanismBlock.ELECTRIC_PUMP);
         upgradeComponent.setSupported(Upgrade.FILTER);
     }
 
@@ -109,7 +106,7 @@ public class TileEntityElectricPump extends TileEntityElectric implements IFluid
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
             if (fluidTank.getFluid() != null) {
-                if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
+                if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
                 }
             }

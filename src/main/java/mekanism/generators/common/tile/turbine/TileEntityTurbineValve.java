@@ -19,7 +19,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.redstoneflux.RFIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;

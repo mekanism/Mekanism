@@ -9,9 +9,7 @@ import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.util.InventoryUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorsBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -26,7 +24,6 @@ public abstract class TileEntityReactorBlock extends TileEntityElectric {
     public TileEntityReactorBlock() {
         //TODO: Does hierarchy have to be done this way
         this((IBlockElectric) GeneratorsBlock.REACTOR_FRAME.getBlock());
-        inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 
     public TileEntityReactorBlock(IBlockElectric electricBlock) {

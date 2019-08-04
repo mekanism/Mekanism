@@ -14,11 +14,11 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,35 +40,34 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     private int currentRedstoneLevel;
 
     public TileEntityBioGenerator() {
-        super("bio", "BioGenerator", 160000, MekanismConfig.current().generators.bioGeneration.val() * 2);
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        super("bio", GeneratorsBlock.BIO_GENERATOR, MekanismConfig.current().generators.bioGeneration.val() * 2);
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
 
-        if (!inventory.get(0).isEmpty()) {
+        if (!getInventory().get(0).isEmpty()) {
             ChargeUtils.charge(1, this);
-            FluidStack fluid = FluidUtil.getFluidContained(inventory.get(0));
+            FluidStack fluid = FluidUtil.getFluidContained(getInventory().get(0));
             if (fluid != null && FluidRegistry.isFluidRegistered("bioethanol")) {
                 if (fluid.getFluid() == FluidRegistry.getFluid("bioethanol")) {
-                    IFluidHandler handler = FluidUtil.getFluidHandler(inventory.get(0));
+                    IFluidHandler handler = FluidUtil.getFluidHandler(getInventory().get(0));
                     FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, true);
                     if (drained != null) {
                         bioFuelSlot.fluidStored += drained.amount;
                     }
                 }
             } else {
-                int fuel = getFuel(inventory.get(0));
+                int fuel = getFuel(getInventory().get(0));
                 if (fuel > 0) {
                     int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
                     if (fuel <= fuelNeeded) {
                         bioFuelSlot.fluidStored += fuel;
-                        if (!inventory.get(0).getItem().getContainerItem(inventory.get(0)).isEmpty()) {
-                            inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
+                        if (!getInventory().get(0).getItem().getContainerItem(getInventory().get(0)).isEmpty()) {
+                            getInventory().set(0, getInventory().get(0).getItem().getContainerItem(getInventory().get(0)));
                         } else {
-                            inventory.get(0).shrink(1);
+                            getInventory().get(0).shrink(1);
                         }
                     }
                 }

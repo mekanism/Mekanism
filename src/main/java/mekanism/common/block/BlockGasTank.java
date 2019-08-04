@@ -4,14 +4,20 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.tier.GasTankTier;
-import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.tile.gas_tank.TileEntityAdvancedGasTank;
+import mekanism.common.tile.gas_tank.TileEntityBasicGasTank;
+import mekanism.common.tile.gas_tank.TileEntityCreativeGasTank;
+import mekanism.common.tile.gas_tank.TileEntityEliteGasTank;
+import mekanism.common.tile.gas_tank.TileEntityGasTank;
+import mekanism.common.tile.gas_tank.TileEntityUltimateGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -33,7 +39,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<GasTankTier> {
+public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
@@ -133,7 +139,19 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityGasTank(tier);
+        switch (tier) {
+            case BASIC:
+                return new TileEntityBasicGasTank();
+            case ADVANCED:
+                return new TileEntityAdvancedGasTank();
+            case ELITE:
+                return new TileEntityEliteGasTank();
+            case ULTIMATE:
+                return new TileEntityUltimateGasTank();
+            case CREATIVE:
+                return new TileEntityCreativeGasTank();
+        }
+        return null;
     }
 
     @Override
@@ -171,5 +189,10 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     @Override
     public int getGuiID() {
         return 10;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

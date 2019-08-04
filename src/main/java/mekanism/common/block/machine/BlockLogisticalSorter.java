@@ -10,6 +10,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
@@ -52,7 +53,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound {
+public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound, IHasInventory {
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
     private static final SoundEvent soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
@@ -314,5 +315,10 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     public SoundEvent getSoundEvent() {
         return soundEvent;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

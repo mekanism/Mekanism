@@ -34,7 +34,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -57,7 +56,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public TileComponentConfig configComponent;
 
     public TileEntityMetallurgicInfuser() {
-        super("machine.metalinfuser", MachineType.METALLURGIC_INFUSER, 0, 200);
+        super("machine.metalinfuser", MekanismBlock.METALLURGIC_INFUSER, 0, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -67,8 +66,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         configComponent.addOutput(TransmissionType.ITEM, new SideData("Infuse", EnumColor.PURPLE, new int[]{1}));
 
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{4, 0, 0, 3, 1, 2});
-
-        inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
@@ -81,7 +78,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(4, this);
-            ItemStack infuseInput = inventory.get(1);
+            ItemStack infuseInput = getInventory().get(1);
             if (!infuseInput.isEmpty()) {
                 InfuseObject pendingInfuseInput = InfuseRegistry.getObject(infuseInput);
                 if (pendingInfuseInput != null) {
@@ -206,17 +203,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     }
 
     public InfusionInput getInput() {
-        return new InfusionInput(infuseStored, inventory.get(2));
+        return new InfusionInput(infuseStored, getInventory().get(2));
     }
 
     public void operate(MetallurgicInfuserRecipe recipe) {
-        recipe.output(inventory, 2, 3, infuseStored);
+        recipe.output(getInventory(), 2, 3, infuseStored);
         markDirty();
     }
 
     @Contract("null -> false")
     public boolean canOperate(MetallurgicInfuserRecipe recipe) {
-        return recipe != null && recipe.canOperate(inventory, 2, 3, infuseStored);
+        return recipe != null && recipe.canOperate(getInventory(), 2, 3, infuseStored);
     }
 
     public int getScaledInfuseLevel(int i) {

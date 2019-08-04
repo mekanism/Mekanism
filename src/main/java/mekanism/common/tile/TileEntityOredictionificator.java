@@ -8,6 +8,7 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
@@ -28,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -49,7 +49,7 @@ public class TileEntityOredictionificator extends TileEntityContainer implements
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityOredictionificator() {
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        super(MekanismBlock.OREDICTIONIFICATOR);
         doAutoSync = false;
     }
 
@@ -63,22 +63,22 @@ public class TileEntityOredictionificator extends TileEntityContainer implements
             }
 
             didProcess = false;
-            ItemStack inputStack = inventory.get(0);
+            ItemStack inputStack = getInventory().get(0);
             if (MekanismUtils.canFunction(this) && !inputStack.isEmpty() && getValidName(inputStack) != null) {
                 ItemStack result = getResult(inputStack);
                 if (!result.isEmpty()) {
-                    ItemStack outputStack = inventory.get(1);
+                    ItemStack outputStack = getInventory().get(1);
                     if (outputStack.isEmpty()) {
                         inputStack.shrink(1);
                         if (inputStack.getCount() <= 0) {
-                            inventory.set(0, ItemStack.EMPTY);
+                            getInventory().set(0, ItemStack.EMPTY);
                         }
-                        inventory.set(1, result);
+                        getInventory().set(1, result);
                         didProcess = true;
                     } else if (ItemHandlerHelper.canItemStacksStack(outputStack, result) && outputStack.getCount() < outputStack.getMaxStackSize()) {
                         inputStack.shrink(1);
                         if (inputStack.getCount() <= 0) {
-                            inventory.set(0, ItemStack.EMPTY);
+                            getInventory().set(0, ItemStack.EMPTY);
                         }
                         outputStack.grow(1);
                         didProcess = true;

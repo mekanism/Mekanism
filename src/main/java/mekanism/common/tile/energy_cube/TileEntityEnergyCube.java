@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.energy_cube;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
@@ -9,6 +9,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -35,7 +36,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityEnergyCube extends TileEntityElectric implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
+public abstract class TileEntityEnergyCube extends TileEntityElectric implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
       IConfigCardAccess, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
@@ -56,15 +57,11 @@ public class TileEntityEnergyCube extends TileEntityElectric implements ICompute
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
 
-    public TileEntityEnergyCube() {
-        this((BlockEnergyCube) MekanismBlock.BASIC_ENERGY_CUBE.getBlock());
-    }
-
     /**
      * A block used to store and transfer electricity.
      */
-    public TileEntityEnergyCube(BlockEnergyCube energyCube) {
-        super(energyCube);
+    public TileEntityEnergyCube(IBlockProvider blockProvider) {
+        super(blockProvider);
         this.tier = energyCube.getTier();
 
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
@@ -78,7 +75,6 @@ public class TileEntityEnergyCube extends TileEntityElectric implements ICompute
         configComponent.setIOConfig(TransmissionType.ENERGY);
         configComponent.setEjecting(TransmissionType.ENERGY, true);
 
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         controlType = RedstoneControl.DISABLED;
 
         ejectorComponent = new TileComponentEjector(this);

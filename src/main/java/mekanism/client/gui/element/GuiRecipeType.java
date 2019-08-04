@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;

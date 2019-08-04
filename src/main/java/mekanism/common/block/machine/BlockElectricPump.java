@@ -8,6 +8,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
@@ -41,7 +42,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockElectricPump extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing {
+public class BlockElectricPump extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IHasInventory {
 
     public BlockElectricPump() {
         super(Material.IRON);
@@ -227,5 +228,10 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     @Override
     public double getConfigStorage() {
         return MekanismConfig.current().storage.electricPump.val();
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 4;
     }
 }

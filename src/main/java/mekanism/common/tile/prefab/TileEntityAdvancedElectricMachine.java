@@ -15,15 +15,15 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.ChargeUtils;
@@ -70,8 +70,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * @param ticksRequired    - how many ticks it takes to smelt an item.
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
-    public TileEntityAdvancedElectricMachine(String soundPath, MachineType type, int ticksRequired, int secondaryPerTick) {
-        super(soundPath, type, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
+    public TileEntityAdvancedElectricMachine(String soundPath, IBlockProvider blockProvider, int ticksRequired, int secondaryPerTick) {
+        super(soundPath, blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -84,8 +84,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         configComponent.setInputConfig(TransmissionType.ENERGY);
 
         gasTank = new GasTank(MAX_GAS);
-
-        inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 
         BASE_SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
         secondaryEnergyPerTick = secondaryPerTick;
@@ -102,11 +100,13 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         //Advanced Machine
         factory.gasTank.setGas(gasTank.getGas());
 
-        factory.inventory.set(5, inventory.get(0));
-        factory.inventory.set(4, inventory.get(1));
-        factory.inventory.set(5 + 3, inventory.get(2));
-        factory.inventory.set(1, inventory.get(3));
-        factory.inventory.set(0, inventory.get(4));
+        NonNullList<ItemStack> factoryInventory = factory.getInventory();
+        NonNullList<ItemStack> inventory = getInventory();
+        factoryInventory.set(5, inventory.get(0));
+        factoryInventory.set(4, inventory.get(1));
+        factoryInventory.set(5 + 3, inventory.get(2));
+        factoryInventory.set(1, inventory.get(3));
+        factoryInventory.set(0, inventory.get(4));
     }
 
     /**
@@ -159,7 +159,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     }
 
     public void handleSecondaryFuel() {
-        ItemStack itemStack = inventory.get(1);
+        ItemStack itemStack = getInventory().get(1);
         int needed = gasTank.getNeeded();
         if (!itemStack.isEmpty() && needed > 0) {
             GasStack gasStack = getItemGas(itemStack);
@@ -205,7 +205,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
     @Override
     public AdvancedMachineInput getInput() {
-        return new AdvancedMachineInput(inventory.get(0), prevGas);
+        return new AdvancedMachineInput(getInventory().get(0), prevGas);
     }
 
     @Override
@@ -219,13 +219,13 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
     @Override
     public void operate(RECIPE recipe) {
-        recipe.operate(inventory, 0, 2, gasTank, secondaryEnergyThisTick);
+        recipe.operate(getInventory(), 0, 2, gasTank, secondaryEnergyThisTick);
         markDirty();
     }
 
     @Override
     public boolean canOperate(RECIPE recipe) {
-        return recipe != null && recipe.canOperate(inventory, 0, 2, gasTank, secondaryEnergyThisTick);
+        return recipe != null && recipe.canOperate(getInventory(), 0, 2, gasTank, secondaryEnergyThisTick);
     }
 
     @Override

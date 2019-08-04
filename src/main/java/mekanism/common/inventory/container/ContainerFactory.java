@@ -6,7 +6,7 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -176,7 +176,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
         @Override
         public boolean isItemValid(ItemStack stack) {
-            ItemStack outputSlotStack = tileEntity.inventory.get(getOutputSlotIndex(this.processNumber));
+            ItemStack outputSlotStack = tileEntity.getInventory().get(getOutputSlotIndex(this.processNumber));
             return tileEntity.inputProducesOutput(getInputSlotIndex(this.processNumber), stack, outputSlotStack, false) && super.isItemValid(stack);
         }
     }

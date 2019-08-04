@@ -55,8 +55,8 @@ public class TileComponentUpgrade<TILE extends TileEntityContainer & IUpgradeTil
     @Override
     public void tick() {
         if (!tileEntity.getWorld().isRemote) {
-            if (!tileEntity.inventory.get(upgradeSlot).isEmpty() && tileEntity.inventory.get(upgradeSlot).getItem() instanceof IUpgradeItem) {
-                Upgrade type = ((IUpgradeItem) tileEntity.inventory.get(upgradeSlot).getItem()).getUpgradeType(tileEntity.inventory.get(upgradeSlot));
+            if (!tileEntity.getInventory().get(upgradeSlot).isEmpty() && tileEntity.getInventory().get(upgradeSlot).getItem() instanceof IUpgradeItem) {
+                Upgrade type = ((IUpgradeItem) tileEntity.getInventory().get(upgradeSlot).getItem()).getUpgradeType(tileEntity.getInventory().get(upgradeSlot));
 
                 if (supports(type) && getUpgrades(type) < type.getMax()) {
                     if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
@@ -64,7 +64,7 @@ public class TileComponentUpgrade<TILE extends TileEntityContainer & IUpgradeTil
                     } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
                         upgradeTicks = 0;
                         addUpgrade(type);
-                        tileEntity.inventory.get(upgradeSlot).shrink(1);
+                        tileEntity.getInventory().get(upgradeSlot).shrink(1);
                         Mekanism.packetHandler.sendUpdatePacket(tileEntity);
                         tileEntity.markDirty();
                     }

@@ -5,12 +5,12 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.ChargeUtils;
@@ -34,8 +34,8 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
      * @param type          - the type of this machine
      * @param ticksRequired - how many ticks it takes to smelt an item.
      */
-    public TileEntityDoubleElectricMachine(String soundPath, MachineType type, int ticksRequired) {
-        super(soundPath, type, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
+    public TileEntityDoubleElectricMachine(String soundPath, IBlockProvider blockProvider, int ticksRequired) {
+        super(soundPath, blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -47,20 +47,20 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{4, 1, 0, 3, 0, 2});
         configComponent.setInputConfig(TransmissionType.ENERGY);
 
-        inventory = NonNullList.withSize(5, ItemStack.EMPTY);
-
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
     }
 
     @Override
     protected void upgradeInventory(TileEntityFactory factory) {
+        NonNullList<ItemStack> factoryInventory = factory.getInventory();
+        NonNullList<ItemStack> inventory = getInventory();
         //Double Machine
-        factory.inventory.set(5, inventory.get(0));
-        factory.inventory.set(4, inventory.get(1));
-        factory.inventory.set(5 + 3, inventory.get(2));
-        factory.inventory.set(1, inventory.get(3));
-        factory.inventory.set(0, inventory.get(4));
+        factoryInventory.set(5, inventory.get(0));
+        factoryInventory.set(4, inventory.get(1));
+        factoryInventory.set(5 + 3, inventory.get(2));
+        factoryInventory.set(1, inventory.get(3));
+        factoryInventory.set(0, inventory.get(4));
     }
 
     @Override
@@ -115,7 +115,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 
     @Override
     public DoubleMachineInput getInput() {
-        return new DoubleMachineInput(inventory.get(0), inventory.get(1));
+        return new DoubleMachineInput(getInventory().get(0), getInventory().get(1));
     }
 
     @Override
@@ -129,13 +129,13 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 
     @Override
     public void operate(RECIPE recipe) {
-        recipe.operate(inventory, 0, 1, 2);
+        recipe.operate(getInventory(), 0, 1, 2);
         markDirty();
     }
 
     @Override
     public boolean canOperate(RECIPE recipe) {
-        return recipe != null && recipe.canOperate(inventory, 0, 1, 2);
+        return recipe != null && recipe.canOperate(getInventory(), 0, 1, 2);
     }
 
     @Override

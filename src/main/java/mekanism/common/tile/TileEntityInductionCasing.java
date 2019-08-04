@@ -5,6 +5,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
@@ -18,7 +20,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -31,7 +32,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
 
     public TileEntityInductionCasing() {
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        this(MekanismBlock.INDUCTION_CASING);
+    }
+
+    public TileEntityInductionCasing(IBlockProvider blockProvider) {
+        super(blockProvider);
     }
 
     @Override

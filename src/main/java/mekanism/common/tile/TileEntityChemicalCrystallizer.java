@@ -12,6 +12,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
@@ -33,7 +34,6 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -49,7 +49,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public TileComponentConfig configComponent;
 
     public TileEntityChemicalCrystallizer() {
-        super("machine.crystallizer", MachineType.CHEMICAL_CRYSTALLIZER, 3, 200);
+        super("machine.crystallizer", MekanismBlock.CHEMICAL_CRYSTALLIZER, 3, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -65,8 +65,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
         configComponent.setInputConfig(TransmissionType.ENERGY);
 
-        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
-
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
     }
@@ -76,7 +74,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
-            TileUtils.receiveGas(inventory.get(0), inputTank);
+            TileUtils.receiveGas(getInventory().get(0), inputTank);
             CrystallizerRecipe recipe = getRecipe();
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
                 setActive(true);
@@ -110,11 +108,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     }
 
     public boolean canOperate(CrystallizerRecipe recipe) {
-        return recipe != null && recipe.canOperate(inputTank, inventory);
+        return recipe != null && recipe.canOperate(inputTank, getInventory());
     }
 
     public void operate(CrystallizerRecipe recipe) {
-        recipe.operate(inputTank, inventory);
+        recipe.operate(inputTank, getInventory());
         markDirty();
     }
 

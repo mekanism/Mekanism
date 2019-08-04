@@ -18,7 +18,6 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.basic.BlockTeleporterFrame;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -41,7 +40,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -81,8 +79,7 @@ public class TileEntityTeleporter extends TileEntityElectric implements ICompute
     public TileComponentUpgrade<TileEntityTeleporter> upgradeComponent;
 
     public TileEntityTeleporter() {
-        super((IBlockElectric) MekanismBlock.TELEPORTER.getBlock());
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        super(MekanismBlock.TELEPORTER);
 
         securityComponent = new TileComponentSecurity(this);
         chunkLoaderComponent = new TileComponentChunkLoader(this);

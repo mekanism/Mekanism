@@ -9,6 +9,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -23,7 +24,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -40,7 +40,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainer implements I
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityLaserTractorBeam() {
-        inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+        super(MekanismBlock.LASER_TRACTOR_BEAM);
     }
 
     @Override
@@ -128,12 +128,12 @@ public class TileEntityLaserTractorBeam extends TileEntityContainer implements I
     public void receiveDrops(List<ItemStack> drops) {
         outer:
         for (ItemStack drop : drops) {
-            for (int i = 0; i < inventory.size(); i++) {
-                if (inventory.get(i).isEmpty()) {
-                    inventory.set(i, drop);
+            for (int i = 0; i < getInventory().size(); i++) {
+                if (getInventory().get(i).isEmpty()) {
+                    getInventory().set(i, drop);
                     continue outer;
                 }
-                ItemStack slot = inventory.get(i);
+                ItemStack slot = getInventory().get(i);
                 if (StackUtils.equalsWildcardWithNBT(slot, drop)) {
                     int change = Math.min(drop.getCount(), slot.getMaxStackSize() - slot.getCount());
                     slot.grow(change);

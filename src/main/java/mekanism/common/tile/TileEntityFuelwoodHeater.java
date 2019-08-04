@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -20,7 +21,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -52,7 +52,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainer implements IHe
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityFuelwoodHeater() {
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+        super(MekanismBlock.FUELWOOD_HEATER);
     }
 
     @Override
@@ -78,13 +78,13 @@ public class TileEntityFuelwoodHeater extends TileEntityContainer implements IHe
                 burnTime--;
                 burning = true;
             } else {
-                if (!inventory.get(0).isEmpty()) {
-                    maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory.get(0)) / 2;
+                if (!getInventory().get(0).isEmpty()) {
+                    maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(getInventory().get(0)) / 2;
                     if (burnTime > 0) {
-                        ItemStack preShrunk = inventory.get(0).copy();
-                        inventory.get(0).shrink(1);
-                        if (inventory.get(0).getCount() == 0) {
-                            inventory.set(0, preShrunk.getItem().getContainerItem(preShrunk));
+                        ItemStack preShrunk = getInventory().get(0).copy();
+                        getInventory().get(0).shrink(1);
+                        if (getInventory().get(0).getCount() == 0) {
+                            getInventory().set(0, preShrunk.getItem().getContainerItem(preShrunk));
                         }
                         burning = true;
                     }

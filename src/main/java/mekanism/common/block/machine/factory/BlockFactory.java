@@ -14,6 +14,7 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
@@ -23,10 +24,35 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tile.TileEntityAdvancedFactory;
-import mekanism.common.tile.TileEntityEliteFactory;
-import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.tile.factory.combining.TileEntityAdvancedCombiningFactory;
+import mekanism.common.tile.factory.combining.TileEntityBasicCombiningFactory;
+import mekanism.common.tile.factory.combining.TileEntityEliteCombiningFactory;
+import mekanism.common.tile.factory.compressing.TileEntityAdvancedCompressingFactory;
+import mekanism.common.tile.factory.compressing.TileEntityBasicCompressingFactory;
+import mekanism.common.tile.factory.compressing.TileEntityEliteCompressingFactory;
+import mekanism.common.tile.factory.crushing.TileEntityAdvancedCrushingFactory;
+import mekanism.common.tile.factory.crushing.TileEntityBasicCrushingFactory;
+import mekanism.common.tile.factory.crushing.TileEntityEliteCrushingFactory;
+import mekanism.common.tile.factory.enriching.TileEntityAdvancedEnrichingFactory;
+import mekanism.common.tile.factory.enriching.TileEntityBasicEnrichingFactory;
+import mekanism.common.tile.factory.enriching.TileEntityEliteEnrichingFactory;
+import mekanism.common.tile.factory.infusing.TileEntityAdvancedInfusingFactory;
+import mekanism.common.tile.factory.infusing.TileEntityBasicInfusingFactory;
+import mekanism.common.tile.factory.infusing.TileEntityEliteInfusingFactory;
+import mekanism.common.tile.factory.injecting.TileEntityAdvancedInjectingFactory;
+import mekanism.common.tile.factory.injecting.TileEntityBasicInjectingFactory;
+import mekanism.common.tile.factory.injecting.TileEntityEliteInjectingFactory;
+import mekanism.common.tile.factory.purifying.TileEntityAdvancedPurifyingFactory;
+import mekanism.common.tile.factory.purifying.TileEntityBasicPurifyingFactory;
+import mekanism.common.tile.factory.purifying.TileEntityElitePurifyingFactory;
+import mekanism.common.tile.factory.sawing.TileEntityAdvancedSawingFactory;
+import mekanism.common.tile.factory.sawing.TileEntityBasicSawingFactory;
+import mekanism.common.tile.factory.sawing.TileEntityEliteSawingFactory;
+import mekanism.common.tile.factory.smelting.TileEntityAdvancedSmeltingFactory;
+import mekanism.common.tile.factory.smelting.TileEntityBasicSmeltingFactory;
+import mekanism.common.tile.factory.smelting.TileEntityEliteSmeltingFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -53,7 +79,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive,
-      ITieredBlock<FactoryTier>, IHasFactoryType {
+      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory {
 
     private final FactoryTier tier;
     private final FactoryType type;
@@ -203,13 +229,88 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         //TODO
-        switch (tier) {
-            case BASIC:
-                return new TileEntityFactory();
-            case ADVANCED:
-                return new TileEntityAdvancedFactory();
-            case ELITE:
-                return new TileEntityEliteFactory();
+        switch (type) {
+            case SMELTING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicSmeltingFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedSmeltingFactory();
+                    case ELITE:
+                        return new TileEntityEliteSmeltingFactory();
+                }
+            case ENRICHING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicEnrichingFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedEnrichingFactory();
+                    case ELITE:
+                        return new TileEntityEliteEnrichingFactory();
+                }
+            case CRUSHING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicCrushingFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedCrushingFactory();
+                    case ELITE:
+                        return new TileEntityEliteCrushingFactory();
+                }
+            case COMPRESSING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicCompressingFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedCompressingFactory();
+                    case ELITE:
+                        return new TileEntityEliteCompressingFactory();
+                }
+            case COMBINING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicCombiningFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedCombiningFactory();
+                    case ELITE:
+                        return new TileEntityEliteCombiningFactory();
+                }
+            case PURIFYING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicPurifyingFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedPurifyingFactory();
+                    case ELITE:
+                        return new TileEntityElitePurifyingFactory();
+                }
+            case INJECTING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicInjectingFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedInjectingFactory();
+                    case ELITE:
+                        return new TileEntityEliteInjectingFactory();
+                }
+            case INFUSING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicInfusingFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedInfusingFactory();
+                    case ELITE:
+                        return new TileEntityEliteInfusingFactory();
+                }
+            case SAWING:
+                switch (tier) {
+                    case BASIC:
+                        return new TileEntityBasicSawingFactory();
+                    case ADVANCED:
+                        return new TileEntityAdvancedSawingFactory();
+                    case ELITE:
+                        return new TileEntityEliteSawingFactory();
+                }
         }
         return null;
     }
@@ -285,5 +386,10 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Override
     public int getGuiID() {
         return 11;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 5 + tier.processes * 2;
     }
 }

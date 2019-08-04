@@ -10,6 +10,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -36,7 +37,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -64,8 +64,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public double clientEnergyUsed;
 
     public TileEntityChemicalWasher() {
-        super("machine.washer", MachineType.CHEMICAL_WASHER, 4);
-        inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+        super("machine.washer", MekanismBlock.CHEMICAL_WASHER, 4);
     }
 
     @Override
@@ -74,7 +73,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
             manageBuckets();
-            TileUtils.drawGas(inventory.get(2), outputTank);
+            TileUtils.drawGas(getInventory().get(2), outputTank);
             WasherRecipe recipe = getRecipe();
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
@@ -118,7 +117,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     }
 
     private void manageBuckets() {
-        if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
+        if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
             FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, FluidChecker.check(FluidRegistry.WATER));
         }
     }

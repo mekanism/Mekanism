@@ -6,13 +6,14 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItem;
 import mekanism.common.SideData;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.prefab.TileEntityUpgradeableMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -26,8 +27,8 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
-    public TileEntityChanceMachine(String soundPath, MachineType type, int ticksRequired, ResourceLocation location) {
-        super(soundPath, type, 3, ticksRequired, location);
+    public TileEntityChanceMachine(String soundPath, IBlockProvider blockProvider, int ticksRequired, ResourceLocation location) {
+        super(soundPath, blockProvider, 3, ticksRequired, location);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -38,8 +39,6 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
         configComponent.setConfig(TransmissionType.ITEM, new byte[]{2, 1, 0, 0, 0, 3});
         configComponent.setInputConfig(TransmissionType.ENERGY);
 
-        inventory = NonNullList.withSize(5, ItemStack.EMPTY);
-
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
     }
@@ -49,10 +48,12 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
         //Chance Machine
         factory.configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{4, 8, 9, 10};
 
-        factory.inventory.set(5, inventory.get(0));
-        factory.inventory.set(1, inventory.get(1));
-        factory.inventory.set(5 + 3, inventory.get(2));
-        factory.inventory.set(0, inventory.get(3));
+        NonNullList<ItemStack> factoryInventory = factory.getInventory();
+        NonNullList<ItemStack> inventory = getInventory();
+        factoryInventory.set(5, inventory.get(0));
+        factoryInventory.set(1, inventory.get(1));
+        factoryInventory.set(5 + 3, inventory.get(2));
+        factoryInventory.set(0, inventory.get(3));
     }
 
     @Override
@@ -94,18 +95,18 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 
     @Override
     public ItemStackInput getInput() {
-        return new ItemStackInput(inventory.get(0));
+        return new ItemStackInput(getInventory().get(0));
     }
 
     @Override
     public void operate(RECIPE recipe) {
-        recipe.operate(inventory, 0, 2, 4);
+        recipe.operate(getInventory(), 0, 2, 4);
         markDirty();
     }
 
     @Override
     public boolean canOperate(RECIPE recipe) {
-        return recipe != null && recipe.canOperate(inventory, 0, 2, 4);
+        return recipe != null && recipe.canOperate(getInventory(), 0, 2, 4);
     }
 
     @Override

@@ -8,6 +8,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
@@ -40,7 +41,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive {
+public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive,
+      IHasInventory {
 
     public BlockChemicalInfuser() {
         super(Material.IRON);
@@ -212,5 +214,10 @@ public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlo
     @Override
     public double getConfigStorage() {
         return MekanismConfig.current().storage.chemicalInfuser.val();
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 5;
     }
 }

@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.frequency.Frequency;
@@ -23,7 +24,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -41,14 +41,14 @@ public class TileEntitySecurityDesk extends TileEntityContainer implements IBoun
     public SecurityFrequency frequency;
 
     public TileEntitySecurityDesk() {
-        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+        super(MekanismBlock.SECURITY_DESK);
     }
 
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
             if (ownerUUID != null && frequency != null) {
-                ItemStack itemStack = inventory.get(0);
+                ItemStack itemStack = getInventory().get(0);
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) itemStack.getItem();
                     if (item.getOwnerUUID(itemStack) != null) {
@@ -61,7 +61,7 @@ public class TileEntitySecurityDesk extends TileEntityContainer implements IBoun
                     }
                 }
 
-                ItemStack stack = inventory.get(1);
+                ItemStack stack = getInventory().get(1);
                 if (!stack.isEmpty() && stack.getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) stack.getItem();
                     UUID stackOwner = item.getOwnerUUID(stack);

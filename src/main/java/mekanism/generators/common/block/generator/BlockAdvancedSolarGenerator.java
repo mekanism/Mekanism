@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -32,7 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Maybe make this extend BlockSolarGenerator
-public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing {
+public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory {
 
     public BlockAdvancedSolarGenerator() {
         super(Material.IRON);
@@ -144,7 +145,12 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
     }
 
     @Override
-    public double getConfigStorage() {
+    public double getStorage() {
         return 200000;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 1;
     }
 }

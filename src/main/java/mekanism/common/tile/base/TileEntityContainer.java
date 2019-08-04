@@ -3,6 +3,7 @@ package mekanism.common.tile.base;
 import javax.annotation.Nonnull;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.ItemHandlerWrapper;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.tile.interfaces.ITileContainer;
@@ -52,6 +53,7 @@ public abstract class TileEntityContainer extends TileEntityMekanism implements 
 
     public TileEntityContainer(IBlockProvider blockProvider) {
         super(blockProvider);
+        inventory = NonNullList.withSize(((IHasInventory) blockProvider.getBlock()).getInventorySize(), ItemStack.EMPTY);
     }
 
     @Override

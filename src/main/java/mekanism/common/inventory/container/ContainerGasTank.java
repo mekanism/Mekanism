@@ -3,7 +3,7 @@ package mekanism.common.inventory.container;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;

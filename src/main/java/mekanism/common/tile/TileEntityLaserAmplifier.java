@@ -10,6 +10,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -21,11 +22,9 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -52,7 +51,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainer implements ILa
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityLaserAmplifier() {
-        inventory = NonNullList.withSize(0, ItemStack.EMPTY);
+        super(MekanismBlock.LASER_AMPLIFIER);
     }
 
     @Override

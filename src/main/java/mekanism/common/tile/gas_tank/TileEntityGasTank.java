@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.gas_tank;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
@@ -13,6 +13,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -41,7 +42,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityGasTank extends TileEntityContainer implements IGasHandler, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
+public abstract class TileEntityGasTank extends TileEntityContainer implements IGasHandler, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
       IComputerIntegration, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
@@ -67,12 +68,9 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
 
-    public TileEntityGasTank() {
-        this(GasTankTier.BASIC);
-    }
-
-    public TileEntityGasTank(GasTankTier tier) {
-        this.tier = tier;
+    public TileEntityGasTank(IBlockProvider blockProvider) {
+        super(blockProvider);
+        this.tier = tankTier;
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -85,7 +83,6 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
         configComponent.setEjecting(TransmissionType.GAS, true);
 
         gasTank = new GasTank(tier.getStorage());
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         dumping = GasMode.IDLE;
         controlType = RedstoneControl.DISABLED;
 
@@ -97,8 +94,8 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
-            TileUtils.drawGas(inventory.get(0), gasTank, tier != GasTankTier.CREATIVE);
-            if (TileUtils.receiveGas(inventory.get(1), gasTank) && tier == GasTankTier.CREATIVE && gasTank.getGas() != null) {
+            TileUtils.drawGas(getInventory().get(0), gasTank, tier != GasTankTier.CREATIVE);
+            if (TileUtils.receiveGas(getInventory().get(1), gasTank) && tier == GasTankTier.CREATIVE && gasTank.getGas() != null) {
                 gasTank.getGas().amount = Integer.MAX_VALUE;
             }
             if (gasTank.getGas() != null && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {

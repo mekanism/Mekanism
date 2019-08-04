@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -22,7 +24,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -47,7 +48,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public float prevScale;
 
     public TileEntityDynamicTank() {
-        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+        this(MekanismBlock.DYNAMIC_TANK);
+    }
+
+    public TileEntityDynamicTank(IBlockProvider blockProvider) {
+        super(blockProvider);
     }
 
     @Override

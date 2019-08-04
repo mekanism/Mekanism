@@ -10,7 +10,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;

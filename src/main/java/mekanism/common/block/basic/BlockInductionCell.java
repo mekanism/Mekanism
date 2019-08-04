@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -17,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier> {
+public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier>, IHasInventory {
 
     private final InductionCellTier tier;
 
@@ -53,5 +54,10 @@ public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<I
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityInductionCell();
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

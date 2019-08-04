@@ -11,6 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
@@ -52,6 +53,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public boolean mode;
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
+
+    public TileEntityInductionPort() {
+        super(MekanismBlock.INDUCTION_PORT);
+    }
 
     @Override
     public void onUpdate() {

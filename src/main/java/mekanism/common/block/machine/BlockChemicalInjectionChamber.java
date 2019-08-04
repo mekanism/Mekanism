@@ -10,6 +10,7 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -42,7 +43,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockChemicalInjectionChamber extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive,
-      IHasFactoryType {
+      IHasFactoryType, IHasInventory {
 
     public BlockChemicalInjectionChamber() {
         super(Material.IRON);
@@ -220,5 +221,10 @@ public class BlockChemicalInjectionChamber extends BlockMekanismContainer implem
     @Override
     public double getConfigStorage() {
         return MekanismConfig.current().storage.chemicalInjectionChamber.val();
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 5;
     }
 }

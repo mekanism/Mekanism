@@ -13,6 +13,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -65,8 +66,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     private int currentRedstoneLevel;
 
     public TileEntityRotaryCondensentrator() {
-        super("machine.rotarycondensentrator", MachineType.ROTARY_CONDENSENTRATOR, 5);
-        inventory = NonNullList.withSize(6, ItemStack.EMPTY);
+        super("machine.rotarycondensentrator", MekanismBlock.ROTARY_CONDENSENTRATOR, 5);
     }
 
     @Override
@@ -77,8 +77,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
             ChargeUtils.discharge(4, this);
 
             if (mode == 0) {
-                TileUtils.receiveGas(inventory.get(1), gasTank);
-                if (FluidContainerUtils.isFluidContainer(inventory.get(2))) {
+                TileUtils.receiveGas(getInventory().get(1), gasTank);
+                if (FluidContainerUtils.isFluidContainer(getInventory().get(2))) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
                 }
 
@@ -96,10 +96,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     setActive(false);
                 }
             } else if (mode == 1) {
-                TileUtils.drawGas(inventory.get(0), gasTank);
+                TileUtils.drawGas(getInventory().get(0), gasTank);
                 TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
 
-                if (FluidContainerUtils.isFluidContainer(inventory.get(2))) {
+                if (FluidContainerUtils.isFluidContainer(getInventory().get(2))) {
                     FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
                 }
 

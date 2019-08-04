@@ -20,6 +20,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -54,8 +55,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     private int currentRedstoneLevel;
 
     public TileEntityHeatGenerator() {
-        super("heat", "HeatGenerator", 160000, MekanismConfig.current().generators.heatGeneration.val() * 2);
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        super("heat", GeneratorsBlock.HEAT_GENERATOR, MekanismConfig.current().generators.heatGeneration.val() * 2);
     }
 
     @Override
@@ -64,19 +64,19 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
         if (!world.isRemote) {
             ChargeUtils.charge(1, this);
-            if (!inventory.get(0).isEmpty()) {
-                if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
+            if (!getInventory().get(0).isEmpty()) {
+                if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                     lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(FluidRegistry.LAVA)), true);
                 } else {
-                    int fuel = getFuel(inventory.get(0));
+                    int fuel = getFuel(getInventory().get(0));
                     if (fuel > 0) {
                         int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0);
                         if (fuel <= fuelNeeded) {
                             lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
-                            if (!inventory.get(0).getItem().getContainerItem(inventory.get(0)).isEmpty()) {
-                                inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
+                            if (!getInventory().get(0).getItem().getContainerItem(getInventory().get(0)).isEmpty()) {
+                                getInventory().set(0, getInventory().get(0).getItem().getContainerItem(getInventory().get(0)));
                             } else {
-                                inventory.get(0).shrink(1);
+                                getInventory().get(0).shrink(1);
                             }
                         }
                     }

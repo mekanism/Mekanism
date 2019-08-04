@@ -20,10 +20,10 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -45,8 +45,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     private int currentRedstoneLevel;
 
     public TileEntityGasGenerator() {
-        super("gas", "GasGenerator", MekanismConfig.current().general.FROM_H2.val() * 100, MekanismConfig.current().general.FROM_H2.val() * 2);
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        super("gas", GeneratorsBlock.GAS_BURNING_GENERATOR, MekanismConfig.current().general.FROM_H2.val() * 2);
         fuelTank = new GasTank(MAX_GAS);
     }
 
@@ -56,17 +55,17 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
         if (!world.isRemote) {
             ChargeUtils.charge(1, this);
-            if (!inventory.get(0).isEmpty() && fuelTank.getStored() < MAX_GAS) {
+            if (!getInventory().get(0).isEmpty() && fuelTank.getStored() < MAX_GAS) {
                 Gas gasType = null;
                 if (fuelTank.getGas() != null) {
                     gasType = fuelTank.getGas().getGas();
-                } else if (!inventory.get(0).isEmpty() && inventory.get(0).getItem() instanceof IGasItem) {
-                    if (((IGasItem) inventory.get(0).getItem()).getGas(inventory.get(0)) != null) {
-                        gasType = ((IGasItem) inventory.get(0).getItem()).getGas(inventory.get(0)).getGas();
+                } else if (!getInventory().get(0).isEmpty() && getInventory().get(0).getItem() instanceof IGasItem) {
+                    if (((IGasItem) getInventory().get(0).getItem()).getGas(getInventory().get(0)) != null) {
+                        gasType = ((IGasItem) getInventory().get(0).getItem()).getGas(getInventory().get(0)).getGas();
                     }
                 }
                 if (gasType != null && FuelHandler.getFuel(gasType) != null) {
-                    GasStack removed = GasUtils.removeGas(inventory.get(0), gasType, fuelTank.getNeeded());
+                    GasStack removed = GasUtils.removeGas(getInventory().get(0), gasType, fuelTank.getNeeded());
                     boolean isTankEmpty = fuelTank.getGas() == null;
                     int fuelReceived = fuelTank.receive(removed, true);
                     if (fuelReceived > 0 && isTankEmpty) {

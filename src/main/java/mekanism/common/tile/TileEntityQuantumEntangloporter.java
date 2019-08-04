@@ -26,7 +26,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -81,7 +80,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
     public TileComponentUpgrade<TileEntityQuantumEntangloporter> upgradeComponent;
 
     public TileEntityQuantumEntangloporter() {
-        super((IBlockElectric) MekanismBlock.QUANTUM_ENTANGLOPORTER.getBlock());
+        super(MekanismBlock.QUANTUM_ENTANGLOPORTER);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 
         for (TransmissionType type : TransmissionType.values()) {
@@ -91,8 +90,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
                 configComponent.setInputConfig(type);
             }
         }
-
-        inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
 
         configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{0};
         configComponent.getOutputs(TransmissionType.FLUID).get(2).availableSlots = new int[]{0};
@@ -217,12 +214,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
         }
 
         NBTTagList tagList = nbtTags.getTagList("upgradesInv", Constants.NBT.TAG_COMPOUND);
+        //TODO: Given we only have one slot I think we can manually clear or something
         inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
-            if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, new ItemStack(tagCompound));
+            if (slotID >= 0 && slotID < getInventory().size()) {
+                getInventory().set(slotID, new ItemStack(tagCompound));
             }
         }
 
@@ -240,8 +238,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
         //Upgrades inventory
         NBTTagList tagList = new NBTTagList();
-        for (int slotCount = 0; slotCount < inventory.size(); slotCount++) {
-            ItemStack stackInSlot = inventory.get(slotCount);
+        for (int slotCount = 0; slotCount < getInventory().size(); slotCount++) {
+            ItemStack stackInSlot = getInventory().get(slotCount);
             if (!stackInSlot.isEmpty()) {
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 tagCompound.setByte("Slot", (byte) slotCount);

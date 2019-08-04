@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
@@ -28,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -84,7 +84,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public float totalLoss = 0;
 
     public TileEntityThermalEvaporationController() {
-        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+        super(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER);
     }
 
     @Override
@@ -194,13 +194,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     private void manageBuckets() {
         if (outputTank.getFluid() != null) {
-            if (FluidContainerUtils.isFluidContainer(inventory.get(2))) {
+            if (FluidContainerUtils.isFluidContainer(getInventory().get(2))) {
                 FluidContainerUtils.handleContainerItemFill(this, outputTank, 2, 3);
             }
         }
 
         if (structured) {
-            if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
+            if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                 FluidContainerUtils.handleContainerItemEmpty(this, inputTank, 0, 1, new FluidChecker() {
                     @Override
                     public boolean isValid(Fluid f) {

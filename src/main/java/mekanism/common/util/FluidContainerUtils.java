@@ -34,11 +34,11 @@ public final class FluidContainerUtils {
     }
 
     public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainer tile, int slotID, FluidChecker checker) {
-        IFluidHandlerItem handler = FluidUtil.getFluidHandler(tile.inventory.get(slotID));
+        IFluidHandlerItem handler = FluidUtil.getFluidHandler(tile.getInventory().get(slotID));
         FluidStack ret = null;
         if (handler != null) {
             ret = extractFluid(tileTank.getCapacity() - tileTank.getFluidAmount(), handler, checker);
-            tile.inventory.set(slotID, handler.getContainer());
+            tile.getInventory().set(slotID, handler.getContainer());
         }
         return ret;
     }
@@ -69,7 +69,7 @@ public final class FluidContainerUtils {
     }
 
     public static void handleContainerItemFill(TileEntityContainer tileEntity, FluidTank tank, int inSlot, int outSlot) {
-        tank.setFluid(handleContainerItemFill(tileEntity, tileEntity.inventory, tank.getFluid(), inSlot, outSlot));
+        tank.setFluid(handleContainerItemFill(tileEntity, tileEntity.getInventory(), tank.getFluid(), inSlot, outSlot));
     }
 
     public static FluidStack handleContainerItemFill(TileEntity tileEntity, NonNullList<ItemStack> inventory, FluidStack stack, int inSlot, int outSlot) {
@@ -102,7 +102,7 @@ public final class FluidContainerUtils {
     }
 
     public static void handleContainerItemEmpty(TileEntityContainer tileEntity, FluidTank tank, int inSlot, int outSlot, FluidChecker checker) {
-        tank.setFluid(handleContainerItemEmpty(tileEntity, tileEntity.inventory, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
+        tank.setFluid(handleContainerItemEmpty(tileEntity, tileEntity.getInventory(), tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
     }
 
     public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, NonNullList<ItemStack> inventory, FluidStack stored, int needed, int inSlot, int outSlot,
@@ -160,7 +160,7 @@ public final class FluidContainerUtils {
     }
 
     public static void handleContainerItem(TileEntityContainer tileEntity, ContainerEditMode editMode, FluidTank tank, int inSlot, int outSlot, FluidChecker checker) {
-        tank.setFluid(handleContainerItem(tileEntity, tileEntity.inventory, editMode, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
+        tank.setFluid(handleContainerItem(tileEntity, tileEntity.getInventory(), editMode, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
     }
 
     public static FluidStack handleContainerItem(TileEntity tileEntity, NonNullList<ItemStack> inventory, ContainerEditMode editMode, FluidStack stack, int needed,

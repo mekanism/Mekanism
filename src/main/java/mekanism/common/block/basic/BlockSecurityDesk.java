@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -30,7 +31,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui {
+public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui, IHasInventory {
 
     public BlockSecurityDesk() {
         super(Material.IRON);
@@ -140,5 +141,10 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
     @Override
     public int getGuiID() {
         return 57;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

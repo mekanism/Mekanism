@@ -22,7 +22,6 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -60,7 +59,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     public TileEntityReactorController() {
         super((IBlockElectric) GeneratorsBlock.REACTOR_CONTROLLER.getBlock());
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     }
 
     @Override

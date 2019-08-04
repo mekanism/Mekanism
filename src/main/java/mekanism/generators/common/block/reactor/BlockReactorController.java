@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -27,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorController extends Block implements IHasGui, IStateActive, IBlockElectric {
+public class BlockReactorController extends Block implements IHasGui, IStateActive, IBlockElectric, IHasInventory {
 
     public BlockReactorController() {
         super(Material.IRON);
@@ -111,5 +112,10 @@ public class BlockReactorController extends Block implements IHasGui, IStateActi
     @Override
     public double getStorage() {
         return 1_000_000_000;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 1;
     }
 }

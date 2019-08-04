@@ -12,6 +12,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IActiveState;
@@ -35,7 +36,6 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -66,8 +66,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainer impleme
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySolarNeutronActivator() {
+        super(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
         upgradeComponent.setSupported(Upgrade.ENERGY, false);
-        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     }
 
     @Override
@@ -80,8 +80,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainer impleme
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
-            TileUtils.receiveGas(inventory.get(0), inputTank);
-            TileUtils.drawGas(inventory.get(1), outputTank);
+            TileUtils.receiveGas(getInventory().get(0), inputTank);
+            TileUtils.drawGas(getInventory().get(1), outputTank);
             SolarNeutronRecipe recipe = getRecipe();
 
             // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but

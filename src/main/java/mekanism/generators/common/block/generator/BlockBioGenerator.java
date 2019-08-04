@@ -6,6 +6,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -33,7 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing {
+public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory {
 
     public BlockBioGenerator() {
         super(Material.IRON);
@@ -169,7 +170,12 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
     }
 
     @Override
-    public double getConfigStorage() {
+    public double getStorage() {
         return 160000;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

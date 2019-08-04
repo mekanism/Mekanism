@@ -7,7 +7,7 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;

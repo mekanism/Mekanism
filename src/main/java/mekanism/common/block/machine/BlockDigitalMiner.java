@@ -8,6 +8,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
@@ -40,7 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui, IStateFacing, IStateActive {
+public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui, IStateFacing, IStateActive, IHasInventory {
 
     public BlockDigitalMiner() {
         super(Material.IRON);
@@ -212,5 +213,11 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
     @Override
     public double getConfigStorage() {
         return MekanismConfig.current().storage.digitalMiner.val();
+    }
+
+    @Override
+    public int getInventorySize() {
+        //TODO: Double check this is correct
+        return 29;
     }
 }

@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -31,6 +32,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     private int currentRedstoneLevel;
 
     public TileEntityBoilerValve() {
+        super(MekanismBlock.BOILER_VALVE);
         waterTank = new BoilerWaterTank(this);
         steamTank = new BoilerSteamTank(this);
     }

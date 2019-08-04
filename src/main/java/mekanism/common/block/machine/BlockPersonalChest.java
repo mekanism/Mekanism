@@ -8,6 +8,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
@@ -41,7 +42,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Why is the personal chest electric
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, IStateFacing {
+public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, IStateFacing, IHasInventory {
 
     public BlockPersonalChest() {
         super(Material.IRON);
@@ -220,5 +221,10 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Override
     public int getGuiID() {
         return 19;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 54;
     }
 }

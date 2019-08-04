@@ -11,7 +11,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.common.inventory.container.ContainerEnergyCube;
-import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

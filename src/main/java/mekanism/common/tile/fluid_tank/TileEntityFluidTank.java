@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.fluid_tank;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
@@ -9,6 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -37,7 +38,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -48,7 +48,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityFluidTank extends TileEntityContainer implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
+public abstract class TileEntityFluidTank extends TileEntityContainer implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
       ITankManager, ISecurityTile, ITierUpgradeable, IComparatorSupport {
 
     public boolean isActive;
@@ -76,14 +76,10 @@ public class TileEntityFluidTank extends TileEntityContainer implements IActiveS
 
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-    public TileEntityFluidTank() {
-        this(FluidTankTier.BASIC);
-    }
-
-    public TileEntityFluidTank(FluidTankTier tier) {
-        this.tier = tier;
+    public TileEntityFluidTank(IBlockProvider blockProvider) {
+        super(blockProvider);
+        this.tier = tankTier;
         fluidTank = new FluidTank(this.tier.getStorage());
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     }
 
     @Override
@@ -140,7 +136,7 @@ public class TileEntityFluidTank extends TileEntityContainer implements IActiveS
             }
 
             prevAmount = fluidTank.getFluidAmount();
-            if (!inventory.get(0).isEmpty()) {
+            if (!getInventory().get(0).isEmpty()) {
                 manageInventory();
             }
             if (isActive) {
@@ -177,8 +173,8 @@ public class TileEntityFluidTank extends TileEntityContainer implements IActiveS
     }
 
     private void manageInventory() {
-        if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
-            FluidStack ret = FluidContainerUtils.handleContainerItem(this, inventory, editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
+        if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
+            FluidStack ret = FluidContainerUtils.handleContainerItem(this, getInventory(), editMode, fluidTank.getFluid(), getCurrentNeeded(), 0, 1, null);
 
             if (ret != null) {
                 fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));

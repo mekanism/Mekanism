@@ -9,6 +9,7 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILogisticalTransporter;
@@ -68,8 +69,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     private int currentRedstoneLevel;
 
     public TileEntityLogisticalSorter() {
-        super("machine.logisticalsorter", "LogisticalSorter", MachineType.LOGISTICAL_SORTER.getStorage(), 3);
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        super("machine.logisticalsorter", MekanismBlock.LOGISTICAL_SORTER, 3);
         doAutoSync = false;
         upgradeComponent = new TileComponentUpgrade<>(this, 1);
         upgradeComponent.clearSupportedTypes();

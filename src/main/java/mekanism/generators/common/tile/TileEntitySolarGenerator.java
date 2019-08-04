@@ -3,9 +3,11 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -22,12 +24,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private float peakOutput;
 
     public TileEntitySolarGenerator() {
-        this("SolarGenerator", 96000, MekanismConfig.current().generators.solarGeneration.val() * 2);
+        this(GeneratorsBlock.SOLAR_GENERATOR, MekanismConfig.current().generators.solarGeneration.val() * 2);
     }
 
-    public TileEntitySolarGenerator(String name, double maxEnergy, double output) {
-        super("solar", name, maxEnergy, output);
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+    public TileEntitySolarGenerator(IBlockProvider blockProvider, double output) {
+        super("solar", blockProvider, output);
     }
 
     public boolean canSeeSun() {

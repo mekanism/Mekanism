@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
@@ -22,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -52,8 +52,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityResistiveHeater() {
-        super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.getStorage());
-        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+        super("machine.resistiveheater", MekanismBlock.RESISTIVE_HEATER);
     }
 
     @Override

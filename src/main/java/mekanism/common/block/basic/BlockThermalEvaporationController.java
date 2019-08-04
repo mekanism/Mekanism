@@ -5,6 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -27,7 +28,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive {
+public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory {
 
     public BlockThermalEvaporationController() {
         super(Material.IRON);
@@ -112,5 +113,10 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 4;
     }
 }

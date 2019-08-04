@@ -1,7 +1,7 @@
 package mekanism.generators.common.content.turbine;
 
 import mekanism.common.multiblock.MultiblockCache;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 

@@ -1,6 +1,7 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.block.state.IBlockState;
@@ -9,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel {
+public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel, IHasInventory {
 
     public BlockDynamicTank() {
         super("dynamic_tank");
@@ -29,5 +30,10 @@ public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel 
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         return 0;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

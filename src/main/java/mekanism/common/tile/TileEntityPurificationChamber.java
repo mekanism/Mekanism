@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.PurificationRecipe;
@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> {
 
     public TileEntityPurificationChamber() {
-        super("purification", MachineType.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super("purification", MekanismBlock.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

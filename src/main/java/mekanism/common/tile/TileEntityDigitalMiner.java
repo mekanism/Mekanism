@@ -26,7 +26,6 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -147,8 +146,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     public TileEntityDigitalMiner() {
-        super((IBlockElectric) MekanismBlock.DIGITAL_MINER.getBlock());
-        inventory = NonNullList.withSize(INV_SLOTS.length + 1, ItemStack.EMPTY);
+        super(MekanismBlock.DIGITAL_MINER);
         radius = 10;
         upgradeComponent.setSupported(Upgrade.ANCHOR);
     }
@@ -376,7 +374,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
             return ItemStack.EMPTY;
         }
         for (int i = 0; i < 27; i++) {
-            ItemStack stack = inventory.get(i);
+            ItemStack stack = getInventory().get(i);
             if (!stack.isEmpty() && stack.isItemEqual(filter.replaceStack)) {
                 stack.shrink(1);
                 return StackUtils.size(filter.replaceStack, 1);
@@ -404,7 +402,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
     public TransitRequest getEjectItemMap() {
         TransitRequest request = new TransitRequest();
         for (int i = 27 - 1; i >= 0; i--) {
-            ItemStack stack = inventory.get(i);
+            ItemStack stack = getInventory().get(i);
             if (!stack.isEmpty() && !isReplaceStack(stack)) {
                 request.addItem(stack, i);
             }
@@ -416,7 +414,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
         if (stacks.isEmpty()) {
             return true;
         }
-        NonNullList<ItemStack> testInv = copy(inventory);
+        NonNullList<ItemStack> testInv = copy(getInventory());
         int added = 0;
 
         stacks:
@@ -462,9 +460,9 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
 
         for (ItemStack stack : stacks) {
             for (int i = 0; i < 27; i++) {
-                ItemStack currentStack = inventory.get(i);
+                ItemStack currentStack = getInventory().get(i);
                 if (currentStack.isEmpty()) {
-                    inventory.set(i, stack);
+                    getInventory().set(i, stack);
                     break;
                 } else if (ItemHandlerHelper.canItemStacksStack(currentStack, stack) && currentStack.getCount() + stack.getCount() <= stack.getMaxStackSize()) {
                     currentStack.grow(stack.getCount());

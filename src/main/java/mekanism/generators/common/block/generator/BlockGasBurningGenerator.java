@@ -5,6 +5,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
@@ -32,7 +33,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing {
+public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory {
 
     public BlockGasBurningGenerator() {
         super(Material.IRON);
@@ -151,7 +152,12 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
     }
 
     @Override
-    public double getConfigStorage() {
+    public double getStorage() {
         return 100 * MekanismConfig.local().general.FROM_H2.val();
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

@@ -5,8 +5,8 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.InjectionRecipe;
@@ -17,7 +17,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe> {
 
     public TileEntityChemicalInjectionChamber() {
-        super("injection", MachineType.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super("injection", MekanismBlock.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
         configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[]{0}));

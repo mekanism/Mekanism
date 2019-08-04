@@ -9,10 +9,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -24,7 +22,6 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
 
     public TileEntityLaser() {
         super("machine.laser", "Laser", MekanismConfig.current().storage.laser.val());
-        inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 
     @Override

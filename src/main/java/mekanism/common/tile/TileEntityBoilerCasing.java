@@ -8,6 +8,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
@@ -22,7 +24,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -47,7 +48,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public float prevWaterScale;
 
     public TileEntityBoilerCasing() {
-        inventory = NonNullList.withSize(INV_SLOTS.length, ItemStack.EMPTY);
+        this(MekanismBlock.BOILER_CASING);
+    }
+
+    public TileEntityBoilerCasing(IBlockProvider blockProvider) {
+        super(blockProvider);
     }
 
     @Override

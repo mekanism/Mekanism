@@ -11,6 +11,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -27,7 +28,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -40,7 +41,6 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -94,8 +94,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     private int currentRedstoneLevel;
 
     public TileEntityElectrolyticSeparator() {
-        super("machine.electrolyticseparator", MachineType.ELECTROLYTIC_SEPARATOR, 4);
-        inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+        super("machine.electrolyticseparator", MekanismBlock.ELECTROLYTIC_SEPARATOR, 4);
     }
 
     @Override
@@ -103,20 +102,20 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-            if (!inventory.get(0).isEmpty()) {
-                if (Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory.get(0))) {
-                    if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
+            if (!getInventory().get(0).isEmpty()) {
+                if (Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(getInventory().get(0))) {
+                    if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                         fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, this, 0), true);
                     }
                 }
             }
 
-            if (!inventory.get(1).isEmpty() && leftTank.getStored() > 0) {
-                leftTank.draw(GasUtils.addGas(inventory.get(1), leftTank.getGas()), true);
+            if (!getInventory().get(1).isEmpty() && leftTank.getStored() > 0) {
+                leftTank.draw(GasUtils.addGas(getInventory().get(1), leftTank.getGas()), true);
                 MekanismUtils.saveChunk(this);
             }
-            if (!inventory.get(2).isEmpty() && rightTank.getStored() > 0) {
-                rightTank.draw(GasUtils.addGas(inventory.get(2), rightTank.getGas()), true);
+            if (!getInventory().get(2).isEmpty() && rightTank.getStored() > 0) {
+                rightTank.draw(GasUtils.addGas(getInventory().get(2), rightTank.getGas()), true);
                 MekanismUtils.saveChunk(this);
             }
             SeparatorRecipe recipe = getRecipe();

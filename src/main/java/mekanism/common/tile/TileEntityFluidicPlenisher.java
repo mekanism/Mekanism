@@ -19,7 +19,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -40,7 +39,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -77,15 +75,14 @@ public class TileEntityFluidicPlenisher extends TileEntityElectric implements IC
     private int currentRedstoneLevel;
 
     public TileEntityFluidicPlenisher() {
-        super((IBlockElectric) MekanismBlock.FLUIDIC_PLENISHER.getBlock());
-        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+        super(MekanismBlock.FLUIDIC_PLENISHER);
     }
 
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
-            if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
+            if (FluidContainerUtils.isFluidContainer(getInventory().get(0))) {
                 FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
                     @Override
                     public boolean isValid(Fluid f) {

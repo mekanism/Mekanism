@@ -10,6 +10,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IRedstoneControl;
@@ -32,7 +33,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -50,8 +50,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     public double clientEnergyUsed;
 
     public TileEntityChemicalInfuser() {
-        super("machine.cheminfuser", MachineType.CHEMICAL_INFUSER, 4);
-        inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+        super("machine.cheminfuser", MekanismBlock.CHEMICAL_INFUSER, 4);
     }
 
     @Override
@@ -59,9 +58,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-            TileUtils.receiveGas(inventory.get(0), leftTank);
-            TileUtils.receiveGas(inventory.get(1), rightTank);
-            TileUtils.drawGas(inventory.get(2), centerTank);
+            TileUtils.receiveGas(getInventory().get(0), leftTank);
+            TileUtils.receiveGas(getInventory().get(1), rightTank);
+            TileUtils.drawGas(getInventory().get(2), centerTank);
             ChemicalInfuserRecipe recipe = getRecipe();
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);

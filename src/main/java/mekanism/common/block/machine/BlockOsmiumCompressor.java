@@ -10,6 +10,7 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -41,7 +42,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IHasFactoryType {
+public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IHasFactoryType,
+      IHasInventory {
 
     public BlockOsmiumCompressor() {
         super(Material.IRON);
@@ -219,5 +221,10 @@ public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBl
     @Override
     public double getConfigStorage() {
         return MekanismConfig.current().storage.osmiumCompressor.val();
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 5;
     }
 }

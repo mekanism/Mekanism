@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine<OsmiumCompressorRecipe> {
 
     public TileEntityOsmiumCompressor() {
-        super("compressor", MachineType.OSMIUM_COMPRESSOR, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super("compressor", MekanismBlock.OSMIUM_COMPRESSOR, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

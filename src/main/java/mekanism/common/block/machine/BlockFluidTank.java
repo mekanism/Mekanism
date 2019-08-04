@@ -9,6 +9,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
@@ -16,9 +17,14 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.tile.fluid_tank.TileEntityAdvancedFluidTank;
+import mekanism.common.tile.fluid_tank.TileEntityBasicFluidTank;
+import mekanism.common.tile.fluid_tank.TileEntityCreativeFluidTank;
+import mekanism.common.tile.fluid_tank.TileEntityEliteFluidTank;
+import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
+import mekanism.common.tile.fluid_tank.TileEntityUltimateFluidTank;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -51,7 +57,8 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui, IColoredBlock, IStateFacing, IStateActive, ITieredBlock<FluidTankTier> {
+public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui, IColoredBlock, IStateFacing, IStateActive, ITieredBlock<FluidTankTier>,
+      IHasInventory {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -136,7 +143,19 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityFluidTank(tier);
+        switch (tier) {
+            case BASIC:
+                return new TileEntityBasicFluidTank();
+            case ADVANCED:
+                return new TileEntityAdvancedFluidTank();
+            case ELITE:
+                return new TileEntityEliteFluidTank();
+            case ULTIMATE:
+                return new TileEntityUltimateFluidTank();
+            case CREATIVE:
+                return new TileEntityCreativeFluidTank();
+        }
+        return null;
     }
 
     @Override
@@ -298,5 +317,10 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     public EnumColor getColor() {
         return getTier().getBaseTier().getColor();
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

@@ -8,6 +8,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -38,7 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockResistiveHeater extends BlockMekanismContainer implements IBlockElectric, IHasGui, IStateFacing, IStateActive {
+public class BlockResistiveHeater extends BlockMekanismContainer implements IBlockElectric, IHasGui, IStateFacing, IStateActive, IHasInventory {
 
     public BlockResistiveHeater() {
         super(Material.IRON);
@@ -205,5 +206,10 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
     @Override
     public double getUsage() {
         return 100;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 1;
     }
 }

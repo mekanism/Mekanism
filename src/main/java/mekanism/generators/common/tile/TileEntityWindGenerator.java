@@ -8,9 +8,9 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
@@ -25,8 +25,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private boolean isBlacklistDimension = false;
 
     public TileEntityWindGenerator() {
-        super("wind", "WindGenerator", 200000, MekanismConfig.current().generators.windGenerationMax.val() * 2);
-        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+        super("wind", GeneratorsBlock.WIND_GENERATOR, MekanismConfig.current().generators.windGenerationMax.val() * 2);
     }
 
     @Override

@@ -9,6 +9,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
@@ -32,7 +33,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -53,8 +53,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public DissolutionRecipe cachedRecipe;
 
     public TileEntityChemicalDissolutionChamber() {
-        super("machine.dissolution", MachineType.CHEMICAL_DISSOLUTION_CHAMBER, 4);
-        inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+        super("machine.dissolution", MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, 4);
         upgradeComponent.setSupported(Upgrade.GAS);
     }
 
@@ -62,7 +61,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public void onUpdate() {
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-            ItemStack itemStack = inventory.get(0);
+            ItemStack itemStack = getInventory().get(0);
             if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
                 //TODO: Maybe make this use GasUtils.getItemGas. This only currently accepts IGasItems here though
                 IGasItem item = (IGasItem) itemStack.getItem();
@@ -75,7 +74,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
                     }
                 }
             }
-            TileUtils.drawGas(inventory.get(2), outputTank);
+            TileUtils.drawGas(getInventory().get(2), outputTank);
             boolean changed = false;
             DissolutionRecipe recipe = getRecipe();
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
@@ -145,15 +144,15 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     public ItemStackInput getInput() {
-        return new ItemStackInput(inventory.get(1));
+        return new ItemStackInput(getInventory().get(1));
     }
 
     public boolean canOperate(DissolutionRecipe recipe) {
-        return recipe != null && recipe.canOperate(inventory, outputTank);
+        return recipe != null && recipe.canOperate(getInventory(), outputTank);
     }
 
     public void operate(DissolutionRecipe recipe) {
-        recipe.operate(inventory, outputTank);
+        recipe.operate(getInventory(), outputTank);
         markDirty();
     }
 

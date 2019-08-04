@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -29,7 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric {
+public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IHasInventory {
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
 
@@ -130,7 +131,12 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     }
 
     @Override
-    public double getConfigStorage() {
+    public double getStorage() {
         return 96000;
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 1;
     }
 }

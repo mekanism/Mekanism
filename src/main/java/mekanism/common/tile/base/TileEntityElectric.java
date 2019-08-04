@@ -5,6 +5,7 @@ import ic2.api.energy.event.EnergyTileUnloadEvent;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
@@ -33,6 +34,7 @@ public abstract class TileEntityElectric extends TileEntityContainer implements 
      */
     public double electricityStored;
 
+    //TODO
     protected IBlockElectric electricBlock;
 
     /**
@@ -48,8 +50,8 @@ public abstract class TileEntityElectric extends TileEntityContainer implements 
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
-    public TileEntityElectric(IBlockElectric electricBlock) {
-        this.electricBlock = electricBlock;
+    public TileEntityElectric(IBlockProvider blockProvider) {
+        super(blockProvider);
         BASE_ENERGY_PER_TICK= maxEnergy = electricBlock.getStorage();
     }
 

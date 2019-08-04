@@ -6,15 +6,15 @@ import java.util.LinkedList;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.common.MekanismBlock;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -26,7 +26,11 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainer imple
     public boolean attempted;
 
     public TileEntityThermalEvaporationBlock() {
-        inventory = NonNullList.withSize(0, ItemStack.EMPTY);
+        this(MekanismBlock.THERMAL_EVAPORATION_BLOCK);
+    }
+
+    public TileEntityThermalEvaporationBlock(IBlockProvider provider) {
+        super(provider);
     }
 
     @Override

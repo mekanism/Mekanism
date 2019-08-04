@@ -6,14 +6,20 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.tile.energy_cube.TileEntityAdvancedEnergyCube;
+import mekanism.common.tile.energy_cube.TileEntityBasicEnergyCube;
+import mekanism.common.tile.energy_cube.TileEntityCreativeEnergyCube;
+import mekanism.common.tile.energy_cube.TileEntityEliteEnergyCube;
+import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
+import mekanism.common.tile.energy_cube.TileEntityUltimateEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -41,7 +47,7 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric {
+public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory {
 
     private final EnergyCubeTier tier;
 
@@ -145,7 +151,19 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityEnergyCube(this);
+        switch (tier) {
+            case BASIC:
+                return new TileEntityBasicEnergyCube();
+            case ADVANCED:
+                return new TileEntityAdvancedEnergyCube();
+            case ELITE:
+                return new TileEntityEliteEnergyCube();
+            case ULTIMATE:
+                return new TileEntityUltimateEnergyCube();
+            case CREATIVE:
+                return new TileEntityCreativeEnergyCube();
+        }
+        return null;
     }
 
     @Override
@@ -174,5 +192,10 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     @Override
     public double getStorage() {
         return tier.getMaxEnergy();
+    }
+
+    @Override
+    public int getInventorySize() {
+        return 2;
     }
 }

@@ -9,6 +9,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismBlock;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.MachineType;
@@ -26,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -40,8 +40,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     public OxidationRecipe cachedRecipe;
 
     public TileEntityChemicalOxidizer() {
-        super("machine.oxidizer", MachineType.CHEMICAL_OXIDIZER, 3, 100);
-        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+        super("machine.oxidizer", MekanismBlock.CHEMICAL_OXIDIZER, 3, 100);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
         super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
-            TileUtils.drawGas(inventory.get(2), gasTank);
+            TileUtils.drawGas(getInventory().get(2), gasTank);
             OxidationRecipe recipe = getRecipe();
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
@@ -109,15 +108,15 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     public ItemStackInput getInput() {
-        return new ItemStackInput(inventory.get(0));
+        return new ItemStackInput(getInventory().get(0));
     }
 
     public boolean canOperate(OxidationRecipe recipe) {
-        return recipe != null && recipe.canOperate(inventory, gasTank);
+        return recipe != null && recipe.canOperate(getInventory(), gasTank);
     }
 
     public void operate(OxidationRecipe recipe) {
-        recipe.operate(inventory, gasTank);
+        recipe.operate(getInventory(), gasTank);
         markDirty();
     }
 
