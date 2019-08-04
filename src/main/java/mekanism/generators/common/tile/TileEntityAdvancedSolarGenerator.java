@@ -7,13 +7,14 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
 
     public TileEntityAdvancedSolarGenerator() {
-        super("AdvancedSolarGenerator", 200000, MekanismConfig.current().generators.advancedSolarGeneration.val() * 2);
+        super(GeneratorsBlock.ADVANCED_SOLAR_GENERATOR, MekanismConfig.current().generators.advancedSolarGeneration.val() * 2);
     }
 
     @Override

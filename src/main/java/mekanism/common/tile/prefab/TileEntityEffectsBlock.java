@@ -7,6 +7,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityElectric;
@@ -35,7 +36,6 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectric implemen
     // Number of ticks that the block can be inactive before it's considered not recently active
     private final int RECENT_THRESHOLD = 100;
 
-
     /**
      * The base of all blocks that deal with electricity, make noise and potential generate ambient lighting
      *
@@ -43,8 +43,8 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectric implemen
      * @param name          - full name of this block
      * @param baseMaxEnergy - how much energy this block can store
      */
-    public TileEntityEffectsBlock(String sound, String name, double baseMaxEnergy) {
-        super(name, baseMaxEnergy);
+    public TileEntityEffectsBlock(String sound, IBlockProvider blockProvider) {
+        super(blockProvider);
         // TODO: Have subclasses pass in a static SoundEvent so we avoid per-instance # of SoundEvents for same sound
         // TODO: Factories don't currently pass in the right value for sound ID of wrapped machine; overhaul this.
         if (!sound.equals("null")) {
@@ -52,8 +52,8 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectric implemen
         }
     }
 
-    public TileEntityEffectsBlock(String sound, String name, double baseMaxEnergy, int rapidChangeThreshold) {
-        this(sound, name, baseMaxEnergy);
+    public TileEntityEffectsBlock(String sound, IBlockProvider blockProvider, int rapidChangeThreshold) {
+        this(sound, blockProvider);
         this.rapidChangeThreshold = rapidChangeThreshold;
     }
 

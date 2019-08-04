@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.tile.base.TileEntityElectric;
 import mekanism.common.util.InventoryUtils;
 import mekanism.generators.common.FusionReactor;
@@ -23,11 +23,11 @@ public abstract class TileEntityReactorBlock extends TileEntityElectric {
 
     public TileEntityReactorBlock() {
         //TODO: Does hierarchy have to be done this way
-        this((IBlockElectric) GeneratorsBlock.REACTOR_FRAME.getBlock());
+        this(GeneratorsBlock.REACTOR_FRAME);
     }
 
-    public TileEntityReactorBlock(IBlockElectric electricBlock) {
-        super(electricBlock);
+    public TileEntityReactorBlock(IBlockProvider blockProvider) {
+        super(blockProvider);
     }
 
     public abstract boolean isFrame();

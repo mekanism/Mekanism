@@ -16,6 +16,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
@@ -78,7 +79,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
 
     public TileEntityFluidTank(IBlockProvider blockProvider) {
         super(blockProvider);
-        this.tier = tankTier;
+        this.tier = ((BlockFluidTank) blockProvider.getBlock()).getTier();
         fluidTank = new FluidTank(this.tier.getStorage());
     }
 

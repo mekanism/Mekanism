@@ -2,7 +2,6 @@ package mekanism.common.tile.interfaces;
 
 import javax.annotation.Nonnull;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -47,12 +46,6 @@ public interface ITileContainer extends ISidedInventory, ISustainedInventory {
     @Override
     default ItemStack removeStackFromSlot(int slotID) {
         return hasInventory() ? ItemStackHelper.getAndRemove(getInventory(), slotID) : ItemStack.EMPTY;
-    }
-
-    @Nonnull
-    @Override
-    default String getName() {
-        return LangUtils.localize(getBlockType().getTranslationKey() + ".name");
     }
 
     @Override

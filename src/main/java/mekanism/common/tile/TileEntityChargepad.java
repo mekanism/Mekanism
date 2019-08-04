@@ -6,7 +6,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.ChargeUtils;
@@ -33,7 +33,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     public Random random = new Random();
 
     public TileEntityChargepad() {
-        super("machine.chargepad", "Chargepad", MachineType.CHARGEPAD.getStorage());
+        super("machine.chargepad", MekanismBlock.CHARGEPAD);
     }
 
     @Override

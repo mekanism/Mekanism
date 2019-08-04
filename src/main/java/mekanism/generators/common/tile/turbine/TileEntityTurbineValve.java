@@ -24,6 +24,7 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,6 +46,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     private int currentRedstoneLevel;
 
     public TileEntityTurbineValve() {
+        super(GeneratorsBlock.TURBINE_VALVE);
         fluidTank = new TurbineFluidTank(this);
     }
 

@@ -8,6 +8,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -19,6 +20,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IFluidHandlerWrapper {
 
     public FluidTankInfo fakeInfo = new FluidTankInfo(null, 1000);
+
+    public TileEntityTurbineVent() {
+        super(GeneratorsBlock.TURBINE_VENT);
+    }
 
     @Override
     public void onUpdate() {

@@ -229,7 +229,7 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     }
 
     @Override
-    public double getConfigStorage() {
+    public double getStorage() {
         return MekanismConfig.current().storage.laser.val();
     }
 }

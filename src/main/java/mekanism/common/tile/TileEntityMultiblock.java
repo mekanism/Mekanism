@@ -241,8 +241,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         return nbtTags;
     }
 
+    @Nonnull
     @Override
-    protected NonNullList<ItemStack> getInventory() {
+    public NonNullList<ItemStack> getInventory() {
         return structure != null ? structure.getInventory() : null;
     }
 

@@ -93,8 +93,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     private int currentRedstoneLevel;
 
+    //TODO: Remove this
+    private double BASE_ENERGY_PER_TICK;
+
     public TileEntityElectrolyticSeparator() {
         super("machine.electrolyticseparator", MekanismBlock.ELECTROLYTIC_SEPARATOR, 4);
+        BASE_ENERGY_PER_TICK = super.getBaseEnergyPerTick();
+    }
+
+    @Override
+    public double getBaseEnergyPerTick() {
+        return BASE_ENERGY_PER_TICK;
     }
 
     @Override
@@ -122,7 +131,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
-                boolean update = BASE_ENERGY_PER_TICK != recipe.energyUsage;
+                boolean update = getBaseEnergyPerTick() != recipe.energyUsage;
                 BASE_ENERGY_PER_TICK = recipe.energyUsage;
                 if (update) {
                     recalculateUpgrades(Upgrade.ENERGY);

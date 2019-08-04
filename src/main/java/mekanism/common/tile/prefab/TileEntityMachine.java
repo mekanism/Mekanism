@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.MachineType;
@@ -29,8 +30,8 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     public TileComponentUpgrade<TileEntityMachine> upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-    public TileEntityMachine(String sound, MachineType type, int upgradeSlot) {
-        super(sound, type.getBlockName(), type.getStorage());
+    public TileEntityMachine(String sound, IBlockProvider blockProvider, int upgradeSlot) {
+        super(sound, blockProvider);
         upgradeComponent = new TileComponentUpgrade<>(this, upgradeSlot);
         upgradeComponent.setSupported(Upgrade.MUFFLING);
     }

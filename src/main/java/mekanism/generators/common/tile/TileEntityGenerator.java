@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.config.MekanismConfig;
@@ -42,8 +43,8 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
      * @param name      - full name of this generator
      * @param maxEnergy - how much energy this generator can store
      */
-    public TileEntityGenerator(String soundPath, String name, double maxEnergy, double out) {
-        super("gen." + soundPath, name, maxEnergy);
+    public TileEntityGenerator(String soundPath, IBlockProvider blockProvider, double out) {
+        super("gen." + soundPath, blockProvider);
         output = out;
         controlType = RedstoneControl.DISABLED;
     }

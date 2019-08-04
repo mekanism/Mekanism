@@ -18,6 +18,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -69,7 +70,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
 
     public TileEntityGasTank(IBlockProvider blockProvider) {
         super(blockProvider);
-        this.tier = tankTier;
+        this.tier = ((BlockGasTank) blockProvider.getBlock()).getTier();
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));

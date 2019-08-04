@@ -13,9 +13,14 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
-import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.tile.bin.TileEntityAdvancedBin;
+import mekanism.common.tile.bin.TileEntityBasicBin;
+import mekanism.common.tile.bin.TileEntityBin;
+import mekanism.common.tile.bin.TileEntityCreativeBin;
+import mekanism.common.tile.bin.TileEntityEliteBin;
+import mekanism.common.tile.bin.TileEntityUltimateBin;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -193,7 +198,19 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityBin();
+        switch (tier) {
+            case BASIC:
+                return new TileEntityBasicBin();
+            case ADVANCED:
+                return new TileEntityAdvancedBin();
+            case ELITE:
+                return new TileEntityEliteBin();
+            case ULTIMATE:
+                return new TileEntityUltimateBin();
+            case CREATIVE:
+                return new TileEntityCreativeBin();
+        }
+        return null;
     }
 
     @Override

@@ -7,7 +7,6 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.SideData;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
@@ -32,7 +31,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -62,7 +60,7 @@ public abstract class TileEntityEnergyCube extends TileEntityElectric implements
      */
     public TileEntityEnergyCube(IBlockProvider blockProvider) {
         super(blockProvider);
-        this.tier = energyCube.getTier();
+        this.tier = ((BlockEnergyCube) blockProvider.getBlock()).getTier();
 
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
 

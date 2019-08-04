@@ -3,6 +3,7 @@ package mekanism.common.tile.prefab;
 import javax.annotation.Nonnull;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.states.MachineType;
@@ -34,8 +35,8 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
      * @param type              - the type of this machine
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityBasicMachine(String soundPath, MachineType type, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super("machine." + soundPath, type, upgradeSlot, baseTicksRequired);
+    public TileEntityBasicMachine(String soundPath, IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+        super("machine." + soundPath, blockProvider, upgradeSlot, baseTicksRequired);
         guiLocation = location;
     }
 

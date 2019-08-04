@@ -1,7 +1,7 @@
 package mekanism.common.tile.prefab;
 
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
@@ -19,8 +19,8 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
      * @param type              - the type of this machine
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityUpgradeableMachine(String soundPath, MachineType type, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super(soundPath, type, upgradeSlot, baseTicksRequired, location);
+    public TileEntityUpgradeableMachine(String soundPath, IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+        super(soundPath, blockProvider, upgradeSlot, baseTicksRequired, location);
     }
 
     @Override

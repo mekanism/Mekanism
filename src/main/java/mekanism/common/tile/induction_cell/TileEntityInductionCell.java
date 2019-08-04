@@ -1,20 +1,27 @@
-package mekanism.common.tile;
+package mekanism.common.tile.induction_cell;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.common.base.IBlockProvider;
+import mekanism.common.block.basic.BlockInductionCell;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityInductionCell extends TileEntityMekanism implements IStrictEnergyStorage {
+public abstract class TileEntityInductionCell extends TileEntityMekanism implements IStrictEnergyStorage {
+
+    public InductionCellTier tier;
+
+    public TileEntityInductionCell(IBlockProvider blockProvider) {
+        super(blockProvider);
+        this.tier = ((BlockInductionCell) blockProvider.getBlock()).getTier();
+    }
 
     public double electricityStored;
 

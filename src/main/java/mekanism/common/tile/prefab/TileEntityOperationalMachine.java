@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.states.MachineType;
 import mekanism.common.util.MekanismUtils;
@@ -19,8 +20,8 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
 
     public int ticksRequired;
 
-    protected TileEntityOperationalMachine(String sound, MachineType type, int upgradeSlot, int baseTicksRequired) {
-        super(sound, type, upgradeSlot);
+    protected TileEntityOperationalMachine(String sound, IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired) {
+        super(sound, blockProvider, upgradeSlot);
         ticksRequired = BASE_TICKS_REQUIRED = baseTicksRequired;
     }
 

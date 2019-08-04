@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.bin.TileEntityBin;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

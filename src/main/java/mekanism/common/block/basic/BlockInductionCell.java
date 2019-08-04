@@ -8,8 +8,11 @@ import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionCellTier;
-import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.induction_cell.TileEntityAdvancedInductionCell;
+import mekanism.common.tile.induction_cell.TileEntityBasicInductionCell;
+import mekanism.common.tile.induction_cell.TileEntityEliteInductionCell;
+import mekanism.common.tile.induction_cell.TileEntityUltimateInductionCell;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -53,7 +56,17 @@ public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<I
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityInductionCell();
+        switch (tier) {
+            case BASIC:
+                return new TileEntityBasicInductionCell();
+            case ADVANCED:
+                return new TileEntityAdvancedInductionCell();
+            case ELITE:
+                return new TileEntityEliteInductionCell();
+            case ULTIMATE:
+                return new TileEntityUltimateInductionCell();
+        }
+        return null;
     }
 
     @Override

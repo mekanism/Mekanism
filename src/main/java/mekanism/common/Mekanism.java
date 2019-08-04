@@ -63,7 +63,7 @@ import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
-import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.bin.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -93,9 +93,9 @@ import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.induction_cell.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.induction_provider.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
@@ -597,9 +597,9 @@ public class Mekanism {
      * Adds and registers all tile entities.
      */
     private void registerTileEntities() {
+        //TODO: Register all tile entities
         //Tile entities
         registerTileEntity(TileEntityAdvancedBoundingBlock.class, "advanced_bounding_block");
-        registerTileEntity(TileEntityAdvancedFactory.class, "advanced_smelting_factory");
         registerTileEntity(TileEntityBin.class, "bin");
         registerTileEntity(TileEntityBoilerCasing.class, "boiler_casing");
         registerTileEntity(TileEntityBoilerValve.class, "boiler_valve");
@@ -620,7 +620,6 @@ public class Mekanism {
         registerTileEntity(TileEntityDynamicValve.class, "dynamic_valve");
         registerTileEntity(TileEntityElectricPump.class, "electric_pump");
         registerTileEntity(TileEntityElectrolyticSeparator.class, "electrolytic_separator");
-        registerTileEntity(TileEntityEliteFactory.class, "ultimate_smelting_factory");
         registerTileEntity(TileEntityEnergizedSmelter.class, "energized_smelter");
         registerTileEntity(TileEntityEnergyCube.class, "energy_cube");
         registerTileEntity(TileEntityEnrichmentChamber.class, "enrichment_chamber");

@@ -35,6 +35,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.interfaces.ITileContainer;
 import mekanism.common.tile.interfaces.ITileDirectional;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -492,7 +493,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     @Override
     //TODO: Don't have this be abstract, get it from the block instead by default
-    public abstract int[] getSlotsForFace(@Nonnull EnumFacing side);
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        //TODO
+        return new int[0];
+    }
 
     @Override
     public void setInventory(NBTTagList nbtTags, Object... data) {
@@ -535,6 +539,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     protected IItemHandler getItemHandler(EnumFacing side) {
         return side == null ? nullHandler : itemManager.getWrapper(this, side);
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return LangUtils.localize(getBlockType().getTranslationKey() + ".name");
     }
     //End methods ITileContainer
 }

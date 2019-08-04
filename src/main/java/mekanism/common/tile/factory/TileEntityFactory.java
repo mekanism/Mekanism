@@ -30,7 +30,7 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.block.states.MachineType;
+import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.GasConversionHandler;
@@ -65,7 +65,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -129,7 +128,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     public TileEntityFactory(IBlockProvider blockProvider) {
         super("null", blockProvider, 0);
-        tier = factoryTier;
+        this.tier = ((BlockFactory) blockProvider.getBlock()).getTier();
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 

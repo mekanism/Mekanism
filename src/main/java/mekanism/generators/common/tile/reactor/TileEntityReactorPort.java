@@ -17,7 +17,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -51,7 +50,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     public boolean fluidEject;
 
     public TileEntityReactorPort() {
-        super((IBlockElectric) GeneratorsBlock.REACTOR_PORT.getBlock());
+        super(GeneratorsBlock.REACTOR_PORT);
     }
 
     @Override

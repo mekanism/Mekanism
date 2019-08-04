@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -16,6 +17,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
+import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
@@ -29,6 +31,14 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage {
+
+    public TileEntityTurbineCasing() {
+        this(GeneratorsBlock.TURBINE_CASING);
+    }
+
+    public TileEntityTurbineCasing(IBlockProvider blockProvider) {
+        super(blockProvider);
+    }
 
     @Override
     public void onUpdate() {

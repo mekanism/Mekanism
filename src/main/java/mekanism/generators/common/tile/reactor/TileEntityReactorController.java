@@ -9,7 +9,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -58,7 +57,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     private int playSoundCooldown = 0;
 
     public TileEntityReactorController() {
-        super((IBlockElectric) GeneratorsBlock.REACTOR_CONTROLLER.getBlock());
+        super(GeneratorsBlock.REACTOR_CONTROLLER);
     }
 
     @Override

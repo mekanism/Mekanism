@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.bin;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
@@ -8,6 +8,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
@@ -41,7 +42,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityBin extends TileEntityMekanism implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
+public abstract class TileEntityBin extends TileEntityMekanism implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
 
     private static final int[] UPSLOTS = {1};
     private static final int[] DOWNSLOTS = {0};
@@ -68,7 +69,8 @@ public class TileEntityBin extends TileEntityMekanism implements ISidedInventory
 
     private BinItemHandler myItemHandler;
 
-    public TileEntityBin() {
+    public TileEntityBin(IBlockProvider blockProvider) {
+        super(blockProvider);
         myItemHandler = new BinItemHandler(this);
     }
 
