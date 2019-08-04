@@ -5,7 +5,7 @@ import mekanism.common.base.IGuiProvider;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
@@ -135,7 +135,7 @@ public class GeneratorsCommonProxy implements IGuiProvider {
             case 12:
             case 13:
             case 15:
-                return new ContainerNull(player, (TileEntityContainer) tileEntity);
+                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
         }
 
         return null;

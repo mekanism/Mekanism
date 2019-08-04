@@ -20,7 +20,7 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiFilterHolder<TILE extends TileEntityContainer, FILTER extends IFilter> extends GuiMekanismTile<TILE> {
+public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER extends IFilter> extends GuiMekanismTile<TILE> {
 
     // Filter dimensions
     protected final int filterX = 56;

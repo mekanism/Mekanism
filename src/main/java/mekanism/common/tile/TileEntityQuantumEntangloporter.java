@@ -215,7 +215,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
         NBTTagList tagList = nbtTags.getTagList("upgradesInv", Constants.NBT.TAG_COMPOUND);
         //TODO: Given we only have one slot I think we can manually clear or something
-        inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
+        //inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");

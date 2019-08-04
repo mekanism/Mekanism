@@ -18,7 +18,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntitySecurityDesk extends TileEntityContainer implements IBoundingBlock {
+public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
     private static final int[] SLOTS = {0, 1};
 

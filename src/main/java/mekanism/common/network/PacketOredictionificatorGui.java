@@ -12,7 +12,7 @@ import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityOredictionificator;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -99,7 +99,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
             if (guiType == 0) {
                 container = new ContainerOredictionificator(playerMP.inventory, (TileEntityOredictionificator) obj.getTileEntity(world));
             } else if (guiType == 1) {
-                container = new ContainerFilter(playerMP.inventory, (TileEntityContainer) obj.getTileEntity(world));
+                container = new ContainerFilter(playerMP.inventory, (TileEntityMekanism) obj.getTileEntity(world));
             }
             playerMP.getNextWindowId();
             int window = playerMP.currentWindowId;

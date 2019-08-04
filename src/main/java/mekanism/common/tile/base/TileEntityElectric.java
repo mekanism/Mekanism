@@ -27,7 +27,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
-public abstract class TileEntityElectric extends TileEntityContainer implements IEnergyWrapper {
+public abstract class TileEntityElectric extends TileEntityMekanism implements IEnergyWrapper {
 
     /**
      * How much energy is stored in this block.

@@ -21,7 +21,6 @@ import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.CapabilityUtils;
@@ -125,7 +124,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                     }
                 }
             } else if (getState(stack) == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof TileEntityContainer) {
+                if (tile instanceof TileEntityMekanism) {
                     if (SecurityUtils.canAccess(player, tile)) {
                         //TODO: Switch this to items being handled by TECB, energy handled here (via lambdas?)
                         IInventory inv = (IInventory) tile;

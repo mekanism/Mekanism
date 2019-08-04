@@ -9,7 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityThermalEvaporationBlock extends TileEntityContainer implements IComputerIntegration {
+public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implements IComputerIntegration {
 
     private static final String[] methods = new String[]{"getTemperature", "getHeight", "isFormed", "getInput", "getOutput"};
     public Coord4D master;

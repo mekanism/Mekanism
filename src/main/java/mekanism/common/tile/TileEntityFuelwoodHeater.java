@@ -11,7 +11,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
@@ -24,7 +24,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFuelwoodHeater extends TileEntityContainer implements IHeatTransfer, ISecurityTile, IActiveState {
+public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHeatTransfer, ISecurityTile, IActiveState {
 
     public double temperature;
     public double heatToAbsorb = 0;

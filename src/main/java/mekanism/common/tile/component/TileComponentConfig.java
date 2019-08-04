@@ -15,7 +15,7 @@ import mekanism.common.SideData;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,14 +28,14 @@ public class TileComponentConfig implements ITileComponent {
 
     public static SideData EMPTY = new SideData("Empty", EnumColor.BLACK, InventoryUtils.EMPTY);
 
-    public TileEntityContainer tileEntity;
+    public TileEntityMekanism tileEntity;
     private List<TransmissionType> transmissions = new ArrayList<>();
     private Map<TransmissionType, SideConfig> sideConfigs = new EnumMap<>(TransmissionType.class);
     private Map<TransmissionType, ArrayList<SideData>> sideOutputs = new EnumMap<>(TransmissionType.class);
     private Map<TransmissionType, Boolean> ejecting = new EnumMap<>(TransmissionType.class);
     private Map<TransmissionType, Boolean> canEject = new EnumMap<>(TransmissionType.class);
 
-    public TileComponentConfig(TileEntityContainer tile, TransmissionType... types) {
+    public TileComponentConfig(TileEntityMekanism tile, TransmissionType... types) {
         tileEntity = tile;
         for (TransmissionType type : types) {
             addSupported(type);

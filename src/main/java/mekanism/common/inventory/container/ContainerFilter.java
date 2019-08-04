@@ -1,15 +1,15 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerFilter extends ContainerMekanism<TileEntityContainer> {
+public class ContainerFilter extends ContainerMekanism<TileEntityMekanism> {
 
-    public ContainerFilter(InventoryPlayer inventory, TileEntityContainer tile) {
+    public ContainerFilter(InventoryPlayer inventory, TileEntityMekanism tile) {
         super(tile, inventory);
     }
 

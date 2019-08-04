@@ -12,7 +12,7 @@ import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
@@ -26,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityContainer> extends GuiTypeFilter<FILTER, TILE> {
+public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityMekanism> extends GuiTypeFilter<FILTER, TILE> {
 
     protected GuiMaterialFilter(EntityPlayer player, TILE tile) {
         super(player, tile);

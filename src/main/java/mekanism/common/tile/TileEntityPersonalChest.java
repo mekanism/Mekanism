@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismBlock;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
@@ -15,7 +15,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityPersonalChest extends TileEntityContainer implements ISecurityTile {
+public class TileEntityPersonalChest extends TileEntityMekanism implements ISecurityTile {
 
     public static int[] INV;
 

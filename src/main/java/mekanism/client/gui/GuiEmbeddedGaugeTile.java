@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Container;
@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainer> extends GuiMekanismTile<TILE> {
+public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism> extends GuiMekanismTile<TILE> {
 
     protected GuiEmbeddedGaugeTile(TILE tile, Container container) {
         super(tile, container);

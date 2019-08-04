@@ -70,13 +70,9 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
-import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
-import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
@@ -92,7 +88,11 @@ import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
+import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
+import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
@@ -298,7 +298,7 @@ public class CommonProxy implements IGuiProvider {
             case 8:
                 return new ContainerEnergyCube(player.inventory, (TileEntityEnergyCube) tileEntity);
             case 9:
-                return new ContainerNull(player, (TileEntityContainer) tileEntity);
+                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
             case 10:
                 return new ContainerGasTank(player.inventory, (TileEntityGasTank) tileEntity);
             case 11:
@@ -320,11 +320,11 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerPersonalChest(player.inventory, (TileEntityPersonalChest) tileEntity);
             //EMPTY 20, 21, 22, 23, 24, 25
             case 26:
-                return new ContainerNull(player, (TileEntityContainer) tileEntity);
+                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
             case 27:
-                return new ContainerFilter(player.inventory, (TileEntityContainer) tileEntity);
+                return new ContainerFilter(player.inventory, (TileEntityMekanism) tileEntity);
             case 28:
-                return new ContainerFilter(player.inventory, (TileEntityContainer) tileEntity);
+                return new ContainerFilter(player.inventory, (TileEntityMekanism) tileEntity);
             case 29:
                 return new ContainerChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer) tileEntity);
             case 30:
@@ -363,21 +363,21 @@ public class CommonProxy implements IGuiProvider {
             case 47:
                 return new ContainerSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator) tileEntity);
             case 48:
-                return new ContainerNull(player, (TileEntityContainer) tileEntity);
+                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
             case 49:
                 return new ContainerInductionMatrix(player.inventory, (TileEntityInductionCasing) tileEntity);
             case 50:
-                return new ContainerNull(player, (TileEntityContainer) tileEntity);
+                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
             case 51:
-                return new ContainerNull(player, (TileEntityContainer) tileEntity);
+                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
             case 52:
                 return new ContainerOredictionificator(player.inventory, (TileEntityOredictionificator) tileEntity);
             case 53:
                 return new ContainerResistiveHeater(player.inventory, (TileEntityResistiveHeater) tileEntity);
             case 54:
-                return new ContainerFilter(player.inventory, (TileEntityContainer) tileEntity);
+                return new ContainerFilter(player.inventory, (TileEntityMekanism) tileEntity);
             case 55:
-                return new ContainerNull(player, (TileEntityContainer) tileEntity);
+                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
             case 56:
                 return new ContainerFormulaicAssemblicator(player.inventory, (TileEntityFormulaicAssemblicator) tileEntity);
             case 57:
@@ -385,7 +385,7 @@ public class CommonProxy implements IGuiProvider {
             case 58:
                 return new ContainerFuelwoodHeater(player.inventory, (TileEntityFuelwoodHeater) tileEntity);
             case 59:
-                return new ContainerNull(player, (TileEntityContainer) tileEntity);
+                return new ContainerNull(player, (TileEntityMekanism) tileEntity);
         }
         return null;
     }

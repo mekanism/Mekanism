@@ -12,10 +12,10 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileComponentUpgrade<TILE extends TileEntityContainer & IUpgradeTile> implements ITileComponent {
+public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile> implements ITileComponent {
 
     /**
      * How long it takes this machine to install an upgrade.

@@ -6,7 +6,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEntityContainer> extends GuiFilter<TILE> {
+public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism> extends GuiFilter<TILE> {
 
     protected String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
     protected FILTER origFilter;

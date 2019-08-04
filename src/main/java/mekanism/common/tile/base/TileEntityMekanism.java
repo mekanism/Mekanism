@@ -14,6 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.ItemHandlerWrapper;
 import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockSound;
@@ -22,6 +23,8 @@ import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -38,20 +41,27 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
-public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, ITileDirectional, ITileContainer {
+public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, ITileDirectional, ITileContainer, IToggleableCapability {
 
     /**
      * The players currently using this block.
@@ -85,10 +95,43 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     private EnumFacing facing = EnumFacing.NORTH;
     //End variables ITileDirectional
 
+    //Variables for handling ITileContainer
+    /**
+     * The inventory slot itemstacks used by this block.
+     */
+    public NonNullList<ItemStack> inventory;
+
+    private CapabilityWrapperManager<ISidedInventory, ItemHandlerWrapper> itemManager = new CapabilityWrapperManager<>(ISidedInventory.class, ItemHandlerWrapper.class);
+    /**
+     * Read only itemhandler for the null facing.
+     */
+    private IItemHandler nullHandler = new InvWrapper(this) {
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+            //no
+        }
+    };
+    //End variables ITileContainer
+
 
     public TileEntityMekanism(IBlockProvider blockProvider) {
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
+        if (hasInventory()) {
+            inventory = NonNullList.withSize(((IHasInventory) blockProvider.getBlock()).getInventorySize(), ItemStack.EMPTY);
+        }
     }
 
     protected void setSupportedTypes(Block block) {
@@ -276,6 +319,19 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isDirectional() && nbtTags.hasKey("facing")) {
             facing = EnumFacing.byIndex(nbtTags.getInteger("facing"));
         }
+        if (hasInventory()) {
+            if (handleInventory()) {
+                NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
+                inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+                for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
+                    NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+                    byte slotID = tagCompound.getByte("Slot");
+                    if (slotID >= 0 && slotID < getSizeInventory()) {
+                        setInventorySlotContents(slotID, new ItemStack(tagCompound));
+                    }
+                }
+            }
+        }
     }
 
     @Nonnull
@@ -289,17 +345,42 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isDirectional()) {
             nbtTags.setInteger("facing", getDirection().ordinal());
         }
+        if (hasInventory()) {
+            if (handleInventory()) {
+                NBTTagList tagList = new NBTTagList();
+                for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
+                    ItemStack stackInSlot = getStackInSlot(slotCount);
+                    if (!stackInSlot.isEmpty()) {
+                        NBTTagCompound tagCompound = new NBTTagCompound();
+                        tagCompound.setByte("Slot", (byte) slotCount);
+                        stackInSlot.writeToNBT(tagCompound);
+                        tagList.appendTag(tagCompound);
+                    }
+                }
+                nbtTags.setTag("Items", tagList);
+            }
+        }
         return nbtTags;
     }
 
+
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        } else if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
+        }
         return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
+        } else if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, side);
@@ -384,4 +465,76 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
     }
     //End methods ITileDirectional
+
+    //Methods for implementing ITileContainer
+    @Nonnull
+    @Override
+    public NonNullList<ItemStack> getInventory() {
+        return inventory;
+    }
+
+    @Override
+    public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack) {
+        if (hasInventory()) {
+            getInventory().set(slotID, itemstack);
+            if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {
+                itemstack.setCount(getInventoryStackLimit());
+            }
+            markDirty();
+        }
+    }
+
+    @Override
+    public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer) {
+        return hasInventory() && !isInvalid() && this.world.isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
+    }
+
+    @Nonnull
+    @Override
+    //TODO: Don't have this be abstract, get it from the block instead by default
+    public abstract int[] getSlotsForFace(@Nonnull EnumFacing side);
+
+    @Override
+    public void setInventory(NBTTagList nbtTags, Object... data) {
+        if (nbtTags == null || nbtTags.tagCount() == 0 || !handleInventory()) {
+            return;
+        }
+        NonNullList<ItemStack>  inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+        for (int slots = 0; slots < nbtTags.tagCount(); slots++) {
+            NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
+            byte slotID = tagCompound.getByte("Slot");
+            if (slotID >= 0 && slotID < inventory.size()) {
+                inventory.set(slotID, new ItemStack(tagCompound));
+            }
+        }
+        this.inventory = inventory;
+    }
+
+    @Override
+    public NBTTagList getInventory(Object... data) {
+        NBTTagList tagList = new NBTTagList();
+        if (handleInventory()) {
+            NonNullList<ItemStack> inventory = getInventory();
+            for (int slots = 0; slots < inventory.size(); slots++) {
+                ItemStack itemStack = inventory.get(slots);
+                if (!itemStack.isEmpty()) {
+                    NBTTagCompound tagCompound = new NBTTagCompound();
+                    tagCompound.setByte("Slot", (byte) slots);
+                    itemStack.writeToNBT(tagCompound);
+                    tagList.appendTag(tagCompound);
+                }
+            }
+        }
+        return tagList;
+    }
+
+    //TODO: Remove??
+    public boolean handleInventory() {
+        return hasInventory();
+    }
+
+    protected IItemHandler getItemHandler(EnumFacing side) {
+        return side == null ? nullHandler : itemManager.getWrapper(this, side);
+    }
+    //End methods ITileContainer
 }

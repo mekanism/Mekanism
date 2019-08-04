@@ -27,7 +27,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ItemDataUtils;
@@ -42,7 +42,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySolarNeutronActivator extends TileEntityContainer implements IRedstoneControl, IBoundingBlock, IGasHandler, IActiveState, ISustainedData,
+public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IRedstoneControl, IBoundingBlock, IGasHandler, IActiveState, ISustainedData,
       ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler, IComparatorSupport {
 
     public static final int MAX_GAS = 10000;

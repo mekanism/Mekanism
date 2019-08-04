@@ -1,16 +1,16 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 
-public class ContainerNull extends ContainerMekanism<TileEntityContainer> {
+public class ContainerNull extends ContainerMekanism<TileEntityMekanism> {
 
-    public ContainerNull(EntityPlayer player, TileEntityContainer tile) {
+    public ContainerNull(EntityPlayer player, TileEntityMekanism tile) {
         super(tile, player == null ? null : player.inventory);
     }
 
-    public ContainerNull(TileEntityContainer tile) {
+    public ContainerNull(TileEntityMekanism tile) {
         this(null, tile);
     }
 

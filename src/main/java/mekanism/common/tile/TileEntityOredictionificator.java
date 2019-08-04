@@ -17,7 +17,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -36,7 +36,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityOredictionificator extends TileEntityContainer implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile {
+public class TileEntityOredictionificator extends TileEntityMekanism implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile {
 
     public static final int MAX_LENGTH = 24;
     private static final int[] SLOTS = {0, 1};

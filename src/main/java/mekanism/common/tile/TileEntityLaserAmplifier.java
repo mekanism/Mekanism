@@ -16,7 +16,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -30,7 +30,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityContainer implements ILaserReceptor, IRedstoneControl, IStrictEnergyOutputter, IStrictEnergyStorage,
+public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IRedstoneControl, IStrictEnergyOutputter, IStrictEnergyStorage,
       IComputerIntegration, ISecurityTile {
 
     public static final double MAX_ENERGY = 5E9;

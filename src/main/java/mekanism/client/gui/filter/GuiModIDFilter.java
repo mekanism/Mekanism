@@ -7,7 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
-import mekanism.common.tile.base.TileEntityContainer;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends TileEntityContainer> extends GuiTextFilter<FILTER, TILE> {
+public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends TileEntityMekanism> extends GuiTextFilter<FILTER, TILE> {
 
     protected GuiModIDFilter(EntityPlayer player, TILE tile) {
         super(player, tile);

@@ -20,7 +20,6 @@ import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.tile.base.TileEntityContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
@@ -91,7 +90,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
         if (tile instanceof IRedstoneControl) {
             ItemDataUtils.setInt(itemStack, "controlType", ((IRedstoneControl) tile).getControlType().ordinal());
         }
-        if (item instanceof ISustainedInventory && tile instanceof TileEntityContainer && ((TileEntityContainer) tile).getSizeInventory() > 0) {
+        if (item instanceof ISustainedInventory && tile.hasInventory() && tile.getSizeInventory() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
