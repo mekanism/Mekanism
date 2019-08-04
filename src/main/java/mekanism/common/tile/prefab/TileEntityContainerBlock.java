@@ -281,7 +281,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
         }
-        return super.getCapability(capability, facing);
+        return super.getCapability(capability, side);
     }
 
     protected IItemHandler getItemHandler(EnumFacing side) {
