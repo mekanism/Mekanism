@@ -24,7 +24,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 //TODO: Ideally we want this to not have to be Directional and can just extend TileEntityMekanism
-public abstract class TileEntityContainer extends TileEntityDirectional implements ISidedInventory, ISustainedInventory, IToggleableCapability {
+public abstract class TileEntityContainer extends TileEntityMekanism implements ISidedInventory, ISustainedInventory, IToggleableCapability {
 
     /**
      * The inventory slot itemstacks used by this block.

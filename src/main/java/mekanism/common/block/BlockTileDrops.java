@@ -21,7 +21,6 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityContainer;
-import mekanism.common.tile.base.TileEntityDirectional;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
@@ -174,10 +173,9 @@ public abstract class BlockTileDrops extends Block {
         //TODO: Remove most implementations of ItemBlock#placeBlockAt and use this method instead
         //TODO: Should this just be TileEntity and then check instance of and abstract things further
         TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
-        if (this instanceof IStateFacing && tile instanceof TileEntityDirectional) {
-            TileEntityDirectional tileDirectional = (TileEntityDirectional) tile;
+        if (this instanceof IStateFacing) {
             EnumFacing change = EnumFacing.SOUTH;
-            if (tileDirectional.canSetFacing(EnumFacing.DOWN) && tileDirectional.canSetFacing(EnumFacing.UP)) {
+            if (tile.canSetFacing(EnumFacing.DOWN) && tile.canSetFacing(EnumFacing.UP)) {
                 int height = Math.round(placer.rotationPitch);
                 if (height >= 65) {
                     change = EnumFacing.UP;
@@ -202,7 +200,7 @@ public abstract class BlockTileDrops extends Block {
                         break;
                 }
             }
-            tileDirectional.setFacing(change);
+            tile.setFacing(change);
         }
         tile.redstone = world.isBlockPowered(pos);
 
@@ -286,11 +284,11 @@ public abstract class BlockTileDrops extends Block {
     @Override
     public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
         if (this instanceof IStateFacing) {
-            TileEntity tile = world.getTileEntity(pos);
-            if (tile instanceof TileEntityDirectional) {
-                TileEntityDirectional tileDirectional = (TileEntityDirectional) tile;
-                if (tileDirectional.canSetFacing(axis)) {
-                    tileDirectional.setFacing(axis);
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof TileEntityMekanism) {
+                TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
+                if (tile.isDirectional() && tile.canSetFacing(axis)) {
+                    tile.setFacing(axis);
                     return true;
                 }
             }

@@ -26,7 +26,6 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityFactory;
-import mekanism.common.tile.base.TileEntityDirectional;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -114,7 +113,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
-        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -162,7 +161,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         if (world.isRemote) {
             return true;
         }
-        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);

@@ -17,7 +17,7 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
-import mekanism.common.tile.base.TileEntityDirectional;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -41,7 +41,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityBin extends TileEntityDirectional implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
+public class TileEntityBin extends TileEntityMekanism implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
 
     private static final int[] UPSLOTS = {1};
     private static final int[] DOWNSLOTS = {0};

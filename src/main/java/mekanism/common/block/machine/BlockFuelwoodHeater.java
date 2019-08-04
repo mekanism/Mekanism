@@ -12,7 +12,6 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
-import mekanism.common.tile.base.TileEntityDirectional;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -69,7 +68,7 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
-        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;

@@ -10,7 +10,7 @@ import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityGlowPanel;
-import mekanism.common.tile.base.TileEntityDirectional;
+import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.Block;
@@ -108,8 +108,11 @@ public class BlockStateHelper {
     @Nullable
     private static EnumFacing getFacing(@Nonnull TileEntity tile) {
         //TODO: Make Glow Panel implement ITileDirectional
-        if (tile instanceof TileEntityDirectional) {
-            return ((TileEntityDirectional) tile).getDirection();
+        if (tile instanceof ITileDirectional) {
+            ITileDirectional directional = (ITileDirectional) tile;
+            if (directional.isDirectional()) {
+                return directional.getDirection();
+            }
         } else if (tile instanceof TileEntityGlowPanel) {
             return ((TileEntityGlowPanel) tile).side;
         }

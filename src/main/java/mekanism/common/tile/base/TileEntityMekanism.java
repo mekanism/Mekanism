@@ -29,6 +29,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -48,7 +49,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
-public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable {
+public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, ITileDirectional {
 
     /**
      * The players currently using this block.
@@ -76,8 +77,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     private boolean hasGui;
 
     //Variables for handling ITileDirectional
-
-
+    //TODO: Should this be null when we don't support rotations
+    @Nonnull
+    private EnumFacing facing = EnumFacing.NORTH;
     //End variables ITileDirectional
 
 
@@ -99,6 +101,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return supportsUpgrades;
     }
 
+    @Override
     public final boolean isDirectional() {
         return isDirectional;
     }
@@ -138,6 +141,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     if (player.isSneaking()) {
                         MekanismUtils.dismantleBlock(getBlockType(), state, world, pos);
                         return WrenchResult.DISMANTLED;
+                    }
+                    //Special ITileDirectional handling
+                    if (isDirectional()) {
+                        //TODO: Extract this out
+                        setFacing(getDirection().rotateY());
+                        world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
                     }
                     return WrenchResult.SUCCESS;
                 }
@@ -204,6 +213,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             for (ITileComponent component : components) {
                 component.read(dataStream);
             }
+            if (isDirectional()) {
+                EnumFacing previousDirection = getDirection();
+                facing = EnumFacing.byIndex(dataStream.readInt());
+                if (previousDirection != getDirection()) {
+                    MekanismUtils.updateBlock(world, getPos());
+                    world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
+                }
+            }
         }
     }
 
@@ -212,6 +229,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         data.add(redstone);
         for (ITileComponent component : components) {
             component.write(data);
+        }
+        if (isDirectional()) {
+            data.add(getDirection().ordinal());
         }
         return data;
     }
@@ -244,6 +264,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         for (ITileComponent component : components) {
             component.read(nbtTags);
         }
+        if (isDirectional() && nbtTags.hasKey("facing")) {
+            facing = EnumFacing.byIndex(nbtTags.getInteger("facing"));
+        }
     }
 
     @Nonnull
@@ -253,6 +276,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         nbtTags.setBoolean("redstone", redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags);
+        }
+        if (isDirectional()) {
+            nbtTags.setInteger("facing", getDirection().ordinal());
         }
         return nbtTags;
     }
@@ -328,4 +354,25 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         // a full NBT object, don't pass it to our custom read methods.
         super.readFromNBT(tag);
     }
+
+
+    //Methods for implementing ITileDirectional
+    @Nonnull
+    @Override
+    public EnumFacing getDirection() {
+        return facing;
+    }
+
+    @Override
+    public void setFacing(@Nonnull EnumFacing direction) {
+        if (canSetFacing(direction)) {
+            EnumFacing previousDirection = getDirection();
+            facing = direction;
+            if (!world.isRemote && previousDirection != getDirection()) {
+                Mekanism.packetHandler.sendUpdatePacket(this);
+                markDirty();
+            }
+        }
+    }
+    //End methods ITileDirectional
 }

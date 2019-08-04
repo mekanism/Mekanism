@@ -8,7 +8,6 @@ import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.tile.base.TileEntityDirectional;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -83,7 +82,7 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
-        TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos)) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + random.nextFloat() * 6.0F / 16.0F;

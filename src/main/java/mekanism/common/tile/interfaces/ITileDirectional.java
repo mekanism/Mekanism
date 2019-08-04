@@ -9,10 +9,23 @@ import net.minecraft.util.EnumFacing;
 //TODO: 1.14 this interface may not even be needed
 public interface ITileDirectional {
 
+    default boolean isDirectional() {
+        return true;
+    }
+
     void setFacing(@Nonnull EnumFacing direction);
 
     //TODO: This shouldn't be needed because the blockstate knows what directions it can go
-    boolean canSetFacing(@Nonnull EnumFacing facing);
+    /**
+     * Whether or not this block's orientation can be changed to a specific direction. Value of isDirectional by default
+     *
+     * @param facing - facing to check
+     *
+     * @return if the block's orientation can be changed
+     */
+    default boolean canSetFacing(@Nonnull EnumFacing facing) {
+        return isDirectional();
+    }
 
     @Nonnull
     EnumFacing getDirection();
