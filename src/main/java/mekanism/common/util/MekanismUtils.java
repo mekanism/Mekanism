@@ -160,17 +160,6 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the opposite side of a certain orientation.
-     *
-     * @param orientation Current orientation of the machine
-     *
-     * @return opposite side
-     */
-    public static EnumFacing getBack(EnumFacing orientation) {
-        return orientation.getOpposite();
-    }
-
-    /**
      * Returns the sides in the modified order relative to the machine-based orientation.
      *
      * @param blockFacing - what orientation the block is facing

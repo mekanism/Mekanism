@@ -97,7 +97,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
                 operatingTicks = 0;
             }
             prevEnergy = getEnergy();
-            TileUtils.emitGas(this, outputTank, gasOutput, MekanismUtils.getRight(facing));
+            TileUtils.emitGas(this, outputTank, gasOutput, getRightSide());
         }
     }
 
@@ -122,11 +122,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing) || side == EnumFacing.UP) {
+        if (side == getLeftSide() || side == EnumFacing.UP) {
             return new int[]{1};
         } else if (side == EnumFacing.DOWN) {
             return new int[]{0};
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             return new int[]{2};
         }
         return InventoryUtils.EMPTY;
@@ -219,7 +219,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return side == MekanismUtils.getLeft(facing) && injectTank.canReceive(type) && isValidGas(type);
+        return side == getLeftSide() && injectTank.canReceive(type) && isValidGas(type);
     }
 
     private boolean isValidGas(Gas gas) {
@@ -259,9 +259,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing);
+            return side != null && side != getLeftSide() && side != getRightSide();
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side == facing || side == facing.getOpposite();
+            return side == getDirection() || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
     }

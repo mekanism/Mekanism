@@ -87,8 +87,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectric implemen
 
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
-            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getMinecraft().getSoundHandler()
-                  .isSoundPlaying(activeSound))) {
+            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound))) {
                 activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), getInitialVolume(), getPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way

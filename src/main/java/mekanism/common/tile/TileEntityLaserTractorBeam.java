@@ -57,7 +57,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainer implements I
     public void onUpdate() {
         if (world.isRemote) {
             if (on) {
-                RayTraceResult mop = LaserManager.fireLaserClient(this, facing, lastFired, world);
+                RayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
                 Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
                 if (hitCoord == null || !hitCoord.equals(digging)) {
                     digging = hitCoord;
@@ -85,7 +85,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainer implements I
                 Mekanism.packetHandler.sendUpdatePacket(this);
             }
 
-            LaserInfo info = LaserManager.fireLaser(this, facing, firing, world);
+            LaserInfo info = LaserManager.fireLaser(this, getDirection(), firing, world);
             Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
 
             if (hitCoord == null || !hitCoord.equals(digging)) {

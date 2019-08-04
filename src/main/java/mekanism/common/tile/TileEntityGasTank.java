@@ -104,7 +104,7 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
             if (gasTank.getGas() != null && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
                 if (configComponent.isEjecting(TransmissionType.GAS)) {
                     GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), tier.getOutput()));
-                    gasTank.draw(GasUtils.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, facing, 2)), tier != GasTankTier.CREATIVE);
+                    gasTank.draw(GasUtils.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, getDirection(), 2)), tier != GasTankTier.CREATIVE);
                 }
             }
 
@@ -172,7 +172,7 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
+        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
@@ -193,7 +193,7 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        if (configComponent.hasSideForData(TransmissionType.GAS, facing, 2, side)) {
+        if (configComponent.hasSideForData(TransmissionType.GAS, getDirection(), 2, side)) {
             return gasTank.canDraw(type);
         }
         return false;
@@ -201,7 +201,7 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        if (configComponent.hasSideForData(TransmissionType.GAS, facing, 1, side)) {
+        if (configComponent.hasSideForData(TransmissionType.GAS, getDirection(), 1, side)) {
             return gasTank.canReceive(type);
         }
         return false;
@@ -233,7 +233,7 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return configComponent.isCapabilityDisabled(capability, side, facing) || super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override
@@ -331,7 +331,7 @@ public class TileEntityGasTank extends TileEntityContainer implements IGasHandle
 
     @Override
     public EnumFacing getOrientation() {
-        return facing;
+        return getDirection();
     }
 
     @Override

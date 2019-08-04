@@ -87,7 +87,7 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
-            EnumFacing side = tileEntity.facing;
+            EnumFacing side = tileEntity.getDirection();
 
             switch (side) {
                 case WEST:
@@ -199,7 +199,7 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         if (tile instanceof TileEntityLaser) {
-            return MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLaser) tile).facing).offset(0.5, 0.5, 0.5);
+            return MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLaser) tile).getDirection()).offset(0.5, 0.5, 0.5);
         }
         return super.getBoundingBox(state, world, pos);
     }

@@ -136,8 +136,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
                 setActive(false);
             }
             int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-            handleTank(leftTank, dumpLeft, MekanismUtils.getLeft(facing), dumpAmount);
-            handleTank(rightTank, dumpRight, MekanismUtils.getRight(facing), dumpAmount);
+            handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
+            handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
             prevEnergy = getEnergy();
 
             int newRedstoneLevel = getRedstoneLevel();
@@ -235,9 +235,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == MekanismUtils.getRight(facing)) {
+        if (side == getRightSide()) {
             return new int[]{3};
-        } else if (side == facing || side == facing.getOpposite()) {
+        } else if (side == getDirection() || side == getOppositeDirection()) {
             return new int[]{1, 2};
         }
         return InventoryUtils.EMPTY;
@@ -390,9 +390,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
-        if (side == MekanismUtils.getLeft(facing)) {
+        if (side == getLeftSide()) {
             return leftTank.draw(amount, doTransfer);
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             return rightTank.draw(amount, doTransfer);
         }
         return null;
@@ -405,9 +405,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        if (side == MekanismUtils.getLeft(facing)) {
+        if (side == getLeftSide()) {
             return leftTank.getGas() != null && leftTank.getGas().getGas() == type;
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             return rightTank.getGas() != null && rightTank.getGas().getGas() == type;
         }
         return false;
@@ -442,9 +442,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing);
+            return side != null && side != getLeftSide() && side != getRightSide();
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side != null && side != facing && side != facing.getOpposite() && side != MekanismUtils.getRight(facing);
+            //TODO: Make this just check the specific sides I think it is a shorter list?
+            return side != null && side != getDirection() && side != getOppositeDirection() && side != getRightSide();
         }
         return super.isCapabilityDisabled(capability, side);
     }

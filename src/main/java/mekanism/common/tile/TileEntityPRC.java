@@ -230,7 +230,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
             case 2:
                 return new Object[]{isActive};
             case 3:
-                return new Object[]{facing};
+                return new Object[]{getDirection()};
             case 4:
                 return new Object[]{canOperate(getRecipe())};
             case 5:
@@ -253,7 +253,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
+        SideData data = configComponent.getOutput(TransmissionType.FLUID, from, getDirection());
         if (data.hasSlot(0)) {
             return FluidContainerUtils.canFill(inputFluidTank.getFluid(), fluid);
         }
@@ -262,7 +262,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
+        SideData data = configComponent.getOutput(TransmissionType.FLUID, from, getDirection());
         return data.getFluidTankInfo(this);
     }
 
@@ -289,12 +289,12 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(1) && inputGasTank.canReceive(type);
+        return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(1) && inputGasTank.canReceive(type);
     }
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(2) && outputGasTank.canDraw(type);
+        return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(2) && outputGasTank.canDraw(type);
     }
 
     @Nonnull
@@ -325,7 +325,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return configComponent.isCapabilityDisabled(capability, side, facing) || super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

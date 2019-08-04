@@ -155,7 +155,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && inputTank.canReceive(type) &&
+        return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(0) && inputTank.canReceive(type) &&
                Recipe.CHEMICAL_CRYSTALLIZER.containsRecipe(type);
     }
 
@@ -204,7 +204,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return configComponent.isCapabilityDisabled(capability, side, facing) || super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override
@@ -233,7 +233,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
+        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
@@ -243,7 +243,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     public EnumFacing getOrientation() {
-        return facing;
+        return getDirection();
     }
 
     @Override

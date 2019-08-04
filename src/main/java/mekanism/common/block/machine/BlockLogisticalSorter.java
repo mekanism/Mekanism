@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
@@ -41,6 +42,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -51,9 +53,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive {
+public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound {
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
+    private static final SoundEvent soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
 
     public BlockLogisticalSorter() {
         super(Material.IRON);
@@ -112,7 +115,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
-            EnumFacing side = tileEntity.facing;
+            EnumFacing side = tileEntity.getDirection();
 
             switch (side) {
                 case WEST:
@@ -168,7 +171,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                             return true;
                         }
                         if (tileEntity != null) {
-                            EnumFacing change = tileEntity.facing.rotateY();
+                            EnumFacing change = tileEntity.getDirection().rotateY();
                             if (tileEntity instanceof TileEntityLogisticalSorter) {
                                 if (!((TileEntityLogisticalSorter) tileEntity).hasInventory()) {
                                     for (EnumFacing dir : EnumFacing.values()) {
@@ -278,7 +281,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         if (tile instanceof TileEntityLogisticalSorter) {
-            return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).facing).offset(0.5, 0.5, 0.5);
+            return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).getDirection()).offset(0.5, 0.5, 0.5);
         }
         return super.getBoundingBox(state, world, pos);
     }
@@ -306,5 +309,11 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     public int getGuiID() {
         return 59;
+    }
+
+    @Nonnull
+    @Override
+    public SoundEvent getSoundEvent() {
+        return soundEvent;
     }
 }

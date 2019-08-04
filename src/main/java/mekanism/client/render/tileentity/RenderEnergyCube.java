@@ -36,7 +36,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        switch (tileEntity.facing) {
+        switch (tileEntity.getDirection()) {
             case DOWN:
                 GlStateManager.rotate(90, -1, 0, 0);
                 GlStateManager.translate(0, 1.0F, -1.0F);
@@ -47,7 +47,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
                 break;
             default:
                 //Otherwise use the helper method for handling different face options because it is one of them
-                MekanismRenderer.rotate(tileEntity.facing, 0, 180, 90, 270);
+                MekanismRenderer.rotate(tileEntity.getDirection(), 0, 180, 90, 270);
                 break;
         }
 

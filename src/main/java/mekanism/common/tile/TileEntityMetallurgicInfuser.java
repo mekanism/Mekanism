@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
@@ -14,8 +13,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismItem;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
-import mekanism.common.Upgrade;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
@@ -126,7 +123,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         world.setBlockToAir(getPos());
         world.setBlockState(getPos(), MekanismBlock.BASIC_INFUSING_FACTORY.getBlock().getDefaultState(), 3);
 
-        TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
+        //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)
+        /*TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
         RecipeType type = RecipeType.INFUSING;
 
         //Basic
@@ -171,7 +169,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             factory.recalculateUpgrades(upgrade);
         }
         factory.upgraded = true;
-        factory.markDirty();
+        factory.markDirty();*/
         return true;
     }
 
@@ -296,7 +294,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             case 1:
                 return new Object[]{operatingTicks};
             case 2:
-                return new Object[]{facing};
+                return new Object[]{getDirection()};
             case 3:
                 return new Object[]{canOperate(RecipeHandler.getMetallurgicInfuserRecipe(getInput()))};
             case 4:
@@ -315,7 +313,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
+        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
@@ -330,7 +328,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
     @Override
     public EnumFacing getOrientation() {
-        return facing;
+        return getDirection();
     }
 
     @Override
@@ -359,7 +357,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return configComponent.isCapabilityDisabled(capability, side, facing) || super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

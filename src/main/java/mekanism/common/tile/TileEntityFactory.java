@@ -174,7 +174,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         world.setBlockToAir(getPos());
         //world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1), 3);
 
-        TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
+        //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)
+        /*TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
 
         //Basic
         factory.facing = facing;
@@ -223,7 +224,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         factory.upgraded = true;
         factory.markDirty();
-        Mekanism.packetHandler.sendUpdatePacket(factory);
+        Mekanism.packetHandler.sendUpdatePacket(factory);*/
         return true;
     }
 
@@ -357,7 +358,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
+        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
     }
 
     public void sortInventory() {
@@ -847,7 +848,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 }
                 return new Object[]{progress[(Integer) arguments[0]]};
             case 2:
-                return new Object[]{facing};
+                return new Object[]{getDirection()};
             case 3:
                 if (arguments[0] == null) {
                     return new Object[]{"Please provide a target operation."};
@@ -872,7 +873,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
+        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
@@ -887,7 +888,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public EnumFacing getOrientation() {
-        return facing;
+        return getDirection();
     }
 
     @Override
@@ -905,7 +906,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        if (configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0)) {
+        if (configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(0)) {
             return recipeType.canReceiveGas(side, type);
         }
         return false;
@@ -950,7 +951,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        if (configComponent.isCapabilityDisabled(capability, side, facing)) {
+        if (configComponent.isCapabilityDisabled(capability, side, getDirection())) {
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             //If the gas capability is not disabled, check if this machine even actually supports gas

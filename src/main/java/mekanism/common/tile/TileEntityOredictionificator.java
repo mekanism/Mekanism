@@ -121,7 +121,7 @@ public class TileEntityOredictionificator extends TileEntityContainer implements
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side != facing) {
+        if (side != getDirection()) {
             return SLOTS;
         }
         return InventoryUtils.EMPTY;
@@ -164,11 +164,6 @@ public class TileEntityOredictionificator extends TileEntityContainer implements
             for (int i = 0; i < tagList.tagCount(); i++) {
                 filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
             }
-        }
-
-        //to fix any badly placed blocks in the world
-        if (facing.getAxis() == EnumFacing.Axis.Y) {
-            facing = EnumFacing.NORTH;
         }
     }
 
@@ -333,7 +328,7 @@ public class TileEntityOredictionificator extends TileEntityContainer implements
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side == facing;
+            return side == getDirection();
         }
         return super.isCapabilityDisabled(capability, side);
     }

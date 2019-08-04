@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBlockProvider;
+import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,23 +16,33 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public abstract class TileEntityDirectional extends TileEntityMekanism {
+public abstract class TileEntityDirectional extends TileEntityMekanism implements ITileDirectional {
 
     /**
      * The direction this block is facing.
      */
+    @Nonnull
     public EnumFacing facing = EnumFacing.NORTH;
 
-    public EnumFacing clientFacing = facing;
+    public TileEntityDirectional(IBlockProvider blockProvider) {
+        super(blockProvider);
+    }
 
+    @Nonnull
+    @Override
+    public EnumFacing getDirection() {
+        return facing;
+    }
+
+    @Override
     public void setFacing(@Nonnull EnumFacing direction) {
         if (canSetFacing(direction)) {
+            EnumFacing previousDirection = getDirection();
             facing = direction;
-        }
-        if (facing != clientFacing && !world.isRemote) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            markDirty();
-            clientFacing = facing;
+            if (!world.isRemote && previousDirection != getDirection()) {
+                Mekanism.packetHandler.sendUpdatePacket(this);
+                markDirty();
+            }
         }
     }
 
@@ -41,8 +53,8 @@ public abstract class TileEntityDirectional extends TileEntityMekanism {
      *
      * @return if the block's orientation can be changed
      */
+    @Override
     public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        //TODO: This shouldn't be needed because the blockstate knows what directions it can go
         return true;
     }
 
@@ -50,11 +62,11 @@ public abstract class TileEntityDirectional extends TileEntityMekanism {
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            EnumFacing previousDirection = getDirection();
             facing = EnumFacing.byIndex(dataStream.readInt());
-            if (clientFacing != facing) {
+            if (previousDirection != getDirection()) {
                 MekanismUtils.updateBlock(world, getPos());
                 world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
-                clientFacing = facing;
             }
         }
     }
@@ -62,7 +74,7 @@ public abstract class TileEntityDirectional extends TileEntityMekanism {
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(facing == null ? -1 : facing.ordinal());
+        data.add(getDirection().ordinal());
         return data;
     }
 
@@ -78,9 +90,7 @@ public abstract class TileEntityDirectional extends TileEntityMekanism {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        if (facing != null) {
-            nbtTags.setInteger("facing", facing.ordinal());
-        }
+        nbtTags.setInteger("facing", getDirection().ordinal());
         return nbtTags;
     }
 
@@ -88,7 +98,7 @@ public abstract class TileEntityDirectional extends TileEntityMekanism {
     public WrenchResult tryWrench(IBlockState state, EntityPlayer player, EnumHand hand, Supplier<RayTraceResult> rayTraceSupplier) {
         WrenchResult result = super.tryWrench(state, player, hand, rayTraceSupplier);
         if (result == WrenchResult.SUCCESS) {
-            setFacing(facing.rotateY());
+            setFacing(getDirection().rotateY());
             world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
         }
         return result;

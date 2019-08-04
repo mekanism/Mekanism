@@ -80,7 +80,7 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
-            EnumFacing side = tileEntity.facing;
+            EnumFacing side = tileEntity.getDirection();
 
             switch (side) {
                 case WEST:

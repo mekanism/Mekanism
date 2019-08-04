@@ -123,7 +123,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Override
     public boolean canOperate() {
-        return electricityStored < BASE_MAX_ENERGY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
+        return electricityStored < getBaseStorage() && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
     }
 
     @Override
@@ -180,7 +180,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return side == MekanismUtils.getRight(facing) ? new int[]{1} : new int[]{0};
+        return side == getRightSide() ? new int[]{1} : new int[]{0};
     }
 
     /**
@@ -231,9 +231,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             case 1:
                 return new Object[]{output};
             case 2:
-                return new Object[]{BASE_MAX_ENERGY};
+                return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{BASE_MAX_ENERGY - electricityStored};
+                return new Object[]{getBaseStorage() - electricityStored};
             case 4:
                 return new Object[]{lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0};
             case 5:
@@ -250,12 +250,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        return fluid.getFluid().equals(FluidRegistry.LAVA) && from != facing;
+        return fluid.getFluid().equals(FluidRegistry.LAVA) && from != getDirection();
     }
 
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        if (from == facing) {
+        if (from == getDirection()) {
             return PipeUtils.EMPTY;
         }
         return new FluidTankInfo[]{lavaTank.getInfo()};
@@ -336,7 +336,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) ||
+        return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || (side != getDirection() && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) ||
                super.hasCapability(capability, side);
     }
 
@@ -345,7 +345,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
-        if (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if (side != getDirection() && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
         return super.getCapability(capability, side);

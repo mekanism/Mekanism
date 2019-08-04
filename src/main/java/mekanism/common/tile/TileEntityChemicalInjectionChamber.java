@@ -40,7 +40,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && gasTank.canReceive(type) && isValidGas(type);
+        return configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(0) && gasTank.canReceive(type) && isValidGas(type);
 
     }
 

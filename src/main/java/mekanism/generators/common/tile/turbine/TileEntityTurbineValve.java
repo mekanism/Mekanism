@@ -273,7 +273,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
                 || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.TESLA_HOLDER_CAPABILITY
-                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(facing)) || capability == CapabilityEnergy.ENERGY) {
+                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(getDirection())) || capability == CapabilityEnergy.ENERGY) {
                 return true;
             }
         }
@@ -287,10 +287,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 return (T) this;
             } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
-            } else if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(facing))) {
-                return (T) teslaManager.getWrapper(this, facing);
+            } else if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(getDirection()))) {
+                return (T) teslaManager.getWrapper(this, getDirection());
             } else if (capability == CapabilityEnergy.ENERGY) {
-                return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
+                return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, getDirection()));
             }
         }
         return super.getCapability(capability, side);

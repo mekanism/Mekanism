@@ -32,7 +32,7 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
         super.onUpdate();
         if (world.isRemote) {
             if (isActive) {
-                RayTraceResult mop = LaserManager.fireLaserClient(this, facing, MekanismConfig.current().usage.laser.val(), world);
+                RayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), MekanismConfig.current().usage.laser.val(), world);
                 Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
                 if (hitCoord == null || !hitCoord.equals(digging)) {
                     digging = hitCoord;
@@ -53,7 +53,7 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
         } else {
             if (getEnergy() >= MekanismConfig.current().usage.laser.val()) {
                 setActive(true);
-                LaserInfo info = LaserManager.fireLaser(this, facing, MekanismConfig.current().usage.laser.val(), world);
+                LaserInfo info = LaserManager.fireLaser(this, getDirection(), MekanismConfig.current().usage.laser.val(), world);
                 Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
 
                 if (hitCoord == null || !hitCoord.equals(digging)) {
@@ -82,7 +82,7 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return side == facing.getOpposite();
+        return side == getOppositeDirection();
     }
 
     @Override

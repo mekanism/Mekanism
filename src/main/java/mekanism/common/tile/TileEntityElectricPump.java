@@ -320,7 +320,7 @@ public class TileEntityElectricPump extends TileEntityElectric implements IFluid
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return facing.getOpposite() == side;
+        return getOppositeDirection() == side;
     }
 
     @Override

@@ -86,16 +86,16 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             }
 
             if (MekanismUtils.canFunction(this) && delayTicks == 0) {
-                TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
-                TileEntity front = Coord4D.get(this).offset(facing).getTileEntity(world);
+                TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
+                TileEntity front = Coord4D.get(this).offset(getDirection()).getTileEntity(world);
                 //If there is no tile to pull from or the push to, skip doing any checks
-                if (InventoryUtils.isItemHandler(back, facing) && front != null) {
+                if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
                     boolean sentItems = false;
                     int min = 0;
 
                     outer:
                     for (TransporterFilter filter : filters) {
-                        for (StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.getSlotCount() >= 0; ) {
+                        for (StackSearcher search = new StackSearcher(back, getOppositeDirection()); search.getSlotCount() >= 0; ) {
                             InvStack invStack = filter.getStackFromInventory(search, singleItem);
                             if (invStack == null) {
                                 break;
@@ -123,10 +123,10 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                     }
 
                     if (!sentItems && autoEject) {
-                        TransitRequest request = TransitRequest.buildInventoryMap(back, facing.getOpposite(), singleItem ? 1 : 64, new StrictFilterFinder());
+                        TransitRequest request = TransitRequest.buildInventoryMap(back, getOppositeDirection(), singleItem ? 1 : 64, new StrictFilterFinder());
                         TransitResponse response = emitItemToTransporter(front, request, color, 0);
                         if (!response.isEmpty()) {
-                            response.getInvStack(back, facing).use(response.getSendingAmount());
+                            response.getInvStack(back, getDirection()).use(response.getSendingAmount());
                             back.markDirty();
                             setActive(true);
                         }
@@ -150,14 +150,14 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     }
 
     public TransitResponse emitItemToTransporter(TileEntity front, TransitRequest request, EnumColor filterColor, int min) {
-        if (CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite())) {
-            ILogisticalTransporter transporter = CapabilityUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
+        if (CapabilityUtils.hasCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection())) {
+            ILogisticalTransporter transporter = CapabilityUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection());
             if (roundRobin) {
                 return TransporterUtils.insertRR(this, transporter, request, filterColor, true, min);
             }
             return TransporterUtils.insert(this, transporter, request, filterColor, true, min);
         }
-        return InventoryUtils.putStackInInventory(front, request, facing, false);
+        return InventoryUtils.putStackInInventory(front, request, getDirection(), false);
     }
 
     @Nonnull
@@ -346,18 +346,18 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     }
 
     public boolean canSendHome(ItemStack stack) {
-        TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
-        return InventoryUtils.canInsert(back, null, stack, facing.getOpposite(), true);
+        TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
+        return InventoryUtils.canInsert(back, null, stack, getOppositeDirection(), true);
     }
 
     public boolean hasInventory() {
-        TileEntity tile = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
-        return TransporterUtils.isValidAcceptorOnSide(tile, facing.getOpposite());
+        TileEntity tile = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
+        return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
     }
 
     public TransitResponse sendHome(ItemStack stack) {
-        TileEntity back = Coord4D.get(this).offset(facing.getOpposite()).getTileEntity(world);
-        return InventoryUtils.putStackInInventory(back, TransitRequest.getFromStack(stack), facing.getOpposite(), true);
+        TileEntity back = Coord4D.get(this).offset(getOppositeDirection()).getTileEntity(world);
+        return InventoryUtils.putStackInInventory(back, TransitRequest.getFromStack(stack), getOppositeDirection(), true);
     }
 
     @Override
@@ -378,7 +378,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == facing || side == facing.getOpposite()) {
+        if (side == getDirection() || side == getOppositeDirection()) {
             return new int[]{0};
         }
         return InventoryUtils.EMPTY;
@@ -637,7 +637,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side != null && side != facing && side != facing.getOpposite();
+            return side != null && side != getDirection() && side != getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
     }

@@ -22,8 +22,8 @@ public class RenderPersonalChest extends TileEntitySpecialRenderer<TileEntityPer
         GlStateManager.rotate(90, 0, 1, 0);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
 
-        MekanismRenderer.rotate(tileEntity.facing, 270, 90, 0, 180);
-        switch (tileEntity.facing) {
+        MekanismRenderer.rotate(tileEntity.getDirection(), 270, 90, 0, 180);
+        switch (tileEntity.getDirection()) {
             case NORTH:
                 GlStateManager.translate(1.0F, 0, 0);
                 break;

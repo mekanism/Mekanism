@@ -65,7 +65,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
                 setActive(false);
             }
             prevEnergy = getEnergy();
-            TileUtils.emitGas(this, gasTank, gasOutput, MekanismUtils.getRight(facing));
+            TileUtils.emitGas(this, gasTank, gasOutput, getRightSide());
         }
     }
 
@@ -90,11 +90,11 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing)) {
+        if (side == getLeftSide()) {
             return new int[]{0};
         } else if (side.getAxis() == Axis.Y) {
             return new int[]{1};
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             return new int[]{2};
         }
         return InventoryUtils.EMPTY;
@@ -176,9 +176,9 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != MekanismUtils.getRight(facing);
+            return side != null && side != getRightSide();
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side == facing || side == facing.getOpposite();
+            return side == getDirection() || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
     }
@@ -221,7 +221,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        return side == MekanismUtils.getRight(facing) && gasTank.canDraw(type);
+        return side == getRightSide() && gasTank.canDraw(type);
     }
 
     @Nonnull

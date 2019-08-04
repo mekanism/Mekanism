@@ -41,13 +41,13 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
+        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
     }
 
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
+        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
@@ -57,7 +57,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
     @Override
     public EnumFacing getOrientation() {
-        return facing;
+        return getDirection();
     }
 
     @Override
@@ -86,6 +86,6 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return configComponent.isCapabilityDisabled(capability, side, facing) || super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
     }
 }

@@ -1,6 +1,7 @@
 package mekanism.common.tile.base;
 
 import javax.annotation.Nonnull;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ItemHandlerWrapper;
 import mekanism.common.capabilities.CapabilityWrapperManager;
@@ -52,6 +53,10 @@ public abstract class TileEntityContainer extends TileEntityDirectional implemen
             //no
         }
     };
+
+    public TileEntityContainer(IBlockProvider blockProvider) {
+        super(blockProvider);
+    }
 
     @Override
     public boolean isEmpty() {

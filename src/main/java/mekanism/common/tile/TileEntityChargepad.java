@@ -94,7 +94,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return side == EnumFacing.DOWN || side == facing.getOpposite();
+        return side == EnumFacing.DOWN || side == getOppositeDirection();
     }
 
     @Override

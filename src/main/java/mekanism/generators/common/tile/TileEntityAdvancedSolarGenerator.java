@@ -18,7 +18,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     public boolean canOutputEnergy(EnumFacing side) {
-        return side == facing;
+        return side == getDirection();
     }
 
     @Override

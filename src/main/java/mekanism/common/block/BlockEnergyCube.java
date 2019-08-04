@@ -2,7 +2,6 @@ package mekanism.common.block;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import mekanism.api.IMekWrench;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockElectric;
@@ -10,11 +9,11 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -128,40 +127,18 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
         }
 
         //TODO: Put the wrench logic in TileEntityMekanism??
-        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
-        ItemStack stack = entityplayer.getHeldItem(hand);
-        if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
-            if (wrenchHandler != null) {
-                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-                    if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-                        if (entityplayer.isSneaking()) {
-                            MekanismUtils.dismantleBlock(this, state, world, pos);
-                            return true;
-                        }
-                        if (tileEntity != null) {
-                            tileEntity.setFacing(tileEntity.facing.rotateAround(side.getAxis()));
-                            world.notifyNeighborsOfStateChange(pos, this, true);
-                        }
-                    } else {
-                        SecurityUtils.displayNoAccess(entityplayer);
-                    }
-                    return true;
-                }
-            }
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+            return true;
         }
 
-        if (tileEntity != null) {
-            if (!entityplayer.isSneaking()) {
-                if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                    entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
-                } else {
-                    SecurityUtils.displayNoAccess(entityplayer);
-                }
-                return true;
+        if (!entityplayer.isSneaking()) {
+            if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+            } else {
+                SecurityUtils.displayNoAccess(entityplayer);
             }
+            return true;
         }
         return false;
     }

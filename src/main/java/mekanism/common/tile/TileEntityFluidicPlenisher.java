@@ -284,7 +284,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectric implements IC
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return facing.getOpposite() == side;
+        return getOppositeDirection() == side;
     }
 
     @Override

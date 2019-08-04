@@ -86,13 +86,13 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
         TileEntityDirectional tileEntity = (TileEntityDirectional) world.getTileEntity(pos);
 
         if (MekanismUtils.isActive(world, pos)) {
-            if (tileEntity.facing == EnumFacing.WEST) {
+            if (tileEntity.getDirection() == EnumFacing.WEST) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .25, pos.getY() + .2, pos.getZ() + .5, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.facing == EnumFacing.EAST) {
+            } else if (tileEntity.getDirection() == EnumFacing.EAST) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .75, pos.getY() + .2, pos.getZ() + .5, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.facing == EnumFacing.NORTH) {
+            } else if (tileEntity.getDirection() == EnumFacing.NORTH) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .5, pos.getY() + .2, pos.getZ() + .25, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.facing == EnumFacing.SOUTH) {
+            } else if (tileEntity.getDirection() == EnumFacing.SOUTH) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .5, pos.getY() + .2, pos.getZ() + .75, 0.0D, 0.0D, 0.0D);
             }
         }

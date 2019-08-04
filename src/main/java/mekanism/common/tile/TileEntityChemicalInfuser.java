@@ -74,7 +74,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
                     setActive(false);
                 }
             }
-            TileUtils.emitGas(this, centerTank, gasOutput, facing);
+            TileUtils.emitGas(this, centerTank, gasOutput, getDirection());
             prevEnergy = getEnergy();
         }
     }
@@ -161,11 +161,11 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     public GasTank getTank(EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing)) {
+        if (side == getLeftSide()) {
             return leftTank;
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             return rightTank;
-        } else if (side == facing) {
+        } else if (side == getDirection()) {
             return centerTank;
         }
         return null;
@@ -224,7 +224,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side == EnumFacing.UP || side == EnumFacing.DOWN || side == facing.getOpposite();
+            return side == EnumFacing.UP || side == EnumFacing.DOWN || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
     }
@@ -249,11 +249,11 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing)) {
+        if (side == getLeftSide()) {
             return new int[]{0};
-        } else if (side == facing) {
+        } else if (side == getDirection()) {
             return new int[]{1};
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             return new int[]{2};
         } else if (side.getAxis() == Axis.Y) {
             return new int[3];

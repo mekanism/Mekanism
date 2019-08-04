@@ -152,7 +152,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return side == MekanismUtils.getRight(facing) ? new int[]{1} : new int[]{0};
+        return side == getRightSide() ? new int[]{1} : new int[]{0};
     }
 
     @Override
@@ -258,7 +258,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return FuelHandler.getFuel(type) != null && side != facing;
+        return FuelHandler.getFuel(type) != null && side != getDirection();
     }
 
     @Override
@@ -292,7 +292,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side == facing;
+            return side == getDirection();
         }
         return super.isCapabilityDisabled(capability, side);
     }

@@ -172,7 +172,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectric implements IAc
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return side == facing.getOpposite();
+        return side == getOppositeDirection();
     }
 
     @Override

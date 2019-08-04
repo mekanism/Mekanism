@@ -112,7 +112,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public boolean canOperate() {
-        return electricityStored < BASE_MAX_ENERGY && bioFuelSlot.fluidStored > 0 && MekanismUtils.canFunction(this);
+        return electricityStored < getBaseStorage() && bioFuelSlot.fluidStored > 0 && MekanismUtils.canFunction(this);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return side == MekanismUtils.getRight(facing) ? new int[]{1} : new int[]{0};
+        return side == getRightSide() ? new int[]{1} : new int[]{0};
     }
 
     @Override
@@ -178,9 +178,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             case 1:
                 return new Object[]{output};
             case 2:
-                return new Object[]{BASE_MAX_ENERGY};
+                return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{BASE_MAX_ENERGY - electricityStored};
+                return new Object[]{getBaseStorage() - electricityStored};
             case 4:
                 return new Object[]{bioFuelSlot.fluidStored};
             case 5:
@@ -202,7 +202,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        return from != facing && fluid.getFluid() == FluidRegistry.getFluid("bioethanol");
+        return from != getDirection() && fluid.getFluid() == FluidRegistry.getFluid("bioethanol");
     }
 
     @Override
@@ -222,12 +222,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
+        return (side != getDirection() && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if (side != getDirection() && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
         return super.getCapability(capability, side);

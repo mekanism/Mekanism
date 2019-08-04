@@ -114,9 +114,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             case 1:
                 return new Object[]{output};
             case 2:
-                return new Object[]{BASE_MAX_ENERGY};
+                return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{BASE_MAX_ENERGY - electricityStored};
+                return new Object[]{getBaseStorage() - electricityStored};
             case 4:
                 return new Object[]{getMultiplier()};
             default:
@@ -126,7 +126,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public boolean canOperate() {
-        return electricityStored < BASE_MAX_ENERGY && getMultiplier() > 0 && MekanismUtils.canFunction(this);
+        return electricityStored < getBaseStorage() && getMultiplier() > 0 && MekanismUtils.canFunction(this);
     }
 
     @Override

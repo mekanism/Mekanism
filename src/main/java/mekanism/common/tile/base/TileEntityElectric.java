@@ -31,7 +31,7 @@ public abstract class TileEntityElectric extends TileEntityContainer implements 
     /**
      * How much energy is stored in this block.
      */
-    protected double electricityStored;
+    public double electricityStored;
 
     protected IBlockElectric electricBlock;
 
@@ -42,7 +42,7 @@ public abstract class TileEntityElectric extends TileEntityContainer implements 
 
     private final double BASE_ENERGY_PER_TICK;
 
-    protected double energyPerTick;
+    public double energyPerTick;
 
     private boolean ic2Registered = false;
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);

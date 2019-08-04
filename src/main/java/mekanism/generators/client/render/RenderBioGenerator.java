@@ -38,7 +38,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             GlStateManager.translate((float) x, (float) y, (float) z);
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            getDisplayList(tileEntity.facing)[tileEntity.getScaledFuelLevel(stages - 1)].render();
+            getDisplayList(tileEntity.getDirection())[tileEntity.getScaledFuelLevel(stages - 1)].render();
             MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.enableLighting();
             GlStateManager.disableBlend();
@@ -50,7 +50,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
-        MekanismRenderer.rotate(tileEntity.facing, 180, 0, 270, 90);
+        MekanismRenderer.rotate(tileEntity.getDirection(), 180, 0, 270, 90);
 
         GlStateManager.rotate(180, 0, 0, 1);
         model.render(0.0625F);

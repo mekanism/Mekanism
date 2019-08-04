@@ -11,9 +11,15 @@ import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.interfaces.IBlockDisableable;
+import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IBlockSound;
+import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.ISupportsUpgrades;
+import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -39,8 +45,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-//TODO: Is the IWrenchable needed, seems unused
-//@Interface(iface = "ic2.api.tile.IWrenchable", modid = MekanismHooks.IC2_MOD_ID)
+//TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
+// does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
+// rather than silently "fail" and just do nothing
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable {
 
     /**
@@ -59,6 +66,54 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public boolean doAutoSync = true;
 
     private List<ITileComponent> components = new ArrayList<>();
+
+    protected IBlockProvider blockProvider;
+
+    private boolean supportsUpgrades;
+    private boolean isDirectional;
+    private boolean isElectric;
+    private boolean hasSound;
+    private boolean hasGui;
+
+    //Variables for handling ITileDirectional
+
+
+    //End variables ITileDirectional
+
+
+    public TileEntityMekanism(IBlockProvider blockProvider) {
+        this.blockProvider = blockProvider;
+        setSupportedTypes(this.blockProvider.getBlock());
+    }
+
+    protected void setSupportedTypes(Block block) {
+        //Used to get any data we may need
+        isElectric = block instanceof IBlockElectric;
+        supportsUpgrades = block instanceof ISupportsUpgrades;
+        isDirectional = block instanceof IStateFacing;
+        hasSound = block instanceof IBlockSound;
+        hasGui = block instanceof IHasGui;
+    }
+
+    public final boolean supportsUpgrades() {
+        return supportsUpgrades;
+    }
+
+    public final boolean isDirectional() {
+        return isDirectional;
+    }
+
+    public final boolean isElectric() {
+        return isElectric;
+    }
+
+    public final boolean hasSound() {
+        return hasSound;
+    }
+
+    public final boolean hasGui() {
+        return hasGui;
+    }
 
     public void addComponent(ITileComponent component) {
         components.add(component);
@@ -208,11 +263,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
         }
-        return super.getCapability(capability, facing);
+        return super.getCapability(capability, side);
     }
 
     public boolean isPowered() {

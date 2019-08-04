@@ -21,7 +21,7 @@ public class RenderGasGenerator extends TileEntitySpecialRenderer<TileEntityGasG
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 
-        MekanismRenderer.rotate(tileEntity.facing, 90, 270, 180, 0);
+        MekanismRenderer.rotate(tileEntity.getDirection(), 90, 270, 180, 0);
 
         GlStateManager.rotate(180, 0, 1, 1);
         GlStateManager.rotate(90, -1, 0, 0);

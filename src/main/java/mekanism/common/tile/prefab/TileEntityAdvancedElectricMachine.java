@@ -347,7 +347,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             case 3:
                 return new Object[]{isActive};
             case 4:
-                return new Object[]{facing};
+                return new Object[]{getDirection()};
             case 5:
                 return new Object[]{canOperate(getRecipe())};
             case 6:

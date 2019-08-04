@@ -85,7 +85,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             } else if (prevEnergy >= getEnergy()) {
                 setActive(false);
             }
-            TileUtils.emitGas(this, outputTank, gasOutput, MekanismUtils.getRight(facing));
+            TileUtils.emitGas(this, outputTank, gasOutput, getRightSide());
             prevEnergy = getEnergy();
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {
@@ -175,9 +175,9 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     }
 
     public GasTank getTank(EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing)) {
+        if (side == getLeftSide()) {
             return inputTank;
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             return outputTank;
         }
         return null;
@@ -242,9 +242,9 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing)) {
+        if (side == getLeftSide()) {
             return new int[]{0};
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             return new int[]{1};
         } else if (side.getAxis() == Axis.Y) {
             return new int[2];
@@ -277,7 +277,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return side != null && getTank(side) == null;
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side == facing || side == facing.getOpposite();
+            return side == getDirection() || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
     }

@@ -161,7 +161,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             case 2:
                 return new Object[]{isActive};
             case 3:
-                return new Object[]{facing};
+                return new Object[]{getDirection()};
             case 4:
                 return new Object[]{canOperate(getRecipe())};
             case 5:

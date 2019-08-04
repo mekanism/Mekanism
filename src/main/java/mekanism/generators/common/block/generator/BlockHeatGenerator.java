@@ -90,16 +90,16 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
-            if (tileEntity.facing == EnumFacing.WEST) {
+            if (tileEntity.getDirection() == EnumFacing.WEST) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
                 world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.facing == EnumFacing.EAST) {
+            } else if (tileEntity.getDirection() == EnumFacing.EAST) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
                 world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.facing == EnumFacing.NORTH) {
+            } else if (tileEntity.getDirection() == EnumFacing.NORTH) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
                 world.spawnParticle(EnumParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
-            } else if (tileEntity.facing == EnumFacing.SOUTH) {
+            } else if (tileEntity.getDirection() == EnumFacing.SOUTH) {
                 world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
                 world.spawnParticle(EnumParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
             }

@@ -97,7 +97,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 }
             } else if (mode == 1) {
                 TileUtils.drawGas(inventory.get(0), gasTank);
-                TileUtils.emitGas(this, gasTank, gasOutput, MekanismUtils.getLeft(facing));
+                TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
 
                 if (FluidContainerUtils.isFluidContainer(inventory.get(2))) {
                     FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
@@ -222,12 +222,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        return mode == 1 && side == MekanismUtils.getLeft(facing) && gasTank.canDraw(type);
+        return mode == 1 && side == getLeftSide() && gasTank.canDraw(type);
     }
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return mode == 0 && side == MekanismUtils.getLeft(facing) && gasTank.canReceive(type);
+        return mode == 0 && side == getLeftSide() && gasTank.canReceive(type);
     }
 
     @Nonnull
@@ -259,7 +259,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != MekanismUtils.getLeft(facing);
+            return side != null && side != getLeftSide();
         }
         return super.isCapabilityDisabled(capability, side);
     }
@@ -293,17 +293,17 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(fluid) : fluidTank.getFluid().isFluidEqual(fluid));
+        return mode == 1 && from == getLeftSide() && (fluidTank.getFluid() == null ? isValidFluid(fluid) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return mode == 0 && from == MekanismUtils.getRight(facing) && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
+        return mode == 0 && from == getRightSide() && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
     }
 
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        if (from == MekanismUtils.getRight(facing)) {
+        if (from == getRightSide()) {
             return new FluidTankInfo[]{fluidTank.getInfo()};
         }
         return PipeUtils.EMPTY;
@@ -327,10 +327,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing)) {
+        if (side == getLeftSide()) {
             //Gas
             return GAS_SLOTS;
-        } else if (side == MekanismUtils.getRight(facing)) {
+        } else if (side == getRightSide()) {
             //Fluid
             return LIQUID_SLOTS;
         }

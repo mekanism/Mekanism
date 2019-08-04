@@ -107,8 +107,9 @@ public class BlockStateHelper {
 
     @Nullable
     private static EnumFacing getFacing(@Nonnull TileEntity tile) {
+        //TODO: Make Glow Panel implement ITileDirectional
         if (tile instanceof TileEntityDirectional) {
-            return ((TileEntityDirectional) tile).facing;
+            return ((TileEntityDirectional) tile).getDirection();
         } else if (tile instanceof TileEntityGlowPanel) {
             return ((TileEntityGlowPanel) tile).side;
         }

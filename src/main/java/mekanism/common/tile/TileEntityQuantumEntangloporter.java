@@ -332,7 +332,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
         if (!hasFrequency()) {
             return false;
         }
-        return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 2, side);
+        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 2, side);
     }
 
     @Override
@@ -340,7 +340,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
         if (!hasFrequency()) {
             return false;
         }
-        return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
+        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
     }
 
     @Override
@@ -378,7 +378,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT) {
+        if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState == IOState.INPUT) {
             return FluidContainerUtils.canFill(frequency.storedFluid.getFluid(), fluid);
         }
         return false;
@@ -386,7 +386,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT) {
+        if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState == IOState.OUTPUT) {
             return FluidContainerUtils.canDrain(frequency.storedFluid.getFluid(), fluid);
         }
         return false;
@@ -395,7 +395,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
         if (hasFrequency()) {
-            if (configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState != IOState.OFF) {
+            if (configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState != IOState.OFF) {
                 return new FluidTankInfo[]{frequency.storedFluid.getInfo()};
             }
         }
@@ -419,7 +419,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.INPUT) {
+        if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.INPUT) {
             return frequency.storedGas.getGasType() == null || type == frequency.storedGas.getGasType();
         }
         return false;
@@ -427,7 +427,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OUTPUT) {
+        if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.OUTPUT) {
             return frequency.storedGas.getGasType() == null || type == frequency.storedGas.getGasType();
         }
         return false;
@@ -485,13 +485,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public boolean canConnectHeat(EnumFacing side) {
-        return hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, facing).ioState != IOState.OFF;
+        return hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, getDirection()).ioState != IOState.OFF;
     }
 
     @Override
     public IHeatTransfer getAdjacent(EnumFacing side) {
         TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, facing).ioState == IOState.INPUT) {
+        if (hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, getDirection()).ioState == IOState.INPUT) {
             if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
                 return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
             }
@@ -501,13 +501,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
-        return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.INPUT;
+        return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.INPUT;
     }
 
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState != IOState.OFF) {
+        if (hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState != IOState.OFF) {
             return new int[]{0};
         }
         return InventoryUtils.EMPTY;
@@ -515,7 +515,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
-        return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.OUTPUT;
+        return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.OUTPUT;
     }
 
     @Override
@@ -533,7 +533,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public EnumFacing getOrientation() {
-        return facing;
+        return getDirection();
     }
 
     @Override
@@ -571,11 +571,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        if (configComponent.isCapabilityDisabled(capability, side, facing)) {
+        if (configComponent.isCapabilityDisabled(capability, side, getDirection())) {
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
                    capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return side != null && (!hasFrequency() || configComponent.isCapabilityDisabled(capability, side, facing));
+            return side != null && (!hasFrequency() || configComponent.isCapabilityDisabled(capability, side, getDirection()));
         }
         return super.isCapabilityDisabled(capability, side);
     }

@@ -137,12 +137,12 @@ public class TileEntityEnergyCube extends TileEntityElectric implements ICompute
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
+        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
     }
 
     @Override
     public boolean canOutputEnergy(EnumFacing side) {
-        return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 2, side);
+        return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 2, side);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class TileEntityEnergyCube extends TileEntityElectric implements ICompute
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
+        return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
@@ -274,7 +274,7 @@ public class TileEntityEnergyCube extends TileEntityElectric implements ICompute
 
     @Override
     public EnumFacing getOrientation() {
-        return facing;
+        return getDirection();
     }
 
     @Override

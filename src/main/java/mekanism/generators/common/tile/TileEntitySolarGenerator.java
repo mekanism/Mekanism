@@ -139,9 +139,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             case 1:
                 return new Object[]{output};
             case 2:
-                return new Object[]{BASE_MAX_ENERGY};
+                return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{BASE_MAX_ENERGY - electricityStored};
+                return new Object[]{getBaseStorage() - electricityStored};
             case 4:
                 return new Object[]{seesSun};
             default:

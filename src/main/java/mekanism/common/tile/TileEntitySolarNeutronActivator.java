@@ -100,7 +100,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainer impleme
                 setActive(false);
             }
 
-            TileUtils.emitGas(this, outputTank, gasOutput, facing);
+            TileUtils.emitGas(this, outputTank, gasOutput, getDirection());
             // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
             // traffic from previous implementation that send the update every 10 ticks.
             if (world.getTotalWorldTime() % 20 == 0) {
@@ -221,7 +221,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainer impleme
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        return side == facing && outputTank.canDraw(type);
+        return side == getDirection() && outputTank.canDraw(type);
     }
 
     @Nonnull
@@ -251,7 +251,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainer impleme
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != facing && side != EnumFacing.DOWN;
+            return side != null && side != getDirection() && side != EnumFacing.DOWN;
         }
         return super.isCapabilityDisabled(capability, side);
     }
@@ -354,7 +354,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainer impleme
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return side == facing ? OUTPUT_SLOT : INPUT_SLOT;
+        return side == getDirection() ? OUTPUT_SLOT : INPUT_SLOT;
     }
 
     @Override

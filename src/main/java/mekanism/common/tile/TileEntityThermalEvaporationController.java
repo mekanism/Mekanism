@@ -261,8 +261,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean buildStructure() {
-        EnumFacing right = MekanismUtils.getRight(facing);
-        EnumFacing left = MekanismUtils.getLeft(facing);
+        EnumFacing right = getRightSide();
+        EnumFacing left = getLeftSide();
         height = 0;
         controllerConflict = false;
         updatedThisTick = true;
@@ -296,8 +296,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean scanTopLayer(Coord4D current) {
-        EnumFacing right = MekanismUtils.getRight(facing);
-        EnumFacing back = MekanismUtils.getBack(facing);
+        EnumFacing right = getRightSide();
+        EnumFacing back = getOppositeDirection();
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
                 Coord4D pointer = current.offset(right, x).offset(back, z);
@@ -339,8 +339,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean scanLowerLayer(Coord4D current) {
-        EnumFacing right = MekanismUtils.getRight(facing);
-        EnumFacing back = MekanismUtils.getBack(facing);
+        EnumFacing right = getRightSide();
+        EnumFacing back = getOppositeDirection();
         boolean foundCenter = false;
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
@@ -401,10 +401,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (!structured) {
             return null;
         }
-        EnumFacing right = MekanismUtils.getRight(facing);
+        EnumFacing right = getRightSide();
         Coord4D startPoint = Coord4D.get(this).offset(right);
         startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
-        startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing));
+        startPoint = startPoint.offset(right.getOpposite()).offset(getOppositeDirection());
         startPoint.y = renderY;
         return startPoint;
     }
@@ -433,8 +433,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 if (structured) {
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).
-                    BlockPos corner1 = getRenderLocation().getPos().offset(facing).offset(facing.rotateYCCW()).down();
-                    BlockPos corner2 = corner1.offset(facing.getOpposite(), 3).offset(facing.rotateYCCW().getOpposite(), 3).up(height - 1);
+                    BlockPos corner1 = getRenderLocation().getPos().offset(getDirection()).offset(getRightSide()).down();
+                    BlockPos corner2 = corner1.offset(getOppositeDirection(), 3).offset(getLeftSide(), 3).up(height - 1);
                     // Use the corners to spin up the sparkle
                     Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);
                 }

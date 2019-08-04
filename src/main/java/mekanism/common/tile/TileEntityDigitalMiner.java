@@ -265,15 +265,15 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
                 TileEntity ejectInv = getEjectInv();
                 TileEntity ejectTile = getEjectTile();
                 if (ejectInv != null && ejectTile != null) {
-                    ILogisticalTransporter capability = CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, facing.getOpposite());
+                    ILogisticalTransporter capability = CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection());
                     TransitResponse response;
                     if (capability == null) {
-                        response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, facing.getOpposite(), false);
+                        response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
                     } else {
                         response = TransporterUtils.insert(ejectTile, capability, ejectMap, null, true, 0);
                     }
                     if (!response.isEmpty()) {
-                        response.getInvStack(ejectTile, facing.getOpposite()).use();
+                        response.getInvStack(ejectTile, getOppositeDirection()).use();
                     }
                     delayTicks = 10;
                 }
@@ -447,7 +447,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
     }
 
     public TileEntity getEjectInv() {
-        final EnumFacing side = facing.getOpposite();
+        final EnumFacing side = getOppositeDirection();
         final BlockPos pos = getPos().up().offset(side, 2);
         if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
@@ -870,7 +870,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         //Allow for automation via the top (as that is where it can auto pull from)
-        return side == EnumFacing.UP || side == facing.getOpposite() ? INV_SLOTS : InventoryUtils.EMPTY;
+        return side == EnumFacing.UP || side == getOppositeDirection() ? INV_SLOTS : InventoryUtils.EMPTY;
     }
 
     @Override
@@ -879,7 +879,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
     }
 
     public TileEntity getEjectTile() {
-        final EnumFacing side = facing.getOpposite();
+        final EnumFacing side = getOppositeDirection();
         final BlockPos pos = getPos().up().offset(side);
         if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
@@ -900,7 +900,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
 
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
-        if (side == facing.getOpposite()) {
+        if (side == getOppositeDirection()) {
             if (slotID == 27) {
                 return !ChargeUtils.canBeDischarged(itemstack);
             }
@@ -1113,8 +1113,8 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
 
     @Override
     public boolean canBoundReceiveEnergy(BlockPos coord, EnumFacing side) {
-        EnumFacing left = MekanismUtils.getLeft(facing);
-        EnumFacing right = MekanismUtils.getRight(facing);
+        EnumFacing left = getLeftSide();
+        EnumFacing right = getRightSide();
         if (coord.equals(getPos().offset(left))) {
             return side == left;
         } else if (coord.equals(getPos().offset(right))) {
@@ -1125,7 +1125,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
 
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
-        return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == EnumFacing.DOWN;
+        return side == getLeftSide() || side == getRightSide() || side == EnumFacing.DOWN;
     }
 
     @Override
@@ -1185,7 +1185,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
                 return side != EnumFacing.UP;
             }
             //Output
-            EnumFacing back = facing.getOpposite();
+            EnumFacing back = getOppositeDirection();
             if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
                 //If output then disable if wrong face of output
                 return side != back;
@@ -1197,8 +1197,8 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
                 //Disable if it is the bottom port but wrong side of it
                 return side != EnumFacing.DOWN;
             }
-            EnumFacing left = MekanismUtils.getLeft(facing);
-            EnumFacing right = MekanismUtils.getRight(facing);
+            EnumFacing left = getLeftSide();
+            EnumFacing right = getRightSide();
             if (offset.equals(new Vec3i(left.getXOffset(), 0, left.getZOffset()))) {
                 //Disable if left power port but wrong side of the port
                 return side != left;
@@ -1241,7 +1241,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
         if (offset.equals(new Vec3i(0, 1, 0))) {
             return BlockFaceShape.SOLID;
         }
-        EnumFacing back = facing.getOpposite();
+        EnumFacing back = getOppositeDirection();
         if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
             return BlockFaceShape.SOLID;
         }

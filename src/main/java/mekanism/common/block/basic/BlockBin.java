@@ -3,7 +3,6 @@ package mekanism.common.block.basic;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
@@ -12,11 +11,11 @@ import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -117,7 +116,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
             TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
             RayTraceResult mop = MekanismUtils.rayTrace(world, player);
 
-            if (mop != null && mop.sideHit == bin.facing) {
+            if (mop != null && mop.sideHit == bin.getDirection()) {
                 if (!bin.bottomStack.isEmpty()) {
                     ItemStack stack;
                     if (player.isSneaking()) {
@@ -126,7 +125,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                         stack = bin.removeStack().copy();
                     }
                     if (!player.inventory.addItemStackToInventory(stack)) {
-                        BlockPos dropPos = pos.offset(bin.facing);
+                        BlockPos dropPos = pos.offset(bin.getDirection());
                         Entity item = new EntityItem(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
                         item.addVelocity(-item.motionX, -item.motionY, -item.motionZ);
                         world.spawnEntity(item);
@@ -143,21 +142,8 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = entityplayer.getHeldItem(hand);
         TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
-        IMekWrench wrenchHandler;
-        if (!stack.isEmpty() && (wrenchHandler = Wrenches.getHandler(stack)) != null) {
-            RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-            if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-                if (!world.isRemote) {
-                    wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-                    if (entityplayer.isSneaking()) {
-                        MekanismUtils.dismantleBlock(this, state, world, pos);
-                        return true;
-                    }
-                    bin.setFacing(bin.facing.rotateY());
-                    world.notifyNeighborsOfStateChange(pos, this, true);
-                }
-                return true;
-            }
+        if (bin.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+            return true;
         }
         if (!world.isRemote) {
             if (bin.getItemCount() < bin.tier.getStorage()) {
