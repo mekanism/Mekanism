@@ -47,9 +47,7 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     private static final int[] UPSLOTS = {1};
     private static final int[] DOWNSLOTS = {0};
 
-    public final int MAX_DELAY = 10;
     public boolean isActive;
-    public boolean clientActive;
     public int addTicks = 0;
 
     public int delayTicks;
@@ -244,7 +242,7 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        clientActive = isActive = nbtTags.getBoolean("isActive");
+        isActive = nbtTags.getBoolean("isActive");
         cacheCount = nbtTags.getInteger("itemCount");
         tier = BinTier.values()[nbtTags.getInteger("tier")];
         bottomStack = new ItemStack(nbtTags.getCompoundTag("bottomStack"));
@@ -270,7 +268,7 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            clientActive = isActive = dataStream.readBoolean();
+            isActive = dataStream.readBoolean();
             clientAmount = dataStream.readInt();
             tier = BinTier.values()[dataStream.readInt()];
             if (clientAmount > 0) {
@@ -466,10 +464,10 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
 
     @Override
     public void setActive(boolean active) {
-        isActive = active;
-        if (clientActive != active) {
+        boolean stateChange = getActive() != active;
+        if (stateChange) {
+            isActive = active;
             Mekanism.packetHandler.sendUpdatePacket(this);
-            clientActive = active;
         }
     }
 

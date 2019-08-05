@@ -114,7 +114,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public int clientToMine;
 
     public boolean isActive;
-    public boolean clientActive;
 
     public boolean silkTouch;
 
@@ -525,7 +524,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        clientActive = isActive = nbtTags.getBoolean("isActive");
+        isActive = nbtTags.getBoolean("isActive");
         running = nbtTags.getBoolean("running");
         delay = nbtTags.getInteger("delay");
         numPowering = nbtTags.getInteger("numPowering");
@@ -556,7 +555,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         maxY = dataStream.readInt();
         doEject = dataStream.readBoolean();
         doPull = dataStream.readBoolean();
-        clientActive = dataStream.readBoolean();
+        isActive = dataStream.readBoolean();
         running = dataStream.readBoolean();
         silkTouch = dataStream.readBoolean();
         numPowering = dataStream.readInt();
@@ -636,6 +635,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            boolean wasActive = getActive();
             int type = dataStream.readInt();
             if (type == 0) {
                 readBasicData(dataStream);
@@ -653,7 +653,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                     filters.add(MinerFilter.readFromPacket(dataStream));
                 }
             } else if (type == 3) {
-                clientActive = dataStream.readBoolean();
+                isActive = dataStream.readBoolean();
                 running = dataStream.readBoolean();
                 clientToMine = dataStream.readInt();
                 if (dataStream.readBoolean()) {
@@ -662,8 +662,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                     missingStack = ItemStack.EMPTY;
                 }
             }
-            if (clientActive != isActive) {
-                isActive = clientActive;
+            if (wasActive != getActive()) {
                 MekanismUtils.updateBlock(world, getPos());
             }
         }
@@ -804,10 +803,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Override
     public void setActive(boolean active) {
-        isActive = active;
-        if (clientActive != active) {
+        boolean stateChange = getActive() != active;
+        if (stateChange) {
+            isActive = active;
             Mekanism.packetHandler.sendUpdatePacket(this);
-            clientActive = active;
         }
     }
 

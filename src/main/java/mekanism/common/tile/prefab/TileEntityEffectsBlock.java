@@ -28,7 +28,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityMekanism implemen
     @SideOnly(Side.CLIENT)
     private ISound activeSound;
     private int playSoundCooldown = 0;
-    private int rapidChangeThreshold = 10;
+    private int rapidChangeThreshold = MekanismConfig.current().general.UPDATE_DELAY.val();
 
     protected boolean isActive;
     private long lastActive = -1;

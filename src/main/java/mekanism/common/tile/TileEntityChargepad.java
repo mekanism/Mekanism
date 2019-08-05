@@ -4,19 +4,15 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -26,8 +22,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChargepad extends TileEntityEffectsBlock {
-
-    public boolean clientActive;
 
     public Random random = new Random();
 
@@ -41,7 +35,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
         if (!world.isRemote) {
             isActive = false;
             List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                  new AxisAlignedBB(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX() + 1, getPos().getY() + 0.2, getPos().getZ() + 1));
+                  new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 0.2, pos.getZ() + 1));
 
             for (EntityLivingBase entity : entities) {
                 if (entity instanceof EntityPlayer || entity instanceof EntityRobit) {
@@ -72,18 +66,6 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
                     }
                 }
             }
-
-            if (clientActive != getActive()) {
-                if (getActive()) {
-                    world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
-                          SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.8F);
-                } else {
-                    world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
-                          SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_OFF, SoundCategory.BLOCKS, 0.3F, 0.7F);
-                }
-                //TODO: This makes no sense (other than maybe it just updates client state?)
-                setActive(getActive());
-            }
         } else if (getActive()) {
             world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX() + random.nextDouble(), getPos().getY() + 0.15,
                   getPos().getZ() + random.nextDouble(), 0, 0, 0);
@@ -96,45 +78,21 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     }
 
     @Override
-    public void setActive(boolean active) {
-        isActive = active;
-        if (clientActive != active) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-        }
-        clientActive = active;
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
-        super.readFromNBT(nbtTags);
-        clientActive = isActive = nbtTags.getBoolean("isActive");
-    }
-
-    @Nonnull
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("isActive", getActive());
-        return nbtTags;
-    }
-
-    @Override
     public void handlePacketData(ByteBuf dataStream) {
+        boolean wasActive = getActive();
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            clientActive = dataStream.readBoolean();
-            if (clientActive != getActive()) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
+            //If the state changed play pressure plate sound
+            if (wasActive != getActive()) {
+                if (getActive()) {
+                    world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
+                          SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.8F);
+                } else {
+                    world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
+                          SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_OFF, SoundCategory.BLOCKS, 0.3F, 0.7F);
+                }
             }
         }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(getActive());
-        return data;
     }
 
     @Override
