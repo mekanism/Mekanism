@@ -297,16 +297,16 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
             for (int process = 0; process < tier.processes; process++) {
                 if (MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process))
-                    && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
+                    && getEnergy() >= getEnergyPerTick() && gasTank.getStored() >= secondaryEnergyThisTick) {
                     if ((progress[process] + 1) < ticksRequired) {
                         progress[process]++;
                         gasTank.draw(secondaryEnergyThisTick, true);
-                        electricityStored -= energyPerTick;
+                        pullEnergy(null, getEnergyPerTick(), false);
                     } else if ((progress[process] + 1) >= ticksRequired) {
                         operate(getInputSlot(process), getOutputSlot(process));
                         progress[process] = 0;
                         gasTank.draw(secondaryEnergyThisTick, true);
-                        electricityStored -= energyPerTick;
+                        pullEnergy(null, getEnergyPerTick(), false);
                     }
                 }
 
@@ -326,7 +326,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
                 }
             }
 
-            if (MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
+            if (MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= getEnergyPerTick() && gasTank.getStored() >= secondaryEnergyThisTick) {
                 setActive(true);
             } else if (prevEnergy >= getEnergy()) {
                 setActive(false);
@@ -354,7 +354,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     public void setRecipeType(@Nonnull RecipeType type) {
         recipeType = Objects.requireNonNull(type);
         maxEnergy = getBaseStorage();
-        energyPerTick = getBaseEnergyPerTick();
+        setEnergyPerTick(getBaseEnergyPerTick());
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
@@ -852,7 +852,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
-                return new Object[]{electricityStored};
+                return new Object[]{getEnergy()};
             case 1:
                 if (arguments[0] == null) {
                     return new Object[]{"Please provide a target operation."};
@@ -881,7 +881,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
             case 4:
                 return new Object[]{getMaxEnergy()};
             case 5:
-                return new Object[]{getMaxEnergy() - getEnergy()};
+                return new Object[]{getNeededEnergy()};
             default:
                 throw new NoSuchMethodException();
         }
@@ -982,14 +982,14 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
         super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()); // incorporate speed upgrades
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick())); // incorporate speed upgrades
                 break;
             case GAS:
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
                 break;
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
                 break;
             default:

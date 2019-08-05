@@ -110,9 +110,9 @@ public class TileEntityElectricPump extends TileEntityElectric implements IFluid
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
                 }
             }
-            if (MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
+            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
                 if (suckedLastOperation) {
-                    setEnergy(getEnergy() - energyPerTick);
+                    setEnergy(getEnergy() - getEnergyPerTick());
                 }
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
@@ -454,7 +454,7 @@ public class TileEntityElectricPump extends TileEntityElectric implements IFluid
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
                 maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:

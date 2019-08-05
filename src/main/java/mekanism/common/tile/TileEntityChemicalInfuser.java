@@ -17,7 +17,6 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
@@ -62,11 +61,11 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
             TileUtils.receiveGas(getInventory().get(1), rightTank);
             TileUtils.drawGas(getInventory().get(2), centerTank);
             ChemicalInfuserRecipe recipe = getRecipe();
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
+            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this)) {
                 setActive(true);
                 int operations = operate(recipe);
                 double prev = getEnergy();
-                setEnergy(getEnergy() - energyPerTick * operations);
+                setEnergy(getEnergy() - getEnergyPerTick() * operations);
                 clientEnergyUsed = prev - getEnergy();
             } else {
                 if (prevEnergy >= getEnergy()) {
@@ -88,7 +87,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
             possibleProcess = Math.min(rightTank.getStored() / recipe.recipeInput.leftGas.amount, possibleProcess);
         }
         possibleProcess = Math.min(centerTank.getNeeded() / recipe.recipeOutput.output.amount, possibleProcess);
-        possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
+        possibleProcess = Math.min((int) (getEnergy() / getEnergyPerTick()), possibleProcess);
         return possibleProcess;
     }
 

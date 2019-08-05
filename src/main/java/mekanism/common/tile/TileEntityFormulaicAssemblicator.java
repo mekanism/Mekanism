@@ -146,9 +146,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectric impleme
                                 pulseOperations--;
                             }
                         }
-                    } else if (getEnergy() >= energyPerTick) {
+                    } else if (getEnergy() >= getEnergyPerTick()) {
                         operatingTicks++;
-                        setEnergy(getEnergy() - energyPerTick);
+                        setEnergy(getEnergy() - getEnergyPerTick());
                     }
                 } else {
                     operatingTicks = 0;
@@ -625,10 +625,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectric impleme
         switch (upgrade) {
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
                 break;
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
                 maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
                 break;

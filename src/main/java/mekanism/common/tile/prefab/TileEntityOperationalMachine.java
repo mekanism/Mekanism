@@ -6,7 +6,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
@@ -65,11 +64,11 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
         super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()); // incorporate speed upgrades
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick())); // incorporate speed upgrades
                 break;
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
                 break;
             default:
                 break;

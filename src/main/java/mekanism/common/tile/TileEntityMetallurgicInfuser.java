@@ -16,7 +16,6 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.RecipeHandler;
@@ -92,9 +91,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             }
 
             MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(getInput());
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
+            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
                 setActive(true);
-                setEnergy(getEnergy() - energyPerTick);
+                setEnergy(getEnergy() - getEnergyPerTick());
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
@@ -297,7 +296,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             case 4:
                 return new Object[]{getMaxEnergy()};
             case 5:
-                return new Object[]{getMaxEnergy() - getEnergy()};
+                return new Object[]{getNeededEnergy()};
             case 6:
                 return new Object[]{infuseStored};
             case 7:

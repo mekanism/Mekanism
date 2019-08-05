@@ -134,7 +134,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             RECIPE recipe = getRecipe();
             secondaryEnergyThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int) Math.ceil(secondaryEnergyPerTick);
 
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
+            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && gasTank.getStored() >= secondaryEnergyThisTick) {
                 setActive(true);
                 operatingTicks++;
                 if (operatingTicks >= ticksRequired) {
@@ -142,7 +142,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
                     operatingTicks = 0;
                 }
                 gasTank.draw(secondaryEnergyThisTick, true);
-                electricityStored -= energyPerTick;
+                pullEnergy(null, getEnergyPerTick(), false);
             } else {
                 inactive = true;
                 setActive(false);

@@ -123,7 +123,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         }
         int max = (int) Math.ceil(((float) fuelTank.getStored() / (float) fuelTank.getMaxGas()) * 256F);
         max = Math.min((fuelTank.getStored() * maxBurnTicks) + burnTicks, max);
-        max = (int) Math.min((getMaxEnergy() - getEnergy()) / generationRate, max);
+        max = (int) Math.min(getNeededEnergy() / generationRate, max);
         return max;
     }
 
@@ -185,7 +185,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
             case 2:
                 return new Object[]{getMaxEnergy()};
             case 3:
-                return new Object[]{getMaxEnergy() - getEnergy()};
+                return new Object[]{getNeededEnergy()};
             case 4:
                 return new Object[]{fuelTank.getStored()};
             case 5:

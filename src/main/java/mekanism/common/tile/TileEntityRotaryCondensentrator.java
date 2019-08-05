@@ -21,7 +21,6 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityMachine;
@@ -36,7 +35,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -82,7 +80,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
                 }
 
-                if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) &&
+                if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) &&
                     (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
@@ -90,7 +88,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     setActive(true);
                     fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), operations), true);
                     gasTank.draw(operations, true);
-                    setEnergy(getEnergy() - energyPerTick * operations);
+                    setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
                 } else if (prevEnergy >= getEnergy()) {
                     setActive(false);
@@ -103,7 +101,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
                 }
 
-                if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) &&
+                if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) &&
                     (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
@@ -111,7 +109,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     setActive(true);
                     gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), operations), true);
                     fluidTank.drain(operations, true);
-                    setEnergy(getEnergy() - energyPerTick * operations);
+                    setEnergy(getEnergy() - getEnergyPerTick() * operations);
                     clientEnergyUsed = prev - getEnergy();
                 } else if (prevEnergy >= getEnergy()) {
                     setActive(false);
@@ -133,7 +131,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         } else { //Fluid to gas
             possibleProcess = Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
         }
-        possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
+        possibleProcess = Math.min((int) (getEnergy() / getEnergyPerTick()), possibleProcess);
         return possibleProcess;
     }
 

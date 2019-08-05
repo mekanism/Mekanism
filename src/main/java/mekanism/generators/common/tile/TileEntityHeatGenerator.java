@@ -27,7 +27,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -123,7 +122,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Override
     public boolean canOperate() {
-        return electricityStored < getBaseStorage() && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
+        return getEnergy() < getBaseStorage() && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
     }
 
     @Override
@@ -227,13 +226,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
-                return new Object[]{electricityStored};
+                return new Object[]{getEnergy()};
             case 1:
                 return new Object[]{output};
             case 2:
                 return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{getBaseStorage() - electricityStored};
+                return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
                 return new Object[]{lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0};
             case 5:

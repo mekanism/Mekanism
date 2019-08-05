@@ -18,7 +18,6 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -75,11 +74,11 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             manageBuckets();
             TileUtils.drawGas(getInventory().get(2), outputTank);
             WasherRecipe recipe = getRecipe();
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
+            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this)) {
                 setActive(true);
                 int operations = operate(recipe);
                 double prev = getEnergy();
-                setEnergy(getEnergy() - energyPerTick * operations);
+                setEnergy(getEnergy() - getEnergyPerTick() * operations);
                 clientEnergyUsed = prev - getEnergy();
             } else if (prevEnergy >= getEnergy()) {
                 setActive(false);
@@ -125,7 +124,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public int getUpgradedUsage() {
         int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
-        possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
+        possibleProcess = Math.min((int) (getEnergy() / getEnergyPerTick()), possibleProcess);
         return Math.min(fluidTank.getFluidAmount() / WATER_USAGE, possibleProcess);
     }
 

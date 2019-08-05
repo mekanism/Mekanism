@@ -26,7 +26,6 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -93,8 +92,6 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
     public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
     public HashList<MinerFilter> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
-    public final double BASE_ENERGY_USAGE = MachineType.DIGITAL_MINER.getUsage();
-    public double energyUsage = BASE_ENERGY_USAGE;
 
     private int radius;
 
@@ -289,7 +286,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
     }
 
     public double getPerTick() {
-        double ret = energyUsage;
+        double ret = getEnergyPerTick();
         if (silkTouch) {
             ret *= MekanismConfig.current().general.minerSilkMultiplier.val();
         }
@@ -1101,7 +1098,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
             case SPEED:
                 delayLength = MekanismUtils.getTicks(this, BASE_DELAY);
             case ENERGY:
-                energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
                 maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:

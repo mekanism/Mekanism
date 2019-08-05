@@ -42,7 +42,7 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPRC> {
             double extra = tileEntity.getRecipe() != null ? tileEntity.getRecipe().extraEnergy : 0;
             String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.getBaseStorage() + extra));
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
-                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
+                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getNeededEnergy()));
         }, this, resource));
         addGuiElement(new GuiFluidGauge(() -> tileEntity.inputFluidTank, GuiGauge.Type.STANDARD_YELLOW, this, resource, 5, 10));
         addGuiElement(new GuiGasGauge(() -> tileEntity.inputGasTank, GuiGauge.Type.STANDARD_RED, this, resource, 28, 10));

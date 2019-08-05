@@ -51,9 +51,9 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 159, 15));
         addGuiElement(new GuiEnergyInfo(() -> {
-            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
+            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.getEnergyPerTick());
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
-                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
+                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getNeededEnergy()));
         }, this, resource));
         addGuiElement(new GuiSlot(SlotType.POWER, this, resource, 151, 75).with(SlotOverlay.POWER));
         ySize += 64;

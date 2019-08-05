@@ -15,7 +15,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
@@ -42,7 +41,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public static final int MAX_GAS = 10000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
-    public final double BASE_ENERGY_USAGE = MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getUsage();
     public GasTank injectTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
     public double injectUsage = BASE_INJECT_USAGE;
@@ -78,9 +76,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
             boolean changed = false;
             DissolutionRecipe recipe = getRecipe();
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this)) {
+            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
-                setEnergy(getEnergy() - energyPerTick);
+                setEnergy(getEnergy() - getEnergyPerTick());
                 minorOperate();
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
@@ -291,14 +289,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()); // incorporate speed upgrades
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick())); // incorporate speed upgrades
                 break;
             case GAS:
                 injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
                 break;
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
                 injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
                 break;
             default:

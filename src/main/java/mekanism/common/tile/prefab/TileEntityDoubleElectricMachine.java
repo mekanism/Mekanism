@@ -70,14 +70,14 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             ChargeUtils.discharge(3, this);
             boolean inactive = false;
             RECIPE recipe = getRecipe();
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
+            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
                 setActive(true);
                 operatingTicks++;
                 if (operatingTicks >= ticksRequired) {
                     operate(recipe);
                     operatingTicks = 0;
                 }
-                electricityStored -= energyPerTick;
+                pullEnergy(null, getEnergyPerTick(), false);
             } else {
                 inactive = true;
                 setActive(false);

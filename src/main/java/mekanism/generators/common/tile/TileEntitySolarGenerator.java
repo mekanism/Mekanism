@@ -11,7 +11,6 @@ import mekanism.generators.common.GeneratorsBlock;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -136,13 +135,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
-                return new Object[]{electricityStored};
+                return new Object[]{getEnergy()};
             case 1:
                 return new Object[]{output};
             case 2:
                 return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{getBaseStorage() - electricityStored};
+                return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
                 return new Object[]{seesSun};
             default:

@@ -14,6 +14,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.tile.interfaces.ITileElectric;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,12 +26,12 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
-public abstract class TileEntityElectric extends TileEntityMekanism implements IEnergyWrapper {
+public abstract class TileEntityElectric extends TileEntityMekanism implements ITileElectric {
 
     /**
      * How much energy is stored in this block.
      */
-    public double electricityStored;
+    private double electricityStored;
 
     //TODO
     private IBlockElectric electricBlock;
@@ -42,7 +43,7 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
 
     private final double BASE_ENERGY_PER_TICK;
 
-    public double energyPerTick;
+    private double energyPerTick;
 
     private boolean ic2Registered = false;
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
@@ -50,7 +51,8 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
     public TileEntityElectric(IBlockProvider blockProvider) {
         super(blockProvider);
         electricBlock = (IBlockElectric) blockProvider.getBlock();
-        BASE_ENERGY_PER_TICK = maxEnergy = electricBlock.getStorage();
+        maxEnergy = electricBlock.getStorage();
+        BASE_ENERGY_PER_TICK = energyPerTick = electricBlock.getUsage();
     }
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
@@ -193,7 +195,7 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getDemandedEnergy() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU((getMaxEnergy() - getEnergy())) : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU(getNeededEnergy()) : 0;
     }
 
     @Override
@@ -215,7 +217,7 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
 
     @Override
     public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-        double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
+        double toUse = Math.min(getNeededEnergy(), amount);
         if (toUse < 0.0001 || (side != null && !canReceiveEnergy(side))) {
             return 0;
         }
@@ -283,5 +285,17 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
 
     public double getBaseEnergyPerTick() {
         return BASE_ENERGY_PER_TICK;
+    }
+
+    public double getNeededEnergy() {
+        return getMaxEnergy() - getEnergy();
+    }
+
+    public double getEnergyPerTick() {
+        return energyPerTick;
+    }
+
+    public void setEnergyPerTick(double energyPerTick) {
+        this.energyPerTick = energyPerTick;
     }
 }

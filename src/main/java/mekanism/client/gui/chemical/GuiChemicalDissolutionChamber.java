@@ -33,9 +33,9 @@ public class GuiChemicalDissolutionChamber extends GuiChemical<TileEntityChemica
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
         addGuiElement(new GuiEnergyInfo(() -> {
-            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
+            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.getEnergyPerTick());
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
-                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
+                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getNeededEnergy()));
         }, this, resource));
         addGuiElement(new GuiGasGauge(() -> tileEntity.injectTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
         addGuiElement(new GuiGasGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));

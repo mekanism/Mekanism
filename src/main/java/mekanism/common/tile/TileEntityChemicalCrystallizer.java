@@ -17,7 +17,6 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -76,9 +75,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
             ChargeUtils.discharge(2, this);
             TileUtils.receiveGas(getInventory().get(0), inputTank);
             CrystallizerRecipe recipe = getRecipe();
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
+            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
                 setActive(true);
-                setEnergy(getEnergy() - energyPerTick);
+                setEnergy(getEnergy() - getEnergyPerTick());
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {

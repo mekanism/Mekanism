@@ -67,7 +67,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
             if (perTick > tileEntity.getMaxEnergy()) {
                 ret.add(TextFormatting.RED + LangUtils.localize("mekanism.gui.insufficientbuffer"));
             }
-            ret.add(LangUtils.localize("mekanism.gui.bufferfree") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
+            ret.add(LangUtils.localize("mekanism.gui.bufferfree") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getNeededEnergy()));
             return ret;
         }, this, resource));
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));

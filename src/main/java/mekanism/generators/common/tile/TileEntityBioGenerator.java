@@ -78,7 +78,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
                 setActive(true);
             }
             bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
-            setEnergy(electricityStored + MekanismConfig.current().generators.bioGeneration.val());
+            setEnergy(getEnergy() + MekanismConfig.current().generators.bioGeneration.val());
         } else if (!world.isRemote) {
             setActive(false);
         }
@@ -111,7 +111,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public boolean canOperate() {
-        return electricityStored < getBaseStorage() && bioFuelSlot.fluidStored > 0 && MekanismUtils.canFunction(this);
+        return getEnergy() < getBaseStorage() && bioFuelSlot.fluidStored > 0 && MekanismUtils.canFunction(this);
     }
 
     @Override
@@ -173,13 +173,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
-                return new Object[]{electricityStored};
+                return new Object[]{getEnergy()};
             case 1:
                 return new Object[]{output};
             case 2:
                 return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{getBaseStorage() - electricityStored};
+                return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
                 return new Object[]{bioFuelSlot.fluidStored};
             case 5:

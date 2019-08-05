@@ -57,7 +57,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
                 setActive(currentMultiplier > 0);
             }
             if (getActive()) {
-                setEnergy(electricityStored + (MekanismConfig.current().generators.windGenerationMin.val() * currentMultiplier));
+                setEnergy(getEnergy() + (MekanismConfig.current().generators.windGenerationMin.val() * currentMultiplier));
             }
         } else if (getActive()) {
             angle = (angle + (getPos().getY() + 4F) / SPEED_SCALED) % 360;
@@ -109,13 +109,13 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
-                return new Object[]{electricityStored};
+                return new Object[]{getEnergy()};
             case 1:
                 return new Object[]{output};
             case 2:
                 return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{getBaseStorage() - electricityStored};
+                return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
                 return new Object[]{getMultiplier()};
             default:
@@ -125,7 +125,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public boolean canOperate() {
-        return electricityStored < getBaseStorage() && getMultiplier() > 0 && MekanismUtils.canFunction(this);
+        return getEnergy() < getBaseStorage() && getMultiplier() > 0 && MekanismUtils.canFunction(this);
     }
 
     @Override

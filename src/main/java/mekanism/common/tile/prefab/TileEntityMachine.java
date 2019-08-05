@@ -8,7 +8,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -56,7 +55,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             controlType = RedstoneControl.values()[dataStream.readInt()];
-            energyPerTick = dataStream.readDouble();
+            setEnergyPerTick(dataStream.readDouble());
             maxEnergy = dataStream.readDouble();
         }
     }
@@ -65,7 +64,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(controlType.ordinal());
-        data.add(energyPerTick);
+        data.add(getEnergyPerTick());
         data.add(maxEnergy);
         return data;
     }
@@ -115,7 +114,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
         //TODO: Should this go away
         if (upgrade == Upgrade.ENERGY) {
             maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
-            energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, getBaseEnergyPerTick());
+            setEnergyPerTick(MekanismUtils.getBaseEnergyPerTick(this, getBaseEnergyPerTick()));
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
     }

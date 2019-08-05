@@ -12,7 +12,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
@@ -50,9 +49,9 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
             ChargeUtils.discharge(1, this);
             TileUtils.drawGas(getInventory().get(2), gasTank);
             OxidationRecipe recipe = getRecipe();
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
+            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this)) {
                 setActive(true);
-                setEnergy(getEnergy() - energyPerTick);
+                setEnergy(getEnergy() - getEnergyPerTick());
                 if (operatingTicks < ticksRequired) {
                     operatingTicks++;
                 } else {

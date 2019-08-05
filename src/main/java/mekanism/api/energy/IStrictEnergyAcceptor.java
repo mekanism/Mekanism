@@ -17,6 +17,7 @@ public interface IStrictEnergyAcceptor {
      *
      * @return energy used
      */
+    //TODO: Add @Nullable to the side
     double acceptEnergy(EnumFacing side, double amount, boolean simulate);
 
     /**

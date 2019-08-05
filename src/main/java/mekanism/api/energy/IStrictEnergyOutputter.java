@@ -17,6 +17,7 @@ public interface IStrictEnergyOutputter {
      *
      * @return energy sent
      */
+    //TODO: Add @Nullable to the side
     double pullEnergy(EnumFacing side, double amount, boolean simulate);
 
     /**

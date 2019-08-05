@@ -19,7 +19,6 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
@@ -100,11 +99,11 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
                 setActive(true);
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
-                    electricityStored -= MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy);
+                    pullEnergy(null, MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy), false);
                 } else if ((operatingTicks + 1) >= ticksRequired && getEnergy() >= MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy)) {
                     operate(recipe);
                     operatingTicks = 0;
-                    electricityStored -= MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy);
+                    pullEnergy(null, MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy), false);
                 }
             } else {
                 BASE_TICKS_REQUIRED = 100;
@@ -234,7 +233,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
             case 5:
                 return new Object[]{getMaxEnergy()};
             case 6:
-                return new Object[]{getMaxEnergy() - getEnergy()};
+                return new Object[]{getNeededEnergy()};
             case 7:
                 return new Object[]{inputFluidTank.getFluidAmount()};
             case 8:

@@ -20,7 +20,6 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.RecipeHandler;
@@ -28,8 +27,8 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
-import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -129,7 +128,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             }
             SeparatorRecipe recipe = getRecipe();
 
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
+            if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this)) {
                 setActive(true);
                 boolean update = getBaseEnergyPerTick() != recipe.energyUsage;
                 BASE_ENERGY_PER_TICK = recipe.energyUsage;
@@ -138,7 +137,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
                 }
                 int operations = operate(recipe);
                 double prev = getEnergy();
-                setEnergy(getEnergy() - energyPerTick * operations);
+                setEnergy(getEnergy() - getEnergyPerTick() * operations);
                 clientEnergyUsed = prev - getEnergy();
             } else if (prevEnergy >= getEnergy()) {
                 setActive(false);
@@ -180,7 +179,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
             possibleProcess = Math.min(rightTank.getNeeded() / recipe.recipeOutput.leftGas.amount, possibleProcess);
         }
         possibleProcess = Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
-        possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
+        possibleProcess = Math.min((int) (getEnergy() / getEnergyPerTick()), possibleProcess);
         return Math.min(fluidTank.getFluidAmount() / recipe.recipeInput.ingredient.amount, possibleProcess);
     }
 
@@ -327,13 +326,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
-                return new Object[]{electricityStored};
+                return new Object[]{getEnergy()};
             case 1:
                 return new Object[]{output};
             case 2:
                 return new Object[]{getBaseStorage()};
             case 3:
-                return new Object[]{getBaseStorage() - electricityStored};
+                return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
                 return new Object[]{fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0};
             case 5:
@@ -473,7 +472,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.ENERGY) {
             maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
-            energyPerTick = MachineType.ELECTROLYTIC_SEPARATOR.getUsage();
+            setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
     }

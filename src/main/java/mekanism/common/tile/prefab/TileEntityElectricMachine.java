@@ -10,9 +10,9 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -65,9 +65,9 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             RECIPE recipe = getRecipe();
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
+            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
                 setActive(true);
-                electricityStored -= energyPerTick;
+                pullEnergy(null, getEnergyPerTick(), false);
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else if ((operatingTicks + 1) >= ticksRequired) {
@@ -152,7 +152,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
             case 5:
                 return new Object[]{getMaxEnergy()};
             case 6:
-                return new Object[]{getMaxEnergy() - getEnergy()};
+                return new Object[]{getNeededEnergy()};
             default:
                 throw new NoSuchMethodException();
         }

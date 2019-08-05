@@ -180,7 +180,7 @@ public abstract class TileEntityEnergyCube extends TileEntityElectric implements
             case 2:
                 return new Object[]{getMaxEnergy()};
             case 3:
-                return new Object[]{(getMaxEnergy() - getEnergy())};
+                return new Object[]{(getNeededEnergy())};
             default:
                 throw new NoSuchMethodException();
         }

@@ -91,9 +91,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectric implements IC
                 });
             }
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
+            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
                 if (!finishedCalc) {
-                    setEnergy(getEnergy() - energyPerTick);
+                    setEnergy(getEnergy() - getEnergyPerTick());
                 }
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
@@ -106,7 +106,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectric implements IC
                         if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= Fluid.BUCKET_VOLUME) {
                             if (fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
                                 world.setBlockState(below.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
-                                setEnergy(getEnergy() - energyPerTick);
+                                setEnergy(getEnergy() - getEnergyPerTick());
                                 fluidTank.drain(Fluid.BUCKET_VOLUME, true);
                             }
                         }
@@ -395,7 +395,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectric implements IC
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
             case ENERGY:
-                energyPerTick = MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick());
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
                 maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:
