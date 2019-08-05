@@ -1,10 +1,9 @@
 package mekanism.tools.item;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.StackUtils;
+import mekanism.tools.common.IHasRepairType;
+import mekanism.tools.common.Materials;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -12,14 +11,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemMekanismSword extends ItemSword {
+public class ItemMekanismSword extends ItemSword implements IHasRepairType {
 
-    private ToolMaterial toolMaterial;
-
-    public ItemMekanismSword(ToolMaterial enumtoolmaterial) {
-        super(enumtoolmaterial);
-        toolMaterial = enumtoolmaterial;
-        setCreativeTab(Mekanism.tabMekanism);
+    public ItemMekanismSword(Materials material) {
+        super(material.getMaterial());
     }
 
     @Override
@@ -29,7 +24,7 @@ public class ItemMekanismSword extends ItemSword {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack stack1, @Nonnull ItemStack stack2) {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super.getIsRepairable(stack1, stack2);
+    public ItemStack getRepairStack() {
+        return material.getRepairItemStack();
     }
 }
