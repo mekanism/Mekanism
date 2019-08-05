@@ -32,6 +32,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = new HashMap<>();
     protected Range4D packetRange = null;
     protected int capacity = 0;
+    protected double doubleCapacity = 0;
+    @Deprecated
     protected double meanCapacity = 0;
     protected boolean needsUpdate = false;
     protected int updateDelay = 0;
@@ -70,11 +72,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         if (!changedAcceptors.isEmpty()) {
             for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> entry : changedAcceptors.entrySet()) {
                 IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = entry.getKey();
-
                 if (transmitter.isValid()) {
-                    EnumSet<EnumFacing> directionsChanged = entry.getValue();
-
-                    for (EnumFacing side : directionsChanged) {
+                    //Update all the changed directions
+                    for (EnumFacing side : entry.getValue()) {
                         updateTransmitterOnSide(transmitter, side);
                     }
                 }
@@ -153,7 +153,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         } else {
             changedAcceptors.put(transmitter, EnumSet.of(side));
         }
-
         TransmitterNetworkRegistry.registerChangedNetwork(this);
     }
 
@@ -178,10 +177,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public Range4D getPacketRange() {
-        if (packetRange == null) {
-            return genPacketRange();
-        }
-        return packetRange;
+        return packetRange == null ? genPacketRange() : packetRange;
     }
 
     protected Range4D genPacketRange() {
@@ -202,23 +198,19 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
         for (IGridTransmitter transmitter : transmitters) {
             Coord4D coord = transmitter.coord();
-
             if (coord.x < minX) {
                 minX = coord.x;
+            } else if (coord.x > maxX) {
+                maxX = coord.x;
             }
             if (coord.y < minY) {
                 minY = coord.y;
+            } else if (coord.y > maxY) {
+                maxY = coord.y;
             }
             if (coord.z < minZ) {
                 minZ = coord.z;
-            }
-            if (coord.x > maxX) {
-                maxX = coord.x;
-            }
-            if (coord.y > maxY) {
-                maxY = coord.y;
-            }
-            if (coord.x > maxZ) {
+            } else if (coord.x > maxZ) {
                 maxZ = coord.z;
             }
         }
@@ -254,25 +246,26 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public synchronized void updateCapacity() {
+        doubleCapacity = transmitters.stream().mapToDouble(IGridTransmitter::getCapacity).sum();
+        capacity = doubleCapacity > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) doubleCapacity;
+        //TODO: Remove this at some point, but kept in for now in case something is using the API and requires the meanCapacity
         updateMeanCapacity();
-        double newCapacity = meanCapacity * transmitters.size();
-        //TODO: Make EnergyNetwork use doubles for capacity rather than just integers
-        capacity = newCapacity > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) newCapacity;
     }
 
     /**
      * Override this if things can have variable capacity along the network. An 'average' value of capacity. Calculate it how you will.
      */
+    @Deprecated
     protected synchronized void updateMeanCapacity() {
-        if (transmitters.size() > 0) {
-            meanCapacity = transmitters.iterator().next().getCapacity();
-        } else {
-            meanCapacity = 0;
-        }
+        meanCapacity = transmitters.size() > 0 ? doubleCapacity / transmitters.size() : 0;
     }
 
     public int getCapacity() {
         return capacity;
+    }
+
+    public double getCapacityAsDouble() {
+        return doubleCapacity;
     }
 
     public World getWorld() {

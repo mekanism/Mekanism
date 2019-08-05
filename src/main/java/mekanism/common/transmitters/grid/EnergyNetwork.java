@@ -71,29 +71,19 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
     @Override
     public void clampBuffer() {
-        if (buffer.amount > getCapacity()) {
-            buffer.amount = getCapacity();
+        if (buffer.amount > getCapacityAsDouble()) {
+            buffer.amount = getCapacityAsDouble();
         }
         if (buffer.amount < 0) {
             buffer.amount = 0;
         }
     }
 
-    @Override
-    protected void updateMeanCapacity() {
-        int numCables = transmitters.size();
-        double reciprocalSum = 0;
-        for (IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> cable : transmitters) {
-            reciprocalSum += 1.0 / (double) cable.getCapacity();
-        }
-        meanCapacity = (double) numCables / reciprocalSum;
-    }
-
     public double getEnergyNeeded() {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             return 0;
         }
-        return getCapacity() - buffer.amount;
+        return getCapacityAsDouble() - buffer.amount;
     }
 
     private double tickEmit(double energyToSend) {
@@ -160,7 +150,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     public double getPowerScale() {
-        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1), getCapacity() == 0 ? 0 : buffer.amount / getCapacity());
+        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1), getCapacityAsDouble() == 0 ? 0 : buffer.amount / getCapacityAsDouble());
     }
 
     public void clearJoulesTransmitted() {

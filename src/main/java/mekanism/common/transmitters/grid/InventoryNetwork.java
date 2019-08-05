@@ -79,6 +79,11 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
+    public void updateCapacity() {
+        //The capacity is always zero so no point in doing calculations.
+    }
+
+    @Override
     public String toString() {
         return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
     }

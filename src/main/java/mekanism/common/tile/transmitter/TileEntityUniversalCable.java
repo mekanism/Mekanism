@@ -77,7 +77,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             List<EnumFacing> sides = getConnections(ConnectionType.PULL);
             if (!sides.isEmpty()) {
                 TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(this, getPos(), getWorld());
-                double canDraw = tier.getCableCapacity();
+                double maxDraw = tier.getCableCapacity();
                 for (EnumFacing side : sides) {
                     TileEntity outputter = connectedOutputters[side.ordinal()];
                     if (outputter != null) {
@@ -85,42 +85,24 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                         IStrictEnergyStorage strictStorage;
                         ITeslaProducer teslaProducer;//do not assign anything to this here, or classloader issues may happen
                         IEnergyStorage forgeStorage;
-                        if (CapabilityUtils.hasCapability(outputter, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, side.getOpposite())
-                            && (strictStorage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite())) != null) {
-                            double received = Math.min(strictStorage.getEnergy(), canDraw);
-                            double toDraw = received;
-                            if (received > 0) {
-                                toDraw -= takeEnergy(received, true);
-                            }
-                            strictStorage.setEnergy(strictStorage.getEnergy() - toDraw);
+                        if ((strictStorage = CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite())) != null) {
+                            double received = draw(Math.min(strictStorage.getEnergy(), maxDraw));
+                            strictStorage.setEnergy(strictStorage.getEnergy() - received);
                         } else if (MekanismUtils.useTesla() && (teslaProducer = CapabilityUtils.getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite())) != null) {
-                            double toDraw = TeslaIntegration.fromTesla(teslaProducer.takePower(TeslaIntegration.toTesla(canDraw), true));
-                            if (toDraw > 0) {
-                                toDraw -= takeEnergy(toDraw, true);
-                            }
-                            teslaProducer.takePower(TeslaIntegration.toTesla(toDraw), false);
+                            double received = draw(TeslaIntegration.fromTesla(teslaProducer.takePower(TeslaIntegration.toTesla(maxDraw), true)));
+                            teslaProducer.takePower(TeslaIntegration.toTesla(received), false);
                         } else if (MekanismUtils.useForge() && (forgeStorage = CapabilityUtils.getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite())) != null) {
-                            double toDraw = ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(canDraw), true));
-                            if (toDraw > 0) {
-                                toDraw -= takeEnergy(toDraw, true);
-                            }
-                            forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(toDraw), false);
+                            double received = draw(ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(maxDraw), true)));
+                            forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(received), false);
                         } else if (MekanismUtils.useRF() && outputter instanceof IEnergyProvider) {
                             IEnergyProvider rfProvider = (IEnergyProvider) outputter;
-                            double toDraw = RFIntegration.fromRF(rfProvider.extractEnergy(side.getOpposite(), RFIntegration.toRF(canDraw), true));
-                            if (toDraw > 0) {
-                                toDraw -= takeEnergy(toDraw, true);
-                            }
-                            rfProvider.extractEnergy(side.getOpposite(), RFIntegration.toRF(toDraw), false);
+                            double received = draw(RFIntegration.fromRF(rfProvider.extractEnergy(side.getOpposite(), RFIntegration.toRF(maxDraw), true)));
+                            rfProvider.extractEnergy(side.getOpposite(), RFIntegration.toRF(received), false);
                         } else if (MekanismUtils.useIC2()) {
                             IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
                             if (tile instanceof IEnergySource) {
-                                double received = Math.min(IC2Integration.fromEU(((IEnergySource) tile).getOfferedEnergy()), canDraw);
-                                double toDraw = received;
-                                if (received > 0) {
-                                    toDraw -= takeEnergy(received, true);
-                                }
-                                ((IEnergySource) tile).drawEnergy(IC2Integration.toEU(toDraw));
+                                double received = draw(Math.min(IC2Integration.fromEU(((IEnergySource) tile).getOfferedEnergy()), maxDraw));
+                                ((IEnergySource) tile).drawEnergy(IC2Integration.toEU(received));
                             }
                         }
                     }
@@ -128,6 +110,18 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             }
         }
         super.update();
+    }
+
+    /**
+     * Takes a certain amount of energy and returns how much was actually taken
+     * @param toDraw Amount to take
+     * @return Amount actually taken
+     */
+    private double draw(double toDraw) {
+        if (toDraw > 0) {
+            toDraw -= takeEnergy(toDraw, true);
+        }
+        return toDraw;
     }
 
     @Override
@@ -259,7 +253,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     public double getMaxEnergy() {
         if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().getCapacity();
+            return getTransmitter().getTransmitterNetwork().getCapacityAsDouble();
         }
         return getCapacity();
     }
@@ -281,6 +275,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
         }
     }
 
+    /**
+     * @return Amount of left over energy
+     */
     public double takeEnergy(double energy, boolean doEmit) {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().emit(energy, doEmit);

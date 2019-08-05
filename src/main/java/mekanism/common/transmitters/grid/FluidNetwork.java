@@ -96,18 +96,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void clampBuffer() {
         if (buffer != null && buffer.amount > getCapacity()) {
-            buffer.amount = capacity;
+            buffer.amount = getCapacity();
         }
-    }
-
-    @Override
-    protected void updateMeanCapacity() {
-        int numCables = transmitters.size();
-        double sum = 0;
-        for (IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> pipe : transmitters) {
-            sum += pipe.getCapacity();
-        }
-        meanCapacity = sum / (double) numCables;
     }
 
     public int getFluidNeeded() {

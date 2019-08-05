@@ -56,6 +56,11 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     }
 
     @Override
+    public void updateCapacity() {
+        //The capacity is always zero so no point in doing calculations.
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
 
@@ -65,12 +70,14 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
 
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
-                if (transmitter instanceof TransmitterImpl && ((TransmitterImpl) transmitter).getTileEntity().hasCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null)) {
+                if (transmitter instanceof TransmitterImpl) {
                     IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity().getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null);
-                    double[] d = heatTransmitter.simulateHeat();
-                    newHeatTransferred += d[0];
-                    newHeatLost += d[1];
-                    newSumTemp += heatTransmitter.applyTemperatureChange();
+                    if (heatTransmitter != null) {
+                        double[] d = heatTransmitter.simulateHeat();
+                        newHeatTransferred += d[0];
+                        newHeatLost += d[1];
+                        newSumTemp += heatTransmitter.applyTemperatureChange();
+                    }
                 }
             }
         }
