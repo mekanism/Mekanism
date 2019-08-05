@@ -904,7 +904,7 @@ public class ClientProxy extends CommonProxy {
     public void onModelBake(ModelBakeEvent event) {
         IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         registerItemStackModel(modelRegistry, "jetpack", model -> RenderJetpack.model = model);
-        registerItemStackModel(modelRegistry, "armored_jetpack", model -> RenderArmoredJetpack.model = model);
+        registerItemStackModel(modelRegistry, "jetpack_armored", model -> RenderArmoredJetpack.model = model);
         registerItemStackModel(modelRegistry, "gas_mask", model -> RenderGasMask.model = model);
         registerItemStackModel(modelRegistry, "scuba_tank", model -> RenderScubaTank.model = model);
         registerItemStackModel(modelRegistry, "free_runners", model -> RenderFreeRunners.model = model);
