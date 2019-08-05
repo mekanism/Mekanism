@@ -22,7 +22,7 @@ public class RenderResistiveHeater extends TileEntitySpecialRenderer<TileEntityR
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
         MekanismRenderer.rotate(tileEntity.getDirection(), 0, 180, 90, 270);
         GlStateManager.rotate(180, 0, 0, 1);
-        model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine, true);
+        model.render(0.0625F, tileEntity.getActive(), rendererDispatcher.renderEngine, true);
         GlStateManager.popMatrix();
     }
 }

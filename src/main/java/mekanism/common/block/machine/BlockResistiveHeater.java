@@ -8,6 +8,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
@@ -33,6 +34,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -43,7 +45,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockResistiveHeater extends BlockMekanismContainer implements IBlockElectric, IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
-      IHasTileEntity<TileEntityResistiveHeater> {
+      IHasTileEntity<TileEntityResistiveHeater>, IBlockSound {
+
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.resistiveheater"));
 
     public BlockResistiveHeater() {
         super(Material.IRON);
@@ -215,5 +219,11 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
     @Override
     public Class<? extends TileEntityResistiveHeater> getTileClass() {
         return TileEntityResistiveHeater.class;
+    }
+
+    @Nonnull
+    @Override
+    public SoundEvent getSoundEvent() {
+        return SOUND_EVENT;
     }
 }

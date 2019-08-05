@@ -41,7 +41,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (tileEntity instanceof TileEntityChargepad) {
             TileEntityChargepad chargepad = (TileEntityChargepad) tileEntity;
-            if (!chargepad.isActive) {
+            if (!chargepad.getActive()) {
                 if (!world.isRemote) {
                     EntityRobit robit = new EntityRobit(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                     robit.setHome(Coord4D.get(chargepad));

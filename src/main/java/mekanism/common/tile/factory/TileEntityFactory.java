@@ -127,7 +127,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     private RecipeType recipeType = RecipeType.SMELTING;
 
     public TileEntityFactory(IBlockProvider blockProvider) {
-        super("null", blockProvider, 0);
+        super(blockProvider, 0);
         this.tier = ((BlockFactory) blockProvider.getBlock()).getTier();
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);

@@ -10,7 +10,7 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe> {
 
     public TileEntityCrusher() {
-        super("crusher", MekanismBlock.CRUSHER, 200);
+        super(MekanismBlock.CRUSHER, 200);
     }
 
     @Override

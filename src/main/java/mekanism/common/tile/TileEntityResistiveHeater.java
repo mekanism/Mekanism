@@ -34,10 +34,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public double temperature;
     public double heatToAbsorb = 0;
     /**
-     * Whether or not this machine is in it's active state.
-     */
-    public boolean isActive;
-    /**
      * The client's current active state.
      */
     public boolean clientActive;
@@ -51,7 +47,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityResistiveHeater() {
-        super("machine.resistiveheater", MekanismBlock.RESISTIVE_HEATER);
+        super(MekanismBlock.RESISTIVE_HEATER);
     }
 
     @Override
@@ -59,7 +55,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         super.onUpdate();
         if (world.isRemote && updateDelay > 0) {
             updateDelay--;
-            if (updateDelay == 0 && clientActive != isActive) {
+            if (updateDelay == 0 && clientActive != getActive()) {
                 isActive = clientActive;
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -69,7 +65,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
             boolean packet = false;
             if (updateDelay > 0) {
                 updateDelay--;
-                if (updateDelay == 0 && clientActive != isActive) {
+                if (updateDelay == 0 && clientActive != getActive()) {
                     packet = true;
                 }
             }
@@ -124,7 +120,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         super.writeToNBT(nbtTags);
         nbtTags.setDouble("energyUsage", energyUsage);
         nbtTags.setDouble("temperature", temperature);
-        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setBoolean("isActive", getActive());
         nbtTags.setInteger("controlType", controlType.ordinal());
         return nbtTags;
     }
@@ -146,7 +142,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
             soundScale = dataStream.readFloat();
             controlType = RedstoneControl.values()[dataStream.readInt()];
             lastEnvironmentLoss = dataStream.readDouble();
-            if (updateDelay == 0 && clientActive != isActive) {
+            if (updateDelay == 0 && clientActive != getActive()) {
                 updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
                 isActive = clientActive;
                 MekanismUtils.updateBlock(world, getPos());
@@ -160,7 +156,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
 
         data.add(energyUsage);
         data.add(temperature);
-        data.add(isActive);
+        data.add(getActive());
         data.add(getMaxEnergy());
         data.add(soundScale);
         data.add(controlType.ordinal());
@@ -226,11 +222,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
     }
 
     @Override

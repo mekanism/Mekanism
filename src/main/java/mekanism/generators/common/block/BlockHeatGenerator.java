@@ -3,9 +3,11 @@ package mekanism.generators.common.block;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
@@ -29,6 +31,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -37,7 +40,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityHeatGenerator> {
+public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
+      IHasTileEntity<TileEntityHeatGenerator> {
+
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.heat"));
 
     public BlockHeatGenerator() {
         super(Material.IRON);
@@ -190,5 +196,11 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public Class<? extends TileEntityHeatGenerator> getTileClass() {
         return TileEntityHeatGenerator.class;
+    }
+
+    @Nonnull
+    @Override
+    public SoundEvent getSoundEvent() {
+        return SOUND_EVENT;
     }
 }

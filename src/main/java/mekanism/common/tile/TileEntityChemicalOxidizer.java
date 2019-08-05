@@ -39,7 +39,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     public OxidationRecipe cachedRecipe;
 
     public TileEntityChemicalOxidizer() {
-        super("machine.oxidizer", MekanismBlock.CHEMICAL_OXIDIZER, 3, 100);
+        super(MekanismBlock.CHEMICAL_OXIDIZER, 3, 100);
     }
 
     @Override

@@ -96,7 +96,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     private double BASE_ENERGY_PER_TICK;
 
     public TileEntityElectrolyticSeparator() {
-        super("machine.electrolyticseparator", MekanismBlock.ELECTROLYTIC_SEPARATOR, 4);
+        super(MekanismBlock.ELECTROLYTIC_SEPARATOR, 4);
         BASE_ENERGY_PER_TICK = super.getBaseUsage();
     }
 

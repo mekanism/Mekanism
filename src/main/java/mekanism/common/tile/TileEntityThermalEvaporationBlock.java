@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+//TODO: Try to move some of this logic to TileEntityMultiblock?
 public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implements IComputerIntegration {
 
     private static final String[] methods = new String[]{"getTemperature", "getHeight", "isFormed", "getInput", "getOutput"};

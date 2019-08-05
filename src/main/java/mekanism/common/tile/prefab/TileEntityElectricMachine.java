@@ -33,8 +33,8 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
      * @param type          - type of this machine
      * @param ticksRequired - ticks required to operate -- or smelt an item.
      */
-    public TileEntityElectricMachine(String soundPath, IBlockProvider blockProvider, int ticksRequired) {
-        super(soundPath, blockProvider, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
+    public TileEntityElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
+        super(blockProvider, 3, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -144,7 +144,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
             case 1:
                 return new Object[]{operatingTicks};
             case 2:
-                return new Object[]{isActive};
+                return new Object[]{getActive()};
             case 3:
                 return new Object[]{getDirection()};
             case 4:

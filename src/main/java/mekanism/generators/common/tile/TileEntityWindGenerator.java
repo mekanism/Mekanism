@@ -25,7 +25,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private boolean isBlacklistDimension = false;
 
     public TileEntityWindGenerator() {
-        super("wind", GeneratorsBlock.WIND_GENERATOR, MekanismConfig.current().generators.windGenerationMax.val() * 2);
+        super(GeneratorsBlock.WIND_GENERATOR, MekanismConfig.current().generators.windGenerationMax.val() * 2);
     }
 
     @Override

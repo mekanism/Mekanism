@@ -27,13 +27,12 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChargepad extends TileEntityEffectsBlock {
 
-    public boolean isActive;
     public boolean clientActive;
 
     public Random random = new Random();
 
     public TileEntityChargepad() {
-        super("machine.chargepad", MekanismBlock.CHARGEPAD);
+        super(MekanismBlock.CHARGEPAD);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
                 if (entity instanceof EntityPlayer || entity instanceof EntityRobit) {
                     isActive = getEnergy() > 0;
                 }
-                if (isActive) {
+                if (getActive()) {
                     if (entity instanceof EntityRobit) {
                         EntityRobit robit = (EntityRobit) entity;
                         double canGive = Math.min(getEnergy(), 1000);
@@ -74,17 +73,18 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
                 }
             }
 
-            if (clientActive != isActive) {
-                if (isActive) {
+            if (clientActive != getActive()) {
+                if (getActive()) {
                     world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
                           SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.8F);
                 } else {
                     world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
                           SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_OFF, SoundCategory.BLOCKS, 0.3F, 0.7F);
                 }
-                setActive(isActive);
+                //TODO: This makes no sense (other than maybe it just updates client state?)
+                setActive(getActive());
             }
-        } else if (isActive) {
+        } else if (getActive()) {
             world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX() + random.nextDouble(), getPos().getY() + 0.15,
                   getPos().getZ() + random.nextDouble(), 0, 0, 0);
         }
@@ -93,11 +93,6 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
         return side == EnumFacing.DOWN || side == getOppositeDirection();
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
     }
 
     @Override
@@ -119,7 +114,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setBoolean("isActive", getActive());
         return nbtTags;
     }
 
@@ -128,7 +123,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             clientActive = dataStream.readBoolean();
-            if (clientActive != isActive) {
+            if (clientActive != getActive()) {
                 isActive = clientActive;
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -138,7 +133,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(isActive);
+        data.add(getActive());
         return data;
     }
 

@@ -59,7 +59,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
       IHasTileEntity<TileEntityLogisticalSorter> {
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
-    private static final SoundEvent soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
 
     public BlockLogisticalSorter() {
         super(Material.IRON);
@@ -317,7 +317,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return soundEvent;
+        return SOUND_EVENT;
     }
 
     @Override

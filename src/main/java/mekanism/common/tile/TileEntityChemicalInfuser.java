@@ -49,7 +49,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     public double clientEnergyUsed;
 
     public TileEntityChemicalInfuser() {
-        super("machine.cheminfuser", MekanismBlock.CHEMICAL_INFUSER, 4);
+        super(MekanismBlock.CHEMICAL_INFUSER, 4);
     }
 
     @Override

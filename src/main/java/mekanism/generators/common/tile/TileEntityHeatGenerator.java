@@ -54,7 +54,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     private int currentRedstoneLevel;
 
     public TileEntityHeatGenerator() {
-        super("heat", GeneratorsBlock.HEAT_GENERATOR, MekanismConfig.current().generators.heatGeneration.val() * 2);
+        super(GeneratorsBlock.HEAT_GENERATOR, MekanismConfig.current().generators.heatGeneration.val() * 2);
     }
 
     @Override

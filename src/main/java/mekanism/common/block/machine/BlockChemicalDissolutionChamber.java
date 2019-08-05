@@ -8,6 +8,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
@@ -35,6 +36,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -45,7 +47,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockChemicalDissolutionChamber extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalDissolutionChamber> {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalDissolutionChamber>, IBlockSound {
+
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.dissolution"));
 
     public BlockChemicalDissolutionChamber() {
         super(Material.IRON);
@@ -222,5 +226,11 @@ public class BlockChemicalDissolutionChamber extends BlockMekanismContainer impl
     @Override
     public Class<? extends TileEntityChemicalDissolutionChamber> getTileClass() {
         return TileEntityChemicalDissolutionChamber.class;
+    }
+
+    @Nonnull
+    @Override
+    public SoundEvent getSoundEvent() {
+        return SOUND_EVENT;
     }
 }

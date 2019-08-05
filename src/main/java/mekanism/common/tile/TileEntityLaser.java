@@ -22,14 +22,14 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
     public double diggingProgress;
 
     public TileEntityLaser() {
-        super("machine.laser", MekanismBlock.LASER);
+        super(MekanismBlock.LASER);
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
         if (world.isRemote) {
-            if (isActive) {
+            if (getActive()) {
                 RayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), MekanismConfig.current().usage.laser.val(), world);
                 Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
                 if (hitCoord == null || !hitCoord.equals(digging)) {

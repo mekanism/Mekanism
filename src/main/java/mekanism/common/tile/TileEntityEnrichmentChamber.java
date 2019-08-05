@@ -10,7 +10,7 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<EnrichmentRecipe> {
 
     public TileEntityEnrichmentChamber() {
-        super("enrichment", MekanismBlock.ENRICHMENT_CHAMBER, 200);
+        super(MekanismBlock.ENRICHMENT_CHAMBER, 200);
     }
 
     @Override

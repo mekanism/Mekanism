@@ -16,7 +16,6 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
@@ -46,7 +45,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -69,7 +67,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     private int currentRedstoneLevel;
 
     public TileEntityLogisticalSorter() {
-        super("machine.logisticalsorter", MekanismBlock.LOGISTICAL_SORTER, 3);
+        super(MekanismBlock.LOGISTICAL_SORTER, 3);
         doAutoSync = false;
         upgradeComponent = new TileComponentUpgrade<>(this, 1);
         upgradeComponent.clearSupportedTypes();
@@ -249,7 +247,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             return;
         }
 
-        boolean wasActive = isActive;
+        boolean wasActive = getActive();
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
@@ -263,7 +261,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             } else if (type == 2) {
                 readFilters(dataStream);
             }
-            if (wasActive != isActive) {
+            if (wasActive != getActive()) {
                 //TileEntityEffectsBlock only updates it if it was not recently turned off.
                 // (This is soo that lighting updates do not cause lag)
                 // The sorter gets toggled a lot we need to make sure to update it anyways
@@ -654,7 +652,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
 
     @Override
     public int getRedstoneLevel() {
-        return isActive ? 15 : 0;
+        return getActive() ? 15 : 0;
     }
 
     private class StrictFilterFinder extends Finder {

@@ -27,7 +27,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     public TileEntitySolarGenerator(IBlockProvider blockProvider, double output) {
-        super("solar", blockProvider, output);
+        super(blockProvider, output);
     }
 
     public boolean canSeeSun() {

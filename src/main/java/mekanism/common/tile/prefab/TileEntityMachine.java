@@ -29,8 +29,8 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     public TileComponentUpgrade<TileEntityMachine> upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-    public TileEntityMachine(String sound, IBlockProvider blockProvider, int upgradeSlot) {
-        super(sound, blockProvider);
+    public TileEntityMachine(IBlockProvider blockProvider, int upgradeSlot) {
+        super(blockProvider);
         upgradeComponent = new TileComponentUpgrade<>(this, upgradeSlot);
         upgradeComponent.setSupported(Upgrade.MUFFLING);
     }

@@ -19,8 +19,8 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
      * @param type              - the type of this machine
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityUpgradeableMachine(String soundPath, IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super(soundPath, blockProvider, upgradeSlot, baseTicksRequired, location);
+    public TileEntityUpgradeableMachine(IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+        super(blockProvider, upgradeSlot, baseTicksRequired, location);
     }
 
     @Override

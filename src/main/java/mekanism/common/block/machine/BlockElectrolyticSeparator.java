@@ -8,6 +8,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
@@ -35,6 +36,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -45,7 +47,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockElectrolyticSeparator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityElectrolyticSeparator> {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityElectrolyticSeparator>, IBlockSound {
+
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.electrolyticseparator"));
 
     public BlockElectrolyticSeparator() {
         super(Material.IRON);
@@ -222,5 +226,11 @@ public class BlockElectrolyticSeparator extends BlockMekanismContainer implement
     @Override
     public Class<? extends TileEntityElectrolyticSeparator> getTileClass() {
         return TileEntityElectrolyticSeparator.class;
+    }
+
+    @Nonnull
+    @Override
+    public SoundEvent getSoundEvent() {
+        return SOUND_EVENT;
     }
 }

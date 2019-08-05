@@ -6,7 +6,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.inputs.MachineInput;
@@ -35,8 +34,8 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
      * @param type              - the type of this machine
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityBasicMachine(String soundPath, IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super("machine." + soundPath, blockProvider, upgradeSlot, baseTicksRequired);
+    public TileEntityBasicMachine(IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+        super(blockProvider, upgradeSlot, baseTicksRequired);
         guiLocation = location;
     }
 

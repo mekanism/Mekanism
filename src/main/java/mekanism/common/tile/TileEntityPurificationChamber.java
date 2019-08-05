@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> {
 
     public TileEntityPurificationChamber() {
-        super("purification", MekanismBlock.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super(MekanismBlock.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

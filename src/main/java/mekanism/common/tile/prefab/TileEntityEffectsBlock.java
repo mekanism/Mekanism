@@ -9,13 +9,13 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -38,25 +38,16 @@ public abstract class TileEntityEffectsBlock extends TileEntityMekanism implemen
 
     /**
      * The base of all blocks that deal with electricity, make noise and potential generate ambient lighting
-     *
-     * @param sound         - the sound path of this block
-     * @param name          - full name of this block
-     * @param baseMaxEnergy - how much energy this block can store
      */
-    public TileEntityEffectsBlock(String sound, IBlockProvider blockProvider) {
+    public TileEntityEffectsBlock(IBlockProvider blockProvider) {
         super(blockProvider);
-        // TODO: Have subclasses pass in a static SoundEvent so we avoid per-instance # of SoundEvents for same sound
-        // TODO: Factories don't currently pass in the right value for sound ID of wrapped machine; overhaul this.
-        if (!sound.equals("null")) {
-            soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile." + sound));
-        }
+        soundEvent = ((IBlockSound) blockProvider.getBlock()).getSoundEvent();
     }
 
-    public TileEntityEffectsBlock(String sound, IBlockProvider blockProvider, int rapidChangeThreshold) {
-        this(sound, blockProvider);
+    public TileEntityEffectsBlock(IBlockProvider blockProvider, int rapidChangeThreshold) {
+        this(blockProvider);
         this.rapidChangeThreshold = rapidChangeThreshold;
     }
-
 
     protected float getInitialVolume() {
         return 1.0f;
@@ -121,7 +112,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityMekanism implemen
     public void onUpdate() {
         if (world.isRemote) {
             updateSound();
-            if (!isActive && lastActive > 0) {
+            if (!getActive() && lastActive > 0) {
                 long updateDiff = world.getTotalWorldTime() - lastActive;
                 if (updateDiff > RECENT_THRESHOLD) {
                     MekanismUtils.updateBlock(world, getPos());
@@ -138,7 +129,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityMekanism implemen
 
     @Override
     public void setActive(boolean active) {
-        boolean stateChange = isActive != active;
+        boolean stateChange = getActive() != active;
         if (stateChange) {
             isActive = active;
             Mekanism.packetHandler.sendUpdatePacket(this);
@@ -149,7 +140,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityMekanism implemen
     public boolean wasActiveRecently() {
         // If the machine is currently active or it flipped off within our threshold,
         // we'll consider it recently active.
-        return isActive || (lastActive > 0 && (world.getTotalWorldTime() - lastActive) < RECENT_THRESHOLD);
+        return getActive() || (lastActive > 0 && (world.getTotalWorldTime() - lastActive) < RECENT_THRESHOLD);
     }
 
     @Override
@@ -157,13 +148,13 @@ public abstract class TileEntityEffectsBlock extends TileEntityMekanism implemen
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             boolean newActive = dataStream.readBoolean();
-            boolean stateChange = newActive != isActive;
+            boolean stateChange = newActive != getActive();
             isActive = newActive;
 
-            if (stateChange && !isActive) {
+            if (stateChange && !getActive()) {
                 // Switched off; note the time
                 lastActive = world.getTotalWorldTime();
-            } else if (stateChange && isActive) {
+            } else if (stateChange) { //&& getActive()
                 // Switching on; if lastActive is not currently set, trigger a lighting update
                 // and make sure lastActive is clear
                 if (lastActive == -1) {
@@ -177,7 +168,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityMekanism implemen
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(isActive);
+        data.add(getActive());
         return data;
     }
 
@@ -191,7 +182,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityMekanism implemen
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setBoolean("isActive", getActive());
         return nbtTags;
     }
 

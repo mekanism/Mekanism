@@ -40,7 +40,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     private int currentRedstoneLevel;
 
     public TileEntityBioGenerator() {
-        super("bio", GeneratorsBlock.BIO_GENERATOR, MekanismConfig.current().generators.bioGeneration.val() * 2);
+        super(GeneratorsBlock.BIO_GENERATOR, MekanismConfig.current().generators.bioGeneration.val() * 2);
     }
 
     @Override

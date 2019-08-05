@@ -19,8 +19,8 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
 
     public int ticksRequired;
 
-    protected TileEntityOperationalMachine(String sound, IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired) {
-        super(sound, blockProvider, upgradeSlot);
+    protected TileEntityOperationalMachine(IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired) {
+        super(blockProvider, upgradeSlot);
         ticksRequired = BASE_TICKS_REQUIRED = baseTicksRequired;
     }
 

@@ -63,7 +63,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public double clientEnergyUsed;
 
     public TileEntityChemicalWasher() {
-        super("machine.washer", MekanismBlock.CHEMICAL_WASHER, 4);
+        super(MekanismBlock.CHEMICAL_WASHER, 4);
     }
 
     @Override

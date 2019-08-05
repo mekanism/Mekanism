@@ -10,7 +10,7 @@ import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 public class TileEntityCombiner extends TileEntityDoubleElectricMachine<CombinerRecipe> {
 
     public TileEntityCombiner() {
-        super("combiner", MekanismBlock.COMBINER, 200);
+        super(MekanismBlock.COMBINER, 200);
     }
 
     @Override

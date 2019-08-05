@@ -12,6 +12,7 @@ import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
@@ -19,6 +20,15 @@ import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.machine.BlockChemicalInjectionChamber;
+import mekanism.common.block.machine.BlockCombiner;
+import mekanism.common.block.machine.BlockCrusher;
+import mekanism.common.block.machine.BlockEnergizedSmelter;
+import mekanism.common.block.machine.BlockEnrichmentChamber;
+import mekanism.common.block.machine.BlockMetallurgicInfuser;
+import mekanism.common.block.machine.BlockOsmiumCompressor;
+import mekanism.common.block.machine.BlockPrecisionSawmill;
+import mekanism.common.block.machine.BlockPurificationChamber;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -71,6 +81,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -80,7 +91,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive,
+public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IBlockSound,
       ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory> {
 
     private final FactoryTier tier;
@@ -454,5 +465,31 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
                 }
         }
         return null;
+    }
+
+    @Nonnull
+    @Override
+    public SoundEvent getSoundEvent() {
+        switch (type) {
+            case ENRICHING:
+                return BlockEnrichmentChamber.SOUND_EVENT;
+            case CRUSHING:
+                return BlockCrusher.SOUND_EVENT;
+            case COMPRESSING:
+                return BlockOsmiumCompressor.SOUND_EVENT;
+            case COMBINING:
+                return BlockCombiner.SOUND_EVENT;
+            case PURIFYING:
+                return BlockPurificationChamber.SOUND_EVENT;
+            case INJECTING:
+                return BlockChemicalInjectionChamber.SOUND_EVENT;
+            case INFUSING:
+                return BlockMetallurgicInfuser.SOUND_EVENT;
+            case SAWING:
+                return BlockPrecisionSawmill.SOUND_EVENT;
+            case SMELTING:
+            default:
+                return BlockEnergizedSmelter.SOUND_EVENT;
+        }
     }
 }

@@ -70,8 +70,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * @param ticksRequired    - how many ticks it takes to smelt an item.
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
-    public TileEntityAdvancedElectricMachine(String soundPath, IBlockProvider blockProvider, int ticksRequired, int secondaryPerTick) {
-        super(soundPath, blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
+    public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired, int secondaryPerTick) {
+        super(blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -345,7 +345,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             case 2:
                 return new Object[]{operatingTicks};
             case 3:
-                return new Object[]{isActive};
+                return new Object[]{getActive()};
             case 4:
                 return new Object[]{getDirection()};
             case 5:

@@ -43,8 +43,8 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
      * @param name      - full name of this generator
      * @param maxEnergy - how much energy this generator can store
      */
-    public TileEntityGenerator(String soundPath, IBlockProvider blockProvider, double out) {
-        super("gen." + soundPath, blockProvider);
+    public TileEntityGenerator(IBlockProvider blockProvider, double out) {
+        super(blockProvider);
         output = out;
         controlType = RedstoneControl.DISABLED;
     }

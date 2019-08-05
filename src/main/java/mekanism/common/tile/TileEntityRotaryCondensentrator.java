@@ -64,7 +64,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     private int currentRedstoneLevel;
 
     public TileEntityRotaryCondensentrator() {
-        super("machine.rotarycondensentrator", MekanismBlock.ROTARY_CONDENSENTRATOR, 5);
+        super(MekanismBlock.ROTARY_CONDENSENTRATOR, 5);
     }
 
     @Override

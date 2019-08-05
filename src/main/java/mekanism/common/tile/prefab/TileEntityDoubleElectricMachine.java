@@ -34,8 +34,8 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
      * @param type          - the type of this machine
      * @param ticksRequired - how many ticks it takes to smelt an item.
      */
-    public TileEntityDoubleElectricMachine(String soundPath, IBlockProvider blockProvider, int ticksRequired) {
-        super(soundPath, blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
+    public TileEntityDoubleElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
+        super(blockProvider, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -159,7 +159,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             case 1:
                 return new Object[]{operatingTicks};
             case 2:
-                return new Object[]{isActive};
+                return new Object[]{getActive()};
             case 3:
                 return new Object[]{getDirection()};
             case 4:
