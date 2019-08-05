@@ -2,16 +2,19 @@ package mekanism.common.block.basic;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasInventory;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.induction_cell.TileEntityAdvancedInductionCell;
 import mekanism.common.tile.induction_cell.TileEntityBasicInductionCell;
 import mekanism.common.tile.induction_cell.TileEntityEliteInductionCell;
+import mekanism.common.tile.induction_cell.TileEntityInductionCell;
 import mekanism.common.tile.induction_cell.TileEntityUltimateInductionCell;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,7 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier>, IHasInventory {
+public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier>, IHasInventory, IHasTileEntity<TileEntityInductionCell> {
 
     private final InductionCellTier tier;
 
@@ -72,5 +75,21 @@ public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<I
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityInductionCell> getTileClass() {
+        switch (tier) {
+            case BASIC:
+                return TileEntityBasicInductionCell.class;
+            case ADVANCED:
+                return TileEntityAdvancedInductionCell.class;
+            case ELITE:
+                return TileEntityEliteInductionCell.class;
+            case ULTIMATE:
+                return TileEntityUltimateInductionCell.class;
+        }
+        return null;
     }
 }

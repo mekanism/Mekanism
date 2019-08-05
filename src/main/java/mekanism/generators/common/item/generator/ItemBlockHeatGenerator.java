@@ -13,7 +13,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.block.generator.BlockHeatGenerator;
+import mekanism.generators.common.block.BlockHeatGenerator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;

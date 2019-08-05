@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter;
+package mekanism.common.tile.transmitter.logistical_transporter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
@@ -11,8 +11,10 @@ import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.states.TransmitterType;
+import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransitRequest;
@@ -21,12 +23,14 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.TransporterTier;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TextComponentGroup;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -37,7 +41,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
+public abstract class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
 
     private final int SYNC_PACKET = 1;
     private final int BATCH_PACKET = 2;
@@ -47,13 +51,15 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private int delay = 0;
     private int delayCount = 0;
 
-    public TileEntityLogisticalTransporter() {
-        this(TransporterTier.BASIC);
-    }
-
-    public TileEntityLogisticalTransporter(TransporterTier tier) {
+    public TileEntityLogisticalTransporter(IBlockProvider blockProvider) {
+        Block block = blockProvider.getBlock();
+        if (block instanceof BlockLogisticalTransporter) {
+            this.tier = ((BlockLogisticalTransporter) block).getTier();
+        } else {
+            //Diversion and restrictive transportesr
+            this.tier = TransporterTier.BASIC;
+        }
         transmitterDelegate = new TransporterImpl(this);
-        this.tier = tier;
     }
 
     @Override

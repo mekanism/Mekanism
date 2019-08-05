@@ -22,7 +22,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.logistical_transporter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;

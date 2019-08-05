@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter;
+package mekanism.common.tile.transmitter.thermodynamic_conductor;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
@@ -8,10 +8,13 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.block.states.TransmitterType;
+import mekanism.common.block.transmitter.BlockThermodynamicConductor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.ConductorTier;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.grid.HeatNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
@@ -21,7 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork, Void> implements IHeatTransfer {
+public abstract class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork, Void> implements IHeatTransfer {
 
     public ConductorTier tier;
 
@@ -29,12 +32,8 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public double clientTemperature = 0;
     public double heatToAbsorb = 0;
 
-    public TileEntityThermodynamicConductor() {
-        this(ConductorTier.BASIC);
-    }
-
-    public TileEntityThermodynamicConductor(ConductorTier tier) {
-        this.tier = tier;
+    public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
+        this.tier = ((BlockThermodynamicConductor) blockProvider.getBlock()).getTier();
     }
 
     @Override

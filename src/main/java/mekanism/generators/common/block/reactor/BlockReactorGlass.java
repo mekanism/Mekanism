@@ -1,6 +1,8 @@
 package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -24,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockReactorGlass extends Block {
+public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntityReactorGlass> {
 
     public BlockReactorGlass() {
         super(Material.IRON);
@@ -113,5 +115,11 @@ public class BlockReactorGlass extends Block {
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         //TODO
         return false;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityReactorGlass> getTileClass() {
+        return TileEntityReactorGlass.class;
     }
 }

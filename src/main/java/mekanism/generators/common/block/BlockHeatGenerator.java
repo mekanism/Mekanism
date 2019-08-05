@@ -1,13 +1,15 @@
-package mekanism.generators.common.block.generator;
+package mekanism.generators.common.block;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -35,7 +37,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity {
+public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityHeatGenerator> {
 
     public BlockHeatGenerator() {
         super(Material.IRON);
@@ -182,5 +184,11 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityHeatGenerator> getTileClass() {
+        return TileEntityHeatGenerator.class;
     }
 }

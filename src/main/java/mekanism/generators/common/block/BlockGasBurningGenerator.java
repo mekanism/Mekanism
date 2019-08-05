@@ -1,22 +1,25 @@
-package mekanism.generators.common.block.generator;
+package mekanism.generators.common.block;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,14 +36,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-//TODO: Maybe make this extend BlockSolarGenerator
-public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity {
+public class BlockGasBurningGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityGasGenerator> {
 
-    public BlockAdvancedSolarGenerator() {
+    public BlockGasBurningGenerator() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "advanced_solar_generator"));
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "gas_burning_generator"));
     }
 
     @Nonnull
@@ -97,7 +99,7 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityAdvancedSolarGenerator();
+        return new TileEntityGasGenerator();
     }
 
     @Override
@@ -112,13 +114,6 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
         return false;
     }
 
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
-        return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
-    }
-
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
@@ -130,22 +125,42 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
     @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         //TODO
-        return false;
+        return true;
 
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState blockState) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+        TileEntity tile = worldIn.getTileEntity(pos);
+        if (tile instanceof IComparatorSupport) {
+            return ((IComparatorSupport) tile).getRedstoneLevel();
+        }
+        return 0;
     }
 
     @Override
     public int getGuiID() {
-        return 1;
+        return 3;
     }
 
     @Override
     public double getStorage() {
-        return 200_000;
+        return 100 * MekanismConfig.local().general.FROM_H2.val();
     }
 
     @Override
     public int getInventorySize() {
-        return 1;
+        return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityGasGenerator> getTileClass() {
+        return TileEntityGasGenerator.class;
     }
 }

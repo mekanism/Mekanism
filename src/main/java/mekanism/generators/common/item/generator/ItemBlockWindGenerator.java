@@ -13,7 +13,7 @@ import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.block.generator.BlockWindGenerator;
+import mekanism.generators.common.block.BlockWindGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

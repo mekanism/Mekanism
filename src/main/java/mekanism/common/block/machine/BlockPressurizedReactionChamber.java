@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -11,6 +12,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -43,7 +45,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockPressurizedReactionChamber extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPRC> {
 
     public BlockPressurizedReactionChamber() {
         super(Material.IRON);
@@ -214,5 +216,11 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
     @Override
     public int getInventorySize() {
         return 4;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityPRC> getTileClass() {
+        return TileEntityPRC.class;
     }
 }

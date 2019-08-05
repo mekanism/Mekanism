@@ -2,12 +2,14 @@ package mekanism.common.block;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
@@ -48,7 +50,8 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory, IHasSecurity {
+public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory, IHasSecurity,
+      IHasTileEntity<TileEntityEnergyCube> {
 
     private final EnergyCubeTier tier;
 
@@ -192,5 +195,23 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityEnergyCube> getTileClass() {
+        switch (tier) {
+            case BASIC:
+                return TileEntityBasicEnergyCube.class;
+            case ADVANCED:
+                return TileEntityAdvancedEnergyCube.class;
+            case ELITE:
+                return TileEntityEliteEnergyCube.class;
+            case ULTIMATE:
+                return TileEntityUltimateEnergyCube.class;
+            case CREATIVE:
+                return TileEntityCreativeEnergyCube.class;
+        }
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -11,6 +12,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -43,7 +45,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalOxidizer> {
 
     public BlockChemicalOxidizer() {
         super(Material.IRON);
@@ -213,5 +215,11 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
     @Override
     public int getInventorySize() {
         return 4;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityChemicalOxidizer> getTileClass() {
+        return TileEntityChemicalOxidizer.class;
     }
 }

@@ -2,11 +2,13 @@ package mekanism.common.block.basic;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -45,7 +47,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier> {
+public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin> {
 
     private final BinTier tier;
 
@@ -232,5 +234,23 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
         return 0;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityBin> getTileClass() {
+        switch (tier) {
+            case BASIC:
+                return TileEntityBasicBin.class;
+            case ADVANCED:
+                return TileEntityAdvancedBin.class;
+            case ELITE:
+                return TileEntityEliteBin.class;
+            case ULTIMATE:
+                return TileEntityUltimateBin.class;
+            case CREATIVE:
+                return TileEntityCreativeBin.class;
+        }
+        return null;
     }
 }

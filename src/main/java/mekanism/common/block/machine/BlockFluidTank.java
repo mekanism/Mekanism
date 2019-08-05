@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -11,6 +12,7 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -58,7 +60,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui, IColoredBlock, IStateFacing, IStateActive, ITieredBlock<FluidTankTier>,
-      IHasInventory {
+      IHasInventory, IHasTileEntity<TileEntityFluidTank> {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 
@@ -321,5 +323,23 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityFluidTank> getTileClass() {
+        switch (tier) {
+            case BASIC:
+                return TileEntityBasicFluidTank.class;
+            case ADVANCED:
+                return TileEntityAdvancedFluidTank.class;
+            case ELITE:
+                return TileEntityEliteFluidTank.class;
+            case ULTIMATE:
+                return TileEntityUltimateFluidTank.class;
+            case CREATIVE:
+                return TileEntityCreativeFluidTank.class;
+        }
+        return null;
     }
 }

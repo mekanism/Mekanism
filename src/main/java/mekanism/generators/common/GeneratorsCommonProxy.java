@@ -12,32 +12,18 @@ import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.inventory.container.ContainerWindGenerator;
-import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
-import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
-import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
-import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
-import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
-import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
-import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
-import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Common proxy for the Mekanism Generators module.
@@ -46,33 +32,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class GeneratorsCommonProxy implements IGuiProvider {
 
-    private static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
-        GameRegistry.registerTileEntity(clazz, new ResourceLocation(MekanismGenerators.MODID, name));
-    }
-
     /**
      * Register normal tile entities
      */
     public void registerTileEntities() {
-        registerTileEntity(TileEntityAdvancedSolarGenerator.class, "advanced_solar_generator");
-        registerTileEntity(TileEntityBioGenerator.class, "bio_generator");
-        registerTileEntity(TileEntityElectromagneticCoil.class, "electromagnetic_coil");
-        registerTileEntity(TileEntityGasGenerator.class, "gas_generator");
-        registerTileEntity(TileEntityHeatGenerator.class, "heat_generator");
-        registerTileEntity(TileEntityReactorController.class, "reactor_controller");
-        registerTileEntity(TileEntityReactorFrame.class, "reactor_frame");
-        registerTileEntity(TileEntityReactorGlass.class, "reactor_glass");
-        registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "reactor_laser_focus");
-        registerTileEntity(TileEntityReactorLogicAdapter.class, "reactor_logic_adapter");
-        registerTileEntity(TileEntityReactorPort.class, "reactor_port");
-        registerTileEntity(TileEntityRotationalComplex.class, "rotational_complex");
-        registerTileEntity(TileEntitySaturatingCondenser.class, "saturating_condenser");
-        registerTileEntity(TileEntitySolarGenerator.class, "solar_generator");
-        registerTileEntity(TileEntityTurbineCasing.class, "turbine_casing");
-        registerTileEntity(TileEntityTurbineRotor.class, "turbine_rod");
-        registerTileEntity(TileEntityTurbineValve.class, "turbine_valve");
-        registerTileEntity(TileEntityTurbineVent.class, "turbine_vent");
-        registerTileEntity(TileEntityWindGenerator.class, "wind_turbine");
+        Mekanism.registerTileEntities(GeneratorsBlock.values());
     }
 
     /**

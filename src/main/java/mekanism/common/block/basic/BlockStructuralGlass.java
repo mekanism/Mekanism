@@ -1,10 +1,12 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -25,7 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockStructuralGlass extends BlockTileDrops implements IHasModel {
+public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityStructuralGlass> {
 
     public BlockStructuralGlass() {
         super(Material.IRON);
@@ -117,5 +119,11 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel {
             return tileEntity.onActivate(entityplayer, hand, entityplayer.getHeldItem(hand));
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityStructuralGlass> getTileClass() {
+        return TileEntityStructuralGlass.class;
     }
 }

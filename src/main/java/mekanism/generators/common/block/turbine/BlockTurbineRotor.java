@@ -1,7 +1,9 @@
-package mekanism.generators.common.block.generator;
+package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -29,7 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTurbineRotor extends BlockMekanismContainer {
+public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTileEntity<TileEntityTurbineRotor> {
 
     private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
 
@@ -158,5 +160,11 @@ public class BlockTurbineRotor extends BlockMekanismContainer {
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         //TODO
         return false;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityTurbineRotor> getTileClass() {
+        return TileEntityTurbineRotor.class;
     }
 }

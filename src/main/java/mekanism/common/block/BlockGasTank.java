@@ -2,10 +2,12 @@ package mekanism.common.block;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
@@ -40,7 +42,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity {
+public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityGasTank> {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
@@ -190,5 +192,23 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityGasTank> getTileClass() {
+        switch (tier) {
+            case BASIC:
+                return TileEntityBasicGasTank.class;
+            case ADVANCED:
+                return TileEntityAdvancedGasTank.class;
+            case ELITE:
+                return TileEntityEliteGasTank.class;
+            case ULTIMATE:
+                return TileEntityUltimateGasTank.class;
+            case CREATIVE:
+                return TileEntityCreativeGasTank.class;
+        }
+        return null;
     }
 }

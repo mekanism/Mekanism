@@ -1,7 +1,10 @@
-package mekanism.generators.common.block.generator;
+package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -9,7 +12,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -27,13 +30,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class BlockTurbineCasing extends BlockMekanismContainer {
+public class BlockTurbineValve extends BlockMekanismContainer implements IHasTileEntity<TileEntityTurbineValve> {
 
-    public BlockTurbineCasing() {
+    public BlockTurbineValve() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "turbine_casing"));
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "turbine_valve"));
     }
 
     @Override
@@ -71,7 +74,7 @@ public class BlockTurbineCasing extends BlockMekanismContainer {
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityTurbineCasing();
+        return new TileEntityTurbineValve();
     }
 
     @Override
@@ -87,5 +90,25 @@ public class BlockTurbineCasing extends BlockMekanismContainer {
             }
         }
         return super.canCreatureSpawn(state, world, pos, type);
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState blockState) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+        TileEntity tile = worldIn.getTileEntity(pos);
+        if (tile instanceof IComparatorSupport) {
+            return ((IComparatorSupport) tile).getRedstoneLevel();
+        }
+        return 0;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityTurbineValve> getTileClass() {
+        return TileEntityTurbineValve.class;
     }
 }

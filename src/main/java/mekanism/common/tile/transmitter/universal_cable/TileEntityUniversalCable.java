@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter;
+package mekanism.common.tile.transmitter.universal_cable;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
@@ -13,7 +13,9 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.block.states.TransmitterType;
+import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
@@ -21,6 +23,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.CableTier;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -32,7 +35,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements IStrictEnergyAcceptor,
+public abstract class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements IStrictEnergyAcceptor,
       IStrictEnergyStorage {
 
     public CableTier tier;
@@ -43,12 +46,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     public EnergyStack buffer = new EnergyStack(0);
     private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(), ForgeEnergyCableIntegration.class);
 
-    public TileEntityUniversalCable() {
-        this(CableTier.BASIC);
-    }
-
-    public TileEntityUniversalCable(CableTier tier) {
-        this.tier = tier;
+    public TileEntityUniversalCable(IBlockProvider blockProvider) {
+        this.tier = ((BlockUniversalCable) blockProvider.getBlock()).getTier();
     }
 
     @Override

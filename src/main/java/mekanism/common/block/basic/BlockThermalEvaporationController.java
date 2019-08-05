@@ -1,12 +1,14 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -28,7 +30,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory {
+public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasTileEntity<TileEntityThermalEvaporationController> {
 
     public BlockThermalEvaporationController() {
         super(Material.IRON);
@@ -118,5 +120,11 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     @Override
     public int getInventorySize() {
         return 4;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityThermalEvaporationController> getTileClass() {
+        return TileEntityThermalEvaporationController.class;
     }
 }

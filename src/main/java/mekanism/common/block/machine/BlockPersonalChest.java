@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -11,6 +12,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
@@ -43,7 +45,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Why is the personal chest electric
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, IStateFacing, IHasInventory, IHasSecurity {
+public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, IStateFacing, IHasInventory, IHasSecurity,
+      IHasTileEntity<TileEntityPersonalChest> {
 
     public BlockPersonalChest() {
         super(Material.IRON);
@@ -221,5 +224,11 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Override
     public int getInventorySize() {
         return 54;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityPersonalChest> getTileClass() {
+        return TileEntityPersonalChest.class;
     }
 }

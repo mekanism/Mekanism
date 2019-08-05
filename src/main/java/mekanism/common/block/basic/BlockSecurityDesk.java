@@ -2,11 +2,13 @@ package mekanism.common.block.basic;
 
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -31,7 +33,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui, IHasInventory {
+public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui, IHasInventory, IHasTileEntity<TileEntitySecurityDesk> {
 
     public BlockSecurityDesk() {
         super(Material.IRON);
@@ -147,5 +149,11 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntitySecurityDesk> getTileClass() {
+        return TileEntitySecurityDesk.class;
     }
 }

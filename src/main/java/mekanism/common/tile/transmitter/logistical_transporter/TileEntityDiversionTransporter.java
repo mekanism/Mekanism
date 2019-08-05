@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter;
+package mekanism.common.tile.transmitter.logistical_transporter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Map;
@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlock;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.util.LangUtils;
@@ -21,6 +22,10 @@ import net.minecraft.util.text.TextComponentString;
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter {
 
     public int[] modes = {0, 0, 0, 0, 0, 0};
+
+    public TileEntityDiversionTransporter() {
+        super(MekanismBlock.DIVERSION_TRANSPORTER);
+    }
 
     @Override
     public TransmitterType getTransmitterType() {

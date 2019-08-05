@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -26,7 +27,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBounding extends Block {
+public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock> {
 
     @Nullable
     private static BlockPos getMainBlockPos(IBlockAccess world, BlockPos thisPos) {
@@ -237,5 +238,12 @@ public class BlockBounding extends Block {
             return new TileEntityAdvancedBoundingBlock();
         }
         return new TileEntityBoundingBlock();
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityBoundingBlock> getTileClass() {
+        //TODO: Advanced?
+        return TileEntityBoundingBlock.class;
     }
 }

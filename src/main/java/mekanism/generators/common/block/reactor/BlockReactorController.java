@@ -1,10 +1,12 @@
 package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -27,7 +29,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorController extends Block implements IHasGui, IStateActive, IBlockElectric, IHasInventory {
+public class BlockReactorController extends Block implements IHasGui, IStateActive, IBlockElectric, IHasInventory, IHasTileEntity<TileEntityReactorController> {
 
     public BlockReactorController() {
         super(Material.IRON);
@@ -108,5 +110,11 @@ public class BlockReactorController extends Block implements IHasGui, IStateActi
     @Override
     public int getInventorySize() {
         return 1;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityReactorController> getTileClass() {
+        return TileEntityReactorController.class;
     }
 }

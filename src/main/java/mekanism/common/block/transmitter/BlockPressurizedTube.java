@@ -2,14 +2,20 @@ package mekanism.common.block.transmitter;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.TubeTier;
-import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.pressurized_tube.TileEntityAdvancedPressurizedTube;
+import mekanism.common.tile.transmitter.pressurized_tube.TileEntityBasicPressurizedTube;
+import mekanism.common.tile.transmitter.pressurized_tube.TileEntityElitePressurizedTube;
+import mekanism.common.tile.transmitter.pressurized_tube.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.pressurized_tube.TileEntityUltimatePressurizedTube;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockPressurizedTube extends BlockSmallTransmitter implements ITieredBlock<TubeTier> {
+public class BlockPressurizedTube extends BlockSmallTransmitter implements ITieredBlock<TubeTier>, IHasTileEntity<TileEntityPressurizedTube> {
 
     private final TubeTier tier;
 
@@ -25,6 +31,32 @@ public class BlockPressurizedTube extends BlockSmallTransmitter implements ITier
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityPressurizedTube(tier);
+        switch (tier) {
+            case BASIC:
+                return new TileEntityBasicPressurizedTube();
+            case ADVANCED:
+                return new TileEntityAdvancedPressurizedTube();
+            case ELITE:
+                return new TileEntityElitePressurizedTube();
+            case ULTIMATE:
+                return new TileEntityUltimatePressurizedTube();
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityPressurizedTube> getTileClass() {
+        switch (tier) {
+            case BASIC:
+                return TileEntityBasicPressurizedTube.class;
+            case ADVANCED:
+                return TileEntityAdvancedPressurizedTube.class;
+            case ELITE:
+                return TileEntityElitePressurizedTube.class;
+            case ULTIMATE:
+                return TileEntityUltimatePressurizedTube.class;
+        }
+        return null;
     }
 }

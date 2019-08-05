@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
@@ -12,6 +13,7 @@ import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -53,7 +55,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound, IHasInventory {
+public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound, IHasInventory,
+      IHasTileEntity<TileEntityLogisticalSorter> {
 
     private static final AxisAlignedBB LOGISTICAL_SORTER_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
     private static final SoundEvent soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
@@ -320,5 +323,11 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityLogisticalSorter> getTileClass() {
+        return TileEntityLogisticalSorter.class;
     }
 }

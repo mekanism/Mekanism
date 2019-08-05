@@ -1,13 +1,15 @@
-package mekanism.generators.common.block.generator;
+package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
+import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -21,13 +23,13 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class BlockSaturatingCondenser extends BlockMekanismContainer {
+public class BlockElectromagneticCoil extends BlockMekanismContainer implements IHasTileEntity<TileEntityElectromagneticCoil> {
 
-    public BlockSaturatingCondenser() {
+    public BlockElectromagneticCoil() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "saturating_condenser"));
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "electromagnetic_coil"));
     }
 
     @Override
@@ -62,6 +64,12 @@ public class BlockSaturatingCondenser extends BlockMekanismContainer {
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntitySaturatingCondenser();
+        return new TileEntityElectromagneticCoil();
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityElectromagneticCoil> getTileClass() {
+        return TileEntityElectromagneticCoil.class;
     }
 }

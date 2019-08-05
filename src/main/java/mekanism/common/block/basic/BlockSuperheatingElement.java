@@ -1,9 +1,11 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -20,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSuperheatingElement extends BlockTileDrops implements IStateActive {
+public class BlockSuperheatingElement extends BlockTileDrops implements IStateActive, IHasTileEntity<TileEntitySuperheatingElement> {
 
     public BlockSuperheatingElement() {
         super(Material.IRON);
@@ -84,5 +86,11 @@ public class BlockSuperheatingElement extends BlockTileDrops implements IStateAc
             }
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntitySuperheatingElement> getTileClass() {
+        return TileEntitySuperheatingElement.class;
     }
 }

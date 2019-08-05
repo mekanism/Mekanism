@@ -1,7 +1,9 @@
 package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -21,7 +23,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorLogicAdapter extends Block implements IHasGui {
+public class BlockReactorLogicAdapter extends Block implements IHasGui, IHasTileEntity<TileEntityReactorLogicAdapter> {
 
     public BlockReactorLogicAdapter() {
         super(Material.IRON);
@@ -84,5 +86,11 @@ public class BlockReactorLogicAdapter extends Block implements IHasGui {
     @Override
     public int getGuiID() {
         return 15;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityReactorLogicAdapter> getTileClass() {
+        return TileEntityReactorLogicAdapter.class;
     }
 }

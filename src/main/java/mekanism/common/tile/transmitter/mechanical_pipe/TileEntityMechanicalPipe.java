@@ -1,4 +1,4 @@
-package mekanism.common.tile.transmitter;
+package mekanism.common.tile.transmitter.mechanical_pipe;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
@@ -7,11 +7,14 @@ import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.block.states.TransmitterType;
+import mekanism.common.block.transmitter.BlockMechanicalPipe;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.PipeTier;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
@@ -25,7 +28,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IFluidHandlerWrapper {
+public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IFluidHandlerWrapper {
 
     public PipeTier tier;
 
@@ -36,12 +39,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public FluidStack lastWrite;
     public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
-    public TileEntityMechanicalPipe() {
-        this(PipeTier.BASIC);
-    }
-
-    public TileEntityMechanicalPipe(PipeTier tier) {
-        this.tier = tier;
+    public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
+        this.tier = ((BlockMechanicalPipe) blockProvider.getBlock()).getTier();
         buffer = new FluidTank(getCapacity());
     }
 

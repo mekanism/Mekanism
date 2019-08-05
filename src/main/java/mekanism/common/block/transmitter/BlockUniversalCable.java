@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IBlockOreDict;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.CableTier;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import mekanism.common.tile.transmitter.universal_cable.TileEntityAdvancedUniversalCable;
+import mekanism.common.tile.transmitter.universal_cable.TileEntityBasicUniversalCable;
+import mekanism.common.tile.transmitter.universal_cable.TileEntityEliteUniversalCable;
+import mekanism.common.tile.transmitter.universal_cable.TileEntityUltimateUniversalCable;
+import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.World;
 
-public class BlockUniversalCable extends BlockSmallTransmitter implements ITieredBlock<CableTier>, IBlockOreDict {
+public class BlockUniversalCable extends BlockSmallTransmitter implements ITieredBlock<CableTier>, IBlockOreDict, IHasTileEntity<TileEntityUniversalCable> {
 
     private final CableTier tier;
 
@@ -29,7 +35,17 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityUniversalCable(tier);
+        switch (tier) {
+            case BASIC:
+                return new TileEntityBasicUniversalCable();
+            case ADVANCED:
+                return new TileEntityAdvancedUniversalCable();
+            case ELITE:
+                return new TileEntityEliteUniversalCable();
+            case ULTIMATE:
+                return new TileEntityUltimateUniversalCable();
+        }
+        return null;
     }
 
     @Override
@@ -44,5 +60,21 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
             entries.add("universalCable");
         }
         return entries;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityUniversalCable> getTileClass() {
+        switch (tier) {
+            case BASIC:
+                return TileEntityBasicUniversalCable.class;
+            case ADVANCED:
+                return TileEntityAdvancedUniversalCable.class;
+            case ELITE:
+                return TileEntityEliteUniversalCable.class;
+            case ULTIMATE:
+                return TileEntityUltimateUniversalCable.class;
+        }
+        return null;
     }
 }

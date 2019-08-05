@@ -1,7 +1,9 @@
 package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -21,7 +23,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class BlockReactorFrame extends Block implements IBlockElectric {
+public class BlockReactorFrame extends Block implements IBlockElectric, IHasTileEntity<TileEntityReactorFrame> {
 
     public BlockReactorFrame() {
         super(Material.IRON);
@@ -73,5 +75,11 @@ public class BlockReactorFrame extends Block implements IBlockElectric {
     @Override
     public boolean hasTileEntity(IBlockState state) {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityReactorFrame> getTileClass() {
+        return TileEntityReactorFrame.class;
     }
 }

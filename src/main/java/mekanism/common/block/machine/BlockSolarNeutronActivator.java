@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -10,6 +11,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -41,7 +43,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity {
+      IHasSecurity, IHasTileEntity<TileEntitySolarNeutronActivator> {
 
     public BlockSolarNeutronActivator() {
         super(Material.IRON);
@@ -201,5 +203,11 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
     @Override
     public int getInventorySize() {
         return 4;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntitySolarNeutronActivator> getTileClass() {
+        return TileEntitySolarNeutronActivator.class;
     }
 }

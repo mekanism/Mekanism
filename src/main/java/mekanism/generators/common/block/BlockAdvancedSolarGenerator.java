@@ -1,11 +1,13 @@
-package mekanism.generators.common.block.generator;
+package mekanism.generators.common.block;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -13,7 +15,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.TileEntityWindGenerator;
+import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
@@ -33,13 +35,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockWindGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity {
+//TODO: Maybe make this extend BlockSolarGenerator
+public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity,
+      IHasTileEntity<TileEntityAdvancedSolarGenerator>  {
 
-    public BlockWindGenerator() {
+    public BlockAdvancedSolarGenerator() {
         super(Material.IRON);
         setHardness(3.5F);
         setResistance(8F);
-        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "wind_generator"));
+        setRegistryName(new ResourceLocation(MekanismGenerators.MODID, "advanced_solar_generator"));
     }
 
     @Nonnull
@@ -96,7 +100,7 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
-        return new TileEntityWindGenerator();
+        return new TileEntityAdvancedSolarGenerator();
     }
 
     @Override
@@ -130,11 +134,12 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         //TODO
         return false;
+
     }
 
     @Override
     public int getGuiID() {
-        return 5;
+        return 1;
     }
 
     @Override
@@ -145,5 +150,11 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
     @Override
     public int getInventorySize() {
         return 1;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityAdvancedSolarGenerator> getTileClass() {
+        return TileEntityAdvancedSolarGenerator.class;
     }
 }

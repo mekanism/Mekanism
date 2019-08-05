@@ -26,7 +26,9 @@ import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
+import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IModule;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
@@ -63,88 +65,6 @@ import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
-import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.tile.TileEntityBoilerValve;
-import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.TileEntityChemicalCrystallizer;
-import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
-import mekanism.common.tile.TileEntityChemicalInfuser;
-import mekanism.common.tile.TileEntityChemicalInjectionChamber;
-import mekanism.common.tile.TileEntityChemicalOxidizer;
-import mekanism.common.tile.TileEntityChemicalWasher;
-import mekanism.common.tile.TileEntityCombiner;
-import mekanism.common.tile.TileEntityCrusher;
-import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.tile.TileEntityElectricPump;
-import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityEnergizedSmelter;
-import mekanism.common.tile.TileEntityEnrichmentChamber;
-import mekanism.common.tile.TileEntityFluidicPlenisher;
-import mekanism.common.tile.TileEntityFormulaicAssemblicator;
-import mekanism.common.tile.TileEntityFuelwoodHeater;
-import mekanism.common.tile.TileEntityGlowPanel;
-import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntityLaser;
-import mekanism.common.tile.TileEntityLaserAmplifier;
-import mekanism.common.tile.TileEntityLaserTractorBeam;
-import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityOredictionificator;
-import mekanism.common.tile.TileEntityOsmiumCompressor;
-import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPersonalChest;
-import mekanism.common.tile.TileEntityPrecisionSawmill;
-import mekanism.common.tile.TileEntityPressureDisperser;
-import mekanism.common.tile.TileEntityPurificationChamber;
-import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import mekanism.common.tile.TileEntityResistiveHeater;
-import mekanism.common.tile.TileEntityRotaryCondensentrator;
-import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.tile.TileEntitySeismicVibrator;
-import mekanism.common.tile.TileEntitySolarNeutronActivator;
-import mekanism.common.tile.TileEntityStructuralGlass;
-import mekanism.common.tile.TileEntitySuperheatingElement;
-import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.tile.TileEntityThermalEvaporationBlock;
-import mekanism.common.tile.TileEntityThermalEvaporationController;
-import mekanism.common.tile.TileEntityThermalEvaporationValve;
-import mekanism.common.tile.bin.TileEntityAdvancedBin;
-import mekanism.common.tile.bin.TileEntityBasicBin;
-import mekanism.common.tile.bin.TileEntityCreativeBin;
-import mekanism.common.tile.bin.TileEntityEliteBin;
-import mekanism.common.tile.bin.TileEntityUltimateBin;
-import mekanism.common.tile.energy_cube.TileEntityAdvancedEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityBasicEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityCreativeEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityEliteEnergyCube;
-import mekanism.common.tile.energy_cube.TileEntityUltimateEnergyCube;
-import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.fluid_tank.TileEntityAdvancedFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityBasicFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityCreativeFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityEliteFluidTank;
-import mekanism.common.tile.fluid_tank.TileEntityUltimateFluidTank;
-import mekanism.common.tile.gas_tank.TileEntityGasTank;
-import mekanism.common.tile.induction_cell.TileEntityAdvancedInductionCell;
-import mekanism.common.tile.induction_cell.TileEntityBasicInductionCell;
-import mekanism.common.tile.induction_cell.TileEntityEliteInductionCell;
-import mekanism.common.tile.induction_cell.TileEntityUltimateInductionCell;
-import mekanism.common.tile.induction_provider.TileEntityAdvancedInductionProvider;
-import mekanism.common.tile.induction_provider.TileEntityBasicInductionProvider;
-import mekanism.common.tile.induction_provider.TileEntityEliteInductionProvider;
-import mekanism.common.tile.induction_provider.TileEntityUltimateInductionProvider;
-import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
-import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
-import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
-import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
@@ -607,99 +527,34 @@ public class Mekanism {
         FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfig.current().general.FROM_H2.val());
     }
 
-    private static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
-        GameRegistry.registerTileEntity(clazz, new ResourceLocation(MODID, name));
+    public static void registerTileEntities(IBlockProvider[] blockProviders) {
+        Set<Class<? extends TileEntity>> alreadyAdded = new HashSet<>();
+        for (IBlockProvider blockProvider : blockProviders) {
+            Block block = blockProvider.getBlock();
+            if (block instanceof IHasTileEntity<?>) {
+                IHasTileEntity<?> tileHolder = (IHasTileEntity<?>) block;
+                Class<? extends TileEntity> tileClass = tileHolder.getTileClass();
+                if (tileClass != null) {
+                    if (tileHolder.hasMultipleBlocks()) {
+                        if (!alreadyAdded.contains(tileClass)) {
+                            alreadyAdded.add(tileClass);
+                            GameRegistry.registerTileEntity(tileClass, new ResourceLocation(MODID, tileHolder.getTileName()));
+                        }
+                    } else {
+                        GameRegistry.registerTileEntity(tileClass, new ResourceLocation(MODID, blockProvider.getName()));
+                    }
+                }
+            }
+        }
     }
 
     /**
      * Adds and registers all tile entities.
      */
     private void registerTileEntities() {
-        //TODO: Register all tile entities
-        //Tile entities
-        registerTileEntity(TileEntityAdvancedBoundingBlock.class, "advanced_bounding_block");
-        registerTileEntity(TileEntityBasicBin.class, "basic_bin");
-        registerTileEntity(TileEntityAdvancedBin.class, "advanced_bin");
-        registerTileEntity(TileEntityEliteBin.class, "elite_bin");
-        registerTileEntity(TileEntityUltimateBin.class, "ultimate_bin");
-        registerTileEntity(TileEntityCreativeBin.class, "creative_bin");
-        registerTileEntity(TileEntityBoilerCasing.class, "boiler_casing");
-        registerTileEntity(TileEntityBoilerValve.class, "boiler_valve");
-        registerTileEntity(TileEntityBoundingBlock.class, "bounding_block");
-        registerTileEntity(TileEntityCardboardBox.class, "cardboard_box");
-        registerTileEntity(TileEntityChargepad.class, "chargepad");
-        registerTileEntity(TileEntityChemicalCrystallizer.class, "chemical_crystallizer");
-        registerTileEntity(TileEntityChemicalDissolutionChamber.class, "chemical_dissolution_chamber");
-        registerTileEntity(TileEntityChemicalInfuser.class, "chemical_infuser");
-        registerTileEntity(TileEntityChemicalInjectionChamber.class, "chemical_injection_chamber");
-        registerTileEntity(TileEntityChemicalOxidizer.class, "chemical_oxidizer");
-        registerTileEntity(TileEntityChemicalWasher.class, "chemical_washer");
-        registerTileEntity(TileEntityCombiner.class, "combiner");
-        registerTileEntity(TileEntityCrusher.class, "crusher");
-        registerTileEntity(TileEntityDigitalMiner.class, "digital_miner");
-        registerTileEntity(TileEntityDiversionTransporter.class, "diversion_transporter");
-        registerTileEntity(TileEntityDynamicTank.class, "dynamic_tank");
-        registerTileEntity(TileEntityDynamicValve.class, "dynamic_valve");
-        registerTileEntity(TileEntityElectricPump.class, "electric_pump");
-        registerTileEntity(TileEntityElectrolyticSeparator.class, "electrolytic_separator");
-        registerTileEntity(TileEntityEnergizedSmelter.class, "energized_smelter");
-        registerTileEntity(TileEntityBasicEnergyCube.class, "basic_energy_cube");
-        registerTileEntity(TileEntityAdvancedEnergyCube.class, "advanced_energy_cube");
-        registerTileEntity(TileEntityEliteEnergyCube.class, "elite_energy_cube");
-        registerTileEntity(TileEntityUltimateEnergyCube.class, "ultimate_energy_cube");
-        registerTileEntity(TileEntityCreativeEnergyCube.class, "creative_energy_cube");
-        registerTileEntity(TileEntityEnrichmentChamber.class, "enrichment_chamber");
-        registerTileEntity(TileEntityFactory.class, "smelting_factory");
-        registerTileEntity(TileEntityBasicFluidTank.class, "basic_fluid_tank");
-        registerTileEntity(TileEntityAdvancedFluidTank.class, "advanced_fluid_tank");
-        registerTileEntity(TileEntityEliteFluidTank.class, "elite_fluid_tank");
-        registerTileEntity(TileEntityUltimateFluidTank.class, "ultimate_fluid_tank");
-        registerTileEntity(TileEntityCreativeFluidTank.class, "creative_fluid_tank");
-        registerTileEntity(TileEntityFluidicPlenisher.class, "fluidic_plenisher");
-        registerTileEntity(TileEntityFormulaicAssemblicator.class, "formulaic_assemblicator");
-        registerTileEntity(TileEntityFuelwoodHeater.class, "fuelwood_heater");
-        registerTileEntity(TileEntityGasTank.class, "gas_tank");
-        registerTileEntity(TileEntityGlowPanel.class, "glow_panel");
-        registerTileEntity(TileEntityInductionCasing.class, "induction_casing");
-        registerTileEntity(TileEntityBasicInductionCell.class, "basic_induction_cell");
-        registerTileEntity(TileEntityAdvancedInductionCell.class, "advanced_induction_cell");
-        registerTileEntity(TileEntityEliteInductionCell.class, "elite_induction_cell");
-        registerTileEntity(TileEntityUltimateInductionCell.class, "ultimate_induction_cell");
-        registerTileEntity(TileEntityInductionPort.class, "induction_port");
-        registerTileEntity(TileEntityBasicInductionProvider.class, "basic_induction_provider");
-        registerTileEntity(TileEntityAdvancedInductionProvider.class, "advanced_induction_provider");
-        registerTileEntity(TileEntityEliteInductionProvider.class, "elite_induction_provider");
-        registerTileEntity(TileEntityUltimateInductionProvider.class, "ultimate_induction_provider");
-        registerTileEntity(TileEntityLaser.class, "laser");
-        registerTileEntity(TileEntityLaserAmplifier.class, "laser_amplifier");
-        registerTileEntity(TileEntityLaserTractorBeam.class, "laser_tractor_beam");
-        registerTileEntity(TileEntityLogisticalSorter.class, "logistical_sorter");
-        registerTileEntity(TileEntityLogisticalTransporter.class, "logistical_transporter");
-        registerTileEntity(TileEntityMechanicalPipe.class, "mechanical_pipe");
-        registerTileEntity(TileEntityMetallurgicInfuser.class, "metallurgic_infuser");
-        registerTileEntity(TileEntityOredictionificator.class, "oredictionificator");
-        registerTileEntity(TileEntityOsmiumCompressor.class, "osmium_compressor");
-        registerTileEntity(TileEntityPRC.class, "pressurized_reaction_chamber");
-        registerTileEntity(TileEntityPersonalChest.class, "personal_chest");
-        registerTileEntity(TileEntityPrecisionSawmill.class, "precision_sawmill");
-        registerTileEntity(TileEntityPressureDisperser.class, "pressure_disperser");
-        registerTileEntity(TileEntityPressurizedTube.class, "pressurized_tube");
-        registerTileEntity(TileEntityPurificationChamber.class, "purification_chamber");
-        registerTileEntity(TileEntityQuantumEntangloporter.class, "quantum_entangloporter");
-        registerTileEntity(TileEntityResistiveHeater.class, "resistive_heater");
-        registerTileEntity(TileEntityRestrictiveTransporter.class, "restrictive_transporter");
-        registerTileEntity(TileEntityRotaryCondensentrator.class, "rotary_condensentrator");
-        registerTileEntity(TileEntitySecurityDesk.class, "security_desk");
-        registerTileEntity(TileEntitySeismicVibrator.class, "seismic_vibrator");
-        registerTileEntity(TileEntitySolarNeutronActivator.class, "solar_neutron_activator");
-        registerTileEntity(TileEntityStructuralGlass.class, "structural_glass");
-        registerTileEntity(TileEntitySuperheatingElement.class, "superheating_element");
-        registerTileEntity(TileEntityTeleporter.class, "mekanism_teleporter");
-        registerTileEntity(TileEntityThermalEvaporationBlock.class, "thermal_evaporation_block");
-        registerTileEntity(TileEntityThermalEvaporationController.class, "thermal_evaporation_controller");
-        registerTileEntity(TileEntityThermalEvaporationValve.class, "thermal_evaporation_valve");
-        registerTileEntity(TileEntityThermodynamicConductor.class, "thermodynamic_conductor");
-        registerTileEntity(TileEntityUniversalCable.class, "universal_cable");
+        registerTileEntities(MekanismBlock.values());
+        //TODO: Make block for advanced bounding?
+        GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, new ResourceLocation(MODID, "advanced_bounding_block"));
 
         //Register the TESRs
         proxy.registerTESRs();

@@ -1,10 +1,12 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
@@ -17,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporation extends BlockTileDrops implements IHasModel {
+public class BlockThermalEvaporation extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationBlock> {
 
     public BlockThermalEvaporation() {
         super(Material.IRON);
@@ -50,5 +52,11 @@ public class BlockThermalEvaporation extends BlockTileDrops implements IHasModel
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityThermalEvaporationBlock();
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityThermalEvaporationBlock> getTileClass() {
+        return TileEntityThermalEvaporationBlock.class;
     }
 }

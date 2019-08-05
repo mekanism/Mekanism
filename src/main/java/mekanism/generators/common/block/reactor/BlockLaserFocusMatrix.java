@@ -1,6 +1,8 @@
 package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -24,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLaserFocusMatrix extends Block {
+public class BlockLaserFocusMatrix extends Block implements IHasTileEntity<TileEntityReactorLaserFocusMatrix> {
 
     public BlockLaserFocusMatrix() {
         super(Material.IRON);
@@ -112,5 +114,11 @@ public class BlockLaserFocusMatrix extends Block {
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         //TODO
         return false;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityReactorLaserFocusMatrix> getTileClass() {
+        return TileEntityReactorLaserFocusMatrix.class;
     }
 }

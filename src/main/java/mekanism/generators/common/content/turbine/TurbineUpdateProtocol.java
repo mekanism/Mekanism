@@ -10,7 +10,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.generator.BlockTurbineCasing;
+import mekanism.generators.common.block.turbine.BlockTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;

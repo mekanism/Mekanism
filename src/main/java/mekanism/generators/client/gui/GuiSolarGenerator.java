@@ -11,7 +11,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.block.generator.BlockAdvancedSolarGenerator;
+import mekanism.generators.common.block.BlockAdvancedSolarGenerator;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.entity.player.InventoryPlayer;

@@ -1,9 +1,11 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
@@ -14,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockPressureDisperser extends BlockTileDrops {
+public class BlockPressureDisperser extends BlockTileDrops implements IHasTileEntity<TileEntityPressureDisperser> {
 
     public BlockPressureDisperser() {
         super(Material.IRON);
@@ -42,5 +44,11 @@ public class BlockPressureDisperser extends BlockTileDrops {
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         return new TileEntityPressureDisperser();
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityPressureDisperser> getTileClass() {
+        return TileEntityPressureDisperser.class;
     }
 }

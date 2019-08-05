@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.FactoryType;
 import mekanism.common.base.IActiveState;
@@ -12,6 +13,7 @@ import mekanism.common.block.interfaces.IHasFactoryType;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -44,7 +46,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockPurificationChamber extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IHasFactoryType,
-      IHasInventory, IHasSecurity {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPurificationChamber> {
 
     public BlockPurificationChamber() {
         super(Material.IRON);
@@ -221,5 +223,11 @@ public class BlockPurificationChamber extends BlockMekanismContainer implements 
     @Override
     public int getInventorySize() {
         return 5;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityPurificationChamber> getTileClass() {
+        return TileEntityPurificationChamber.class;
     }
 }

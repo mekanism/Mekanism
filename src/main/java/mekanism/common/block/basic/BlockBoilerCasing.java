@@ -1,7 +1,9 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IHasInventory;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -9,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasInventory {
+public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasInventory, IHasTileEntity<TileEntityBoilerCasing> {
 
     public BlockBoilerCasing() {
         super("boiler_casing");
@@ -34,5 +36,11 @@ public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasInven
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityBoilerCasing> getTileClass() {
+        return TileEntityBoilerCasing.class;
     }
 }

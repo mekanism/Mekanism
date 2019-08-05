@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -10,6 +11,7 @@ import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -40,7 +42,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockResistiveHeater extends BlockMekanismContainer implements IBlockElectric, IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity {
+public class BlockResistiveHeater extends BlockMekanismContainer implements IBlockElectric, IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
+      IHasTileEntity<TileEntityResistiveHeater> {
 
     public BlockResistiveHeater() {
         super(Material.IRON);
@@ -206,5 +209,11 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
     @Override
     public int getInventorySize() {
         return 1;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityResistiveHeater> getTileClass() {
+        return TileEntityResistiveHeater.class;
     }
 }

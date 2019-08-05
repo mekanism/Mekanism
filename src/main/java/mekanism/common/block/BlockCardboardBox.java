@@ -1,9 +1,11 @@
 package mekanism.common.block;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
@@ -28,7 +30,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class BlockCardboardBox extends BlockMekanismContainer implements IHasModel, IStateStorage {
+public class BlockCardboardBox extends BlockMekanismContainer implements IHasModel, IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
     private static boolean testingPlace = false;
 
@@ -125,6 +127,12 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
             blockEvent.setUseBlock(Event.Result.ALLOW);
             blockEvent.setUseItem(Event.Result.DENY);
         }
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityCardboardBox> getTileClass() {
+        return TileEntityCardboardBox.class;
     }
 
     public static class BlockData {

@@ -2,12 +2,14 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasModel;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
@@ -41,7 +43,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
-public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing {
+public class BlockLaser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser> {
 
     private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
 
@@ -231,5 +233,11 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     @Override
     public double getStorage() {
         return MekanismConfig.current().storage.laser.val();
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityLaser> getTileClass() {
+        return TileEntityLaser.class;
     }
 }

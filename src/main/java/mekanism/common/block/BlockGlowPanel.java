@@ -3,11 +3,13 @@ package mekanism.common.block;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IColoredBlock;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.integration.multipart.MultipartMekanism;
@@ -29,7 +31,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing, IColoredBlock {
+public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing, IColoredBlock, IHasTileEntity<TileEntityGlowPanel> {
 
     public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
 
@@ -193,5 +195,21 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     @Deprecated
     public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
         return BlockFaceShape.UNDEFINED;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityGlowPanel> getTileClass() {
+        return TileEntityGlowPanel.class;
+    }
+
+    @Override
+    public boolean hasMultipleBlocks() {
+        return true;
+    }
+
+    @Override
+    public String getTileName() {
+        return "glow_panel";
     }
 }

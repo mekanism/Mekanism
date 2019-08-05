@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.FactoryType;
 import mekanism.common.base.IActiveState;
@@ -13,6 +14,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
@@ -45,7 +47,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
 public class BlockMetallurgicInfuser extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui, IStateFacing, IHasFactoryType,
-      IHasInventory, IHasSecurity {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityMetallurgicInfuser> {
 
     public BlockMetallurgicInfuser() {
         super(Material.IRON);
@@ -225,5 +227,11 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
     @Override
     public int getInventorySize() {
         return 5;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityMetallurgicInfuser> getTileClass() {
+        return TileEntityMetallurgicInfuser.class;
     }
 }

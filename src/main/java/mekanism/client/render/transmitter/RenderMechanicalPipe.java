@@ -10,7 +10,7 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.BufferBuilder;

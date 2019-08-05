@@ -1,7 +1,9 @@
 package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.interfaces.IBlockElectric;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -24,7 +26,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockReactorPort extends Block implements IStateActive, IBlockElectric {
+public class BlockReactorPort extends Block implements IStateActive, IBlockElectric, IHasTileEntity<TileEntityReactorPort> {
 
     public BlockReactorPort() {
         super(Material.IRON);
@@ -92,5 +94,11 @@ public class BlockReactorPort extends Block implements IStateActive, IBlockElect
     @Override
     public double getStorage() {
         return 1;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityReactorPort> getTileClass() {
+        return TileEntityReactorPort.class;
     }
 }

@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
@@ -9,6 +10,7 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -39,7 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity {
+public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityOredictionificator> {
 
     public BlockOredictionificator() {
         super(Material.IRON);
@@ -200,5 +202,11 @@ public class BlockOredictionificator extends BlockMekanismContainer implements I
     @Override
     public int getInventorySize() {
         return 2;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends TileEntityOredictionificator> getTileClass() {
+        return TileEntityOredictionificator.class;
     }
 }

@@ -3,7 +3,7 @@ package mekanism.client.render.transmitter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
