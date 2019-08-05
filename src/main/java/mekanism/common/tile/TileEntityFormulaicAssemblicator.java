@@ -629,7 +629,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectric impleme
                 break;
             case ENERGY:
                 setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
-                maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
+                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
                 break;
             default:

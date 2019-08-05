@@ -56,7 +56,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             controlType = RedstoneControl.values()[dataStream.readInt()];
             setEnergyPerTick(dataStream.readDouble());
-            maxEnergy = dataStream.readDouble();
+            setMaxEnergy(dataStream.readDouble());
         }
     }
 
@@ -65,7 +65,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
         super.getNetworkedData(data);
         data.add(controlType.ordinal());
         data.add(getEnergyPerTick());
-        data.add(maxEnergy);
+        data.add(getMaxEnergy());
         return data;
     }
 
@@ -113,7 +113,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     public void recalculateUpgrades(Upgrade upgrade) {
         //TODO: Should this go away
         if (upgrade == Upgrade.ENERGY) {
-            maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
+            setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
             setEnergyPerTick(MekanismUtils.getBaseEnergyPerTick(this, getBaseEnergyPerTick()));
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }

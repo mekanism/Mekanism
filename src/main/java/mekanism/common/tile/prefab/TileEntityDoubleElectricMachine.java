@@ -165,9 +165,9 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
             case 4:
                 return new Object[]{canOperate(getRecipe())};
             case 5:
-                return new Object[]{maxEnergy};
+                return new Object[]{getMaxEnergy()};
             case 6:
-                return new Object[]{maxEnergy - getEnergy()};
+                return new Object[]{getNeededEnergy()};
             default:
                 throw new NoSuchMethodException();
         }

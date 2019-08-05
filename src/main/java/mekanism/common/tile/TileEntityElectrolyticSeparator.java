@@ -471,7 +471,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.ENERGY) {
-            maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
+            setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
             setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }

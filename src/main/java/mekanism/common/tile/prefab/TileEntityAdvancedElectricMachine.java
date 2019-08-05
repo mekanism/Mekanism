@@ -351,9 +351,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             case 5:
                 return new Object[]{canOperate(getRecipe())};
             case 6:
-                return new Object[]{maxEnergy};
+                return new Object[]{getMaxEnergy()};
             case 7:
-                return new Object[]{maxEnergy - getEnergy()};
+                return new Object[]{getNeededEnergy()};
             default:
                 throw new NoSuchMethodException();
         }

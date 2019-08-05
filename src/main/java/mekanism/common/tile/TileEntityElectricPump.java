@@ -455,7 +455,7 @@ public class TileEntityElectricPump extends TileEntityElectric implements IFluid
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
             case ENERGY:
                 setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
-                maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
+                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:
                 break;

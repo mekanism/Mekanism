@@ -8,7 +8,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.block.states.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -116,7 +115,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         temperature = nbtTags.getDouble("temperature");
         clientActive = isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-        maxEnergy = energyUsage * 400;
+        setMaxEnergy(energyUsage * 400);
     }
 
     @Nonnull
@@ -134,7 +133,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
-            maxEnergy = energyUsage * 400;
+            setMaxEnergy(energyUsage * 400);
             return;
         }
 
@@ -143,7 +142,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
             energyUsage = dataStream.readDouble();
             temperature = dataStream.readDouble();
             clientActive = dataStream.readBoolean();
-            maxEnergy = dataStream.readDouble();
+            setMaxEnergy(dataStream.readDouble());
             soundScale = dataStream.readFloat();
             controlType = RedstoneControl.values()[dataStream.readInt()];
             lastEnvironmentLoss = dataStream.readDouble();
@@ -162,7 +161,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         data.add(energyUsage);
         data.add(temperature);
         data.add(isActive);
-        data.add(maxEnergy);
+        data.add(getMaxEnergy());
         data.add(soundScale);
         data.add(controlType.ordinal());
 

@@ -1099,7 +1099,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
                 delayLength = MekanismUtils.getTicks(this, BASE_DELAY);
             case ENERGY:
                 setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                maxEnergy = MekanismUtils.getMaxEnergy(this, getBaseStorage());
+                setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:
                 break;

@@ -353,7 +353,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     public void setRecipeType(@Nonnull RecipeType type) {
         recipeType = Objects.requireNonNull(type);
-        maxEnergy = getBaseStorage();
+        setMaxEnergy(getBaseStorage());
         setEnergyPerTick(getBaseEnergyPerTick());
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);

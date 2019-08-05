@@ -39,7 +39,7 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
     /**
      * Actual maximum energy storage, including upgrades
      */
-    protected double maxEnergy;
+    private double maxEnergy;
 
     private final double BASE_ENERGY_PER_TICK;
 
@@ -51,7 +51,7 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
     public TileEntityElectric(IBlockProvider blockProvider) {
         super(blockProvider);
         electricBlock = (IBlockElectric) blockProvider.getBlock();
-        maxEnergy = electricBlock.getStorage();
+        setMaxEnergy(electricBlock.getStorage());
         BASE_ENERGY_PER_TICK = energyPerTick = electricBlock.getUsage();
     }
 
@@ -273,6 +273,10 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
             return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    protected void setMaxEnergy(double maxEnergy) {
+        this.maxEnergy = maxEnergy;
     }
 
     public double getBaseUsage() {
