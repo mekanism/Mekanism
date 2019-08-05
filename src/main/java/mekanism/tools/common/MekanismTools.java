@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Random;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismItems;
+import mekanism.common.MekanismItem;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
@@ -88,11 +88,11 @@ public class MekanismTools implements IModule {
         //Furnace Recipes
         addSmeltingRecipe(ToolsItem.IRON_PAXEL, new ItemStack(Items.IRON_NUGGET));
         addSmeltingRecipe(ToolsItem.GOLD_PAXEL, new ItemStack(Items.GOLD_NUGGET));
-        addSmeltingRecipe(ToolsItem.OBSIDIAN_SET, new ItemStack(MekanismItems.Nugget));
-        addSmeltingRecipe(ToolsItem.OSMIUM_SET, new ItemStack(MekanismItems.Nugget, 1, 1));
-        addSmeltingRecipe(ToolsItem.BRONZE_SET, new ItemStack(MekanismItems.Nugget, 1, 2));
-        addSmeltingRecipe(ToolsItem.GLOWSTONE_SET, new ItemStack(MekanismItems.Nugget, 1, 3));
-        addSmeltingRecipe(ToolsItem.STEEL_SET, new ItemStack(MekanismItems.Nugget, 1, 4));
+        addSmeltingRecipe(ToolsItem.OBSIDIAN_SET, MekanismItem.REFINED_OBSIDIAN_NUGGET.getItemStack());
+        addSmeltingRecipe(ToolsItem.OSMIUM_SET, MekanismItem.OSMIUM_NUGGET.getItemStack());
+        addSmeltingRecipe(ToolsItem.BRONZE_SET, MekanismItem.BRONZE_NUGGET.getItemStack());
+        addSmeltingRecipe(ToolsItem.GLOWSTONE_SET, MekanismItem.REFINED_GLOWSTONE_NUGGET.getItemStack());
+        addSmeltingRecipe(ToolsItem.STEEL_SET, MekanismItem.STEEL_NUGGET.getItemStack());
     }
 
     private static void addSmeltingRecipe(List<ToolsItem> itemSet, ItemStack nugget) {

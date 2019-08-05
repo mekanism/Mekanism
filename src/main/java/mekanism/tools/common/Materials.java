@@ -3,7 +3,7 @@ package mekanism.tools.common;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.common.MekanismItems;
+import mekanism.common.MekanismItem;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.ToolsConfig;
 import mekanism.common.config.ToolsConfig.ArmorBalance;
@@ -17,12 +17,12 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.util.EnumHelper;
 
 public enum Materials {
-    OBSIDIAN("OBSIDIAN", cfg -> cfg.toolOBSIDIAN, cfg -> cfg.toolOBSIDIAN2, cfg -> cfg.armorOBSIDIAN, () -> new ItemStack(MekanismItems.Ingot)),
+    OBSIDIAN("OBSIDIAN", cfg -> cfg.toolOBSIDIAN, cfg -> cfg.toolOBSIDIAN2, cfg -> cfg.armorOBSIDIAN, MekanismItem.REFINED_OBSIDIAN_INGOT::getItemStack),
     LAZULI("LAZULI", cfg -> cfg.toolLAZULI, cfg -> cfg.toolLAZULI2, cfg -> cfg.armorLAZULI, () -> new ItemStack(Items.DYE, 1, 4), SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND),
-    OSMIUM("OSMIUM", cfg -> cfg.toolOSMIUM, cfg -> cfg.toolOSMIUM2, cfg -> cfg.armorOSMIUM, () -> new ItemStack(MekanismItems.Ingot, 1, 1)),
-    BRONZE("BRONZE", cfg -> cfg.toolBRONZE, cfg -> cfg.toolBRONZE2, cfg -> cfg.armorBRONZE, () -> new ItemStack(MekanismItems.Ingot, 1, 2)),
-    GLOWSTONE("GLOWSTONE", tools -> tools.toolGLOWSTONE, tools -> tools.toolGLOWSTONE2, cfg -> cfg.armorGLOWSTONE, () -> new ItemStack(MekanismItems.Ingot, 1, 3)),
-    STEEL("STEEL", cfg -> cfg.toolSTEEL, cfg -> cfg.toolSTEEL2, cfg -> cfg.armorSTEEL, () -> new ItemStack(MekanismItems.Ingot, 1, 4));
+    OSMIUM("OSMIUM", cfg -> cfg.toolOSMIUM, cfg -> cfg.toolOSMIUM2, cfg -> cfg.armorOSMIUM, MekanismItem.OSMIUM_INGOT::getItemStack),
+    BRONZE("BRONZE", cfg -> cfg.toolBRONZE, cfg -> cfg.toolBRONZE2, cfg -> cfg.armorBRONZE, MekanismItem.BRONZE_INGOT::getItemStack),
+    GLOWSTONE("GLOWSTONE", tools -> tools.toolGLOWSTONE, tools -> tools.toolGLOWSTONE2, cfg -> cfg.armorGLOWSTONE, MekanismItem.REFINED_GLOWSTONE_INGOT::getItemStack),
+    STEEL("STEEL", cfg -> cfg.toolSTEEL, cfg -> cfg.toolSTEEL2, cfg -> cfg.armorSTEEL, MekanismItem.STEEL_INGOT::getItemStack);
 
     private final Function<ToolsConfig, ToolBalance> materialFunction;
     private final Function<ToolsConfig, ToolBalance> paxelMaterialFunction;
