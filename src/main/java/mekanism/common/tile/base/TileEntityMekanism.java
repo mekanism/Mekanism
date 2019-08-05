@@ -1,5 +1,7 @@
 package mekanism.common.tile.base;
 
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,6 +14,7 @@ import mekanism.api.IMekWrench;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
+import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.ItemHandlerWrapper;
@@ -30,12 +33,17 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
+import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.interfaces.ITileContainer;
 import mekanism.common.tile.interfaces.ITileDirectional;
+import mekanism.common.tile.interfaces.ITileElectric;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -53,9 +61,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -63,7 +76,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
-public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, ITileDirectional, ITileContainer, IToggleableCapability {
+public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, ITileDirectional, ITileContainer, ITileElectric,
+      IToggleableCapability {
 
     /**
      * The players currently using this block.
@@ -128,6 +142,19 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     };
     //End variables ITileContainer
 
+    //Variables for handling ITileElectric
+    protected CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
+    /**
+     * How much energy is stored in this block.
+     */
+    private double electricityStored;
+    /**
+     * Actual maximum energy storage, including upgrades
+     */
+    private double maxEnergy;
+
+    private boolean ic2Registered;
+    //End variables ITileElectric
 
     public TileEntityMekanism(IBlockProvider blockProvider) {
         this.blockProvider = blockProvider;
@@ -233,6 +260,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (world.isRemote) {
             Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
         }
+        if (isElectric() && MekanismUtils.useIC2()) {
+            register();
+        }
     }
 
     @Override
@@ -293,17 +323,25 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
                 }
             }
+            if (isElectric()) {
+                setEnergy(dataStream.readDouble());
+            }
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
+        //TODO: Should there be a hasRedstone?
         data.add(redstone);
+        //TODO: Should there be a hasComponents?
         for (ITileComponent component : components) {
             component.write(data);
         }
         if (isDirectional()) {
             data.add(getDirection().ordinal());
+        }
+        if (isElectric()) {
+            data.add(getEnergy());
         }
         return data;
     }
@@ -314,13 +352,20 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         for (ITileComponent component : components) {
             component.invalidate();
         }
+        if (isElectric() && MekanismUtils.useIC2()) {
+            deregister();
+        }
     }
 
     @Override
     public void validate() {
+        boolean wasInvalid = this.tileEntityInvalid;//workaround for pending tile entity invalidate/revalidate cycle
         super.validate();
         if (world.isRemote) {
             Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+        }
+        if (isElectric() && wasInvalid && MekanismUtils.useIC2()) {//re-register if we got invalidated and are an electric block
+            register();
         }
     }
 
@@ -352,6 +397,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 }
             }
         }
+        if (isElectric()) {
+            electricityStored = nbtTags.getDouble("electricityStored");
+        }
     }
 
     @Nonnull
@@ -380,6 +428,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 nbtTags.setTag("Items", tagList);
             }
         }
+        if (isElectric()) {
+            nbtTags.setDouble("electricityStored", getEnergy());
+        }
         return nbtTags;
     }
 
@@ -389,7 +440,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isCapabilityDisabled(capability, side)) {
             return false;
         } else if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
+            return true;
+        } else if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
+            return true;
         }
         return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
     }
@@ -402,8 +455,20 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
         } else if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
+        } else if (isElectric() && isStrictEnergy(capability)) {
+            return (T) this;
+        } else if (isElectric() && capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, side));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
+            return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
+        }
+        return false;
     }
 
     public boolean isPowered() {
@@ -565,5 +630,137 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public String getName() {
         return LangUtils.localize(getBlockType().getTranslationKey() + ".name");
     }
+
+    @Nonnull
+    @Override
+    public ITextComponent getDisplayName() {
+        return new TextComponentString(getName());
+    }
     //End methods ITileContainer
+
+    //Methods for implementing ITileElectric
+    protected boolean isStrictEnergy(@Nonnull Capability capability) {
+        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY;
+    }
+
+    @Override
+    public boolean canOutputEnergy(EnumFacing side) {
+        return false;
+    }
+
+    @Override
+    public boolean canReceiveEnergy(EnumFacing side) {
+        return isElectric();
+    }
+
+    @Override
+    public double getMaxOutput() {
+        return 0;
+    }
+
+    @Override
+    public double getEnergy() {
+        return isElectric() ? electricityStored : 0;
+    }
+
+    @Override
+    public void setEnergy(double energy) {
+        if (isElectric()) {
+            electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
+            MekanismUtils.saveChunk(this);
+        }
+    }
+
+    @Override
+    public double getMaxEnergy() {
+        return maxEnergy;
+    }
+
+    @Override
+    public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+        if (!isElectric()) {
+            return 0;
+        }
+        double toUse = Math.min(getNeededEnergy(), amount);
+        if (toUse < 0.0001 || (side != null && !canReceiveEnergy(side))) {
+            return 0;
+        }
+        if (!simulate) {
+            setEnergy(getEnergy() + toUse);
+        }
+        return toUse;
+    }
+
+    @Override
+    public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
+        if (!isElectric()) {
+            return 0;
+        }
+        double toGive = Math.min(getEnergy(), amount);
+        if (toGive < 0.0001 || (side != null && !canOutputEnergy(side))) {
+            return 0;
+        }
+        if (!simulate) {
+            setEnergy(getEnergy() - toGive);
+        }
+        return toGive;
+    }
+
+    //TODO: Once upgrade handling is moved into this class, this can probably be removed
+    protected void setMaxEnergy(double maxEnergy) {
+        if (isElectric()) {
+            this.maxEnergy = maxEnergy;
+        }
+    }
+
+    //IC2
+    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    public void register() {
+        if (!world.isRemote && !ic2Registered) {
+            MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+            ic2Registered = true;
+        }
+    }
+
+    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    public void deregister() {
+        if (!world.isRemote && ic2Registered) {
+            MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+            ic2Registered = false;
+        }
+    }
+
+    @Override
+    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    public int addEnergy(int amount) {
+        if (!MekanismConfig.current().general.blacklistIC2.val()) {
+            setEnergy(getEnergy() + IC2Integration.fromEU(amount));
+            return IC2Integration.toEUAsInt(getEnergy());
+        }
+        return 0;
+    }
+
+    @Override
+    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    public double getDemandedEnergy() {
+        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU(getNeededEnergy()) : 0;
+    }
+
+    @Override
+    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    public double injectEnergy(EnumFacing pushDirection, double amount, double voltage) {
+        // nb: the facing param contains the side relative to the pushing block
+        TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(pushDirection.getOpposite()));
+        if (MekanismConfig.current().general.blacklistIC2.val() || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)) {
+            return amount;
+        }
+        return amount - IC2Integration.toEU(acceptEnergy(pushDirection.getOpposite(), IC2Integration.fromEU(amount), false));
+    }
+
+    @Override
+    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    public void drawEnergy(double amount) {
+        setEnergy(Math.max(getEnergy() - IC2Integration.fromEU(amount), 0));
+    }
+    //End methods ITileElectric
 }

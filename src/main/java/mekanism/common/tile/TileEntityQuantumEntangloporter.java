@@ -110,8 +110,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectric implemen
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
-
         if (!world.isRemote) {
             if (configComponent.isEjecting(TransmissionType.ENERGY)) {
                 CableUtils.emit(this);

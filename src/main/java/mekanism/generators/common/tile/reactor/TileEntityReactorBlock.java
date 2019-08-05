@@ -53,7 +53,6 @@ public abstract class TileEntityReactorBlock extends TileEntityElectric {
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (changed) {
             changed = false;
         }

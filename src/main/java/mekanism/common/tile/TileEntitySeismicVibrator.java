@@ -47,7 +47,6 @@ public class TileEntitySeismicVibrator extends TileEntityElectric implements IAc
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (world.isRemote) {
             if (isActive) {
                 clientPiston++;

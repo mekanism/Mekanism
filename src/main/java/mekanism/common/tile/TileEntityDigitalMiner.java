@@ -150,7 +150,6 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (getActive()) {
             for (EntityPlayer player : new HashSet<>(playersUsing)) {
                 if (player.openContainer instanceof ContainerNull || player.openContainer instanceof ContainerFilter) {
@@ -1164,7 +1163,7 @@ public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgra
         } else if (isStrictEnergy(capability)) {
             return (T) this;
         } else if (capability == CapabilityEnergy.ENERGY) {
-            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
+            return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, side));
         }
         return getCapability(capability, side);
     }

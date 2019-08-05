@@ -132,11 +132,7 @@ public class TileEntityElectricPump extends TileEntityElectric implements IFluid
             } else {
                 suckedLastOperation = false;
             }
-        }
 
-        super.onUpdate();
-
-        if (!world.isRemote) {
             if (fluidTank.getFluid() != null) {
                 TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
                 if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN)) {

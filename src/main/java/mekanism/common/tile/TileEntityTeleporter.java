@@ -131,7 +131,6 @@ public class TileEntityTeleporter extends TileEntityElectric implements ICompute
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (teleportBounds == null) {
             resetBounds();
         }

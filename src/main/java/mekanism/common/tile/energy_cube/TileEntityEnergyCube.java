@@ -82,7 +82,6 @@ public abstract class TileEntityEnergyCube extends TileEntityElectric implements
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.charge(0, this);
             ChargeUtils.discharge(1, this);

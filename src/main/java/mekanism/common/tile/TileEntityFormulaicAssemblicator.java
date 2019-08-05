@@ -115,7 +115,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectric impleme
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             if (formula != null && stockControl && needsOrganize) {
                 needsOrganize = false;

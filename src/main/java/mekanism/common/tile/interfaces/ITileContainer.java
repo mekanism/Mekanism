@@ -8,8 +8,6 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 
 public interface ITileContainer extends ISidedInventory, ISustainedInventory {
 
@@ -97,11 +95,5 @@ public interface ITileContainer extends ISidedInventory, ISustainedInventory {
 
     @Override
     default void clear() {
-    }
-
-    @Nonnull
-    @Override
-    default ITextComponent getDisplayName() {
-        return new TextComponentString(getName());
     }
 }

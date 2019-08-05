@@ -119,15 +119,14 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectric implemen
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (world.isRemote) {
             updateSound();
-        }
-        if (world.isRemote && !isActive && lastActive > 0) {
-            long updateDiff = world.getTotalWorldTime() - lastActive;
-            if (updateDiff > RECENT_THRESHOLD) {
-                MekanismUtils.updateBlock(world, getPos());
-                lastActive = -1;
+            if (!isActive && lastActive > 0) {
+                long updateDiff = world.getTotalWorldTime() - lastActive;
+                if (updateDiff > RECENT_THRESHOLD) {
+                    MekanismUtils.updateBlock(world, getPos());
+                    lastActive = -1;
+                }
             }
         }
     }
