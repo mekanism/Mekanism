@@ -1,14 +1,14 @@
 package mekanism.client.gui.chemical;
 
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiChemical<TILE extends TileEntityElectric> extends GuiMekanismTile<TILE> {
+public abstract class GuiChemical<TILE extends TileEntityMekanism> extends GuiMekanismTile<TILE> {
 
     protected GuiChemical(TILE tile, Container container) {
         super(tile, container);

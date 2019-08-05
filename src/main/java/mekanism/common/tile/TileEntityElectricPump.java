@@ -27,7 +27,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
@@ -57,7 +57,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityElectricPump extends TileEntityElectric implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile,
+public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile,
       ITankManager, IComputerIntegration, ISecurityTile, IComparatorSupport {
 
     private static final int[] UPSLOTS = {0};
@@ -450,7 +450,7 @@ public class TileEntityElectricPump extends TileEntityElectric implements IFluid
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
             case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
                 setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             default:

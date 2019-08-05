@@ -114,7 +114,7 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
         //TODO: Should this go away
         if (upgrade == Upgrade.ENERGY) {
             setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-            setEnergyPerTick(MekanismUtils.getBaseEnergyPerTick(this, getBaseEnergyPerTick()));
+            setEnergyPerTick(MekanismUtils.getBaseEnergyPerTick(this, getBaseUsage()));
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
     }

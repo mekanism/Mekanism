@@ -152,6 +152,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
      * Actual maximum energy storage, including upgrades
      */
     private double maxEnergy;
+    private double energyPerTick;
 
     private boolean ic2Registered;
     //End variables ITileElectric
@@ -161,6 +162,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         setSupportedTypes(this.blockProvider.getBlock());
         if (hasInventory()) {
             inventory = NonNullList.withSize(((IHasInventory) blockProvider.getBlock()).getInventorySize(), ItemStack.EMPTY);
+        }
+        if (isElectric()) {
+            maxEnergy = getBaseStorage();
+            energyPerTick = getBaseUsage();
         }
     }
 
@@ -263,6 +268,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isElectric() && MekanismUtils.useIC2()) {
             register();
         }
+    }
+
+    @Override
+    public void onChunkUnload() {
+        if (isElectric() && MekanismUtils.useIC2()) {
+            deregister();
+        }
+        super.onChunkUnload();
     }
 
     @Override
@@ -674,6 +687,30 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public double getMaxEnergy() {
         return maxEnergy;
+    }
+
+    public double getBaseUsage() {
+        if (isElectric()) {
+            return ((IBlockElectric) blockProvider.getBlock()).getUsage();
+        }
+        return 0;
+    }
+
+    public double getBaseStorage() {
+        if (isElectric()) {
+            return ((IBlockElectric) blockProvider.getBlock()).getStorage();
+        }
+        return 0;
+    }
+
+    public double getEnergyPerTick() {
+        return isElectric() ? energyPerTick : 0;
+    }
+
+    public void setEnergyPerTick(double energyPerTick) {
+        if (isElectric()) {
+            this.energyPerTick = energyPerTick;
+        }
     }
 
     @Override

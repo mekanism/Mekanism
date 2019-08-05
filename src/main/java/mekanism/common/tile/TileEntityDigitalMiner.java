@@ -40,7 +40,7 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -83,7 +83,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityElectric implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader,
+public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader,
       IAdvancedBoundingBlock {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();

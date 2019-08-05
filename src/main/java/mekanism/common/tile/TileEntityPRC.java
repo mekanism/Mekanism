@@ -90,7 +90,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
             PressurizedRecipe recipe = getRecipe();
             ChargeUtils.discharge(1, this);
             if (canOperate(recipe) && MekanismUtils.canFunction(this) &&
-                getEnergy() >= MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy)) {
+                getEnergy() >= MekanismUtils.getEnergyPerTick(this, getBaseUsage() + recipe.extraEnergy)) {
                 boolean update = BASE_TICKS_REQUIRED != recipe.ticks;
                 BASE_TICKS_REQUIRED = recipe.ticks;
                 if (update) {
@@ -99,11 +99,11 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
                 setActive(true);
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
-                    pullEnergy(null, MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy), false);
-                } else if ((operatingTicks + 1) >= ticksRequired && getEnergy() >= MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy)) {
+                    pullEnergy(null, MekanismUtils.getEnergyPerTick(this, getBaseUsage() + recipe.extraEnergy), false);
+                } else if ((operatingTicks + 1) >= ticksRequired && getEnergy() >= MekanismUtils.getEnergyPerTick(this, getBaseUsage() + recipe.extraEnergy)) {
                     operate(recipe);
                     operatingTicks = 0;
-                    pullEnergy(null, MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick() + recipe.extraEnergy), false);
+                    pullEnergy(null, MekanismUtils.getEnergyPerTick(this, getBaseUsage() + recipe.extraEnergy), false);
                 }
             } else {
                 BASE_TICKS_REQUIRED = 100;

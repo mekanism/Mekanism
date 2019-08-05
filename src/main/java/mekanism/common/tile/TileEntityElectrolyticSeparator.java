@@ -97,11 +97,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     public TileEntityElectrolyticSeparator() {
         super("machine.electrolyticseparator", MekanismBlock.ELECTROLYTIC_SEPARATOR, 4);
-        BASE_ENERGY_PER_TICK = super.getBaseEnergyPerTick();
+        BASE_ENERGY_PER_TICK = super.getBaseUsage();
     }
 
     @Override
-    public double getBaseEnergyPerTick() {
+    public double getBaseUsage() {
         return BASE_ENERGY_PER_TICK;
     }
 
@@ -130,7 +130,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
             if (canOperate(recipe) && getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this)) {
                 setActive(true);
-                boolean update = getBaseEnergyPerTick() != recipe.energyUsage;
+                boolean update = getBaseUsage() != recipe.energyUsage;
                 BASE_ENERGY_PER_TICK = recipe.energyUsage;
                 if (update) {
                     recalculateUpgrades(Upgrade.ENERGY);
@@ -472,7 +472,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.ENERGY) {
             setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-            setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
+            setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
     }

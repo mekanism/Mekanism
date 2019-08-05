@@ -347,14 +347,14 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public double getBaseEnergyPerTick() {
+    public double getBaseUsage() {
         return recipeType.getEnergyUsage();
     }
 
     public void setRecipeType(@Nonnull RecipeType type) {
         recipeType = Objects.requireNonNull(type);
         setMaxEnergy(getBaseStorage());
-        setEnergyPerTick(getBaseEnergyPerTick());
+        setEnergyPerTick(getBaseUsage());
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
@@ -982,14 +982,14 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
         super.recalculateUpgrades(upgrade);
         switch (upgrade) {
             case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick())); // incorporate speed upgrades
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage())); // incorporate speed upgrades
                 break;
             case GAS:
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
                 break;
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
                 secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
                 break;
             default:

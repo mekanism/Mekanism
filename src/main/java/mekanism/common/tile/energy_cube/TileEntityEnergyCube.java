@@ -19,7 +19,7 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -34,7 +34,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public abstract class TileEntityEnergyCube extends TileEntityElectric implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
+public abstract class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
       IConfigCardAccess, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};

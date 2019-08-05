@@ -27,7 +27,7 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -48,7 +48,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityTeleporter extends TileEntityElectric implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile,
+public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile,
       IUpgradeTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};

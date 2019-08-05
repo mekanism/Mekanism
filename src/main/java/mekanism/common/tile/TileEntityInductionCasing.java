@@ -106,10 +106,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         return LangUtils.localize("gui.inductionMatrix");
     }
 
-    public int getScaledEnergyLevel(int i) {
-        return (int) (getEnergy() * i / getMaxEnergy());
-    }
-
     @Override
     public double getEnergy() {
         //Uses post queue as that is the actual total we just haven't saved it yet

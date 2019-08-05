@@ -5,7 +5,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.base.IBlockProvider;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorsBlock;
@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public abstract class TileEntityReactorBlock extends TileEntityElectric {
+public abstract class TileEntityReactorBlock extends TileEntityMekanism {
 
     public FusionReactor fusionReactor;
 

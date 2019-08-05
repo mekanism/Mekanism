@@ -18,7 +18,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -37,7 +37,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityElectric implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess,
+public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess,
       ISecurityTile {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
@@ -624,10 +624,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectric impleme
         switch (upgrade) {
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
                 break;
             case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseEnergyPerTick()));
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
                 setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
                 break;

@@ -11,7 +11,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySeismicVibrator extends TileEntityElectric implements IActiveState, IRedstoneControl, ISecurityTile, IBoundingBlock {
+public class TileEntitySeismicVibrator extends TileEntityMekanism implements IActiveState, IRedstoneControl, ISecurityTile, IBoundingBlock {
 
     private static final int[] SLOTS = {0};
 
@@ -67,9 +67,9 @@ public class TileEntitySeismicVibrator extends TileEntityElectric implements IAc
             }
 
             ChargeUtils.discharge(0, this);
-            if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseEnergyPerTick()) {
+            if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseUsage()) {
                 setActive(true);
-                setEnergy(getEnergy() - getBaseEnergyPerTick());
+                pullEnergy(null, getBaseUsage(), false);
             } else {
                 setActive(false);
             }

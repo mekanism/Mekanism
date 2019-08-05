@@ -35,7 +35,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.base.TileEntityElectric;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -62,7 +62,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityQuantumEntangloporter extends TileEntityElectric implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
+public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
       IGasHandler, IHeatTransfer, IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile {
 
     private static final int INV_SIZE = 1;//this.inventory size, used for upgrades. Manually handled
