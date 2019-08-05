@@ -33,7 +33,7 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
     public double electricityStored;
 
     //TODO
-    protected IBlockElectric electricBlock;
+    private IBlockElectric electricBlock;
 
     /**
      * Actual maximum energy storage, including upgrades
@@ -49,7 +49,8 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
 
     public TileEntityElectric(IBlockProvider blockProvider) {
         super(blockProvider);
-        BASE_ENERGY_PER_TICK= maxEnergy = electricBlock.getStorage();
+        electricBlock = (IBlockElectric) blockProvider.getBlock();
+        BASE_ENERGY_PER_TICK = maxEnergy = electricBlock.getStorage();
     }
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
