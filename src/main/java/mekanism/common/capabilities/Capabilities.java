@@ -16,9 +16,6 @@ import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITileNetwork;
-import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.api.ITeslaHolder;
-import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -77,15 +74,6 @@ public class Capabilities {
 
     @CapabilityInject(ILogisticalTransporter.class)
     public static Capability<ILogisticalTransporter> LOGISTICAL_TRANSPORTER_CAPABILITY = null;
-
-    @CapabilityInject(ITeslaConsumer.class)
-    public static Capability<ITeslaConsumer> TESLA_CONSUMER_CAPABILITY = null;
-
-    @CapabilityInject(ITeslaProducer.class)
-    public static Capability<ITeslaProducer> TESLA_PRODUCER_CAPABILITY = null;
-
-    @CapabilityInject(ITeslaHolder.class)
-    public static Capability<ITeslaHolder> TESLA_HOLDER_CAPABILITY = null;
 
     public static void registerCapabilities() {
         DefaultStrictEnergyStorage.register();

@@ -116,8 +116,7 @@ public class UnitDisplayUtils {
 
     public enum ElectricUnit {
         JOULES("Joule", "J"),
-        REDSTONE_FLUX("Redstone Flux", "RF"),
-        TESLA("Tesla", "T"),
+        FORGE_ENERGY("Redstone Flux", "RF"),
         ELECTRICAL_UNITS("Electrical Unit", "EU");
 
         public String name;
@@ -129,7 +128,7 @@ public class UnitDisplayUtils {
         }
 
         public String getPlural() {
-            return this == REDSTONE_FLUX ? name : name + "s";
+            return this == FORGE_ENERGY ? name : name + "s";
         }
     }
 
@@ -224,9 +223,8 @@ public class UnitDisplayUtils {
 
     public enum EnergyType {
         J,
-        RF,
-        EU,
-        T
+        FE,
+        EU
     }
 
     public enum TempType {

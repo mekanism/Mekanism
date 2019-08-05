@@ -8,7 +8,6 @@ import mekanism.client.MekanismClient;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
-import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemRedirectedModel;
 import mekanism.common.item.IItemSustainedInventory;
@@ -118,7 +117,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip implements IItemEnergi
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
+        return new ItemCapabilityWrapper(stack, new ForgeEnergyItemWrapper());
     }
 
     @Nonnull

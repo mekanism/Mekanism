@@ -20,8 +20,6 @@ import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
-import mekanism.common.integration.redstoneflux.RFIntegration;
-import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
@@ -51,7 +49,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
      * false = input, true = output
      */
     public boolean mode;
-    private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
     public TileEntityInductionPort() {
@@ -179,31 +176,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        if (canReceiveEnergy(from)) {
-            return RFIntegration.toRF(addEnergy(RFIntegration.fromRF(maxReceive), simulate));
-        }
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        if (canOutputEnergy(from)) {
-            double sent = removeEnergy(RFIntegration.fromRF(maxExtract), simulate);
-            return RFIntegration.toRF(sent);
-        }
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public boolean canConnectEnergy(EnumFacing from) {
-        return structure != null;
-    }
-
-    @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
         addEnergy(IC2Integration.fromEU(amount), false);
@@ -285,7 +257,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
                || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY
-               || capability == CapabilityEnergy.ENERGY || isTesla(capability, facing) || super.hasCapability(capability, facing);
+               || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
     }
 
     @Override
@@ -294,18 +266,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return (T) this;
         }
-        if (isTesla(capability, facing)) {
-            return (T) teslaManager.getWrapper(this, facing);
-        }
         if (capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
         }
         return super.getCapability(capability, facing);
-    }
-
-    private boolean isTesla(@Nonnull Capability capability, EnumFacing side) {
-        return capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && canReceiveEnergy(side))
-               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(side));
     }
 
     @Nonnull

@@ -1,8 +1,5 @@
 package mekanism.common.util;
 
-import cofh.redstoneflux.api.IEnergyConnection;
-import cofh.redstoneflux.api.IEnergyProvider;
-import cofh.redstoneflux.api.IEnergyReceiver;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -46,7 +43,6 @@ public final class CableUtils {
             return false;
         }
         return isAcceptor(cableEntity, tile, side) || isOutputter(cableEntity, tile, side) ||
-               (MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection) tile).canConnectEnergy(side.getOpposite())) ||
                (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()));
     }
 
@@ -87,15 +83,9 @@ public final class CableUtils {
         if (outputter != null && outputter.canOutputEnergy(opposite)) {
             return true;
         }
-        if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_PRODUCER_CAPABILITY, opposite)) {
-            return true;
-        }
         IEnergyStorage forgeStorage;
         if (MekanismUtils.useForge() && (forgeStorage = CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, opposite)) != null) {
             return forgeStorage.canExtract();
-        }
-        if (MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection) tileEntity).canConnectEnergy(opposite)) {
-            return true;
         }
         return MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side);
 
@@ -109,15 +99,9 @@ public final class CableUtils {
         if ((strictEnergyAcceptor = CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite())) != null) {
             return strictEnergyAcceptor.canReceiveEnergy(side.getOpposite());
         }
-        if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite())) {
-            return true;
-        }
         IEnergyStorage energyStorage;
         if (MekanismUtils.useForge() && (energyStorage = CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) != null) {
             return energyStorage.canReceive();
-        }
-        if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
-            return ((IEnergyReceiver) tileEntity).canConnectEnergy(side.getOpposite());
         }
         return MekanismUtils.useIC2() && IC2Integration.isAcceptor(tileEntity, side);
     }

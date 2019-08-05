@@ -49,9 +49,7 @@ public final class MekanismHooks {
     public static final String IC2_MOD_ID = "ic2";
     public static final String COMPUTERCRAFT_MOD_ID = "computercraft";
     public static final String APPLIED_ENERGISTICS_2_MOD_ID = "appliedenergistics2";
-    public static final String TESLA_MOD_ID = "tesla";
     public static final String MCMULTIPART_MOD_ID = "mcmultipart";
-    public static final String REDSTONEFLUX_MOD_ID = "redstoneflux";
     public static final String METALLURGY_MOD_ID = "metallurgy";
     public static final String OPENCOMPUTERS_MOD_ID = "opencomputers";
     public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
@@ -72,8 +70,6 @@ public final class MekanismHooks {
     public boolean MCMPLoaded = false;
     public boolean MetallurgyLoaded = false;
     public boolean OCLoaded = false;
-    public boolean RFLoaded = false;
-    public boolean TeslaLoaded = false;
 
     public void hookPreInit() {
         AE2Loaded = Loader.isModLoaded(APPLIED_ENERGISTICS_2_MOD_ID);
@@ -86,8 +82,6 @@ public final class MekanismHooks {
         MetallurgyLoaded = Loader.isModLoaded(METALLURGY_MOD_ID);
         MALoaded = Loader.isModLoaded(MYSTICALAGRICULTURE_MOD_ID);
         OCLoaded = Loader.isModLoaded(OPENCOMPUTERS_MOD_ID);
-        RFLoaded = Loader.isModLoaded(REDSTONEFLUX_MOD_ID);
-        TeslaLoaded = Loader.isModLoaded(TESLA_MOD_ID);
     }
 
     public void hookInit() {

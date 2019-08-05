@@ -26,9 +26,8 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
-import mekanism.common.integration.redstoneflux.RFIntegration;
-import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -704,12 +703,10 @@ public final class MekanismUtils {
         switch (MekanismConfig.current().general.energyUnit.val()) {
             case J:
                 return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
-            case RF:
-                return UnitDisplayUtils.getDisplayShort(RFIntegration.toRF(energy), ElectricUnit.REDSTONE_FLUX);
+            case FE:
+                return UnitDisplayUtils.getDisplayShort(ForgeEnergyIntegration.toForge(energy), ElectricUnit.FORGE_ENERGY);
             case EU:
                 return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
-            case T:
-                return UnitDisplayUtils.getDisplayShort(TeslaIntegration.toTesla(energy), ElectricUnit.TESLA);
         }
         return "error";
     }
@@ -732,12 +729,10 @@ public final class MekanismUtils {
      */
     public static double convertToJoules(double energy) {
         switch (MekanismConfig.current().general.energyUnit.val()) {
-            case RF:
-                return RFIntegration.fromRF(energy);
+            case FE:
+                return ForgeEnergyIntegration.fromForge(energy);
             case EU:
                 return IC2Integration.fromEU(energy);
-            case T:
-                return TeslaIntegration.fromTesla(energy);
             default:
                 return energy;
         }
@@ -752,12 +747,10 @@ public final class MekanismUtils {
      */
     public static double convertToDisplay(double energy) {
         switch (MekanismConfig.current().general.energyUnit.val()) {
-            case RF:
-                return RFIntegration.toRFAsDouble(energy);
+            case FE:
+                return ForgeEnergyIntegration.toForgeAsDouble(energy);
             case EU:
                 return IC2Integration.toEU(energy);
-            case T:
-                return TeslaIntegration.toTesla(energy);
             default:
                 return energy;
         }
@@ -794,24 +787,6 @@ public final class MekanismUtils {
      */
     public static boolean useIC2() {
         return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !MekanismConfig.current().general.blacklistIC2.val();
-    }
-
-    /**
-     * Whether or not RF power should be used.
-     *
-     * @return if RF power should be used
-     */
-    public static boolean useRF() {
-        return Mekanism.hooks.RFLoaded && !MekanismConfig.current().general.blacklistRF.val();
-    }
-
-    /**
-     * Whether or not Tesla power should be used.
-     *
-     * @return if Tesla power should be used
-     */
-    public static boolean useTesla() {
-        return Mekanism.hooks.TeslaLoaded && !MekanismConfig.current().general.blacklistTesla.val();
     }
 
     /**

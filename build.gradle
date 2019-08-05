@@ -45,10 +45,6 @@ repositories {
         url 'http://dvs1.progwml6.com/files/maven'
     }
     maven {
-        name 'tesla'
-        url 'https://maven.mcmoddev.com'
-    }
-    maven {
         name 'curseforge'
         url 'https://minecraft.curseforge.com/api/maven/'
     }
@@ -59,10 +55,6 @@ repositories {
     maven {
         name 'hwyla'
         url 'https://tehnut.info/maven'
-    }
-    maven {
-        name 'CoFH Maven'
-        url 'https://maven.covers1624.net'
     }
     maven {
         name 'buildcraft'
@@ -112,12 +104,10 @@ dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
-    compileOnly "net.darkhax.tesla:Tesla-${minecraft_version}:${tesla_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
     compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
     // Not updated yet
     compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
-    deobfCompile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
     compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
     compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"

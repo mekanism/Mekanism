@@ -17,8 +17,6 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
-import mekanism.common.integration.redstoneflux.RFIntegration;
-import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.LangUtils;
@@ -41,7 +39,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow", "getSteamInput"};
     public boolean ic2Registered = false;
     public TurbineFluidTank fluidTank;
-    private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
     private int currentRedstoneLevel;
 
@@ -134,31 +131,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if (MekanismUtils.useIC2()) {
             deregister();
         }
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        if (canOutputEnergy(from)) {
-            double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), RFIntegration.fromRF(maxExtract)));
-            if (!simulate) {
-                setEnergy(getEnergy() - toSend);
-            }
-            return RFIntegration.toRF(toSend);
-        }
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public boolean canConnectEnergy(EnumFacing from) {
-        return structure != null;
     }
 
     @Override
@@ -274,8 +246,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-                || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.TESLA_HOLDER_CAPABILITY
-                || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(getDirection())) || capability == CapabilityEnergy.ENERGY) {
+                || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
                 return true;
             }
         }
@@ -289,8 +260,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 return (T) this;
             } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
-            } else if (capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(getDirection()))) {
-                return (T) teslaManager.getWrapper(this, getDirection());
             } else if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, getDirection()));
             }

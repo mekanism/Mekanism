@@ -79,18 +79,6 @@ public class GeneralConfig extends BaseConfig {
     public final DoubleOption TO_IC2 = new DoubleOption(this, "general", "EUToJoules", .1D,
           "Conversion multiplier from Joules to EU (Joules * EUToJoules = EU)");
 
-    public final DoubleOption FROM_RF = new DoubleOption(this, "general", "JoulesToRF", 2.5D,
-          "Conversion multiplier from RF to Joules (RF * JoulesToRF = Joules)");
-
-    public final DoubleOption TO_RF = new DoubleOption(this, "general", "RFToJoules", 0.4D,
-          "Conversion multiplier from Joules to RF (Joules * RFToJoules = RF)");
-
-    public final DoubleOption FROM_TESLA = new DoubleOption(this, "general", "JoulesToTesla", 2.5D,
-          "Conversion multiplier from Tesla to Joules (Tesla * JoulesToTesla = Joules)");
-
-    public final DoubleOption TO_TESLA = new DoubleOption(this, "general", "TeslaToJoules", 0.4D,
-          "Conversion multiplier from Joules to Tesla (Joules * TeslaToJoules = Tesla)");
-
     public final DoubleOption FROM_FORGE = new DoubleOption(this, "general", "JoulesToForge", 2.5D,
           "Conversion multiplier from Forge Energy to Joules (FE * JoulesToForge = Joules)");
 
@@ -232,16 +220,10 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption blacklistIC2 = new BooleanOption(this, "general", "BlacklistIC2Power", false,
           "Disables IC2 power integration. Requires world restart (server-side option in SMP).");
 
-    public final BooleanOption blacklistRF = new BooleanOption(this, "general", "BlacklistRFPower", false,
-          "Disables Thermal Expansion RedstoneFlux power integration. Requires world restart (server-side option in SMP).");
-
-    public final BooleanOption blacklistTesla = new BooleanOption(this, "general", "BlacklistTeslaPower", false,
-          "Disables Tesla power integration. Requires world restart (server-side option in SMP).");
-
     public final BooleanOption blacklistForge = new BooleanOption(this, "general", "BlacklistForgePower", false,
           "Disables Forge Energy (FE,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).");
 
-    public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType", EnergyType.RF,
+    public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType", EnergyType.FE,
           "Displayed energy type in Mekanism GUIs.");
 
     public EnumOption<TempType> tempUnit = new EnumOption<>(this, "general", "Temperature Units", TempType.K,

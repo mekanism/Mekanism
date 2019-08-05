@@ -6,7 +6,6 @@ import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
-import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
@@ -96,6 +95,6 @@ public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip im
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
+        return new ItemCapabilityWrapper(stack, new ForgeEnergyItemWrapper());
     }
 }

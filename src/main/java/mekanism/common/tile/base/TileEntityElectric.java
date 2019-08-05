@@ -14,8 +14,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
-import mekanism.common.integration.redstoneflux.RFIntegration;
-import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +45,6 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
     public double energyPerTick;
 
     private boolean ic2Registered = false;
-    private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
     public TileEntityElectric(IBlockProvider blockProvider) {
@@ -183,24 +180,6 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
     }
 
     @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return RFIntegration.toRF(acceptEnergy(from, RFIntegration.fromRF(maxReceive), simulate));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        return RFIntegration.toRF(pullEnergy(from, RFIntegration.fromRF(maxExtract), simulate));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public boolean canConnectEnergy(EnumFacing from) {
-        return canReceiveEnergy(from) || canOutputEnergy(from);
-    }
-
-    @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
         if (!MekanismConfig.current().general.blacklistIC2.val()) {
@@ -262,7 +241,7 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
-        return isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side) || super.hasCapability(capability, side);
+        return isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, side);
     }
 
     @Override
@@ -271,8 +250,6 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
             return null;
         } else if (isStrictEnergy(capability)) {
             return (T) this;
-        } else if (isTesla(capability, side)) {
-            return (T) getTeslaEnergyWrapper(side);
         } else if (capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
         }
@@ -283,22 +260,13 @@ public abstract class TileEntityElectric extends TileEntityMekanism implements I
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY;
     }
 
-    protected boolean isTesla(@Nonnull Capability capability, EnumFacing side) {
-        return capability == Capabilities.TESLA_HOLDER_CAPABILITY || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && canReceiveEnergy(side))
-               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && canOutputEnergy(side));
-    }
-
     protected ForgeEnergyIntegration getForgeEnergyWrapper(EnumFacing side) {
         return forgeEnergyManager.getWrapper(this, side);
     }
 
-    protected TeslaIntegration getTeslaEnergyWrapper(EnumFacing side) {
-        return teslaManager.getWrapper(this, side);
-    }
-
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
             return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
         }
         return super.isCapabilityDisabled(capability, side);

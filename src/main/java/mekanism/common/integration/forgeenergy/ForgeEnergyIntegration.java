@@ -21,8 +21,20 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
         return forge * MekanismConfig.current().general.FROM_FORGE.val();
     }
 
+    public static double fromForge(double forge) {
+        return forge * MekanismConfig.current().general.FROM_FORGE.val();
+    }
+
     public static int toForge(double joules) {
         return MekanismUtils.clampToInt(joules * MekanismConfig.current().general.TO_FORGE.val());
+    }
+
+    public static double toForgeAsDouble(double joules) {
+        return joules * MekanismConfig.current().general.TO_FORGE.val();
+    }
+
+    public static long toForgeAsLong(long joules) {
+        return Math.round(joules * MekanismConfig.current().general.TO_FORGE.val());
     }
 
     @Override

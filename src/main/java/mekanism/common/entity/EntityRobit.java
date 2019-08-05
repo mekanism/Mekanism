@@ -1,6 +1,5 @@
 package mekanism.common.entity;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import java.math.BigDecimal;
@@ -13,21 +12,17 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.MekanismItem;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
-import mekanism.common.integration.redstoneflux.RFIntegration;
-import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
-import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -169,20 +164,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
             if (!stack.isEmpty() && getEnergy() < MAX_ELECTRICITY) {
                 if (stack.getItem() instanceof IEnergizedItem) {
                     setEnergy(getEnergy() + EnergizedItemManager.discharge(stack, MAX_ELECTRICITY - getEnergy()));
-                } else if (MekanismUtils.useTesla() && stack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)) {
-                    ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
-                    long needed = TeslaIntegration.toTesla(MAX_ELECTRICITY - getEnergy());
-                    setEnergy(getEnergy() + TeslaIntegration.fromTesla(producer.takePower(needed, false)));
                 } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                     IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
                     if (storage.canExtract()) {
                         int needed = ForgeEnergyIntegration.toForge(MAX_ELECTRICITY - getEnergy());
                         setEnergy(getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
                     }
-                } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
-                    IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
-                    int needed = RFIntegration.toRF(MAX_ELECTRICITY - getEnergy());
-                    setEnergy(getEnergy() + RFIntegration.fromRF(item.extractEnergy(stack, needed, false)));
                 } else if (MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem) {
                     IElectricItem item = (IElectricItem) stack.getItem();
                     if (item.canProvideEnergy(stack)) {

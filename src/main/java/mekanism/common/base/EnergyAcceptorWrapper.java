@@ -1,6 +1,5 @@
 package mekanism.common.base;
 
-import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
@@ -10,11 +9,8 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
-import mekanism.common.integration.redstoneflux.RFIntegration;
-import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -35,12 +31,8 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         EnergyAcceptorWrapper wrapper = null;
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side)) {
             wrapper = fromCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side, MekanismAcceptor::new);
-        } else if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
-            wrapper = fromCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side, TeslaAcceptor::new);
         } else if (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side)) {
             wrapper = fromCapability(tileEntity, CapabilityEnergy.ENERGY, side, ForgeAcceptor::new);
-        } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
-            wrapper = new RFAcceptor((IEnergyReceiver) tileEntity);
         } else if (MekanismUtils.useIC2()) {
             IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
             if (tile instanceof IEnergySink) {
@@ -92,30 +84,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
     }
 
-    public static class RFAcceptor extends EnergyAcceptorWrapper {
-
-        private IEnergyReceiver acceptor;
-
-        public RFAcceptor(IEnergyReceiver rfAcceptor) {
-            acceptor = rfAcceptor;
-        }
-
-        @Override
-        public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return RFIntegration.fromRF(acceptor.receiveEnergy(side, RFIntegration.toRF(amount), simulate));
-        }
-
-        @Override
-        public boolean canReceiveEnergy(EnumFacing side) {
-            return acceptor.canConnectEnergy(side);
-        }
-
-        @Override
-        public boolean needsEnergy(EnumFacing side) {
-            return acceptor.receiveEnergy(side, 1, true) > 0;
-        }
-    }
-
     public static class IC2Acceptor extends EnergyAcceptorWrapper {
 
         private IEnergySink acceptor;
@@ -143,30 +111,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         @Override
         public boolean needsEnergy(EnumFacing side) {
             return acceptor.getDemandedEnergy() > 0;
-        }
-    }
-
-    public static class TeslaAcceptor extends EnergyAcceptorWrapper {
-
-        private ITeslaConsumer acceptor;
-
-        public TeslaAcceptor(ITeslaConsumer teslaConsumer) {
-            acceptor = teslaConsumer;
-        }
-
-        @Override
-        public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return TeslaIntegration.fromTesla(acceptor.givePower(TeslaIntegration.toTesla(amount), simulate));
-        }
-
-        @Override
-        public boolean canReceiveEnergy(EnumFacing side) {
-            return acceptor.givePower(1, true) > 0;
-        }
-
-        @Override
-        public boolean needsEnergy(EnumFacing side) {
-            return canReceiveEnergy(side);
         }
     }
 

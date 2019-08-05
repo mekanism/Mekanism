@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import cofh.redstoneflux.api.IEnergyProvider;
-import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import javax.annotation.Nonnull;
@@ -27,12 +25,10 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-      @Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
-      @Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver,
-      IEnergyProvider, IComputerIntegration, ISpecialConfigData {
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IComputerIntegration,
+      ISpecialConfigData {
 
     @Override
     public boolean isEmpty() {
@@ -215,52 +211,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return false;
         }
         return inv.acceptsEnergyFrom(emitter, direction);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null || !canReceiveEnergy(from)) {
-            return 0;
-        }
-        return inv.receiveEnergy(from, maxReceive, simulate);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return 0;
-        }
-        return inv.extractEnergy(from, maxExtract, simulate);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public boolean canConnectEnergy(EnumFacing from) {
-        return canReceiveEnergy(from);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getEnergyStored(EnumFacing from) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return 0;
-        }
-        return inv.getEnergyStored(from);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-    public int getMaxEnergyStored(EnumFacing from) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return 0;
-        }
-        return inv.getMaxEnergyStored(from);
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IItemProvider;
 import mekanism.tools.item.ItemMekanismArmor;
 import mekanism.tools.item.ItemMekanismAxe;
 import mekanism.tools.item.ItemMekanismHoe;
@@ -20,7 +21,8 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
-public enum ToolsItem {
+//TODO: Register names in the classes themselves
+public enum ToolsItem implements IItemProvider {
     WOOD_PAXEL("WoodPaxel", new ItemMekanismPaxel(ToolMaterial.WOOD)),
     STONE_PAXEL("StonePaxel", new ItemMekanismPaxel(ToolMaterial.STONE)),
     IRON_PAXEL("IronPaxel", new ItemMekanismPaxel(ToolMaterial.IRON)),
@@ -118,6 +120,7 @@ public enum ToolsItem {
     }
 
     @Nonnull
+    @Override
     public Item getItem() {
         return item;
     }
@@ -130,16 +133,6 @@ public enum ToolsItem {
     public ItemStack getRepairStack() {
         //All cases currently implement IHasRepairType but just in case we decide to add some eventually that doesn't
         return item instanceof IHasRepairType ? ((IHasRepairType) item).getRepairStack() : ItemStack.EMPTY;
-    }
-
-    @Nonnull
-    public ItemStack getItemStack() {
-        return getItemStack(1);
-    }
-
-    @Nonnull
-    public ItemStack getItemStack(int size) {
-        return new ItemStack(getItem(), size);
     }
 
     @Nonnull
@@ -159,6 +152,7 @@ public enum ToolsItem {
     }
 
     public static void remapItems() {
+        //TODO: Add this to other modules
         for (ToolsItem toolsItem : values()) {
             ResourceLocation registryName = toolsItem.getItem().getRegistryName();
             toolsItem.updateItem(ForgeRegistries.ITEMS.getValue(registryName));
