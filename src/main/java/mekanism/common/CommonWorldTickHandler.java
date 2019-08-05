@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonWorldTickHandler {
 
-    private static final long maximumDeltaTimeNanoSecs = 16000000; // 16 milliseconds
+    private static final long maximumDeltaTimeNanoSecs = 16_000_000; // 16 milliseconds
 
     private Int2ObjectMap<Queue<ChunkPos>> chunkRegenMap;
 

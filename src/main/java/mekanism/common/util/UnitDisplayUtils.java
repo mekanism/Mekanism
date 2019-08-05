@@ -170,14 +170,14 @@ public class UnitDisplayUtils {
         MICRO("Micro", "u", 0.000001D),
         MILLI("Milli", "m", 0.001D),
         BASE("", "", 1),
-        KILO("Kilo", "k", 1000D),
-        MEGA("Mega", "M", 1000000D),
-        GIGA("Giga", "G", 1000000000D),
-        TERA("Tera", "T", 1000000000000D),
-        PETA("Peta", "P", 1000000000000000D),
-        EXA("Exa", "E", 1000000000000000000D),
-        ZETTA("Zetta", "Z", 1000000000000000000000D),
-        YOTTA("Yotta", "Y", 1000000000000000000000000D);
+        KILO("Kilo", "k", 1_000D),
+        MEGA("Mega", "M", 1_000_000D),
+        GIGA("Giga", "G", 1_000_000_000D),
+        TERA("Tera", "T", 1_000_000_000_000D),
+        PETA("Peta", "P", 1_000_000_000_000_000D),
+        EXA("Exa", "E", 1_000_000_000_000_000_000D),
+        ZETTA("Zetta", "Z", 1_000_000_000_000_000_000_000D),
+        YOTTA("Yotta", "Y", 1_000_000_000_000_000_000_000_000D);
 
         /**
          * long name for the unit

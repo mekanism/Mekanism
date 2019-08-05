@@ -413,7 +413,7 @@ public class FusionReactor {
     }
 
     public double getInsulationCoefficient(EnumFacing side) {
-        return 100000;
+        return 100_000;
     }
 
     public void transferHeatTo(double heat) {

@@ -144,7 +144,7 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
 
     @Override
     public double getStorage() {
-        return 200000;
+        return 200_000;
     }
 
     @Override

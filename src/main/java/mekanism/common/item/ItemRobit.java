@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
     public ItemRobit() {
-        super("robit", 100000);
+        super("robit", 100_000);
     }
 
     @Override

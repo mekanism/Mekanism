@@ -5,10 +5,10 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnergyCubeTier implements ITier, IStringSerializable {
-    BASIC(2000000, 800),
-    ADVANCED(8000000, 3200),
-    ELITE(32000000, 12800),
-    ULTIMATE(128000000, 51200),
+    BASIC(2_000_000, 800),
+    ADVANCED(8_000_000, 3200),
+    ELITE(32_000_000, 12800),
+    ULTIMATE(128_000_000, 51200),
     CREATIVE(Double.MAX_VALUE, Double.MAX_VALUE);
 
     private final double baseMaxEnergy;

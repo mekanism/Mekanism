@@ -146,7 +146,7 @@ public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implemen
 
     @Override
     public double getStorage() {
-        return 200000;
+        return 200_000;
     }
 
     @Override

@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem {
 
     public ItemPortableTeleporter() {
-        super("portable_teleporter", 1000000);
+        super("portable_teleporter", 1_000_000);
     }
 
     public static double calculateEnergyCost(Entity entity, Coord4D coords) {

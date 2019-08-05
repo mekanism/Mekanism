@@ -47,7 +47,7 @@ public enum MekanismItem implements IItemProvider {
     ELECTRIC_BOW(new ItemElectricBow()),
     ROBIT(new ItemRobit()),
     ATOMIC_DISASSEMBLER(new ItemAtomicDisassembler()),
-    ENERGY_TABLET(new ItemEnergized("energy_tablet", 1000000)),
+    ENERGY_TABLET(new ItemEnergized("energy_tablet", 1_000_000)),
     CONFIGURATOR(new ItemConfigurator()),
     NETWORK_READER(new ItemNetworkReader()),
     WALKIE_TALKIE(new ItemWalkieTalkie()),

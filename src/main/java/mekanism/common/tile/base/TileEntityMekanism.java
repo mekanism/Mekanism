@@ -197,7 +197,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     }
                     //Special ITileDirectional handling
                     if (isDirectional()) {
-                        //TODO: Extract this out
+                        //TODO: Extract this out into a handleRotation method?
                         setFacing(getDirection().rotateY());
                         world.notifyNeighborsOfStateChange(pos, getBlockType(), true);
                     }

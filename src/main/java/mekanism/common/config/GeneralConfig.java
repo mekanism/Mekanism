@@ -127,7 +127,7 @@ public class GeneralConfig extends BaseConfig {
     public final IntOption disassemblerDamageMax = new IntOption(this, "general", "DisassemblerDamageMax", 20,
           "The amount of damage the Atomic Disassembler does when it has at least DisassemblerEnergyUsageWeapon power stored. (Value is in number of half hearts)");
 
-    public final DoubleOption disassemblerBatteryCapacity = new DoubleOption(this, "general", "DisassemblerBatteryCapacity", 1000000, "Maximum amount (joules) of energy the Atomic Disassembler can contain", 0, Double.MAX_VALUE).setRequiresGameRestart(true);
+    public final DoubleOption disassemblerBatteryCapacity = new DoubleOption(this, "general", "DisassemblerBatteryCapacity", 1_000_000, "Maximum amount (joules) of energy the Atomic Disassembler can contain", 0, Double.MAX_VALUE).setRequiresGameRestart(true);
 
     public final IntOption VOICE_PORT = new IntOption(this, "general", "VoicePort", 36123,
           "TCP port for the Voice server to listen on.", 1, 65535);
@@ -208,7 +208,7 @@ public class GeneralConfig extends BaseConfig {
     public final IntOption portableTeleporterDelay = new IntOption(this, "general", "PortableTeleporterDelay", 0,
           "Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter.");
 
-    public final DoubleOption quantumEntangloporterEnergyTransfer = new DoubleOption(this, "general", "QuantumEntangloporterEnergyTransfer", 16000000D,
+    public final DoubleOption quantumEntangloporterEnergyTransfer = new DoubleOption(this, "general", "QuantumEntangloporterEnergyTransfer", 16_000_000D,
           "Maximum energy buffer (Mekanism Joules) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency.", 0, Double.MAX_VALUE).setRequiresWorldRestart(true);
 
     public final IntOption quantumEntangloporterFluidBuffer = new IntOption(this, "general", "quantumEntangloporterFluidBuffer", GasTankTier.ULTIMATE.getBaseStorage(),
@@ -232,7 +232,7 @@ public class GeneralConfig extends BaseConfig {
     public final IntOption laserRange = new IntOption(this, "general", "LaserRange", 64,
           "How far (in blocks) a laser can travel.");
 
-    public final IntOption laserEnergyNeededPerHardness = new IntOption(this, "general", "LaserDiggingEnergy", 100000,
+    public final IntOption laserEnergyNeededPerHardness = new IntOption(this, "general", "LaserDiggingEnergy", 100_000,
           "Energy needed to destroy or attract blocks with a Laser (per block hardness level).");
 
     public final BooleanOption destroyDisabledBlocks = new BooleanOption(this, "general", "DestroyDisabledBlocks", true,

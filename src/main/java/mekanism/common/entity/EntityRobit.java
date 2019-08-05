@@ -66,7 +66,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     private static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> FOLLOW = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
-    public double MAX_ELECTRICITY = 100000;
+    public double MAX_ELECTRICITY = 100_000;
     public Coord4D homeLocation;
     public NonNullList<ItemStack> inventory = NonNullList.withSize(31, ItemStack.EMPTY);
     public int furnaceBurnTime = 0;
