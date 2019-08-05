@@ -1,7 +1,9 @@
 package mekanism.generators.common;
 
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IItemProvider;
+import mekanism.common.item.IItemMekanism;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -37,7 +39,13 @@ public enum GeneratorsItem implements IItemProvider {
 
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (GeneratorsItem generatorsItem : values()) {
-            registry.register(generatorsItem.getItem());
+            Item item = generatorsItem.getItem();
+            item.setCreativeTab(Mekanism.tabMekanism);
+            item.setTranslationKey("mekanism." + generatorsItem.getName());
+            registry.register(item);
+            if (item instanceof IItemMekanism) {
+                ((IItemMekanism) item).registerOreDict();
+            }
         }
     }
 }

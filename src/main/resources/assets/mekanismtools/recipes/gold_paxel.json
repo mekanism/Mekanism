@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:gold_paxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "#STICK_WOOD"
+    },
+    "X": {
+      "item": "minecraft:golden_axe"
+    },
+    "Y": {
+      "item": "minecraft:golden_pickaxe"
+    },
+    "Z": {
+      "item": "minecraft:golden_shovel"
+    }
+  }
+}

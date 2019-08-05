@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:lapis_lazuli_paxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "#STICK_WOOD"
+    },
+    "X": {
+      "item": "mekanismtools:lapis_lazuli_axe"
+    },
+    "Y": {
+      "item": "mekanismtools:lapis_lazuli_pickaxe"
+    },
+    "Z": {
+      "item": "mekanismtools:lapis_lazuli_shovel"
+    }
+  }
+}

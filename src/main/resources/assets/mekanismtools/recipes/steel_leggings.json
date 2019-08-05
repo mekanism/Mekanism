@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:steel_leggings"
+  },
+  "pattern": [
+    "I*I",
+    "* *",
+    "* *"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "#INGOT_IRON"
+    },
+    "*": {
+      "item": "#INGOT_STEEL"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:osmium_paxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "#STICK_WOOD"
+    },
+    "X": {
+      "item": "mekanismtools:osmium_axe"
+    },
+    "Y": {
+      "item": "mekanismtools:osmium_pickaxe"
+    },
+    "Z": {
+      "item": "mekanismtools:osmium_shovel"
+    }
+  }
+}

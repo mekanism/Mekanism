@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:osmium_shovel"
+  },
+  "pattern": [
+    "X",
+    "T",
+    "T"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "T": {
+      "item": "#STICK_WOOD"
+    },
+    "X": {
+      "item": "#INGOT_OSMIUM"
+    }
+  }
+}

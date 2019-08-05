@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:bronze_hoe"
+  },
+  "pattern": [
+    "XX",
+    " T",
+    " T"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "T": {
+      "item": "#STICK_WOOD"
+    },
+    "X": {
+      "item": "#INGOT_BRONZE"
+    }
+  }
+}

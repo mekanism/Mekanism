@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:steel_sword"
+  },
+  "pattern": [
+    "X",
+    "X",
+    "I"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "X": {
+      "item": "#INGOT_STEEL"
+    },
+    "I": {
+      "item": "#INGOT_IRON"
+    }
+  }
+}

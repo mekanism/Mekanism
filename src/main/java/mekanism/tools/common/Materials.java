@@ -18,7 +18,7 @@ import net.minecraftforge.common.util.EnumHelper;
 
 public enum Materials {
     OBSIDIAN("OBSIDIAN", cfg -> cfg.toolOBSIDIAN, cfg -> cfg.toolOBSIDIAN2, cfg -> cfg.armorOBSIDIAN, MekanismItem.REFINED_OBSIDIAN_INGOT::getItemStack),
-    LAZULI("LAZULI", cfg -> cfg.toolLAZULI, cfg -> cfg.toolLAZULI2, cfg -> cfg.armorLAZULI, () -> new ItemStack(Items.DYE, 1, 4), SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND),
+    LAPIS_LAZULI("LAPIS_LAZULI", cfg -> cfg.toolLAZULI, cfg -> cfg.toolLAZULI2, cfg -> cfg.armorLAZULI, () -> new ItemStack(Items.DYE, 1, 4), SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND),
     OSMIUM("OSMIUM", cfg -> cfg.toolOSMIUM, cfg -> cfg.toolOSMIUM2, cfg -> cfg.armorOSMIUM, MekanismItem.OSMIUM_INGOT::getItemStack),
     BRONZE("BRONZE", cfg -> cfg.toolBRONZE, cfg -> cfg.toolBRONZE2, cfg -> cfg.armorBRONZE, MekanismItem.BRONZE_INGOT::getItemStack),
     GLOWSTONE("GLOWSTONE", tools -> tools.toolGLOWSTONE, tools -> tools.toolGLOWSTONE2, cfg -> cfg.armorGLOWSTONE, MekanismItem.REFINED_GLOWSTONE_INGOT::getItemStack),
@@ -101,6 +101,10 @@ public enum Materials {
 
     public ArmorMaterial getArmorMaterial() {
         return armorMaterial;
+    }
+
+    public String getMaterialName() {
+        return materialName;
     }
 
     public float getAxeDamage() {

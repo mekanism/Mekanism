@@ -12,11 +12,7 @@ public class ItemMekanism extends Item implements IItemMekanism {
     }
 
     public ItemMekanism(String modid, String name) {
-        super();
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        name = name.toLowerCase(Locale.ROOT);
-        setCreativeTab(Mekanism.tabMekanism);
-        setTranslationKey(Mekanism.MODID + "." + name);
-        setRegistryName(new ResourceLocation(modid, name));
+        setRegistryName(new ResourceLocation(modid, name.toLowerCase(Locale.ROOT)));
     }
 }

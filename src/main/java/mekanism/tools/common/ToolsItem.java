@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IItemProvider;
+import mekanism.common.item.IItemMekanism;
 import mekanism.tools.item.ItemMekanismArmor;
 import mekanism.tools.item.ItemMekanismAxe;
 import mekanism.tools.item.ItemMekanismHoe;
@@ -21,79 +22,78 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
-//TODO: Register names in the classes themselves
 public enum ToolsItem implements IItemProvider {
-    WOOD_PAXEL("WoodPaxel", new ItemMekanismPaxel(ToolMaterial.WOOD)),
-    STONE_PAXEL("StonePaxel", new ItemMekanismPaxel(ToolMaterial.STONE)),
-    IRON_PAXEL("IronPaxel", new ItemMekanismPaxel(ToolMaterial.IRON)),
-    DIAMOND_PAXEL("DiamondPaxel", new ItemMekanismPaxel(ToolMaterial.DIAMOND)),
-    GOLD_PAXEL("GoldPaxel", new ItemMekanismPaxel(ToolMaterial.GOLD)),
+    WOOD_PAXEL(new ItemMekanismPaxel(ToolMaterial.WOOD)),
+    STONE_PAXEL(new ItemMekanismPaxel(ToolMaterial.STONE)),
+    IRON_PAXEL(new ItemMekanismPaxel(ToolMaterial.IRON)),
+    DIAMOND_PAXEL(new ItemMekanismPaxel(ToolMaterial.DIAMOND)),
+    GOLD_PAXEL(new ItemMekanismPaxel(ToolMaterial.GOLD)),
 
-    GLOWSTONE_PICKAXE("GlowstonePickaxe", new ItemMekanismPickaxe(Materials.GLOWSTONE)),
-    GLOWSTONE_AXE("GlowstoneAxe", new ItemMekanismAxe(Materials.GLOWSTONE)),
-    GLOWSTONE_SHOVEL("GlowstoneShovel", new ItemMekanismShovel(Materials.GLOWSTONE)),
-    GLOWSTONE_HOE("GlowstoneHoe", new ItemMekanismHoe(Materials.GLOWSTONE)),
-    GLOWSTONE_SWORD("GlowstoneSword", new ItemMekanismSword(Materials.GLOWSTONE)),
-    GLOWSTONE_PAXEL("GlowstonePaxel", new ItemMekanismPaxel(Materials.GLOWSTONE)),
-    GLOWSTONE_HELMET("GlowstoneHelmet", new ItemMekanismArmor(Materials.GLOWSTONE, 0, EntityEquipmentSlot.HEAD)),
-    GLOWSTONE_CHESTPLATE("GlowstoneChestplate", new ItemMekanismArmor(Materials.GLOWSTONE, 1, EntityEquipmentSlot.CHEST)),
-    GLOWSTONE_LEGGINGS("GlowstoneLeggings", new ItemMekanismArmor(Materials.GLOWSTONE, 2, EntityEquipmentSlot.LEGS)),
-    GLOWSTONE_BOOTS("GlowstoneBoots", new ItemMekanismArmor(Materials.GLOWSTONE, 3, EntityEquipmentSlot.FEET)),
+    GLOWSTONE_PICKAXE(new ItemMekanismPickaxe(Materials.GLOWSTONE)),
+    GLOWSTONE_AXE(new ItemMekanismAxe(Materials.GLOWSTONE)),
+    GLOWSTONE_SHOVEL(new ItemMekanismShovel(Materials.GLOWSTONE)),
+    GLOWSTONE_HOE(new ItemMekanismHoe(Materials.GLOWSTONE)),
+    GLOWSTONE_SWORD(new ItemMekanismSword(Materials.GLOWSTONE)),
+    GLOWSTONE_PAXEL(new ItemMekanismPaxel(Materials.GLOWSTONE)),
+    GLOWSTONE_HELMET(new ItemMekanismArmor(Materials.GLOWSTONE, 0, EntityEquipmentSlot.HEAD)),
+    GLOWSTONE_CHESTPLATE(new ItemMekanismArmor(Materials.GLOWSTONE, 1, EntityEquipmentSlot.CHEST)),
+    GLOWSTONE_LEGGINGS(new ItemMekanismArmor(Materials.GLOWSTONE, 2, EntityEquipmentSlot.LEGS)),
+    GLOWSTONE_BOOTS(new ItemMekanismArmor(Materials.GLOWSTONE, 3, EntityEquipmentSlot.FEET)),
 
-    BRONZE_PICKAXE("BronzePickaxe", new ItemMekanismPickaxe(Materials.BRONZE)),
-    BRONZE_AXE("BronzeAxe", new ItemMekanismAxe(Materials.BRONZE)),
-    BRONZE_SHOVEL("BronzeShovel", new ItemMekanismShovel(Materials.BRONZE)),
-    BRONZE_HOE("BronzeHoe", new ItemMekanismHoe(Materials.BRONZE)),
-    BRONZE_SWORD("BronzeSword", new ItemMekanismSword(Materials.BRONZE)),
-    BRONZE_PAXEL("BronzePaxel", new ItemMekanismPaxel(Materials.BRONZE)),
-    BRONZE_HELMET("BronzeHelmet", new ItemMekanismArmor(Materials.BRONZE, 0, EntityEquipmentSlot.HEAD)),
-    BRONZE_CHESTPLATE("BronzeChestplate", new ItemMekanismArmor(Materials.BRONZE, 1, EntityEquipmentSlot.CHEST)),
-    BRONZE_LEGGINGS("BronzeLeggings", new ItemMekanismArmor(Materials.BRONZE, 2, EntityEquipmentSlot.LEGS)),
-    BRONZE_BOOTS("BronzeBoots", new ItemMekanismArmor(Materials.BRONZE, 3, EntityEquipmentSlot.FEET)),
+    BRONZE_PICKAXE(new ItemMekanismPickaxe(Materials.BRONZE)),
+    BRONZE_AXE(new ItemMekanismAxe(Materials.BRONZE)),
+    BRONZE_SHOVEL(new ItemMekanismShovel(Materials.BRONZE)),
+    BRONZE_HOE(new ItemMekanismHoe(Materials.BRONZE)),
+    BRONZE_SWORD(new ItemMekanismSword(Materials.BRONZE)),
+    BRONZE_PAXEL(new ItemMekanismPaxel(Materials.BRONZE)),
+    BRONZE_HELMET(new ItemMekanismArmor(Materials.BRONZE, 0, EntityEquipmentSlot.HEAD)),
+    BRONZE_CHESTPLATE(new ItemMekanismArmor(Materials.BRONZE, 1, EntityEquipmentSlot.CHEST)),
+    BRONZE_LEGGINGS(new ItemMekanismArmor(Materials.BRONZE, 2, EntityEquipmentSlot.LEGS)),
+    BRONZE_BOOTS(new ItemMekanismArmor(Materials.BRONZE, 3, EntityEquipmentSlot.FEET)),
 
-    OSMIUM_PICKAXE("OsmiumPickaxe", new ItemMekanismPickaxe(Materials.OSMIUM)),
-    OSMIUM_AXE("OsmiumAxe", new ItemMekanismAxe(Materials.OSMIUM)),
-    OSMIUM_SHOVEL("OsmiumShovel", new ItemMekanismShovel(Materials.OSMIUM)),
-    OSMIUM_HOE("OsmiumHoe", new ItemMekanismHoe(Materials.OSMIUM)),
-    OSMIUM_SWORD("OsmiumSword", new ItemMekanismSword(Materials.OSMIUM)),
-    OSMIUM_PAXEL("OsmiumPaxel", new ItemMekanismPaxel(Materials.OSMIUM)),
-    OSMIUM_HELMET("OsmiumHelmet", new ItemMekanismArmor(Materials.OSMIUM, 0, EntityEquipmentSlot.HEAD)),
-    OSMIUM_CHESTPLATE("OsmiumChestplate", new ItemMekanismArmor(Materials.OSMIUM, 1, EntityEquipmentSlot.CHEST)),
-    OSMIUM_LEGGINGS("OsmiumLeggings", new ItemMekanismArmor(Materials.OSMIUM, 2, EntityEquipmentSlot.LEGS)),
-    OSMIUM_BOOTS("OsmiumBoots", new ItemMekanismArmor(Materials.OSMIUM, 3, EntityEquipmentSlot.FEET)),
+    OSMIUM_PICKAXE(new ItemMekanismPickaxe(Materials.OSMIUM)),
+    OSMIUM_AXE(new ItemMekanismAxe(Materials.OSMIUM)),
+    OSMIUM_SHOVEL(new ItemMekanismShovel(Materials.OSMIUM)),
+    OSMIUM_HOE(new ItemMekanismHoe(Materials.OSMIUM)),
+    OSMIUM_SWORD(new ItemMekanismSword(Materials.OSMIUM)),
+    OSMIUM_PAXEL(new ItemMekanismPaxel(Materials.OSMIUM)),
+    OSMIUM_HELMET(new ItemMekanismArmor(Materials.OSMIUM, 0, EntityEquipmentSlot.HEAD)),
+    OSMIUM_CHESTPLATE(new ItemMekanismArmor(Materials.OSMIUM, 1, EntityEquipmentSlot.CHEST)),
+    OSMIUM_LEGGINGS(new ItemMekanismArmor(Materials.OSMIUM, 2, EntityEquipmentSlot.LEGS)),
+    OSMIUM_BOOTS(new ItemMekanismArmor(Materials.OSMIUM, 3, EntityEquipmentSlot.FEET)),
 
-    OBSIDIAN_PICKAXE("ObsidianPickaxe", new ItemMekanismPickaxe(Materials.OBSIDIAN)),
-    OBSIDIAN_AXE("ObsidianAxe", new ItemMekanismAxe(Materials.OBSIDIAN)),
-    OBSIDIAN_SHOVEL("ObsidianShovel", new ItemMekanismShovel(Materials.OBSIDIAN)),
-    OBSIDIAN_HOE("ObsidianHoe", new ItemMekanismHoe(Materials.OBSIDIAN)),
-    OBSIDIAN_SWORD("ObsidianSword", new ItemMekanismSword(Materials.OBSIDIAN)),
-    OBSIDIAN_PAXEL("ObsidianPaxel", new ItemMekanismPaxel(Materials.OBSIDIAN)),
-    OBSIDIAN_HELMET("ObsidianHelmet", new ItemMekanismArmor(Materials.OBSIDIAN, 0, EntityEquipmentSlot.HEAD)),
-    OBSIDIAN_CHESTPLATE("ObsidianChestplate", new ItemMekanismArmor(Materials.OBSIDIAN, 1, EntityEquipmentSlot.CHEST)),
-    OBSIDIAN_LEGGINGS("ObsidianLeggings", new ItemMekanismArmor(Materials.OBSIDIAN, 2, EntityEquipmentSlot.LEGS)),
-    OBSIDIAN_BOOTS("ObsidianBoots", new ItemMekanismArmor(Materials.OBSIDIAN, 3, EntityEquipmentSlot.FEET)),
+    OBSIDIAN_PICKAXE(new ItemMekanismPickaxe(Materials.OBSIDIAN)),
+    OBSIDIAN_AXE(new ItemMekanismAxe(Materials.OBSIDIAN)),
+    OBSIDIAN_SHOVEL(new ItemMekanismShovel(Materials.OBSIDIAN)),
+    OBSIDIAN_HOE(new ItemMekanismHoe(Materials.OBSIDIAN)),
+    OBSIDIAN_SWORD(new ItemMekanismSword(Materials.OBSIDIAN)),
+    OBSIDIAN_PAXEL(new ItemMekanismPaxel(Materials.OBSIDIAN)),
+    OBSIDIAN_HELMET(new ItemMekanismArmor(Materials.OBSIDIAN, 0, EntityEquipmentSlot.HEAD)),
+    OBSIDIAN_CHESTPLATE(new ItemMekanismArmor(Materials.OBSIDIAN, 1, EntityEquipmentSlot.CHEST)),
+    OBSIDIAN_LEGGINGS(new ItemMekanismArmor(Materials.OBSIDIAN, 2, EntityEquipmentSlot.LEGS)),
+    OBSIDIAN_BOOTS(new ItemMekanismArmor(Materials.OBSIDIAN, 3, EntityEquipmentSlot.FEET)),
 
-    LAPIS_LAZULI_PICKAXE("LapisLazuliPickaxe", new ItemMekanismPickaxe(Materials.LAZULI)),
-    LAPIS_LAZULI_AXE("LapisLazuliAxe", new ItemMekanismAxe(Materials.LAZULI)),
-    LAPIS_LAZULI_SHOVEL("LapisLazuliShovel", new ItemMekanismShovel(Materials.LAZULI)),
-    LAPIS_LAZULI_HOE("LapisLazuliHoe", new ItemMekanismHoe(Materials.LAZULI)),
-    LAPIS_LAZULI_SWORD("LapisLazuliSword", new ItemMekanismSword(Materials.LAZULI)),
-    LAPIS_LAZULI_PAXEL("LapisLazuliPaxel", new ItemMekanismPaxel(Materials.LAZULI)),
-    LAPIS_LAZULI_HELMET("LapisLazuliHelmet", new ItemMekanismArmor(Materials.LAZULI, 0, EntityEquipmentSlot.HEAD)),
-    LAPIS_LAZULI_CHESTPLATE("LapisLazuliChestplate", new ItemMekanismArmor(Materials.LAZULI, 1, EntityEquipmentSlot.CHEST)),
-    LAPIS_LAZULI_LEGGINGS("LapisLazuliLeggings", new ItemMekanismArmor(Materials.LAZULI, 2, EntityEquipmentSlot.LEGS)),
-    LAPIS_LAZULI_BOOTS("LapisLazuliBoots", new ItemMekanismArmor(Materials.LAZULI, 3, EntityEquipmentSlot.FEET)),
+    LAPIS_LAZULI_PICKAXE(new ItemMekanismPickaxe(Materials.LAPIS_LAZULI)),
+    LAPIS_LAZULI_AXE(new ItemMekanismAxe(Materials.LAPIS_LAZULI)),
+    LAPIS_LAZULI_SHOVEL(new ItemMekanismShovel(Materials.LAPIS_LAZULI)),
+    LAPIS_LAZULI_HOE(new ItemMekanismHoe(Materials.LAPIS_LAZULI)),
+    LAPIS_LAZULI_SWORD(new ItemMekanismSword(Materials.LAPIS_LAZULI)),
+    LAPIS_LAZULI_PAXEL(new ItemMekanismPaxel(Materials.LAPIS_LAZULI)),
+    LAPIS_LAZULI_HELMET(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 0, EntityEquipmentSlot.HEAD)),
+    LAPIS_LAZULI_CHESTPLATE(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 1, EntityEquipmentSlot.CHEST)),
+    LAPIS_LAZULI_LEGGINGS(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 2, EntityEquipmentSlot.LEGS)),
+    LAPIS_LAZULI_BOOTS(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 3, EntityEquipmentSlot.FEET)),
 
-    STEEL_PICKAXE("SteelPickaxe", new ItemMekanismPickaxe(Materials.STEEL)),
-    STEEL_AXE("SteelAxe", new ItemMekanismAxe(Materials.STEEL)),
-    STEEL_SHOVEL("SteelShovel", new ItemMekanismShovel(Materials.STEEL)),
-    STEEL_HOE("SteelHoe", new ItemMekanismHoe(Materials.STEEL)),
-    STEEL_SWORD("SteelSword", new ItemMekanismSword(Materials.STEEL)),
-    STEEL_PAXEL("SteelPaxel", new ItemMekanismPaxel(Materials.STEEL)),
-    STEEL_HELMET("SteelHelmet", new ItemMekanismArmor(Materials.STEEL, 0, EntityEquipmentSlot.HEAD)),
-    STEEL_CHESTPLATE("SteelChestplate", new ItemMekanismArmor(Materials.STEEL, 1, EntityEquipmentSlot.CHEST)),
-    STEEL_LEGGINGS("SteelLeggings", new ItemMekanismArmor(Materials.STEEL, 2, EntityEquipmentSlot.LEGS)),
-    STEEL_BOOTS("SteelBoots", new ItemMekanismArmor(Materials.STEEL, 3, EntityEquipmentSlot.FEET));
+    STEEL_PICKAXE(new ItemMekanismPickaxe(Materials.STEEL)),
+    STEEL_AXE(new ItemMekanismAxe(Materials.STEEL)),
+    STEEL_SHOVEL(new ItemMekanismShovel(Materials.STEEL)),
+    STEEL_HOE(new ItemMekanismHoe(Materials.STEEL)),
+    STEEL_SWORD(new ItemMekanismSword(Materials.STEEL)),
+    STEEL_PAXEL(new ItemMekanismPaxel(Materials.STEEL)),
+    STEEL_HELMET(new ItemMekanismArmor(Materials.STEEL, 0, EntityEquipmentSlot.HEAD)),
+    STEEL_CHESTPLATE(new ItemMekanismArmor(Materials.STEEL, 1, EntityEquipmentSlot.CHEST)),
+    STEEL_LEGGINGS(new ItemMekanismArmor(Materials.STEEL, 2, EntityEquipmentSlot.LEGS)),
+    STEEL_BOOTS(new ItemMekanismArmor(Materials.STEEL, 3, EntityEquipmentSlot.FEET));
 
     public static final List<ToolsItem> BRONZE_SET = Arrays.asList(BRONZE_PICKAXE, BRONZE_AXE, BRONZE_SHOVEL, BRONZE_HOE, BRONZE_SWORD, BRONZE_PAXEL, BRONZE_HELMET,
           BRONZE_CHESTPLATE, BRONZE_LEGGINGS, BRONZE_BOOTS);
@@ -112,11 +112,8 @@ public enum ToolsItem implements IItemProvider {
     @Nonnull
     private Item item;
 
-    <ITEM extends Item & IHasRepairType> ToolsItem(@Nonnull String name, @Nonnull ITEM item) {
-        //TODO: Make name be part of item instead of added on this extra layer.
-        // Also make them have underscores rather than "fake" capitalization that is just to make it easier to read in the enum
-        // This note is for 1.14 when we are going to be mass changing ids anyways to flatten things
-        this.item = item.setTranslationKey(name).setRegistryName(new ResourceLocation(MekanismTools.MODID, name)).setCreativeTab(Mekanism.tabMekanism);
+    <ITEM extends Item & IHasRepairType> ToolsItem(@Nonnull ITEM item) {
+        this.item = item;
     }
 
     @Nonnull
@@ -147,7 +144,13 @@ public enum ToolsItem implements IItemProvider {
 
     public static void registerItems(IForgeRegistry<Item> registry) {
         for (ToolsItem toolsItem : values()) {
-            registry.register(toolsItem.getItem());
+            Item item = toolsItem.getItem();
+            item.setCreativeTab(Mekanism.tabMekanism);
+            item.setTranslationKey("mekanism." + toolsItem.getName());
+            registry.register(item);
+            if (item instanceof IItemMekanism) {
+                ((IItemMekanism) item).registerOreDict();
+            }
         }
     }
 

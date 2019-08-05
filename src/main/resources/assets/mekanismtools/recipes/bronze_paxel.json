@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:bronze_paxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "#STICK_WOOD"
+    },
+    "X": {
+      "item": "mekanismtools:bronze_axe"
+    },
+    "Y": {
+      "item": "mekanismtools:bronze_pickaxe"
+    },
+    "Z": {
+      "item": "mekanismtools:bronze_shovel"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:glowstone_axe"
+  },
+  "pattern": [
+    "XX",
+    "XT",
+    " T"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "T": {
+      "item": "#STICK_WOOD"
+    },
+    "X": {
+      "item": "#INGOT_REFINED_GLOWSTONE"
+    }
+  }
+}

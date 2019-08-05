@@ -76,6 +76,7 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
+        //TODO: Replace tier with next tier?
         if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }

@@ -205,6 +205,8 @@ public enum MekanismItem implements IItemProvider {
         for (MekanismItem mekanismItem : values()) {
             Item item = mekanismItem.getItem();
             registry.register(item);
+            item.setCreativeTab(Mekanism.tabMekanism);
+            item.setTranslationKey("mekanism." + mekanismItem.getName());
             if (item instanceof IItemMekanism) {
                 ((IItemMekanism) item).registerOreDict();
             }

@@ -66,7 +66,6 @@ public enum GeneratorsBlock implements IBlockProvider {
     <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block> GeneratorsBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
-        //TODO: Fix all translation keys so that they have mekanism in them
     }
 
     @Nonnull

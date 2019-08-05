@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanismtools:lapis_lazuli_pickaxe"
+  },
+  "pattern": [
+    "XXX",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "#STICK_WOOD"
+    },
+    "X": {
+      "item": "#GEM_LAPIS"
+    }
+  }
+}

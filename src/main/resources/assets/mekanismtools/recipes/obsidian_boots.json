@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "mekanismtools:obsidian_boots"
+  },
+  "pattern": [
+    "* *",
+    "* *"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "*": {
+      "item": "#INGOT_REFINED_OBSIDIAN"
+    }
+  }
+}
