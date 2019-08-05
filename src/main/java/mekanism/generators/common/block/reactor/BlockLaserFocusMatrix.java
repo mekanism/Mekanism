@@ -1,10 +1,9 @@
 package mekanism.generators.common.block.reactor;
 
-import buildcraft.api.tools.IToolWrench;
 import javax.annotation.Nonnull;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.tile.base.WrenchResult;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import net.minecraft.block.Block;
@@ -12,7 +11,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -59,20 +57,13 @@ public class BlockLaserFocusMatrix extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return true;
         }
-        ItemStack stack = entityplayer.getHeldItem(hand);
-        if (!stack.isEmpty()) {
-            if (MekanismUtils.isBCWrench(stack.getItem()) && !stack.getTranslationKey().contains("omniwrench")) {
-                if (entityplayer.isSneaking()) {
-                    MekanismUtils.dismantleBlock(this, state, world, pos);
-                    return true;
-                }
-                ((IToolWrench) stack.getItem()).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
-                return true;
-            }
+        TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
+        if (tileEntity.tryWrench(state, player, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+            return true;
         }
         return false;
     }

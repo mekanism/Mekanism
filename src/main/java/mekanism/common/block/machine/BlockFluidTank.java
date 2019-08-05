@@ -113,29 +113,28 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+        if (tileEntity.tryWrench(state, player, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
             return true;
         }
-
-        ItemStack stack = entityplayer.getHeldItem(hand);
-        if (!entityplayer.isSneaking()) {
-            if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack)) {
-                    if (manageInventory(entityplayer, (TileEntityFluidTank) tileEntity, hand, stack)) {
-                        entityplayer.inventory.markDirty();
-                        return true;
-                    }
-                } else {
-                    entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+        //Handle filling fluid tank
+        if (!player.isSneaking()) {
+            if (SecurityUtils.canAccess(player, tileEntity)) {
+                ItemStack stack = player.getHeldItem(hand);
+                if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack) && manageInventory(player, (TileEntityFluidTank) tileEntity, hand, stack)) {
+                    player.inventory.markDirty();
+                    return true;
                 }
             } else {
-                SecurityUtils.displayNoAccess(entityplayer);
+                SecurityUtils.displayNoAccess(player);
             }
+            return true;
+        }
+        if (tileEntity.openGui(player)) {
             return true;
         }
         return false;

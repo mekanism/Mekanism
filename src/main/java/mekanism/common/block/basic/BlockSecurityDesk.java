@@ -120,16 +120,17 @@ public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, I
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntitySecurityDesk tile = (TileEntitySecurityDesk) world.getTileEntity(pos);
+        //TODO
         if (tile != null) {
-            if (!entityplayer.isSneaking()) {
+            if (!player.isSneaking()) {
                 if (!world.isRemote) {
                     UUID ownerUUID = tile.ownerUUID;
-                    if (ownerUUID == null || entityplayer.getUniqueID().equals(ownerUUID)) {
-                        entityplayer.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+                    if (ownerUUID == null || player.getUniqueID().equals(ownerUUID)) {
+                        player.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
                     } else {
-                        SecurityUtils.displayNoAccess(entityplayer);
+                        SecurityUtils.displayNoAccess(player);
                     }
                 }
                 return true;

@@ -116,7 +116,7 @@ public class UnitDisplayUtils {
 
     public enum ElectricUnit {
         JOULES("Joule", "J"),
-        FORGE_ENERGY("Redstone Flux", "RF"),
+        FORGE_ENERGY("Forge Energy", "FE"),
         ELECTRICAL_UNITS("Electrical Unit", "EU");
 
         public String name;

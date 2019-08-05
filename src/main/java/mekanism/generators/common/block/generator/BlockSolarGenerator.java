@@ -5,6 +5,7 @@ import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
+import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -30,7 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IHasInventory {
+public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IHasInventory, IHasSecurity {
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
 
@@ -60,21 +61,15 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+        if (tileEntity.tryWrench(state, player, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
             return true;
         }
-
-        if (!entityplayer.isSneaking()) {
-            if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                entityplayer.openGui(MekanismGenerators.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
-            } else {
-                SecurityUtils.displayNoAccess(entityplayer);
-            }
+        if (tileEntity.openGui(player)) {
             return true;
         }
         return false;

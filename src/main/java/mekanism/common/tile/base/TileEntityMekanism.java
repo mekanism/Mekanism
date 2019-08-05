@@ -20,6 +20,7 @@ import mekanism.common.block.interfaces.IBlockElectric;
 import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
+import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
@@ -86,6 +87,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     private boolean supportsUpgrades;
     private boolean isDirectional;
     private boolean hasInventory;
+    private boolean hasSecurity;
     private boolean isElectric;
     private boolean hasSound;
     private boolean hasGui;
@@ -143,6 +145,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         hasSound = block instanceof IBlockSound;
         hasGui = block instanceof IHasGui;
         hasInventory = block instanceof IHasInventory;
+        hasSecurity = block instanceof IHasSecurity;
     }
 
     public final boolean supportsUpgrades() {
@@ -166,6 +169,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return hasGui;
     }
 
+    public final boolean hasSecurity() {
+        return hasSecurity;
+    }
+
     @Override
     public final boolean hasInventory() {
         return hasInventory;
@@ -186,7 +193,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (wrenchHandler != null) {
                 RayTraceResult raytrace = rayTraceSupplier.get();
                 if (wrenchHandler.canUseWrench(player, hand, stack, raytrace)) {
-                    if (!SecurityUtils.canAccess(player, this)) {
+                    if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                         SecurityUtils.displayNoAccess(player);
                         return WrenchResult.NO_SECURITY;
                     }
@@ -206,6 +213,18 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             }
         }
         return WrenchResult.PASS;
+    }
+
+    public boolean openGui(EntityPlayer player) {
+        if (hasGui() && !player.isSneaking()) {
+            if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
+                SecurityUtils.displayNoAccess(player);
+            } else {
+                player.openGui(Mekanism.instance, ((IHasGui) blockProvider.getBlock()).getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

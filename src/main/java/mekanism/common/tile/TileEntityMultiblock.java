@@ -244,6 +244,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Nonnull
     @Override
     public NonNullList<ItemStack> getInventory() {
+        //TODO: Overwrite hasInventory??
         return structure != null ? structure.getInventory() : null;
     }
 
