@@ -171,7 +171,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End variables ITileElectric
 
     //Variables for handling ITileActive
-    protected boolean isActive;
+    protected boolean isActive;//TODO: Make private
     private long lastActive = -1;
 
     // Number of ticks that the block can be inactive before it's considered not recently active
@@ -889,15 +889,17 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Methods for implementing ITileActive
     @Override
     public boolean getActive() {
-        return isActive;
+        return isActivatable() && isActive;
     }
 
     @Override
     public void setActive(boolean active) {
-        boolean stateChange = getActive() != active;
-        if (stateChange) {
-            isActive = active;
-            Mekanism.packetHandler.sendUpdatePacket(this);
+        if (isActivatable()) {
+            boolean stateChange = getActive() != active;
+            if (stateChange) {
+                isActive = active;
+                Mekanism.packetHandler.sendUpdatePacket(this);
+            }
         }
     }
 
@@ -905,7 +907,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public boolean wasActiveRecently() {
         // If the machine is currently active or it flipped off within our threshold,
         // we'll consider it recently active.
-        return getActive() || (lastActive > 0 && (world.getTotalWorldTime() - lastActive) < RECENT_THRESHOLD);
+        return isActivatable() && (getActive() || (lastActive > 0 && (world.getTotalWorldTime() - lastActive) < RECENT_THRESHOLD));
     }
     //End methods ITileActive
 
@@ -954,7 +956,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     private boolean isFullyMuffled() {
-        if (!(this instanceof IUpgradeTile)) {
+        if (!hasSound() || !(this instanceof IUpgradeTile)) {
             return false;
         }
         IUpgradeTile tile = (IUpgradeTile) this;

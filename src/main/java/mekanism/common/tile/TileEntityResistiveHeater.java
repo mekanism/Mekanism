@@ -33,14 +33,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     public double energyUsage = 100;
     public double temperature;
     public double heatToAbsorb = 0;
-    /**
-     * The client's current active state.
-     */
-    public boolean clientActive;
-    /**
-     * How many ticks must pass until this block's active state can sync with the client.
-     */
-    public int updateDelay;
     public float soundScale = 1;
     public double lastEnvironmentLoss;
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -52,23 +44,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     @Override
     public void onUpdate() {
-        if (world.isRemote && updateDelay > 0) {
-            updateDelay--;
-            if (updateDelay == 0 && clientActive != getActive()) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
-        }
-
         if (!world.isRemote) {
             boolean packet = false;
-            if (updateDelay > 0) {
-                updateDelay--;
-                if (updateDelay == 0 && clientActive != getActive()) {
-                    packet = true;
-                }
-            }
-
             ChargeUtils.discharge(0, this);
             double toUse = 0;
             if (MekanismUtils.canFunction(this)) {
@@ -108,7 +85,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         super.readFromNBT(nbtTags);
         energyUsage = nbtTags.getDouble("energyUsage");
         temperature = nbtTags.getDouble("temperature");
-        clientActive = getActive();
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         setMaxEnergy(energyUsage * 400);
     }
@@ -135,16 +111,10 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             energyUsage = dataStream.readDouble();
             temperature = dataStream.readDouble();
-            clientActive = dataStream.readBoolean();
             setMaxEnergy(dataStream.readDouble());
             soundScale = dataStream.readFloat();
             controlType = RedstoneControl.values()[dataStream.readInt()];
             lastEnvironmentLoss = dataStream.readDouble();
-            if (updateDelay == 0 && clientActive != getActive()) {
-                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 
@@ -154,7 +124,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
         data.add(energyUsage);
         data.add(temperature);
-        data.add(getActive());
         data.add(getMaxEnergy());
         data.add(soundScale);
         data.add(controlType.ordinal());
@@ -220,16 +189,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-        if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            updateDelay = 10;
-            clientActive = active;
-        }
     }
 
     @Override

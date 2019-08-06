@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
@@ -15,7 +14,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -32,21 +30,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     public int burnTime;
     public int maxBurnTime;
 
-    /**
-     * Whether or not this machine is in it's active state.
-     */
-    public boolean isActive;
-
-    /**
-     * The client's current active state.
-     */
-    public boolean clientActive;
-
-    /**
-     * How many ticks must pass until this block's active state can sync with the client.
-     */
-    public int updateDelay;
-
     public double lastEnvironmentLoss;
 
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
@@ -57,22 +40,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
 
     @Override
     public void onUpdate() {
-        if (world.isRemote && updateDelay > 0) {
-            updateDelay--;
-            if (updateDelay == 0 && clientActive != isActive) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
-        }
-
         if (!world.isRemote) {
-            if (updateDelay > 0) {
-                updateDelay--;
-                if (updateDelay == 0 && clientActive != isActive) {
-                    Mekanism.packetHandler.sendUpdatePacket(this);
-                }
-            }
-
             boolean burning = false;
             if (burnTime > 0) {
                 burnTime--;
@@ -104,7 +72,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         temperature = nbtTags.getDouble("temperature");
-        clientActive = isActive;
         burnTime = nbtTags.getInteger("burnTime");
         maxBurnTime = nbtTags.getInteger("maxBurnTime");
     }
@@ -124,15 +91,9 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             temperature = dataStream.readDouble();
-            clientActive = dataStream.readBoolean();
             burnTime = dataStream.readInt();
             maxBurnTime = dataStream.readInt();
             lastEnvironmentLoss = dataStream.readDouble();
-            if (updateDelay == 0 && clientActive != isActive) {
-                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 
@@ -140,7 +101,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(temperature);
-        data.add(isActive);
         data.add(burnTime);
         data.add(maxBurnTime);
         data.add(lastEnvironmentLoss);
@@ -161,21 +121,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
         return TileEntityFurnace.getItemBurnTime(stack) > 0;
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-        if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            updateDelay = 10;
-            clientActive = active;
-        }
     }
 
     @Override

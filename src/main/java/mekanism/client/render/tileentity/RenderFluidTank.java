@@ -37,10 +37,10 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
     @Override
     public void render(TileEntityFluidTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         FluidStack fluid = tileEntity.fluidTank.getFluid();
-        render(tileEntity.tier, fluid, tileEntity.prevScale, tileEntity.isActive, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);
+        render(tileEntity.tier, fluid, tileEntity.prevScale, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);
     }
 
-    public void render(FluidTankTier tier, FluidStack fluid, float fluidScale, boolean active, FluidStack valveFluid, double x, double y, double z) {
+    public void render(FluidTankTier tier, FluidStack fluid, float fluidScale, FluidStack valveFluid, double x, double y, double z) {
         boolean glChanged = false;
         if (fluid != null && fluidScale > 0) {
             GlStateManager.pushMatrix();

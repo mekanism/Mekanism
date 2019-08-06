@@ -9,7 +9,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -29,12 +28,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
 
     private static final int[] SLOTS = {0};
 
-    public boolean isActive;
-
-    public boolean clientActive;
-
-    public int updateDelay;
-
     public int clientPiston;
 
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -48,24 +41,10 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     @Override
     public void onUpdate() {
         if (world.isRemote) {
-            if (isActive) {
+            if (getActive()) {
                 clientPiston++;
             }
-            if (updateDelay > 0) {
-                updateDelay--;
-                if (updateDelay == 0 && clientActive != isActive) {
-                    isActive = clientActive;
-                    MekanismUtils.updateBlock(world, getPos());
-                }
-            }
         } else {
-            if (updateDelay > 0) {
-                updateDelay--;
-                if (updateDelay == 0 && clientActive != isActive) {
-                    Mekanism.packetHandler.sendUpdatePacket(this);
-                }
-            }
-
             ChargeUtils.discharge(0, this);
             if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseUsage()) {
                 setActive(true);
@@ -91,7 +70,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
         return nbtTags;
     }
@@ -99,7 +77,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        clientActive = isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
@@ -107,37 +84,15 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            clientActive = dataStream.readBoolean();
             controlType = RedstoneControl.values()[dataStream.readInt()];
-            if (updateDelay == 0 && clientActive != isActive) {
-                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(isActive);
         data.add(controlType.ordinal());
         return data;
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-        if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            updateDelay = 10;
-            clientActive = active;
-        }
     }
 
     @Override

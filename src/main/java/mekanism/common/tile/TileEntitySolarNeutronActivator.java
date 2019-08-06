@@ -57,7 +57,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     private SolarNeutronRecipe cachedRecipe;
 
     private int currentRedstoneLevel;
-    private boolean isActive;
     private boolean needsRainCheck;
 
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -145,7 +144,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            isActive = dataStream.readBoolean();
             controlType = RedstoneControl.values()[dataStream.readInt()];
             TileUtils.readTankData(dataStream, inputTank);
             TileUtils.readTankData(dataStream, outputTank);
@@ -155,7 +153,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(isActive);
         data.add(controlType.ordinal());
         TileUtils.addTankData(data, inputTank);
         TileUtils.addTankData(data, outputTank);
@@ -287,20 +284,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        boolean stateChange = isActive != active;
-        if (stateChange) {
-            isActive = active;
-            Mekanism.packetHandler.sendUpdatePacket(this);
-        }
-    }
-
-    @Override
     public boolean renderUpdate() {
         return false;
     }
@@ -343,7 +326,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     public double getProgress() {
-        if (isActive) {
+        if (getActive()) {
             return .16 * (1 + (world.getTotalWorldTime() % 6));
         }
         return 0;

@@ -18,7 +18,6 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
@@ -52,17 +51,11 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public abstract class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
       ITankManager, ISecurityTile, ITierUpgradeable, IComparatorSupport {
 
-    public boolean isActive;
-
-    public boolean clientActive;
-
     public FluidTank fluidTank;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
     public FluidTankTier tier;
-
-    public int updateDelay;
 
     public int prevAmount;
 
@@ -103,26 +96,11 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     @Override
     public void onUpdate() {
         if (world.isRemote) {
-            if (updateDelay > 0) {
-                updateDelay--;
-                if (updateDelay == 0 && clientActive != isActive) {
-                    isActive = clientActive;
-                    MekanismUtils.updateBlock(world, getPos());
-                }
-            }
-
             float targetScale = (float) (fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0) / fluidTank.getCapacity();
             if (Math.abs(prevScale - targetScale) > 0.01) {
                 prevScale = (9 * prevScale + targetScale) / 10;
             }
         } else {
-            if (updateDelay > 0) {
-                updateDelay--;
-                if (updateDelay == 0 && clientActive != isActive) {
-                    needsPacket = true;
-                }
-            }
-
             if (valve > 0) {
                 valve--;
                 if (valve == 0) {
@@ -140,7 +118,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
             if (!getInventory().get(0).isEmpty()) {
                 manageInventory();
             }
-            if (isActive) {
+            if (getActive()) {
                 activeEmit();
             }
 
@@ -248,7 +226,6 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         tier = FluidTankTier.values()[nbtTags.getInteger("tier")];
-        clientActive = getActive();
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
         //Needs to be outside the hasKey check because this is just based on the tier which is known information
         fluidTank.setCapacity(tier.getStorage());
@@ -265,7 +242,6 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
             tier = FluidTankTier.values()[dataStream.readInt()];
             fluidTank.setCapacity(tier.getStorage());
 
-            clientActive = dataStream.readBoolean();
             valve = dataStream.readInt();
             editMode = ContainerEditMode.values()[dataStream.readInt()];
             if (valve > 0) {
@@ -275,9 +251,8 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
             }
 
             TileUtils.readTankData(dataStream, fluidTank);
-            if (prevTier != tier || (updateDelay == 0 && clientActive != isActive)) {
-                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-                isActive = clientActive;
+            if (prevTier != tier) {
+                //TODO: Is this still needed given the block actually will change once we setup upgrading
                 MekanismUtils.updateBlock(world, getPos());
             }
         }
@@ -311,7 +286,6 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(tier.ordinal());
-        data.add(isActive);
         data.add(valve);
         data.add(editMode.ordinal());
         if (valve > 0) {
@@ -319,21 +293,6 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
         }
         TileUtils.addTankData(data, fluidTank);
         return data;
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-        if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            updateDelay = 10;
-            clientActive = active;
-        }
     }
 
     @Override
@@ -394,7 +353,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
             return resource.amount;
         }
         int filled = fluidTank.fill(resource, doFill);
-        if (filled < resource.amount && !isActive) {
+        if (filled < resource.amount && !getActive()) {
             filled += pushUp(PipeUtils.copy(resource, resource.amount - filled), doFill);
         }
         if (filled > 0 && from == EnumFacing.UP) {
@@ -416,13 +375,13 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     @Override
     public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
         TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(EnumFacing.DOWN));
-        if (from == EnumFacing.DOWN && isActive && !(tile instanceof TileEntityFluidTank)) {
+        if (from == EnumFacing.DOWN && getActive() && !(tile instanceof TileEntityFluidTank)) {
             return false;
         }
         if (tier == FluidTankTier.CREATIVE) {
             return true;
         }
-        if (isActive && tile instanceof TileEntityFluidTank) { // Only fill if tanks underneath have same fluid.
+        if (getActive() && tile instanceof TileEntityFluidTank) { // Only fill if tanks underneath have same fluid.
             return fluidTank.getFluid() == null ? ((TileEntityFluidTank) tile).canFill(EnumFacing.UP, fluid) : fluidTank.getFluid().isFluidEqual(fluid);
         }
         return FluidContainerUtils.canFill(fluidTank.getFluid(), fluid);
@@ -430,7 +389,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluidTank != null && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid) && !isActive || from != EnumFacing.DOWN;
+        return fluidTank != null && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid) && !getActive() || from != EnumFacing.DOWN;
     }
 
     @Override

@@ -47,7 +47,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     private static final int[] UPSLOTS = {1};
     private static final int[] DOWNSLOTS = {0};
 
-    public boolean isActive;
     public int addTicks = 0;
 
     public int delayTicks;
@@ -199,7 +198,7 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
             }
 
             if (delayTicks == 0) {
-                if (!bottomStack.isEmpty() && isActive) {
+                if (!bottomStack.isEmpty() && getActive()) {
                     TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(world);
                     ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
                     TransitResponse response;
@@ -253,7 +252,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(isActive);
         data.add(getItemCount());
         data.add(tier.ordinal());
         if (getItemCount() > 0) {
@@ -266,7 +264,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            isActive = dataStream.readBoolean();
             clientAmount = dataStream.readInt();
             tier = BinTier.values()[dataStream.readInt()];
             if (clientAmount > 0) {
@@ -453,20 +450,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     @Override
     public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        boolean stateChange = getActive() != active;
-        if (stateChange) {
-            isActive = active;
-            Mekanism.packetHandler.sendUpdatePacket(this);
-        }
     }
 
     @Override

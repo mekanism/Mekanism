@@ -524,7 +524,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        isActive = nbtTags.getBoolean("isActive");
         running = nbtTags.getBoolean("running");
         delay = nbtTags.getInteger("delay");
         numPowering = nbtTags.getInteger("numPowering");
@@ -540,7 +539,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         if (searcher.state == State.SEARCHING) {
             reset();
         }
-        nbtTags.setBoolean("isActive", isActive);
         nbtTags.setBoolean("running", running);
         nbtTags.setInteger("delay", delay);
         nbtTags.setInteger("numPowering", numPowering);
