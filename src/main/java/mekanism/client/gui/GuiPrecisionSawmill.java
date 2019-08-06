@@ -4,10 +4,10 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiPrecisionSawmill extends GuiChanceMachine<SawmillRecipe> {
 
     public GuiPrecisionSawmill(InventoryPlayer inventory, TileEntityChanceMachine<SawmillRecipe> tile) {

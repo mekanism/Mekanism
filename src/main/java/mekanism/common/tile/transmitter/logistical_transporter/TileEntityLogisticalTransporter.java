@@ -35,7 +35,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
@@ -289,7 +289,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
     @Override
-    protected EnumActionResult onConfigure(PlayerEntity player, int part, Direction side) {
+    protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         TransporterUtils.incrementColor(getTransmitter());
         onPartChanged(null);
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
@@ -303,11 +303,11 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
             msg.translation("gui.none");
         }
         player.sendMessage(msg);
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         super.onRightClick(player, side);
         TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
               .translation("tooltip.configurator.viewColor").string(": ");
@@ -318,7 +318,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
             msg.translation("gui.none");
         }
         player.sendMessage(msg);
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

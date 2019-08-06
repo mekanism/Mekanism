@@ -119,7 +119,7 @@ public final class StackUtils {
      * @param player our fake player, usually
      *
      * @return the result of {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.Direction, float, float,
-     * float, int, net.minecraft.entity.EntityLivingBase, net.minecraft.util.Hand)}
+     * float, int, net.minecraft.entity.LivingEntity, net.minecraft.util.Hand)}
      */
     @Nonnull
     public static BlockState getStateForPlacement(ItemStack stack, World world, BlockPos pos, PlayerEntity player) {

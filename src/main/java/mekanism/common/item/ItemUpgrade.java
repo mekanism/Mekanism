@@ -13,13 +13,13 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Keyboard;
 
 public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
@@ -34,7 +34,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
@@ -50,7 +50,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
+    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         if (player.isSneaking()) {
             TileEntity tile = world.getTileEntity(pos);
             ItemStack stack = player.getHeldItem(hand);
@@ -63,9 +63,9 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
                         stack.shrink(1);
                     }
                 }
-                return EnumActionResult.SUCCESS;
+                return ActionResultType.SUCCESS;
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 }

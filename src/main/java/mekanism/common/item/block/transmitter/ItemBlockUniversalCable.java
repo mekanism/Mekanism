@@ -21,8 +21,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockUniversalCable extends ItemBlockMultipartAble implements ITieredItem<CableTier> {
 
@@ -41,7 +41,7 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble implements I
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             CableTier tier = getTier(itemstack);

@@ -34,7 +34,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
@@ -49,8 +49,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
       ITieredItem<FluidTankTier>, IItemRedirectedModel {
@@ -71,7 +71,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         FluidStack fluidStack = getFluidStack(itemstack);
         if (fluidStack != null) {
@@ -89,7 +89,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
         list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
@@ -103,10 +103,10 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(PlayerEntity player, World world, @Nonnull BlockPos pos, @Nonnull Hand hand, @Nonnull Direction side, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(PlayerEntity player, World world, @Nonnull BlockPos pos, @Nonnull Hand hand, @Nonnull Direction side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         if (getBucketMode(stack)) {
-            return EnumActionResult.PASS;
+            return ActionResultType.PASS;
         }
         return super.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
     }
@@ -147,17 +147,17 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
                 if (pos != null && pos.typeOfHit == RayTraceResult.Type.BLOCK) {
                     Coord4D coord = new Coord4D(pos.getBlockPos(), world);
                     if (!world.provider.canMineBlock(entityplayer, coord.getPos())) {
-                        return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                        return new ActionResult<>(ActionResultType.FAIL, itemstack);
                     }
                     if (!entityplayer.isSneaking()) {
                         if (!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack)) {
-                            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                            return new ActionResult<>(ActionResultType.FAIL, itemstack);
                         }
                         FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
                         if (fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid))) {
                             int needed = getCapacity(itemstack) - (getFluidStack(itemstack) != null ? getFluidStack(itemstack).amount : 0);
                             if (fluid.amount > needed) {
-                                return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                                return new ActionResult<>(ActionResultType.FAIL, itemstack);
                             }
                             if (getFluidStack(itemstack) == null) {
                                 setFluidStack(fluid, itemstack);
@@ -166,16 +166,16 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
                                 newStack.amount += fluid.amount;
                                 setFluidStack(newStack, itemstack);
                             }
-                            world.setBlockToAir(coord.getPos());
+                            world.removeBlock(coord.getPos(), false);
                         }
                     } else {
                         FluidStack stored = getFluidStack(itemstack);
                         if (stored == null || stored.amount < Fluid.BUCKET_VOLUME) {
-                            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                            return new ActionResult<>(ActionResultType.FAIL, itemstack);
                         }
                         Coord4D trans = coord.offset(pos.sideHit);
                         if (!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack)) {
-                            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                            return new ActionResult<>(ActionResultType.FAIL, itemstack);
                         }
                         if (tryPlaceContainedLiquid(world, itemstack, trans.getPos())
                             && !entityplayer.capabilities.isCreativeMode) {
@@ -185,12 +185,12 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
                         }
                     }
                 }
-                return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+                return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
             } else {
                 SecurityUtils.displayNoAccess(entityplayer);
             }
         }
-        return new ActionResult<>(EnumActionResult.PASS, itemstack);
+        return new ActionResult<>(ActionResultType.PASS, itemstack);
     }
 
     public void setBucketMode(ItemStack itemStack, boolean bucketMode) {

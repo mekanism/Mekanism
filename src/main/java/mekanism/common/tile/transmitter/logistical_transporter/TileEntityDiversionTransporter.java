@@ -15,7 +15,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextComponentString;
 
@@ -88,7 +88,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    protected EnumActionResult onConfigure(PlayerEntity player, int part, Direction side) {
+    protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         int newMode = (modes[side.ordinal()] + 1) % 3;
         String description = "ERROR";
         modes[side.ordinal()] = newMode;
@@ -108,7 +108,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " +
                                                    LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
         Mekanism.packetHandler.sendUpdatePacket(this);
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

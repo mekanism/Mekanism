@@ -19,8 +19,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemFlamethrower extends ItemMekanism implements IGasItem {
 
@@ -32,7 +32,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
         if (gasStack == null) {

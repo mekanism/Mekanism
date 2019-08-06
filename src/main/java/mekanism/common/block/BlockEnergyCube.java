@@ -31,7 +31,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -105,7 +105,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityEnergyCube) {
             TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
             if (cube.tier == EnergyCubeTier.CREATIVE) {

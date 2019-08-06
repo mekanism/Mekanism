@@ -25,8 +25,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSorterGuiMessage, IMessage> {
 
@@ -119,7 +119,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
             playerMP.openContainer.addListener(playerMP);
         }
 
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public static GuiScreen getGui(SorterGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
             if (type == 0) {
                 return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter) world.getTileEntity(pos));

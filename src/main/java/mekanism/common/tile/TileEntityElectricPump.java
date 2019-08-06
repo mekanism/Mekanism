@@ -39,7 +39,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -159,7 +159,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                     recurringNodes.add(wrapper);
                     fluidTank.fill(fluid, true);
                     if (shouldTake(fluid, wrapper)) {
-                        world.setBlockToAir(wrapper.getPos());
+                        world.removeBlock(wrapper.getPos(), false);
                     }
                 }
                 return true;
@@ -175,7 +175,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                     activeType = fluid.getFluid();
                     fluidTank.fill(fluid, true);
                     if (shouldTake(fluid, wrapper)) {
-                        world.setBlockToAir(wrapper.getPos());
+                        world.removeBlock(wrapper.getPos(), false);
                     }
                 }
                 return true;
@@ -192,7 +192,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                             recurringNodes.add(side);
                             fluidTank.fill(fluid, true);
                             if (shouldTake(fluid, side)) {
-                                world.setBlockToAir(side.getPos());
+                                world.removeBlock(side.getPos(), false);
                             }
                         }
                         return true;
@@ -357,15 +357,15 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
         player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
-        return EnumActionResult.PASS;
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 
     @Override

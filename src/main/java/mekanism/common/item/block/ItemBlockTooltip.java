@@ -12,8 +12,8 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockTooltip extends ItemBlockMekanism {
 
@@ -22,7 +22,7 @@ public class ItemBlockTooltip extends ItemBlockMekanism {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             addStats(itemstack, world, list, flag);
@@ -33,11 +33,11 @@ public class ItemBlockTooltip extends ItemBlockMekanism {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip.mekanism." + getRegistryName().getPath()), itemstack));
     }

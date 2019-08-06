@@ -37,8 +37,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntityBioGenerator> {
@@ -90,7 +90,7 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
 
@@ -139,7 +139,7 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

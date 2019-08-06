@@ -14,13 +14,13 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModelCustomArmor extends ModelBiped {
 
     public static ModelCustomArmor INSTANCE = new ModelCustomArmor();
@@ -54,16 +54,16 @@ public class ModelCustomArmor extends ModelBiped {
         return false;
     }
 
-    public static ModelBiped getGlow(EntityEquipmentSlot index) {
-        ModelBiped biped = index != EntityEquipmentSlot.LEGS ? GLOW_BIG : GLOW_SMALL;
+    public static ModelBiped getGlow(EquipmentSlotType index) {
+        ModelBiped biped = index != EquipmentSlotType.LEGS ? GLOW_BIG : GLOW_SMALL;
 
-        biped.bipedHead.showModel = index == EntityEquipmentSlot.HEAD;
-        biped.bipedHeadwear.showModel = index == EntityEquipmentSlot.HEAD;
-        biped.bipedBody.showModel = index == EntityEquipmentSlot.CHEST || index == EntityEquipmentSlot.LEGS;
-        biped.bipedRightArm.showModel = index == EntityEquipmentSlot.CHEST;
-        biped.bipedLeftArm.showModel = index == EntityEquipmentSlot.CHEST;
-        biped.bipedRightLeg.showModel = index == EntityEquipmentSlot.LEGS || index == EntityEquipmentSlot.FEET;
-        biped.bipedLeftLeg.showModel = index == EntityEquipmentSlot.LEGS || index == EntityEquipmentSlot.FEET;
+        biped.bipedHead.showModel = index == EquipmentSlotType.HEAD;
+        biped.bipedHeadwear.showModel = index == EquipmentSlotType.HEAD;
+        biped.bipedBody.showModel = index == EquipmentSlotType.CHEST || index == EquipmentSlotType.LEGS;
+        biped.bipedRightArm.showModel = index == EquipmentSlotType.CHEST;
+        biped.bipedLeftArm.showModel = index == EquipmentSlotType.CHEST;
+        biped.bipedRightLeg.showModel = index == EquipmentSlotType.LEGS || index == EquipmentSlotType.FEET;
+        biped.bipedLeftLeg.showModel = index == EquipmentSlotType.LEGS || index == EquipmentSlotType.FEET;
         return biped;
     }
 
@@ -73,8 +73,8 @@ public class ModelCustomArmor extends ModelBiped {
         isSneak = entity.isSneaking();
         isRiding = entity.isRiding();
 
-        if (entity instanceof EntityLivingBase) {
-            isChild = ((EntityLivingBase) entity).isChild();
+        if (entity instanceof LivingEntity) {
+            isChild = ((LivingEntity) entity).isChild();
         }
 
         if (modelType.armorSlot == 0) {
@@ -159,8 +159,8 @@ public class ModelCustomArmor extends ModelBiped {
         public void render(@Nonnull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             isSneak = entity.isSneaking();
             isRiding = entity.isRiding();
-            if (entity instanceof EntityLivingBase) {
-                isChild = ((EntityLivingBase) entity).isChild();
+            if (entity instanceof LivingEntity) {
+                isChild = ((LivingEntity) entity).isChild();
             }
 
             setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);

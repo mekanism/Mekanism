@@ -29,8 +29,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMessage, IMessage> {
 
@@ -138,7 +138,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
             }
         }
 
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public static GuiScreen getGui(MinerGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
             if (type == 0) {
                 return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner) world.getTileEntity(pos));

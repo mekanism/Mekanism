@@ -15,12 +15,12 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 
 //From: https://github.com/Shadows-of-Fire/Singularities/blob/master/src/main/java/shadows/singularity/client/ItemLayerWrapper.java
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ItemLayerWrapper implements IBakedModel {
 
     private final IBakedModel internal;

@@ -9,7 +9,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -33,10 +33,10 @@ public class TileEntityChargepad extends TileEntityMekanism {
     public void onUpdate() {
         if (!world.isRemote) {
             boolean active = false;
-            List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class,
+            List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class,
                   new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 0.2, pos.getZ() + 1));
 
-            for (EntityLivingBase entity : entities) {
+            for (LivingEntity entity : entities) {
                 if (entity instanceof PlayerEntity || entity instanceof EntityRobit) {
                     active = getEnergy() > 0;
                 }

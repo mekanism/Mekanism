@@ -24,7 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -115,7 +115,7 @@ public abstract class BlockTileDrops extends Block {
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
-        world.setBlockToAir(pos);
+        world.removeBlock(pos, false);
     }
 
     /**
@@ -157,7 +157,7 @@ public abstract class BlockTileDrops extends Block {
     //TODO: Try to merge BlockMekanismContainer and this class
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity == null) {
             return;
@@ -272,7 +272,7 @@ public abstract class BlockTileDrops extends Block {
     }
 
     //TODO: Method to override for setting some simple tile specific stuff
-    public void setTileData(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack, TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
 
     }
 

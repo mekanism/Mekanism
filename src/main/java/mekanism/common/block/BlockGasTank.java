@@ -29,7 +29,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -83,7 +83,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityGasTank) {
             TileEntityGasTank gasTank = (TileEntityGasTank) tile;
             gasTank.gasTank.setMaxGas(gasTank.tier.getStorage());

@@ -44,8 +44,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockPressurizedReactionChamber extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive,
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPRC>, IBlockSound, ISupportsRedstone {
@@ -79,7 +79,7 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
@@ -150,7 +150,7 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

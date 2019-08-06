@@ -34,7 +34,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
@@ -302,17 +302,17 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!world.isRemote) {
             setActive(!getActive());
             world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
         }
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
-        return EnumActionResult.PASS;
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 
     @Override

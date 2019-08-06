@@ -9,14 +9,14 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemArmoredJetpack extends ItemJetpack {
 
@@ -25,8 +25,8 @@ public class ItemArmoredJetpack extends ItemJetpack {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
+    @OnlyIn(Dist.CLIENT)
+    public ModelBiped getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, ModelBiped _default) {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
         model.modelType = ArmorModel.ARMOREDJETPACK;
         return model;
@@ -47,7 +47,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
     }
 
     @Override
-    public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
+    public ArmorProperties getProperties(LivingEntity player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
         return new ArmorProperties(1, MekanismConfig.current().general.armoredJetpackDamageRatio.val(), MekanismConfig.current().general.armoredJetpackDamageMax.val());
     }
 

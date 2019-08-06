@@ -4,10 +4,10 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiCombiner extends GuiDoubleElectricMachine<CombinerRecipe> {
 
     public GuiCombiner(InventoryPlayer inventory, TileEntityDoubleElectricMachine<CombinerRecipe> tile) {

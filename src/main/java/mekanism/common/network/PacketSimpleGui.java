@@ -17,8 +17,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessage> {
 
@@ -78,7 +78,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
             playerMP.openContainer.addListener(playerMP);
         }
 
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public static GuiScreen getGui(int handler, int id, PlayerEntity player, World world, Coord4D obj) {
             return (GuiScreen) handlers.get(handler).getClientGui(id, player, world, obj.getPos());
         }

@@ -13,10 +13,10 @@ import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController, ReactorTab> {
 
     public GuiReactorTab(IGuiWrapper gui, TileEntityReactorController tile, ReactorTab type, ResourceLocation def) {

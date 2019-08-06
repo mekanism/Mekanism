@@ -31,7 +31,7 @@ import mekanism.common.util.TextComponentGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ITickable;
@@ -514,16 +514,16 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!getWorld().isRemote) {
             RayTraceResult hit = reTrace(getWorld(), getPos(), player);
             if (hit == null) {
-                return EnumActionResult.PASS;
+                return ActionResultType.PASS;
             } else {
                 Direction hitSide = sideHit(hit.subHit + 1);
                 if (hitSide == null) {
-                    if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == EnumActionResult.SUCCESS) {
-                        return EnumActionResult.SUCCESS;
+                    if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == ActionResultType.SUCCESS) {
+                        return ActionResultType.SUCCESS;
                     }
                     hitSide = side;
                 }
@@ -536,13 +536,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                     refreshConnections();
                     notifyTileChange();
                     player.sendMessage(new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ").translation(connectionTypes[hitSide.ordinal()].translationKey()));
-                    return EnumActionResult.SUCCESS;
+                    return ActionResultType.SUCCESS;
                 } else {
-                    return EnumActionResult.PASS;
+                    return ActionResultType.PASS;
                 }
             }
         }
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     private RayTraceResult reTrace(World world, BlockPos pos, PlayerEntity player) {
@@ -565,8 +565,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         return null;
     }
 
-    protected EnumActionResult onConfigure(PlayerEntity player, int part, Direction side) {
-        return EnumActionResult.PASS;
+    protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
+        return ActionResultType.PASS;
     }
 
     public EnumColor getRenderColor() {
@@ -574,7 +574,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     @Override
-    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         if (!getWorld().isRemote && handlesRedstone()) {
             redstoneReactive ^= true;
             refreshConnections();
@@ -582,7 +582,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO
                                                        + (redstoneReactive ? "on." : "off.")));
         }
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     public void notifyTileChange() {

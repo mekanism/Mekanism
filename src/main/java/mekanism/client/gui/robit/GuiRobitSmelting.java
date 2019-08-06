@@ -4,10 +4,10 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
 import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiRobitSmelting extends GuiRobit {
 
     public GuiRobitSmelting(InventoryPlayer inventory, EntityRobit entity) {

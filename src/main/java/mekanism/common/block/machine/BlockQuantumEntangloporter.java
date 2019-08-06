@@ -29,7 +29,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -44,8 +44,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Evaluate closer, but it seems IStateActive is not "needed" as it isn't actually used for rendering
 public class BlockQuantumEntangloporter extends BlockMekanismContainer implements IBlockElectric, IHasGui, ISupportsUpgrades, IStateFacing, IHasInventory, IHasSecurity,
@@ -83,7 +83,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityQuantumEntangloporter) {
             if (!world.isRemote && ItemDataUtils.hasData(stack, "entangleporter_frequency")) {
                 Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
@@ -95,7 +95,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
@@ -166,7 +166,7 @@ public class BlockQuantumEntangloporter extends BlockMekanismContainer implement
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

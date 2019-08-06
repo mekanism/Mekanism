@@ -33,12 +33,12 @@ import mekanism.common.util.TextComponentGroup;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -51,8 +51,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @InterfaceList({
       @Interface(iface = "buildcraft.api.tools.IToolWrench", modid = MekanismHooks.BUILDCRAFT_MOD_ID),
@@ -68,7 +68,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemstack, world, list, flag);
         list.add(EnumColor.PINK + LangUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
@@ -76,7 +76,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
+    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             Block block = world.getBlockState(pos).getBlock();
@@ -109,7 +109,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                             }
                         }
                     }
-                    return EnumActionResult.SUCCESS;
+                    return ActionResultType.SUCCESS;
                 } else if (CapabilityUtils.hasCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side)) {
                     IConfigurable config = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side);
                     if (SecurityUtils.canAccess(player, tile)) {
@@ -120,7 +120,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                         }
                     } else {
                         SecurityUtils.displayNoAccess(player);
-                        return EnumActionResult.SUCCESS;
+                        return ActionResultType.SUCCESS;
                     }
                 }
             } else if (getState(stack) == ConfiguratorMode.EMPTY) { //Empty
@@ -139,10 +139,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                 setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
                             }
                         }
-                        return EnumActionResult.SUCCESS;
+                        return ActionResultType.SUCCESS;
                     } else {
                         SecurityUtils.displayNoAccess(player);
-                        return EnumActionResult.FAIL;
+                        return ActionResultType.FAIL;
                     }
                 }
             } else if (getState(stack) == ConfiguratorMode.ROTATE) { //Rotate
@@ -155,12 +155,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                         block.rotateBlock(world, pos, side.getOpposite());
                     }
                 }
-                return EnumActionResult.SUCCESS;
+                return ActionResultType.SUCCESS;
             } else if (getState(stack) == ConfiguratorMode.WRENCH) { //Wrench
-                return EnumActionResult.PASS;
+                return ActionResultType.PASS;
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     public String getViewModeText(TransmissionType type) {
@@ -217,21 +217,21 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
     /*cofh IToolHammer */
     @Override
-    public boolean isUsable(ItemStack stack, EntityLivingBase user, BlockPos pos) {
+    public boolean isUsable(ItemStack stack, LivingEntity user, BlockPos pos) {
         return getState(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override
-    public boolean isUsable(ItemStack stack, EntityLivingBase user, Entity entity) {
+    public boolean isUsable(ItemStack stack, LivingEntity user, Entity entity) {
         return getState(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override
-    public void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos) {
+    public void toolUsed(ItemStack item, LivingEntity user, BlockPos pos) {
     }
 
     @Override
-    public void toolUsed(ItemStack item, EntityLivingBase user, Entity entity) {
+    public void toolUsed(ItemStack item, LivingEntity user, Entity entity) {
     }
     /*end cofh IToolHammer */
 

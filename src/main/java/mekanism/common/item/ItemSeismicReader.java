@@ -14,7 +14,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -59,18 +59,18 @@ public class ItemSeismicReader extends ItemEnergized {
                                                                  LangUtils.localize("tooltip.seismicReader.needsEnergy")));
             }
 
-            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         } else if (!MekanismUtils.isChunkVibrated(chunk)) {
             if (!world.isRemote) {
                 entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
                                                                  LangUtils.localize("tooltip.seismicReader.noVibrations")));
             }
-            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         }
         if (!entityplayer.capabilities.isCreativeMode) {
             setEnergy(itemstack, getEnergy(itemstack) - ENERGY_USAGE);
         }
         MekanismUtils.openItemGui(entityplayer, hand, 38);
-        return new ActionResult<>(EnumActionResult.PASS, itemstack);
+        return new ActionResult<>(ActionResultType.PASS, itemstack);
     }
 }

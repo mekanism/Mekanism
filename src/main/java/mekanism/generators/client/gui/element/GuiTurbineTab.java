@@ -13,10 +13,10 @@ import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, TurbineTab> {
 
     public GuiTurbineTab(IGuiWrapper gui, TileEntityTurbineCasing tile, TurbineTab type, ResourceLocation def) {

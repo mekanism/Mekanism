@@ -2,6 +2,7 @@ package mekanism.tools.item;
 
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nullable;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.util.LangUtils;
 import mekanism.tools.common.IHasRepairType;
@@ -11,27 +12,28 @@ import mekanism.tools.common.ToolsItem;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemMekanismArmor extends ItemArmor implements IHasRepairType {
+public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
 
-    public ItemMekanismArmor(Materials material, int renderIndex, EntityEquipmentSlot slot) {
+    public ItemMekanismArmor(Materials material, int renderIndex, EquipmentSlotType slot) {
         super(material.getArmorMaterial(), renderIndex, slot);
         String name = null;
-        if (slot == EntityEquipmentSlot.HEAD) {
+        if (slot == EquipmentSlotType.HEAD) {
             name = material.getMaterialName() + "_helmet";
-        } else if (slot == EntityEquipmentSlot.CHEST) {
+        } else if (slot == EquipmentSlotType.CHEST) {
             name = material.getMaterialName() + "_chestplate";
-        } else if (slot == EntityEquipmentSlot.LEGS) {
+        } else if (slot == EquipmentSlotType.LEGS) {
             name = material.getMaterialName() + "_leggings";
-        } else if (slot == EntityEquipmentSlot.FEET) {
+        } else if (slot == EquipmentSlotType.FEET) {
             name = material.getMaterialName() + "_boots";
         }
         if (name != null) {
@@ -40,20 +42,20 @@ public class ItemMekanismArmor extends ItemArmor implements IHasRepairType {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add(LangUtils.localize("tooltip.hp") + ": " + (stack.getMaxDamage() - stack.getItemDamage()));
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
-        int layer = slot == EntityEquipmentSlot.LEGS ? 2 : 1;
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+        int layer = slot == EquipmentSlotType.LEGS ? 2 : 1;
         return "mekanism:armor/" + getArmorMaterial().name().toLowerCase(Locale.ROOT) + "_" + layer + ".png";
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
+    @OnlyIn(Dist.CLIENT)
+    public ModelBiped getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, ModelBiped _default) {
         if (itemStack.getItem() == ToolsItem.GLOWSTONE_HELMET.getItem() || itemStack.getItem() == ToolsItem.GLOWSTONE_CHESTPLATE.getItem()
             || itemStack.getItem() == ToolsItem.GLOWSTONE_LEGGINGS.getItem() || itemStack.getItem() == ToolsItem.GLOWSTONE_BOOTS.getItem()) {
             return ModelCustomArmor.getGlow(armorSlot);

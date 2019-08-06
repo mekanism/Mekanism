@@ -7,10 +7,10 @@ import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer<TileEntityAdvancedSolarGenerator> {
 
     private ModelAdvancedSolarGenerator model = new ModelAdvancedSolarGenerator();

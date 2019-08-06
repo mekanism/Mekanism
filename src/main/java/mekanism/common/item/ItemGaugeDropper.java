@@ -14,7 +14,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
@@ -23,8 +23,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
@@ -69,13 +69,13 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
             setGas(stack, null);
             FluidUtil.getFluidHandler(stack).drain(CAPACITY, true);
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
-            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+            return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
-        return new ActionResult<>(EnumActionResult.PASS, stack);
+        return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemstack);

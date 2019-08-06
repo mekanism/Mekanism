@@ -30,8 +30,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState {
@@ -52,7 +52,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public double clientTemp = 0;
     public boolean clientBurning = false;
     private SoundEvent soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.fusionreactor"));
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private ISound activeSound;
     private int playSoundCooldown = 0;
 
@@ -106,7 +106,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void updateSound() {
         // If machine sounds are disabled, noop
         if (!MekanismConfig.current().client.enableMachineSounds.val()) {
@@ -281,7 +281,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Nonnull
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         if (box == null) {
             box = new AxisAlignedBB(getPos().getX() - 1, getPos().getY() - 3, getPos().getZ() - 1, getPos().getX() + 2, getPos().getY(), getPos().getZ() + 2);

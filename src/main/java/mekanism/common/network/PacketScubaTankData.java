@@ -9,7 +9,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -32,7 +32,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
                 }
             } else if (message.packetType == ScubaTankPacket.MODE) {
                 // Use has changed the mode of their gasmask; update it
-                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+                ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank) {
                     ((ItemScubaTank) stack.getItem()).toggleFlowing(stack);
                 }

@@ -29,7 +29,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
@@ -278,7 +278,7 @@ public class TransmitterModel extends OBJBakedModelBase {
 
         @Nonnull
         @Override
-        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
                 for (Direction side : Direction.values()) {

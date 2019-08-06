@@ -16,13 +16,13 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
 
@@ -41,7 +41,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemstack, world, list, flag);
         list.add((getOn(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.localize("gui." + (getOn(itemstack) ? "on" : "off")));
@@ -57,9 +57,9 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
         ItemStack itemStack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             setOn(itemStack, !getOn(itemStack));
-            return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
+            return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         }
-        return new ActionResult<>(EnumActionResult.PASS, itemStack);
+        return new ActionResult<>(ActionResultType.PASS, itemStack);
     }
 
     @Override

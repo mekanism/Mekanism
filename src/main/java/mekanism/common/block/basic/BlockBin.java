@@ -29,7 +29,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -106,7 +106,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack, TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
         if (stack.hasTagCompound() && tile instanceof TileEntityBin) {
             InventoryBin inv = new InventoryBin(stack);
             if (!inv.getItemType().isEmpty()) {

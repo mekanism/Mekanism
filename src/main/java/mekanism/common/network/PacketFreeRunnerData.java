@@ -6,7 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.gear.ItemFreeRunners;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -30,7 +30,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
                           entityPlayer.world.provider.getDimension());
                 }
             } else if (message.packetType == FreeRunnerPacket.MODE) {
-                ItemStack stack = entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+                ItemStack stack = entityPlayer.getItemStackFromSlot(EquipmentSlotType.FEET);
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
                     if (!message.value) {
                         ((ItemFreeRunners) stack.getItem()).incrementMode(stack);

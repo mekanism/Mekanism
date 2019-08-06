@@ -9,7 +9,7 @@ import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 public class MultipartTransmitter implements IMultipart {
 
     @Override
-    public IPartSlot getSlotForPlacement(World world, BlockPos pos, BlockState state, Direction facing, float hitX, float hitY, float hitZ, EntityLivingBase placer) {
+    public IPartSlot getSlotForPlacement(World world, BlockPos pos, BlockState state, Direction facing, float hitX, float hitY, float hitZ, LivingEntity placer) {
         return EnumCenterSlot.CENTER;
     }
 
@@ -66,7 +66,7 @@ public class MultipartTransmitter implements IMultipart {
     }
 
     @Override
-    public void onPartPlacedBy(IPartInfo part, EntityLivingBase placer, ItemStack stack) {
+    public void onPartPlacedBy(IPartInfo part, LivingEntity placer, ItemStack stack) {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntitySidedPipe) {
             BaseTier baseTier = BaseTier.BASIC;

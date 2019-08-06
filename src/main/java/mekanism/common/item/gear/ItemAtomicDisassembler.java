@@ -22,17 +22,17 @@ import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockDirt.DirtType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -43,8 +43,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ItemAtomicDisassembler extends ItemEnergized {
@@ -58,7 +58,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return state.getBlock() != Blocks.BEDROCK;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemstack, world, list, flag);
@@ -68,7 +68,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     @Override
-    public boolean hitEntity(ItemStack itemstack, EntityLivingBase target, EntityLivingBase attacker) {
+    public boolean hitEntity(ItemStack itemstack, LivingEntity target, LivingEntity attacker) {
         double energy = getEnergy(itemstack);
         int energyCost = MekanismConfig.current().general.disassemblerEnergyUsageWeapon.val();
         int minDamage = MekanismConfig.current().general.disassemblerDamageMin.val();
@@ -96,7 +96,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack itemstack, World world, BlockState state, BlockPos pos, EntityLivingBase entityliving) {
+    public boolean onBlockDestroyed(ItemStack itemstack, World world, BlockState state, BlockPos pos, LivingEntity entityliving) {
         setEnergy(itemstack, getEnergy(itemstack) - getDestroyEnergy(itemstack, state.getBlockHardness(world, pos)));
         return true;
     }
@@ -147,7 +147,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         Block block2 = coord.getBlock(player.world);
                         block2.onBlockHarvested(player.world, coord.getPos(), state, player);
                         player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
-                        player.world.setBlockToAir(coord.getPos());
+                        player.world.removeBlock(coord.getPos(), false);
                         block2.breakBlock(player.world, coord.getPos(), state);
                         block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
                         setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
@@ -174,14 +174,14 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle")
                                                                  + " " + EnumColor.INDIGO + mode.getModeName() + EnumColor.AQUA + " (" + mode.getEfficiency() + ")"));
             }
-            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         }
-        return new ActionResult<>(EnumActionResult.PASS, itemstack);
+        return new ActionResult<>(ActionResultType.PASS, itemstack);
     }
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
         if (!player.isSneaking()) {
             ItemStack stack = player.getHeldItem(hand);
             int diameter = getMode(stack).getDiameter();
@@ -194,15 +194,15 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 }
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
-    private EnumActionResult useItemAs(PlayerEntity player, World world, BlockPos pos, Direction side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
+    private ActionResultType useItemAs(PlayerEntity player, World world, BlockPos pos, Direction side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
         double energy = getEnergy(stack);
         int hoeUsage = MekanismConfig.current().general.disassemblerEnergyUsageHoe.val();
-        if (energy < hoeUsage || consumer.use(stack, player, world, pos, side) == EnumActionResult.FAIL) {
+        if (energy < hoeUsage || consumer.use(stack, player, world, pos, side) == ActionResultType.FAIL) {
             //Fail if we don't have enough energy or using the item failed
-            return EnumActionResult.FAIL;
+            return ActionResultType.FAIL;
         }
         double energyUsed = hoeUsage;
         int radius = (diameter - 1) / 2;
@@ -210,7 +210,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             for (int z = -radius; z <= radius; z++) {
                 if (energyUsed + hoeUsage > energy) {
                     break;
-                } else if ((x != 0 || z != 0) && consumer.use(stack, player, world, pos.add(x, 0, z), side) == EnumActionResult.SUCCESS) {
+                } else if ((x != 0 || z != 0) && consumer.use(stack, player, world, pos.add(x, 0, z), side) == ActionResultType.SUCCESS) {
                     //Don't attempt to use it on the source location as it was already done above
                     // If we successfully used it in a spot increment how much energy we used
                     energyUsed += hoeUsage;
@@ -218,16 +218,16 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             }
         }
         setEnergy(stack, energy - energyUsed);
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
-    private EnumActionResult useHoe(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing) {
+    private ActionResultType useHoe(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing) {
         if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
-            return EnumActionResult.FAIL;
+            return ActionResultType.FAIL;
         }
         int hook = ForgeEventFactory.onHoeUse(stack, player, world, pos);
         if (hook != 0) {
-            return hook > 0 ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+            return hook > 0 ? ActionResultType.SUCCESS : ActionResultType.FAIL;
         }
         if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
             BlockState state = world.getBlockState(pos);
@@ -245,23 +245,23 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             }
             if (newState != null) {
                 setBlock(stack, player, world, pos, newState);
-                return EnumActionResult.SUCCESS;
+                return ActionResultType.SUCCESS;
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
-    private EnumActionResult useShovel(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing) {
+    private ActionResultType useShovel(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing) {
         if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
-            return EnumActionResult.FAIL;
+            return ActionResultType.FAIL;
         } else if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
             Block block = world.getBlockState(pos).getBlock();
             if (block == Blocks.GRASS) {
                 setBlock(stack, player, world, pos, Blocks.GRASS_PATH.getDefaultState());
-                return EnumActionResult.SUCCESS;
+                return ActionResultType.SUCCESS;
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     private void setBlock(ItemStack stack, PlayerEntity player, World worldIn, BlockPos pos, BlockState state) {
@@ -293,9 +293,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Nonnull
     @Override
     @Deprecated
-    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EquipmentSlotType equipmentSlot) {
         Multimap<String, AttributeModifier> multiMap = super.getItemAttributeModifiers(equipmentSlot);
-        if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
+        if (equipmentSlot == EquipmentSlotType.MAINHAND) {
             multiMap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
         }
         return multiMap;
@@ -434,6 +434,6 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     interface ItemUseConsumer {
 
         //Used to reference useHoe and useShovel via lambda references
-        EnumActionResult use(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing);
+        ActionResultType use(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing);
     }
 }

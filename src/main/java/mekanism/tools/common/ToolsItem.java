@@ -13,7 +13,7 @@ import mekanism.tools.item.ItemMekanismPaxel;
 import mekanism.tools.item.ItemMekanismPickaxe;
 import mekanism.tools.item.ItemMekanismShovel;
 import mekanism.tools.item.ItemMekanismSword;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;
@@ -35,10 +35,10 @@ public enum ToolsItem implements IItemProvider {
     GLOWSTONE_HOE(new ItemMekanismHoe(Materials.GLOWSTONE)),
     GLOWSTONE_SWORD(new ItemMekanismSword(Materials.GLOWSTONE)),
     GLOWSTONE_PAXEL(new ItemMekanismPaxel(Materials.GLOWSTONE)),
-    GLOWSTONE_HELMET(new ItemMekanismArmor(Materials.GLOWSTONE, 0, EntityEquipmentSlot.HEAD)),
-    GLOWSTONE_CHESTPLATE(new ItemMekanismArmor(Materials.GLOWSTONE, 1, EntityEquipmentSlot.CHEST)),
-    GLOWSTONE_LEGGINGS(new ItemMekanismArmor(Materials.GLOWSTONE, 2, EntityEquipmentSlot.LEGS)),
-    GLOWSTONE_BOOTS(new ItemMekanismArmor(Materials.GLOWSTONE, 3, EntityEquipmentSlot.FEET)),
+    GLOWSTONE_HELMET(new ItemMekanismArmor(Materials.GLOWSTONE, 0, EquipmentSlotType.HEAD)),
+    GLOWSTONE_CHESTPLATE(new ItemMekanismArmor(Materials.GLOWSTONE, 1, EquipmentSlotType.CHEST)),
+    GLOWSTONE_LEGGINGS(new ItemMekanismArmor(Materials.GLOWSTONE, 2, EquipmentSlotType.LEGS)),
+    GLOWSTONE_BOOTS(new ItemMekanismArmor(Materials.GLOWSTONE, 3, EquipmentSlotType.FEET)),
 
     BRONZE_PICKAXE(new ItemMekanismPickaxe(Materials.BRONZE)),
     BRONZE_AXE(new ItemMekanismAxe(Materials.BRONZE)),
@@ -46,10 +46,10 @@ public enum ToolsItem implements IItemProvider {
     BRONZE_HOE(new ItemMekanismHoe(Materials.BRONZE)),
     BRONZE_SWORD(new ItemMekanismSword(Materials.BRONZE)),
     BRONZE_PAXEL(new ItemMekanismPaxel(Materials.BRONZE)),
-    BRONZE_HELMET(new ItemMekanismArmor(Materials.BRONZE, 0, EntityEquipmentSlot.HEAD)),
-    BRONZE_CHESTPLATE(new ItemMekanismArmor(Materials.BRONZE, 1, EntityEquipmentSlot.CHEST)),
-    BRONZE_LEGGINGS(new ItemMekanismArmor(Materials.BRONZE, 2, EntityEquipmentSlot.LEGS)),
-    BRONZE_BOOTS(new ItemMekanismArmor(Materials.BRONZE, 3, EntityEquipmentSlot.FEET)),
+    BRONZE_HELMET(new ItemMekanismArmor(Materials.BRONZE, 0, EquipmentSlotType.HEAD)),
+    BRONZE_CHESTPLATE(new ItemMekanismArmor(Materials.BRONZE, 1, EquipmentSlotType.CHEST)),
+    BRONZE_LEGGINGS(new ItemMekanismArmor(Materials.BRONZE, 2, EquipmentSlotType.LEGS)),
+    BRONZE_BOOTS(new ItemMekanismArmor(Materials.BRONZE, 3, EquipmentSlotType.FEET)),
 
     OSMIUM_PICKAXE(new ItemMekanismPickaxe(Materials.OSMIUM)),
     OSMIUM_AXE(new ItemMekanismAxe(Materials.OSMIUM)),
@@ -57,10 +57,10 @@ public enum ToolsItem implements IItemProvider {
     OSMIUM_HOE(new ItemMekanismHoe(Materials.OSMIUM)),
     OSMIUM_SWORD(new ItemMekanismSword(Materials.OSMIUM)),
     OSMIUM_PAXEL(new ItemMekanismPaxel(Materials.OSMIUM)),
-    OSMIUM_HELMET(new ItemMekanismArmor(Materials.OSMIUM, 0, EntityEquipmentSlot.HEAD)),
-    OSMIUM_CHESTPLATE(new ItemMekanismArmor(Materials.OSMIUM, 1, EntityEquipmentSlot.CHEST)),
-    OSMIUM_LEGGINGS(new ItemMekanismArmor(Materials.OSMIUM, 2, EntityEquipmentSlot.LEGS)),
-    OSMIUM_BOOTS(new ItemMekanismArmor(Materials.OSMIUM, 3, EntityEquipmentSlot.FEET)),
+    OSMIUM_HELMET(new ItemMekanismArmor(Materials.OSMIUM, 0, EquipmentSlotType.HEAD)),
+    OSMIUM_CHESTPLATE(new ItemMekanismArmor(Materials.OSMIUM, 1, EquipmentSlotType.CHEST)),
+    OSMIUM_LEGGINGS(new ItemMekanismArmor(Materials.OSMIUM, 2, EquipmentSlotType.LEGS)),
+    OSMIUM_BOOTS(new ItemMekanismArmor(Materials.OSMIUM, 3, EquipmentSlotType.FEET)),
 
     OBSIDIAN_PICKAXE(new ItemMekanismPickaxe(Materials.OBSIDIAN)),
     OBSIDIAN_AXE(new ItemMekanismAxe(Materials.OBSIDIAN)),
@@ -68,10 +68,10 @@ public enum ToolsItem implements IItemProvider {
     OBSIDIAN_HOE(new ItemMekanismHoe(Materials.OBSIDIAN)),
     OBSIDIAN_SWORD(new ItemMekanismSword(Materials.OBSIDIAN)),
     OBSIDIAN_PAXEL(new ItemMekanismPaxel(Materials.OBSIDIAN)),
-    OBSIDIAN_HELMET(new ItemMekanismArmor(Materials.OBSIDIAN, 0, EntityEquipmentSlot.HEAD)),
-    OBSIDIAN_CHESTPLATE(new ItemMekanismArmor(Materials.OBSIDIAN, 1, EntityEquipmentSlot.CHEST)),
-    OBSIDIAN_LEGGINGS(new ItemMekanismArmor(Materials.OBSIDIAN, 2, EntityEquipmentSlot.LEGS)),
-    OBSIDIAN_BOOTS(new ItemMekanismArmor(Materials.OBSIDIAN, 3, EntityEquipmentSlot.FEET)),
+    OBSIDIAN_HELMET(new ItemMekanismArmor(Materials.OBSIDIAN, 0, EquipmentSlotType.HEAD)),
+    OBSIDIAN_CHESTPLATE(new ItemMekanismArmor(Materials.OBSIDIAN, 1, EquipmentSlotType.CHEST)),
+    OBSIDIAN_LEGGINGS(new ItemMekanismArmor(Materials.OBSIDIAN, 2, EquipmentSlotType.LEGS)),
+    OBSIDIAN_BOOTS(new ItemMekanismArmor(Materials.OBSIDIAN, 3, EquipmentSlotType.FEET)),
 
     LAPIS_LAZULI_PICKAXE(new ItemMekanismPickaxe(Materials.LAPIS_LAZULI)),
     LAPIS_LAZULI_AXE(new ItemMekanismAxe(Materials.LAPIS_LAZULI)),
@@ -79,10 +79,10 @@ public enum ToolsItem implements IItemProvider {
     LAPIS_LAZULI_HOE(new ItemMekanismHoe(Materials.LAPIS_LAZULI)),
     LAPIS_LAZULI_SWORD(new ItemMekanismSword(Materials.LAPIS_LAZULI)),
     LAPIS_LAZULI_PAXEL(new ItemMekanismPaxel(Materials.LAPIS_LAZULI)),
-    LAPIS_LAZULI_HELMET(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 0, EntityEquipmentSlot.HEAD)),
-    LAPIS_LAZULI_CHESTPLATE(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 1, EntityEquipmentSlot.CHEST)),
-    LAPIS_LAZULI_LEGGINGS(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 2, EntityEquipmentSlot.LEGS)),
-    LAPIS_LAZULI_BOOTS(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 3, EntityEquipmentSlot.FEET)),
+    LAPIS_LAZULI_HELMET(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 0, EquipmentSlotType.HEAD)),
+    LAPIS_LAZULI_CHESTPLATE(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 1, EquipmentSlotType.CHEST)),
+    LAPIS_LAZULI_LEGGINGS(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 2, EquipmentSlotType.LEGS)),
+    LAPIS_LAZULI_BOOTS(new ItemMekanismArmor(Materials.LAPIS_LAZULI, 3, EquipmentSlotType.FEET)),
 
     STEEL_PICKAXE(new ItemMekanismPickaxe(Materials.STEEL)),
     STEEL_AXE(new ItemMekanismAxe(Materials.STEEL)),
@@ -90,10 +90,10 @@ public enum ToolsItem implements IItemProvider {
     STEEL_HOE(new ItemMekanismHoe(Materials.STEEL)),
     STEEL_SWORD(new ItemMekanismSword(Materials.STEEL)),
     STEEL_PAXEL(new ItemMekanismPaxel(Materials.STEEL)),
-    STEEL_HELMET(new ItemMekanismArmor(Materials.STEEL, 0, EntityEquipmentSlot.HEAD)),
-    STEEL_CHESTPLATE(new ItemMekanismArmor(Materials.STEEL, 1, EntityEquipmentSlot.CHEST)),
-    STEEL_LEGGINGS(new ItemMekanismArmor(Materials.STEEL, 2, EntityEquipmentSlot.LEGS)),
-    STEEL_BOOTS(new ItemMekanismArmor(Materials.STEEL, 3, EntityEquipmentSlot.FEET));
+    STEEL_HELMET(new ItemMekanismArmor(Materials.STEEL, 0, EquipmentSlotType.HEAD)),
+    STEEL_CHESTPLATE(new ItemMekanismArmor(Materials.STEEL, 1, EquipmentSlotType.CHEST)),
+    STEEL_LEGGINGS(new ItemMekanismArmor(Materials.STEEL, 2, EquipmentSlotType.LEGS)),
+    STEEL_BOOTS(new ItemMekanismArmor(Materials.STEEL, 3, EquipmentSlotType.FEET));
 
     public static final List<ToolsItem> BRONZE_SET = Arrays.asList(BRONZE_PICKAXE, BRONZE_AXE, BRONZE_SHOVEL, BRONZE_HOE, BRONZE_SWORD, BRONZE_PAXEL, BRONZE_HELMET,
           BRONZE_CHESTPLATE, BRONZE_LEGGINGS, BRONZE_BOOTS);

@@ -34,7 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -330,17 +330,17 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         activeNodes.clear();
         usedNodes.clear();
         finishedCalc = false;
         player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
-        return EnumActionResult.PASS;
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 
     @Override

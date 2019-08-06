@@ -15,10 +15,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEntityLogisticalSorter> {
 
     public GuiTOreDictFilter(PlayerEntity player, TileEntityLogisticalSorter tile, int index) {

@@ -81,7 +81,7 @@ public class LaserManager {
             blockHit.getDrops(ret, world, blockCoord.getPos(), state, 0);
         }
         blockHit.breakBlock(world, blockCoord.getPos(), state);
-        world.setBlockToAir(blockCoord.getPos());
+        world.removeBlock(blockCoord.getPos(), false);
         world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockCoord.getPos(), Block.getStateId(state));
         return ret;
     }

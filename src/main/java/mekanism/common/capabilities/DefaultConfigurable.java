@@ -3,7 +3,7 @@ package mekanism.common.capabilities;
 import mekanism.api.IConfigurable;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -17,12 +17,12 @@ public class DefaultConfigurable implements IConfigurable {
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
-        return EnumActionResult.PASS;
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 
     @Override
-    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
-        return EnumActionResult.PASS;
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 }

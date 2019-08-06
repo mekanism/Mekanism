@@ -13,8 +13,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism implements IComputerIntegration {
 
@@ -39,7 +39,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
                 if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
                     //TODO: Better way of doing name?
                     Mekanism.logger.info("Destroying generator of type '" + block.getClass().getSimpleName() + "' at coords " + Coord4D.get(this) + " as according to config.");
-                    world.setBlockToAir(getPos());
+                    world.removeBlock(getPos(), false);
                     return;
                 }
             }
@@ -78,7 +78,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
     }

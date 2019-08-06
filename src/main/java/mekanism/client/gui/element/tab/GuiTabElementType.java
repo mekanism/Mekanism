@@ -3,10 +3,10 @@ package mekanism.client.gui.element.tab;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enum & TabType> extends GuiTabElement<TILE> {
 
     private final TAB tabType;

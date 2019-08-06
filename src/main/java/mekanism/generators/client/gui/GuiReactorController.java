@@ -15,10 +15,10 @@ import mekanism.generators.common.inventory.container.ContainerReactorController
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiReactorController extends GuiMekanismTile<TileEntityReactorController> {
 
     public GuiReactorController(InventoryPlayer inventory, final TileEntityReactorController tile) {

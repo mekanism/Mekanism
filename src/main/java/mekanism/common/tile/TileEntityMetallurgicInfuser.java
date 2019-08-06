@@ -115,7 +115,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             return false;
         }
 
-        world.setBlockToAir(getPos());
+        world.removeBlock(getPos(), false);
         world.setBlockState(getPos(), MekanismBlock.BASIC_INFUSING_FACTORY.getBlock().getDefaultState(), 3);
 
         //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)

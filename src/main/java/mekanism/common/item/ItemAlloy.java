@@ -9,7 +9,7 @@ import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +27,7 @@ public class ItemAlloy extends ItemMekanism {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
         if (MekanismConfig.current().general.allowTransmitterAlloyUpgrade.val() && CapabilityUtils.hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side)) {
             if (!world.isRemote) {
@@ -35,9 +35,9 @@ public class ItemAlloy extends ItemMekanism {
                 ItemStack stack = player.getHeldItem(hand);
                 interaction.onAlloyInteraction(player, hand, stack, tier.getBaseTier().ordinal());
             }
-            return EnumActionResult.SUCCESS;
+            return ActionResultType.SUCCESS;
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     public AlloyTier getTier() {

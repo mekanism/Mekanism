@@ -10,8 +10,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ContainerReactorController extends ContainerMekanism<TileEntityReactorController> {
 
@@ -71,7 +71,7 @@ public class ContainerReactorController extends ContainerMekanism<TileEntityReac
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public boolean isEnabled() {
             return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorld(), tileEntity.getPos());
         }

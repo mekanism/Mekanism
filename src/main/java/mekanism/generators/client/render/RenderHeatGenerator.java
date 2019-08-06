@@ -7,10 +7,10 @@ import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHeatGenerator> {
 
     private ModelHeatGenerator model = new ModelHeatGenerator();

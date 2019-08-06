@@ -16,17 +16,17 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemScubaTank extends ItemArmorMekanism implements IGasItem {
 
@@ -34,11 +34,11 @@ public class ItemScubaTank extends ItemArmorMekanism implements IGasItem {
 
     public ItemScubaTank() {
         super(EnumHelper.addArmorMaterial("SCUBATANK", "scubatank", 0, new int[]{0, 0, 0, 0}, 0,
-              SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), EntityEquipmentSlot.CHEST, "scuba_tank");
+              SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), EquipmentSlotType.CHEST, "scuba_tank");
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
         if (gasStack == null) {
@@ -65,18 +65,18 @@ public class ItemScubaTank extends ItemArmorMekanism implements IGasItem {
     }
 
     @Override
-    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
-        return armorType == EntityEquipmentSlot.CHEST;
+    public boolean isValidArmor(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
+        return armorType == EquipmentSlotType.CHEST;
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
         return "mekanism:render/NullArmor.png";
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
+    @OnlyIn(Dist.CLIENT)
+    public ModelBiped getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, ModelBiped _default) {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
         model.modelType = ArmorModel.SCUBATANK;
         return model;

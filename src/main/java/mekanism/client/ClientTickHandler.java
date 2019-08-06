@@ -30,7 +30,7 @@ import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessag
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.Hand;
@@ -40,15 +40,15 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
  *
  * @author AidanBrady
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ClientTickHandler {
 
     public static Minecraft mc = FMLClientHandler.instance().getClient();
@@ -68,7 +68,7 @@ public class ClientTickHandler {
             return Mekanism.playerState.isJetpackOn(player);
         }
         if (!player.isCreative() && !player.isSpectator()) {
-            ItemStack chest = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {
                 ItemJetpack jetpack = (ItemJetpack) chest.getItem();
                 if (jetpack.getGas(chest) != null) {
@@ -103,7 +103,7 @@ public class ClientTickHandler {
             return Mekanism.freeRunnerOn.contains(player.getUniqueID());
         }
 
-        ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+        ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
             ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
             /*freeRunners.getEnergy(stack) > 0 && */
@@ -182,7 +182,7 @@ public class ClientTickHandler {
                 Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.UPDATE, playerUUID, freeRunnerOn));
             }
 
-            ItemStack bootStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+            ItemStack bootStack = mc.player.getItemStackFromSlot(EquipmentSlotType.FEET);
             if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !mc.player.isSneaking()) {
                 mc.player.stepHeight = 1.002F;
             } else if (mc.player.stepHeight == 1.002F) {
@@ -211,7 +211,7 @@ public class ClientTickHandler {
                 }
             }
 
-            ItemStack chestStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            ItemStack chestStack = mc.player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
             if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemJetpack) {
                 MekanismClient.updateKey(mc.gameSettings.keyBindJump, KeySync.ASCEND);

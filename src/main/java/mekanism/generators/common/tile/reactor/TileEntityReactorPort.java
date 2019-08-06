@@ -32,7 +32,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -358,7 +358,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!world.isRemote) {
             fluidEject = !fluidEject;
             String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
@@ -367,11 +367,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
-    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
-        return EnumActionResult.PASS;
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 }

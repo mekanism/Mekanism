@@ -44,7 +44,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -300,7 +300,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
     @Nonnull
     @Override
-    public EnumActionResult applyPlayerInteraction(PlayerEntity entityplayer, Vec3d vec, Hand hand) {
+    public ActionResultType applyPlayerInteraction(PlayerEntity entityplayer, Vec3d vec, Hand hand) {
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (entityplayer.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
@@ -309,14 +309,14 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                 }
                 setDead();
                 entityplayer.swingArm(hand);
-                return EnumActionResult.SUCCESS;
+                return ActionResultType.SUCCESS;
             }
         } else {
             MekanismUtils.openEntityGui(entityplayer, this, 21);
-            return EnumActionResult.SUCCESS;
+            return ActionResultType.SUCCESS;
         }
 
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     public void drop() {

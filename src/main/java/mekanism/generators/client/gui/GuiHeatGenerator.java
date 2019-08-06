@@ -22,10 +22,10 @@ import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator> {
 
     public GuiHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator tile) {

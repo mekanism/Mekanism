@@ -26,8 +26,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
@@ -37,7 +37,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip imp
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(itemstack, "entangleporter_frequency"));
         if (freq != null) {
@@ -47,7 +47,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip imp
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
         list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));

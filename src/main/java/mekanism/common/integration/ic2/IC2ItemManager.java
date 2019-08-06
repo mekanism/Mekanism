@@ -2,7 +2,7 @@ package mekanism.common.integration.ic2;
 
 import ic2.api.item.IElectricItemManager;
 import mekanism.api.energy.IEnergizedItem;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
 public class IC2ItemManager implements IElectricItemManager {
@@ -53,12 +53,12 @@ public class IC2ItemManager implements IElectricItemManager {
     }
 
     @Override
-    public boolean use(ItemStack itemStack, double amount, EntityLivingBase entity) {
+    public boolean use(ItemStack itemStack, double amount, LivingEntity entity) {
         return false;
     }
 
     @Override
-    public void chargeFromArmor(ItemStack itemStack, EntityLivingBase entity) {
+    public void chargeFromArmor(ItemStack itemStack, LivingEntity entity) {
     }
 
     @Override

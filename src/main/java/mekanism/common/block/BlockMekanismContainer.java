@@ -23,16 +23,16 @@ import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockFlowerPot;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -134,7 +134,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
             Block.spawnAsEntity(world, pos, dropItem);
         }
         //Set it to air like the flower pot's harvestBlock method
-        world.setBlockToAir(pos);
+        world.removeBlock(pos, false);
     }
 
     /**
@@ -187,14 +187,14 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     @Nonnull
     @Override
     @Deprecated
-    public EnumBlockRenderType getRenderType(@Nonnull BlockState state) {
+    public BlockRenderType getRenderType(@Nonnull BlockState state) {
         //This is needed because BlockContainer sets it to invisible, except we are not using TESRs for rendering most implementers of this class
-        return EnumBlockRenderType.MODEL;
+        return BlockRenderType.MODEL;
     }
 
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity == null) {
             return;
@@ -309,7 +309,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     }
 
     //TODO: Method to override for setting some simple tile specific stuff
-    public void setTileData(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
 
     }
 

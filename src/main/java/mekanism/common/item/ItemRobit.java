@@ -12,13 +12,13 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
@@ -27,7 +27,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemstack, world, list, flag);
         list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.name") + ": " + EnumColor.GREY + getName(itemstack));
@@ -36,7 +36,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(PlayerEntity entityplayer, World world, BlockPos pos, Hand hand, Direction side, float posX, float posY, float posZ) {
+    public ActionResultType onItemUse(PlayerEntity entityplayer, World world, BlockPos pos, Hand hand, Direction side, float posX, float posY, float posZ) {
         TileEntity tileEntity = world.getTileEntity(pos);
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (tileEntity instanceof TileEntityChargepad) {
@@ -52,10 +52,10 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                     world.spawnEntity(robit);
                 }
                 entityplayer.setHeldItem(hand, ItemStack.EMPTY);
-                return EnumActionResult.SUCCESS;
+                return ActionResultType.SUCCESS;
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     @Override

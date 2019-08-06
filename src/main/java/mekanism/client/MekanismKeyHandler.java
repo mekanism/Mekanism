@@ -25,7 +25,7 @@ import mekanism.common.util.TextComponentGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -35,11 +35,11 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Keyboard;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MekanismKeyHandler extends MekKeyHandler {
 
     public static final String keybindCategory = Mekanism.MOD_NAME;
@@ -122,7 +122,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             }
         } else if (kb == armorModeSwitchKey) {
             PlayerEntity player = FMLClientHandler.instance().getClient().player;
-            ItemStack chestStack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             Item chestItem = chestStack.getItem();
 
             if (chestItem instanceof ItemJetpack) {
@@ -143,7 +143,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             }
         } else if (kb == freeRunnerModeSwitchKey) {
             PlayerEntity player = FMLClientHandler.instance().getClient().player;
-            ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+            ItemStack feetStack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
             Item feetItem = feetStack.getItem();
 
             if (feetItem instanceof ItemFreeRunners) {

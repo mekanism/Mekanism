@@ -19,14 +19,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemConfigurationCard extends ItemMekanism {
 
@@ -36,7 +36,7 @@ public class ItemConfigurationCard extends ItemMekanism {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemstack, world, list, flag);
         list.add(EnumColor.GREY + LangUtils.localize("gui.data") + ": " + EnumColor.INDIGO + LangUtils.localize(getDataType(itemstack)));
@@ -44,7 +44,7 @@ public class ItemConfigurationCard extends ItemMekanism {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
+    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (CapabilityUtils.hasCapability(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side)) {
@@ -64,7 +64,7 @@ public class ItemConfigurationCard extends ItemMekanism {
                                                                        LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s",
                                                                              EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
                         }
-                        return EnumActionResult.SUCCESS;
+                        return ActionResultType.SUCCESS;
                     } else if (getData(stack) != null) {
                         if (getNameFromTile(tileEntity, side).equals(getDataType(stack))) {
                             setBaseData(getData(stack), tileEntity);
@@ -80,14 +80,14 @@ public class ItemConfigurationCard extends ItemMekanism {
                             player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
                                                                        LangUtils.localize("tooltip.configurationCard.unequal") + "."));
                         }
-                        return EnumActionResult.SUCCESS;
+                        return ActionResultType.SUCCESS;
                     }
                 } else {
                     SecurityUtils.displayNoAccess(player);
                 }
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     private CompoundNBT getBaseData(TileEntity tile) {

@@ -16,7 +16,7 @@ import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +33,7 @@ public class ItemNetworkReader extends ItemEnergized {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
+    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
@@ -59,7 +59,7 @@ public class ItemNetworkReader extends ItemEnergized {
                     }
 
                     player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-                    return EnumActionResult.SUCCESS;
+                    return ActionResultType.SUCCESS;
                 } else if (CapabilityUtils.hasCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
                     if (drain) {
                         setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
@@ -69,7 +69,7 @@ public class ItemNetworkReader extends ItemEnergized {
                     player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " -------------"));
                     player.sendMessage(new TextComponentString(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp() + "K above ambient"));
                     player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-                    return EnumActionResult.SUCCESS;
+                    return ActionResultType.SUCCESS;
                 } else {
                     if (drain) {
                         setEnergy(stack, getEnergy(stack) - ENERGY_PER_USE);
@@ -93,7 +93,7 @@ public class ItemNetworkReader extends ItemEnergized {
                             }
                         }
                     }
-                    return EnumActionResult.SUCCESS;
+                    return ActionResultType.SUCCESS;
                 }
             }
 
@@ -106,7 +106,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 player.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     @Override

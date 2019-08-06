@@ -11,10 +11,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE extends TileEntityMekanism> extends GuiTextFilter<FILTER, TILE> {
 
     protected GuiOreDictFilter(PlayerEntity player, TILE tile) {

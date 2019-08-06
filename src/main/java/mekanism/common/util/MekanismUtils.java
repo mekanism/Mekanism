@@ -69,8 +69,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -809,7 +809,7 @@ public final class MekanismUtils {
         return "[" + obj.x + ", " + obj.y + ", " + obj.z + "]";
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static List<String> splitTooltip(String s, ItemStack stack) {
         s = s.trim();
         FontRenderer renderer = (FontRenderer) Mekanism.proxy.getFontRenderer();
@@ -1041,7 +1041,7 @@ public final class MekanismUtils {
      */
     public static void dismantleBlock(Block block, BlockState state, World world, BlockPos pos) {
         block.dropBlockAsItem(world, pos, state, 0);
-        world.setBlockToAir(pos);
+        world.removeBlock(pos, false);
     }
 
     /**

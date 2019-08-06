@@ -30,8 +30,8 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 // SoundHandler is the central point for sounds on Mek client side. There are roughly three classes of sounds to deal
 // with:
@@ -50,7 +50,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 // intercepts new repeating sounds from Mek and ensures that they periodically poll for any muting/manipulation so that
 // it the object can dynamically adjust to conditions.
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class SoundHandler {
 
     private static Set<UUID> jetpackSounds = new HashSet<>();

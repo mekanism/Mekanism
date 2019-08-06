@@ -17,8 +17,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntityFormulaicAssemblicator> {
 
@@ -105,7 +105,7 @@ public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntit
                     }
 
                     @Override
-                    @SideOnly(Side.CLIENT)
+                    @OnlyIn(Dist.CLIENT)
                     public boolean isEnabled() {
                         return !tileEntity.autoMode;
                     }

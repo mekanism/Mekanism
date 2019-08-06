@@ -16,9 +16,9 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
@@ -29,8 +29,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemFreeRunners extends ItemArmorMekanism implements IItemEnergized {
 
@@ -41,29 +41,29 @@ public class ItemFreeRunners extends ItemArmorMekanism implements IItemEnergized
 
     public ItemFreeRunners() {
         super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", "frictionboots", 0, new int[]{0, 0, 0, 0}, 0,
-              SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), EntityEquipmentSlot.FEET, "free_runners");
+              SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), EquipmentSlotType.FEET, "free_runners");
     }
 
     @Override
-    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
-        return armorType == EntityEquipmentSlot.FEET;
+    public boolean isValidArmor(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
+        return armorType == EquipmentSlotType.FEET;
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
         return "mekanism:render/NullArmor.png";
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
+    @OnlyIn(Dist.CLIENT)
+    public ModelBiped getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, ModelBiped _default) {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
         model.modelType = ArmorModel.FREERUNNERS;
         return model;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
         list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
@@ -122,8 +122,8 @@ public class ItemFreeRunners extends ItemArmorMekanism implements IItemEnergized
 
     @SubscribeEvent
     public void onEntityAttacked(LivingAttackEvent event) {
-        EntityLivingBase base = event.getEntityLiving();
-        ItemStack stack = base.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+        LivingEntity base = event.getEntityLiving();
+        ItemStack stack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
             ItemFreeRunners boots = (ItemFreeRunners) stack.getItem();
             if (boots.getMode(stack) == FreeRunnerMode.NORMAL && boots.getEnergy(stack) > 0

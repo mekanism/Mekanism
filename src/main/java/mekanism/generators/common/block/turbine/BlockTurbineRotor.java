@@ -28,8 +28,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTileEntity<TileEntityTurbineRotor> {
 
@@ -141,7 +141,7 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
         return face != Direction.UP && face != Direction.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

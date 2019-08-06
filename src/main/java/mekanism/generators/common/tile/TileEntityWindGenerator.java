@@ -141,11 +141,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public void onBreak() {
-        world.setBlockToAir(getPos().add(0, 1, 0));
-        world.setBlockToAir(getPos().add(0, 2, 0));
-        world.setBlockToAir(getPos().add(0, 3, 0));
-        world.setBlockToAir(getPos().add(0, 4, 0));
-        world.setBlockToAir(getPos());
+        world.removeBlock(getPos().add(0, 1, 0), false);
+        world.removeBlock(getPos().add(0, 2, 0), false);
+        world.removeBlock(getPos().add(0, 3, 0), false);
+        world.removeBlock(getPos().add(0, 4, 0), false);
+        world.removeBlock(getPos(), false);
     }
 
     public float getCurrentMultiplier() {

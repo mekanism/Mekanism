@@ -35,7 +35,7 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -53,8 +53,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockLogisticalSorter extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IBlockSound, IHasInventory,
       ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter> {
@@ -94,7 +94,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityLogisticalSorter) {
             TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
             if (!transporter.hasConnectedInventory()) {
@@ -110,7 +110,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {
@@ -220,7 +220,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

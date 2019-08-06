@@ -76,8 +76,8 @@ import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -324,13 +324,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             BlockState s = obj.getBlockState(world);
             if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock()).canBlockStay(world, pos, s)) {
                 s.getBlock().dropBlockAsItem(world, pos, s, 1);
-                world.setBlockToAir(pos);
+                world.removeBlock(pos, false);
             }
             return true;
         } else {
             MinerFilter filter = replaceMap.get(index);
             if (filter == null || filter.replaceStack.isEmpty() || !filter.requireStack) {
-                world.setBlockToAir(pos);
+                world.removeBlock(pos, false);
                 return true;
             }
             missingStack = filter.replaceStack;
@@ -762,7 +762,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Nonnull
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
     }
@@ -793,7 +793,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         for (int x = -1; x <= +1; x++) {
             for (int y = 0; y <= +1; y++) {
                 for (int z = -1; z <= +1; z++) {
-                    world.setBlockToAir(getPos().add(x, y, z));
+                    world.removeBlock(getPos().add(x, y, z), false);
                 }
             }
         }

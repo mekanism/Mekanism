@@ -12,10 +12,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiUpgradeTab extends GuiTileEntityElement<TileEntity> {
 
     public GuiUpgradeTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {

@@ -27,8 +27,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
@@ -232,8 +232,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Override
     public void onBreak() {
-        world.setBlockToAir(getPos().up());
-        world.setBlockToAir(getPos());
+        world.removeBlock(getPos().up(), false);
+        world.removeBlock(getPos(), false);
     }
 
     @Override
@@ -246,7 +246,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Nonnull
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
     }

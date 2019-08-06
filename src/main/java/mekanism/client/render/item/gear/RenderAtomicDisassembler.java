@@ -10,10 +10,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
 
     private static ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();

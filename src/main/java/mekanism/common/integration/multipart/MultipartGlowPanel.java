@@ -10,7 +10,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public class MultipartGlowPanel implements IMultipart {
 
     @Override
-    public IPartSlot getSlotForPlacement(World world, BlockPos pos, BlockState state, Direction facing, float hitX, float hitY, float hitZ, EntityLivingBase placer) {
+    public IPartSlot getSlotForPlacement(World world, BlockPos pos, BlockState state, Direction facing, float hitX, float hitY, float hitZ, LivingEntity placer) {
         return EnumFaceSlot.values()[facing.ordinal()];
     }
 
@@ -32,7 +32,7 @@ public class MultipartGlowPanel implements IMultipart {
     }
 
     @Override
-    public void onPartPlacedBy(IPartInfo part, EntityLivingBase placer, ItemStack stack) {
+    public void onPartPlacedBy(IPartInfo part, LivingEntity placer, ItemStack stack) {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntityGlowPanel) {
             Direction facing = Direction.values()[((EnumFaceSlot) part.getSlot()).ordinal()];

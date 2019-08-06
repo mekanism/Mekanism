@@ -11,8 +11,8 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Should this just be merged with ItemBlockTooltip somehow, or maybe not extend it at all
 public abstract class ItemBlockAdvancedTooltip extends ItemBlockTooltip {
@@ -22,7 +22,7 @@ public abstract class ItemBlockAdvancedTooltip extends ItemBlockTooltip {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             addStats(itemstack, world, list, flag);
@@ -38,6 +38,6 @@ public abstract class ItemBlockAdvancedTooltip extends ItemBlockTooltip {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public abstract void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag);
 }

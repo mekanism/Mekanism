@@ -17,11 +17,11 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Keyboard;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism> extends GuiFilter<TILE> {
 
     protected String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");

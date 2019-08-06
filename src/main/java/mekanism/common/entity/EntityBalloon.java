@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRedstone;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -22,8 +22,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData {
 
@@ -34,7 +34,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
     public EnumColor color = EnumColor.DARK_BLUE;
     public Coord4D latched;
-    public EntityLivingBase latchedEntity;
+    public LivingEntity latchedEntity;
     /* server-only */
     public boolean hasCachedEntity;
     public UUID cachedEntityUUID;
@@ -65,7 +65,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         color = c;
     }
 
-    public EntityBalloon(EntityLivingBase entity, EnumColor c) {
+    public EntityBalloon(LivingEntity entity, EnumColor c) {
         this(entity.world);
         latchedEntity = entity;
         setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
@@ -113,7 +113,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                 latched = null;
             }
             if (dataManager.get(IS_LATCHED) == 2) {
-                latchedEntity = (EntityLivingBase) world.getEntityByID(dataManager.get(LATCHED_ID));
+                latchedEntity = (LivingEntity) world.getEntityByID(dataManager.get(LATCHED_ID));
             } else {
                 latchedEntity = null;
             }
@@ -187,7 +187,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return latchedEntity.height + 0.8;
     }
 
-    private int getFloor(EntityLivingBase entity) {
+    private int getFloor(LivingEntity entity) {
         BlockPos pos = new BlockPos(entity);
         for (BlockPos posi = pos; posi.getY() > 0; posi = posi.down()) {
             if (posi.getY() < 256 && !world.isAirBlock(posi)) {
@@ -199,8 +199,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     private void findCachedEntity() {
         for (Object obj : world.loadedEntityList) {
-            if (obj instanceof EntityLivingBase) {
-                EntityLivingBase entity = (EntityLivingBase) obj;
+            if (obj instanceof LivingEntity) {
+                LivingEntity entity = (LivingEntity) obj;
                 if (entity.getUniqueID().equals(cachedEntityUUID)) {
                     latchedEntity = entity;
                 }
@@ -221,7 +221,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         setDead();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void doParticle() {
         Pos3D pos = new Pos3D(posX + (rand.nextFloat() * .6 - 0.3), posY + (rand.nextFloat() * .6 - 0.3), posZ + (rand.nextFloat() * .6 - 0.3));
 
@@ -305,7 +305,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         if (type == 1) {
             latched = Coord4D.read(data);
         } else if (type == 2) {
-            latchedEntity = (EntityLivingBase) world.getEntityByID(data.readInt());
+            latchedEntity = (LivingEntity) world.getEntityByID(data.readInt());
         } else {
             latched = null;
         }

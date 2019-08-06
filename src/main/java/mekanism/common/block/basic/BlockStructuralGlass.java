@@ -24,8 +24,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityStructuralGlass> {
 
@@ -57,7 +57,7 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
 
     @Override
     @Deprecated
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public boolean shouldSideBeRendered(BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, Direction side) {
         //Not structural glass
         return world.getBlockState(pos.offset(side)).getBlock() != this;
@@ -97,7 +97,7 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
         return false;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

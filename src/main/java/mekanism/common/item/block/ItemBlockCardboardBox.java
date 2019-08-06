@@ -17,7 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -25,8 +25,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism {
 
@@ -39,7 +39,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
         BlockData data = getBlockData(itemstack);
@@ -57,7 +57,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
+    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!player.isSneaking() && !world.isAirBlock(pos) && stack.getItemDamage() == 0) {
             BlockState state = world.getBlockState(pos);
@@ -82,17 +82,17 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
                 // any updates (esp. if it's a tile entity backed block). Ideally, we could avoid
                 // double updates, but if the block we are wrapping has multiple stacked blocks,
                 // we need to make sure it has a chance to update.
-                world.setBlockToAir(pos);
+                world.removeBlock(pos, false);
                 world.setBlockState(pos, MekanismBlock.CARDBOARD_BOX.getBlock().getStateFromMeta(1));
                 isMonitoring = false;
                 TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
                 if (tileEntity != null) {
                     tileEntity.storedData = data;
                 }
-                return EnumActionResult.SUCCESS;
+                return ActionResultType.SUCCESS;
             }
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     @Override

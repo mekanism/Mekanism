@@ -25,7 +25,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.RayTraceResult;
@@ -33,10 +33,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderTickHandler {
 
     public static int modeSwitchTimer = 0;
@@ -96,8 +96,8 @@ public class RenderTickHandler {
                     ClientTickHandler.wheelStatus = 0;
                 }
 
-                if (mc.currentScreen == null && !mc.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty()) {
-                    ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+                if (mc.currentScreen == null && !mc.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()) {
+                    ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
                     ScaledResolution scaledresolution = new ScaledResolution(mc);
 

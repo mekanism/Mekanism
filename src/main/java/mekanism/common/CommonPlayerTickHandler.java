@@ -11,7 +11,7 @@ import mekanism.common.item.gear.ItemScubaTank;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -20,7 +20,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 public class CommonPlayerTickHandler {
 
@@ -37,8 +37,8 @@ public class CommonPlayerTickHandler {
     }
 
     public static boolean isGasMaskOn(PlayerEntity player) {
-        ItemStack tank = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-        ItemStack mask = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack mask = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
         if (!tank.isEmpty() && !mask.isEmpty()) {
             if (tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask) {
                 ItemScubaTank scubaTank = (ItemScubaTank) tank.getItem();
@@ -66,7 +66,7 @@ public class CommonPlayerTickHandler {
     }
 
     public void tickEnd(PlayerEntity player) {
-        ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
+        ItemStack feetStack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners && !player.isSneaking()) {
             player.stepHeight = 1.002F;
         } else if (player.stepHeight == 1.002F) {
@@ -82,7 +82,7 @@ public class CommonPlayerTickHandler {
         }
 
         if (isJetpackOn(player)) {
-            ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             JetpackMode mode = jetpack.getMode(stack);
             if (mode == JetpackMode.NORMAL) {
@@ -112,7 +112,7 @@ public class CommonPlayerTickHandler {
         }
 
         if (isGasMaskOn(player)) {
-            ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             ItemScubaTank tank = (ItemScubaTank) stack.getItem();
             final int max = 300;
             tank.useGas(stack);
@@ -132,7 +132,7 @@ public class CommonPlayerTickHandler {
 
     public boolean isJetpackOn(PlayerEntity player) {
         if (!player.isCreative() && !player.isSpectator()) {
-            ItemStack chest = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+            ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {
                 ItemJetpack jetpack = (ItemJetpack) chest.getItem();
                 if (jetpack.getGas(chest) != null) {

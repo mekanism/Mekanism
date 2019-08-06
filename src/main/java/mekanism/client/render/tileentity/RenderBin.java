@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
 
     private final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();

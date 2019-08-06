@@ -83,8 +83,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -202,7 +202,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nullable
     private SoundEvent soundEvent;
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private ISound activeSound;
     private int playSoundCooldown = 0;
     protected int rapidChangeThreshold = 10;
@@ -354,7 +354,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (block instanceof IBlockDisableable && !((IBlockDisableable) block).isEnabled()) {
                 //TODO: Better way of doing name?
                 Mekanism.logger.info("Destroying machine of type '" + block.getClass().getSimpleName() + "' at coords " + Coord4D.get(this) + " as according to config.");
-                world.setBlockToAir(getPos());
+                world.removeBlock(getPos(), false);
                 return;
             }
         }
@@ -980,7 +980,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return 1.0f;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void updateSound() {
         // If machine sounds are disabled, noop
         if (!hasSound() || !MekanismConfig.current().client.enableMachineSounds.val() || soundEvent == null) {

@@ -23,12 +23,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem {
 
@@ -51,7 +51,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
         if (getFrequency(itemstack) != null) {
@@ -77,7 +77,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
                 SecurityUtils.displayNoAccess(entityplayer);
             }
         }
-        return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+        return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
     }
 
     @Override

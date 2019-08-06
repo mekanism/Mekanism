@@ -2,19 +2,24 @@ package mekanism.tools.item;
 
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nullable;
 import mekanism.common.util.LangUtils;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.Materials;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemMekanismHoe extends ItemHoe implements IHasRepairType {
+public class ItemMekanismHoe extends HoeItem implements IHasRepairType {
 
     public ItemMekanismHoe(Materials material) {
         super(material.getMaterial());
@@ -22,9 +27,9 @@ public class ItemMekanismHoe extends ItemHoe implements IHasRepairType {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add(LangUtils.localize("tooltip.hp") + ": " + (stack.getMaxDamage() - stack.getItemDamage()));
     }
 
     @Override

@@ -9,7 +9,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
@@ -20,14 +20,14 @@ import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
@@ -37,14 +37,14 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemstack, world, list, flag);
         list.add(EnumColor.PINK + LangUtils.localizeWithFormat("mekanism.tooltip.fireMode", LangUtils.transOnOff(getFireState(itemstack))));
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityLivingBase entityLiving, int itemUseCount) {
+    public void onPlayerStoppedUsing(ItemStack itemstack, World world, LivingEntity entityLiving, int itemUseCount) {
         if (entityLiving instanceof PlayerEntity && getEnergy(itemstack) > 0) {
             PlayerEntity player = (PlayerEntity) entityLiving;
             boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
@@ -140,10 +140,10 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
             return ret;
         }
         if (!playerIn.capabilities.isCreativeMode && !flag) {
-            return new ActionResult<>(EnumActionResult.FAIL, itemStackIn);
+            return new ActionResult<>(ActionResultType.FAIL, itemStackIn);
         }
         playerIn.setActiveHand(hand);
-        return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
+        return new ActionResult<>(ActionResultType.SUCCESS, itemStackIn);
     }
 
     public void setFireState(ItemStack itemstack, boolean state) {

@@ -12,7 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +28,7 @@ public class ItemDictionary extends ItemMekanism {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
+    public ActionResultType onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         if (!player.isSneaking()) {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
@@ -44,9 +44,9 @@ public class ItemDictionary extends ItemMekanism {
                     player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
                 }
             }
-            return EnumActionResult.SUCCESS;
+            return ActionResultType.SUCCESS;
         }
-        return EnumActionResult.PASS;
+        return ActionResultType.PASS;
     }
 
     @Nonnull
@@ -55,8 +55,8 @@ public class ItemDictionary extends ItemMekanism {
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (entityplayer.isSneaking()) {
             MekanismUtils.openItemGui(entityplayer, hand, 0);
-            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         }
-        return new ActionResult<>(EnumActionResult.PASS, itemstack);
+        return new ActionResult<>(ActionResultType.PASS, itemstack);
     }
 }

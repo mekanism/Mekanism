@@ -30,7 +30,7 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         if (true) {
             return false;
         }
-        world.setBlockToAir(getPos());
+        world.removeBlock(getPos(), false);
         //world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 
         //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)

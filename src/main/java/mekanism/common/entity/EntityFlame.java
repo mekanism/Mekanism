@@ -202,7 +202,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 if (newBlock != Blocks.AIR) {
                     world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
                 } else {
-                    world.setBlockToAir(block.getPos());
+                    world.removeBlock(block.getPos(), false);
                     EntityItem item = new EntityItem(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());
                     item.motionX = 0;
                     item.motionY = 0;

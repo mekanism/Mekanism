@@ -1,7 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 
 /**
@@ -19,7 +19,7 @@ public interface IConfigurable {
      *
      * @return action that was performed
      */
-    EnumActionResult onSneakRightClick(PlayerEntity player, Direction side);
+    ActionResultType onSneakRightClick(PlayerEntity player, Direction side);
 
     /**
      * Called when a player right clicks this block with a Configurator.
@@ -29,5 +29,5 @@ public interface IConfigurable {
      *
      * @return action that was performed
      */
-    EnumActionResult onRightClick(PlayerEntity player, Direction side);
+    ActionResultType onRightClick(PlayerEntity player, Direction side);
 }

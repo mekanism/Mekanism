@@ -14,8 +14,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockBin extends ItemBlockTooltip implements ITieredItem<BinTier> {
 
@@ -35,7 +35,7 @@ public class ItemBlockBin extends ItemBlockTooltip implements ITieredItem<BinTie
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         InventoryBin inv = new InventoryBin(itemstack);
         if (inv.getItemCount() > 0) {

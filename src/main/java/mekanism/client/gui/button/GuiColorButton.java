@@ -6,10 +6,10 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiColorButton extends GuiButton {
 
     private final Supplier<EnumColor> colorSupplier;

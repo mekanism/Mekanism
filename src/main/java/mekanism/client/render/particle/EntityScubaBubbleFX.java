@@ -4,10 +4,10 @@ import net.minecraft.client.particle.ParticleBubble;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class EntityScubaBubbleFX extends ParticleBubble {
 
     public EntityScubaBubbleFX(World world, double posX, double posY, double posZ, double velX, double velY, double velZ) {

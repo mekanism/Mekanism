@@ -16,10 +16,10 @@ import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator> {
 
     public GuiSolarGenerator(InventoryPlayer inventory, TileEntitySolarGenerator tile) {

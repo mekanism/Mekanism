@@ -32,7 +32,7 @@ public class BlockObsidianTNT extends Block {
         super.onBlockAdded(world, pos, state);
         if (world.isBlockPowered(pos)) {
             explode(world, pos);
-            world.setBlockToAir(pos);
+            world.removeBlock(pos, false);
         }
     }
 
@@ -41,7 +41,7 @@ public class BlockObsidianTNT extends Block {
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (world.isBlockPowered(pos)) {
             explode(world, pos);
-            world.setBlockToAir(pos);
+            world.removeBlock(pos, false);
         }
     }
 
@@ -67,7 +67,7 @@ public class BlockObsidianTNT extends Block {
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (!stack.isEmpty() && (stack.getItem() == Items.FLINT_AND_STEEL || stack.getItem() == Items.FIRE_CHARGE)) {
             explode(world, pos);
-            world.setBlockToAir(pos);
+            world.removeBlock(pos, false);
             if (stack.getItem() == Items.FLINT_AND_STEEL) {
                 stack.damageItem(1, entityplayer);
             } else if (!entityplayer.capabilities.isCreativeMode) {
@@ -89,7 +89,7 @@ public class BlockObsidianTNT extends Block {
             EntityArrow entityarrow = (EntityArrow) entity;
             if (entityarrow.isBurning()) {
                 explode(world, pos);
-                world.setBlockToAir(pos);
+                world.removeBlock(pos, false);
             }
         }
     }

@@ -4,37 +4,37 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemGasMask extends ItemArmorMekanism {
 
     public ItemGasMask() {
         super(EnumHelper.addArmorMaterial("GASMASK", "gasmask", 0, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
-              0), EntityEquipmentSlot.HEAD, "gas_mask");
+              0), EquipmentSlotType.HEAD, "gas_mask");
     }
 
     @Override
-    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
-        return armorType == EntityEquipmentSlot.HEAD;
+    public boolean isValidArmor(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
+        return armorType == EquipmentSlotType.HEAD;
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
         return "mekanism:render/NullArmor.png";
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
+    @OnlyIn(Dist.CLIENT)
+    public ModelBiped getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, ModelBiped _default) {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
         model.modelType = ArmorModel.GASMASK;
         return model;
@@ -42,9 +42,9 @@ public class ItemGasMask extends ItemArmorMekanism {
 
     @SubscribeEvent
     public void onEntityAttacked(LivingAttackEvent event) {
-        EntityLivingBase base = event.getEntityLiving();
-        ItemStack headStack = base.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-        ItemStack chestStack = base.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+        LivingEntity base = event.getEntityLiving();
+        ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
+        ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
         if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
             ItemGasMask mask = (ItemGasMask) headStack.getItem();
             if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank) {

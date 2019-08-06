@@ -33,8 +33,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntitySolarGenerator> {
@@ -106,7 +106,7 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
         return BlockFaceShape.UNDEFINED;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

@@ -10,7 +10,7 @@ import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -34,7 +34,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
                 }
             } else if (message.packetType == JetpackPacket.MODE) {
                 // Use has changed the mode of their jetpack; update it
-                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+                ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemJetpack) {
                     if (!message.value) {
                         ((ItemJetpack) stack.getItem()).incrementMode(stack);

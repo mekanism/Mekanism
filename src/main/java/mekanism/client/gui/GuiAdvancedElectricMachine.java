@@ -24,10 +24,10 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityAdvancedElectricMachine<RECIPE>> {
 
     public GuiAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<RECIPE> tile) {

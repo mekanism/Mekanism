@@ -38,8 +38,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockTeleporter extends BlockMekanismContainer implements IBlockElectric, IHasGui, ISupportsUpgrades, IHasInventory, IHasSecurity, ISupportsRedstone,
       IHasTileEntity<TileEntityTeleporter> {
@@ -71,7 +71,7 @@ public class BlockTeleporter extends BlockMekanismContainer implements IBlockEle
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val()) {

@@ -21,11 +21,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Keyboard;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityMekanism> extends GuiTypeFilter<FILTER, TILE> {
 
     protected GuiMaterialFilter(PlayerEntity player, TILE tile) {

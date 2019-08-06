@@ -40,14 +40,14 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     public void onBreak() {
-        world.setBlockToAir(getPos().add(0, 1, 0));
+        world.removeBlock(getPos().add(0, 1, 0), false);
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
-                world.setBlockToAir(getPos().add(x, 2, z));
+                world.removeBlock(getPos().add(x, 2, z), false);
             }
         }
         invalidate();
-        world.setBlockToAir(getPos());
+        world.removeBlock(getPos(), false);
     }
 
     @Override

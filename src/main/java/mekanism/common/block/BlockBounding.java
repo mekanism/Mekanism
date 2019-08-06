@@ -17,7 +17,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -47,7 +47,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             BlockState state = world.getBlockState(mainPos);
             if (!state.getBlock().isAir(state, world, mainPos)) {
                 //Set the main block to air, which will invalidate the rest of the bounding blocks
-                world.setBlockToAir(mainPos);
+                world.removeBlock(mainPos, false);
             }
         }
     }
@@ -153,7 +153,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
-        world.setBlockToAir(pos);
+        world.removeBlock(pos, false);
     }
 
     /**
@@ -197,8 +197,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nonnull
     @Override
     @Deprecated
-    public EnumBlockRenderType getRenderType(BlockState state) {
-        return EnumBlockRenderType.INVISIBLE;
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 
     @Override

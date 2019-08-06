@@ -28,7 +28,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 public class BlockTurbineValve extends BlockMekanismContainer implements IHasTileEntity<TileEntityTurbineValve> {
 

@@ -8,11 +8,11 @@ import mekanism.common.MekanismItem;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -103,33 +103,33 @@ public class MekanismTools implements IModule {
         GameRegistry.addSmelting(toolsItem.getItemStackAnyDamage(), nugget, 0.1F);
     }
 
-    private void setStackIfEmpty(EntityLivingBase entity, EntityEquipmentSlot slot, ItemStack item) {
+    private void setStackIfEmpty(LivingEntity entity, EquipmentSlotType slot, ItemStack item) {
         if (entity.getItemStackFromSlot(slot).isEmpty()) {
             entity.setItemStackToSlot(slot, item);
         }
     }
 
-    private void setEntityArmorWithChance(Random random, EntityLivingBase entity, ToolsItem sword, ToolsItem helmet, ToolsItem chestplate, ToolsItem leggings, ToolsItem boots) {
+    private void setEntityArmorWithChance(Random random, LivingEntity entity, ToolsItem sword, ToolsItem helmet, ToolsItem chestplate, ToolsItem leggings, ToolsItem boots) {
         if (entity instanceof EntityZombie && random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.MAINHAND, sword.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlotType.MAINHAND, sword.getItemStack());
         }
         if (random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.HEAD, helmet.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlotType.HEAD, helmet.getItemStack());
         }
         if (random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.CHEST, chestplate.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlotType.CHEST, chestplate.getItemStack());
         }
         if (random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.LEGS, leggings.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlotType.LEGS, leggings.getItemStack());
         }
         if (random.nextInt(100) < 50) {
-            setStackIfEmpty(entity, EntityEquipmentSlot.FEET, boots.getItemStack());
+            setStackIfEmpty(entity, EquipmentSlotType.FEET, boots.getItemStack());
         }
     }
 
     @SubscribeEvent
     public void onLivingSpecialSpawn(LivingSpawnEvent.SpecialSpawn event) {
-        EntityLivingBase entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntityLiving();
         if (entity instanceof EntityZombie || entity instanceof EntitySkeleton) {
             //Don't bother calculating random numbers unless the instanceof checks pass
             Random random = event.getWorld().rand;

@@ -6,10 +6,10 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class VoiceInput extends Thread {
 
     private VoiceClient voiceClient;

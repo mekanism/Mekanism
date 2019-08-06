@@ -15,8 +15,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Should this implement IItemEnergized instead of IEnergizedItem
 public class ItemBlockInductionCell extends ItemBlockTooltip implements IEnergizedItem, ITieredItem<InductionCellTier> {
@@ -36,7 +36,7 @@ public class ItemBlockInductionCell extends ItemBlockTooltip implements IEnergiz
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         InductionCellTier tier = getTier(itemstack);
         if (tier != null) {

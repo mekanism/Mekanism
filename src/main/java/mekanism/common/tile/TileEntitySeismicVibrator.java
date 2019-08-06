@@ -14,8 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3i;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntitySeismicVibrator extends TileEntityMekanism implements IActiveState, IBoundingBlock {
 
@@ -77,13 +77,13 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
 
     @Override
     public void onBreak() {
-        world.setBlockToAir(getPos().up());
-        world.setBlockToAir(getPos());
+        world.removeBlock(getPos().up(), false);
+        world.removeBlock(getPos(), false);
     }
 
     @Nonnull
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
     }

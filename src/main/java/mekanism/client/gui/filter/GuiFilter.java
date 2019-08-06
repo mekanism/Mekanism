@@ -5,10 +5,10 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiFilter<TILE extends TileEntityMekanism> extends GuiMekanismTile<TILE> {
 
     protected GuiFilter(TILE tile, Container container) {

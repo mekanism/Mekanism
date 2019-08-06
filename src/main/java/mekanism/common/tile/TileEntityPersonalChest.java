@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityPersonalChest extends TileEntityMekanism {

@@ -4,10 +4,10 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.Container;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiChemical<TILE extends TileEntityMekanism> extends GuiMekanismTile<TILE> {
 
     protected GuiChemical(TILE tile, Container container) {

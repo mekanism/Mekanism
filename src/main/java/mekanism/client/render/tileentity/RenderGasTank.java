@@ -3,10 +3,10 @@ package mekanism.client.render.tileentity;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderGasTank extends TileEntitySpecialRenderer<TileEntityGasTank> {
 
     @Override

@@ -14,7 +14,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -35,12 +35,12 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
      */
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(PlayerEntity player, World worldIn, @Nonnull BlockPos pos, @Nonnull Hand hand, @Nonnull Direction facing, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(PlayerEntity player, World worldIn, @Nonnull BlockPos pos, @Nonnull Hand hand, @Nonnull Direction facing, float hitX, float hitY, float hitZ) {
         BlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
         ItemStack itemstack = player.getHeldItem(hand);
         if (itemstack.isEmpty()) {
-            return EnumActionResult.FAIL;//WTF
+            return ActionResultType.FAIL;//WTF
         }
         if (Mekanism.hooks.MCMPLoaded) {
             if (!block.isReplaceable(worldIn, pos) && !hasFreeMultiPartSpot(itemstack, worldIn, pos, iblockstate, facing)) {//free spot handles case of no container
@@ -66,9 +66,9 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
                 worldIn.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                 itemstack.shrink(1);
             }
-            return EnumActionResult.SUCCESS;
+            return ActionResultType.SUCCESS;
         }
-        return EnumActionResult.FAIL;
+        return ActionResultType.FAIL;
     }
 
     private boolean mayPlace(ItemStack itemstack, World worldIn, BlockPos pos, BlockState state, Hand hand, Direction facing) {
