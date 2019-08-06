@@ -95,6 +95,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, IToggleableCapability, ITileDirectional,
       ITileContainer, ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile {
 
+    //TODO: Should the implementations of the various stuff be extracted into TileComponents?
+
     /**
      * The players currently using this block.
      */
