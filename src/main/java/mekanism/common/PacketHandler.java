@@ -73,17 +73,19 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -92,7 +94,13 @@ import net.minecraftforge.api.distmarker.Dist;
  */
 public class PacketHandler {
 
-    public SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("MEK");
+    private static final String PROTOCOL_VERSION = Integer.toString(1);
+    private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder
+          .named(new ResourceLocation(Mekanism.MODID, "main_channel"))
+          .clientAcceptedVersions(PROTOCOL_VERSION::equals)
+          .serverAcceptedVersions(PROTOCOL_VERSION::equals)
+          .networkProtocolVersion(() -> PROTOCOL_VERSION)
+          .simpleChannel();
 
     /**
      * Encodes an Object[] of data into a DataOutputStream.
@@ -181,6 +189,8 @@ public class PacketHandler {
     }
 
     public void initialize() {
+        int disc = 0;
+
         netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Dist.CLIENT);
         //FREE ID 2
@@ -213,7 +223,7 @@ public class PacketHandler {
         netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Dist.CLIENT);
         netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketConfigSync.class, ConfigSyncMessage.class, 23, Dist.CLIENT);
-        netHandler.registerMessage(PacketBoxBlacklist.class, BoxBlacklistMessage.class, 24, Dist.CLIENT);
+        netHandler.registerMessage(disc++, PacketBoxBlacklist.class, PacketBoxBlacklist::encode, PacketBoxBlacklist::decode, PacketBoxBlacklist::handle);
         //FREE ID 25
         netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Dist.CLIENT);

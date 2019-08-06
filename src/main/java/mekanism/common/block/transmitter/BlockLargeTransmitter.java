@@ -10,7 +10,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public abstract class BlockLargeTransmitter extends BlockTransmitter {
@@ -53,7 +53,7 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
         return BlockLargeTransmitter.largeSides[6];
     }
 

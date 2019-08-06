@@ -23,7 +23,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -57,12 +57,12 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override
-    public boolean isReplaceable(IBlockAccess world, @Nonnull BlockPos pos) {
+    public boolean isReplaceable(IWorldReader world, @Nonnull BlockPos pos) {
         return testingPlace;
     }
 
@@ -104,7 +104,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
 
     @Nonnull
     @Override
-    protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+    protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
         TileEntityCardboardBox tile = (TileEntityCardboardBox) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this);
         if (tile == null) {

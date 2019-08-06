@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockReactorLogicAdapter extends Block implements IHasGui, IHasTileEntity<TileEntityReactorLogicAdapter> {
@@ -70,7 +70,7 @@ public class BlockReactorLogicAdapter extends Block implements IHasGui, IHasTile
 
     @Override
     @Deprecated
-    public int getWeakPower(BlockState state, IBlockAccess world, BlockPos pos, Direction side) {
+    public int getWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         if (tile instanceof TileEntityReactorLogicAdapter) {
             return ((TileEntityReactorLogicAdapter) tile).checkMode() ? 15 : 0;
@@ -79,7 +79,7 @@ public class BlockReactorLogicAdapter extends Block implements IHasGui, IHasTile
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, IBlockAccess world, BlockPos pos, Direction side) {
+    public boolean canConnectRedstone(BlockState state, IWorldReader world, BlockPos pos, Direction side) {
         return true;
     }
 

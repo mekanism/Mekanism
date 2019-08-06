@@ -57,11 +57,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.LightType;
 import net.minecraft.world.Region;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
@@ -69,8 +71,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -126,7 +126,7 @@ public final class MekanismUtils {
      *
      * @return if machine is active
      */
-    public static boolean isActive(IBlockAccess world, BlockPos pos) {
+    public static boolean isActive(IWorldReader world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity != null) {
             if (tileEntity instanceof IActiveState) {
@@ -1015,8 +1015,8 @@ public final class MekanismUtils {
         return ret != null ? ret : "<???>";
     }
 
-    public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
-        return worldIn instanceof Region ? ((Region) worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+    public static TileEntity getTileEntitySafe(IWorldReader worldIn, BlockPos pos) {
+        return worldIn instanceof Region ? ((Region) worldIn).getTileEntity(pos, Chunk.CreateEntityType.CHECK) : worldIn.getTileEntity(pos);
     }
 
     /**

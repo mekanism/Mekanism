@@ -114,10 +114,11 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Mekanism.MODID, useMetadata = true, guiFactory = "mekanism.client.gui.ConfigGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)", version = "${version}")
+@Mod(modid = Mekanism.MODID, useMetadata = true, guiFactory = "mekanism.client.gui.ConfigGuiFactory", acceptedMinecraftVersions = "[1.14.4,1.15)", version = "${version}")
 @Mod.EventBusSubscriber()
 public class Mekanism {
 
@@ -332,8 +333,8 @@ public class Mekanism {
             }
 
             //BioFuel Crusher Recipes
-            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.TALLGRASS), MekanismItem.BIO_FUEL.getItemStack(4));
-            RecipeHandler.addCrusherRecipe(new ItemStack(Items.REEDS), MekanismItem.BIO_FUEL.getItemStack(2));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.GRASS), MekanismItem.BIO_FUEL.getItemStack(4));
+            RecipeHandler.addCrusherRecipe(new ItemStack(Items.SUGAR_CANE), MekanismItem.BIO_FUEL.getItemStack(2));
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.WHEAT_SEEDS), MekanismItem.BIO_FUEL.getItemStack(2));
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.WHEAT), MekanismItem.BIO_FUEL.getItemStack(4));
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.PUMPKIN_SEEDS), MekanismItem.BIO_FUEL.getItemStack(2));

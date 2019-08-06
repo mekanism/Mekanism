@@ -30,7 +30,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public abstract class BlockTransmitter extends BlockTileDrops implements IStateConnection {
@@ -42,7 +42,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
         setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
-    protected static TileEntitySidedPipe getTileEntitySidedPipe(IBlockAccess world, BlockPos pos) {
+    protected static TileEntitySidedPipe getTileEntitySidedPipe(IWorldReader world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         TileEntitySidedPipe sidedPipe = null;
         if (tileEntity instanceof TileEntitySidedPipe) {
@@ -71,7 +71,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, getTileEntitySidedPipe(world, pos));
     }
 
@@ -126,7 +126,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
     }
 
     @Override
-    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChange(IWorldReader world, BlockPos pos, BlockPos neighbor) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile != null) {
             Direction side = Direction.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
@@ -166,7 +166,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
     @Nonnull
     @Override
     @Deprecated
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction face) {
+    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
         return BlockFaceShape.UNDEFINED;
     }
 

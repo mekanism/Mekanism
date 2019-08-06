@@ -44,7 +44,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin> {
@@ -79,7 +79,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
@@ -95,7 +95,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(BlockState state, IWorldReader world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity instanceof IActiveState) {
             if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
@@ -181,7 +181,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
 
     @Nonnull
     @Override
-    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
+    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
         if (tile instanceof TileEntityBin) {
             TileEntityBin bin = (TileEntityBin) tile;
             if (bin.getItemCount() > 0) {
@@ -232,7 +232,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightOpacity(BlockState state, IWorldReader world, BlockPos pos) {
         return 0;
     }
 

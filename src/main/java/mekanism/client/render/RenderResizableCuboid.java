@@ -12,8 +12,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -25,7 +25,8 @@ import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IWorldReader;
 import org.lwjgl.opengl.GL11;
 
 /*
@@ -138,7 +139,7 @@ public class RenderResizableCuboid {
         renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
     }
 
-    public void renderCube(Model3D cube, EnumShadeArgument shadeTypes, IBlockLocation formula, IFacingLocation faceFormula, IBlockAccess world) {
+    public void renderCube(Model3D cube, EnumShadeArgument shadeTypes, IBlockLocation formula, IFacingLocation faceFormula, IWorldReader world) {
         if (faceFormula == null) {
             faceFormula = DefaultFacingLocation.INSTANCE;
         }
@@ -179,7 +180,7 @@ public class RenderResizableCuboid {
     }
 
     private void renderCuboidFace(BufferBuilder wr, Direction face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
-          Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula, IBlockAccess access) {
+          Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula, IWorldReader access) {
         int ordinal = face.ordinal();
         if (sprites[ordinal] == null) {
             return;
@@ -213,7 +214,7 @@ public class RenderResizableCuboid {
     }
 
     private void renderPoint(BufferBuilder wr, Direction face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV, IBlockLocation locationFormula,
-          IFacingLocation faceFormula, IBlockAccess access, EnumShadeArgument shadeTypes) {
+          IFacingLocation faceFormula, IWorldReader access, EnumShadeArgument shadeTypes) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
 
@@ -241,7 +242,7 @@ public class RenderResizableCuboid {
         wr.endVertex();
     }
 
-    private void applyLocalAO(BufferBuilder wr, Direction face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes, Vec3d vertex) {
+    private void applyLocalAO(BufferBuilder wr, Direction face, IBlockLocation locationFormula, IWorldReader access, EnumShadeArgument shadeTypes, Vec3d vertex) {
         // This doesn't work. At all.
         boolean allAround = false;
 

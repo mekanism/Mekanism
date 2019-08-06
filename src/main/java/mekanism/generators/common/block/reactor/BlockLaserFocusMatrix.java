@@ -21,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -101,7 +101,7 @@ public class BlockLaserFocusMatrix extends Block implements IHasTileEntity<TileE
     @Override
     @Deprecated
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldSideBeRendered(BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, Direction side) {
+    public boolean shouldSideBeRendered(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
         Block blockOffset = world.getBlockState(pos.offset(side)).getBlock();
         if (blockOffset instanceof BlockReactorGlass || blockOffset instanceof BlockLaserFocusMatrix) {
             return false;
@@ -111,7 +111,7 @@ public class BlockLaserFocusMatrix extends Block implements IHasTileEntity<TileE
 
     @Override
     @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
         //TODO
         return false;
     }

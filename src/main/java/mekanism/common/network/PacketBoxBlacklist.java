@@ -1,51 +1,42 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Set;
+import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import net.minecraft.block.Block;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, IMessage> {
+public class PacketBoxBlacklist {
 
-    @Override
-    public IMessage onMessage(BoxBlacklistMessage message, MessageContext context) {
-        return null;
+    public static PacketBoxBlacklist decode(PacketBuffer buf) {
+        Set<Block> boxIgnore = MekanismAPI.getBoxIgnore();
+        buf.writeInt(boxIgnore.size());
+        for (Block info : boxIgnore) {
+            buf.writeInt(Block.getIdFromBlock(info));
+        }
+        Set<String> boxModIgnore = MekanismAPI.getBoxModIgnore();
+        buf.writeInt(boxModIgnore.size());
+        for (String modid : boxModIgnore) {
+            buf.writeString(modid);
+        }
+        return new PacketBoxBlacklist();
     }
 
-    public static class BoxBlacklistMessage implements IMessage {
-
-        @Override
-        public void toBytes(ByteBuf dataStream) {
-            Set<Block> boxIgnore = MekanismAPI.getBoxIgnore();
-            dataStream.writeInt(boxIgnore.size());
-            for (Block info : boxIgnore) {
-                dataStream.writeInt(Block.getIdFromBlock(info));
-            }
-            Set<String> boxModIgnore = MekanismAPI.getBoxModIgnore();
-            dataStream.writeInt(boxModIgnore.size());
-            for (String modid : boxModIgnore) {
-                ByteBufUtils.writeUTF8String(dataStream, modid);
-            }
+    public static void encode(PacketBoxBlacklist pkt, PacketBuffer buf) {
+        MekanismAPI.getBoxIgnore().clear();
+        int amount = buf.readInt();
+        for (int i = 0; i < amount; i++) {
+            MekanismAPI.addBoxBlacklist(Block.getBlockById(buf.readInt()));
         }
-
-        @Override
-        public void fromBytes(ByteBuf dataStream) {
-            MekanismAPI.getBoxIgnore().clear();
-            int amount = dataStream.readInt();
-            for (int i = 0; i < amount; i++) {
-                MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()));
-            }
-            int amountMods = dataStream.readInt();
-            for (int i = 0; i < amountMods; i++) {
-                MekanismAPI.addBoxBlacklistMod(ByteBufUtils.readUTF8String(dataStream));
-            }
-            Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " explicit blocks, " + amountMods + " mod wildcards)");
+        int amountMods = buf.readInt();
+        for (int i = 0; i < amountMods; i++) {
+            MekanismAPI.addBoxBlacklistMod(buf.readString());
         }
+        Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " explicit blocks, " + amountMods + " mod wildcards)");
+    }
+
+    public static void handle(PacketBoxBlacklist message, Supplier<Context> context) {
     }
 }

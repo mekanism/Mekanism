@@ -40,7 +40,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockGasTank extends BlockMekanismContainer implements IHasGui, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity, ISupportsRedstone,
@@ -78,7 +78,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
@@ -133,7 +133,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
         return TANK_BOUNDS;
     }
 
@@ -182,7 +182,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     @Nonnull
     @Override
     @Deprecated
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction face) {
+    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
         return face == Direction.UP || face == Direction.DOWN ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
     }
 

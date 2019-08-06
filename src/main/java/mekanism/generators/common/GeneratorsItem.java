@@ -12,7 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum GeneratorsItem implements IItemProvider {
@@ -20,7 +20,7 @@ public enum GeneratorsItem implements IItemProvider {
     HOHLRAUM(new ItemHohlraum()),
     TURBINE_BLADE(new ItemMekanism(MekanismGenerators.MODID, "turbine_blade") {
         @Override
-        public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, PlayerEntity player) {
+        public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
             return MekanismUtils.getTileEntitySafe(world, pos) instanceof TileEntityTurbineRotor;
         }
     });

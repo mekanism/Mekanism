@@ -22,7 +22,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,21 +51,21 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, SpawnPlacementType type) {
         return false;
     }
 
     @Override
     @Deprecated
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldSideBeRendered(BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, Direction side) {
+    public boolean shouldSideBeRendered(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
         //Not structural glass
         return world.getBlockState(pos.offset(side)).getBlock() != this;
     }
 
     @Override
     @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
         return false;
     }
 
@@ -105,7 +105,7 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightOpacity(BlockState state, IWorldReader world, BlockPos pos) {
         return 0;
     }
 

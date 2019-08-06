@@ -24,7 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.api.distmarker.Dist;
@@ -77,7 +77,7 @@ public class BlockTurbineVent extends BlockMekanismContainer implements IHasTile
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, MobEntity.SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, MobEntity.SpawnPlacementType type) {
         TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity != null) {
             if (FMLCommonHandler.instance().getEffectiveSide() == Dist.DEDICATED_SERVER) {

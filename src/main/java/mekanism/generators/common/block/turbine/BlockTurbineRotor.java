@@ -26,7 +26,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -137,7 +137,7 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     @Nonnull
     @Override
     @Deprecated
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction face) {
+    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
         return face != Direction.UP && face != Direction.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
     }
 
@@ -151,13 +151,13 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
         return ROTOR_BOUNDS;
     }
 
     @Override
     @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
         //TODO
         return false;
     }

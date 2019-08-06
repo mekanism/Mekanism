@@ -8,7 +8,7 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasInventory, IHasTileEntity<TileEntityBoilerCasing> {
@@ -29,7 +29,7 @@ public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasInven
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightOpacity(BlockState state, IWorldReader world, BlockPos pos) {
         return 0;
     }
 

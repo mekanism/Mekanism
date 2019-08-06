@@ -27,7 +27,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasTileEntity<TileEntityThermalEvaporationController> {
@@ -54,7 +54,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
@@ -70,7 +70,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(BlockState state, IWorldReader world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity instanceof IActiveState) {
             if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
@@ -102,7 +102,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightOpacity(BlockState state, IWorldReader world, BlockPos pos) {
         return 0;
     }
 

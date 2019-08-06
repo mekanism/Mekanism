@@ -51,7 +51,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -89,7 +89,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
@@ -145,7 +145,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(BlockState state, IWorldReader world, BlockPos pos) {
         if (MekanismConfig.current().client.enableAmbientLighting.val()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
             if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
@@ -282,7 +282,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         if (tile instanceof TileEntityLogisticalSorter) {
             return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).getDirection()).offset(0.5, 0.5, 0.5);
@@ -298,7 +298,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     @Override
     @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
         //TODO: This was true before, but I think it should be false?
         return true;
     }
@@ -306,7 +306,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Nonnull
     @Override
     @Deprecated
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction face) {
+    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
         return BlockFaceShape.UNDEFINED;
     }
 

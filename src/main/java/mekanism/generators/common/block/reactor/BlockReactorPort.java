@@ -23,7 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockReactorPort extends Block implements IStateActive, IBlockElectric, IHasTileEntity<TileEntityReactorPort> {
@@ -38,7 +38,7 @@ public class BlockReactorPort extends Block implements IStateActive, IBlockElect
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityReactorPort) {
             state = state.withProperty(BlockStateHelper.activeProperty, ((TileEntityReactorPort) tile).fluidEject);

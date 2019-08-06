@@ -19,7 +19,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.api.distmarker.Dist;
@@ -54,7 +54,7 @@ public class BlockBasicMultiblock extends BlockTileDrops {
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, SpawnPlacementType type) {
         TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity != null) {
             if (FMLCommonHandler.instance().getEffectiveSide() == Dist.DEDICATED_SERVER) {

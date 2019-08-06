@@ -26,7 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockReactorController extends Block implements IHasGui, IStateActive, IBlockElectric, IHasInventory, IHasTileEntity<TileEntityReactorController> {
@@ -41,7 +41,7 @@ public class BlockReactorController extends Block implements IHasGui, IStateActi
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
         if (tile instanceof TileEntityReactorController) {
             state = state.withProperty(BlockStateHelper.activeProperty, ((IActiveState) tile).getActive());

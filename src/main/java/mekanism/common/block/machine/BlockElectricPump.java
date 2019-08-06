@@ -40,7 +40,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -71,7 +71,7 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
@@ -111,7 +111,7 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(BlockState state, IWorldReader world, BlockPos pos) {
         if (MekanismConfig.current().client.enableAmbientLighting.val()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
             if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
@@ -202,7 +202,7 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
 
     @Override
     @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
         //TODO: Was true but should this be false
         return true;
     }
@@ -210,7 +210,7 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
     @Nonnull
     @Override
     @Deprecated
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction face) {
+    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
         return face == Direction.UP || face == Direction.DOWN ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
     }
 

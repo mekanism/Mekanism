@@ -37,7 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -72,7 +72,7 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
@@ -112,7 +112,7 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(BlockState state, IWorldReader world, BlockPos pos) {
         if (MekanismConfig.current().client.enableAmbientLighting.val()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
             if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
@@ -204,7 +204,7 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, IBlockAccess world, BlockPos pos, Direction side) {
+    public boolean canConnectRedstone(BlockState state, IWorldReader world, BlockPos pos, Direction side) {
         return true;
     }
 
@@ -216,7 +216,7 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
 
     @Override
     @Deprecated
-    public int getWeakPower(BlockState state, IBlockAccess world, BlockPos pos, Direction side) {
+    public int getWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         if (tile instanceof TileEntityLaserAmplifier) {
             return ((TileEntityLaserAmplifier) tile).emittingRedstone ? 15 : 0;
