@@ -7,8 +7,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
@@ -35,8 +35,8 @@ public class Pos3D extends Vec3d {
         super(vec);
     }
 
-    public Pos3D(RayTraceResult mop) {
-        this(mop.getBlockPos());
+    public Pos3D(BlockRayTraceResult mop) {
+        this(mop.getPos());
     }
 
     public Pos3D(double x, double y, double z) {

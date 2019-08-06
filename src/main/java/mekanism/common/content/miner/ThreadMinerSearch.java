@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.util.BlockInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -24,7 +24,7 @@ public class ThreadMinerSearch extends Thread {
 
     private Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     private Map<Integer, MinerFilter> replaceMap = new HashMap<>();
-    private Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<>();
+    private Map<Block, MinerFilter> acceptedItems = new HashMap<>();
 
     public int found = 0;
 
@@ -42,7 +42,7 @@ public class ThreadMinerSearch extends Thread {
         Coord4D coord = tileEntity.getStartingCoord();
         int diameter = tileEntity.getDiameter();
         int size = tileEntity.getTotalSize();
-        BlockInfo info = new BlockInfo(null, 0);
+        Block info;
         BlockPos minerPos = tileEntity.getPos();
         World world = tileEntity.getWorld();
 
@@ -66,10 +66,9 @@ public class ThreadMinerSearch extends Thread {
             }
 
             BlockState state = world.getBlockState(testPos);
-            info.block = state.getBlock();
-            info.meta = state.getBlock().getMetaFromState(state);
+            info = state.getBlock();
 
-            if (info.block == null || info.block instanceof BlockLiquid || info.block instanceof IFluidBlock || info.block.isAir(state, world, testPos)) {
+            if (info == null || info instanceof BlockLiquid || info instanceof IFluidBlock || info.isAir(state, world, testPos)) {
                 //Skip air and liquids
                 continue;
             }
@@ -79,7 +78,7 @@ public class ThreadMinerSearch extends Thread {
                 if (acceptedItems.containsKey(info)) {
                     filterFound = acceptedItems.get(info);
                 } else {
-                    ItemStack stack = new ItemStack(info.block, 1, info.meta);
+                    ItemStack stack = new ItemStack(info);
                     if (tileEntity.isReplaceStack(stack)) {
                         continue;
                     }

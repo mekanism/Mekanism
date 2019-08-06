@@ -787,8 +787,8 @@ public class Mekanism {
         event.blacklistWildcard(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR.getBlock());
 
         // Minecraft unobtainable
-        event.blacklist(Blocks.BEDROCK, 0);
-        event.blacklistWildcard(Blocks.PORTAL);
+        event.blacklist(Blocks.BEDROCK);
+        event.blacklistWildcard(Blocks.NETHER_PORTAL);
         event.blacklistWildcard(Blocks.END_PORTAL);
         event.blacklistWildcard(Blocks.END_PORTAL_FRAME);
 

@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.util.ItemInfo;
 import mekanism.common.util.ItemRegistryUtils;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictCache {
 
-    public static Map<ItemInfo, List<String>> cachedKeys = new HashMap<>();
+    public static Map<Item, List<String>> cachedKeys = new HashMap<>();
     public static Map<String, List<ItemStack>> oreDictStacks = new HashMap<>();
     public static Map<String, List<ItemStack>> modIDStacks = new HashMap<>();
 
@@ -20,7 +20,7 @@ public final class OreDictCache {
         if (check.isEmpty()) {
             return new ArrayList<>();
         }
-        ItemInfo info = ItemInfo.get(check);
+        Item info = check.getItem();
         List<String> cached = cachedKeys.get(info);
         if (cached != null) {
             return cached;

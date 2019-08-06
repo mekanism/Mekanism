@@ -3,7 +3,6 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 import java.util.Set;
 import mekanism.api.MekanismAPI;
-import mekanism.api.util.BlockInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import net.minecraft.block.Block;
@@ -23,11 +22,10 @@ public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, 
 
         @Override
         public void toBytes(ByteBuf dataStream) {
-            Set<BlockInfo> boxIgnore = MekanismAPI.getBoxIgnore();
+            Set<Block> boxIgnore = MekanismAPI.getBoxIgnore();
             dataStream.writeInt(boxIgnore.size());
-            for (BlockInfo info : boxIgnore) {
-                dataStream.writeInt(Block.getIdFromBlock(info.block));
-                dataStream.writeInt(info.meta);
+            for (Block info : boxIgnore) {
+                dataStream.writeInt(Block.getIdFromBlock(info));
             }
             Set<String> boxModIgnore = MekanismAPI.getBoxModIgnore();
             dataStream.writeInt(boxModIgnore.size());
@@ -41,7 +39,7 @@ public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, 
             MekanismAPI.getBoxIgnore().clear();
             int amount = dataStream.readInt();
             for (int i = 0; i < amount; i++) {
-                MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()), dataStream.readInt());
+                MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()));
             }
             int amountMods = dataStream.readInt();
             for (int i = 0; i < amountMods; i++) {
