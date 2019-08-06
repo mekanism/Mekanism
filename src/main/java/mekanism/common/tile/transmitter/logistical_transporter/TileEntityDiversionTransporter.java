@@ -33,18 +33,18 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("modes")) {
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("modes")) {
             modes = nbtTags.getIntArray("modes");
         }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setIntArray("modes", modes);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putIntArray("modes", modes);
         return nbtTags;
     }
 

@@ -137,23 +137,23 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
         buffer.amount = nbtTags.getDouble("cacheEnergy");
         if (buffer.amount < 0) {
             buffer.amount = 0;
         }
-        if (nbtTags.hasKey("tier")) {
-            tier = CableTier.values()[nbtTags.getInteger("tier")];
+        if (nbtTags.contains("tier")) {
+            tier = CableTier.values()[nbtTags.getInt("tier")];
         }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setDouble("cacheEnergy", lastWrite);
-        nbtTags.setInteger("tier", tier.ordinal());
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putDouble("cacheEnergy", lastWrite);
+        nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }
 

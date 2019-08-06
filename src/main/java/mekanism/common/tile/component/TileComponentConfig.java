@@ -215,10 +215,10 @@ public class TileComponentConfig implements ITileComponent {
     @Override
     public void write(CompoundNBT nbtTags) {
         for (TransmissionType type : transmissions) {
-            nbtTags.setByteArray("config" + type.ordinal(), sideConfigs.get(type).asByteArray());
-            nbtTags.setBoolean("ejecting" + type.ordinal(), ejecting.get(type));
+            nbtTags.putByteArray("config" + type.ordinal(), sideConfigs.get(type).asByteArray());
+            nbtTags.putBoolean("ejecting" + type.ordinal(), ejecting.get(type));
         }
-        nbtTags.setBoolean("sideDataStored", true);
+        nbtTags.putBoolean("sideDataStored", true);
     }
 
     @Override

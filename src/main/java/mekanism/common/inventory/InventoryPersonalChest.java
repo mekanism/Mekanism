@@ -44,9 +44,9 @@ public class InventoryPersonalChest extends Inventory {
         for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
             if (!getStackInSlot(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.setByte("Slot", (byte) slotCount);
-                getStackInSlot(slotCount).writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
+                tagCompound.putByte("Slot", (byte) slotCount);
+                getStackInSlot(slotCount).write(tagCompound);
+                tagList.add(tagCompound);
             }
         }
         if (!getStack().isEmpty()) {
@@ -61,11 +61,11 @@ public class InventoryPersonalChest extends Inventory {
         reading = true;
         ListNBT tagList = ((ISustainedInventory) getStack().getItem()).getInventory(getStack());
         if (tagList != null) {
-            for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-                CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
+            for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
+                CompoundNBT tagCompound = tagList.getCompound(tagCount);
                 byte slotID = tagCompound.getByte("Slot");
                 if (slotID >= 0 && slotID < getSizeInventory()) {
-                    setInventorySlotContents(slotID, new ItemStack(tagCompound));
+                    setInventorySlotContents(slotID, ItemStack.read(tagCompound));
                 }
             }
         }

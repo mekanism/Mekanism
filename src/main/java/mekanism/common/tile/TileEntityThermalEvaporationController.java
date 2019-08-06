@@ -462,10 +462,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        inputTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
-        outputTank.readFromNBT(nbtTags.getCompoundTag("brineTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        inputTank.readFromNBT(nbtTags.getCompound("waterTank"));
+        outputTank.readFromNBT(nbtTags.getCompound("brineTank"));
 
         temperature = nbtTags.getFloat("temperature");
 
@@ -475,15 +475,15 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setTag("waterTank", inputTank.writeToNBT(new CompoundNBT()));
-        nbtTags.setTag("brineTank", outputTank.writeToNBT(new CompoundNBT()));
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.put("waterTank", inputTank.writeToNBT(new CompoundNBT()));
+        nbtTags.put("brineTank", outputTank.writeToNBT(new CompoundNBT()));
 
-        nbtTags.setFloat("temperature", temperature);
+        nbtTags.putFloat("temperature", temperature);
 
-        nbtTags.setDouble("partialWater", partialInput);
-        nbtTags.setDouble("partialBrine", partialOutput);
+        nbtTags.putDouble("partialWater", partialInput);
+        nbtTags.putDouble("partialBrine", partialOutput);
         return nbtTags;
     }
 

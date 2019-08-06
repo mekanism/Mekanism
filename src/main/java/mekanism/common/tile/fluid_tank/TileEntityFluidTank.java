@@ -208,25 +208,25 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("tier", tier.ordinal());
-        nbtTags.setInteger("editMode", editMode.ordinal());
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("tier", tier.ordinal());
+        nbtTags.putInt("editMode", editMode.ordinal());
         if (fluidTank.getFluid() != null) {
-            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
+            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        tier = FluidTankTier.values()[nbtTags.getInteger("tier")];
-        editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
-        //Needs to be outside the hasKey check because this is just based on the tier which is known information
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        tier = FluidTankTier.values()[nbtTags.getInt("tier")];
+        editMode = ContainerEditMode.values()[nbtTags.getInt("editMode")];
+        //Needs to be outside the contains check because this is just based on the tier which is known information
         fluidTank.setCapacity(tier.getStorage());
-        if (nbtTags.hasKey("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+        if (nbtTags.contains("fluidTank")) {
+            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
         }
     }
 

@@ -336,13 +336,13 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     @Override
     public void writeEntityToNBT(CompoundNBT nbtTags) {
         super.writeEntityToNBT(nbtTags);
-        nbtTags.setDouble("electricityStored", getEnergy());
-        nbtTags.setString("name", getName());
+        nbtTags.putDouble("electricityStored", getEnergy());
+        nbtTags.putString("name", getName());
         if (getOwnerUUID() != null) {
-            nbtTags.setString("ownerUUID", getOwnerUUID().toString());
+            nbtTags.putString("ownerUUID", getOwnerUUID().toString());
         }
-        nbtTags.setBoolean("follow", getFollowing());
-        nbtTags.setBoolean("dropPickup", getDropPickup());
+        nbtTags.putBoolean("follow", getFollowing());
+        nbtTags.putBoolean("dropPickup", getDropPickup());
         if (homeLocation != null) {
             homeLocation.write(nbtTags);
         }
@@ -350,12 +350,12 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
         for (int slotCount = 0; slotCount < inventory.size(); slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.setByte("Slot", (byte) slotCount);
-                inventory.get(slotCount).writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
+                tagCompound.putByte("Slot", (byte) slotCount);
+                inventory.get(slotCount).write(tagCompound);
+                tagList.add(tagCompound);
             }
         }
-        nbtTags.setTag("Items", tagList);
+        nbtTags.put("Items", tagList);
     }
 
     @Override
@@ -363,20 +363,20 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
         super.readEntityFromNBT(nbtTags);
         setEnergy(nbtTags.getDouble("electricityStored"));
         setCustomNameTag(nbtTags.getString("name"));
-        if (nbtTags.hasKey("ownerUUID")) {
+        if (nbtTags.contains("ownerUUID")) {
             setOwnerUUID(UUID.fromString(nbtTags.getString("ownerUUID")));
         }
         setFollowing(nbtTags.getBoolean("follow"));
         setDropPickup(nbtTags.getBoolean("dropPickup"));
         homeLocation = Coord4D.read(nbtTags);
-        ListNBT tagList = nbtTags.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        ListNBT tagList = nbtTags.getList("Items", Constants.NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-        for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
+        for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
+            CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, new ItemStack(tagCompound));
+                inventory.set(slotID, ItemStack.read(tagCompound));
             }
         }
     }
@@ -527,15 +527,15 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
 
     @Override
     public void setInventory(ListNBT nbtTags, Object... data) {
-        if (nbtTags == null || nbtTags.tagCount() == 0) {
+        if (nbtTags == null || nbtTags.isEmpty()) {
             return;
         }
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-        for (int slots = 0; slots < nbtTags.tagCount(); slots++) {
-            CompoundNBT tagCompound = nbtTags.getCompoundTagAt(slots);
+        for (int slots = 0; slots < nbtTags.size(); slots++) {
+            CompoundNBT tagCompound = nbtTags.getCompound(slots);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, new ItemStack(tagCompound));
+                inventory.set(slotID, ItemStack.read(tagCompound));
             }
         }
     }
@@ -546,9 +546,9 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
         for (int slots = 0; slots < inventory.size(); slots++) {
             if (!inventory.get(slots).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.setByte("Slot", (byte) slots);
-                inventory.get(slots).writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
+                tagCompound.putByte("Slot", (byte) slots);
+                inventory.get(slots).write(tagCompound);
+                tagList.add(tagCompound);
             }
         }
         return tagList;

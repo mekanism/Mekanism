@@ -37,12 +37,12 @@ public enum Upgrade {
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundNBT nbtTags) {
         Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
         if (nbtTags != null) {
-            if (nbtTags.hasKey("upgrades")) {
-                ListNBT list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
-                for (int tagCount = 0; tagCount < list.tagCount(); tagCount++) {
-                    CompoundNBT compound = list.getCompoundTagAt(tagCount);
-                    Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
-                    upgrades.put(upgrade, compound.getInteger("amount"));
+            if (nbtTags.contains("upgrades")) {
+                ListNBT list = nbtTags.getList("upgrades", NBT.TAG_COMPOUND);
+                for (int tagCount = 0; tagCount < list.size(); tagCount++) {
+                    CompoundNBT compound = list.getCompound(tagCount);
+                    Upgrade upgrade = Upgrade.values()[compound.getInt("type")];
+                    upgrades.put(upgrade, compound.getInt("amount"));
                 }
             }
         }
@@ -52,15 +52,15 @@ public enum Upgrade {
     public static void saveMap(Map<Upgrade, Integer> upgrades, CompoundNBT nbtTags) {
         ListNBT list = new ListNBT();
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-            list.appendTag(getTagFor(entry.getKey(), entry.getValue()));
+            list.add(getTagFor(entry.getKey(), entry.getValue()));
         }
-        nbtTags.setTag("upgrades", list);
+        nbtTags.put("upgrades", list);
     }
 
     public static CompoundNBT getTagFor(Upgrade upgrade, int amount) {
         CompoundNBT compound = new CompoundNBT();
-        compound.setInteger("type", upgrade.ordinal());
-        compound.setInteger("amount", amount);
+        compound.putInt("type", upgrade.ordinal());
+        compound.putInt("amount", amount);
         return compound;
     }
 

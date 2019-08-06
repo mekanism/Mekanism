@@ -94,20 +94,20 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
         temperature = nbtTags.getDouble("temperature");
-        if (nbtTags.hasKey("tier")) {
-            tier = ConductorTier.values()[nbtTags.getInteger("tier")];
+        if (nbtTags.contains("tier")) {
+            tier = ConductorTier.values()[nbtTags.getInt("tier")];
         }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setDouble("temperature", temperature);
-        nbtTags.setInteger("tier", tier.ordinal());
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putDouble("temperature", temperature);
+        nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }
 

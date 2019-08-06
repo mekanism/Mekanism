@@ -152,18 +152,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        inputTank.read(nbtTags.getCompoundTag("inputTank"));
-        outputTank.read(nbtTags.getCompoundTag("outputTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        inputTank.read(nbtTags.getCompound("inputTank"));
+        outputTank.read(nbtTags.getCompound("outputTank"));
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setTag("inputTank", inputTank.write(new CompoundNBT()));
-        nbtTags.setTag("outputTank", outputTank.write(new CompoundNBT()));
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.put("inputTank", inputTank.write(new CompoundNBT()));
+        nbtTags.put("outputTank", outputTank.write(new CompoundNBT()));
         return nbtTags;
     }
 

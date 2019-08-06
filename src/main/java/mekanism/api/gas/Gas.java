@@ -186,7 +186,7 @@ public class Gas {
      * @return associated IIcon
      */
     public TextureAtlasSprite getSprite() {
-        AtlasTexture texMap = Minecraft.getInstance().getTextureMapBlocks();
+        AtlasTexture texMap = Minecraft.getInstance().getTextureMap();
         if (from_fluid) {
             return texMap.getAtlasSprite(fluid.getStill().toString());
         }
@@ -243,8 +243,7 @@ public class Gas {
      * @return the tag compound this gas was written to
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.setString("gasName", getName());
-
+        nbtTags.putString("gasName", getName());
         return nbtTags;
     }
 

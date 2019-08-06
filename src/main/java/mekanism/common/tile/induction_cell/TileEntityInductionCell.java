@@ -45,16 +45,16 @@ public abstract class TileEntityInductionCell extends TileEntityMekanism impleme
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
         electricityStored = nbtTags.getDouble("electricityStored");
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setDouble("electricityStored", electricityStored);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putDouble("electricityStored", electricityStored);
         return nbtTags;
     }
 

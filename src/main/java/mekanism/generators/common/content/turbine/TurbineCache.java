@@ -27,19 +27,19 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        if (nbtTags.hasKey("cachedFluid")) {
-            fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
+        if (nbtTags.contains("cachedFluid")) {
+            fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("cachedFluid"));
         }
         electricity = nbtTags.getDouble("electricity");
-        dumpMode = GasMode.values()[nbtTags.getInteger("dumpMode")];
+        dumpMode = GasMode.values()[nbtTags.getInt("dumpMode")];
     }
 
     @Override
     public void save(CompoundNBT nbtTags) {
         if (fluid != null) {
-            nbtTags.setTag("cachedFluid", fluid.writeToNBT(new CompoundNBT()));
+            nbtTags.put("cachedFluid", fluid.writeToNBT(new CompoundNBT()));
         }
-        nbtTags.setDouble("electricity", electricity);
-        nbtTags.setInteger("dumpMode", dumpMode.ordinal());
+        nbtTags.putDouble("electricity", electricity);
+        nbtTags.putInt("dumpMode", dumpMode.ordinal());
     }
 }

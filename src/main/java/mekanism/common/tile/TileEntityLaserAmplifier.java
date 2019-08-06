@@ -228,28 +228,28 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
         on = nbtTags.getBoolean("on");
         minThreshold = nbtTags.getDouble("minThreshold");
         maxThreshold = nbtTags.getDouble("maxThreshold");
-        time = nbtTags.getInteger("time");
+        time = nbtTags.getInt("time");
         collectedEnergy = nbtTags.getDouble("collectedEnergy");
         lastFired = nbtTags.getDouble("lastFired");
-        outputMode = RedstoneOutput.values()[nbtTags.getInteger("outputMode")];
+        outputMode = RedstoneOutput.values()[nbtTags.getInt("outputMode")];
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("on", on);
-        nbtTags.setDouble("minThreshold", minThreshold);
-        nbtTags.setDouble("maxThreshold", maxThreshold);
-        nbtTags.setInteger("time", time);
-        nbtTags.setDouble("collectedEnergy", collectedEnergy);
-        nbtTags.setDouble("lastFired", lastFired);
-        nbtTags.setInteger("outputMode", outputMode.ordinal());
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putBoolean("on", on);
+        nbtTags.putDouble("minThreshold", minThreshold);
+        nbtTags.putDouble("maxThreshold", maxThreshold);
+        nbtTags.putInt("time", time);
+        nbtTags.putDouble("collectedEnergy", collectedEnergy);
+        nbtTags.putDouble("lastFired", lastFired);
+        nbtTags.putInt("outputMode", outputMode.ordinal());
         return nbtTags;
     }
 

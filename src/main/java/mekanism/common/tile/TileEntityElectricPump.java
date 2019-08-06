@@ -233,46 +233,46 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setBoolean("suckedLastOperation", suckedLastOperation);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("operatingTicks", operatingTicks);
+        nbtTags.putBoolean("suckedLastOperation", suckedLastOperation);
 
         if (activeType != null) {
-            nbtTags.setString("activeType", FluidRegistry.getFluidName(activeType));
+            nbtTags.putString("activeType", FluidRegistry.getFluidName(activeType));
         }
 
         if (fluidTank.getFluid() != null) {
-            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
+            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 
         ListNBT recurringList = new ListNBT();
         for (Coord4D wrapper : recurringNodes) {
             CompoundNBT tagCompound = new CompoundNBT();
             wrapper.write(tagCompound);
-            recurringList.appendTag(tagCompound);
+            recurringList.add(tagCompound);
         }
-        if (recurringList.tagCount() != 0) {
-            nbtTags.setTag("recurringNodes", recurringList);
+        if (!recurringList.isEmpty()) {
+            nbtTags.put("recurringNodes", recurringList);
         }
         return nbtTags;
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        operatingTicks = nbtTags.getInteger("operatingTicks");
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        operatingTicks = nbtTags.getInt("operatingTicks");
         suckedLastOperation = nbtTags.getBoolean("suckedLastOperation");
-        if (nbtTags.hasKey("activeType")) {
+        if (nbtTags.contains("activeType")) {
             activeType = FluidRegistry.getFluid(nbtTags.getString("activeType"));
         }
-        if (nbtTags.hasKey("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+        if (nbtTags.contains("fluidTank")) {
+            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
         }
-        if (nbtTags.hasKey("recurringNodes")) {
-            ListNBT tagList = nbtTags.getTagList("recurringNodes", NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                recurringNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
+        if (nbtTags.contains("recurringNodes")) {
+            ListNBT tagList = nbtTags.getList("recurringNodes", NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                recurringNodes.add(Coord4D.read(tagList.getCompound(i)));
             }
         }
     }

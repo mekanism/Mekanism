@@ -91,22 +91,22 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        mainPos = new BlockPos(nbtTags.getInteger("mainX"), nbtTags.getInteger("mainY"), nbtTags.getInteger("mainZ"));
-        prevPower = nbtTags.getInteger("prevPower");
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        mainPos = new BlockPos(nbtTags.getInt("mainX"), nbtTags.getInt("mainY"), nbtTags.getInt("mainZ"));
+        prevPower = nbtTags.getInt("prevPower");
         receivedCoords = nbtTags.getBoolean("receivedCoords");
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("mainX", getMainPos().getX());
-        nbtTags.setInteger("mainY", getMainPos().getY());
-        nbtTags.setInteger("mainZ", getMainPos().getZ());
-        nbtTags.setInteger("prevPower", prevPower);
-        nbtTags.setBoolean("receivedCoords", receivedCoords);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("mainX", getMainPos().getX());
+        nbtTags.putInt("mainY", getMainPos().getY());
+        nbtTags.putInt("mainZ", getMainPos().getZ());
+        nbtTags.putInt("prevPower", prevPower);
+        nbtTags.putBoolean("receivedCoords", receivedCoords);
         return nbtTags;
     }
 

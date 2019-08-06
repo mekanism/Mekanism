@@ -44,8 +44,8 @@ public class DefaultStrictEnergyStorage implements IStrictEnergyStorage, INBTSer
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT tag = new CompoundNBT();
-        tag.setDouble("maxEnergy", getMaxEnergy());
-        tag.setDouble("energyStored", getEnergy());
+        tag.putDouble("maxEnergy", getMaxEnergy());
+        tag.putDouble("energyStored", getEnergy());
         return tag;
     }
 

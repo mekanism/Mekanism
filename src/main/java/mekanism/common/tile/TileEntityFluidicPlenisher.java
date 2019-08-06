@@ -194,57 +194,57 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setBoolean("finishedCalc", finishedCalc);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("operatingTicks", operatingTicks);
+        nbtTags.putBoolean("finishedCalc", finishedCalc);
 
         if (fluidTank.getFluid() != null) {
-            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
+            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 
         ListNBT activeList = new ListNBT();
         for (Coord4D wrapper : activeNodes) {
             CompoundNBT tagCompound = new CompoundNBT();
             wrapper.write(tagCompound);
-            activeList.appendTag(tagCompound);
+            activeList.add(tagCompound);
         }
-        if (activeList.tagCount() != 0) {
-            nbtTags.setTag("activeNodes", activeList);
+        if (!activeList.isEmpty()) {
+            nbtTags.put("activeNodes", activeList);
         }
 
         ListNBT usedList = new ListNBT();
         for (Coord4D obj : usedNodes) {
-            activeList.appendTag(obj.write(new CompoundNBT()));
+            activeList.add(obj.write(new CompoundNBT()));
         }
-        if (activeList.tagCount() != 0) {
-            nbtTags.setTag("usedNodes", usedList);
+        if (!activeList.isEmpty()) {
+            nbtTags.put("usedNodes", usedList);
         }
         return nbtTags;
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        operatingTicks = nbtTags.getInteger("operatingTicks");
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        operatingTicks = nbtTags.getInt("operatingTicks");
         finishedCalc = nbtTags.getBoolean("finishedCalc");
 
-        if (nbtTags.hasKey("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+        if (nbtTags.contains("fluidTank")) {
+            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
         }
 
-        if (nbtTags.hasKey("activeNodes")) {
-            ListNBT tagList = nbtTags.getTagList("activeNodes", NBT.TAG_COMPOUND);
+        if (nbtTags.contains("activeNodes")) {
+            ListNBT tagList = nbtTags.getList("activeNodes", NBT.TAG_COMPOUND);
 
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                activeNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
+            for (int i = 0; i < tagList.size(); i++) {
+                activeNodes.add(Coord4D.read(tagList.getCompound(i)));
             }
         }
-        if (nbtTags.hasKey("usedNodes")) {
-            ListNBT tagList = nbtTags.getTagList("usedNodes", NBT.TAG_COMPOUND);
+        if (nbtTags.contains("usedNodes")) {
+            ListNBT tagList = nbtTags.getList("usedNodes", NBT.TAG_COMPOUND);
 
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                usedNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
+            for (int i = 0; i < tagList.size(); i++) {
+                usedNodes.add(Coord4D.read(tagList.getCompound(i)));
             }
         }
     }

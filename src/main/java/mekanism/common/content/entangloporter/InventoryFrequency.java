@@ -46,24 +46,24 @@ public class InventoryFrequency extends Frequency {
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setDouble("storedEnergy", storedEnergy);
+        nbtTags.putDouble("storedEnergy", storedEnergy);
         if (storedFluid.getFluid() != null) {
-            nbtTags.setTag("storedFluid", storedFluid.writeToNBT(new CompoundNBT()));
+            nbtTags.put("storedFluid", storedFluid.writeToNBT(new CompoundNBT()));
         }
         if (storedGas.getGas() != null) {
-            nbtTags.setTag("storedGas", storedGas.write(new CompoundNBT()));
+            nbtTags.put("storedGas", storedGas.write(new CompoundNBT()));
         }
         ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < 1; slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.setByte("Slot", (byte) slotCount);
-                inventory.get(slotCount).writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
+                tagCompound.putByte("Slot", (byte) slotCount);
+                inventory.get(slotCount).write(tagCompound);
+                tagList.add(tagCompound);
             }
         }
-        nbtTags.setTag("Items", tagList);
-        nbtTags.setDouble("temperature", temperature);
+        nbtTags.put("Items", tagList);
+        nbtTags.putDouble("temperature", temperature);
     }
 
     @Override
@@ -73,21 +73,21 @@ public class InventoryFrequency extends Frequency {
         storedGas = GAS_TANK_SUPPLIER.get();
         storedEnergy = nbtTags.getDouble("storedEnergy");
 
-        if (nbtTags.hasKey("storedFluid")) {
-            storedFluid.readFromNBT(nbtTags.getCompoundTag("storedFluid"));
+        if (nbtTags.contains("storedFluid")) {
+            storedFluid.readFromNBT(nbtTags.getCompound("storedFluid"));
         }
-        if (nbtTags.hasKey("storedGas")) {
-            storedGas.read(nbtTags.getCompoundTag("storedGas"));
+        if (nbtTags.contains("storedGas")) {
+            storedGas.read(nbtTags.getCompound("storedGas"));
             storedGas.setMaxGas(MekanismConfig.current().general.quantumEntangloporterGasBuffer.val());
         }
 
-        ListNBT tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
+        ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-        for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
+        for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
+            CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID == 0) {
-                inventory.set(slotID, new ItemStack(tagCompound));
+                inventory.set(slotID, ItemStack.read(tagCompound));
             }
         }
         temperature = nbtTags.getDouble("temperature");

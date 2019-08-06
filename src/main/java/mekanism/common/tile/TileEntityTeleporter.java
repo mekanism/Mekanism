@@ -368,22 +368,22 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("frequency")) {
-            frequency = new Frequency(nbtTags.getCompoundTag("frequency"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("frequency")) {
+            frequency = new Frequency(nbtTags.getCompound("frequency"));
             frequency.valid = false;
         }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
-            nbtTags.setTag("frequency", frequencyTag);
+            nbtTags.put("frequency", frequencyTag);
         }
         return nbtTags;
     }

@@ -34,14 +34,14 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setInteger("type", 2);
-        materialItem.writeToNBT(nbtTags);
+        nbtTags.putInt("type", 2);
+        materialItem.write(nbtTags);
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        materialItem = new ItemStack(nbtTags);
+        materialItem = ItemStack.read(nbtTags);
     }
 
     @Override

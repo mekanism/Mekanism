@@ -16,7 +16,7 @@ public abstract class MinerFilter implements IFilter {
     public boolean requireStack;
 
     public static MinerFilter readFromNBT(CompoundNBT nbtTags) {
-        MinerFilter filter = getType(nbtTags.getInteger("type"));
+        MinerFilter filter = getType(nbtTags.getInt("type"));
         filter.read(nbtTags);
         return filter;
     }
@@ -45,17 +45,17 @@ public abstract class MinerFilter implements IFilter {
     public abstract boolean canFilter(ItemStack itemStack);
 
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.setBoolean("requireStack", requireStack);
+        nbtTags.putBoolean("requireStack", requireStack);
         if (!replaceStack.isEmpty()) {
-            nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new CompoundNBT()));
+            nbtTags.put("replaceStack", replaceStack.write(new CompoundNBT()));
         }
         return nbtTags;
     }
 
     protected void read(CompoundNBT nbtTags) {
         requireStack = nbtTags.getBoolean("requireStack");
-        if (nbtTags.hasKey("replaceStack")) {
-            replaceStack = new ItemStack(nbtTags.getCompoundTag("replaceStack"));
+        if (nbtTags.contains("replaceStack")) {
+            replaceStack = ItemStack.read(nbtTags.getCompound("replaceStack"));
         }
     }
 

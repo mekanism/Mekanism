@@ -206,9 +206,9 @@ public class GasTank implements GasTankInfo {
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
         if (stored != null && stored.getGas() != null && stored.amount > 0) {
-            nbtTags.setTag("stored", stored.write(new CompoundNBT()));
+            nbtTags.put("stored", stored.write(new CompoundNBT()));
         }
-        nbtTags.setInteger("maxGas", maxGas);
+        nbtTags.putInt("maxGas", maxGas);
         return nbtTags;
     }
 
@@ -218,16 +218,16 @@ public class GasTank implements GasTankInfo {
      * @param nbtTags - tag compound to read from
      */
     public void read(CompoundNBT nbtTags) {
-        if (nbtTags.hasKey("stored")) {
-            stored = GasStack.readFromNBT(nbtTags.getCompoundTag("stored"));
+        if (nbtTags.contains("stored")) {
+            stored = GasStack.readFromNBT(nbtTags.getCompound("stored"));
             if (stored != null && stored.amount <= 0) {
                 //fix any old data that may be broken
                 stored = null;
             }
         }
         //todo: this is weird, remove in v10?
-        if (nbtTags.hasKey("maxGas") && nbtTags.getInteger("maxGas") != 0) {
-            maxGas = nbtTags.getInteger("maxGas");
+        if (nbtTags.contains("maxGas") && nbtTags.getInt("maxGas") != 0) {
+            maxGas = nbtTags.getInt("maxGas");
         }
     }
 }

@@ -182,20 +182,20 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        inputFluidTank.readFromNBT(nbtTags.getCompoundTag("inputFluidTank"));
-        inputGasTank.read(nbtTags.getCompoundTag("inputGasTank"));
-        outputGasTank.read(nbtTags.getCompoundTag("outputGasTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        inputFluidTank.readFromNBT(nbtTags.getCompound("inputFluidTank"));
+        inputGasTank.read(nbtTags.getCompound("inputGasTank"));
+        outputGasTank.read(nbtTags.getCompound("outputGasTank"));
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setTag("inputFluidTank", inputFluidTank.writeToNBT(new CompoundNBT()));
-        nbtTags.setTag("inputGasTank", inputGasTank.write(new CompoundNBT()));
-        nbtTags.setTag("outputGasTank", outputGasTank.write(new CompoundNBT()));
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.put("inputFluidTank", inputFluidTank.writeToNBT(new CompoundNBT()));
+        nbtTags.put("inputGasTank", inputGasTank.write(new CompoundNBT()));
+        nbtTags.put("outputGasTank", outputGasTank.write(new CompoundNBT()));
         return nbtTags;
     }
 

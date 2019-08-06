@@ -15,7 +15,7 @@ public class IntegerInput extends MachineInput<IntegerInput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        ingredient = nbtTags.getInteger("input");
+        ingredient = nbtTags.getInt("input");
     }
 
     @Override

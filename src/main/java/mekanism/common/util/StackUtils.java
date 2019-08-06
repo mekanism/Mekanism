@@ -33,8 +33,8 @@ public final class StackUtils {
         if (wild.isEmpty() || check.isEmpty()) {
             return wildcard;
         }
-        return wildcard && (!wild.hasTagCompound() ? !check.hasTagCompound() : (wild.getTagCompound() == check.getTagCompound() ||
-                                                                                wild.getTagCompound().equals(check.getTagCompound())));
+        return wildcard && (!wild.hasTag() ? !check.hasTag() : (wild.getTag() == check.getTag() ||
+                                                                                wild.getTag().equals(check.getTag())));
     }
 
     //assumes stacks same

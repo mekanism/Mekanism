@@ -131,20 +131,20 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        leftTank.read(nbtTags.getCompoundTag("leftTank"));
-        rightTank.read(nbtTags.getCompoundTag("rightTank"));
-        centerTank.read(nbtTags.getCompoundTag("centerTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        leftTank.read(nbtTags.getCompound("leftTank"));
+        rightTank.read(nbtTags.getCompound("rightTank"));
+        centerTank.read(nbtTags.getCompound("centerTank"));
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setTag("leftTank", leftTank.write(new CompoundNBT()));
-        nbtTags.setTag("rightTank", rightTank.write(new CompoundNBT()));
-        nbtTags.setTag("centerTank", centerTank.write(new CompoundNBT()));
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.put("leftTank", leftTank.write(new CompoundNBT()));
+        nbtTags.put("rightTank", rightTank.write(new CompoundNBT()));
+        nbtTags.put("centerTank", centerTank.write(new CompoundNBT()));
         return nbtTags;
     }
 

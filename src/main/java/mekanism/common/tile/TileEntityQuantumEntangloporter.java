@@ -200,21 +200,21 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("frequency")) {
-            frequency = new InventoryFrequency(nbtTags.getCompoundTag("frequency"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("frequency")) {
+            frequency = new InventoryFrequency(nbtTags.getCompound("frequency"));
             frequency.valid = false;
         }
 
-        ListNBT tagList = nbtTags.getTagList("upgradesInv", Constants.NBT.TAG_COMPOUND);
+        ListNBT tagList = nbtTags.getList("upgradesInv", Constants.NBT.TAG_COMPOUND);
         //TODO: Given we only have one slot I think we can manually clear or something
         //inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
-        for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
+        for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
+            CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < getInventory().size()) {
-                getInventory().set(slotID, new ItemStack(tagCompound));
+                getInventory().set(slotID, ItemStack.read(tagCompound));
             }
         }
 
@@ -222,12 +222,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
-            nbtTags.setTag("frequency", frequencyTag);
+            nbtTags.put("frequency", frequencyTag);
         }
 
         //Upgrades inventory
@@ -236,12 +236,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             ItemStack stackInSlot = getInventory().get(slotCount);
             if (!stackInSlot.isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.setByte("Slot", (byte) slotCount);
-                stackInSlot.writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
+                tagCompound.putByte("Slot", (byte) slotCount);
+                stackInSlot.write(tagCompound);
+                tagList.add(tagCompound);
             }
         }
-        nbtTags.setTag("upgradesInv", tagList);
+        nbtTags.put("upgradesInv", tagList);
         return nbtTags;
     }
 

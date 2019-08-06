@@ -59,18 +59,18 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        logicType = ReactorLogic.values()[nbtTags.getInteger("logicType")];
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        logicType = ReactorLogic.values()[nbtTags.getInt("logicType")];
         activeCooled = nbtTags.getBoolean("activeCooled");
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("logicType", logicType.ordinal());
-        nbtTags.setBoolean("activeCooled", activeCooled);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("logicType", logicType.ordinal());
+        nbtTags.putBoolean("activeCooled", activeCooled);
         return nbtTags;
     }
 

@@ -248,20 +248,20 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        tier = GasTankTier.values()[nbtTags.getInteger("tier")];
-        gasTank.read(nbtTags.getCompoundTag("gasTank"));
-        dumping = GasMode.values()[nbtTags.getInteger("dumping")];
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        tier = GasTankTier.values()[nbtTags.getInt("tier")];
+        gasTank.read(nbtTags.getCompound("gasTank"));
+        dumping = GasMode.values()[nbtTags.getInt("dumping")];
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("tier", tier.ordinal());
-        nbtTags.setTag("gasTank", gasTank.write(new CompoundNBT()));
-        nbtTags.setInteger("dumping", dumping.ordinal());
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("tier", tier.ordinal());
+        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
+        nbtTags.putInt("dumping", dumping.ordinal());
         return nbtTags;
     }
 

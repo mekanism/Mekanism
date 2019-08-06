@@ -148,14 +148,14 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("tier")) {
-            tier = TubeTier.values()[nbtTags.getInteger("tier")];
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("tier")) {
+            tier = TubeTier.values()[nbtTags.getInt("tier")];
         }
         buffer.setMaxGas(getCapacity());
-        if (nbtTags.hasKey("cacheGas")) {
-            buffer.setGas(GasStack.readFromNBT(nbtTags.getCompoundTag("cacheGas")));
+        if (nbtTags.contains("cacheGas")) {
+            buffer.setGas(GasStack.readFromNBT(nbtTags.getCompound("cacheGas")));
         } else {
             buffer.setGas(null);
         }
@@ -163,14 +163,14 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         if (lastWrite != null && lastWrite.amount > 0) {
-            nbtTags.setTag("cacheGas", lastWrite.write(new CompoundNBT()));
+            nbtTags.put("cacheGas", lastWrite.write(new CompoundNBT()));
         } else {
-            nbtTags.removeTag("cacheGas");
+            nbtTags.remove("cacheGas");
         }
-        nbtTags.setInteger("tier", tier.ordinal());
+        nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }
 

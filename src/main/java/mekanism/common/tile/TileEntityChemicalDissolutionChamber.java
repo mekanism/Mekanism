@@ -178,21 +178,21 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        operatingTicks = nbtTags.getInteger("operatingTicks");
-        injectTank.read(nbtTags.getCompoundTag("injectTank"));
-        outputTank.read(nbtTags.getCompoundTag("gasTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        operatingTicks = nbtTags.getInt("operatingTicks");
+        injectTank.read(nbtTags.getCompound("injectTank"));
+        outputTank.read(nbtTags.getCompound("gasTank"));
         GasUtils.clearIfInvalid(injectTank, this::isValidGas);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setTag("injectTank", injectTank.write(new CompoundNBT()));
-        nbtTags.setTag("gasTank", outputTank.write(new CompoundNBT()));
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("operatingTicks", operatingTicks);
+        nbtTags.put("injectTank", injectTank.write(new CompoundNBT()));
+        nbtTags.put("gasTank", outputTank.write(new CompoundNBT()));
         return nbtTags;
     }
 

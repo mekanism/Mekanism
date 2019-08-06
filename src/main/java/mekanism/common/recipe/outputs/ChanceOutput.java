@@ -31,8 +31,8 @@ public class ChanceOutput extends MachineOutput<ChanceOutput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        primaryOutput = new ItemStack(nbtTags.getCompoundTag("primaryOutput"));
-        secondaryOutput = new ItemStack(nbtTags.getCompoundTag("secondaryOutput"));
+        primaryOutput = new ItemStack(nbtTags.getCompound("primaryOutput"));
+        secondaryOutput = new ItemStack(nbtTags.getCompound("secondaryOutput"));
         secondaryChance = nbtTags.getDouble("secondaryChance");
     }
 

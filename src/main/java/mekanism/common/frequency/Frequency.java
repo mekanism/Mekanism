@@ -74,9 +74,9 @@ public class Frequency {
     }
 
     public void write(CompoundNBT nbtTags) {
-        nbtTags.setString("name", name);
-        nbtTags.setString("ownerUUID", ownerUUID.toString());
-        nbtTags.setBoolean("publicFreq", publicFreq);
+        nbtTags.putString("name", name);
+        nbtTags.putString("ownerUUID", ownerUUID.toString());
+        nbtTags.putBoolean("publicFreq", publicFreq);
     }
 
     protected void read(CompoundNBT nbtTags) {
@@ -137,8 +137,8 @@ public class Frequency {
 
         public CompoundNBT serialize() {
             CompoundNBT tag = new CompoundNBT();
-            tag.setString("name", name);
-            tag.setBoolean("publicFreq", publicFreq);
+            tag.putString("name", name);
+            tag.putBoolean("publicFreq", publicFreq);
             return tag;
         }
     }

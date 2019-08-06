@@ -24,8 +24,8 @@ public class MModIDFilter extends MinerFilter implements IModIDFilter {
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setInteger("type", 3);
-        nbtTags.setString("modID", modID);
+        nbtTags.putInt("type", 3);
+        nbtTags.putString("modID", modID);
         return nbtTags;
     }
 

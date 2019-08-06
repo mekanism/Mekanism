@@ -152,45 +152,45 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT tag) {
-        super.writeToNBT(tag);
-        tag.setBoolean("formed", isFormed());
+    public CompoundNBT write(CompoundNBT tag) {
+        super.write(tag);
+        tag.putBoolean("formed", isFormed());
         if (isFormed()) {
-            tag.setDouble("plasmaTemp", getReactor().getPlasmaTemp());
-            tag.setDouble("caseTemp", getReactor().getCaseTemp());
-            tag.setInteger("injectionRate", getReactor().getInjectionRate());
-            tag.setBoolean("burning", getReactor().isBurning());
+            tag.putDouble("plasmaTemp", getReactor().getPlasmaTemp());
+            tag.putDouble("caseTemp", getReactor().getCaseTemp());
+            tag.putInt("injectionRate", getReactor().getInjectionRate());
+            tag.putBoolean("burning", getReactor().isBurning());
         } else {
-            tag.setDouble("plasmaTemp", 0);
-            tag.setDouble("caseTemp", 0);
-            tag.setInteger("injectionRate", 0);
-            tag.setBoolean("burning", false);
+            tag.putDouble("plasmaTemp", 0);
+            tag.putDouble("caseTemp", 0);
+            tag.putInt("injectionRate", 0);
+            tag.putBoolean("burning", false);
         }
-        tag.setTag("fuelTank", fuelTank.write(new CompoundNBT()));
-        tag.setTag("deuteriumTank", deuteriumTank.write(new CompoundNBT()));
-        tag.setTag("tritiumTank", tritiumTank.write(new CompoundNBT()));
-        tag.setTag("waterTank", waterTank.writeToNBT(new CompoundNBT()));
-        tag.setTag("steamTank", steamTank.writeToNBT(new CompoundNBT()));
+        tag.put("fuelTank", fuelTank.write(new CompoundNBT()));
+        tag.put("deuteriumTank", deuteriumTank.write(new CompoundNBT()));
+        tag.put("tritiumTank", tritiumTank.write(new CompoundNBT()));
+        tag.put("waterTank", waterTank.writeToNBT(new CompoundNBT()));
+        tag.put("steamTank", steamTank.writeToNBT(new CompoundNBT()));
         return tag;
     }
 
     @Override
-    public void readFromNBT(CompoundNBT tag) {
-        super.readFromNBT(tag);
+    public void read(CompoundNBT tag) {
+        super.read(tag);
         boolean formed = tag.getBoolean("formed");
         if (formed) {
             setReactor(new FusionReactor(this));
             getReactor().setPlasmaTemp(tag.getDouble("plasmaTemp"));
             getReactor().setCaseTemp(tag.getDouble("caseTemp"));
-            getReactor().setInjectionRate(tag.getInteger("injectionRate"));
+            getReactor().setInjectionRate(tag.getInt("injectionRate"));
             getReactor().setBurning(tag.getBoolean("burning"));
             getReactor().updateTemperatures();
         }
-        fuelTank.read(tag.getCompoundTag("fuelTank"));
-        deuteriumTank.read(tag.getCompoundTag("deuteriumTank"));
-        tritiumTank.read(tag.getCompoundTag("tritiumTank"));
-        waterTank.readFromNBT(tag.getCompoundTag("waterTank"));
-        steamTank.readFromNBT(tag.getCompoundTag("steamTank"));
+        fuelTank.read(tag.getCompound("fuelTank"));
+        deuteriumTank.read(tag.getCompound("deuteriumTank"));
+        tritiumTank.read(tag.getCompound("tritiumTank"));
+        waterTank.readFromNBT(tag.getCompound("waterTank"));
+        steamTank.readFromNBT(tag.getCompound("steamTank"));
     }
 
     @Override

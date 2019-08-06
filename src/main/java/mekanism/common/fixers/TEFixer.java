@@ -30,19 +30,19 @@ public class TEFixer extends BaseMekanismFixer {
         String teLoc = compound.getString("id");
         //Fix multipart
         if (teLoc.equals("mcmultipart:multipart.ticking") || teLoc.equals("mcmultipart:multipart.nonticking")) {
-            if (compound.hasKey("parts")) {
-                CompoundNBT parts = compound.getCompoundTag("parts");
+            if (compound.contains("parts")) {
+                CompoundNBT parts = compound.getCompound("parts");
                 for (String sID : parts.getKeySet()) {
-                    CompoundNBT part = parts.getCompoundTag(sID);
-                    if (part.hasKey("tile")) {
-                        fixTagCompound(part.getCompoundTag("tile"));
+                    CompoundNBT part = parts.getCompound(sID);
+                    if (part.contains("tile")) {
+                        fixTagCompound(part.getCompound("tile"));
                     }
                 }
             }
         } else if (tileEntityNames.containsKey(teLoc)) {
             //Fix other TEs but only if they are one of ours
             String newID = tileEntityNames.get(teLoc);
-            compound.setString("id", newID);
+            compound.putString("id", newID);
             Mekanism.logger.info("Fixed TE from {} to {}", teLoc, newID);
         }
         return compound;

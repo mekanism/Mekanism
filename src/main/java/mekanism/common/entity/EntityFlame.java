@@ -243,12 +243,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     protected void readEntityFromNBT(@Nonnull CompoundNBT nbtTags) {
-        mode = ItemFlamethrower.FlamethrowerMode.values()[nbtTags.getInteger("mode")];
+        mode = ItemFlamethrower.FlamethrowerMode.values()[nbtTags.getInt("mode")];
     }
 
     @Override
     protected void writeEntityToNBT(@Nonnull CompoundNBT nbtTags) {
-        nbtTags.setInteger("mode", mode.ordinal());
+        nbtTags.putInt("mode", mode.ordinal());
     }
 
     @Override

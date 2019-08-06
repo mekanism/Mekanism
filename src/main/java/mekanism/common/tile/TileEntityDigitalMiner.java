@@ -511,26 +511,26 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
         running = nbtTags.getBoolean("running");
-        delay = nbtTags.getInteger("delay");
-        numPowering = nbtTags.getInteger("numPowering");
-        searcher.state = State.values()[nbtTags.getInteger("state")];
+        delay = nbtTags.getInt("delay");
+        numPowering = nbtTags.getInt("numPowering");
+        searcher.state = State.values()[nbtTags.getInt("state")];
         setConfigurationData(nbtTags);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         if (searcher.state == State.SEARCHING) {
             reset();
         }
-        nbtTags.setBoolean("running", running);
-        nbtTags.setInteger("delay", delay);
-        nbtTags.setInteger("numPowering", numPowering);
-        nbtTags.setInteger("state", searcher.state.ordinal());
+        nbtTags.putBoolean("running", running);
+        nbtTags.putInt("delay", delay);
+        nbtTags.putInt("numPowering", numPowering);
+        nbtTags.putInt("state", searcher.state.ordinal());
         return getConfigurationData(nbtTags);
     }
 
@@ -948,36 +948,36 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        nbtTags.setInteger("radius", radius);
-        nbtTags.setInteger("minY", minY);
-        nbtTags.setInteger("maxY", maxY);
-        nbtTags.setBoolean("doEject", doEject);
-        nbtTags.setBoolean("doPull", doPull);
-        nbtTags.setBoolean("silkTouch", silkTouch);
-        nbtTags.setBoolean("inverse", inverse);
+        nbtTags.putInt("radius", radius);
+        nbtTags.putInt("minY", minY);
+        nbtTags.putInt("maxY", maxY);
+        nbtTags.putBoolean("doEject", doEject);
+        nbtTags.putBoolean("doPull", doPull);
+        nbtTags.putBoolean("silkTouch", silkTouch);
+        nbtTags.putBoolean("inverse", inverse);
         ListNBT filterTags = new ListNBT();
         for (MinerFilter filter : filters) {
-            filterTags.appendTag(filter.write(new CompoundNBT()));
+            filterTags.add(filter.write(new CompoundNBT()));
         }
-        if (filterTags.tagCount() != 0) {
-            nbtTags.setTag("filters", filterTags);
+        if (!filterTags.isEmpty()) {
+            nbtTags.put("filters", filterTags);
         }
         return nbtTags;
     }
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        setRadius(Math.min(nbtTags.getInteger("radius"), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
-        minY = nbtTags.getInteger("minY");
-        maxY = nbtTags.getInteger("maxY");
+        setRadius(Math.min(nbtTags.getInt("radius"), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
+        minY = nbtTags.getInt("minY");
+        maxY = nbtTags.getInt("maxY");
         doEject = nbtTags.getBoolean("doEject");
         doPull = nbtTags.getBoolean("doPull");
         silkTouch = nbtTags.getBoolean("silkTouch");
         inverse = nbtTags.getBoolean("inverse");
-        if (nbtTags.hasKey("filters")) {
-            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
+        if (nbtTags.contains("filters")) {
+            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
     }
@@ -1002,10 +1002,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         ListNBT filterTags = new ListNBT();
 
         for (MinerFilter filter : filters) {
-            filterTags.appendTag(filter.write(new CompoundNBT()));
+            filterTags.add(filter.write(new CompoundNBT()));
         }
 
-        if (filterTags.tagCount() != 0) {
+        if (!filterTags.isEmpty()) {
             ItemDataUtils.setList(itemStack, "filters", filterTags);
         }
     }
@@ -1023,8 +1023,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
             if (ItemDataUtils.hasData(itemStack, "filters")) {
                 ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
-                for (int i = 0; i < tagList.tagCount(); i++) {
-                    filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
+                for (int i = 0; i < tagList.size(); i++) {
+                    filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
                 }
             }
         }

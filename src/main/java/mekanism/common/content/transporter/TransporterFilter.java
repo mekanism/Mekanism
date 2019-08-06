@@ -22,7 +22,7 @@ public abstract class TransporterFilter implements IFilter {
     public boolean allowDefault;
 
     public static TransporterFilter readFromNBT(CompoundNBT nbtTags) {
-        TransporterFilter filter = getType(nbtTags.getInteger("type"));
+        TransporterFilter filter = getType(nbtTags.getInt("type"));
         filter.read(nbtTags);
         return filter;
     }
@@ -59,16 +59,16 @@ public abstract class TransporterFilter implements IFilter {
     }
 
     public void write(CompoundNBT nbtTags) {
-        nbtTags.setBoolean("allowDefault", allowDefault);
+        nbtTags.putBoolean("allowDefault", allowDefault);
         if (color != null) {
-            nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+            nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));
         }
     }
 
     protected void read(CompoundNBT nbtTags) {
         allowDefault = nbtTags.getBoolean("allowDefault");
-        if (nbtTags.hasKey("color")) {
-            color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+        if (nbtTags.contains("color")) {
+            color = TransporterUtils.colors.get(nbtTags.getInt("color"));
         }
     }
 

@@ -502,27 +502,27 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public abstract void onUpdate();
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
         redstone = nbtTags.getBoolean("redstone");
         for (ITileComponent component : components) {
             component.read(nbtTags);
         }
-        if (isDirectional() && nbtTags.hasKey("facing")) {
-            facing = Direction.byIndex(nbtTags.getInteger("facing"));
+        if (isDirectional() && nbtTags.contains("facing")) {
+            facing = Direction.byIndex(nbtTags.getInt("facing"));
         }
-        if (supportsRedstone() && nbtTags.hasKey("controlType")) {
-            controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        if (supportsRedstone() && nbtTags.contains("controlType")) {
+            controlType = RedstoneControl.values()[nbtTags.getInt("controlType")];
         }
         if (hasInventory()) {
             if (handleInventory()) {
-                ListNBT tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
+                ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
                 inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-                for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-                    CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
+                for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
+                    CompoundNBT tagCompound = tagList.getCompound(tagCount);
                     byte slotID = tagCompound.getByte("Slot");
                     if (slotID >= 0 && slotID < getSizeInventory()) {
-                        setInventorySlotContents(slotID, new ItemStack(tagCompound));
+                        setInventorySlotContents(slotID, ItemStack.read(tagCompound));
                     }
                 }
             }
@@ -537,17 +537,17 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("redstone", redstone);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putBoolean("redstone", redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags);
         }
         if (isDirectional()) {
-            nbtTags.setInteger("facing", getDirection().ordinal());
+            nbtTags.putInt("facing", getDirection().ordinal());
         }
         if (supportsRedstone()) {
-            nbtTags.setInteger("controlType", controlType.ordinal());
+            nbtTags.putInt("controlType", controlType.ordinal());
         }
         if (hasInventory()) {
             if (handleInventory()) {
@@ -556,19 +556,19 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     ItemStack stackInSlot = getStackInSlot(slotCount);
                     if (!stackInSlot.isEmpty()) {
                         CompoundNBT tagCompound = new CompoundNBT();
-                        tagCompound.setByte("Slot", (byte) slotCount);
-                        stackInSlot.writeToNBT(tagCompound);
-                        tagList.appendTag(tagCompound);
+                        tagCompound.putByte("Slot", (byte) slotCount);
+                        stackInSlot.write(tagCompound);
+                        tagList.add(tagCompound);
                     }
                 }
-                nbtTags.setTag("Items", tagList);
+                nbtTags.put("Items", tagList);
             }
         }
         if (isElectric()) {
-            nbtTags.setDouble("electricityStored", getEnergy());
+            nbtTags.putDouble("electricityStored", getEnergy());
         }
         if (isActivatable()) {
-            nbtTags.setBoolean("isActive", getActive());
+            nbtTags.putBoolean("isActive", getActive());
         }
         return nbtTags;
     }
@@ -739,15 +739,15 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void setInventory(ListNBT nbtTags, Object... data) {
-        if (nbtTags == null || nbtTags.tagCount() == 0 || !handleInventory()) {
+        if (nbtTags == null || nbtTags.isEmpty() || !handleInventory()) {
             return;
         }
         NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-        for (int slots = 0; slots < nbtTags.tagCount(); slots++) {
-            CompoundNBT tagCompound = nbtTags.getCompoundTagAt(slots);
+        for (int slots = 0; slots < nbtTags.size(); slots++) {
+            CompoundNBT tagCompound = nbtTags.getCompound(slots);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, new ItemStack(tagCompound));
+                inventory.set(slotID, ItemStack.read(tagCompound));
             }
         }
         this.inventory = inventory;
@@ -762,9 +762,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 ItemStack itemStack = inventory.get(slots);
                 if (!itemStack.isEmpty()) {
                     CompoundNBT tagCompound = new CompoundNBT();
-                    tagCompound.setByte("Slot", (byte) slots);
-                    itemStack.writeToNBT(tagCompound);
-                    tagList.appendTag(tagCompound);
+                    tagCompound.putByte("Slot", (byte) slots);
+                    itemStack.write(tagCompound);
+                    tagList.add(tagCompound);
                 }
             }
         }

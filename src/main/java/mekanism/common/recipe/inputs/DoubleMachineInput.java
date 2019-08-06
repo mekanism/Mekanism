@@ -21,8 +21,8 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput> impleme
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        itemStack = new ItemStack(nbtTags.getCompoundTag("input"));
-        extraStack = new ItemStack(nbtTags.getCompoundTag("extra"));
+        itemStack = new ItemStack(nbtTags.getCompound("input"));
+        extraStack = new ItemStack(nbtTags.getCompound("extra"));
     }
 
     @Override

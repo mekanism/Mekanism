@@ -240,18 +240,18 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        gasTank.read(nbtTags.getCompoundTag("gasTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        gasTank.read(nbtTags.getCompound("gasTank"));
         gasTank.setMaxGas(MAX_GAS);
         GasUtils.clearIfInvalid(gasTank, this::isValidGas);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setTag("gasTank", gasTank.write(new CompoundNBT()));
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
         return nbtTags;
     }
 

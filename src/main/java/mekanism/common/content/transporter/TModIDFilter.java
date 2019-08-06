@@ -25,8 +25,8 @@ public class TModIDFilter extends TransporterFilter implements IModIDFilter {
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setInteger("type", 3);
-        nbtTags.setString("modID", modID);
+        nbtTags.putInt("type", 3);
+        nbtTags.putString("modID", modID);
     }
 
     @Override

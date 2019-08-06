@@ -107,7 +107,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
 
     @Override
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
-        if (stack.hasTagCompound() && tile instanceof TileEntityBin) {
+        if (stack.hasTag() && tile instanceof TileEntityBin) {
             InventoryBin inv = new InventoryBin(stack);
             if (!inv.getItemType().isEmpty()) {
                 TileEntityBin bin = (TileEntityBin) tile;

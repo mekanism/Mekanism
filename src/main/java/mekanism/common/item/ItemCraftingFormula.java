@@ -109,11 +109,11 @@ public class ItemCraftingFormula extends ItemMekanism {
         }
         ListNBT tagList = ItemDataUtils.getList(stack, "Items");
         NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
-        for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
+        for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
+            CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < 9) {
-                inventory.set(slotID, new ItemStack(tagCompound));
+                inventory.set(slotID, ItemStack.read(tagCompound));
             }
         }
         return inventory;
@@ -128,9 +128,9 @@ public class ItemCraftingFormula extends ItemMekanism {
         for (int slotCount = 0; slotCount < 9; slotCount++) {
             if (!inv.get(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.setByte("Slot", (byte) slotCount);
-                inv.get(slotCount).writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
+                tagCompound.putByte("Slot", (byte) slotCount);
+                inv.get(slotCount).write(tagCompound);
+                tagList.add(tagCompound);
             }
         }
         ItemDataUtils.setList(stack, "Items", tagList);

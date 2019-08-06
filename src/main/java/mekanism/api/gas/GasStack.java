@@ -84,7 +84,7 @@ public class GasStack {
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
         type.write(nbtTags);
-        nbtTags.setInteger("amount", amount);
+        nbtTags.putInt("amount", amount);
 
         return nbtTags;
     }
@@ -96,7 +96,7 @@ public class GasStack {
      */
     public void read(CompoundNBT nbtTags) {
         type = Gas.readFromNBT(nbtTags);
-        amount = nbtTags.getInteger("amount");
+        amount = nbtTags.getInt("amount");
     }
 
     /**

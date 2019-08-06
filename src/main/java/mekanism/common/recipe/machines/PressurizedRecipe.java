@@ -29,7 +29,7 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
     public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedOutput pressurizedProducts, CompoundNBT extraNBT) {
         super(pressurizedInput, pressurizedProducts);
         extraEnergy = extraNBT.getDouble("extraEnergy");
-        ticks = extraNBT.getInteger("duration");
+        ticks = extraNBT.getInt("duration");
     }
 
     @Override

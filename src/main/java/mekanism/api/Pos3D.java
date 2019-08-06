@@ -117,9 +117,9 @@ public class Pos3D extends Vec3d {
      * @return the tag compound with this Pos3D's data
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.setDouble("x", x);
-        nbtTags.setDouble("y", y);
-        nbtTags.setDouble("z", z);
+        nbtTags.putDouble("x", x);
+        nbtTags.putDouble("y", y);
+        nbtTags.putDouble("z", z);
         return nbtTags;
     }
 

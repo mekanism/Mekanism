@@ -201,12 +201,12 @@ public class TileComponentEjector implements ITileComponent {
     @Override
     public void read(CompoundNBT nbtTags) {
         strictInput = nbtTags.getBoolean("strictInput");
-        if (nbtTags.hasKey("ejectColor")) {
-            outputColor = readColor(nbtTags.getInteger("ejectColor"));
+        if (nbtTags.contains("ejectColor")) {
+            outputColor = readColor(nbtTags.getInt("ejectColor"));
         }
         for (int i = 0; i < 6; i++) {
-            if (nbtTags.hasKey("inputColors" + i)) {
-                inputColors[i] = readColor(nbtTags.getInteger("inputColors" + i));
+            if (nbtTags.contains("inputColors" + i)) {
+                inputColors[i] = readColor(nbtTags.getInt("inputColors" + i));
             }
         }
     }
@@ -222,12 +222,12 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void write(CompoundNBT nbtTags) {
-        nbtTags.setBoolean("strictInput", strictInput);
+        nbtTags.putBoolean("strictInput", strictInput);
         if (outputColor != null) {
-            nbtTags.setInteger("ejectColor", getColorIndex(outputColor));
+            nbtTags.putInt("ejectColor", getColorIndex(outputColor));
         }
         for (int i = 0; i < 6; i++) {
-            nbtTags.setInteger("inputColors" + i, getColorIndex(inputColors[i]));
+            nbtTags.putInt("inputColors" + i, getColorIndex(inputColors[i]));
         }
     }
 

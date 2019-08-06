@@ -43,20 +43,20 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setInteger("type", 0);
-        nbtTags.setBoolean("sizeMode", sizeMode);
-        nbtTags.setInteger("min", min);
-        nbtTags.setInteger("max", max);
-        itemType.writeToNBT(nbtTags);
+        nbtTags.putInt("type", 0);
+        nbtTags.putBoolean("sizeMode", sizeMode);
+        nbtTags.putInt("min", min);
+        nbtTags.putInt("max", max);
+        itemType.write(nbtTags);
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         sizeMode = nbtTags.getBoolean("sizeMode");
-        min = nbtTags.getInteger("min");
-        max = nbtTags.getInteger("max");
-        itemType = new ItemStack(nbtTags);
+        min = nbtTags.getInt("min");
+        max = nbtTags.getInt("max");
+        itemType = ItemStack.read(nbtTags);
     }
 
     @Override

@@ -111,14 +111,14 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("tier")) {
-            tier = PipeTier.values()[nbtTags.getInteger("tier")];
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("tier")) {
+            tier = PipeTier.values()[nbtTags.getInt("tier")];
         }
         buffer.setCapacity(getCapacity());
-        if (nbtTags.hasKey("cacheFluid")) {
-            buffer.setFluid(FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cacheFluid")));
+        if (nbtTags.contains("cacheFluid")) {
+            buffer.setFluid(FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("cacheFluid")));
         } else {
             buffer.setFluid(null);
         }
@@ -126,14 +126,14 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         if (lastWrite != null && lastWrite.amount > 0) {
-            nbtTags.setTag("cacheFluid", lastWrite.writeToNBT(new CompoundNBT()));
+            nbtTags.put("cacheFluid", lastWrite.writeToNBT(new CompoundNBT()));
         } else {
-            nbtTags.removeTag("cacheFluid");
+            nbtTags.remove("cacheFluid");
         }
-        nbtTags.setInteger("tier", tier.ordinal());
+        nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }
 

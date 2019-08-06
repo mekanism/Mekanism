@@ -18,7 +18,7 @@ public class ItemStackOutput extends MachineOutput<ItemStackOutput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        output = new ItemStack(nbtTags.getCompoundTag("output"));
+        output = new ItemStack(nbtTags.getCompound("output"));
     }
 
     public boolean applyOutputs(NonNullList<ItemStack> inventory, int index, boolean doEmit) {

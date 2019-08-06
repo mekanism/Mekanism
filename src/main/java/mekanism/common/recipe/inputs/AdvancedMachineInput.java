@@ -24,8 +24,8 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> imp
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        itemStack = new ItemStack(nbtTags.getCompoundTag("input"));
-        gasType = Gas.readFromNBT(nbtTags.getCompoundTag("gasType"));
+        itemStack = new ItemStack(nbtTags.getCompound("input"));
+        gasType = Gas.readFromNBT(nbtTags.getCompound("gasType"));
     }
 
     @Override

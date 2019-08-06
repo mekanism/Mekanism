@@ -39,15 +39,15 @@ public class SecurityFrequency extends Frequency {
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setBoolean("override", override);
-        nbtTags.setInteger("securityMode", securityMode.ordinal());
+        nbtTags.putBoolean("override", override);
+        nbtTags.putInt("securityMode", securityMode.ordinal());
 
         if (!trusted.isEmpty()) {
             ListNBT trustedList = new ListNBT();
             for (String s : trusted) {
-                trustedList.appendTag(new StringNBT(s));
+                trustedList.add(new StringNBT(s));
             }
-            nbtTags.setTag("trusted", trustedList);
+            nbtTags.put("trusted", trustedList);
         }
     }
 
@@ -59,11 +59,11 @@ public class SecurityFrequency extends Frequency {
         securityMode = SecurityMode.PUBLIC;
 
         override = nbtTags.getBoolean("override");
-        securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
+        securityMode = SecurityMode.values()[nbtTags.getInt("securityMode")];
 
-        if (nbtTags.hasKey("trusted")) {
-            ListNBT trustedList = nbtTags.getTagList("trusted", NBT.TAG_STRING);
-            for (int i = 0; i < trustedList.tagCount(); i++) {
+        if (nbtTags.contains("trusted")) {
+            ListNBT trustedList = nbtTags.getList("trusted", NBT.TAG_STRING);
+            for (int i = 0; i < trustedList.size(); i++) {
                 trusted.add(trustedList.getStringTagAt(i));
             }
         }

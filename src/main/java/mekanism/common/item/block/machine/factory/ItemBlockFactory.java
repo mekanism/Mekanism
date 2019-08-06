@@ -65,7 +65,7 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip implements IItemE
         list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
                  + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
         list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
-                 LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+                 LangUtils.transYesNo(getInventory(itemstack) != null && !getInventory(itemstack).isEmpty()));
         if (block instanceof ISupportsUpgrades && ItemDataUtils.hasData(itemstack, "upgrades")) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
@@ -76,10 +76,10 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip implements IItemE
 
     @Override
     public int getRecipeType(ItemStack itemStack) {
-        if (itemStack.getTagCompound() == null) {
+        if (!itemStack.hasTag()) {
             return 0;
         }
-        return itemStack.getTagCompound().getInteger("recipeType");
+        return itemStack.getTag().getInt("recipeType");
     }
 
     @Nullable
@@ -94,10 +94,10 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip implements IItemE
 
     @Override
     public void setRecipeType(int type, ItemStack itemStack) {
-        if (itemStack.getTagCompound() == null) {
-            itemStack.setTagCompound(new CompoundNBT());
+        if (!itemStack.hasTag()) {
+            itemStack.setTag(new CompoundNBT());
         }
-        itemStack.getTagCompound().setInteger("recipeType", type);
+        itemStack.getTag().putInt("recipeType", type);
     }
 
     @Override

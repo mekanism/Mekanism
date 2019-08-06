@@ -58,7 +58,7 @@ public class ItemConfigurationCard extends ItemMekanism {
                         }
 
                         if (data != null) {
-                            data.setString("dataType", getNameFromTile(tileEntity, side));
+                            data.putString("dataType", getNameFromTile(tileEntity, side));
                             setData(stack, data);
                             player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
                                                                        LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s",
@@ -93,7 +93,7 @@ public class ItemConfigurationCard extends ItemMekanism {
     private CompoundNBT getBaseData(TileEntity tile) {
         CompoundNBT nbtTags = new CompoundNBT();
         if (tile instanceof IRedstoneControl) {
-            nbtTags.setInteger("controlType", ((IRedstoneControl) tile).getControlType().ordinal());
+            nbtTags.putInt("controlType", ((IRedstoneControl) tile).getControlType().ordinal());
         }
         if (tile instanceof ISideConfiguration) {
             ((ISideConfiguration) tile).getConfig().write(nbtTags);
@@ -104,7 +104,7 @@ public class ItemConfigurationCard extends ItemMekanism {
 
     private void setBaseData(CompoundNBT nbtTags, TileEntity tile) {
         if (tile instanceof IRedstoneControl) {
-            ((IRedstoneControl) tile).setControlType(RedstoneControl.values()[nbtTags.getInteger("controlType")]);
+            ((IRedstoneControl) tile).setControlType(RedstoneControl.values()[nbtTags.getInt("controlType")]);
         }
         if (tile instanceof ISideConfiguration) {
             ((ISideConfiguration) tile).getConfig().read(nbtTags);

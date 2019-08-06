@@ -291,28 +291,28 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("fluidTank")) {
+            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
         }
-        leftTank.read(nbtTags.getCompoundTag("leftTank"));
-        rightTank.read(nbtTags.getCompoundTag("rightTank"));
-        dumpLeft = GasMode.values()[nbtTags.getInteger("dumpLeft")];
-        dumpRight = GasMode.values()[nbtTags.getInteger("dumpRight")];
+        leftTank.read(nbtTags.getCompound("leftTank"));
+        rightTank.read(nbtTags.getCompound("rightTank"));
+        dumpLeft = GasMode.values()[nbtTags.getInt("dumpLeft")];
+        dumpRight = GasMode.values()[nbtTags.getInt("dumpRight")];
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         if (fluidTank.getFluid() != null) {
-            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
+            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
-        nbtTags.setTag("leftTank", leftTank.write(new CompoundNBT()));
-        nbtTags.setTag("rightTank", rightTank.write(new CompoundNBT()));
-        nbtTags.setInteger("dumpLeft", dumpLeft.ordinal());
-        nbtTags.setInteger("dumpRight", dumpRight.ordinal());
+        nbtTags.put("leftTank", leftTank.write(new CompoundNBT()));
+        nbtTags.put("rightTank", rightTank.write(new CompoundNBT()));
+        nbtTags.putInt("dumpLeft", dumpLeft.ordinal());
+        nbtTags.putInt("dumpRight", dumpRight.ordinal());
         return nbtTags;
     }
 

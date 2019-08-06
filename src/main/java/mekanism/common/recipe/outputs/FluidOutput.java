@@ -17,7 +17,7 @@ public class FluidOutput extends MachineOutput<FluidOutput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        output = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("output"));
+        output = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("output"));
     }
 
     @Override

@@ -105,7 +105,7 @@ public class EntityObsidianTNT extends Entity {
 
     @Override
     protected void writeEntityToNBT(@Nonnull CompoundNBT nbtTags) {
-        nbtTags.setByte("Fuse", (byte) fuse);
+        nbtTags.putByte("Fuse", (byte) fuse);
     }
 
     @Override

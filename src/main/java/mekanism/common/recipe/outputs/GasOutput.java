@@ -17,7 +17,7 @@ public class GasOutput extends MachineOutput<GasOutput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        output = GasStack.readFromNBT(nbtTags.getCompoundTag("output"));
+        output = GasStack.readFromNBT(nbtTags.getCompound("output"));
     }
 
     @Override

@@ -15,9 +15,9 @@ public class ChunkManager implements LoadingCallback, PlayerOrderedLoadingCallba
     @Override
     public void ticketsLoaded(List<Ticket> tickets, World world) {
         for (Ticket ticket : tickets) {
-            int x = ticket.getModData().getInteger("x");
-            int y = ticket.getModData().getInteger("y");
-            int z = ticket.getModData().getInteger("z");
+            int x = ticket.getModData().getInt("x");
+            int y = ticket.getModData().getInt("y");
+            int z = ticket.getModData().getInt("z");
             TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
             if (tileEntity instanceof IChunkLoader) {
                 TileComponentChunkLoader chunkLoader = ((IChunkLoader) tileEntity).getChunkLoader();

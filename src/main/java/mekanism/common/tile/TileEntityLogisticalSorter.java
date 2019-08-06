@@ -154,49 +154,49 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
 
         if (color != null) {
-            nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+            nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));
         }
 
-        nbtTags.setBoolean("autoEject", autoEject);
-        nbtTags.setBoolean("roundRobin", roundRobin);
-        nbtTags.setBoolean("singleItem", singleItem);
+        nbtTags.putBoolean("autoEject", autoEject);
+        nbtTags.putBoolean("roundRobin", roundRobin);
+        nbtTags.putBoolean("singleItem", singleItem);
 
-        nbtTags.setInteger("rrIndex", rrIndex);
+        nbtTags.putInt("rrIndex", rrIndex);
 
         ListNBT filterTags = new ListNBT();
 
         for (TransporterFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
-            filterTags.appendTag(tagCompound);
+            filterTags.add(tagCompound);
         }
-        if (filterTags.tagCount() != 0) {
-            nbtTags.setTag("filters", filterTags);
+        if (!filterTags.isEmpty()) {
+            nbtTags.put("filters", filterTags);
         }
         return nbtTags;
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("color")) {
-            color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("color")) {
+            color = TransporterUtils.colors.get(nbtTags.getInt("color"));
         }
 
         autoEject = nbtTags.getBoolean("autoEject");
         roundRobin = nbtTags.getBoolean("roundRobin");
         singleItem = nbtTags.getBoolean("singleItem");
 
-        rrIndex = nbtTags.getInteger("rrIndex");
+        rrIndex = nbtTags.getInt("rrIndex");
 
-        if (nbtTags.hasKey("filters")) {
-            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
+        if (nbtTags.contains("filters")) {
+            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                filters.add(TransporterFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
     }
@@ -401,39 +401,39 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         if (color != null) {
-            nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+            nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));
         }
-        nbtTags.setBoolean("autoEject", autoEject);
-        nbtTags.setBoolean("roundRobin", roundRobin);
-        nbtTags.setBoolean("singleItem", singleItem);
-        nbtTags.setInteger("rrIndex", rrIndex);
+        nbtTags.putBoolean("autoEject", autoEject);
+        nbtTags.putBoolean("roundRobin", roundRobin);
+        nbtTags.putBoolean("singleItem", singleItem);
+        nbtTags.putInt("rrIndex", rrIndex);
 
         ListNBT filterTags = new ListNBT();
         for (TransporterFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
-            filterTags.appendTag(tagCompound);
+            filterTags.add(tagCompound);
         }
-        if (filterTags.tagCount() != 0) {
-            nbtTags.setTag("filters", filterTags);
+        if (!filterTags.isEmpty()) {
+            nbtTags.put("filters", filterTags);
         }
         return nbtTags;
     }
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        if (nbtTags.hasKey("color")) {
-            color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+        if (nbtTags.contains("color")) {
+            color = TransporterUtils.colors.get(nbtTags.getInt("color"));
         }
         autoEject = nbtTags.getBoolean("autoEject");
         roundRobin = nbtTags.getBoolean("roundRobin");
         singleItem = nbtTags.getBoolean("singleItem");
-        rrIndex = nbtTags.getInteger("rrIndex");
+        rrIndex = nbtTags.getInt("rrIndex");
 
-        if (nbtTags.hasKey("filters")) {
-            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
+        if (nbtTags.contains("filters")) {
+            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                filters.add(TransporterFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
     }
@@ -458,9 +458,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         for (TransporterFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
-            filterTags.appendTag(tagCompound);
+            filterTags.add(tagCompound);
         }
-        if (filterTags.tagCount() != 0) {
+        if (!filterTags.isEmpty()) {
             ItemDataUtils.setList(itemStack, "filters", filterTags);
         }
     }
@@ -476,8 +476,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             singleItem = ItemDataUtils.getBoolean(itemStack, "singleItem");
             if (ItemDataUtils.hasData(itemStack, "filters")) {
                 ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
-                for (int i = 0; i < tagList.tagCount(); i++) {
-                    filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
+                for (int i = 0; i < tagList.size(); i++) {
+                    filters.add(TransporterFilter.readFromNBT(tagList.getCompound(i)));
                 }
             }
         }

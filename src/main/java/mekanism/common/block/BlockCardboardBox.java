@@ -86,7 +86,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
                 world.setBlockState(pos, data.block.getStateFromMeta(data.meta), 3);
                 if (data.tileTag != null && world.getTileEntity(pos) != null) {
                     data.updateLocation(pos);
-                    world.getTileEntity(pos).readFromNBT(data.tileTag);
+                    world.getTileEntity(pos).read(data.tileTag);
                 }
                 if (data.block != null) {
                     data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), entityplayer, new ItemStack(data.block, 1, data.meta));
@@ -152,27 +152,27 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
 
         public static BlockData read(CompoundNBT nbtTags) {
             BlockData data = new BlockData();
-            data.block = Block.getBlockById(nbtTags.getInteger("id"));
-            data.meta = nbtTags.getInteger("meta");
-            if (nbtTags.hasKey("tileTag")) {
-                data.tileTag = nbtTags.getCompoundTag("tileTag");
+            data.block = Block.getBlockById(nbtTags.getInt("id"));
+            data.meta = nbtTags.getInt("meta");
+            if (nbtTags.contains("tileTag")) {
+                data.tileTag = nbtTags.getCompound("tileTag");
             }
             return data;
         }
 
         public void updateLocation(BlockPos pos) {
             if (tileTag != null) {
-                tileTag.setInteger("x", pos.getX());
-                tileTag.setInteger("y", pos.getY());
-                tileTag.setInteger("z", pos.getZ());
+                tileTag.putInt("x", pos.getX());
+                tileTag.putInt("y", pos.getY());
+                tileTag.putInt("z", pos.getZ());
             }
         }
 
         public CompoundNBT write(CompoundNBT nbtTags) {
-            nbtTags.setInteger("id", Block.getIdFromBlock(block));
-            nbtTags.setInteger("meta", meta);
+            nbtTags.putInt("id", Block.getIdFromBlock(block));
+            nbtTags.putInt("meta", meta);
             if (tileTag != null) {
-                nbtTags.setTag("tileTag", tileTag);
+                nbtTags.put("tileTag", tileTag);
             }
             return nbtTags;
         }

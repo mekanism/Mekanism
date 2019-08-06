@@ -166,28 +166,28 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("ownerUUID")) {
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("ownerUUID")) {
             ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
         }
-        if (nbtTags.hasKey("frequency")) {
-            frequency = new SecurityFrequency(nbtTags.getCompoundTag("frequency"));
+        if (nbtTags.contains("frequency")) {
+            frequency = new SecurityFrequency(nbtTags.getCompound("frequency"));
             frequency.valid = false;
         }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         if (ownerUUID != null) {
-            nbtTags.setString("ownerUUID", ownerUUID.toString());
+            nbtTags.putString("ownerUUID", ownerUUID.toString());
         }
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
-            nbtTags.setTag("frequency", frequencyTag);
+            nbtTags.put("frequency", frequencyTag);
         }
         return nbtTags;
     }

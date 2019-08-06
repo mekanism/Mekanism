@@ -260,30 +260,30 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
 
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("tier")) {
-            tier = TransporterTier.values()[nbtTags.getInteger("tier")];
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("tier")) {
+            tier = TransporterTier.values()[nbtTags.getInt("tier")];
         }
         getTransmitter().readFromNBT(nbtTags);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("tier", tier.ordinal());
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("tier", tier.ordinal());
         if (getTransmitter().getColor() != null) {
-            nbtTags.setInteger("color", TransporterUtils.colors.indexOf(getTransmitter().getColor()));
+            nbtTags.putInt("color", TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         }
         ListNBT stacks = new ListNBT();
         for (TransporterStack stack : getTransmitter().getTransit()) {
             CompoundNBT tagCompound = new CompoundNBT();
             stack.write(tagCompound);
-            stacks.appendTag(tagCompound);
+            stacks.add(tagCompound);
         }
-        if (stacks.tagCount() != 0) {
-            nbtTags.setTag("stacks", stacks);
+        if (!stacks.isEmpty()) {
+            nbtTags.put("stacks", stacks);
         }
         return nbtTags;
     }

@@ -53,7 +53,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     private static TextureAtlasSprite getStillGasSprite(Minecraft minecraft, Gas gas) {
-        AtlasTexture textureMapBlocks = minecraft.getTextureMapBlocks();
+        AtlasTexture textureMapBlocks = minecraft.getTextureMap();
         ResourceLocation gasStill = gas.getIcon();
         TextureAtlasSprite gasStillSprite = null;
         if (gasStill != null) {

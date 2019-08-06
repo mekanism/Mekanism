@@ -81,13 +81,13 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     public void readFromNBT(CompoundNBT nbtTags) {
-        if (nbtTags.hasKey("color")) {
-            setColor(TransporterUtils.colors.get(nbtTags.getInteger("color")));
+        if (nbtTags.contains("color")) {
+            setColor(TransporterUtils.colors.get(nbtTags.getInt("color")));
         }
-        if (nbtTags.hasKey("stacks")) {
-            ListNBT tagList = nbtTags.getTagList("stacks", NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompoundTagAt(i));
+        if (nbtTags.contains("stacks")) {
+            ListNBT tagList = nbtTags.getList("stacks", NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompound(i));
                 transit.put(nextId++, stack);
             }
         }

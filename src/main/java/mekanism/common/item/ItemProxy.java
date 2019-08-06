@@ -38,13 +38,13 @@ public class ItemProxy extends Item implements IItemMekanism {
             ItemDataUtils.removeData(stack, "savedItem");
         } else {
             ItemDataUtils.setBoolean(stack, "hasStack", true);
-            ItemDataUtils.setCompound(stack, "savedItem", save.writeToNBT(new CompoundNBT()));
+            ItemDataUtils.setCompound(stack, "savedItem", save.write(new CompoundNBT()));
         }
     }
 
     public ItemStack getSavedItem(ItemStack stack) {
         if (ItemDataUtils.getBoolean(stack, "hasStack")) {
-            return new ItemStack(ItemDataUtils.getCompound(stack, "savedItem"));
+            return ItemStack.read(ItemDataUtils.getCompound(stack, "savedItem"));
         }
         return ItemStack.EMPTY;
     }

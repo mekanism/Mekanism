@@ -251,11 +251,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     protected void readEntityFromNBT(@Nonnull CompoundNBT nbtTags) {
-        color = EnumColor.values()[nbtTags.getInteger("color")];
-        if (nbtTags.hasKey("latched")) {
-            latched = Coord4D.read(nbtTags.getCompoundTag("latched"));
+        color = EnumColor.values()[nbtTags.getInt("color")];
+        if (nbtTags.contains("latched")) {
+            latched = Coord4D.read(nbtTags.getCompound("latched"));
         }
-        if (nbtTags.hasKey("idMost")) {
+        if (nbtTags.contains("idMost")) {
             hasCachedEntity = true;
             cachedEntityUUID = new UUID(nbtTags.getLong("idMost"), nbtTags.getLong("idLeast"));
         }
@@ -263,13 +263,13 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     protected void writeEntityToNBT(@Nonnull CompoundNBT nbtTags) {
-        nbtTags.setInteger("color", color.ordinal());
+        nbtTags.putInt("color", color.ordinal());
         if (latched != null) {
-            nbtTags.setTag("latched", latched.write(new CompoundNBT()));
+            nbtTags.put("latched", latched.write(new CompoundNBT()));
         }
         if (latchedEntity != null) {
-            nbtTags.setLong("idMost", latchedEntity.getUniqueID().getMostSignificantBits());
-            nbtTags.setLong("idLeast", latchedEntity.getUniqueID().getLeastSignificantBits());
+            nbtTags.putLong("idMost", latchedEntity.getUniqueID().getMostSignificantBits());
+            nbtTags.putLong("idLeast", latchedEntity.getUniqueID().getLeastSignificantBits());
         }
     }
 

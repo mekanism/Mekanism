@@ -185,23 +185,23 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        mode = nbtTags.getInteger("mode");
-        gasTank.read(nbtTags.getCompoundTag("gasTank"));
-        if (nbtTags.hasKey("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        mode = nbtTags.getInt("mode");
+        gasTank.read(nbtTags.getCompound("gasTank"));
+        if (nbtTags.contains("fluidTank")) {
+            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
         }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("mode", mode);
-        nbtTags.setTag("gasTank", gasTank.write(new CompoundNBT()));
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("mode", mode);
+        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
         if (fluidTank.getFluid() != null) {
-            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
+            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
     }

@@ -25,8 +25,8 @@ public class TOreDictFilter extends TransporterFilter implements IOreDictFilter 
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setInteger("type", 1);
-        nbtTags.setString("oreDictName", oreDictName);
+        nbtTags.putInt("type", 1);
+        nbtTags.putString("oreDictName", oreDictName);
     }
 
     @Override

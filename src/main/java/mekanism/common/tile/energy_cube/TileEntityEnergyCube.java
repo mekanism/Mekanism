@@ -193,16 +193,16 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        tier = EnergyCubeTier.values()[nbtTags.getInt("tier")];
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("tier", tier.ordinal());
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("tier", tier.ordinal());
         return nbtTags;
     }
 

@@ -68,7 +68,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip implements IItemEnergi
             list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
         }
         list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
-                 LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+                 LangUtils.transYesNo(getInventory(itemstack) != null && !getInventory(itemstack).isEmpty()));
     }
 
     @Override

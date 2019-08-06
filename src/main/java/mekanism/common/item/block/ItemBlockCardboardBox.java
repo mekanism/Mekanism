@@ -70,7 +70,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
                 if (world.getTileEntity(pos) != null) {
                     TileEntity tile = world.getTileEntity(pos);
                     CompoundNBT tag = new CompoundNBT();
-                    tile.writeToNBT(tag);
+                    tile.write(tag);
                     data.tileTag = tag;
                 }
                 if (!player.capabilities.isCreativeMode) {

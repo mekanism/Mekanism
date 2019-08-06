@@ -26,11 +26,11 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        if (nbtTags.hasKey("cachedWater")) {
-            water = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedWater"));
+        if (nbtTags.contains("cachedWater")) {
+            water = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("cachedWater"));
         }
-        if (nbtTags.hasKey("cachedSteam")) {
-            steam = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedSteam"));
+        if (nbtTags.contains("cachedSteam")) {
+            steam = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("cachedSteam"));
         }
         temperature = nbtTags.getDouble("temperature");
     }
@@ -38,11 +38,11 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
     @Override
     public void save(CompoundNBT nbtTags) {
         if (water != null) {
-            nbtTags.setTag("cachedWater", water.writeToNBT(new CompoundNBT()));
+            nbtTags.put("cachedWater", water.writeToNBT(new CompoundNBT()));
         }
         if (steam != null) {
-            nbtTags.setTag("cachedSteam", steam.writeToNBT(new CompoundNBT()));
+            nbtTags.put("cachedSteam", steam.writeToNBT(new CompoundNBT()));
         }
-        nbtTags.setDouble("temperature", temperature);
+        nbtTags.putDouble("temperature", temperature);
     }
 }

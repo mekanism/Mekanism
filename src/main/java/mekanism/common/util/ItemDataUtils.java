@@ -14,7 +14,7 @@ public final class ItemDataUtils {
     @Nonnull
     public static CompoundNBT getDataMap(ItemStack stack) {
         initStack(stack);
-        return stack.getTagCompound().getCompoundTag(DATA_ID);
+        return stack.getTag().getCompound(DATA_ID);
     }
 
     @Nullable
@@ -31,21 +31,21 @@ public final class ItemDataUtils {
         if (!hasDataTag(stack)) {
             return false;
         }
-        return getDataMap(stack).hasKey(key);
+        return getDataMap(stack).contains(key);
     }
 
     public static void removeData(ItemStack stack, String key) {
         if (!hasDataTag(stack)) {
             return;
         }
-        getDataMap(stack).removeTag(key);
+        getDataMap(stack).remove(key);
     }
 
     public static int getInt(ItemStack stack, String key) {
         if (!hasDataTag(stack)) {
             return 0;
         }
-        return getDataMap(stack).getInteger(key);
+        return getDataMap(stack).getInt(key);
     }
 
     public static boolean getBoolean(ItemStack stack, String key) {
@@ -73,56 +73,56 @@ public final class ItemDataUtils {
         if (!hasDataTag(stack)) {
             return new CompoundNBT();
         }
-        return getDataMap(stack).getCompoundTag(key);
+        return getDataMap(stack).getCompound(key);
     }
 
     public static ListNBT getList(ItemStack stack, String key) {
         if (!hasDataTag(stack)) {
             return new ListNBT();
         }
-        return getDataMap(stack).getTagList(key, NBT.TAG_COMPOUND);
+        return getDataMap(stack).getList(key, NBT.TAG_COMPOUND);
     }
 
     public static void setInt(ItemStack stack, String key, int i) {
         initStack(stack);
-        getDataMap(stack).setInteger(key, i);
+        getDataMap(stack).putInt(key, i);
     }
 
     public static void setBoolean(ItemStack stack, String key, boolean b) {
         initStack(stack);
-        getDataMap(stack).setBoolean(key, b);
+        getDataMap(stack).putBoolean(key, b);
     }
 
     public static void setDouble(ItemStack stack, String key, double d) {
         initStack(stack);
-        getDataMap(stack).setDouble(key, d);
+        getDataMap(stack).putDouble(key, d);
     }
 
     public static void setString(ItemStack stack, String key, String s) {
         initStack(stack);
-        getDataMap(stack).setString(key, s);
+        getDataMap(stack).putString(key, s);
     }
 
     public static void setCompound(ItemStack stack, String key, CompoundNBT tag) {
         initStack(stack);
-        getDataMap(stack).setTag(key, tag);
+        getDataMap(stack).put(key, tag);
     }
 
     public static void setList(ItemStack stack, String key, ListNBT tag) {
         initStack(stack);
-        getDataMap(stack).setTag(key, tag);
+        getDataMap(stack).put(key, tag);
     }
 
     private static boolean hasDataTag(ItemStack stack) {
-        return stack.getTagCompound() != null && stack.getTagCompound().hasKey(DATA_ID);
+        return stack.getTag() != null && stack.getTag().contains(DATA_ID);
     }
 
     private static void initStack(ItemStack stack) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new CompoundNBT());
+        if (stack.getTag() == null) {
+            stack.setTag(new CompoundNBT());
         }
-        if (!stack.getTagCompound().hasKey(DATA_ID)) {
-            stack.getTagCompound().setTag(DATA_ID, new CompoundNBT());
+        if (!stack.getTag().contains(DATA_ID)) {
+            stack.getTag().put(DATA_ID, new CompoundNBT());
         }
     }
 }

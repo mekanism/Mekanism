@@ -37,8 +37,8 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        leftGas = GasStack.readFromNBT(nbtTags.getCompoundTag("leftInput"));
-        rightGas = GasStack.readFromNBT(nbtTags.getCompoundTag("rightInput"));
+        leftGas = GasStack.readFromNBT(nbtTags.getCompound("leftInput"));
+        rightGas = GasStack.readFromNBT(nbtTags.getCompound("rightInput"));
     }
 
     public boolean useGas(GasTank leftTank, GasTank rightTank, boolean deplete, int scale) {

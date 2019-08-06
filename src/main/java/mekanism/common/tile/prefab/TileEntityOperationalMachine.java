@@ -46,16 +46,16 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        operatingTicks = nbtTags.getInteger("operatingTicks");
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        operatingTicks = nbtTags.getInt("operatingTicks");
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("operatingTicks", operatingTicks);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("operatingTicks", operatingTicks);
         return nbtTags;
     }
 

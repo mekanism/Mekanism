@@ -37,8 +37,8 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        leftGas = GasStack.readFromNBT(nbtTags.getCompoundTag("leftOutput"));
-        rightGas = GasStack.readFromNBT(nbtTags.getCompoundTag("rightOutput"));
+        leftGas = GasStack.readFromNBT(nbtTags.getCompound("leftOutput"));
+        rightGas = GasStack.readFromNBT(nbtTags.getCompound("rightOutput"));
     }
 
     /**

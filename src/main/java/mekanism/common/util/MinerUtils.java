@@ -60,8 +60,8 @@ public final class MinerUtils {
                 if (!tileentityshulkerbox.isCleared() && tileentityshulkerbox.shouldDrop()) {
                     CompoundNBT itemTag = new CompoundNBT();
                     CompoundNBT nbtBlockEntity = new CompoundNBT();
-                    itemTag.setTag("BlockEntityTag", ((ShulkerBoxTileEntity) tileentity).saveToNbt(nbtBlockEntity));
-                    shulkerBoxItem.setTagCompound(itemTag);
+                    itemTag.put("BlockEntityTag", ((ShulkerBoxTileEntity) tileentity).saveToNbt(nbtBlockEntity));
+                    shulkerBoxItem.setTag(itemTag);
                     if (tileentityshulkerbox.hasCustomName()) {
                         shulkerBoxItem.setStackDisplayName(tileentityshulkerbox.getName());
                     }

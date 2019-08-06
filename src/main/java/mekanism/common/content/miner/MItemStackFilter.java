@@ -35,9 +35,9 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setInteger("type", 0);
-        nbtTags.setBoolean("fuzzy", fuzzy);
-        itemType.writeToNBT(nbtTags);
+        nbtTags.putInt("type", 0);
+        nbtTags.putBoolean("fuzzy", fuzzy);
+        itemType.write(nbtTags);
         return nbtTags;
     }
 
@@ -45,7 +45,7 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         fuzzy = nbtTags.getBoolean("fuzzy");
-        itemType = new ItemStack(nbtTags);
+        itemType = ItemStack.read(nbtTags);
     }
 
     @Override

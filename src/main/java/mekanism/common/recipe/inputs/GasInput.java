@@ -17,7 +17,7 @@ public class GasInput extends MachineInput<GasInput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        ingredient = GasStack.readFromNBT(nbtTags.getCompoundTag("input"));
+        ingredient = GasStack.readFromNBT(nbtTags.getCompound("input"));
     }
 
     @Override

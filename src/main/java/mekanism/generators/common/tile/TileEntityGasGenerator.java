@@ -237,9 +237,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        fuelTank.read(nbtTags.getCompoundTag("fuelTank"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        fuelTank.read(nbtTags.getCompound("fuelTank"));
         boolean isTankEmpty = fuelTank.getGas() == null;
         FuelGas fuel = isTankEmpty ? null : FuelHandler.getFuel(fuelTank.getGas().getGas());
         if (fuel != null) {
@@ -249,9 +249,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setTag("fuelTank", fuelTank.write(new CompoundNBT()));
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.put("fuelTank", fuelTank.write(new CompoundNBT()));
         return nbtTags;
     }
 

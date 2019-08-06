@@ -85,7 +85,7 @@ public class Coord4D {
      * @return the Coord4D from the tag compound
      */
     public static Coord4D read(CompoundNBT tag) {
-        return new Coord4D(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"), tag.getInteger("id"));
+        return new Coord4D(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"), tag.getInt("id"));
     }
 
     /**
@@ -155,10 +155,10 @@ public class Coord4D {
      * @return the tag compound with this Coord4D's data
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.setInteger("x", x);
-        nbtTags.setInteger("y", y);
-        nbtTags.setInteger("z", z);
-        nbtTags.setInteger("dimensionId", dimensionId);
+        nbtTags.putInt("x", x);
+        nbtTags.putInt("y", y);
+        nbtTags.putInt("z", z);
+        nbtTags.putInt("dimensionId", dimensionId);
         return nbtTags;
     }
 

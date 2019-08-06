@@ -93,7 +93,7 @@ public class InventoryBin {
         if (getItemCount() == 0) {
             return ItemStack.EMPTY;
         }
-        return new ItemStack(ItemDataUtils.getCompound(bin, "storedItem"));
+        return ItemStack.read(ItemDataUtils.getCompound(bin, "storedItem"));
     }
 
     public void setItemType(ItemStack stack) {
@@ -101,6 +101,6 @@ public class InventoryBin {
             ItemDataUtils.removeData(bin, "storedItem");
             return;
         }
-        ItemDataUtils.setCompound(bin, "storedItem", StackUtils.size(stack, 1).writeToNBT(new CompoundNBT()));
+        ItemDataUtils.setCompound(bin, "storedItem", StackUtils.size(stack, 1).write(new CompoundNBT()));
     }
 }

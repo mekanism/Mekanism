@@ -119,12 +119,12 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
-        if (nbtTags.hasKey("ownerUUID")) {
+        securityMode = SecurityMode.values()[nbtTags.getInt("securityMode")];
+        if (nbtTags.contains("ownerUUID")) {
             ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
         }
-        if (nbtTags.hasKey("securityFreq")) {
-            frequency = new SecurityFrequency(nbtTags.getCompoundTag("securityFreq"));
+        if (nbtTags.contains("securityFreq")) {
+            frequency = new SecurityFrequency(nbtTags.getCompound("securityFreq"));
             frequency.valid = false;
         }
     }
@@ -150,14 +150,14 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void write(CompoundNBT nbtTags) {
-        nbtTags.setInteger("securityMode", securityMode.ordinal());
+        nbtTags.putInt("securityMode", securityMode.ordinal());
         if (ownerUUID != null) {
-            nbtTags.setString("ownerUUID", ownerUUID.toString());
+            nbtTags.putString("ownerUUID", ownerUUID.toString());
         }
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
-            nbtTags.setTag("securityFreq", frequencyTag);
+            nbtTags.put("securityFreq", frequencyTag);
         }
     }
 

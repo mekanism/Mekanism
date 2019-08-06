@@ -241,7 +241,7 @@ public abstract class BlockTileDrops extends Block {
                 config.getEjector().read(ItemDataUtils.getDataMap(stack));
             }
         }
-        if (tile instanceof ISustainedData && stack.hasTagCompound()) {
+        if (tile instanceof ISustainedData && stack.hasTag()) {
             ((ISustainedData) tile).readSustainedData(stack);
         }
         if (tile.supportsRedstone()) {

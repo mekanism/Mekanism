@@ -93,38 +93,38 @@ public class TransporterStack {
 
     public void write(CompoundNBT nbtTags) {
         if (color != null) {
-            nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+            nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));
         }
 
-        nbtTags.setInteger("progress", progress);
-        nbtTags.setTag("originalLocation", originalLocation.write(new CompoundNBT()));
+        nbtTags.putInt("progress", progress);
+        nbtTags.put("originalLocation", originalLocation.write(new CompoundNBT()));
 
         if (idleDir != null) {
-            nbtTags.setInteger("idleDir", idleDir.ordinal());
+            nbtTags.putInt("idleDir", idleDir.ordinal());
         }
         if (homeLocation != null) {
-            nbtTags.setTag("homeLocation", homeLocation.write(new CompoundNBT()));
+            nbtTags.put("homeLocation", homeLocation.write(new CompoundNBT()));
         }
-        nbtTags.setInteger("pathType", pathType.ordinal());
-        itemStack.writeToNBT(nbtTags);
+        nbtTags.putInt("pathType", pathType.ordinal());
+        itemStack.write(nbtTags);
     }
 
     public void read(CompoundNBT nbtTags) {
-        if (nbtTags.hasKey("color")) {
-            color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+        if (nbtTags.contains("color")) {
+            color = TransporterUtils.colors.get(nbtTags.getInt("color"));
         }
 
-        progress = nbtTags.getInteger("progress");
-        originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
+        progress = nbtTags.getInt("progress");
+        originalLocation = Coord4D.read(nbtTags.getCompound("originalLocation"));
 
-        if (nbtTags.hasKey("idleDir")) {
-            idleDir = Direction.values()[nbtTags.getInteger("idleDir")];
+        if (nbtTags.contains("idleDir")) {
+            idleDir = Direction.values()[nbtTags.getInt("idleDir")];
         }
-        if (nbtTags.hasKey("homeLocation")) {
-            homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));
+        if (nbtTags.contains("homeLocation")) {
+            homeLocation = Coord4D.read(nbtTags.getCompound("homeLocation"));
         }
-        pathType = Path.values()[nbtTags.getInteger("pathType")];
-        itemStack = new ItemStack(nbtTags);
+        pathType = Path.values()[nbtTags.getInt("pathType")];
+        itemStack = ItemStack.read(nbtTags);
     }
 
     public void setPath(List<Coord4D> path, Path type) {

@@ -755,41 +755,41 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        setRecipeType(RecipeType.values()[nbtTags.getInteger("recipeType")]);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        setRecipeType(RecipeType.values()[nbtTags.getInt("recipeType")]);
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
-        recipeTicks = nbtTags.getInteger("recipeTicks");
+        recipeTicks = nbtTags.getInt("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
-        int amount = nbtTags.getInteger("infuseStored");
+        int amount = nbtTags.getInt("infuseStored");
         if (amount != 0) {
             infuseStored.setAmount(amount);
             infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
         }
         for (int i = 0; i < tier.processes; i++) {
-            progress[i] = nbtTags.getInteger("progress" + i);
+            progress[i] = nbtTags.getInt("progress" + i);
         }
-        gasTank.read(nbtTags.getCompoundTag("gasTank"));
+        gasTank.read(nbtTags.getCompound("gasTank"));
         GasUtils.clearIfInvalid(gasTank, recipeType::isValidGas);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("recipeType", recipeType.ordinal());
-        nbtTags.setInteger("recipeTicks", recipeTicks);
-        nbtTags.setBoolean("sorting", sorting);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("recipeType", recipeType.ordinal());
+        nbtTags.putInt("recipeTicks", recipeTicks);
+        nbtTags.putBoolean("sorting", sorting);
         if (infuseStored.getType() != null) {
-            nbtTags.setString("type", infuseStored.getType().name);
-            nbtTags.setInteger("infuseStored", infuseStored.getAmount());
+            nbtTags.putString("type", infuseStored.getType().name);
+            nbtTags.putInt("infuseStored", infuseStored.getAmount());
         } else {
-            nbtTags.setString("type", "null");
+            nbtTags.putString("type", "null");
         }
         for (int i = 0; i < tier.processes; i++) {
-            nbtTags.setInteger("progress" + i, progress[i]);
+            nbtTags.putInt("progress" + i, progress[i]);
         }
-        nbtTags.setTag("gasTank", gasTank.write(new CompoundNBT()));
+        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
@@ -992,7 +992,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        nbtTags.setBoolean("sorting", sorting);
+        nbtTags.putBoolean("sorting", sorting);
         return nbtTags;
     }
 

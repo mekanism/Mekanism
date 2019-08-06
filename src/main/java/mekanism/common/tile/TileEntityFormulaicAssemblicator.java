@@ -470,22 +470,22 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
         autoMode = nbtTags.getBoolean("autoMode");
-        operatingTicks = nbtTags.getInteger("operatingTicks");
-        pulseOperations = nbtTags.getInteger("pulseOperations");
+        operatingTicks = nbtTags.getInt("operatingTicks");
+        pulseOperations = nbtTags.getInt("pulseOperations");
         stockControl = nbtTags.getBoolean("stockControl");
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("autoMode", autoMode);
-        nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setInteger("pulseOperations", pulseOperations);
-        nbtTags.setBoolean("stockControl", stockControl);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putBoolean("autoMode", autoMode);
+        nbtTags.putInt("operatingTicks", operatingTicks);
+        nbtTags.putInt("pulseOperations", pulseOperations);
+        nbtTags.putBoolean("stockControl", stockControl);
         return nbtTags;
     }
 

@@ -116,9 +116,9 @@ public class TileComponentChunkLoader implements ITileComponent {
                 }
 
                 if (ticket != null) {
-                    ticket.getModData().setInteger("x", tileEntity.getPos().getX());
-                    ticket.getModData().setInteger("y", tileEntity.getPos().getY());
-                    ticket.getModData().setInteger("z", tileEntity.getPos().getZ());
+                    ticket.getModData().putInt("x", tileEntity.getPos().getX());
+                    ticket.getModData().putInt("y", tileEntity.getPos().getY());
+                    ticket.getModData().putInt("z", tileEntity.getPos().getZ());
                     forceChunks(ticket);
                 }
             }
@@ -127,12 +127,12 @@ public class TileComponentChunkLoader implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        prevCoord = Coord4D.read(nbtTags.getCompoundTag("prevCoord"));
+        prevCoord = Coord4D.read(nbtTags.getCompound("prevCoord"));
         chunkSet.clear();
-        ListNBT list = nbtTags.getTagList("chunkSet", NBT.TAG_COMPOUND);
-        for (int i = 0; i < list.tagCount(); i++) {
-            CompoundNBT compound = list.getCompoundTagAt(i);
-            chunkSet.add(new ChunkPos(compound.getInteger("chunkX"), compound.getInteger("chunkZ")));
+        ListNBT list = nbtTags.getList("chunkSet", NBT.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            CompoundNBT compound = list.getCompound(i);
+            chunkSet.add(new ChunkPos(compound.getInt("chunkX"), compound.getInt("chunkZ")));
         }
     }
 
@@ -143,17 +143,17 @@ public class TileComponentChunkLoader implements ITileComponent {
     @Override
     public void write(CompoundNBT nbtTags) {
         if (prevCoord != null) {
-            nbtTags.setTag("prevCoord", prevCoord.write(new CompoundNBT()));
+            nbtTags.put("prevCoord", prevCoord.write(new CompoundNBT()));
         }
 
         ListNBT list = new ListNBT();
         for (ChunkPos pos : chunkSet) {
             CompoundNBT compound = new CompoundNBT();
-            compound.setInteger("chunkX", pos.x);
-            compound.setInteger("chunkZ", pos.z);
-            list.appendTag(compound);
+            compound.putInt("chunkX", pos.x);
+            compound.putInt("chunkZ", pos.z);
+            list.add(compound);
         }
-        nbtTags.setTag("chunkSet", list);
+        nbtTags.put("chunkSet", list);
     }
 
     @Override

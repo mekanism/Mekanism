@@ -32,15 +32,15 @@ public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setInteger("type", 2);
-        materialItem.writeToNBT(nbtTags);
+        nbtTags.putInt("type", 2);
+        materialItem.write(nbtTags);
         return nbtTags;
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        materialItem = new ItemStack(nbtTags);
+        materialItem = ItemStack.read(nbtTags);
     }
 
     @Override

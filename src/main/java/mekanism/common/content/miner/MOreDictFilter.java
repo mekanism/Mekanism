@@ -24,8 +24,8 @@ public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.setInteger("type", 1);
-        nbtTags.setString("oreDictName", oreDictName);
+        nbtTags.putInt("type", 1);
+        nbtTags.putString("oreDictName", oreDictName);
         return nbtTags;
     }
 

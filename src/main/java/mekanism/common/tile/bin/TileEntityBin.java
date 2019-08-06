@@ -221,31 +221,31 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("itemCount", cacheCount);
-        nbtTags.setInteger("tier", tier.ordinal());
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt("itemCount", cacheCount);
+        nbtTags.putInt("tier", tier.ordinal());
         if (!bottomStack.isEmpty()) {
-            nbtTags.setTag("bottomStack", bottomStack.writeToNBT(new CompoundNBT()));
+            nbtTags.put("bottomStack", bottomStack.write(new CompoundNBT()));
         }
         if (!topStack.isEmpty()) {
-            nbtTags.setTag("topStack", topStack.writeToNBT(new CompoundNBT()));
+            nbtTags.put("topStack", topStack.write(new CompoundNBT()));
         }
         if (getItemCount() > 0) {
-            nbtTags.setTag("itemType", itemType.writeToNBT(new CompoundNBT()));
+            nbtTags.put("itemType", itemType.write(new CompoundNBT()));
         }
         return nbtTags;
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        cacheCount = nbtTags.getInteger("itemCount");
-        tier = BinTier.values()[nbtTags.getInteger("tier")];
-        bottomStack = new ItemStack(nbtTags.getCompoundTag("bottomStack"));
-        topStack = new ItemStack(nbtTags.getCompoundTag("topStack"));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        cacheCount = nbtTags.getInt("itemCount");
+        tier = BinTier.values()[nbtTags.getInt("tier")];
+        bottomStack = ItemStack.read(nbtTags.getCompound("bottomStack"));
+        topStack = ItemStack.read(nbtTags.getCompound("topStack"));
         if (getItemCount() > 0) {
-            itemType = new ItemStack(nbtTags.getCompoundTag("itemType"));
+            itemType = ItemStack.read(nbtTags.getCompound("itemType"));
         }
     }
 

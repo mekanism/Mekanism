@@ -23,18 +23,18 @@ public class KeybindingFixer {
 
     private static void remapKey(@Nonnull CompoundNBT compound, String oldKey, String langKey) {
         String newKey = "key_" + langKey;
-        if (compound.hasKey(oldKey)) {
+        if (compound.contains(oldKey)) {
             LOGGER.info("Remapping {} to {}", oldKey, langKey);
-            compound.setString(newKey, compound.getString(oldKey));
-            compound.removeTag(oldKey);
+            compound.putString(newKey, compound.getString(oldKey));
+            compound.remove(oldKey);
         }
         //Not sure if translations loaded yet, but try anyway
         try {
             String translated = "key_Mekanism " + LangUtils.localize(langKey);
-            if (compound.hasKey(translated)) {
+            if (compound.contains(translated)) {
                 LOGGER.info("Remapping {} to {}", translated, langKey);
-                compound.setString(newKey, compound.getString(translated));
-                compound.removeTag(translated);
+                compound.putString(newKey, compound.getString(translated));
+                compound.remove(translated);
             }
         } catch (Exception e) {
             LOGGER.error("Remap error", e);

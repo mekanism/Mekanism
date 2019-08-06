@@ -17,7 +17,7 @@ public class FluidInput extends MachineInput<FluidInput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        ingredient = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("input"));
+        ingredient = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("input"));
     }
 
     @Override

@@ -22,8 +22,8 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        itemOutput = new ItemStack(nbtTags.getCompoundTag("itemOutput"));
-        gasOutput = GasStack.readFromNBT(nbtTags.getCompoundTag("gasOutput"));
+        itemOutput = new ItemStack(nbtTags.getCompound("itemOutput"));
+        gasOutput = GasStack.readFromNBT(nbtTags.getCompound("gasOutput"));
     }
 
     public boolean canFillTank(GasTank tank) {

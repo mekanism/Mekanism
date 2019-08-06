@@ -48,33 +48,33 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
     }
 
     public static ShapedMekanismRecipe create(CompoundNBT nbtTags) {
-        if (!nbtTags.hasKey("result") || !nbtTags.hasKey("input")) {
+        if (!nbtTags.contains("result") || !nbtTags.contains("input")) {
             Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: missing input or result compound tag.");
             return null;
         }
-        ItemStack result = new ItemStack(nbtTags.getCompoundTag("result"));
-        ListNBT list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
-        if (result.isEmpty() || list.tagCount() == 0) {
+        ItemStack result = new ItemStack(nbtTags.getCompound("result"));
+        ListNBT list = nbtTags.getList("input", Constants.NBT.TAG_COMPOUND);
+        if (result.isEmpty() || list.isEmpty()) {
             Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid result stack or input data list.");
             return null;
         }
 
-        Object[] ret = new Object[list.tagCount()];
-        for (int i = 0; i < list.tagCount(); i++) {
-            CompoundNBT compound = list.getCompoundTagAt(i);
-            if (compound.hasKey("oredict")) {
+        Object[] ret = new Object[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            CompoundNBT compound = list.getCompound(i);
+            if (compound.contains("oredict")) {
                 ret[i] = compound.getString("oredict");
-            } else if (compound.hasKey("pattern")) {
+            } else if (compound.contains("pattern")) {
                 ret[i] = compound.getString("pattern");
-            } else if (compound.hasKey("character")) {
+            } else if (compound.contains("character")) {
                 String s = compound.getString("character");
                 if (s.length() > 1) {
                     Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid pattern character data.");
                     return null;
                 }
                 ret[i] = compound.getString("character").toCharArray()[0];
-            } else if (compound.hasKey("itemstack")) {
-                ret[i] = new ItemStack(compound.getCompoundTag("itemstack"));
+            } else if (compound.contains("itemstack")) {
+                ret[i] = new ItemStack(compound.getCompound("itemstack"));
             } else {
                 Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid input tag data key.");
                 return null;

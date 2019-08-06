@@ -308,21 +308,21 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
         redstoneReactive = nbtTags.getBoolean("redstoneReactive");
         for (int i = 0; i < 6; i++) {
-            connectionTypes[i] = ConnectionType.values()[nbtTags.getInteger("connection" + i)];
+            connectionTypes[i] = ConnectionType.values()[nbtTags.getInt("connection" + i)];
         }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("redstoneReactive", redstoneReactive);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putBoolean("redstoneReactive", redstoneReactive);
         for (int i = 0; i < 6; i++) {
-            nbtTags.setInteger("connection" + i, connectionTypes[i].ordinal());
+            nbtTags.putInt("connection" + i, connectionTypes[i].ordinal());
         }
         return nbtTags;
     }
@@ -331,7 +331,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT nbtTags = super.getUpdateTag();
-        nbtTags.setInteger("tier", getBaseTier().ordinal());
+        nbtTags.putInt("tier", getBaseTier().ordinal());
         return nbtTags;
     }
 

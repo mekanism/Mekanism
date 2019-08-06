@@ -48,22 +48,22 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbt) {
-        super.writeToNBT(nbt);
-        nbt.setInteger("side", side.ordinal());
+    public CompoundNBT write(CompoundNBT nbt) {
+        super.write(nbt);
+        nbt.putInt("side", side.ordinal());
         return nbt;
     }
 
     @Nonnull
     @Override
     public CompoundNBT getUpdateTag() {
-        return writeToNBT(new CompoundNBT());
+        return write(new CompoundNBT());
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbt) {
-        super.readFromNBT(nbt);
-        side = Direction.byIndex(nbt.getInteger("side"));
+    public void read(CompoundNBT nbt) {
+        super.read(nbt);
+        side = Direction.byIndex(nbt.getInt("side"));
     }
 
     @Override

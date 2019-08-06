@@ -133,27 +133,27 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         ListNBT filterTags = new ListNBT();
         for (OredictionificatorFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
-            filterTags.appendTag(tagCompound);
+            filterTags.add(tagCompound);
         }
-        if (filterTags.tagCount() != 0) {
-            nbtTags.setTag("filters", filterTags);
+        if (!filterTags.isEmpty()) {
+            nbtTags.put("filters", filterTags);
         }
         return nbtTags;
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        if (nbtTags.hasKey("filters")) {
-            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        if (nbtTags.contains("filters")) {
+            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
     }
@@ -225,20 +225,20 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         for (OredictionificatorFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
-            filterTags.appendTag(tagCompound);
+            filterTags.add(tagCompound);
         }
-        if (filterTags.tagCount() != 0) {
-            nbtTags.setTag("filters", filterTags);
+        if (!filterTags.isEmpty()) {
+            nbtTags.put("filters", filterTags);
         }
         return nbtTags;
     }
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        if (nbtTags.hasKey("filters")) {
-            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
+        if (nbtTags.contains("filters")) {
+            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
     }
@@ -255,9 +255,9 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         for (OredictionificatorFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
-            filterTags.appendTag(tagCompound);
+            filterTags.add(tagCompound);
         }
-        if (filterTags.tagCount() != 0) {
+        if (!filterTags.isEmpty()) {
             ItemDataUtils.setList(itemStack, "filters", filterTags);
         }
     }
@@ -267,8 +267,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         if (ItemDataUtils.hasData(itemStack, "hasOredictionificatorConfig")) {
             if (ItemDataUtils.hasData(itemStack, "filters")) {
                 ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
-                for (int i = 0; i < tagList.tagCount(); i++) {
-                    filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
+                for (int i = 0; i < tagList.size(); i++) {
+                    filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
                 }
             }
         }
@@ -328,13 +328,13 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         }
 
         public void write(CompoundNBT nbtTags) {
-            nbtTags.setString("filter", filter);
-            nbtTags.setInteger("index", index);
+            nbtTags.putString("filter", filter);
+            nbtTags.putInt("index", index);
         }
 
         protected void read(CompoundNBT nbtTags) {
             filter = nbtTags.getString("filter");
-            index = nbtTags.getInteger("index");
+            index = nbtTags.getInt("index");
         }
 
         public void write(TileNetworkList data) {

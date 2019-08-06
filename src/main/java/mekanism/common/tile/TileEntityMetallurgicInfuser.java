@@ -219,9 +219,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     }
 
     @Override
-    public void readFromNBT(CompoundNBT nbtTags) {
-        super.readFromNBT(nbtTags);
-        int amount = nbtTags.getInteger("infuseStored");
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        int amount = nbtTags.getInt("infuseStored");
         if (amount != 0) {
             infuseStored.setAmount(amount);
             infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
@@ -230,15 +230,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
     @Nonnull
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
-        super.writeToNBT(nbtTags);
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
         if (infuseStored.getType() != null) {
-            nbtTags.setString("type", infuseStored.getType().name);
-            nbtTags.setInteger("infuseStored", infuseStored.getAmount());
+            nbtTags.putString("type", infuseStored.getType().name);
+            nbtTags.putInt("infuseStored", infuseStored.getAmount());
         } else {
-            nbtTags.setString("type", "null");
+            nbtTags.putString("type", "null");
         }
-        nbtTags.setBoolean("sideDataStored", true);
+        nbtTags.putBoolean("sideDataStored", true);
         return nbtTags;
     }
 

@@ -236,16 +236,16 @@ public class FrequencyManager {
         }
 
         @Override
-        public void readFromNBT(@Nonnull CompoundNBT nbtTags) {
+        public void read(@Nonnull CompoundNBT nbtTags) {
             try {
                 String frequencyClass = nbtTags.getString("frequencyClass");//todo fix this using a classname from nbt!
-                if (nbtTags.hasKey("ownerUUID")) {
+                if (nbtTags.contains("ownerUUID")) {
                     loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
                 }
-                ListNBT list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
+                ListNBT list = nbtTags.getList("freqList", NBT.TAG_COMPOUND);
                 loadedFrequencies = new HashSet<>();
-                for (int i = 0; i < list.tagCount(); i++) {
-                    CompoundNBT compound = list.getCompoundTagAt(i);
+                for (int i = 0; i < list.size(); i++) {
+                    CompoundNBT compound = list.getCompound(i);
                     Constructor<?> c = Class.forName(frequencyClass).getConstructor(CompoundNBT.class);
                     Frequency freq = (Frequency) c.newInstance(compound);
                     loadedFrequencies.add(freq);
@@ -257,18 +257,18 @@ public class FrequencyManager {
 
         @Nonnull
         @Override
-        public CompoundNBT writeToNBT(@Nonnull CompoundNBT nbtTags) {
-            nbtTags.setString("frequencyClass", manager.frequencyClass.getName());
+        public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
+            nbtTags.putString("frequencyClass", manager.frequencyClass.getName());
             if (manager.ownerUUID != null) {
-                nbtTags.setString("ownerUUID", manager.ownerUUID.toString());
+                nbtTags.putString("ownerUUID", manager.ownerUUID.toString());
             }
             ListNBT list = new ListNBT();
             for (Frequency freq : manager.getFrequencies()) {
                 CompoundNBT compound = new CompoundNBT();
                 freq.write(compound);
-                list.appendTag(compound);
+                list.add(compound);
             }
-            nbtTags.setTag("freqList", list);
+            nbtTags.put("freqList", list);
             return nbtTags;
         }
     }

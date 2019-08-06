@@ -827,8 +827,8 @@ public class Mekanism {
         if (!event.getWorld().isRemote) {
             CompoundNBT nbtTags = event.getData();
 
-            nbtTags.setInteger("MekanismWorldGen", baseWorldGenVersion);
-            nbtTags.setInteger("MekanismUserWorldGen", MekanismConfig.current().general.userWorldGenVersion.val());
+            nbtTags.putInt("MekanismWorldGen", baseWorldGenVersion);
+            nbtTags.putInt("MekanismUserWorldGen", MekanismConfig.current().general.userWorldGenVersion.val());
         }
     }
 
@@ -837,8 +837,8 @@ public class Mekanism {
         if (!event.getWorld().isRemote) {
             if (MekanismConfig.current().general.enableWorldRegeneration.val()) {
                 CompoundNBT loadData = event.getData();
-                if (loadData.getInteger("MekanismWorldGen") == baseWorldGenVersion &&
-                    loadData.getInteger("MekanismUserWorldGen") == MekanismConfig.current().general.userWorldGenVersion.val()) {
+                if (loadData.getInt("MekanismWorldGen") == baseWorldGenVersion &&
+                    loadData.getInt("MekanismUserWorldGen") == MekanismConfig.current().general.userWorldGenVersion.val()) {
                     return;
                 }
                 ChunkPos coordPair = event.getChunk().getPos();
