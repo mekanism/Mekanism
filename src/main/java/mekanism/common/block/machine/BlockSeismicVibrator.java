@@ -13,6 +13,7 @@ import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -44,7 +45,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
-      IHasTileEntity<TileEntitySeismicVibrator> {
+      ISupportsRedstone, IHasTileEntity<TileEntitySeismicVibrator> {
 
     public BlockSeismicVibrator() {
         super(Material.IRON);

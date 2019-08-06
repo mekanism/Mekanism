@@ -11,6 +11,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -41,7 +42,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityOredictionificator> {
+public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui, IStateFacing, IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone,
+      IHasTileEntity<TileEntityOredictionificator> {
 
     public BlockOredictionificator() {
         super(Material.IRON);

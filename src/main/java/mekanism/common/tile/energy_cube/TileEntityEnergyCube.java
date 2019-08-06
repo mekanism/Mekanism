@@ -10,7 +10,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockEnergyCube;
@@ -34,7 +33,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public abstract class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
+public abstract class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISecurityTile, ITierUpgradeable,
       IConfigCardAccess, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
@@ -46,10 +45,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
      * The redstone level this Energy Cube is outputting at.
      */
     public int currentRedstoneLevel;
-    /**
-     * This machine's current RedstoneControl type.
-     */
-    public RedstoneControl controlType;
     public int prevScale;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -72,8 +67,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
         configComponent.setCanEject(TransmissionType.ITEM, false);
         configComponent.setIOConfig(TransmissionType.ENERGY);
         configComponent.setEjecting(TransmissionType.ENERGY, true);
-
-        controlType = RedstoneControl.DISABLED;
 
         ejectorComponent = new TileComponentEjector(this);
 
@@ -191,7 +184,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             EnergyCubeTier prevTier = tier;
             tier = EnergyCubeTier.values()[dataStream.readInt()];
-            controlType = RedstoneControl.values()[dataStream.readInt()];
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -202,7 +194,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(tier.ordinal());
-        data.add(controlType.ordinal());
         return data;
     }
 
@@ -210,7 +201,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
     @Nonnull
@@ -218,7 +208,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("tier", tier.ordinal());
-        nbtTags.setInteger("controlType", controlType.ordinal());
         return nbtTags;
     }
 
@@ -238,21 +227,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(getEnergy(), getMaxEnergy());
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-    }
-
-    @Override
-    public boolean canPulse() {
-        return false;
     }
 
     @Override

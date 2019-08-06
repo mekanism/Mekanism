@@ -15,7 +15,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -48,7 +47,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IRedstoneControl, ISecurityTile,
+public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, ISecurityTile,
       IUpgradeTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
@@ -71,8 +70,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
      * This teleporter's current status.
      */
     public byte status = 0;
-
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public TileComponentSecurity securityComponent;
     public TileComponentChunkLoader chunkLoaderComponent;
@@ -378,7 +375,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         if (nbtTags.hasKey("frequency")) {
             frequency = new Frequency(nbtTags.getCompoundTag("frequency"));
             frequency.valid = false;
@@ -389,7 +385,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setInteger("controlType", controlType.ordinal());
         if (frequency != null) {
             NBTTagCompound frequencyTag = new NBTTagCompound();
             frequency.write(frequencyTag);
@@ -428,7 +423,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
             status = dataStream.readByte();
             shouldRender = dataStream.readBoolean();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
 
             publicCache.clear();
             privateCache.clear();
@@ -457,7 +451,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
         data.add(status);
         data.add(shouldRender);
-        data.add(controlType.ordinal());
         data.add(Mekanism.publicTeleporters.getFrequencies().size());
         for (Frequency freq : Mekanism.publicTeleporters.getFrequencies()) {
             freq.write(data);
@@ -515,21 +508,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-    }
-
-    @Override
-    public boolean canPulse() {
-        return false;
     }
 
     @Override

@@ -12,6 +12,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
@@ -40,7 +41,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTeleporter extends BlockMekanismContainer implements IBlockElectric, IHasGui, ISupportsUpgrades, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityTeleporter> {
+public class BlockTeleporter extends BlockMekanismContainer implements IBlockElectric, IHasGui, ISupportsUpgrades, IHasInventory, IHasSecurity, ISupportsRedstone,
+      IHasTileEntity<TileEntityTeleporter> {
 
     public BlockTeleporter() {
         super(Material.IRON);

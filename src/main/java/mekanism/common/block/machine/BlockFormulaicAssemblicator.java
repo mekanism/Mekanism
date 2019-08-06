@@ -12,6 +12,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -44,7 +45,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockFormulaicAssemblicator extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity, IHasTileEntity<TileEntityFormulaicAssemblicator> {
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFormulaicAssemblicator> {
 
     public BlockFormulaicAssemblicator() {
         super(Material.IRON);

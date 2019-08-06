@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -28,6 +29,7 @@ import mekanism.common.block.interfaces.IBlockSound;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasSecurity;
+import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -49,6 +51,7 @@ import mekanism.common.tile.interfaces.ITileActive;
 import mekanism.common.tile.interfaces.ITileContainer;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileElectric;
+import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.LangUtils;
@@ -89,7 +92,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, IToggleableCapability, ITileDirectional,
-      ITileContainer, ITileElectric, ITileActive, ITileSound {
+      ITileContainer, ITileElectric, ITileActive, ITileSound, ITileRedstone {
 
     /**
      * The players currently using this block.
@@ -99,10 +102,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     /**
      * A timer used to send packets to clients.
      */
+    //TODO: Evaluate this
     public int ticker;
-
-    public boolean redstone = false;
-    public boolean redstoneLastTick = false;
 
     public boolean doAutoSync = true;
 
@@ -111,6 +112,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     protected IBlockProvider blockProvider;
 
     private boolean supportsUpgrades;
+    private boolean supportsRedstone;
     private boolean isDirectional;
     private boolean isActivatable;
     private boolean hasInventory;
@@ -124,6 +126,15 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     private EnumFacing facing = EnumFacing.NORTH;
     //End variables ITileDirectional
+
+    //Variables for handling ITileRedstone
+    public boolean redstone = false;
+    public boolean redstoneLastTick = false;
+    /**
+     * This machine's current RedstoneControl type.
+     */
+    private RedstoneControl controlType = RedstoneControl.DISABLED;
+    //End variables ITileRedstone
 
     //Variables for handling ITileContainer
     /**
@@ -210,6 +221,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         isElectric = block instanceof IBlockElectric;
         supportsUpgrades = block instanceof ISupportsUpgrades;
         isDirectional = block instanceof IStateFacing;
+        supportsRedstone = block instanceof ISupportsRedstone;
         hasSound = block instanceof IBlockSound;
         hasGui = block instanceof IHasGui;
         hasInventory = block instanceof IHasInventory;
@@ -225,6 +237,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public final boolean isDirectional() {
         return isDirectional;
+    }
+
+    public final boolean supportsRedstone() {
+        return supportsRedstone;
     }
 
     public final boolean isElectric() {
@@ -360,7 +376,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             }
         }
         ticker++;
-        redstoneLastTick = redstone;
+        if (supportsRedstone()) {
+            redstoneLastTick = redstone;
+        }
     }
 
     @Override
@@ -391,6 +409,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                     MekanismUtils.updateBlock(world, getPos());
                     world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
                 }
+            }
+            if (supportsRedstone()) {
+                controlType = RedstoneControl.values()[dataStream.readInt()];
             }
             if (isElectric()) {
                 setEnergy(dataStream.readDouble());
@@ -425,6 +446,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (isDirectional()) {
             data.add(getDirection().ordinal());
+        }
+        if (supportsRedstone()) {
+            data.add(controlType.ordinal());
         }
         if (isElectric()) {
             data.add(getEnergy());
@@ -476,6 +500,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isDirectional() && nbtTags.hasKey("facing")) {
             facing = EnumFacing.byIndex(nbtTags.getInteger("facing"));
         }
+        if (supportsRedstone() && nbtTags.hasKey("controlType")) {
+            controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        }
         if (hasInventory()) {
             if (handleInventory()) {
                 NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
@@ -507,6 +534,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (isDirectional()) {
             nbtTags.setInteger("facing", getDirection().ordinal());
+        }
+        if (supportsRedstone()) {
+            nbtTags.setInteger("controlType", controlType.ordinal());
         }
         if (hasInventory()) {
             if (handleInventory()) {
@@ -569,29 +599,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return false;
     }
 
-    public boolean isPowered() {
-        return redstone;
-    }
-
-    public boolean wasPowered() {
-        return redstoneLastTick;
-    }
-
-    public void onPowerChange() {
-    }
-
     public void onNeighborChange(Block block) {
-        if (!world.isRemote) {
+        if (!world.isRemote && supportsRedstone()) {
             updatePower();
-        }
-    }
-
-    private void updatePower() {
-        boolean power = world.isBlockPowered(getPos());
-        if (redstone != power) {
-            redstone = power;
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            onPowerChange();
         }
     }
 
@@ -599,7 +609,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
      * Called when block is placed in world
      */
     public void onAdded() {
-        updatePower();
+        if (supportsRedstone()) {
+            updatePower();
+        }
     }
 
     @Override
@@ -648,6 +660,40 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
     }
     //End methods ITileDirectional
+
+    //Methods for implementing ITileRedstone
+    @Override
+    public RedstoneControl getControlType() {
+        return controlType;
+    }
+
+    @Override
+    public void setControlType(@Nonnull RedstoneControl type) {
+        if (supportsRedstone()) {
+            controlType = Objects.requireNonNull(type);
+            MekanismUtils.saveChunk(this);
+        }
+    }
+
+    @Override
+    public boolean isPowered() {
+        return supportsRedstone() && redstone;
+    }
+
+    @Override
+    public boolean wasPowered() {
+        return supportsRedstone() && redstoneLastTick;
+    }
+
+    private void updatePower() {
+        boolean power = world.isBlockPowered(getPos());
+        if (redstone != power) {
+            redstone = power;
+            Mekanism.packetHandler.sendUpdatePacket(this);
+            onPowerChange();
+        }
+    }
+    //End methods ITileRedstone
 
     //Methods for implementing ITileContainer
     @Nonnull

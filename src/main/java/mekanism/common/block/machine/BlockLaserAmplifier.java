@@ -11,6 +11,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -41,7 +42,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasModel, IHasGui, IStateFacing, IStateActive, IHasSecurity, IHasTileEntity<TileEntityLaserAmplifier> {
+public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasModel, IHasGui, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
+      IHasTileEntity<TileEntityLaserAmplifier> {
 
     public BlockLaserAmplifier() {
         super(Material.IRON);

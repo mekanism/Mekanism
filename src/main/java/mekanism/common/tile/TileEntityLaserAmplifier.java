@@ -11,7 +11,6 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -30,8 +29,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IRedstoneControl, IStrictEnergyOutputter, IStrictEnergyStorage,
-      IComputerIntegration, ISecurityTile {
+public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration,
+      ISecurityTile {
 
     public static final double MAX_ENERGY = 5E9;
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy"};
@@ -41,7 +40,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     public double maxThreshold = 5E9;
     public int ticks = 0;
     public int time = 0;
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
     public boolean on = false;
     public Coord4D digging;
     public double diggingProgress;
@@ -194,7 +192,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         data.add(time);
         data.add(collectedEnergy);
         data.add(lastFired);
-        data.add(controlType.ordinal());
         data.add(emittingRedstone);
         data.add(outputMode.ordinal());
         return data;
@@ -229,7 +226,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
             time = dataStream.readInt();
             collectedEnergy = dataStream.readDouble();
             lastFired = dataStream.readDouble();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
             emittingRedstone = dataStream.readBoolean();
             outputMode = RedstoneOutput.values()[dataStream.readInt()];
         }
@@ -244,7 +240,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         time = nbtTags.getInteger("time");
         collectedEnergy = nbtTags.getDouble("collectedEnergy");
         lastFired = nbtTags.getDouble("lastFired");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         outputMode = RedstoneOutput.values()[nbtTags.getInteger("outputMode")];
     }
 
@@ -258,19 +253,8 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         nbtTags.setInteger("time", time);
         nbtTags.setDouble("collectedEnergy", collectedEnergy);
         nbtTags.setDouble("lastFired", lastFired);
-        nbtTags.setInteger("controlType", controlType.ordinal());
         nbtTags.setInteger("outputMode", outputMode.ordinal());
         return nbtTags;
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
     }
 
     @Override

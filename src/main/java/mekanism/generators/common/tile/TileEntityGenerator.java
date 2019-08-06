@@ -1,12 +1,9 @@
 package mekanism.generators.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockProvider;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -16,24 +13,17 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityGenerator extends TileEntityMekanism implements IComputerIntegration, IRedstoneControl, ISecurityTile {
+public abstract class TileEntityGenerator extends TileEntityMekanism implements IComputerIntegration, ISecurityTile {
 
     /**
      * Output per tick this generator can transfer.
      */
     public double output;
-
-    /**
-     * This machine's current RedstoneControl type.
-     */
-    public RedstoneControl controlType;
 
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
@@ -43,7 +33,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
     public TileEntityGenerator(IBlockProvider blockProvider, double out) {
         super(blockProvider);
         output = out;
-        controlType = RedstoneControl.DISABLED;
     }
 
     @Override
@@ -91,36 +80,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
         return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
     }
 
-    @Override
-    public void handlePacketData(ByteBuf dataStream) {
-        super.handlePacketData(dataStream);
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            controlType = RedstoneControl.values()[dataStream.readInt()];
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(controlType.ordinal());
-        return data;
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
-        super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-    }
-
-    @Nonnull
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
-        super.writeToNBT(nbtTags);
-        nbtTags.setInteger("controlType", controlType.ordinal());
-        return nbtTags;
-    }
-
     @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
@@ -136,22 +95,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
     @Override
     public boolean lightUpdate() {
         return true;
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-        MekanismUtils.saveChunk(this);
-    }
-
-    @Override
-    public boolean canPulse() {
-        return false;
     }
 
     @Override

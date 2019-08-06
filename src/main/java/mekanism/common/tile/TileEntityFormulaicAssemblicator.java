@@ -11,7 +11,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -37,8 +36,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess,
-      ISecurityTile {
+public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IUpgradeTile, IConfigCardAccess, ISecurityTile {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
     public static final int SLOT_UPGRADE = 0;
@@ -71,8 +69,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public RecipeFormula formula;
     private IRecipe cachedRecipe;
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
-
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public TileComponentUpgrade<TileEntityFormulaicAssemblicator> upgradeComponent;
     public TileComponentEjector ejectorComponent;
@@ -121,7 +117,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 organizeStock();
             }
             ChargeUtils.discharge(SLOT_ENERGY, this);
-            if (controlType != RedstoneControl.PULSE) {
+            if (getControlType() != RedstoneControl.PULSE) {
                 pulseOperations = 0;
             } else if (MekanismUtils.canFunction(this)) {
                 pulseOperations++;
@@ -131,7 +127,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 toggleAutoMode();
             }
 
-            if (autoMode && formula != null && ((controlType == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
+            if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
                 boolean canOperate = true;
                 if (!isRecipe) {
                     canOperate = moveItemsToGrid();
@@ -483,7 +479,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         super.readFromNBT(nbtTags);
         autoMode = nbtTags.getBoolean("autoMode");
         operatingTicks = nbtTags.getInteger("operatingTicks");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         pulseOperations = nbtTags.getInteger("pulseOperations");
         stockControl = nbtTags.getBoolean("stockControl");
     }
@@ -494,7 +489,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         super.writeToNBT(nbtTags);
         nbtTags.setBoolean("autoMode", autoMode);
         nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setInteger("controlType", controlType.ordinal());
         nbtTags.setInteger("pulseOperations", pulseOperations);
         nbtTags.setBoolean("stockControl", stockControl);
         return nbtTags;
@@ -529,7 +523,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             autoMode = dataStream.readBoolean();
             operatingTicks = dataStream.readInt();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
             isRecipe = dataStream.readBoolean();
             stockControl = dataStream.readBoolean();
             if (dataStream.readBoolean()) {
@@ -553,7 +546,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         super.getNetworkedData(data);
         data.add(autoMode);
         data.add(operatingTicks);
-        data.add(controlType.ordinal());
         data.add(isRecipe);
         data.add(stockControl);
         if (needsFormulaUpdate) {
@@ -576,17 +568,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
         needsFormulaUpdate = false;
         return data;
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-        MekanismUtils.saveChunk(this);
     }
 
     @Override

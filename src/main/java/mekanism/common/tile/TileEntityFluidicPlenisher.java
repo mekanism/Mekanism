@@ -16,7 +16,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -51,7 +50,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
-      IUpgradeTile, IRedstoneControl, ISecurityTile, IComparatorSupport {
+      IUpgradeTile, ISecurityTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
@@ -68,7 +67,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      * How many ticks this machine has been operating for.
      */
     public int operatingTicks;
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
     public TileComponentUpgrade<TileEntityFluidicPlenisher> upgradeComponent = new TileComponentUpgrade<>(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
@@ -185,7 +183,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             finishedCalc = dataStream.readBoolean();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
             TileUtils.readTankData(dataStream, fluidTank);
         }
     }
@@ -194,7 +191,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(finishedCalc);
-        data.add(controlType.ordinal());
         TileUtils.addTankData(data, fluidTank);
         return data;
     }
@@ -205,7 +201,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("finishedCalc", finishedCalc);
-        nbtTags.setInteger("controlType", controlType.ordinal());
 
         if (fluidTank.getFluid() != null) {
             nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
@@ -236,7 +231,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         super.readFromNBT(nbtTags);
         operatingTicks = nbtTags.getInteger("operatingTicks");
         finishedCalc = nbtTags.getBoolean("finishedCalc");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 
         if (nbtTags.hasKey("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
@@ -401,21 +395,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             default:
                 break;
         }
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-    }
-
-    @Override
-    public boolean canPulse() {
-        return false;
     }
 
     @Override

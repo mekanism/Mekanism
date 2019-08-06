@@ -13,7 +13,6 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -50,11 +49,10 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile,
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ISecurityTile,
       IComputerIntegration, IUpgradeTile, IComparatorSupport {
 
     public HashList<TransporterFilter> filters = new HashList<>();
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
     public EnumColor color;
     public boolean autoEject;
     public boolean roundRobin;
@@ -162,7 +160,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IR
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setInteger("controlType", controlType.ordinal());
 
         if (color != null) {
             nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
@@ -190,7 +187,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IR
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         if (nbtTags.hasKey("color")) {
             color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
         }
@@ -275,7 +271,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IR
     }
 
     private void readState(ByteBuf dataStream) {
-        controlType = RedstoneControl.values()[dataStream.readInt()];
         int c = dataStream.readInt();
         if (c != -1) {
             color = TransporterUtils.colors.get(c);
@@ -299,7 +294,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IR
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(0);
-        data.add(controlType.ordinal());
         if (color != null) {
             data.add(TransporterUtils.colors.indexOf(color));
         } else {
@@ -320,7 +314,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IR
     public TileNetworkList getGenericPacket(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(1);
-        data.add(controlType.ordinal());
         if (color != null) {
             data.add(TransporterUtils.colors.indexOf(color));
         } else {
@@ -387,16 +380,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IR
         if (!world.isRemote) {
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
     }
 
     @Override

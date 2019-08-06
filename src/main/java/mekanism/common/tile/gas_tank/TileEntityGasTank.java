@@ -15,7 +15,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockGasTank;
@@ -42,8 +41,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public abstract class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
-      IComputerIntegration, IComparatorSupport {
+public abstract class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, ISecurityTile, ITierUpgradeable, IComputerIntegration,
+      IComparatorSupport {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**
@@ -58,11 +57,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     public int currentGasAmount;
 
     public int currentRedstoneLevel;
-
-    /**
-     * This machine's current RedstoneControl type.
-     */
-    public RedstoneControl controlType;
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -84,7 +78,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
 
         gasTank = new GasTank(tier.getStorage());
         dumping = GasMode.IDLE;
-        controlType = RedstoneControl.DISABLED;
 
         ejectorComponent = new TileComponentEjector(this);
 
@@ -254,7 +247,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
             gasTank.setMaxGas(tier.getStorage());
             TileUtils.readTankData(dataStream, gasTank);
             dumping = GasMode.values()[dataStream.readInt()];
-            controlType = RedstoneControl.values()[dataStream.readInt()];
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -267,7 +259,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
         tier = GasTankTier.values()[nbtTags.getInteger("tier")];
         gasTank.read(nbtTags.getCompoundTag("gasTank"));
         dumping = GasMode.values()[nbtTags.getInteger("dumping")];
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
     @Nonnull
@@ -277,7 +268,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
         nbtTags.setInteger("tier", tier.ordinal());
         nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
         nbtTags.setInteger("dumping", dumping.ordinal());
-        nbtTags.setInteger("controlType", controlType.ordinal());
         return nbtTags;
     }
 
@@ -287,7 +277,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
         data.add(tier.ordinal());
         TileUtils.addTankData(data, gasTank);
         data.add(dumping.ordinal());
-        data.add(controlType.ordinal());
         return data;
     }
 
@@ -299,21 +288,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getMaxGas());
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-    }
-
-    @Override
-    public boolean canPulse() {
-        return false;
     }
 
     @Override

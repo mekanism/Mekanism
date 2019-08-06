@@ -7,7 +7,6 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -25,7 +24,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile {
+public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer, IComputerIntegration, ISecurityTile {
 
     private static final int[] SLOTS = {0};
 
@@ -36,7 +35,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     //TODO: Figure out sound
     public float soundScale = 1;
     public double lastEnvironmentLoss;
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityResistiveHeater() {
@@ -86,7 +84,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         super.readFromNBT(nbtTags);
         energyUsage = nbtTags.getDouble("energyUsage");
         temperature = nbtTags.getDouble("temperature");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         setMaxEnergy(energyUsage * 400);
     }
 
@@ -96,7 +93,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         super.writeToNBT(nbtTags);
         nbtTags.setDouble("energyUsage", energyUsage);
         nbtTags.setDouble("temperature", temperature);
-        nbtTags.setInteger("controlType", controlType.ordinal());
         return nbtTags;
     }
 
@@ -114,7 +110,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
             temperature = dataStream.readDouble();
             setMaxEnergy(dataStream.readDouble());
             soundScale = dataStream.readFloat();
-            controlType = RedstoneControl.values()[dataStream.readInt()];
             lastEnvironmentLoss = dataStream.readDouble();
         }
     }
@@ -127,7 +122,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         data.add(temperature);
         data.add(getMaxEnergy());
         data.add(soundScale);
-        data.add(controlType.ordinal());
 
         data.add(lastEnvironmentLoss);
         return data;
@@ -222,21 +216,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-    }
-
-    @Override
-    public boolean canPulse() {
-        return false;
     }
 
     @Override

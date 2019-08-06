@@ -19,7 +19,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
@@ -57,8 +56,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile,
-      ITankManager, IComputerIntegration, ISecurityTile, IComparatorSupport {
+public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IUpgradeTile, ITankManager,
+      IComputerIntegration, ISecurityTile, IComparatorSupport {
 
     private static final int[] UPSLOTS = {0};
     private static final int[] DOWNSLOTS = {1};
@@ -87,10 +86,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
      * The nodes that have full sources near them or in them
      */
     public Set<Coord4D> recurringNodes = new HashSet<>();
-    /**
-     * This machine's current RedstoneControl type.
-     */
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
     public TileComponentUpgrade<TileEntityElectricPump> upgradeComponent = new TileComponentUpgrade<>(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
@@ -229,7 +224,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             TileUtils.readTankData(dataStream, fluidTank);
-            controlType = RedstoneControl.values()[dataStream.readInt()];
         }
     }
 
@@ -237,7 +231,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         TileUtils.addTankData(data, fluidTank);
-        data.add(controlType.ordinal());
         return data;
     }
 
@@ -255,8 +248,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         if (fluidTank.getFluid() != null) {
             nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
         }
-
-        nbtTags.setInteger("controlType", controlType.ordinal());
 
         NBTTagList recurringList = new NBTTagList();
         for (Coord4D wrapper : recurringNodes) {
@@ -280,9 +271,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         }
         if (nbtTags.hasKey("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
-        }
-        if (nbtTags.hasKey("controlType")) {
-            controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         }
         if (nbtTags.hasKey("recurringNodes")) {
             NBTTagList tagList = nbtTags.getTagList("recurringNodes", NBT.TAG_COMPOUND);
@@ -397,17 +385,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-        MekanismUtils.saveChunk(this);
     }
 
     @Override

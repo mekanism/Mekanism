@@ -12,6 +12,7 @@ import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.interfaces.ISupportsRedstone;
 import mekanism.common.block.interfaces.ISupportsUpgrades;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -43,7 +44,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IHasGui, ISupportsUpgrades, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity, IHasTileEntity<TileEntitySolarNeutronActivator> {
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator> {
 
     public BlockSolarNeutronActivator() {
         super(Material.IRON);

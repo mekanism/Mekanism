@@ -11,7 +11,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
@@ -36,13 +35,11 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityOredictionificator extends TileEntityMekanism implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile {
+public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ISecurityTile {
 
-    public static final int MAX_LENGTH = 24;
     private static final int[] SLOTS = {0, 1};
     public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
     public HashList<OredictionificatorFilter> filters = new HashList<>();
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public boolean didProcess;
 
@@ -142,7 +139,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setInteger("controlType", controlType.ordinal());
         NBTTagList filterTags = new NBTTagList();
         for (OredictionificatorFilter filter : filters) {
             NBTTagCompound tagCompound = new NBTTagCompound();
@@ -158,7 +154,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         if (nbtTags.hasKey("filters")) {
             NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
@@ -173,7 +168,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                controlType = RedstoneControl.values()[dataStream.readInt()];
                 didProcess = dataStream.readBoolean();
                 filters.clear();
 
@@ -182,7 +176,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
                     filters.add(OredictionificatorFilter.readFromPacket(dataStream));
                 }
             } else if (type == 1) {
-                controlType = RedstoneControl.values()[dataStream.readInt()];
                 didProcess = dataStream.readBoolean();
             } else if (type == 2) {
                 filters.clear();
@@ -198,7 +191,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(0);
-        data.add(controlType.ordinal());
         data.add(didProcess);
         data.add(filters.size());
         for (OredictionificatorFilter filter : filters) {
@@ -210,7 +202,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public TileNetworkList getGenericPacket(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(1);
-        data.add(controlType.ordinal());
         data.add(didProcess);
         return data;
     }
@@ -285,16 +276,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
                 }
             }
         }
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
     }
 
     @Override

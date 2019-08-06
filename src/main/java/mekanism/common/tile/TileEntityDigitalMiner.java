@@ -23,7 +23,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
@@ -83,8 +82,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader,
-      IAdvancedBoundingBlock {
+public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgradeTile, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
@@ -128,11 +126,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public boolean clientRendering = false;
 
     private Set<ChunkPos> chunkSet;
-
-    /**
-     * This machine's current RedstoneControl type.
-     */
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public TileComponentUpgrade<TileEntityDigitalMiner> upgradeComponent = new TileComponentUpgrade<>(this, INV_SLOTS.length);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
@@ -526,7 +519,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         delay = nbtTags.getInteger("delay");
         numPowering = nbtTags.getInteger("numPowering");
         searcher.state = State.values()[nbtTags.getInteger("state")];
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         setConfigurationData(nbtTags);
     }
 
@@ -541,7 +533,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         nbtTags.setInteger("delay", delay);
         nbtTags.setInteger("numPowering", numPowering);
         nbtTags.setInteger("state", searcher.state.ordinal());
-        nbtTags.setInteger("controlType", controlType.ordinal());
         return getConfigurationData(nbtTags);
     }
 
@@ -556,7 +547,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         numPowering = dataStream.readInt();
         searcher.state = State.values()[dataStream.readInt()];
         clientToMine = dataStream.readInt();
-        controlType = RedstoneControl.values()[dataStream.readInt()];
         inverse = dataStream.readBoolean();
         if (dataStream.readBoolean()) {
             missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
@@ -680,7 +670,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             data.add(getSize());
         }
 
-        data.add(controlType.ordinal());
         data.add(inverse);
         if (!missingStack.isEmpty()) {
             data.add(true);
@@ -766,22 +755,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     @Override
     public boolean isPowered() {
         return redstone || numPowering > 0;
-    }
-
-    @Override
-    public boolean canPulse() {
-        return false;
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-        MekanismUtils.saveChunk(this);
     }
 
     @Override

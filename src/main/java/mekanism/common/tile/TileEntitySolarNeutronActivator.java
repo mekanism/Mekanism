@@ -18,7 +18,6 @@ import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
@@ -42,8 +41,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IRedstoneControl, IBoundingBlock, IGasHandler, IActiveState, ISustainedData,
-      ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler, IComparatorSupport {
+public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager, ISecurityTile,
+      IUpgradeTile, IUpgradeInfoHandler, IComparatorSupport {
 
     public static final int MAX_GAS = 10000;
     private static final int[] INPUT_SLOT = {0};
@@ -58,8 +57,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     private int currentRedstoneLevel;
     private boolean needsRainCheck;
-
-    public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public TileComponentUpgrade<TileEntitySolarNeutronActivator> upgradeComponent = new TileComponentUpgrade<>(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
@@ -144,7 +141,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            controlType = RedstoneControl.values()[dataStream.readInt()];
             TileUtils.readTankData(dataStream, inputTank);
             TileUtils.readTankData(dataStream, outputTank);
         }
@@ -153,7 +149,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(controlType.ordinal());
         TileUtils.addTankData(data, inputTank);
         TileUtils.addTankData(data, outputTank);
         return data;
@@ -162,7 +157,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         inputTank.read(nbtTags.getCompoundTag("inputTank"));
         outputTank.read(nbtTags.getCompoundTag("outputTank"));
     }
@@ -171,7 +165,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setInteger("controlType", controlType.ordinal());
         nbtTags.setTag("inputTank", inputTank.write(new NBTTagCompound()));
         nbtTags.setTag("outputTank", outputTank.write(new NBTTagCompound()));
         return nbtTags;
@@ -265,22 +258,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public void readSustainedData(ItemStack itemStack) {
         inputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
         outputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
-    }
-
-    @Override
-    public RedstoneControl getControlType() {
-        return controlType;
-    }
-
-    @Override
-    public void setControlType(RedstoneControl type) {
-        controlType = type;
-        MekanismUtils.saveChunk(this);
-    }
-
-    @Override
-    public boolean canPulse() {
-        return false;
     }
 
     @Override
