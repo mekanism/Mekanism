@@ -6,7 +6,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.tile.prefab.TileEntityEffectsBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,7 +21,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChargepad extends TileEntityEffectsBlock {
+public class TileEntityChargepad extends TileEntityMekanism {
 
     public Random random = new Random();
 
@@ -31,7 +31,6 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             isActive = false;
             List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class,

@@ -237,7 +237,6 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("tier", tier.ordinal());
-        nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("editMode", editMode.ordinal());
         if (fluidTank.getFluid() != null) {
             nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
@@ -249,7 +248,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         tier = FluidTankTier.values()[nbtTags.getInteger("tier")];
-        clientActive = isActive = nbtTags.getBoolean("isActive");
+        clientActive = getActive();
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
         //Needs to be outside the hasKey check because this is just based on the tier which is known information
         fluidTank.setCapacity(tier.getStorage());

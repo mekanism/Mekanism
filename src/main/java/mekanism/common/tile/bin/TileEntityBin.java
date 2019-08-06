@@ -224,7 +224,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("itemCount", cacheCount);
         nbtTags.setInteger("tier", tier.ordinal());
         if (!bottomStack.isEmpty()) {
@@ -242,7 +241,6 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-        isActive = nbtTags.getBoolean("isActive");
         cacheCount = nbtTags.getInteger("itemCount");
         tier = BinTier.values()[nbtTags.getInteger("tier")];
         bottomStack = new ItemStack(nbtTags.getCompoundTag("bottomStack"));

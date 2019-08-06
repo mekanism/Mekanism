@@ -9,6 +9,7 @@ import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
@@ -17,7 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 //TODO
-public abstract class TileEntityMachine extends TileEntityEffectsBlock implements IUpgradeTile, IRedstoneControl, ISecurityTile {
+public abstract class TileEntityMachine extends TileEntityMekanism implements IUpgradeTile, IRedstoneControl, ISecurityTile {
 
     public double prevEnergy;
 

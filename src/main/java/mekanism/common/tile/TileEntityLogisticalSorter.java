@@ -28,9 +28,9 @@ import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -50,7 +50,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile,
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements IRedstoneControl, ISpecialConfigData, ISustainedData, ISecurityTile,
       IComputerIntegration, IUpgradeTile, IComparatorSupport {
 
     public HashList<TransporterFilter> filters = new HashList<>();
@@ -67,7 +67,8 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     private int currentRedstoneLevel;
 
     public TileEntityLogisticalSorter() {
-        super(MekanismBlock.LOGISTICAL_SORTER, 3);
+        super(MekanismBlock.LOGISTICAL_SORTER);
+        rapidChangeThreshold = 3;
         doAutoSync = false;
         upgradeComponent = new TileComponentUpgrade<>(this, 1);
         upgradeComponent.clearSupportedTypes();
@@ -76,7 +77,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             delayTicks = Math.max(0, delayTicks - 1);
             if (delayTicks == 6) {

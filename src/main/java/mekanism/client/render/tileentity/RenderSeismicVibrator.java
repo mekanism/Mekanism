@@ -22,7 +22,7 @@ public class RenderSeismicVibrator extends TileEntitySpecialRenderer<TileEntityS
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
         MekanismRenderer.rotate(tileEntity.getDirection(), 0, 180, 90, 270);
         GlStateManager.rotate(180, 0, 0, 1);
-        float actualRate = (float) Math.sin((tileEntity.clientPiston + (tileEntity.isActive ? partialTick : 0)) / 5F);
+        float actualRate = (float) Math.sin((tileEntity.clientPiston + (tileEntity.getActive() ? partialTick : 0)) / 5F);
         model.renderWithPiston(Math.max(0, actualRate), 0.0625F);
         GlStateManager.popMatrix();
     }

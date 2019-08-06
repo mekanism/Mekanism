@@ -104,7 +104,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
         temperature = nbtTags.getDouble("temperature");
-        clientActive = isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive;
         burnTime = nbtTags.getInteger("burnTime");
         maxBurnTime = nbtTags.getInteger("maxBurnTime");
     }
@@ -114,7 +114,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setDouble("temperature", temperature);
-        nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("burnTime", burnTime);
         nbtTags.setInteger("maxBurnTime", maxBurnTime);
         return nbtTags;

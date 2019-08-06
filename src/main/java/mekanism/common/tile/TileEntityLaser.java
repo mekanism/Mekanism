@@ -7,7 +7,7 @@ import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.prefab.TileEntityEffectsBlock;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -16,7 +16,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaser extends TileEntityEffectsBlock {
+public class TileEntityLaser extends TileEntityMekanism {
 
     public Coord4D digging;
     public double diggingProgress;
@@ -27,7 +27,6 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (world.isRemote) {
             if (getActive()) {
                 RayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), MekanismConfig.current().usage.laser.val(), world);

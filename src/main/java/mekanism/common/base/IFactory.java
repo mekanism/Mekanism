@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.common.InfuseStorage;
-import mekanism.common.Mekanism;
 import mekanism.common.block.states.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -27,8 +26,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
@@ -73,27 +70,25 @@ public interface IFactory {
     }
 
     enum RecipeType implements IStringSerializable {
-        SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, MachineFuelType.BASIC, false, Recipe.ENERGIZED_SMELTER),
-        ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false, Recipe.ENRICHMENT_CHAMBER),
-        CRUSHING("Crushing", "crusher", MachineType.CRUSHER, MachineFuelType.BASIC, false, Recipe.CRUSHER),
-        COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false, Recipe.OSMIUM_COMPRESSOR),
-        COMBINING("Combining", "combiner", MachineType.COMBINER, MachineFuelType.DOUBLE, false, Recipe.COMBINER),
-        PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.PURIFICATION_CHAMBER),
-        INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
-        INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER),
-        SAWING("Sawing", "sawmill", MachineType.PRECISION_SAWMILL, MachineFuelType.CHANCE, false, Recipe.PRECISION_SAWMILL);
+        SMELTING("Smelting", MachineType.ENERGIZED_SMELTER, MachineFuelType.BASIC, false, Recipe.ENERGIZED_SMELTER),
+        ENRICHING("Enriching", MachineType.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false, Recipe.ENRICHMENT_CHAMBER),
+        CRUSHING("Crushing", MachineType.CRUSHER, MachineFuelType.BASIC, false, Recipe.CRUSHER),
+        COMPRESSING("Compressing", MachineType.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false, Recipe.OSMIUM_COMPRESSOR),
+        COMBINING("Combining", MachineType.COMBINER, MachineFuelType.DOUBLE, false, Recipe.COMBINER),
+        PURIFYING("Purifying", MachineType.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.PURIFICATION_CHAMBER),
+        INJECTING("Injecting", MachineType.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
+        INFUSING("Infusing", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER),
+        SAWING("Sawing", MachineType.PRECISION_SAWMILL, MachineFuelType.CHANCE, false, Recipe.PRECISION_SAWMILL);
 
         private String name;
-        private SoundEvent sound;
         private MachineType type;
         private MachineFuelType fuelType;
         private boolean fuelSpeed;
         private Recipe recipe;
         private TileEntityAdvancedElectricMachine cacheTile;
 
-        RecipeType(String s, String s1, MachineType t, MachineFuelType ft, boolean speed, Recipe r) {
+        RecipeType(String s, MachineType t, MachineFuelType ft, boolean speed, Recipe r) {
             name = s;
-            sound = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine." + s1));
             type = t;
             fuelType = ft;
             fuelSpeed = speed;
@@ -261,10 +256,6 @@ public interface IFactory {
 
         public String getLocalizedName() {
             return LangUtils.localize("gui.factory." + name);
-        }
-
-        public SoundEvent getSound() {
-            return sound;
         }
 
         public MachineFuelType getFuelType() {

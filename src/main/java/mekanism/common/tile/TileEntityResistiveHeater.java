@@ -12,8 +12,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
@@ -25,7 +25,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile {
+public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile {
 
     private static final int[] SLOTS = {0};
 
@@ -52,7 +52,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (world.isRemote && updateDelay > 0) {
             updateDelay--;
             if (updateDelay == 0 && clientActive != getActive()) {
@@ -109,7 +108,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         super.readFromNBT(nbtTags);
         energyUsage = nbtTags.getDouble("energyUsage");
         temperature = nbtTags.getDouble("temperature");
-        clientActive = isActive = nbtTags.getBoolean("isActive");
+        clientActive = getActive();
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         setMaxEnergy(energyUsage * 400);
     }
@@ -120,7 +119,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         super.writeToNBT(nbtTags);
         nbtTags.setDouble("energyUsage", energyUsage);
         nbtTags.setDouble("temperature", temperature);
-        nbtTags.setBoolean("isActive", getActive());
         nbtTags.setInteger("controlType", controlType.ordinal());
         return nbtTags;
     }

@@ -368,9 +368,6 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
         for (Upgrade upgrade : upgradeComponent.getSupportedTypes()) {
             recalculateUpgrades(upgrade);
         }
-        if (hasWorld() && world.isRemote) {
-            setSoundEvent(type.getSound());
-        }
     }
 
     @Override

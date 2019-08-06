@@ -11,8 +11,8 @@ import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityGenerator extends TileEntityEffectsBlock implements IComputerIntegration, IRedstoneControl, ISecurityTile {
+public abstract class TileEntityGenerator extends TileEntityMekanism implements IComputerIntegration, IRedstoneControl, ISecurityTile {
 
     /**
      * Output per tick this generator can transfer.
@@ -39,9 +39,6 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
 
     /**
      * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
-     *
-     * @param name      - full name of this generator
-     * @param maxEnergy - how much energy this generator can store
      */
     public TileEntityGenerator(IBlockProvider blockProvider, double out) {
         super(blockProvider);
@@ -51,7 +48,6 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             if (MekanismConfig.current().general.destroyDisabledBlocks.val()) {
                 Block block = getBlockType();
