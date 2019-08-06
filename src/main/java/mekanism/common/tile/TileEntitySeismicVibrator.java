@@ -6,9 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.BlockFaceShape;
@@ -19,13 +17,11 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySeismicVibrator extends TileEntityMekanism implements IActiveState, ISecurityTile, IBoundingBlock {
+public class TileEntitySeismicVibrator extends TileEntityMekanism implements IActiveState, IBoundingBlock {
 
     private static final int[] SLOTS = {0};
 
     public int clientPiston;
-
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySeismicVibrator() {
         super(MekanismBlock.SEISMIC_VIBRATOR);
@@ -72,11 +68,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
         return side == getOppositeDirection();
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

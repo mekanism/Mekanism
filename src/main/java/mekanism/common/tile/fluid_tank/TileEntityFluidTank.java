@@ -18,11 +18,9 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -49,7 +47,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public abstract class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
-      ITankManager, ISecurityTile, ITierUpgradeable, IComparatorSupport {
+      ITankManager, ITierUpgradeable, IComparatorSupport {
 
     public FluidTank fluidTank;
 
@@ -67,8 +65,6 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     public boolean needsPacket;
 
     public int currentRedstoneLevel;
-
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityFluidTank(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -430,10 +426,5 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     @Override
     public Object[] getTanks() {
         return new Object[]{fluidTank};
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 }

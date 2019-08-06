@@ -8,6 +8,10 @@ public interface ISecurityTile {
 
     TileComponentSecurity getSecurity();
 
+    default boolean hasSecurity() {
+        return true;
+    }
+
     enum SecurityMode {
         PUBLIC("security.public", EnumColor.BRIGHT_GREEN),
         PRIVATE("security.private", EnumColor.RED),

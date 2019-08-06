@@ -26,9 +26,7 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
@@ -49,8 +47,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ISecurityTile,
-      IComputerIntegration, IUpgradeTile, IComparatorSupport {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration, IUpgradeTile, IComparatorSupport {
 
     public HashList<TransporterFilter> filters = new HashList<>();
     public EnumColor color;
@@ -60,7 +57,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public int rrIndex = 0;
     public int delayTicks;
     public TileComponentUpgrade<TileEntityLogisticalSorter> upgradeComponent;
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "setSingleItem"};
     private int currentRedstoneLevel;
 
@@ -400,11 +396,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return true;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

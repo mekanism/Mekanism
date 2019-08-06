@@ -7,9 +7,7 @@ import mekanism.common.base.IBlockProvider;
 import mekanism.common.block.interfaces.IBlockDisableable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -18,14 +16,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityGenerator extends TileEntityMekanism implements IComputerIntegration, ISecurityTile {
+public abstract class TileEntityGenerator extends TileEntityMekanism implements IComputerIntegration {
 
     /**
      * Output per tick this generator can transfer.
      */
     public double output;
-
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     /**
      * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
@@ -95,10 +91,5 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
     @Override
     public boolean lightUpdate() {
         return true;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 }

@@ -15,13 +15,11 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -33,8 +31,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public abstract class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISecurityTile, ITierUpgradeable,
-      IConfigCardAccess, IComparatorSupport {
+public abstract class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ITierUpgradeable, IConfigCardAccess,
+      IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
     /**
@@ -48,7 +46,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     public int prevScale;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
-    public TileComponentSecurity securityComponent;
 
     /**
      * A block used to store and transfer electricity.
@@ -69,8 +66,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
         configComponent.setEjecting(TransmissionType.ENERGY, true);
 
         ejectorComponent = new TileComponentEjector(this);
-
-        securityComponent = new TileComponentSecurity(this);
     }
 
     @Override
@@ -242,11 +237,6 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     @Override
     public EnumFacing getOrientation() {
         return getDirection();
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

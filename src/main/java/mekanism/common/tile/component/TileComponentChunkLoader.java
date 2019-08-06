@@ -108,7 +108,7 @@ public class TileComponentChunkLoader implements ITileComponent {
 
             if (canOperate() && chunkTicket == null) {
                 Ticket ticket;
-                if (tileEntity instanceof ISecurityTile) {
+                if (tileEntity.hasSecurity()) {
                     ticket = ForgeChunkManager.requestPlayerTicket(Mekanism.instance,
                           MekanismUtils.getLastKnownUsername(((ISecurityTile) tileEntity).getSecurity().getOwnerUUID()), tileEntity.getWorld(), Type.NORMAL);
                 } else {

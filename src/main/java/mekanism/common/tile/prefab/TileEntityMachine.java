@@ -6,21 +6,18 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 //TODO
-public abstract class TileEntityMachine extends TileEntityMekanism implements IUpgradeTile, ISecurityTile {
+public abstract class TileEntityMachine extends TileEntityMekanism implements IUpgradeTile {
 
     public double prevEnergy;
 
     public TileComponentUpgrade<TileEntityMachine> upgradeComponent;
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityMachine(IBlockProvider blockProvider, int upgradeSlot) {
         super(blockProvider);
@@ -58,11 +55,6 @@ public abstract class TileEntityMachine extends TileEntityMekanism implements IU
         data.add(getEnergyPerTick());
         data.add(getMaxEnergy());
         return data;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

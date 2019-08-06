@@ -25,9 +25,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -41,8 +39,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager, ISecurityTile,
-      IUpgradeTile, IUpgradeInfoHandler, IComparatorSupport {
+public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager, IUpgradeTile,
+      IUpgradeInfoHandler, IComparatorSupport {
 
     public static final int MAX_GAS = 10000;
     private static final int[] INPUT_SLOT = {0};
@@ -59,7 +57,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     private boolean needsRainCheck;
 
     public TileComponentUpgrade<TileEntitySolarNeutronActivator> upgradeComponent = new TileComponentUpgrade<>(this, 3);
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySolarNeutronActivator() {
         super(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
@@ -263,11 +260,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public Object[] getTanks() {
         return new Object[]{inputTank, outputTank};
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

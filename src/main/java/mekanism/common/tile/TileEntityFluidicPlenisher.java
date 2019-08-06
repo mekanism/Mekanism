@@ -21,9 +21,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -50,7 +48,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
-      IUpgradeTile, ISecurityTile, IComparatorSupport {
+      IUpgradeTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
@@ -68,7 +66,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      */
     public int operatingTicks;
     public TileComponentUpgrade<TileEntityFluidicPlenisher> upgradeComponent = new TileComponentUpgrade<>(this, 3);
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     private int currentRedstoneLevel;
 
@@ -395,11 +392,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             default:
                 break;
         }
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

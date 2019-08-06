@@ -47,6 +47,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.interfaces.ITileActive;
 import mekanism.common.tile.interfaces.ITileContainer;
 import mekanism.common.tile.interfaces.ITileDirectional;
@@ -92,7 +93,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, IToggleableCapability, ITileDirectional,
-      ITileContainer, ITileElectric, ITileActive, ITileSound, ITileRedstone {
+      ITileContainer, ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile {
 
     /**
      * The players currently using this block.
@@ -181,6 +182,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     private boolean ic2Registered;
     //End variables ITileElectric
 
+    //Variables for handling ITileSecurity
+    private TileComponentSecurity securityComponent;
+    //End variables ITileSecurity
+
     //Variables for handling ITileActive
     private boolean isActive;
     private long lastActive = -1;
@@ -210,6 +215,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isElectric()) {
             maxEnergy = getBaseStorage();
             energyPerTick = getBaseUsage();
+        }
+        if (hasSecurity()) {
+            securityComponent = new TileComponentSecurity(this);
         }
         if (hasSound()) {
             soundEvent = ((IBlockSound) blockProvider.getBlock()).getSoundEvent();
@@ -255,6 +263,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return hasGui;
     }
 
+    @Override
     public final boolean hasSecurity() {
         return hasSecurity;
     }
@@ -617,8 +626,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public Frequency getFrequency(FrequencyManager manager) {
         //TODO: I don't think this is needed, only thing that uses this method is querying the quantum entangloporter
-        if (manager == Mekanism.securityFrequencies && this instanceof ISecurityTile) {
-            return ((ISecurityTile) this).getSecurity().getFrequency();
+        if (manager == Mekanism.securityFrequencies && hasSecurity) {
+            return getSecurity().getFrequency();
         }
         return null;
     }
@@ -931,6 +940,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         setEnergy(Math.max(getEnergy() - IC2Integration.fromEU(amount), 0));
     }
     //End methods ITileElectric
+
+    //Methods for implementing ITileSecurity
+    @Override
+    public TileComponentSecurity getSecurity() {
+        return securityComponent;
+    }
+    //End methods ITileSecurity
 
     //Methods for implementing ITileActive
     @Override

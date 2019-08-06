@@ -40,7 +40,8 @@ public final class SecurityUtils {
     }
 
     public static boolean canAccess(EntityPlayer player, TileEntity tile) {
-        if (!(tile instanceof ISecurityTile)) {
+        if (!(tile instanceof ISecurityTile) || !((ISecurityTile) tile).hasSecurity()) {
+            //If this tile does not have security allow access
             return true;
         }
         ISecurityTile security = (ISecurityTile) tile;
@@ -97,6 +98,9 @@ public final class SecurityUtils {
     }
 
     public static SecurityMode getSecurity(ISecurityTile security, Side side) {
+        if (!security.hasSecurity()) {
+            return SecurityMode.PUBLIC;
+        }
         if (side == Side.SERVER) {
             SecurityFrequency freq = security.getSecurity().getFrequency();
             if (freq != null && freq.override) {
@@ -132,6 +136,9 @@ public final class SecurityUtils {
 
     public static String getSecurityDisplay(TileEntity tile, Side side) {
         ISecurityTile security = (ISecurityTile) tile;
+        if (!security.hasSecurity()) {
+            return SecurityMode.PUBLIC.getDisplay();
+        }
         SecurityMode mode = security.getSecurity().getMode();
         if (security.getSecurity().getOwnerUUID() != null) {
             if (side == Side.SERVER) {
@@ -164,7 +171,7 @@ public final class SecurityUtils {
 
     public static boolean isOverridden(TileEntity tile, Side side) {
         ISecurityTile security = (ISecurityTile) tile;
-        if (security.getSecurity().getOwnerUUID() == null) {
+        if (!security.hasSecurity() || security.getSecurity().getOwnerUUID() == null) {
             return false;
         }
         if (side == Side.SERVER) {

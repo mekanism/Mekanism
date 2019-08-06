@@ -14,9 +14,7 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -29,8 +27,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration,
-      ISecurityTile {
+public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration {
 
     public static final double MAX_ENERGY = 5E9;
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy"};
@@ -46,7 +43,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     public boolean emittingRedstone;
     public int currentRedstoneLevel;
     public RedstoneOutput outputMode = RedstoneOutput.OFF;
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityLaserAmplifier() {
         super(MekanismBlock.LASER_AMPLIFIER);
@@ -287,11 +283,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

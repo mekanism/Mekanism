@@ -6,7 +6,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
@@ -18,7 +17,6 @@ import mekanism.common.item.IItemEnergized;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
@@ -67,11 +65,10 @@ public abstract class BlockTileDrops extends Block {
         //Set any data that is block specific rather than tile specific
         itemStack = setItemData(state, world, pos, tile, itemStack);
 
-        if (item instanceof ISecurityItem && tile instanceof ISecurityTile) {
+        if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
-            ISecurityTile securityTile = (ISecurityTile) tile;
-            securityItem.setOwnerUUID(itemStack, securityTile.getSecurity().getOwnerUUID());
-            securityItem.setSecurity(itemStack, securityTile.getSecurity().getMode());
+            securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
+            securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
         }
         if (tile instanceof IUpgradeTile) {
             ((IUpgradeTile) tile).getComponent().write(ItemDataUtils.getDataMap(itemStack));
@@ -84,8 +81,8 @@ public abstract class BlockTileDrops extends Block {
         if (tile instanceof ISustainedData) {
             ((ISustainedData) tile).writeSustainedData(itemStack);
         }
-        if (tile instanceof IRedstoneControl) {
-            ItemDataUtils.setInt(itemStack, "controlType", ((IRedstoneControl) tile).getControlType().ordinal());
+        if (tile.supportsRedstone()) {
+            ItemDataUtils.setInt(itemStack, "controlType", tile.getControlType().ordinal());
         }
         if (item instanceof ISustainedInventory && tile.hasInventory() && tile.getSizeInventory() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
@@ -226,12 +223,11 @@ public abstract class BlockTileDrops extends Block {
         Item item = stack.getItem();
         setTileData(world, pos, state, placer, stack, tile);
 
-        if (item instanceof ISecurityItem && tile instanceof ISecurityTile) {
+        if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
-            ISecurityTile security = (ISecurityTile) tile;
-            security.getSecurity().setMode(securityItem.getSecurity(stack));
+            tile.getSecurity().setMode(securityItem.getSecurity(stack));
             UUID ownerUUID = securityItem.getOwnerUUID(stack);
-            security.getSecurity().setOwnerUUID(ownerUUID == null ? placer.getUniqueID() : ownerUUID);
+            tile.getSecurity().setOwnerUUID(ownerUUID == null ? placer.getUniqueID() : ownerUUID);
         }
         if (tile instanceof IUpgradeTile) {
             if (ItemDataUtils.hasData(stack, "upgrades")) {
@@ -248,9 +244,9 @@ public abstract class BlockTileDrops extends Block {
         if (tile instanceof ISustainedData && stack.hasTagCompound()) {
             ((ISustainedData) tile).readSustainedData(stack);
         }
-        if (tile instanceof IRedstoneControl) {
+        if (tile.supportsRedstone()) {
             if (ItemDataUtils.hasData(stack, "controlType")) {
-                ((IRedstoneControl) tile).setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
+                tile.setControlType(RedstoneControl.values()[ItemDataUtils.getInt(stack, "controlType")]);
             }
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank && ((ISustainedTank) item).hasTank(stack)) {

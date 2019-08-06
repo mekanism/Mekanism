@@ -2,9 +2,7 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismBlock;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.init.SoundEvents;
@@ -15,7 +13,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityPersonalChest extends TileEntityMekanism implements ISecurityTile {
+public class TileEntityPersonalChest extends TileEntityMekanism {
 
     public static int[] INV;
 
@@ -23,11 +21,8 @@ public class TileEntityPersonalChest extends TileEntityMekanism implements ISecu
 
     public float prevLidAngle;
 
-    public TileComponentSecurity securityComponent;
-
     public TileEntityPersonalChest() {
         super(MekanismBlock.PERSONAL_CHEST);
-        securityComponent = new TileComponentSecurity(this);
     }
 
     @Override
@@ -100,10 +95,5 @@ public class TileEntityPersonalChest extends TileEntityMekanism implements ISecu
     @Override
     public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 }

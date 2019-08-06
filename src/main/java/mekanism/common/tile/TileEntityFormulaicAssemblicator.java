@@ -16,11 +16,9 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -36,7 +34,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IUpgradeTile, IConfigCardAccess, ISecurityTile {
+public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IUpgradeTile, IConfigCardAccess {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
     public static final int SLOT_UPGRADE = 0;
@@ -73,7 +71,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public TileComponentUpgrade<TileEntityFormulaicAssemblicator> upgradeComponent;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
-    public TileComponentSecurity securityComponent;
 
     public ItemStack lastFormulaStack = ItemStack.EMPTY;
     public boolean needsFormulaUpdate = false;
@@ -96,8 +93,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
-
-        securityComponent = new TileComponentSecurity(this);
     }
 
     @Override
@@ -593,11 +588,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

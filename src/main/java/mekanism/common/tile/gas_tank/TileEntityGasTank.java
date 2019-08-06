@@ -21,13 +21,11 @@ import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -41,8 +39,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public abstract class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, ISecurityTile, ITierUpgradeable, IComputerIntegration,
-      IComparatorSupport {
+public abstract class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, ITierUpgradeable, IComputerIntegration, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**
@@ -60,7 +57,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
-    public TileComponentSecurity securityComponent;
 
     public TileEntityGasTank(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -80,8 +76,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
         dumping = GasMode.IDLE;
 
         ejectorComponent = new TileComponentEjector(this);
-
-        securityComponent = new TileComponentSecurity(this);
     }
 
     @Override
@@ -303,11 +297,6 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     @Override
     public EnumFacing getOrientation() {
         return getDirection();
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

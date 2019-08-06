@@ -41,7 +41,6 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
@@ -128,7 +127,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     private Set<ChunkPos> chunkSet;
 
     public TileComponentUpgrade<TileEntityDigitalMiner> upgradeComponent = new TileComponentUpgrade<>(this, INV_SLOTS.length);
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
@@ -1061,11 +1059,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     @Override
     public boolean canReceiveEnergy(EnumFacing side) {
         return side == getLeftSide() || side == getRightSide() || side == EnumFacing.DOWN;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

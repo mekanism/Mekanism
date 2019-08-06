@@ -34,12 +34,10 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -63,7 +61,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
-      IGasHandler, IHeatTransfer, IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile {
+      IGasHandler, IHeatTransfer, IComputerIntegration, IChunkLoader, IUpgradeTile {
 
     private static final int INV_SIZE = 1;//this.inventory size, used for upgrades. Manually handled
     private static final String[] methods = new String[]{"setFrequency"};
@@ -75,7 +73,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     public List<Frequency> privateCache = new ArrayList<>();
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
-    public TileComponentSecurity securityComponent;
     public TileComponentChunkLoader chunkLoaderComponent;
     public TileComponentUpgrade<TileEntityQuantumEntangloporter> upgradeComponent;
 
@@ -100,7 +97,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         ejectorComponent.setOutputData(TransmissionType.FLUID, configComponent.getOutputs(TransmissionType.FLUID).get(2));
         ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
 
-        securityComponent = new TileComponentSecurity(this);
         chunkLoaderComponent = new TileComponentChunkLoader(this);
 
         upgradeComponent = new TileComponentUpgrade<>(this, 0);
@@ -535,11 +531,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

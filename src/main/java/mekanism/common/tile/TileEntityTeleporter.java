@@ -25,10 +25,8 @@ import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -47,8 +45,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, ISecurityTile,
-      IUpgradeTile, IComparatorSupport {
+public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IUpgradeTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
     public AxisAlignedBB teleportBounds = null;
@@ -71,14 +68,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
      */
     public byte status = 0;
 
-    public TileComponentSecurity securityComponent;
     public TileComponentChunkLoader chunkLoaderComponent;
     public TileComponentUpgrade<TileEntityTeleporter> upgradeComponent;
 
     public TileEntityTeleporter() {
         super(MekanismBlock.TELEPORTER);
 
-        securityComponent = new TileComponentSecurity(this);
         chunkLoaderComponent = new TileComponentChunkLoader(this);
         upgradeComponent = new TileComponentUpgrade<>(this, 1);
         upgradeComponent.clearSupportedTypes();
@@ -508,11 +503,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

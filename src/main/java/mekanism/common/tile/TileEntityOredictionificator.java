@@ -15,9 +15,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -35,15 +33,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ISecurityTile {
+public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData {
 
     private static final int[] SLOTS = {0, 1};
     public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
     public HashList<OredictionificatorFilter> filters = new HashList<>();
 
     public boolean didProcess;
-
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityOredictionificator() {
         super(MekanismBlock.OREDICTIONIFICATOR);
@@ -281,11 +277,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public boolean canPulse() {
         return true;
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override

@@ -9,9 +9,7 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import net.minecraft.item.ItemStack;
@@ -22,7 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHeatTransfer, ISecurityTile, IActiveState {
+public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHeatTransfer, IActiveState {
 
     public double temperature;
     public double heatToAbsorb = 0;
@@ -31,8 +29,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     public int maxBurnTime;
 
     public double lastEnvironmentLoss;
-
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityFuelwoodHeater() {
         super(MekanismBlock.FUELWOOD_HEATER);
@@ -185,10 +181,5 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 }

@@ -25,9 +25,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
@@ -57,7 +55,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IUpgradeTile, ITankManager,
-      IComputerIntegration, ISecurityTile, IComparatorSupport {
+      IComputerIntegration, IComparatorSupport {
 
     private static final int[] UPSLOTS = {0};
     private static final int[] DOWNSLOTS = {1};
@@ -87,7 +85,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
      */
     public Set<Coord4D> recurringNodes = new HashSet<>();
     public TileComponentUpgrade<TileEntityElectricPump> upgradeComponent = new TileComponentUpgrade<>(this, 3);
-    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     private int currentRedstoneLevel;
 
@@ -414,11 +411,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             return new Object[]{"Pump calculation reset."};
         }
         throw new NoSuchMethodException();
-    }
-
-    @Override
-    public TileComponentSecurity getSecurity() {
-        return securityComponent;
     }
 
     @Override
