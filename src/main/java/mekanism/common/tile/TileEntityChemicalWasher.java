@@ -68,7 +68,6 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
             manageBuckets();

@@ -107,7 +107,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
             if (!getInventory().get(0).isEmpty()) {

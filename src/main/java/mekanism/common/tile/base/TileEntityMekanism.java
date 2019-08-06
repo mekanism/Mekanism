@@ -88,7 +88,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
-public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, IToggleableCapability , ITileDirectional,
+public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable, IToggleableCapability, ITileDirectional,
       ITileContainer, ITileElectric, ITileActive, ITileSound {
 
     /**
@@ -171,7 +171,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End variables ITileElectric
 
     //Variables for handling ITileActive
-    protected boolean isActive;//TODO: Make private
+    private boolean isActive;
     private long lastActive = -1;
 
     // Number of ticks that the block can be inactive before it's considered not recently active
@@ -685,7 +685,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (nbtTags == null || nbtTags.tagCount() == 0 || !handleInventory()) {
             return;
         }
-        NonNullList<ItemStack>  inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
         for (int slots = 0; slots < nbtTags.tagCount(); slots++) {
             NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
             byte slotID = tagCompound.getByte("Slot");

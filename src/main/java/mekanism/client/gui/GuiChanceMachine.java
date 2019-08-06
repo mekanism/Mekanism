@@ -16,7 +16,7 @@ import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.ContainerChanceMachine;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
-import mekanism.common.tile.TileEntityChanceMachine;
+import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;

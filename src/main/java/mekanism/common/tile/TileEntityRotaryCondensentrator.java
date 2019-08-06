@@ -69,8 +69,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
-
         if (!world.isRemote) {
             ChargeUtils.discharge(4, this);
 

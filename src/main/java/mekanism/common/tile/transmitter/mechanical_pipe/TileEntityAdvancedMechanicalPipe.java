@@ -5,6 +5,6 @@ import mekanism.common.MekanismBlock;
 public class TileEntityAdvancedMechanicalPipe extends TileEntityMechanicalPipe {
 
     public TileEntityAdvancedMechanicalPipe() {
-    super(MekanismBlock.ADVANCED_MECHANICAL_PIPE);
+        super(MekanismBlock.ADVANCED_MECHANICAL_PIPE);
     }
 }

@@ -131,7 +131,8 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
         if (tileEntity.tryWrench(state, player, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
             return true;
-        }if (tileEntity.openGui(player)) {
+        }
+        if (tileEntity.openGui(player)) {
             return true;
         }
         return false;

@@ -33,6 +33,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     public double energyUsage = 100;
     public double temperature;
     public double heatToAbsorb = 0;
+    //TODO: Figure out sound
     public float soundScale = 1;
     public double lastEnvironmentLoss;
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -189,11 +190,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return false;
     }
 
     @Override

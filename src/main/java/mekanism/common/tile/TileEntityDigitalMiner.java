@@ -113,8 +113,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     public int clientToMine;
 
-    public boolean isActive;
-
     public boolean silkTouch;
 
     public boolean running;
@@ -553,7 +551,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         maxY = dataStream.readInt();
         doEject = dataStream.readBoolean();
         doPull = dataStream.readBoolean();
-        isActive = dataStream.readBoolean();
         running = dataStream.readBoolean();
         silkTouch = dataStream.readBoolean();
         numPowering = dataStream.readInt();
@@ -630,10 +627,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             return;
         }
 
+        boolean wasActive = getActive();
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            boolean wasActive = getActive();
             int type = dataStream.readInt();
             if (type == 0) {
                 readBasicData(dataStream);
@@ -651,7 +648,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                     filters.add(MinerFilter.readFromPacket(dataStream));
                 }
             } else if (type == 3) {
-                isActive = dataStream.readBoolean();
                 running = dataStream.readBoolean();
                 clientToMine = dataStream.readInt();
                 if (dataStream.readBoolean()) {
@@ -660,6 +656,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                     missingStack = ItemStack.EMPTY;
                 }
             }
+            //TODO: Does this get handled by TileEntityMekanism
             if (wasActive != getActive()) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -672,7 +669,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         data.add(maxY);
         data.add(doEject);
         data.add(doPull);
-        data.add(isActive);
         data.add(running);
         data.add(silkTouch);
         data.add(numPowering);
@@ -712,7 +708,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
         data.add(3);
 
-        data.add(isActive);
         data.add(running);
 
         if (searcher.state == State.SEARCHING) {
@@ -792,30 +787,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     @Override
     public TileComponentUpgrade getComponent() {
         return upgradeComponent;
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        boolean stateChange = getActive() != active;
-        if (stateChange) {
-            isActive = active;
-            Mekanism.packetHandler.sendUpdatePacket(this);
-        }
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return false;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return false;
     }
 
     @Nonnull

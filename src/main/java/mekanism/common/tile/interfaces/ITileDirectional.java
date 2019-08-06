@@ -16,6 +16,7 @@ public interface ITileDirectional {
     void setFacing(@Nonnull EnumFacing direction);
 
     //TODO: This shouldn't be needed because the blockstate knows what directions it can go
+
     /**
      * Whether or not this block's orientation can be changed to a specific direction. Value of isDirectional by default
      *

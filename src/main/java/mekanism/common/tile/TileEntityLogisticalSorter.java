@@ -410,11 +410,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IR
     }
 
     @Override
-    public boolean lightUpdate() {
-        return false;
-    }
-
-    @Override
     public boolean canReceiveEnergy(EnumFacing side) {
         return false;
     }

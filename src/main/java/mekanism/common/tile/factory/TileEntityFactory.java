@@ -168,10 +168,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 
-
-
         progress = new int[tier.processes];
-        isActive = false;
         cachedRecipe = new MachineRecipe[tier.processes];
         gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
         maxInfuse = BASE_MAX_INFUSE * tier.processes;
@@ -247,7 +244,6 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             if (ticker == 1) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);

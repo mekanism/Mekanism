@@ -70,7 +70,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
             TileUtils.receiveGas(getInventory().get(0), inputTank);

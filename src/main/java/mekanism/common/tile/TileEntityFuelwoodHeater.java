@@ -124,11 +124,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     }
 
     @Override
-    public boolean renderUpdate() {
-        return false;
-    }
-
-    @Override
     public boolean lightUpdate() {
         return true;
     }

@@ -26,7 +26,7 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer<TileEntityDigi
         GlStateManager.translate(0, 0, -1.0F);
 
         GlStateManager.rotate(180, 0, 0, 1);
-        model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine, true);
+        model.render(0.0625F, tileEntity.getActive(), rendererDispatcher.renderEngine, true);
         GlStateManager.popMatrix();
 
         if (tileEntity.clientRendering) {

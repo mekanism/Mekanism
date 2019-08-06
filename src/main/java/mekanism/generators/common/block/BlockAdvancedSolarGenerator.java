@@ -40,7 +40,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO: Maybe make this extend BlockSolarGenerator
 public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntityAdvancedSolarGenerator>  {
+      IHasTileEntity<TileEntityAdvancedSolarGenerator> {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
 

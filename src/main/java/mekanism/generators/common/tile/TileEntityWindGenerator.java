@@ -148,16 +148,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         world.setBlockToAir(getPos());
     }
 
-    @Override
-    public boolean renderUpdate() {
-        return false;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return false;
-    }
-
     public float getCurrentMultiplier() {
         return currentMultiplier;
     }

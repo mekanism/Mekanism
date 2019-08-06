@@ -1,4 +1,4 @@
-package mekanism.common.tile;
+package mekanism.common.tile.prefab;
 
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -14,7 +14,6 @@ import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.prefab.TileEntityUpgradeableMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -58,7 +57,6 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             RECIPE recipe = getRecipe();

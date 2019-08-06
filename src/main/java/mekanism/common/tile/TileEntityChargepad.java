@@ -32,13 +32,13 @@ public class TileEntityChargepad extends TileEntityMekanism {
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
-            isActive = false;
+            boolean active = false;
             List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class,
                   new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 0.2, pos.getZ() + 1));
 
             for (EntityLivingBase entity : entities) {
                 if (entity instanceof EntityPlayer || entity instanceof EntityRobit) {
-                    isActive = getEnergy() > 0;
+                    active = getEnergy() > 0;
                 }
                 if (getActive()) {
                     if (entity instanceof EntityRobit) {
@@ -64,6 +64,9 @@ public class TileEntityChargepad extends TileEntityMekanism {
                         }
                     }
                 }
+            }
+            if (active != getActive()) {
+                setActive(active);
             }
         } else if (getActive()) {
             world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX() + random.nextDouble(), getPos().getY() + 0.15,
@@ -97,11 +100,6 @@ public class TileEntityChargepad extends TileEntityMekanism {
     @Override
     public boolean canSetFacing(@Nonnull EnumFacing facing) {
         return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return false;
     }
 
     @Override

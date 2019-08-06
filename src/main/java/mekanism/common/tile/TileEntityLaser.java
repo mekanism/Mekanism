@@ -82,16 +82,6 @@ public class TileEntityLaser extends TileEntityMekanism {
         return side == getOppositeDirection();
     }
 
-    @Override
-    public boolean renderUpdate() {
-        return false;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return false;
-    }
-
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {

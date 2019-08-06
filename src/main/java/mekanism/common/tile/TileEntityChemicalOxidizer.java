@@ -44,7 +44,6 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             TileUtils.drawGas(getInventory().get(2), gasTank);

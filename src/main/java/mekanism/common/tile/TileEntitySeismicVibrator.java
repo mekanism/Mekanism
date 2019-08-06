@@ -96,11 +96,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     }
 
     @Override
-    public boolean renderUpdate() {
-        return false;
-    }
-
-    @Override
     public boolean lightUpdate() {
         return true;
     }

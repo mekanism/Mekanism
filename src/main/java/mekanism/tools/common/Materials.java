@@ -43,7 +43,7 @@ public enum Materials {
     }
 
     Materials(@Nonnull String name, @Nonnull Function<ToolsConfig, ToolBalance> material, @Nonnull Function<ToolsConfig, ToolBalance> paxelMaterial,
-          @Nonnull Function<ToolsConfig, ArmorBalance> armorMaterial, @Nonnull  Supplier<ItemStack> repairStack, @Nonnull SoundEvent equipSound) {
+          @Nonnull Function<ToolsConfig, ArmorBalance> armorMaterial, @Nonnull Supplier<ItemStack> repairStack, @Nonnull SoundEvent equipSound) {
         this.materialName = name;
         this.materialFunction = material;
         this.paxelMaterialFunction = paxelMaterial;

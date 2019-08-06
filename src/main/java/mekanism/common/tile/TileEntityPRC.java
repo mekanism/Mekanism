@@ -84,8 +84,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
-
         if (!world.isRemote) {
             PressurizedRecipe recipe = getRecipe();
             ChargeUtils.discharge(1, this);

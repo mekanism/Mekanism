@@ -10,9 +10,9 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -30,8 +30,6 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
      * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2), energy slot (3), and the upgrade slot
      * (4). The machine will not run if it does not have enough electricity.
      *
-     * @param soundPath     - location of the sound effect
-     * @param type          - the type of this machine
      * @param ticksRequired - how many ticks it takes to smelt an item.
      */
     public TileEntityDoubleElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
@@ -65,7 +63,6 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
             boolean inactive = false;

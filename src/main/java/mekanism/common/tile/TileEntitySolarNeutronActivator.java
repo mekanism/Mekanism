@@ -284,16 +284,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean renderUpdate() {
-        return false;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return false;
-    }
-
-    @Override
     public Object[] getTanks() {
         return new Object[]{inputTank, outputTank};
     }

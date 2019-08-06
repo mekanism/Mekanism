@@ -530,11 +530,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public boolean lightUpdate() {
-        return false;
-    }
-
-    @Override
     public Object[] getTanks() {
         return new Object[]{inputTank, outputTank};
     }

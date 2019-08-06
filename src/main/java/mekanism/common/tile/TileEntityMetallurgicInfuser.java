@@ -74,7 +74,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(4, this);
             ItemStack infuseInput = getInventory().get(1);

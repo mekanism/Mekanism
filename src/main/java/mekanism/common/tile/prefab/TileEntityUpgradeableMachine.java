@@ -15,8 +15,6 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
     /**
      * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
      *
-     * @param soundPath         - location of the sound effect
-     * @param type              - the type of this machine
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
     public TileEntityUpgradeableMachine(IBlockProvider blockProvider, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {

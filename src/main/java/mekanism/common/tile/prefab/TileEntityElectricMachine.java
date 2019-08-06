@@ -29,8 +29,6 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
      * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), output slot (2), and the upgrade slot (3). It will not run if it does not
      * have enough energy.
      *
-     * @param soundPath     - location of the sound effect
-     * @param type          - type of this machine
      * @param ticksRequired - ticks required to operate -- or smelt an item.
      */
     public TileEntityElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
@@ -61,7 +59,6 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
             RECIPE recipe = getRecipe();

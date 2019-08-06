@@ -169,16 +169,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return side == EnumFacing.DOWN;
     }
 
-    @Override
-    public boolean renderUpdate() {
-        return false;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return false;
-    }
-
     protected float getConfiguredMax() {
         return (float) MekanismConfig.current().generators.solarGeneration.val();
     }

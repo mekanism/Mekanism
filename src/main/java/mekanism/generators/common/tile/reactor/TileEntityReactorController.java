@@ -279,11 +279,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         return true;
     }
 
-    @Override
-    public boolean lightUpdate() {
-        return false;
-    }
-
     @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
