@@ -26,17 +26,18 @@ import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -72,16 +73,17 @@ public final class MekanismHooks {
     public boolean OCLoaded = false;
 
     public void hookPreInit() {
-        AE2Loaded = Loader.isModLoaded(APPLIED_ENERGISTICS_2_MOD_ID);
-        BuildCraftLoaded = Loader.isModLoaded(BUILDCRAFT_MOD_ID);
-        CCLoaded = Loader.isModLoaded(COMPUTERCRAFT_MOD_ID);
-        CraftTweakerLoaded = Loader.isModLoaded(CRAFTTWEAKER_MOD_ID);
-        CyclicLoaded = Loader.isModLoaded(CYCLIC_MOD_ID);
-        IC2Loaded = Loader.isModLoaded(IC2_MOD_ID);
-        MCMPLoaded = Loader.isModLoaded(MCMULTIPART_MOD_ID);
-        MetallurgyLoaded = Loader.isModLoaded(METALLURGY_MOD_ID);
-        MALoaded = Loader.isModLoaded(MYSTICALAGRICULTURE_MOD_ID);
-        OCLoaded = Loader.isModLoaded(OPENCOMPUTERS_MOD_ID);
+        ModList modList = ModList.get();
+        AE2Loaded = modList.isLoaded(APPLIED_ENERGISTICS_2_MOD_ID);
+        BuildCraftLoaded = modList.isLoaded(BUILDCRAFT_MOD_ID);
+        CCLoaded = modList.isLoaded(COMPUTERCRAFT_MOD_ID);
+        CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
+        CyclicLoaded = modList.isLoaded(CYCLIC_MOD_ID);
+        IC2Loaded = modList.isLoaded(IC2_MOD_ID);
+        MCMPLoaded = modList.isLoaded(MCMULTIPART_MOD_ID);
+        MetallurgyLoaded = modList.isLoaded(METALLURGY_MOD_ID);
+        MALoaded = modList.isLoaded(MYSTICALAGRICULTURE_MOD_ID);
+        OCLoaded = modList.isLoaded(OPENCOMPUTERS_MOD_ID);
     }
 
     public void hookInit() {

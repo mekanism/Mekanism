@@ -15,12 +15,13 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -72,7 +73,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         if (isDead) {
             return;
         }
@@ -93,7 +94,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
         calculateVector();
         if (ticksExisted > LIFESPAN) {
-            setDead();
+            remove();
         }
     }
 
@@ -168,7 +169,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
                 }
             }
-            setDead();
+            remove();
         }
     }
 
@@ -252,12 +253,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    public void writeSpawnData(ByteBuf dataStream) {
+    public void writeSpawnData(PacketBuffer dataStream) {
         dataStream.writeInt(mode.ordinal());
     }
 
     @Override
-    public void readSpawnData(ByteBuf dataStream) {
+    public void readSpawnData(PacketBuffer dataStream) {
         mode = ItemFlamethrower.FlamethrowerMode.values()[dataStream.readInt()];
     }
 }

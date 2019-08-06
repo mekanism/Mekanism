@@ -71,6 +71,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -1003,7 +1004,7 @@ public final class MekanismUtils {
     public static String getLastKnownUsername(UUID uuid) {
         String ret = UsernameCache.getLastKnownUsername(uuid);
         if (ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide() == Dist.DEDICATED_SERVER) { // see if MC/Yggdrasil knows about it?!
-            GameProfile gp = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
+            GameProfile gp = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getProfileByUUID(uuid);
             if (gp != null) {
                 ret = gp.getName();
             }

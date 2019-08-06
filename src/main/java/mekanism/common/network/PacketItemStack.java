@@ -10,10 +10,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessage> {
 
@@ -57,7 +57,7 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(currentHand.ordinal());
-            MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
             if (server != null) {
                 PacketHandler.log("Sending ItemStack packet");
             }

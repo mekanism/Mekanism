@@ -63,7 +63,7 @@ public class EntityObsidianTNT extends Entity {
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
@@ -84,11 +84,11 @@ public class EntityObsidianTNT extends Entity {
 
         if (fuse-- <= 0) {
             if (!world.isRemote) {
-                setDead();
+                remove();
                 explode();
             } else {
                 if (hasExploded) {
-                    setDead();
+                    remove();
                 } else {
                     world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
                 }

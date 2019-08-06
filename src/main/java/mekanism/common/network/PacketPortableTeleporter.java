@@ -16,15 +16,15 @@ import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketPortableTeleporter implements IMessageHandler<PortableTeleporterMessage, IMessage> {
 
@@ -78,7 +78,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                         }
                         Coord4D coords = found.getClosestCoords(new Coord4D(player));
                         if (coords != null) {
-                            World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(coords.dimensionId);
+                            World teleWorld = ServerLifecycleHooks.getCurrentServer().getWorld(coords.dimension);
                             TileEntityTeleporter teleporter = (TileEntityTeleporter) coords.getTileEntity(teleWorld);
                             if (teleporter != null) {
                                 try {

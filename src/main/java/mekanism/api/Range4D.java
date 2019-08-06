@@ -4,9 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class Range4D {
 
@@ -43,7 +42,7 @@ public class Range4D {
     }
 
     public static Range4D getChunkRange(PlayerEntity player) {
-        int radius = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getViewDistance();
+        int radius = ServerLifecycleHooks.getCurrentServer().getPlayerList().getViewDistance();
         return new Range4D(new Chunk3D(player)).expandChunks(radius);
     }
 

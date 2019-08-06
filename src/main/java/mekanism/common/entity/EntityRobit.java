@@ -30,23 +30,23 @@ import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.pathfinding.GroundPathNavigator;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -54,8 +54,8 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = MekanismHooks.GALACTICRAFT_MOD_ID)
@@ -127,30 +127,30 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     @Override
-    public void onEntityUpdate() {
+    public void baseTick() {
         if (!world.isRemote) {
             if (getFollowing() && getOwner() != null && getDistanceSq(getOwner()) > 4 && !getNavigator().noPath() && getEnergy() > 0) {
                 setEnergy(getEnergy() - getRoundedTravelEnergy());
             }
         }
 
-        super.onEntityUpdate();
+        super.baseTick();
 
         if (!world.isRemote) {
             if (getDropPickup()) {
                 collectItems();
             }
             if (homeLocation == null) {
-                setDead();
+                remove();
                 return;
             }
 
             if (ticksExisted % 20 == 0) {
-                World serverWorld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(homeLocation.dimensionId);
+                World serverWorld = ServerLifecycleHooks.getCurrentServer().getWorld(homeLocation.dimension);
                 if (homeLocation.exists(serverWorld)) {
                     if (!(homeLocation.getTileEntity(serverWorld) instanceof TileEntityChargepad)) {
                         drop();
-                        setDead();
+                        remove();
                     }
                 }
             }
@@ -225,7 +225,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
                     if (itemStack.isEmpty()) {
                         inventory.set(i, item.getItem());
                         onItemPickup(item, item.getItem().getCount());
-                        item.setDead();
+                        item.remove();
                         playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
                     } else if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < itemStack.getMaxStackSize()) {
@@ -235,7 +235,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
                         item.getItem().shrink(toAdd);
                         onItemPickup(item, toAdd);
                         if (item.getItem().getCount() == 0) {
-                            item.setDead();
+                            item.remove();
                         }
                         playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
@@ -307,7 +307,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
                 if (!world.isRemote) {
                     drop();
                 }
-                setDead();
+                remove();
                 entityplayer.swingArm(hand);
                 return ActionResultType.SUCCESS;
             }

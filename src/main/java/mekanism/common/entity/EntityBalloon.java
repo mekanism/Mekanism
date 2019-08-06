@@ -15,15 +15,16 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData {
 
@@ -96,7 +97,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
@@ -218,7 +219,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                 }
             }
         }
-        setDead();
+        remove();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -280,7 +281,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public void writeSpawnData(ByteBuf data) {
+    public void writeSpawnData(PacketBuffer data) {
         data.writeDouble(posX);
         data.writeDouble(posY);
         data.writeDouble(posZ);
@@ -298,7 +299,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public void readSpawnData(ByteBuf data) {
+    public void readSpawnData(PacketBuffer data) {
         setPosition(data.readDouble(), data.readDouble(), data.readDouble());
         color = EnumColor.values()[data.readInt()];
         byte type = data.readByte();
@@ -312,8 +313,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public void setDead() {
-        super.setDead();
+    public void remove() {
+        super.remove();
         if (latchedEntity != null) {
             latchedEntity.isAirBorne = false;
         }

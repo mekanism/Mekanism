@@ -42,11 +42,11 @@ public class EntityBabySkeleton extends SkeletonEntity {
     }
 
     @Override
-    protected int getExperiencePoints(PlayerEntity p_70693_1_) {
+    protected int getExperiencePoints(PlayerEntity player) {
         if (isChild()) {
             experienceValue = (int) ((float) experienceValue * 2.5F);
         }
-        return super.getExperiencePoints(p_70693_1_);
+        return super.getExperiencePoints(player);
     }
 
     public void updateChildSize(boolean child) {

@@ -13,12 +13,13 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessage> {
 
@@ -29,7 +30,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
-                World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
+                World worldServer = ServerLifecycleHooks.getCurrentServer().getWorld(message.coord4D.dimension);
                 if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityMekanism) {
                     if (message.guiId == -1) {
                         return;

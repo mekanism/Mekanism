@@ -16,16 +16,16 @@ import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilte
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.ServerWorld;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessage> {
 
     @Override
     public IMessage onMessage(NewFilterMessage message, MessageContext context) {
-        ServerWorld worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
+        ServerWorld worldServer = ServerLifecycleHooks.getCurrentServer().getWorld(message.coord4D.dimension);
 
         worldServer.addScheduledTask(() -> {
             if (message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {

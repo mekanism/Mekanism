@@ -10,7 +10,6 @@ import mekanism.api.Range4D;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
-import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -83,9 +82,9 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -291,7 +290,7 @@ public class PacketHandler {
      * @param dimId   - the dimension the cuboid is in
      */
     public void sendToCuboid(IMessage message, AxisAlignedBB cuboid, int dimId) {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null && cuboid != null) {
             for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
                 if (player.dimension == dimId && cuboid.contains(new Vec3d(player.posX, player.posY, player.posZ))) {
@@ -325,7 +324,7 @@ public class PacketHandler {
 
     //TODO: change Network stuff over to using this
     public void sendToReceivers(IMessage message, Range4D range) {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
             for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
                 if (range.hasPlayerInRange(player)) {

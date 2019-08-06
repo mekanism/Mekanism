@@ -8,17 +8,17 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.ToolsConfig;
 import mekanism.common.config.ToolsConfig.ArmorBalance;
 import mekanism.common.config.ToolsConfig.ToolBalance;
-import net.minecraft.item.Items;
-import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.item.ArmorItem.ArmorMaterial;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.util.EnumHelper;
 
 public enum Materials {
     OBSIDIAN("OBSIDIAN", cfg -> cfg.toolOBSIDIAN, cfg -> cfg.toolOBSIDIAN2, cfg -> cfg.armorOBSIDIAN, MekanismItem.REFINED_OBSIDIAN_INGOT::getItemStack),
-    LAPIS_LAZULI("LAPIS_LAZULI", cfg -> cfg.toolLAZULI, cfg -> cfg.toolLAZULI2, cfg -> cfg.armorLAZULI, () -> new ItemStack(Items.DYE, 1, 4), SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND),
+    LAPIS_LAZULI("LAPIS_LAZULI", cfg -> cfg.toolLAZULI, cfg -> cfg.toolLAZULI2, cfg -> cfg.armorLAZULI, () -> new ItemStack(Items.LAPIS_LAZULI), SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND),
     OSMIUM("OSMIUM", cfg -> cfg.toolOSMIUM, cfg -> cfg.toolOSMIUM2, cfg -> cfg.armorOSMIUM, MekanismItem.OSMIUM_INGOT::getItemStack),
     BRONZE("BRONZE", cfg -> cfg.toolBRONZE, cfg -> cfg.toolBRONZE2, cfg -> cfg.armorBRONZE, MekanismItem.BRONZE_INGOT::getItemStack),
     GLOWSTONE("GLOWSTONE", tools -> tools.toolGLOWSTONE, tools -> tools.toolGLOWSTONE2, cfg -> cfg.armorGLOWSTONE, MekanismItem.REFINED_GLOWSTONE_INGOT::getItemStack),
@@ -30,9 +30,9 @@ public enum Materials {
     private final Supplier<ItemStack> repairStackSupplier;
     private final SoundEvent equipSound;
     private final String materialName;
-    private ToolMaterial material;
-    private ToolMaterial paxelMaterial;
-    private ArmorMaterial armorMaterial;
+    private IItemTier material;
+    private IItemTier paxelMaterial;
+    private IArmorMaterial armorMaterial;
     private boolean initialized;
     private float axeDamage;
     private float axeSpeed;
@@ -52,11 +52,11 @@ public enum Materials {
         this.equipSound = equipSound;
     }
 
-    private static ToolMaterial getToolMaterial(@Nonnull String enumName, @Nonnull ToolBalance config) {
+    private static IItemTier getToolMaterial(@Nonnull String enumName, @Nonnull ToolBalance config) {
         return EnumHelper.addToolMaterial(enumName, config.harvestLevel.val(), config.maxUses.val(), config.efficiency.val(), config.damage.val(), config.enchantability.val());
     }
 
-    private static ArmorMaterial getArmorMaterial(@Nonnull String enumName, @Nonnull ArmorBalance config, @Nonnull SoundEvent equipSound) {
+    private static IArmorMaterial getArmorMaterial(@Nonnull String enumName, @Nonnull ArmorBalance config, @Nonnull SoundEvent equipSound) {
         return EnumHelper.addArmorMaterial(enumName, "TODO", config.durability.val(), new int[]{
               config.feetProtection.val(), config.legsProtection.val(), config.chestProtection.val(), config.headProtection.val(),
               }, config.enchantability.val(), equipSound, config.toughness.val());
@@ -91,15 +91,15 @@ public enum Materials {
 
     //The below getters should **NOT** be used before the Materials are initialized. Storing the Materials object for reference
     // before any of the getters is fine as the Fucntions/Suppliers mean nothing is prematurely initialized (before the config gets red for example)
-    public ToolMaterial getMaterial() {
+    public IItemTier getMaterial() {
         return material;
     }
 
-    public ToolMaterial getPaxelMaterial() {
+    public IItemTier getPaxelMaterial() {
         return paxelMaterial;
     }
 
-    public ArmorMaterial getArmorMaterial() {
+    public IArmorMaterial getArmorMaterial() {
         return armorMaterial;
     }
 

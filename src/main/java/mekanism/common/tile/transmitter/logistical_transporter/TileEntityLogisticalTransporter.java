@@ -39,7 +39,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public abstract class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
 
@@ -174,7 +174,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
 
     @Override
     public void handlePacketData(ByteBuf dataStream) throws Exception {
-        if (FMLCommonHandler.instance().getSide().isClient()) {
+        if (FMLEnvironment.dist.isClient()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 super.handlePacketData(dataStream);

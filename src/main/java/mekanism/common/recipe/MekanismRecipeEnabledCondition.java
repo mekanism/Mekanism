@@ -9,7 +9,7 @@ import mekanism.generators.common.block.states.GeneratorType;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 
 /**
  * Used as a condition in mekanism _factories.json
@@ -27,7 +27,7 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
             return () -> true;//() -> MekanismConfig.current().general.machinesManager.isEnabled(type);
         }
 
-        if (Loader.isModLoaded(MekanismGenerators.MODID) && JSONUtils.hasField(json, "generatorType")) {
+        if (ModList.get().isLoaded(MekanismGenerators.MODID) && JSONUtils.hasField(json, "generatorType")) {
             final String generatorType = JSONUtils.getString(json, "generatorType");
             final GeneratorType type = MekanismConfig.current().generators.generatorsManager.typeFromName(generatorType);
             //noinspection Convert2Lambda - classloading issues if generators not installed

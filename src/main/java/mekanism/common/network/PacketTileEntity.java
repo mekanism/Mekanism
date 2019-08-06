@@ -13,10 +13,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMessage> {
 
@@ -68,9 +68,9 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
         @Override
         public void toBytes(ByteBuf dataStream) {
             coord4D.write(dataStream);
-            MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
             if (server != null) {
-                World world = server.getWorld(coord4D.dimensionId);
+                World world = server.getWorld(coord4D.dimension);
                 PacketHandler.log("Sending TileEntity packet from coordinate " + coord4D + " (" + coord4D.getTileEntity(world) + ")");
             }
 

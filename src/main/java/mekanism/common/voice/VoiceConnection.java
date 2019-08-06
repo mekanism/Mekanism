@@ -14,11 +14,11 @@ import mekanism.common.item.ItemWalkieTalkie;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class VoiceConnection extends Thread {
 
-    private MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+    private MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
     private DataOutputStream output;
     private DataInputStream input;
     private boolean open = true;

@@ -21,12 +21,13 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSorterGuiMessage, IMessage> {
 
@@ -35,7 +36,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
-                World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
+                World worldServer = ServerLifecycleHooks.getCurrentServer().getWorld(message.coord4D.dimension);
                 if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
                     LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (ServerPlayerEntity) player, message.coord4D, message.index);
                 }

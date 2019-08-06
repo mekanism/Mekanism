@@ -12,6 +12,7 @@ import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PlayerState {
 
@@ -25,7 +26,7 @@ public class PlayerState {
         activeJetpacks.clear();
         activeGasmasks.clear();
         activeFlamethrowers.clear();
-        if (FMLCommonHandler.instance().getSide().isClient()) {
+        if (FMLEnvironment.dist.isClient()) {
             SoundHandler.clearPlayerSounds();
         }
     }
@@ -34,7 +35,7 @@ public class PlayerState {
         activeJetpacks.remove(uuid);
         activeGasmasks.remove(uuid);
         activeFlamethrowers.remove(uuid);
-        if (FMLCommonHandler.instance().getSide().isClient()) {
+        if (FMLEnvironment.dist.isClient()) {
             SoundHandler.clearPlayerSounds(uuid);
         }
     }

@@ -3,7 +3,7 @@ package mekanism.common.config;
 import javax.annotation.Nullable;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.tools.common.MekanismTools;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 
 public class MekanismConfig {
 
@@ -40,7 +40,7 @@ public class MekanismConfig {
     public UsageConfig usage = new UsageConfig();
     public StorageConfig storage = new StorageConfig();
 
-    public GeneratorsConfig generators = Loader.isModLoaded(MekanismGenerators.MODID) ? new GeneratorsConfig() : null;
+    public GeneratorsConfig generators = ModList.get().isLoaded(MekanismGenerators.MODID) ? new GeneratorsConfig() : null;
 
-    public ToolsConfig tools = Loader.isModLoaded(MekanismTools.MODID) ? new ToolsConfig() : null;
+    public ToolsConfig tools = ModList.get().isLoaded(MekanismTools.MODID) ? new ToolsConfig() : null;
 }
