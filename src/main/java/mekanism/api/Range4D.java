@@ -4,11 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class Range4D {
 
-    public int dimensionId;
+    public DimensionType dimension;
     public int xMin;
     public int yMin;
     public int zMin;
@@ -16,14 +18,14 @@ public class Range4D {
     public int yMax;
     public int zMax;
 
-    public Range4D(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, int dimension) {
+    public Range4D(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, DimensionType dimension) {
         xMin = minX;
         yMin = minY;
         zMin = minZ;
         xMax = maxX;
         yMax = maxY;
         zMax = maxZ;
-        dimensionId = dimension;
+        this.dimension = dimension;
     }
 
     public Range4D(Chunk3D chunk) {
@@ -33,11 +35,11 @@ public class Range4D {
         xMax = xMin + 16;
         yMax = 255;
         zMax = zMin + 16;
-        dimensionId = chunk.dimensionId;
+        dimension = chunk.dimension;
     }
 
     public Range4D(Coord4D coord) {
-        this(coord.x, coord.y, coord.z, coord.x + 1, coord.y + 1, coord.z + 1, coord.dimensionId);
+        this(coord.x, coord.y, coord.z, coord.x + 1, coord.y + 1, coord.z + 1, coord.dimension);
     }
 
     public static Range4D getChunkRange(PlayerEntity player) {
@@ -65,7 +67,7 @@ public class Range4D {
         Set<Chunk3D> set = new HashSet<>();
         for (int chunkX = xMin >> 4; chunkX <= xMax - 1 >> 4; chunkX++) {
             for (int chunkZ = zMin >> 4; chunkZ <= zMax - 1 >> 4; chunkZ++) {
-                set.add(new Chunk3D(chunkX, chunkZ, dimensionId));
+                set.add(new Chunk3D(chunkX, chunkZ, dimension));
             }
         }
         return set;
@@ -77,7 +79,7 @@ public class Range4D {
     }
 
     public boolean hasPlayerInRange(ServerPlayerEntity player) {
-        if (player.dimension != dimensionId) {
+        if (player.dimension != dimension) {
             return false;
         }
         //Ignore height for partial Cubic chunks support as range comparision gets used ignoring player height normally anyways
@@ -92,12 +94,12 @@ public class Range4D {
 
     @Override
     public Range4D clone() {
-        return new Range4D(xMin, yMin, zMin, xMax, yMax, zMax, dimensionId);
+        return new Range4D(xMin, yMin, zMin, xMax, yMax, zMax, dimension);
     }
 
     @Override
     public String toString() {
-        return "[Range4D: " + xMin + ", " + yMin + ", " + zMin + ", " + xMax + ", " + yMax + ", " + zMax + ", dim=" + dimensionId + "]";
+        return "[Range4D: " + xMin + ", " + yMin + ", " + zMin + ", " + xMax + ", " + yMax + ", " + zMax + ", dim=" + dimension + "]";
     }
 
     @Override
@@ -109,7 +111,7 @@ public class Range4D {
                ((Range4D) obj).xMax == xMax &&
                ((Range4D) obj).yMax == yMax &&
                ((Range4D) obj).zMax == zMax &&
-               ((Range4D) obj).dimensionId == dimensionId;
+               ((Range4D) obj).dimension == dimension;
     }
 
     @Override
@@ -121,7 +123,7 @@ public class Range4D {
         code = 31 * code + xMax;
         code = 31 * code + yMax;
         code = 31 * code + zMax;
-        code = 31 * code + dimensionId;
+        code = 31 * code + dimension.hashCode();
         return code;
     }
 }

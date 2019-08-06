@@ -17,6 +17,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
 
 /**
@@ -30,7 +31,7 @@ public class Coord4D {
     public int x;
     public int y;
     public int z;
-    public Dimension dimension;
+    public DimensionType dimension;
 
     /**
      * Creates a Coord4D from an entity's position, rounded down.
@@ -41,7 +42,7 @@ public class Coord4D {
         this.x = (int) entity.posX;
         this.y = (int) entity.posY;
         this.z = (int) entity.posZ;
-        this.dimension = entity.world.getDimension();
+        this.dimension = entity.world.getDimension().getType();
     }
 
     /**
@@ -52,7 +53,7 @@ public class Coord4D {
      * @param z         - z coordinate
      * @param dimension - dimension ID
      */
-    public Coord4D(double x, double y, double z, Dimension dimension) {
+    public Coord4D(double x, double y, double z, DimensionType dimension) {
         this.x = MathHelper.floor(x);
         this.y = MathHelper.floor(y);
         this.z = MathHelper.floor(z);
@@ -60,7 +61,7 @@ public class Coord4D {
     }
 
     public Coord4D(BlockPos pos, IWorldReader world) {
-        this(pos.getX(), pos.getY(), pos.getZ(), world.getDimension());
+        this(pos.getX(), pos.getY(), pos.getZ(), world.getDimension().getType());
     }
 
     public Coord4D(BlockRayTraceResult mop, IWorldReader world) {
@@ -308,7 +309,7 @@ public class Coord4D {
      * @return TargetPoint relative to this Coord4D
      */
     public TargetPoint getTargetPoint(double range) {
-        return new TargetPoint(x, y, z, range, dimension.getType());
+        return new TargetPoint(x, y, z, range, dimension);
     }
 
     /**

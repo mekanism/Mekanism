@@ -1,5 +1,6 @@
 package mekanism.api.energy;
 
+import javax.annotation.Nullable;
 import net.minecraft.util.Direction;
 
 /**
@@ -17,8 +18,7 @@ public interface IStrictEnergyOutputter {
      *
      * @return energy sent
      */
-    //TODO: Add @Nullable to the side
-    double pullEnergy(Direction side, double amount, boolean simulate);
+    double pullEnergy(@Nullable Direction side, double amount, boolean simulate);
 
     /**
      * Whether or not this tile entity can output energy on a specific side.

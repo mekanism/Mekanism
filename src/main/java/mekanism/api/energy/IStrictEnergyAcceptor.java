@@ -1,5 +1,6 @@
 package mekanism.api.energy;
 
+import javax.annotation.Nullable;
 import net.minecraft.util.Direction;
 
 /**
@@ -17,8 +18,7 @@ public interface IStrictEnergyAcceptor {
      *
      * @return energy used
      */
-    //TODO: Add @Nullable to the side
-    double acceptEnergy(Direction side, double amount, boolean simulate);
+    double acceptEnergy(@Nullable Direction side, double amount, boolean simulate);
 
     /**
      * Whether or not this tile entity can accept energy from a certain side.
