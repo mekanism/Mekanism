@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class PathfinderCache {
 
@@ -19,9 +19,9 @@ public class PathfinderCache {
         cachedPaths.put(data, coords);
     }
 
-    public static List<Coord4D> getCache(Coord4D start, Coord4D end, Set<EnumFacing> sides) {
+    public static List<Coord4D> getCache(Coord4D start, Coord4D end, Set<Direction> sides) {
         List<Coord4D> ret = null;
-        for (EnumFacing side : sides) {
+        for (Direction side : sides) {
             List<Coord4D> test = cachedPaths.get(new PathData(start, end, side));
             if (ret == null || (test != null && test.size() < ret.size())) {
                 ret = test;
@@ -38,10 +38,10 @@ public class PathfinderCache {
 
         private final Coord4D startTransporter;
         private final Coord4D end;
-        private final EnumFacing endSide;
+        private final Direction endSide;
         private final int hash;
 
-        public PathData(Coord4D s, Coord4D e, EnumFacing es) {
+        public PathData(Coord4D s, Coord4D e, Direction es) {
             startTransporter = s;
             end = e;
             endSide = es;

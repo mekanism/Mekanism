@@ -1,8 +1,8 @@
 package mekanism.api;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 
 /**
  * Implement this class in your TileEntity if it can interact with Mekanism alloys.
@@ -19,5 +19,5 @@ public interface IAlloyInteraction {
      * @param stack       - the stack of alloy being right-clicked
      * @param tierOrdinal - the ordinal tier of the alloy (1 = advanced, 2 = elite, 3 = ultimate)
      */
-    void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal);
+    void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, int tierOrdinal);
 }

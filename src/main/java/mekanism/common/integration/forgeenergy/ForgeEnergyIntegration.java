@@ -3,16 +3,16 @@ package mekanism.common.integration.forgeenergy;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class ForgeEnergyIntegration implements IEnergyStorage {
 
     public IEnergyWrapper tileEntity;
 
-    public EnumFacing side;
+    public Direction side;
 
-    public ForgeEnergyIntegration(IEnergyWrapper tile, EnumFacing facing) {
+    public ForgeEnergyIntegration(IEnergyWrapper tile, Direction facing) {
         tileEntity = tile;
         side = facing;
     }

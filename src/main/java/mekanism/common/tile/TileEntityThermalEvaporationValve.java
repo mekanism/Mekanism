@@ -12,7 +12,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -32,7 +32,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         super.onUpdate();
         if (!world.isRemote) {
             if ((master == null) == prevMaster) {
-                for (EnumFacing side : EnumFacing.values()) {
+                for (Direction side : Direction.values()) {
                     Coord4D obj = Coord4D.get(this).offset(side);
                     if (obj.exists(world) && !obj.isAirBlock(world) && !(obj.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock)) {
                         MekanismUtils.notifyNeighborofChange(world, obj, this.pos);
@@ -49,32 +49,32 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
         TileEntityThermalEvaporationController controller = getController();
         return controller == null ? 0 : controller.inputTank.fill(resource, doFill);
     }
 
     @Override
     @Nullable
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
         TileEntityThermalEvaporationController controller = getController();
         return controller == null ? null : controller.outputTank.drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
         return controller != null && controller.hasRecipe(fluid.getFluid());
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
+    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
         return controller != null && controller.outputTank.getFluidAmount() > 0 && FluidContainerUtils.canDrain(controller.outputTank.getFluid(), fluid);
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
+    public FluidTankInfo[] getTankInfo(Direction from) {
         TileEntityThermalEvaporationController controller = getController();
         if (controller == null) {
             return PipeUtils.EMPTY;
@@ -98,7 +98,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public double getInsulationCoefficient(EnumFacing side) {
+    public double getInsulationCoefficient(Direction side) {
         return 0;
     }
 
@@ -121,23 +121,23 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public boolean canConnectHeat(EnumFacing side) {
+    public boolean canConnectHeat(Direction side) {
         return getController() != null;
     }
 
     @Override
-    public IHeatTransfer getAdjacent(EnumFacing side) {
+    public IHeatTransfer getAdjacent(Direction side) {
         return null;
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) ||
                super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }

@@ -1,12 +1,12 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 
 public class ContainerNull extends ContainerMekanism<TileEntityMekanism> {
 
-    public ContainerNull(EntityPlayer player, TileEntityMekanism tile) {
+    public ContainerNull(PlayerEntity player, TileEntityMekanism tile) {
         super(tile, player == null ? null : player.inventory);
     }
 

@@ -9,7 +9,7 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage,
       IComputerIntegration, ISpecialConfigData, ISecurityTile, IOffsetCapability {
 
-    boolean canBoundReceiveEnergy(BlockPos location, EnumFacing side);
+    boolean canBoundReceiveEnergy(BlockPos location, Direction side);
 
     void onPower();
 

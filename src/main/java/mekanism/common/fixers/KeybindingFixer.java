@@ -2,7 +2,7 @@ package mekanism.common.fixers;
 
 import javax.annotation.Nonnull;
 import mekanism.common.util.LangUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,14 +14,14 @@ public class KeybindingFixer {
 
     private static final Logger LOGGER = LogManager.getLogger("Mekanism KeybindingFixer");
 
-    public static void runFix(NBTTagCompound compound) {
+    public static void runFix(CompoundNBT compound) {
         remapKey(compound, "key_Mekanism Item Mode Switch", "mekanism.key.mode");
         remapKey(compound, "key_Mekanism Armor Mode Switch", "mekanism.key.armorMode");
         remapKey(compound, "key_Mekanism Feet Mode Switch", "mekanism.key.feetMode");
         remapKey(compound, "key_Mekanism Voice", "mekanism.key.voice");
     }
 
-    private static void remapKey(@Nonnull NBTTagCompound compound, String oldKey, String langKey) {
+    private static void remapKey(@Nonnull CompoundNBT compound, String oldKey, String langKey) {
         String newKey = "key_" + langKey;
         if (compound.hasKey(oldKey)) {
             LOGGER.info("Remapping {} to {}", oldKey, langKey);

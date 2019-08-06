@@ -10,7 +10,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -65,7 +65,7 @@ public class ThreadMinerSearch extends Thread {
                 continue;
             }
 
-            IBlockState state = world.getBlockState(testPos);
+            BlockState state = world.getBlockState(testPos);
             info.block = state.getBlock();
             info.meta = state.getBlock().getMetaFromState(state);
 

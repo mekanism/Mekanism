@@ -1,16 +1,16 @@
 package mekanism.common.integration.forgeenergy;
 
 import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
     public TileEntityUniversalCable tileEntity;
 
-    public EnumFacing side;
+    public Direction side;
 
-    public ForgeEnergyCableIntegration(TileEntityUniversalCable tile, EnumFacing facing) {
+    public ForgeEnergyCableIntegration(TileEntityUniversalCable tile, Direction facing) {
         tileEntity = tile;
         side = facing;
     }

@@ -15,13 +15,13 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -44,14 +44,14 @@ public class ItemConfigurationCard extends ItemMekanism {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (CapabilityUtils.hasCapability(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side)) {
                 if (SecurityUtils.canAccess(player, tileEntity)) {
                     ItemStack stack = player.getHeldItem(hand);
                     if (player.isSneaking()) {
-                        NBTTagCompound data = getBaseData(tileEntity);
+                        CompoundNBT data = getBaseData(tileEntity);
                         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side)) {
                             ISpecialConfigData special = CapabilityUtils.getCapability(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side);
                             data = special.getConfigurationData(data);
@@ -90,8 +90,8 @@ public class ItemConfigurationCard extends ItemMekanism {
         return EnumActionResult.PASS;
     }
 
-    private NBTTagCompound getBaseData(TileEntity tile) {
-        NBTTagCompound nbtTags = new NBTTagCompound();
+    private CompoundNBT getBaseData(TileEntity tile) {
+        CompoundNBT nbtTags = new CompoundNBT();
         if (tile instanceof IRedstoneControl) {
             nbtTags.setInteger("controlType", ((IRedstoneControl) tile).getControlType().ordinal());
         }
@@ -102,7 +102,7 @@ public class ItemConfigurationCard extends ItemMekanism {
         return nbtTags;
     }
 
-    private void setBaseData(NBTTagCompound nbtTags, TileEntity tile) {
+    private void setBaseData(CompoundNBT nbtTags, TileEntity tile) {
         if (tile instanceof IRedstoneControl) {
             ((IRedstoneControl) tile).setControlType(RedstoneControl.values()[nbtTags.getInteger("controlType")]);
         }
@@ -112,7 +112,7 @@ public class ItemConfigurationCard extends ItemMekanism {
         }
     }
 
-    private String getNameFromTile(TileEntity tile, EnumFacing side) {
+    private String getNameFromTile(TileEntity tile, Direction side) {
         String ret = Integer.toString(tile.hashCode());
         if (tile instanceof TileEntityMekanism) {
             ret = tile.getBlockType().getTranslationKey() + ".name";
@@ -124,7 +124,7 @@ public class ItemConfigurationCard extends ItemMekanism {
         return ret;
     }
 
-    public void setData(ItemStack itemstack, NBTTagCompound data) {
+    public void setData(ItemStack itemstack, CompoundNBT data) {
         if (data != null) {
             ItemDataUtils.setCompound(itemstack, "data", data);
         } else {
@@ -132,8 +132,8 @@ public class ItemConfigurationCard extends ItemMekanism {
         }
     }
 
-    public NBTTagCompound getData(ItemStack itemstack) {
-        NBTTagCompound data = ItemDataUtils.getCompound(itemstack, "data");
+    public CompoundNBT getData(ItemStack itemstack) {
+        CompoundNBT data = ItemDataUtils.getCompound(itemstack, "data");
         if (data.isEmpty()) {
             return null;
         }
@@ -141,7 +141,7 @@ public class ItemConfigurationCard extends ItemMekanism {
     }
 
     public String getDataType(ItemStack itemstack) {
-        NBTTagCompound data = getData(itemstack);
+        CompoundNBT data = getData(itemstack);
         if (data != null) {
             return data.getString("dataType");
         }

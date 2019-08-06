@@ -9,14 +9,14 @@ import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE extends TileEntityMekanism> extends GuiTypeFilter<FILTER, TILE> {
 
-    protected GuiItemStackFilter(EntityPlayer player, TILE tile) {
+    protected GuiItemStackFilter(PlayerEntity player, TILE tile) {
         super(player, tile);
     }
 

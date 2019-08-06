@@ -2,7 +2,7 @@ package mekanism.common.capabilities;
 
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.DefaultStorageHelper.DefaultStorage;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 /**
@@ -15,12 +15,12 @@ public class DefaultStrictEnergyAcceptor implements IStrictEnergyAcceptor {
     }
 
     @Override
-    public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double acceptEnergy(Direction side, double amount, boolean simulate) {
         return 0;
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         return true;
     }
 }

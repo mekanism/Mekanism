@@ -14,7 +14,7 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -108,7 +108,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         Set<FluidHandlerTarget> availableAcceptors = new HashSet<>();
         int totalHandlers = 0;
         for (Coord4D coord : possibleAcceptors) {
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            EnumSet<Direction> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
@@ -117,7 +117,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 continue;
             }
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
-            for (EnumFacing side : sides) {
+            for (Direction side : sides) {
                 if (CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) {
                     IFluidHandler acceptor = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
                     if (acceptor != null && PipeUtils.canFill(acceptor, fluidToSend)) {

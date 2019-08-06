@@ -30,12 +30,12 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -51,7 +51,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
       IUpgradeTile, IComparatorSupport {
 
     private static final String[] methods = new String[]{"reset"};
-    private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
+    private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
     public Set<Coord4D> activeNodes = new LinkedHashSet<>();
     public Set<Coord4D> usedNodes = new HashSet<>();
     public boolean finishedCalc = false;
@@ -96,7 +96,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                     if (!finishedCalc) {
                         doPlenish();
                     } else {
-                        Coord4D below = Coord4D.get(this).offset(EnumFacing.DOWN);
+                        Coord4D below = Coord4D.get(this).offset(Direction.DOWN);
 
                         if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= Fluid.BUCKET_VOLUME) {
                             if (fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
@@ -125,7 +125,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         }
         if (activeNodes.isEmpty()) {
             if (usedNodes.isEmpty()) {
-                Coord4D below = Coord4D.get(this).offset(EnumFacing.DOWN);
+                Coord4D below = Coord4D.get(this).offset(Direction.DOWN);
                 if (!canReplace(below, true, true)) {
                     finishedCalc = true;
                     return;
@@ -146,7 +146,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                     fluidTank.drain(Fluid.BUCKET_VOLUME, true);
                 }
 
-                for (EnumFacing dir : dirs) {
+                for (Direction dir : dirs) {
                     Coord4D sideCoord = coord.offset(dir);
                     if (sideCoord.exists(world) && canReplace(sideCoord, true, true)) {
                         activeNodes.add(sideCoord);
@@ -194,18 +194,18 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("finishedCalc", finishedCalc);
 
         if (fluidTank.getFluid() != null) {
-            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 
         NBTTagList activeList = new NBTTagList();
         for (Coord4D wrapper : activeNodes) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             wrapper.write(tagCompound);
             activeList.appendTag(tagCompound);
         }
@@ -215,7 +215,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
         NBTTagList usedList = new NBTTagList();
         for (Coord4D obj : usedNodes) {
-            activeList.appendTag(obj.write(new NBTTagCompound()));
+            activeList.appendTag(obj.write(new CompoundNBT()));
         }
         if (activeList.tagCount() != 0) {
             nbtTags.setTag("usedNodes", usedList);
@@ -224,7 +224,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         operatingTicks = nbtTags.getInteger("operatingTicks");
         finishedCalc = nbtTags.getBoolean("finishedCalc");
@@ -263,7 +263,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 2) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         }
@@ -271,29 +271,29 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         return getOppositeDirection() == side;
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == EnumFacing.UP) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
+        if (side == Direction.UP) {
             return new int[]{0};
-        } else if (side == EnumFacing.DOWN) {
+        } else if (side == Direction.DOWN) {
             return new int[]{1};
         }
         return new int[]{2};
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing direction) {
-        if (direction == EnumFacing.UP) {
+    public FluidTankInfo[] getTankInfo(Direction direction) {
+        if (direction == Direction.UP) {
             return new FluidTankInfo[]{fluidTank.getInfo()};
         }
         return PipeUtils.EMPTY;
@@ -301,7 +301,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Override
     public FluidTankInfo[] getAllTanks() {
-        return getTankInfo(EnumFacing.UP);
+        return getTankInfo(Direction.UP);
     }
 
     @Override
@@ -320,17 +320,17 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
         return fluidTank.fill(resource, doFill);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        return from == EnumFacing.UP && fluid.getFluid().canBePlacedInWorld();
+    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
+        return from == Direction.UP && fluid.getFluid().canBePlacedInWorld();
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
         activeNodes.clear();
         usedNodes.clear();
         finishedCalc = false;
@@ -339,17 +339,17 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
         return EnumActionResult.PASS;
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.cast(this);
         }

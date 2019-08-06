@@ -3,7 +3,7 @@ package mekanism.api.transmitters;
 import java.util.Collection;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends ITransmitter {
@@ -44,9 +44,9 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     Coord4D coord();
 
-    Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side);
+    Coord4D getAdjacentConnectableTransmitterCoord(Direction side);
 
-    ACCEPTOR getAcceptor(EnumFacing side);
+    ACCEPTOR getAcceptor(Direction side);
 
     boolean isValid();
 

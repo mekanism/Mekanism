@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.gas_tank.TileEntityGasTank;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ public class ContainerGasTank extends ContainerMekanism<TileEntityGasTank> {
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
         if (currentSlot != null && currentSlot.getHasStack()) {

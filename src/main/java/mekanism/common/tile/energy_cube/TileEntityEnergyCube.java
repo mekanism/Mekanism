@@ -26,8 +26,8 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -117,17 +117,17 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
     }
 
     @Override
-    public boolean canOutputEnergy(EnumFacing side) {
+    public boolean canOutputEnergy(Direction side) {
         return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 2, side);
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+    public boolean canSetFacing(@Nonnull Direction facing) {
         return true;
     }
 
@@ -138,12 +138,12 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         } else if (slotID == 0) {
@@ -193,14 +193,14 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
     }
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("tier", tier.ordinal());
         return nbtTags;
@@ -235,17 +235,17 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     }
 
     @Override
-    public EnumFacing getOrientation() {
+    public Direction getOrientation() {
         return getDirection();
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         //Special isCapabilityDisabled override not needed here as it already gets handled in TileEntityElectricBlock
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);

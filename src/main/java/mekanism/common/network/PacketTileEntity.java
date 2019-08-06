@@ -9,7 +9,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -22,7 +22,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 
     @Override
     public IMessage onMessage(TileEntityMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         if (player == null) {
             return null;
         }

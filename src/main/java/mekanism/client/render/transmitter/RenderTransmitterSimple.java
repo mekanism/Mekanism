@@ -8,11 +8,11 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> extends RenderTransmitterBase<T> {
 
-    protected abstract void renderSide(BufferBuilder renderer, EnumFacing side, T transmitter);
+    protected abstract void renderSide(BufferBuilder renderer, Direction side, T transmitter);
 
     protected void render(T transmitter, double x, double y, double z, int glow) {
         GlStateManager.pushMatrix();
@@ -24,7 +24,7 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> e
         BufferBuilder worldRenderer = tessellator.getBuffer();
         GlStateManager.translate((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
 
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             renderSide(worldRenderer, side, transmitter);
         }
 

@@ -8,13 +8,13 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -26,11 +26,11 @@ import net.minecraftforge.event.world.BlockEvent;
 
 public class LaserManager {
 
-    public static LaserInfo fireLaser(TileEntity from, EnumFacing direction, double energy, World world) {
+    public static LaserInfo fireLaser(TileEntity from, Direction direction, double energy, World world) {
         return fireLaser(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
     }
 
-    public static LaserInfo fireLaser(Pos3D from, EnumFacing direction, double energy, World world) {
+    public static LaserInfo fireLaser(Pos3D from, Direction direction, double energy, World world) {
         Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
         RayTraceResult mop = world.rayTraceBlocks(from, to);
         if (mop != null) {
@@ -65,9 +65,9 @@ public class LaserManager {
             return null;
         }
 
-        IBlockState state = blockCoord.getBlockState(world);
+        BlockState state = blockCoord.getBlockState(world);
         Block blockHit = state.getBlock();
-        EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, laserPos).get();
+        PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, laserPos).get();
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) {
@@ -86,11 +86,11 @@ public class LaserManager {
         return ret;
     }
 
-    public static RayTraceResult fireLaserClient(TileEntity from, EnumFacing direction, double energy, World world) {
+    public static RayTraceResult fireLaserClient(TileEntity from, Direction direction, double energy, World world) {
         return fireLaserClient(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
     }
 
-    public static RayTraceResult fireLaserClient(Pos3D from, EnumFacing direction, double energy, World world) {
+    public static RayTraceResult fireLaserClient(Pos3D from, Direction direction, double energy, World world) {
         Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
         RayTraceResult mop = world.rayTraceBlocks(from, to);
         if (mop != null) {
@@ -101,11 +101,11 @@ public class LaserManager {
         return mop;
     }
 
-    public static boolean isReceptor(TileEntity tile, EnumFacing side) {
+    public static boolean isReceptor(TileEntity tile, Direction side) {
         return CapabilityUtils.hasCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
     }
 
-    public static ILaserReceptor getReceptor(TileEntity tile, EnumFacing side) {
+    public static ILaserReceptor getReceptor(TileEntity tile, Direction side) {
         return CapabilityUtils.getCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
     }
 

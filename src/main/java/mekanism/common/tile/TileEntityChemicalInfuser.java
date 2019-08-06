@@ -26,9 +26,9 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -131,7 +131,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         leftTank.read(nbtTags.getCompoundTag("leftTank"));
         rightTank.read(nbtTags.getCompoundTag("rightTank"));
@@ -140,20 +140,20 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setTag("leftTank", leftTank.write(new NBTTagCompound()));
-        nbtTags.setTag("rightTank", rightTank.write(new NBTTagCompound()));
-        nbtTags.setTag("centerTank", centerTank.write(new NBTTagCompound()));
+        nbtTags.setTag("leftTank", leftTank.write(new CompoundNBT()));
+        nbtTags.setTag("rightTank", rightTank.write(new CompoundNBT()));
+        nbtTags.setTag("centerTank", centerTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
-    public GasTank getTank(EnumFacing side) {
+    public GasTank getTank(Direction side) {
         if (side == getLeftSide()) {
             return leftTank;
         } else if (side == getRightSide()) {
@@ -171,12 +171,12 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean canReceiveGas(EnumFacing side, Gas type) {
+    public boolean canReceiveGas(Direction side, Gas type) {
         return getTank(side) != null && getTank(side) != centerTank && getTank(side).canReceive(type);
     }
 
     @Override
-    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack != null ? stack.getGas() : null)) {
             return getTank(side).receive(stack, doTransfer);
         }
@@ -184,7 +184,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         if (canDrawGas(side, null)) {
             return getTank(side).draw(amount, doTransfer);
         }
@@ -192,12 +192,12 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean canDrawGas(EnumFacing side, Gas type) {
+    public boolean canDrawGas(Direction side, Gas type) {
         return getTank(side) != null && getTank(side) == centerTank && getTank(side).canDraw(type);
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -205,7 +205,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
@@ -215,9 +215,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side == EnumFacing.UP || side == EnumFacing.DOWN || side == getOppositeDirection();
+            return side == Direction.UP || side == Direction.DOWN || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
     }
@@ -228,7 +228,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 0 || slotID == 2) {
             return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canReceiveGas(itemstack, null);
         } else if (slotID == 1) {
@@ -241,7 +241,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         if (side == getLeftSide()) {
             return new int[]{0};
         } else if (side == getDirection()) {
@@ -257,13 +257,13 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (leftTank.getGas() != null) {
-            ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getGas().write(new NBTTagCompound()));
+            ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getGas().write(new CompoundNBT()));
         }
         if (rightTank.getGas() != null) {
-            ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getGas().write(new NBTTagCompound()));
+            ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getGas().write(new CompoundNBT()));
         }
         if (centerTank.getGas() != null) {
-            ItemDataUtils.setCompound(itemStack, "centerTank", centerTank.getGas().write(new NBTTagCompound()));
+            ItemDataUtils.setCompound(itemStack, "centerTank", centerTank.getGas().write(new CompoundNBT()));
         }
     }
 

@@ -6,10 +6,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -19,7 +19,7 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
 
     @Override
     public IMessage onMessage(ItemStackMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         if (player == null) {
             return null;
         }
@@ -40,7 +40,7 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
 
     public static class ItemStackMessage implements IMessage {
 
-        public EnumHand currentHand;
+        public Hand currentHand;
 
         public List<Object> parameters;
 
@@ -49,7 +49,7 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
         public ItemStackMessage() {
         }
 
-        public ItemStackMessage(EnumHand hand, List<Object> params) {
+        public ItemStackMessage(Hand hand, List<Object> params) {
             currentHand = hand;
             parameters = params;
         }
@@ -66,7 +66,7 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
-            currentHand = EnumHand.values()[dataStream.readInt()];
+            currentHand = Hand.values()[dataStream.readInt()];
             storedBuffer = dataStream.copy();
         }
     }

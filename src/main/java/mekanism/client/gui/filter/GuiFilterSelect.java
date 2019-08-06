@@ -6,7 +6,7 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -19,7 +19,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism> extends G
     protected GuiButton modIDButton;
     protected GuiButton backButton;
 
-    protected GuiFilterSelect(EntityPlayer player, TILE tile) {
+    protected GuiFilterSelect(PlayerEntity player, TILE tile) {
         super(tile, new ContainerNull(player, tile));
     }
 

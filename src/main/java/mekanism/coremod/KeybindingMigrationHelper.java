@@ -16,8 +16,8 @@ import org.objectweb.asm.commons.Method;
 /**
  * Allows us to run a mini datafixer on the GameSettings to migrate the old keybind options (before we correctly used the translation key).
  *
- * Hooks into {@link net.minecraft.client.settings.GameSettings#dataFix(net.minecraft.nbt.NBTTagCompound)} and always calls our static method datafixer {@link
- * mekanism.common.fixers.KeybindingFixer#runFix(net.minecraft.nbt.NBTTagCompound)}
+ * Hooks into {@link net.minecraft.client.settings.GameSettings#dataFix(net.minecraft.nbt.CompoundNBT)} and always calls our static method datafixer {@link
+ * mekanism.common.fixers.KeybindingFixer#runFix(net.minecraft.nbt.CompoundNBT)}
  */
 @SuppressWarnings("unused")//coremod land
 public class KeybindingMigrationHelper implements IClassTransformer {
@@ -36,9 +36,9 @@ public class KeybindingMigrationHelper implements IClassTransformer {
 
     private static class Visitor extends ClassVisitor {
 
-        private static final String DATAFIX_SIG = "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;";
+        private static final String DATAFIX_SIG = "(Lnet/minecraft/nbt/CompoundNBT;)Lnet/minecraft/nbt/CompoundNBT;";
 
-        //net.minecraft.client.settings.GameSettings func_189988_a(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound; #dataFix
+        //net.minecraft.client.settings.GameSettings func_189988_a(Lnet/minecraft/nbt/CompoundNBT;)Lnet/minecraft/nbt/CompoundNBT; #dataFix
         private String datafixMethodName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName("net/minecraft/client/settings/GameSettings", "func_189988_a", DATAFIX_SIG);
 
         Visitor(ClassVisitor parent) {
@@ -56,7 +56,7 @@ public class KeybindingMigrationHelper implements IClassTransformer {
                     public void visitCode() {
                         super.visitCode();
                         loadArg(0);
-                        invokeStatic(Type.getObjectType("mekanism/common/fixers/KeybindingFixer"), new Method("runFix", "(Lnet/minecraft/nbt/NBTTagCompound;)V"));
+                        invokeStatic(Type.getObjectType("mekanism/common/fixers/KeybindingFixer"), new Method("runFix", "(Lnet/minecraft/nbt/CompoundNBT;)V"));
                     }
                 };
             }

@@ -2,11 +2,11 @@ package mekanism.common.tile.interfaces;
 
 import javax.annotation.Nonnull;
 import mekanism.common.base.ISustainedInventory;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 
 public interface ITileContainer extends ISidedInventory, ISustainedInventory {
@@ -52,11 +52,11 @@ public interface ITileContainer extends ISidedInventory, ISustainedInventory {
     }
 
     @Override
-    default void openInventory(@Nonnull EntityPlayer player) {
+    default void openInventory(@Nonnull PlayerEntity player) {
     }
 
     @Override
-    default void closeInventory(@Nonnull EntityPlayer player) {
+    default void closeInventory(@Nonnull PlayerEntity player) {
     }
 
     @Override
@@ -70,12 +70,12 @@ public interface ITileContainer extends ISidedInventory, ISustainedInventory {
     }
 
     @Override
-    default boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    default boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return isItemValidForSlot(slotID, itemstack);
     }
 
     @Override
-    default boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    default boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return hasInventory();
     }
 

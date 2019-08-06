@@ -30,10 +30,10 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
@@ -80,7 +80,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         }
     }
 
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         if (nbtTags.hasKey("color")) {
             setColor(TransporterUtils.colors.get(nbtTags.getInteger("color")));
         }
@@ -195,7 +195,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     private boolean checkSideForInsert(TransporterStack stack) {
-        EnumFacing side = stack.getSide(this);
+        Direction side = stack.getSide(this);
         return getTileEntity().getConnectionType(side) == ConnectionType.NORMAL || getTileEntity().getConnectionType(side) == ConnectionType.PUSH;
     }
 
@@ -219,7 +219,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
     @Override
     public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        EnumFacing from = coord().sideDifference(original).getOpposite();
+        Direction from = coord().sideDifference(original).getOpposite();
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = original;
         stack.homeLocation = original;
@@ -249,7 +249,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
     @Override
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        EnumFacing from = coord().sideDifference(Coord4D.get(outputter)).getOpposite();
+        Direction from = coord().sideDifference(Coord4D.get(outputter)).getOpposite();
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = Coord4D.get(outputter);
         stack.homeLocation = Coord4D.get(outputter);
@@ -291,7 +291,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public boolean canEmitTo(TileEntity tileEntity, EnumFacing side) {
+    public boolean canEmitTo(TileEntity tileEntity, Direction side) {
         if (!getTileEntity().canConnect(side)) {
             return false;
         }
@@ -299,7 +299,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side) {
+    public boolean canReceiveFrom(TileEntity tileEntity, Direction side) {
         if (!getTileEntity().canConnect(side)) {
             return false;
         }
@@ -312,12 +312,12 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public boolean canConnectMutual(EnumFacing side) {
+    public boolean canConnectMutual(Direction side) {
         return getTileEntity().canConnectMutual(side);
     }
 
     @Override
-    public boolean canConnect(EnumFacing side) {
+    public boolean canConnect(Direction side) {
         return getTileEntity().canConnect(side);
     }
 

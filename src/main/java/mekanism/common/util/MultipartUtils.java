@@ -1,9 +1,9 @@
 package mekanism.common.util;
 
 import java.util.Collection;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -13,13 +13,13 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public final class MultipartUtils {
 
-    public static AxisAlignedBB rotate(AxisAlignedBB aabb, EnumFacing side) {
+    public static AxisAlignedBB rotate(AxisAlignedBB aabb, Direction side) {
         Vec3d v1 = rotate(new Vec3d(aabb.minX, aabb.minY, aabb.minZ), side);
         Vec3d v2 = rotate(new Vec3d(aabb.maxX, aabb.maxY, aabb.maxZ), side);
         return new AxisAlignedBB(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
     }
 
-    public static Vec3d rotate(Vec3d vec, EnumFacing side) {
+    public static Vec3d rotate(Vec3d vec, Direction side) {
         switch (side) {
             case DOWN:
                 return new Vec3d(vec.x, vec.y, vec.z);
@@ -38,7 +38,7 @@ public final class MultipartUtils {
     }
 
     /* taken from MCMP */
-    public static Pair<Vec3d, Vec3d> getRayTraceVectors(EntityPlayer player) {
+    public static Pair<Vec3d, Vec3d> getRayTraceVectors(PlayerEntity player) {
         float pitch = player.rotationPitch;
         float yaw = player.rotationYaw;
         Vec3d start = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
@@ -49,8 +49,8 @@ public final class MultipartUtils {
         float f5 = f2 * f3;
         float f6 = f1 * f3;
         double d3 = 5.0D;
-        if (player instanceof EntityPlayerMP) {
-            d3 = player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+        if (player instanceof ServerPlayerEntity) {
+            d3 = player.getEntityAttribute(PlayerEntity.REACH_DISTANCE).getAttributeValue();
         }
         Vec3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
         return Pair.of(start, end);

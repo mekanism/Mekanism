@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -47,7 +47,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 
     public static class ValveData {
 
-        public EnumFacing side;
+        public Direction side;
         public Coord4D location;
 
         public boolean prevActive;

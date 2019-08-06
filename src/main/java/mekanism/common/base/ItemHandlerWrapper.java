@@ -3,12 +3,12 @@ package mekanism.common.base;
 import javax.annotation.Nonnull;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 public class ItemHandlerWrapper extends SidedInvWrapper {
 
-    public ItemHandlerWrapper(ISidedInventory inv, EnumFacing side) {
+    public ItemHandlerWrapper(ISidedInventory inv, Direction side) {
         super(inv, side);
     }
 

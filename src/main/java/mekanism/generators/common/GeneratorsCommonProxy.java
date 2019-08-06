@@ -19,7 +19,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -71,12 +71,12 @@ public class GeneratorsCommonProxy implements IGuiProvider {
     }
 
     @Override
-    public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+    public Object getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
         return null;
     }
 
     @Override
-    public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+    public Container getServerGui(int ID, PlayerEntity player, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         switch (ID) {
             case 0:

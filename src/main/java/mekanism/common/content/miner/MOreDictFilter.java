@@ -5,9 +5,9 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
 
@@ -15,14 +15,14 @@ public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
 
     @Override
     public boolean canFilter(ItemStack itemStack) {
-        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock)) {
+        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof BlockItem)) {
             return false;
         }
         return new OreDictFinder(oreDictName).modifies(itemStack);
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.setInteger("type", 1);
         nbtTags.setString("oreDictName", oreDictName);
@@ -30,7 +30,7 @@ public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
     }
 
     @Override
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         oreDictName = nbtTags.getString("oreDictName");
     }

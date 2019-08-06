@@ -2,7 +2,7 @@ package mekanism.generators.common.content.turbine;
 
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
@@ -26,7 +26,7 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         if (nbtTags.hasKey("cachedFluid")) {
             fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
         }
@@ -35,9 +35,9 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
     }
 
     @Override
-    public void save(NBTTagCompound nbtTags) {
+    public void save(CompoundNBT nbtTags) {
         if (fluid != null) {
-            nbtTags.setTag("cachedFluid", fluid.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("cachedFluid", fluid.writeToNBT(new CompoundNBT()));
         }
         nbtTags.setDouble("electricity", electricity);
         nbtTags.setInteger("dumpMode", dumpMode.ordinal());

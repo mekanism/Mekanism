@@ -34,14 +34,14 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -128,8 +128,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 delayTicks = 10;
             }
             if (playersUsing.size() > 0) {
-                for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
+                for (PlayerEntity player : playersUsing) {
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
                 }
             }
 
@@ -154,7 +154,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
 
         if (color != null) {
@@ -170,7 +170,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         NBTTagList filterTags = new NBTTagList();
 
         for (TransporterFilter filter : filters) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.appendTag(tagCompound);
         }
@@ -181,7 +181,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("color")) {
             color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
@@ -223,14 +223,14 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 // Move filter up
                 int filterIndex = dataStream.readInt();
                 filters.swap(filterIndex, filterIndex - 1);
-                for (EntityPlayer player : playersUsing) {
+                for (PlayerEntity player : playersUsing) {
                     openInventory(player);
                 }
             } else if (type == 4) {
                 // Move filter down
                 int filterIndex = dataStream.readInt();
                 filters.swap(filterIndex, filterIndex + 1);
-                for (EntityPlayer player : playersUsing) {
+                for (PlayerEntity player : playersUsing) {
                     openInventory(player);
                 }
             } else if (type == 5) {
@@ -348,7 +348,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return false;
     }
 
@@ -364,7 +364,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         if (side == getDirection() || side == getOppositeDirection()) {
             return new int[]{0};
         }
@@ -372,7 +372,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void openInventory(@Nonnull EntityPlayer player) {
+    public void openInventory(@Nonnull PlayerEntity player) {
         if (!world.isRemote) {
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
@@ -389,17 +389,17 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         return false;
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+    public boolean canSetFacing(@Nonnull Direction facing) {
         return true;
     }
 
     @Override
-    public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags) {
+    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         if (color != null) {
             nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
         }
@@ -410,7 +410,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
         NBTTagList filterTags = new NBTTagList();
         for (TransporterFilter filter : filters) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.appendTag(tagCompound);
         }
@@ -421,7 +421,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void setConfigurationData(NBTTagCompound nbtTags) {
+    public void setConfigurationData(CompoundNBT nbtTags) {
         if (nbtTags.hasKey("color")) {
             color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
         }
@@ -456,7 +456,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
         NBTTagList filterTags = new NBTTagList();
         for (TransporterFilter filter : filters) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.appendTag(tagCompound);
         }
@@ -576,14 +576,14 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             }
         }
 
-        for (EntityPlayer player : playersUsing) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
+        for (PlayerEntity player : playersUsing) {
+            Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
         }
         return null;
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -591,7 +591,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         }
@@ -602,7 +602,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return side != null && side != getDirection() && side != getOppositeDirection();
         }

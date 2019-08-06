@@ -1,14 +1,14 @@
 package mekanism.common.entity.ai;
 
 import mekanism.common.entity.EntityRobit;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class RobitAIFollow extends RobitAIBase {
 
     /**
      * The robit's owner.
      */
-    private EntityPlayer theOwner;
+    private PlayerEntity theOwner;
 
     /**
      * The distance between the owner the robit must be at in order for the protocol to begin.
@@ -28,7 +28,7 @@ public class RobitAIFollow extends RobitAIBase {
 
     @Override
     public boolean shouldExecute() {
-        EntityPlayer player = theRobit.getOwner();
+        PlayerEntity player = theRobit.getOwner();
         if (player == null) {
             return false;
         } else if (theRobit.world.provider.getDimension() != player.world.provider.getDimension()) {

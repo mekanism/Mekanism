@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.robit;
 
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
@@ -63,7 +63,7 @@ public class ContainerRobitSmelting extends ContainerRobit {
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
         if (currentSlot != null && currentSlot.getHasStack()) {

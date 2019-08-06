@@ -35,10 +35,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,9 +47,9 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
 
-    private EnumHand currentHand;
+    private Hand currentHand;
     private ItemStack itemStack = ItemStack.EMPTY;
-    private EntityPlayer entityPlayer;
+    private PlayerEntity entityPlayer;
     private GuiButton publicButton;
     private GuiButton privateButton;
     private GuiButton setButton;
@@ -92,7 +92,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         ySize += 64;
     }
 
-    public GuiTeleporter(EntityPlayer player, EnumHand hand, ItemStack stack) {
+    public GuiTeleporter(PlayerEntity player, Hand hand, ItemStack stack) {
         super(null, new ContainerNull());
         isPortable = true;
         currentHand = hand;

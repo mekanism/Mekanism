@@ -8,7 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fml.common.Optional.Method;
 
 public class IC2Integration {
@@ -26,14 +26,14 @@ public class IC2Integration {
     }
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public static boolean isOutputter(TileEntity tileEntity, EnumFacing side) {
+    public static boolean isOutputter(TileEntity tileEntity, Direction side) {
         IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
         return tile instanceof IEnergySource && ((IEnergySource) tile).emitsEnergyTo(null, side.getOpposite());
 
     }
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public static boolean isAcceptor(TileEntity tileEntity, EnumFacing side) {
+    public static boolean isAcceptor(TileEntity tileEntity, Direction side) {
         IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
         if (tile instanceof IEnergySink) {
             return ((IEnergySink) tile).acceptsEnergyFrom(null, side.getOpposite());

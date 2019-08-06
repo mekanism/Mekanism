@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotPersonalChest;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
@@ -59,7 +59,7 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     }
 
     @Override
-    protected void closeInventory(EntityPlayer entityplayer) {
+    protected void closeInventory(PlayerEntity entityplayer) {
         if (isBlock) {
             tileEntity.close(entityplayer);
             tileEntity.closeInventory(entityplayer);
@@ -86,7 +86,7 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
+    public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
         if (isBlock) {
             return tileEntity.isUsableByPlayer(entityplayer);
         }
@@ -95,7 +95,7 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
         if (currentSlot != null && currentSlot.getHasStack()) {
@@ -123,7 +123,7 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
 
     @Nonnull
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickType, PlayerEntity player) {
         int hotbarSlotId = slotId - 81;
         //Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)
         if (!isBlock && hotbarSlotId >= 0 && hotbarSlotId < 9 && player.inventory.currentItem == hotbarSlotId) {

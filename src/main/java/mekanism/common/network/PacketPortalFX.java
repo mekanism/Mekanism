@@ -5,7 +5,7 @@ import java.util.Random;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -15,7 +15,7 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 
     @Override
     public IMessage onMessage(PortalFXMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             Random random = new Random();
             for (int i = 0; i < 50; i++) {

@@ -10,14 +10,14 @@ import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE extends TileEntityMekanism> extends GuiTextFilter<FILTER, TILE> {
 
-    protected GuiOreDictFilter(EntityPlayer player, TILE tile) {
+    protected GuiOreDictFilter(PlayerEntity player, TILE tile) {
         super(player, tile);
     }
 

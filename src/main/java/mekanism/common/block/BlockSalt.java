@@ -10,7 +10,7 @@ import mekanism.common.block.interfaces.IBlockOreDict;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
@@ -25,7 +25,7 @@ public class BlockSalt extends Block implements IBlockOreDict {
 
     @Nonnull
     @Override
-    public Item getItemDropped(IBlockState state, Random random, int fortune) {
+    public Item getItemDropped(BlockState state, Random random, int fortune) {
         return MekanismItem.SALT.getItem();
     }
 

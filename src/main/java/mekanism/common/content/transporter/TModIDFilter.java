@@ -6,7 +6,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class TModIDFilter extends TransporterFilter implements IModIDFilter {
 
@@ -23,14 +23,14 @@ public class TModIDFilter extends TransporterFilter implements IModIDFilter {
     }
 
     @Override
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.setInteger("type", 3);
         nbtTags.setString("modID", modID);
     }
 
     @Override
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         modID = nbtTags.getString("modID");
     }

@@ -23,9 +23,9 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -77,7 +77,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 2) {
             return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, null);
         }
@@ -86,7 +86,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         if (side == getLeftSide()) {
             return new int[]{0};
         } else if (side.getAxis() == Axis.Y) {
@@ -134,26 +134,26 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         gasTank.read(nbtTags.getCompoundTag("gasTank"));
     }
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
+        nbtTags.setTag("gasTank", gasTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -161,7 +161,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
@@ -171,7 +171,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return side != null && side != getRightSide();
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -183,7 +183,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (gasTank.getGas() != null) {
-            ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new NBTTagCompound()));
+            ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new CompoundNBT()));
         }
     }
 
@@ -198,18 +198,18 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     @Override
-    public boolean canReceiveGas(EnumFacing side, Gas type) {
+    public boolean canReceiveGas(Direction side, Gas type) {
         return false;
     }
 
 
     @Override
-    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         return 0;
     }
 
     @Override
-    public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         if (canDrawGas(side, null)) {
             return gasTank.draw(amount, doTransfer);
         }
@@ -217,7 +217,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     }
 
     @Override
-    public boolean canDrawGas(EnumFacing side, Gas type) {
+    public boolean canDrawGas(Direction side, Gas type) {
         return side == getRightSide() && gasTank.canDraw(type);
     }
 

@@ -3,12 +3,12 @@ package mekanism.api;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -84,7 +84,7 @@ public class Coord4D {
      *
      * @return the Coord4D from the tag compound
      */
-    public static Coord4D read(NBTTagCompound tag) {
+    public static Coord4D read(CompoundNBT tag) {
         return new Coord4D(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"), tag.getInteger("id"));
     }
 
@@ -106,12 +106,12 @@ public class Coord4D {
      *
      * @return the state of this Coord4D's block
      */
-    public IBlockState getBlockState(IBlockAccess world) {
+    public BlockState getBlockState(IBlockAccess world) {
         return world.getBlockState(getPos());
     }
 
     public int getBlockMeta(IBlockAccess world) {
-        IBlockState state = getBlockState(world);
+        BlockState state = getBlockState(world);
         return state == null ? 0 : state.getBlock().getMetaFromState(state);
     }
 
@@ -148,13 +148,13 @@ public class Coord4D {
     }
 
     /**
-     * Writes this Coord4D's data to an NBTTagCompound.
+     * Writes this Coord4D's data to an CompoundNBT.
      *
      * @param nbtTags - tag compound to write to
      *
      * @return the tag compound with this Coord4D's data
      */
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.setInteger("x", x);
         nbtTags.setInteger("y", y);
         nbtTags.setInteger("z", z);
@@ -225,7 +225,7 @@ public class Coord4D {
      *
      * @return translated Coord4D
      */
-    public Coord4D offset(EnumFacing side) {
+    public Coord4D offset(Direction side) {
         return offset(side, 1);
     }
 
@@ -237,7 +237,7 @@ public class Coord4D {
      *
      * @return translated Coord4D
      */
-    public Coord4D offset(EnumFacing side, int amount) {
+    public Coord4D offset(Direction side, int amount) {
         if (side == null || amount == 0) {
             return this;
         }
@@ -245,7 +245,7 @@ public class Coord4D {
     }
 
     public ItemStack getStack(IBlockAccess world) {
-        IBlockState state = getBlockState(world);
+        BlockState state = getBlockState(world);
         if (state == null || state.getBlock().isAir(state, world, null)) {
             return ItemStack.EMPTY;
         }
@@ -264,15 +264,15 @@ public class Coord4D {
     }
 
     /**
-     * A method used to find the EnumFacing represented by the distance of the defined Coord4D. Most likely won't have many applicable uses.
+     * A method used to find the Direction represented by the distance of the defined Coord4D. Most likely won't have many applicable uses.
      *
      * @param other - Coord4D to find the side difference of
      *
-     * @return EnumFacing representing the side the defined relative Coord4D is on to this
+     * @return Direction representing the side the defined relative Coord4D is on to this
      */
-    public EnumFacing sideDifference(Coord4D other) {
+    public Direction sideDifference(Coord4D other) {
         Coord4D diff = difference(other);
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             if (side.getXOffset() == diff.x && side.getYOffset() == diff.y && side.getZOffset() == diff.z) {
                 return side;
             }
@@ -300,7 +300,7 @@ public class Coord4D {
      *
      * @return Whether or not the defined side of this Coord4D is visible.
      */
-    public boolean sideVisible(EnumFacing side, IBlockAccess world) {
+    public boolean sideVisible(Direction side, IBlockAccess world) {
         return world.isAirBlock(step(side).getPos());
     }
 
@@ -322,7 +322,7 @@ public class Coord4D {
      *
      * @return this Coord4D
      */
-    public Coord4D step(EnumFacing side) {
+    public Coord4D step(Direction side) {
         return translate(side.getXOffset(), side.getYOffset(), side.getZOffset());
     }
 

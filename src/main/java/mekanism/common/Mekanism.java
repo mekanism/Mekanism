@@ -79,8 +79,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.ChunkPos;
@@ -114,6 +115,7 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -825,7 +827,7 @@ public class Mekanism {
     @SubscribeEvent
     public void chunkSave(ChunkDataEvent.Save event) {
         if (!event.getWorld().isRemote) {
-            NBTTagCompound nbtTags = event.getData();
+            CompoundNBT nbtTags = event.getData();
 
             nbtTags.setInteger("MekanismWorldGen", baseWorldGenVersion);
             nbtTags.setInteger("MekanismUserWorldGen", MekanismConfig.current().general.userWorldGenVersion.val());
@@ -836,7 +838,7 @@ public class Mekanism {
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (!event.getWorld().isRemote) {
             if (MekanismConfig.current().general.enableWorldRegeneration.val()) {
-                NBTTagCompound loadData = event.getData();
+                CompoundNBT loadData = event.getData();
                 if (loadData.getInteger("MekanismWorldGen") == baseWorldGenVersion &&
                     loadData.getInteger("MekanismUserWorldGen") == MekanismConfig.current().general.userWorldGenVersion.val()) {
                     return;

@@ -11,7 +11,7 @@ import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityBasicT
 import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityEliteThermodynamicConductor;
 import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityUltimateThermodynamicConductor;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -30,7 +30,7 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter implement
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
         switch (tier) {
             case BASIC:
                 return new TileEntityBasicThermodynamicConductor();

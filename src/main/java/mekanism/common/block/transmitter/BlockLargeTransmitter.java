@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -37,7 +37,7 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
 
     @Override
     @Deprecated
-    public RayTraceResult collisionRayTrace(IBlockState blockState, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Vec3d start, @Nonnull Vec3d end) {
+    public RayTraceResult collisionRayTrace(BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Vec3d start, @Nonnull Vec3d end) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile == null) {
             return null;
@@ -53,14 +53,14 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess world, BlockPos pos) {
         return BlockLargeTransmitter.largeSides[6];
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
+    public AxisAlignedBB getSelectedBoundingBox(BlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
         return largeDefault.offset(pos);
     }
 }

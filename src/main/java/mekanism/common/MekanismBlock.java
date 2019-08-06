@@ -159,8 +159,9 @@ import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.registries.IForgeRegistry;
 
 //TODO: Ensure all IBlockMekanism's set the required information
@@ -452,7 +453,7 @@ public enum MekanismBlock implements IBlockProvider {
     SALT_BLOCK(new BlockSalt());
 
     @Nonnull
-    private final ItemBlock item;
+    private final BlockItem item;
     @Nonnull
     private final Block block;
 
@@ -460,7 +461,7 @@ public enum MekanismBlock implements IBlockProvider {
         this(block, ItemBlockMekanism::new);
     }
 
-    <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block> MekanismBlock(@Nonnull BLOCK block, Function<BLOCK, ITEM> itemCreator) {
+    <ITEM extends BlockItem & IItemMekanism, BLOCK extends Block> MekanismBlock(@Nonnull BLOCK block, Function<BLOCK, ITEM> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
         //TODO: Fix all translation keys so that they have mekanism in them
@@ -474,7 +475,7 @@ public enum MekanismBlock implements IBlockProvider {
 
     @Nonnull
     @Override
-    public ItemBlock getItem() {
+    public BlockItem getItem() {
         return item;
     }
 

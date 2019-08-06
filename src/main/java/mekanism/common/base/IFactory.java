@@ -24,7 +24,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -175,7 +175,7 @@ public interface IFactory {
             return 0;
         }
 
-        public boolean canReceiveGas(EnumFacing side, Gas type) {
+        public boolean canReceiveGas(Direction side, Gas type) {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().canReceiveGas(side, type);
             }

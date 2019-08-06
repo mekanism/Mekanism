@@ -1,10 +1,10 @@
 package mekanism.api.lasers;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public interface ILaserReceptor {
 
-    void receiveLaserEnergy(double energy, EnumFacing side);
+    void receiveLaserEnergy(double energy, Direction side);
 
     boolean canLasersDig();
 }

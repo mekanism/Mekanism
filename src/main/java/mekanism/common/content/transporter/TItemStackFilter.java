@@ -8,7 +8,7 @@ import mekanism.common.content.transporter.Finder.ItemStackFinder;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TItemStackFilter extends TransporterFilter implements IItemStackFilter {
@@ -41,7 +41,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     }
 
     @Override
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.setInteger("type", 0);
         nbtTags.setBoolean("sizeMode", sizeMode);
@@ -51,7 +51,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     }
 
     @Override
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         sizeMode = nbtTags.getBoolean("sizeMode");
         min = nbtTags.getInteger("min");

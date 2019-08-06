@@ -7,7 +7,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import javax.annotation.Nonnull;
 import mekanism.common.integration.MekanismHooks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
@@ -67,7 +67,7 @@ public class CCPeripheral implements IPeripheral {
     public static class CCPeripheralProvider implements IPeripheralProvider {
 
         @Override
-        public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side) {
+        public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull Direction side) {
             TileEntity te = world.getTileEntity(pos);
             if (te instanceof IComputerIntegration) {
                 return new CCPeripheral((IComputerIntegration) te);

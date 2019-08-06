@@ -11,7 +11,7 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
@@ -25,7 +25,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
+        BlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
         return state.getBlock() instanceof BlockDynamicTank;
     }
 

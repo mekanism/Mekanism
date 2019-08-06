@@ -29,11 +29,11 @@ import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -54,7 +54,7 @@ public class ClientTickHandler {
     public static Minecraft mc = FMLClientHandler.instance().getClient();
     public static Random rand = new Random();
     public static Set<IClientTicker> tickingSet = new HashSet<>();
-    public static Map<EntityPlayer, TeleportData> portableTeleports = new HashMap<>();
+    public static Map<PlayerEntity, TeleportData> portableTeleports = new HashMap<>();
     public static int wheelStatus = 0;
     public boolean initHoliday = false;
     public boolean shouldReset = false;
@@ -63,7 +63,7 @@ public class ClientTickHandler {
         tickingSet.removeIf(iClientTicker -> !iClientTicker.needsTicks());
     }
 
-    public static boolean isJetpackActive(EntityPlayer player) {
+    public static boolean isJetpackActive(PlayerEntity player) {
         if (player != mc.player) {
             return Mekanism.playerState.isJetpackOn(player);
         }
@@ -91,14 +91,14 @@ public class ClientTickHandler {
         return false;
     }
 
-    public static boolean isGasMaskOn(EntityPlayer player) {
+    public static boolean isGasMaskOn(PlayerEntity player) {
         if (player != mc.player) {
             return Mekanism.playerState.isGasmaskOn(player);
         }
         return CommonPlayerTickHandler.isGasMaskOn(player);
     }
 
-    public static boolean isFreeRunnerOn(EntityPlayer player) {
+    public static boolean isFreeRunnerOn(PlayerEntity player) {
         if (player != mc.player) {
             return Mekanism.freeRunnerOn.contains(player.getUniqueID());
         }
@@ -112,14 +112,14 @@ public class ClientTickHandler {
         return false;
     }
 
-    public static boolean isFlamethrowerOn(EntityPlayer player) {
+    public static boolean isFlamethrowerOn(PlayerEntity player) {
         if (player != mc.player) {
             return Mekanism.playerState.isFlamethrowerOn(player);
         }
         return hasFlamethrower(player) && mc.gameSettings.keyBindUseItem.isKeyDown();
     }
 
-    public static boolean hasFlamethrower(EntityPlayer player) {
+    public static boolean hasFlamethrower(PlayerEntity player) {
         ItemStack currentItem = player.inventory.getCurrentItem();
         if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower) {
             return ((ItemFlamethrower) currentItem.getItem()).getGas(currentItem) != null;
@@ -127,7 +127,7 @@ public class ClientTickHandler {
         return false;
     }
 
-    public static void portableTeleport(EntityPlayer player, EnumHand hand, Frequency freq) {
+    public static void portableTeleport(PlayerEntity player, Hand hand, Frequency freq) {
         int delay = MekanismConfig.current().general.portableTeleporterDelay.val();
         if (delay == 0) {
             Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, hand, freq));
@@ -195,9 +195,9 @@ public class ClientTickHandler {
             Mekanism.playerState.setGasmaskState(playerUUID, isGasMaskOn(mc.player), true);
             Mekanism.playerState.setFlamethrowerState(playerUUID, hasFlamethrower(mc.player), isFlamethrowerOn(mc.player), true);
 
-            for (Iterator<Entry<EntityPlayer, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
-                Entry<EntityPlayer, TeleportData> entry = iter.next();
-                EntityPlayer player = entry.getKey();
+            for (Iterator<Entry<PlayerEntity, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
+                Entry<PlayerEntity, TeleportData> entry = iter.next();
+                PlayerEntity player = entry.getKey();
                 for (int i = 0; i < 100; i++) {
                     double x = player.posX + rand.nextDouble() - 0.5D;
                     double y = player.posY + rand.nextDouble() * 2 - 2D;
@@ -293,7 +293,7 @@ public class ClientTickHandler {
                     newVal = ConfiguratorMode.values().length + newVal;
                 }
                 configurator.setState(stack, ConfiguratorMode.values()[newVal]);
-                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(newVal)));
+                Mekanism.packetHandler.sendToServer(new ItemStackMessage(Hand.MAIN_HAND, Collections.singletonList(newVal)));
                 event.setCanceled(true);
             }
         }
@@ -301,11 +301,11 @@ public class ClientTickHandler {
 
     private static class TeleportData {
 
-        private EnumHand hand;
+        private Hand hand;
         private Frequency freq;
         private long teleportTime;
 
-        public TeleportData(EnumHand h, Frequency f, long t) {
+        public TeleportData(Hand h, Frequency f, long t) {
             hand = h;
             freq = f;
             teleportTime = t;

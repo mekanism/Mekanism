@@ -10,10 +10,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -37,7 +37,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
                   new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 0.2, pos.getZ() + 1));
 
             for (EntityLivingBase entity : entities) {
-                if (entity instanceof EntityPlayer || entity instanceof EntityRobit) {
+                if (entity instanceof PlayerEntity || entity instanceof EntityRobit) {
                     active = getEnergy() > 0;
                 }
                 if (getActive()) {
@@ -47,8 +47,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
                         double toGive = Math.min(robit.MAX_ELECTRICITY - robit.getEnergy(), canGive);
                         robit.setEnergy(robit.getEnergy() + toGive);
                         setEnergy(getEnergy() - toGive);
-                    } else if (entity instanceof EntityPlayer) {
-                        EntityPlayer player = (EntityPlayer) entity;
+                    } else if (entity instanceof PlayerEntity) {
+                        PlayerEntity player = (PlayerEntity) entity;
                         double prevEnergy = getEnergy();
                         for (ItemStack itemstack : player.inventory.armorInventory) {
                             ChargeUtils.charge(itemstack, this);
@@ -75,8 +75,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
-        return side == EnumFacing.DOWN || side == getOppositeDirection();
+    public boolean canReceiveEnergy(Direction side) {
+        return side == Direction.DOWN || side == getOppositeDirection();
     }
 
     @Override
@@ -98,8 +98,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override
@@ -109,12 +109,12 @@ public class TileEntityChargepad extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return InventoryUtils.EMPTY;
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
         }

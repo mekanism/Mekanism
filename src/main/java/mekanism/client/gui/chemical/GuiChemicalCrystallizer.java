@@ -28,7 +28,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -173,7 +173,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         for (String key : keys) {
             for (ItemStack stack : OreDictionary.getOres(key, false)) {
                 ItemStack toAdd = stack.copy();
-                if (!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock) {
+                if (!iterStacks.contains(stack) && toAdd.getItem() instanceof BlockItem) {
                     iterStacks.add(stack.copy());
                 }
             }

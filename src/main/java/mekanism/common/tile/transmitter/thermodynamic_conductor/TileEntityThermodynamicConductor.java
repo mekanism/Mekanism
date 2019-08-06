@@ -19,9 +19,9 @@ import mekanism.common.transmitters.grid.HeatNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 public abstract class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork, Void> implements IHeatTransfer {
@@ -80,7 +80,7 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
     }
 
     @Override
-    public boolean isValidAcceptor(TileEntity tile, EnumFacing side) {
+    public boolean isValidAcceptor(TileEntity tile, Direction side) {
         if (CapabilityUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
             IHeatTransfer transfer = CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
             return transfer.canConnectHeat(side.getOpposite());
@@ -94,7 +94,7 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         temperature = nbtTags.getDouble("temperature");
         if (nbtTags.hasKey("tier")) {
@@ -104,7 +104,7 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setDouble("temperature", temperature);
         nbtTags.setInteger("tier", tier.ordinal());
@@ -116,7 +116,7 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
     }
 
     @Override
-    public IHeatTransfer getCachedAcceptor(EnumFacing side) {
+    public IHeatTransfer getCachedAcceptor(Direction side) {
         TileEntity tile = getCachedTile(side);
         if (CapabilityUtils.hasCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
             return CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
@@ -154,7 +154,7 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
     }
 
     @Override
-    public double getInsulationCoefficient(EnumFacing side) {
+    public double getInsulationCoefficient(Direction side) {
         return tier.getInverseConductionInsulation();
     }
 
@@ -180,12 +180,12 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
     }
 
     @Override
-    public boolean canConnectHeat(EnumFacing side) {
+    public boolean canConnectHeat(Direction side) {
         return true;
     }
 
     @Override
-    public IHeatTransfer getAdjacent(EnumFacing side) {
+    public IHeatTransfer getAdjacent(Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             TileEntity adj = MekanismUtils.getTileEntity(world, getPos().offset(side));
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
@@ -194,12 +194,12 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }

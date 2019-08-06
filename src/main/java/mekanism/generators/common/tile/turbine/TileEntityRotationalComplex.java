@@ -5,7 +5,7 @@ import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
 
@@ -21,7 +21,7 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
 
         super.setMultiblock(id);
 
-        Coord4D coord = Coord4D.get(this).offset(EnumFacing.DOWN);
+        Coord4D coord = Coord4D.get(this).offset(Direction.DOWN);
         TileEntity tile = coord.getTileEntity(world);
         if (tile instanceof TileEntityTurbineRotor) {
             ((TileEntityTurbineRotor) tile).updateRotors();

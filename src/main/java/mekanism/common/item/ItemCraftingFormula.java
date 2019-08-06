@@ -10,14 +10,14 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -67,13 +67,13 @@ public class ItemCraftingFormula extends ItemMekanism {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             if (!world.isRemote) {
                 setInventory(stack, null);
                 setInvalid(stack, false);
-                ((EntityPlayerMP) player).sendContainerToPlayer(player.openContainer);
+                ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
             }
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
@@ -110,7 +110,7 @@ public class ItemCraftingFormula extends ItemMekanism {
         NBTTagList tagList = ItemDataUtils.getList(stack, "Items");
         NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+            CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < 9) {
                 inventory.set(slotID, new ItemStack(tagCompound));
@@ -127,7 +127,7 @@ public class ItemCraftingFormula extends ItemMekanism {
         NBTTagList tagList = new NBTTagList();
         for (int slotCount = 0; slotCount < 9; slotCount++) {
             if (!inv.get(slotCount).isEmpty()) {
-                NBTTagCompound tagCompound = new NBTTagCompound();
+                CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.setByte("Slot", (byte) slotCount);
                 inv.get(slotCount).writeToNBT(tagCompound);
                 tagList.appendTag(tagCompound);

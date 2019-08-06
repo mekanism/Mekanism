@@ -10,7 +10,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -392,7 +392,7 @@ public class ModelEnergyCube extends ModelBase {
         GlStateManager.popMatrix();
     }
 
-    public void renderSide(float size, EnumFacing side, IOState state, EnergyCubeTier tier, TextureManager renderer) {
+    public void renderSide(float size, Direction side, IOState state, EnergyCubeTier tier, TextureManager renderer) {
         if (state != IOState.OFF) { //input or output
             connectors[side.ordinal()].render(size);
             ports[side.ordinal()].render(size);

@@ -8,7 +8,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -29,7 +29,7 @@ public class TransitRequest {
         return ret;
     }
 
-    public static TransitRequest buildInventoryMap(TileEntity tile, EnumFacing side, int amount) {
+    public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int amount) {
         return buildInventoryMap(tile, side, amount, new FirstFinder());
     }
 
@@ -39,7 +39,7 @@ public class TransitRequest {
      *
      * @param side - the side from an adjacent connected inventory, *not* the inventory itself.
      */
-    public static TransitRequest buildInventoryMap(TileEntity tile, EnumFacing side, int amount, Finder finder) {
+    public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int amount, Finder finder) {
         TransitRequest ret = new TransitRequest();
         // so we can keep track of how many of each item type we have in this inventory mapping
         Map<HashedItem, Integer> itemCountMap = new HashMap<>();
@@ -153,7 +153,7 @@ public class TransitRequest {
             return StackUtils.size(orig, orig.getCount() - getSendingAmount());
         }
 
-        public InvStack getInvStack(TileEntity tile, EnumFacing side) {
+        public InvStack getInvStack(TileEntity tile, Direction side) {
             return new InvStack(tile, toSend, idMap, side);
         }
     }

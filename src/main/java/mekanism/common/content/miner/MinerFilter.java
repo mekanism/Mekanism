@@ -7,7 +7,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public abstract class MinerFilter implements IFilter {
 
@@ -15,7 +15,7 @@ public abstract class MinerFilter implements IFilter {
 
     public boolean requireStack;
 
-    public static MinerFilter readFromNBT(NBTTagCompound nbtTags) {
+    public static MinerFilter readFromNBT(CompoundNBT nbtTags) {
         MinerFilter filter = getType(nbtTags.getInteger("type"));
         filter.read(nbtTags);
         return filter;
@@ -44,15 +44,15 @@ public abstract class MinerFilter implements IFilter {
 
     public abstract boolean canFilter(ItemStack itemStack);
 
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.setBoolean("requireStack", requireStack);
         if (!replaceStack.isEmpty()) {
-            nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
     }
 
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         requireStack = nbtTags.getBoolean("requireStack");
         if (nbtTags.hasKey("replaceStack")) {
             replaceStack = new ItemStack(nbtTags.getCompoundTag("replaceStack"));

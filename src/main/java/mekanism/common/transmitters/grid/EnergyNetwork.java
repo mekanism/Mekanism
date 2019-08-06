@@ -14,7 +14,7 @@ import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -90,7 +90,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         Set<EnergyAcceptorTarget> targets = new HashSet<>();
         int totalHandlers = 0;
         for (Coord4D coord : possibleAcceptors) {
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            EnumSet<Direction> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
@@ -99,7 +99,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
                 continue;
             }
             EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-            for (EnumFacing side : sides) {
+            for (Direction side : sides) {
                 EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
                 if (acceptor != null && acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
                     target.addHandler(side, acceptor);

@@ -18,7 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -33,13 +33,13 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     private GuiTextField maxField;
     private GuiButton sizeButton;
 
-    public GuiTItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tile, int index) {
+    public GuiTItemStackFilter(PlayerEntity player, TileEntityLogisticalSorter tile, int index) {
         super(player, tile);
         origFilter = (TItemStackFilter) tileEntity.filters.get(index);
         filter = ((TItemStackFilter) tileEntity.filters.get(index)).clone();
     }
 
-    public GuiTItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tile) {
+    public GuiTItemStackFilter(PlayerEntity player, TileEntityLogisticalSorter tile) {
         super(player, tile);
         isNew = true;
         filter = new TItemStackFilter();

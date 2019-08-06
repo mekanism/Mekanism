@@ -52,7 +52,7 @@ import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -549,7 +549,7 @@ public final class RecipeHandler {
         }
 
         @Nullable
-        public INPUT createInput(NBTTagCompound nbtTags) {
+        public INPUT createInput(CompoundNBT nbtTags) {
             try {
                 INPUT input = inputClass.newInstance();
                 input.load(nbtTags);
@@ -560,7 +560,7 @@ public final class RecipeHandler {
         }
 
         @Nullable
-        public RECIPE createRecipe(INPUT input, NBTTagCompound nbtTags) {
+        public RECIPE createRecipe(INPUT input, CompoundNBT nbtTags) {
             try {
                 OUTPUT output = outputClass.newInstance();
                 output.load(nbtTags);
@@ -568,7 +568,7 @@ public final class RecipeHandler {
                     Constructor<RECIPE> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
                     return construct.newInstance(input, output);
                 } catch (Exception e) {
-                    Constructor<RECIPE> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass, NBTTagCompound.class);
+                    Constructor<RECIPE> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass, CompoundNBT.class);
                     return construct.newInstance(input, output, nbtTags);
                 }
             } catch (Exception e) {

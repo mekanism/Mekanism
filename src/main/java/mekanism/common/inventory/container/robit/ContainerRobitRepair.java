@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.robit;
 
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.util.math.BlockPos;
@@ -17,7 +17,7 @@ public class ContainerRobitRepair extends ContainerRepair {
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
+    public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
         return !robit.isDead;
     }
 }

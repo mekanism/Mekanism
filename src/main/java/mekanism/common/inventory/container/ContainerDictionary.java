@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -21,13 +21,13 @@ public class ContainerDictionary extends Container {
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
+    public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
         return true;
     }
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
         if (currentSlot != null && currentSlot.getHasStack()) {

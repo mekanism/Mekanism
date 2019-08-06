@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -28,7 +28,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final int stages = 100;
     private static final double height = 0.45;
     private static final double offset = 0.015;
-    //TODO this is basically used as an enum map (EnumFacing), but null key is possible, which EnumMap doesn't support. 6 is used for null side
+    //TODO this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support. 6 is used for null side
     private static Int2ObjectMap<FluidRenderMap<DisplayInteger[]>> cachedLiquids = new Int2ObjectArrayMap<>(7);
 
     public static void onStitch() {
@@ -79,7 +79,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             GlStateManager.translate((float) x, (float) y, (float) z);
 
             boolean gas = fluidStack == null ? fluid.isGaseous() : fluid.isGaseous(fluidStack);
-            for (EnumFacing side : EnumFacing.values()) {
+            for (Direction side : Direction.values()) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
                     renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
@@ -113,7 +113,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
     }
 
-    private DisplayInteger[] getListAndRender(EnumFacing side, FluidStack fluid) {
+    private DisplayInteger[] getListAndRender(Direction side, FluidStack fluid) {
         if (fluid == null) {
             return null;
         }
@@ -219,7 +219,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         return displays;
     }
 
-    public boolean renderFluidInOut(BufferBuilder renderer, EnumFacing side, TileEntityMechanicalPipe pipe) {
+    public boolean renderFluidInOut(BufferBuilder renderer, Direction side, TileEntityMechanicalPipe pipe) {
         if (pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null) {
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();

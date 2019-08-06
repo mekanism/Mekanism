@@ -2,10 +2,10 @@ package mekanism.api;
 
 import javax.annotation.Nonnull;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -68,7 +68,7 @@ public class Pos3D extends Vec3d {
      *
      * @return the Pos3D from the tag compound
      */
-    public static Pos3D read(NBTTagCompound tag) {
+    public static Pos3D read(CompoundNBT tag) {
         return new Pos3D(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z"));
     }
 
@@ -110,13 +110,13 @@ public class Pos3D extends Vec3d {
     }
 
     /**
-     * Writes this Pos3D's data to an NBTTagCompound.
+     * Writes this Pos3D's data to an CompoundNBT.
      *
      * @param nbtTags - tag compound to write to
      *
      * @return the tag compound with this Pos3D's data
      */
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.setDouble("x", x);
         nbtTags.setDouble("y", y);
         nbtTags.setDouble("z", z);
@@ -177,16 +177,16 @@ public class Pos3D extends Vec3d {
     }
 
     /**
-     * Performs the same operation as translate(x, y, z), but by a set amount in a EnumFacing
+     * Performs the same operation as translate(x, y, z), but by a set amount in a Direction
      */
-    public Pos3D translate(EnumFacing direction, double amount) {
+    public Pos3D translate(Direction direction, double amount) {
         return translate(direction.getDirectionVec().getX() * amount, direction.getDirectionVec().getY() * amount, direction.getDirectionVec().getZ() * amount);
     }
 
     /**
-     * Performs the same operation as translate(x, y, z), but by a set amount in a EnumFacing
+     * Performs the same operation as translate(x, y, z), but by a set amount in a Direction
      */
-    public Pos3D translateExcludingSide(EnumFacing direction, double amount) {
+    public Pos3D translateExcludingSide(Direction direction, double amount) {
         double xPos = x, yPos = y, zPos = z;
         if (direction.getAxis() != Axis.X) {
             xPos += amount;

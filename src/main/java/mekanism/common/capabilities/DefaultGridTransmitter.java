@@ -6,7 +6,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -79,12 +79,12 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, B
     }
 
     @Override
-    public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side) {
+    public Coord4D getAdjacentConnectableTransmitterCoord(Direction side) {
         return null;
     }
 
     @Override
-    public A getAcceptor(EnumFacing side) {
+    public A getAcceptor(Direction side) {
         return null;
     }
 

@@ -3,7 +3,7 @@ package mekanism.common;
 import com.mojang.authlib.GameProfile;
 import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -32,7 +32,7 @@ public class MekFakePlayer extends FakePlayer {
         super(world, name);
     }
 
-    public static WeakReference<EntityPlayer> getInstance(WorldServer world) {
+    public static WeakReference<PlayerEntity> getInstance(WorldServer world) {
         if (INSTANCE == null) {
             INSTANCE = new MekFakePlayer(world, Mekanism.gameProfile);
         }
@@ -40,7 +40,7 @@ public class MekFakePlayer extends FakePlayer {
         return new WeakReference<>(INSTANCE);
     }
 
-    public static WeakReference<EntityPlayer> getInstance(WorldServer world, double x, double y, double z) {
+    public static WeakReference<PlayerEntity> getInstance(WorldServer world, double x, double y, double z) {
         if (INSTANCE == null) {
             INSTANCE = new MekFakePlayer(world, Mekanism.gameProfile);
         }

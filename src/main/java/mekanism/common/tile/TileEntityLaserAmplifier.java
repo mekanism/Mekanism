@@ -18,10 +18,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -49,7 +49,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     }
 
     @Override
-    public void receiveLaserEnergy(double energy, EnumFacing side) {
+    public void receiveLaserEnergy(double energy, Direction side) {
         setEnergy(getEnergy() + energy);
     }
 
@@ -70,7 +70,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                 }
 
                 if (hitCoord != null) {
-                    IBlockState blockHit = hitCoord.getBlockState(world);
+                    BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
@@ -109,7 +109,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                 }
 
                 if (hitCoord != null) {
-                    IBlockState blockHit = hitCoord.getBlockState(world);
+                    BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
                     if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))) {
@@ -143,7 +143,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     }
 
     @Override
-    public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double pullEnergy(Direction side, double amount, boolean simulate) {
         double toGive = Math.min(getEnergy(), amount);
         if (toGive < 0.0001) {
             return 0;
@@ -228,7 +228,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         on = nbtTags.getBoolean("on");
         minThreshold = nbtTags.getDouble("minThreshold");
@@ -241,7 +241,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setBoolean("on", on);
         nbtTags.setDouble("minThreshold", minThreshold);
@@ -259,7 +259,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     }
 
     @Override
-    public boolean canOutputEnergy(EnumFacing side) {
+    public boolean canOutputEnergy(Direction side) {
         return true;
     }
 
@@ -286,13 +286,13 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
                || capability == Capabilities.LASER_RECEPTOR_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
             return Capabilities.ENERGY_STORAGE_CAPABILITY.cast(this);
         }
@@ -307,12 +307,12 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return InventoryUtils.EMPTY;
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
         }

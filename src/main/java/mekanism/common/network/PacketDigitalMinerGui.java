@@ -20,8 +20,8 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -36,12 +36,12 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 
     @Override
     public IMessage onMessage(DigitalMinerGuiMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
                 if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner) {
-                    DigitalMinerGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player, message.coord4D, message.index);
+                    DigitalMinerGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (ServerPlayerEntity) player, message.coord4D, message.index);
                 }
             } else if (message.coord4D.getTileEntity(player.world) instanceof TileEntityDigitalMiner) {
                 try {
@@ -97,7 +97,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
             }
         }
 
-        public static void openServerGui(MinerGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i) {
+        public static void openServerGui(MinerGuiPacket t, int guiType, World world, ServerPlayerEntity playerMP, Coord4D obj, int i) {
             Container container;
             playerMP.closeContainer();
             switch (guiType) {
@@ -132,14 +132,14 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
             playerMP.openContainer.addListener(playerMP);
             if (guiType == 0) {
                 TileEntityDigitalMiner tile = (TileEntityDigitalMiner) obj.getTileEntity(world);
-                for (EntityPlayer player : tile.playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new TileNetworkList())), (EntityPlayerMP) player);
+                for (PlayerEntity player : tile.playersUsing) {
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) player);
                 }
             }
         }
 
         @SideOnly(Side.CLIENT)
-        public static GuiScreen getGui(MinerGuiPacket packetType, int type, EntityPlayer player, World world, BlockPos pos, int index) {
+        public static GuiScreen getGui(MinerGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
             if (type == 0) {
                 return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner) world.getTileEntity(pos));
             } else if (type == 4) {

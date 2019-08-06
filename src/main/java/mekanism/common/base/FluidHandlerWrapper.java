@@ -1,7 +1,7 @@
 package mekanism.common.base;
 
 import java.util.Arrays;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -12,9 +12,9 @@ public class FluidHandlerWrapper implements IFluidHandler {
 
     public IFluidHandlerWrapper wrapper;
 
-    public EnumFacing side;
+    public Direction side;
 
-    public FluidHandlerWrapper(IFluidHandlerWrapper w, EnumFacing s) {
+    public FluidHandlerWrapper(IFluidHandlerWrapper w, Direction s) {
         wrapper = w;
         side = s;
     }

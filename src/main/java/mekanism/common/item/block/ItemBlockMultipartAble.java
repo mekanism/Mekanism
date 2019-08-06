@@ -11,12 +11,12 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -35,8 +35,8 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
      */
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, @Nonnull BlockPos pos, @Nonnull EnumHand hand, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ) {
-        IBlockState iblockstate = worldIn.getBlockState(pos);
+    public EnumActionResult onItemUse(PlayerEntity player, World worldIn, @Nonnull BlockPos pos, @Nonnull Hand hand, @Nonnull Direction facing, float hitX, float hitY, float hitZ) {
+        BlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
         ItemStack itemstack = player.getHeldItem(hand);
         if (itemstack.isEmpty()) {
@@ -53,7 +53,7 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
 
         if (player.canPlayerEdit(pos, facing, itemstack) && mayPlace(itemstack, worldIn, pos, iblockstate, hand, facing)) {
             int i = this.getMetadata(itemstack.getMetadata());
-            IBlockState iblockstate1 = this.block.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, i, player, hand);
+            BlockState iblockstate1 = this.block.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, i, player, hand);
             boolean flag;
             if (Mekanism.hooks.MCMPLoaded) {
                 flag = MultipartMekanism.placeMultipartBlock(this.block, itemstack, player, worldIn, pos, facing, hitX, hitY, hitZ, iblockstate1);
@@ -71,21 +71,21 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
         return EnumActionResult.FAIL;
     }
 
-    private boolean mayPlace(ItemStack itemstack, World worldIn, BlockPos pos, IBlockState state, EnumHand hand, EnumFacing facing) {
+    private boolean mayPlace(ItemStack itemstack, World worldIn, BlockPos pos, BlockState state, Hand hand, Direction facing) {
         if (!Mekanism.hooks.MCMPLoaded) {
             return worldIn.mayPlace(this.block, pos, false, facing, null);
         }
         return worldIn.mayPlace(this.block, pos, false, facing, null) || hasFreeMultiPartSpot(itemstack, worldIn, pos, state, facing);
     }
 
-    private boolean hasFreeMultiPartSpot(ItemStack itemstack, World worldIn, BlockPos pos, IBlockState state, EnumFacing facing) {
+    private boolean hasFreeMultiPartSpot(ItemStack itemstack, World worldIn, BlockPos pos, BlockState state, Direction facing) {
         Optional<IMultipartContainer> container;
         if (!Mekanism.hooks.MCMPLoaded || !(container = MultipartHelper.getContainer(worldIn, pos)).isPresent()) {
             return false;
         }
         IMultipart multipart = getMultiPart();
         IPartSlot slot = multipart.getSlotForPlacement(worldIn, pos, state, facing, 0, 0, 0, null);
-        return container.get().canAddPart(slot, this.block.getStateForPlacement(worldIn, pos, facing, 0, 0, 0, itemstack.getMetadata(), null, EnumHand.MAIN_HAND));
+        return container.get().canAddPart(slot, this.block.getStateForPlacement(worldIn, pos, facing, 0, 0, 0, itemstack.getMetadata(), null, Hand.MAIN_HAND));
     }
 
     //FQ needed because it uses java optional interface elsewhere
@@ -93,13 +93,13 @@ public abstract class ItemBlockMultipartAble extends ItemBlockMekanism {
     protected abstract IMultipart getMultiPart();
 
     @Override
-    public boolean canPlaceBlockOnSide(World worldIn, @Nonnull BlockPos pos, @Nonnull EnumFacing side, @Nonnull EntityPlayer player, ItemStack stack) {
+    public boolean canPlaceBlockOnSide(World worldIn, @Nonnull BlockPos pos, @Nonnull Direction side, @Nonnull PlayerEntity player, ItemStack stack) {
         return super.canPlaceBlockOnSide(worldIn, pos, side, player, stack) || (Mekanism.hooks.MCMPLoaded && MultipartHelper.getContainer(worldIn, pos).isPresent());
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, @Nonnull IBlockState newState) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
+          float hitZ, @Nonnull BlockState newState) {
         if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
             return false;
         }

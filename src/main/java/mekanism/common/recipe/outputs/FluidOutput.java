@@ -1,6 +1,6 @@
 package mekanism.common.recipe.outputs;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -16,7 +16,7 @@ public class FluidOutput extends MachineOutput<FluidOutput> {
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         output = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("output"));
     }
 

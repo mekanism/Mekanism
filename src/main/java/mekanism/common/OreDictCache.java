@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.util.ItemInfo;
 import mekanism.common.util.ItemRegistryUtils;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -66,7 +66,7 @@ public final class OreDictCache {
         for (String key : keys) {
             for (ItemStack stack : OreDictionary.getOres(key, false)) {
                 ItemStack toAdd = stack.copy();
-                if (!stacks.contains(stack) && (!forceBlock || toAdd.getItem() instanceof ItemBlock)) {
+                if (!stacks.contains(stack) && (!forceBlock || toAdd.getItem() instanceof BlockItem)) {
                     stacks.add(stack.copy());
                 }
             }
@@ -84,7 +84,7 @@ public final class OreDictCache {
             for (ItemStack stack : OreDictionary.getOres(key, false)) {
                 ItemStack toAdd = stack.copy();
                 String s = ItemRegistryUtils.getMod(toAdd);
-                if (!stacks.contains(stack) && toAdd.getItem() instanceof ItemBlock) {
+                if (!stacks.contains(stack) && toAdd.getItem() instanceof BlockItem) {
                     if (modName.equals(s) || modName.equals("*")) {
                         stacks.add(stack.copy());
                     } else if (modName.endsWith("*") && !modName.startsWith("*")) {

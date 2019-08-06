@@ -47,10 +47,10 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -200,7 +200,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("frequency")) {
             frequency = new InventoryFrequency(nbtTags.getCompoundTag("frequency"));
@@ -211,7 +211,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         //TODO: Given we only have one slot I think we can manually clear or something
         //inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+            CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < getInventory().size()) {
                 getInventory().set(slotID, new ItemStack(tagCompound));
@@ -222,10 +222,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         if (frequency != null) {
-            NBTTagCompound frequencyTag = new NBTTagCompound();
+            CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
             nbtTags.setTag("frequency", frequencyTag);
         }
@@ -235,7 +235,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         for (int slotCount = 0; slotCount < getInventory().size(); slotCount++) {
             ItemStack stackInSlot = getInventory().get(slotCount);
             if (!stackInSlot.isEmpty()) {
-                NBTTagCompound tagCompound = new NBTTagCompound();
+                CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.setByte("Slot", (byte) slotCount);
                 stackInSlot.writeToNBT(tagCompound);
                 tagList.appendTag(tagCompound);
@@ -320,7 +320,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canOutputEnergy(EnumFacing side) {
+    public boolean canOutputEnergy(Direction side) {
         if (!hasFrequency()) {
             return false;
         }
@@ -328,7 +328,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         if (!hasFrequency()) {
             return false;
         }
@@ -358,18 +358,18 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
         return frequency.storedFluid.fill(resource, doFill);
     }
 
     @Override
     @Nullable
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
         return frequency.storedFluid.drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState == IOState.INPUT) {
             return FluidContainerUtils.canFill(frequency.storedFluid.getFluid(), fluid);
         }
@@ -377,7 +377,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
+    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState == IOState.OUTPUT) {
             return FluidContainerUtils.canDrain(frequency.storedFluid.getFluid(), fluid);
         }
@@ -385,7 +385,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
+    public FluidTankInfo[] getTankInfo(Direction from) {
         if (hasFrequency()) {
             if (configComponent.getOutput(TransmissionType.FLUID, from, getDirection()).ioState != IOState.OFF) {
                 return new FluidTankInfo[]{frequency.storedFluid.getInfo()};
@@ -400,17 +400,17 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         return !hasFrequency() ? 0 : frequency.storedGas.receive(stack, doTransfer);
     }
 
     @Override
-    public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         return !hasFrequency() ? null : frequency.storedGas.draw(amount, doTransfer);
     }
 
     @Override
-    public boolean canReceiveGas(EnumFacing side, Gas type) {
+    public boolean canReceiveGas(Direction side, Gas type) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.INPUT) {
             return frequency.storedGas.getGasType() == null || type == frequency.storedGas.getGasType();
         }
@@ -418,7 +418,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canDrawGas(EnumFacing side, Gas type) {
+    public boolean canDrawGas(Direction side, Gas type) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, getDirection()).ioState == IOState.OUTPUT) {
             return frequency.storedGas.getGasType() == null || type == frequency.storedGas.getGasType();
         }
@@ -452,7 +452,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public double getInsulationCoefficient(EnumFacing side) {
+    public double getInsulationCoefficient(Direction side) {
         return 1000;
     }
 
@@ -476,12 +476,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canConnectHeat(EnumFacing side) {
+    public boolean canConnectHeat(Direction side) {
         return hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, getDirection()).ioState != IOState.OFF;
     }
 
     @Override
-    public IHeatTransfer getAdjacent(EnumFacing side) {
+    public IHeatTransfer getAdjacent(Direction side) {
         TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
         if (hasFrequency() && configComponent.getOutput(TransmissionType.HEAT, side, getDirection()).ioState == IOState.INPUT) {
             if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
@@ -492,13 +492,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.INPUT;
     }
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState != IOState.OFF) {
             return new int[]{0};
         }
@@ -506,7 +506,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).ioState == IOState.OUTPUT;
     }
 
@@ -524,7 +524,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public EnumFacing getOrientation() {
+    public Direction getOrientation() {
         return getDirection();
     }
 
@@ -534,7 +534,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -543,7 +543,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         }
@@ -557,7 +557,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (configComponent.isCapabilityDisabled(capability, side, getDirection())) {
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||

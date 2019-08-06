@@ -8,7 +8,7 @@ import mekanism.common.base.SplitInfo.IntegerSplitInfo;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.target.Target;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -84,10 +84,10 @@ public class EmitUtils {
      * @param sides  - sides to search
      * @param action - action to complete
      */
-    public static void forEachSide(World world, BlockPos center, Iterable<EnumFacing> sides, BiConsumer<TileEntity, EnumFacing> action) {
+    public static void forEachSide(World world, BlockPos center, Iterable<Direction> sides, BiConsumer<TileEntity, Direction> action) {
         if (sides != null) {
             //Loop provided sides
-            for (EnumFacing side : sides) {
+            for (Direction side : sides) {
                 //Validate we have a block loaded in world, prevents ghost chunk loading
                 final BlockPos pos = center.offset(side);
                 if (world.isBlockLoaded(pos)) {

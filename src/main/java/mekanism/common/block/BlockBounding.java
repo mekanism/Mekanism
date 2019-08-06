@@ -13,13 +13,13 @@ import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +44,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     private static void removeMainBlock(World world, BlockPos thisPos) {
         BlockPos mainPos = getMainBlockPos(world, thisPos);
         if (mainPos != null) {
-            IBlockState state = world.getBlockState(mainPos);
+            BlockState state = world.getBlockState(mainPos);
             if (!state.getBlock().isAir(state, world, mainPos)) {
                 //Set the main block to air, which will invalidate the rest of the bounding blocks
                 world.setBlockToAir(mainPos);
@@ -74,27 +74,27 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nonnull
     @Override
     @Deprecated
-    public IBlockState getStateFromMeta(int meta) {
+    public BlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(BlockStateBounding.advancedProperty, meta > 0);
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
+    public int getMetaFromState(BlockState state) {
         return state.getValue(BlockStateBounding.advancedProperty) ? 1 : 0;
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return false;
         }
-        IBlockState state1 = world.getBlockState(mainPos);
+        BlockState state1 = world.getBlockState(mainPos);
         return state1.getBlock().onBlockActivated(world, mainPos, state1, player, hand, side, hitX, hitY, hitZ);
     }
 
     @Override
-    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
+    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
         //Remove the main block if a bounding block gets broken by being directly replaced
         removeMainBlock(world, pos);
         super.breakBlock(world, pos, state);
@@ -102,28 +102,28 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     /**
-     * {@inheritDoc} Delegate to main {@link Block#getPickBlock(IBlockState, RayTraceResult, World, BlockPos, EntityPlayer)}.
+     * {@inheritDoc} Delegate to main {@link Block#getPickBlock(BlockState, RayTraceResult, World, BlockPos, PlayerEntity)}.
      */
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return ItemStack.EMPTY;
         }
-        IBlockState state1 = world.getBlockState(mainPos);
+        BlockState state1 = world.getBlockState(mainPos);
         return state1.getBlock().getPickBlock(state1, target, world, mainPos, player);
     }
 
     /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)}. Used together with {@link
-     * Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)}.
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, BlockState, int)}. Used together with {@link
+     * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
-     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
+     * @see BlockFlowerPot#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)
      */
     @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest) {
         if (willHarvest) {
             return true;
         }
@@ -132,33 +132,33 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     /**
-     * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)}.
+     * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, BlockState, int)}.
      */
     @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
+    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull BlockState state, int fortune) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return;
         }
-        IBlockState state1 = world.getBlockState(mainPos);
+        BlockState state1 = world.getBlockState(mainPos);
         state1.getBlock().getDrops(drops, world, mainPos, state1, fortune);
     }
 
     /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)}.
+     * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)}.
      *
      * @author Forge
-     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
+     * @see BlockFlowerPot#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
      */
     @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos, @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
+    public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.setBlockToAir(pos);
     }
 
     /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not called, because only {@link
-     * Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
+     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(BlockState)} is not called, because only {@link
+     * Block#getDrops(NonNullList, IBlockAccess, BlockPos, BlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
      * silk touched by default anyway.
      *
      * @return false
@@ -171,52 +171,52 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
         if (tileEntity != null) {
             tileEntity.onNeighborChange(state.getBlock());
         }
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
-            IBlockState state1 = world.getBlockState(mainPos);
+            BlockState state1 = world.getBlockState(mainPos);
             state1.getBlock().neighborChanged(state1, world, mainPos, neighborBlock, neighborPos);
         }
     }
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull World world, @Nonnull BlockPos pos) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return super.getPlayerRelativeBlockHardness(state, player, world, pos);
         }
-        IBlockState state1 = world.getBlockState(mainPos);
+        BlockState state1 = world.getBlockState(mainPos);
         return state1.getBlock().getPlayerRelativeBlockHardness(state1, player, world, mainPos);
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public EnumBlockRenderType getRenderType(IBlockState state) {
+    public EnumBlockRenderType getRenderType(BlockState state) {
         return EnumBlockRenderType.INVISIBLE;
     }
 
     @Override
     @Deprecated
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isOpaqueCube(BlockState state) {
         return false;
     }
 
     @Override
     @Deprecated
-    public boolean isFullCube(IBlockState state) {
+    public boolean isFullCube(BlockState state) {
         return false;
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing face) {
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction face) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
             TileEntity tile = world.getTileEntity(mainPos);
@@ -228,12 +228,12 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state) {
+    public boolean hasTileEntity(BlockState state) {
         return true;
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
         if (state.getValue(BlockStateBounding.advancedProperty)) {
             return new TileEntityAdvancedBoundingBlock();
         }

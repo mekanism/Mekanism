@@ -13,7 +13,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -165,7 +165,7 @@ public class GuiSeismicReader extends GuiScreen {
 
     public void calculate() {
         for (BlockPos p = new BlockPos(pos.x, 0, pos.z); p.getY() < pos.y; p = p.up()) {
-            IBlockState state = worldObj.getBlockState(p);
+            BlockState state = worldObj.getBlockState(p);
             Block block = state.getBlock();
             int metadata = block.getMetaFromState(state);
             blockList.add(Pair.of(metadata, block));

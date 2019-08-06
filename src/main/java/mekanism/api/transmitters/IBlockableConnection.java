@@ -1,11 +1,11 @@
 package mekanism.api.transmitters;
 
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public interface IBlockableConnection {
 
-    boolean canConnectMutual(EnumFacing side);
+    boolean canConnectMutual(Direction side);
 
-    boolean canConnect(EnumFacing side);
+    boolean canConnect(Direction side);
 }

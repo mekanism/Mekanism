@@ -19,7 +19,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.StackUtils;
 import mekanism.common.world.DummyWorld;
 import net.minecraft.block.BlockPlanks;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
@@ -444,7 +444,7 @@ public final class OreDictManager {
     private static void addLogRecipes() {
         Container tempContainer = new Container() {
             @Override
-            public boolean canInteractWith(@Nonnull EntityPlayer player) {
+            public boolean canInteractWith(@Nonnull PlayerEntity player) {
                 return false;
             }
         };

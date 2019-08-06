@@ -9,9 +9,9 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
 
@@ -23,14 +23,14 @@ public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
 
     @Override
     public boolean canFilter(ItemStack itemStack) {
-        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock)) {
+        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof BlockItem)) {
             return false;
         }
         return new MaterialFinder(getMaterial()).modifies(itemStack);
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.setInteger("type", 2);
         materialItem.writeToNBT(nbtTags);
@@ -38,7 +38,7 @@ public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
     }
 
     @Override
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         materialItem = new ItemStack(nbtTags);
     }

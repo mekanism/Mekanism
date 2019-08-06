@@ -4,16 +4,16 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
 public class StackSearcher {
 
     private int slotCount = -1;
     private TileEntity tileEntity;
-    private EnumFacing side;
+    private Direction side;
 
-    public StackSearcher(TileEntity tile, EnumFacing direction) {
+    public StackSearcher(TileEntity tile, Direction direction) {
         tileEntity = tile;
         side = direction;
         if (InventoryUtils.isItemHandler(tile, direction.getOpposite())) {

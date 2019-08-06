@@ -12,7 +12,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,14 +20,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEntityDigitalMiner> {
 
-    public GuiMOreDictFilter(EntityPlayer player, TileEntityDigitalMiner tile, int index) {
+    public GuiMOreDictFilter(PlayerEntity player, TileEntityDigitalMiner tile, int index) {
         super(player, tile);
         origFilter = (MOreDictFilter) tileEntity.filters.get(index);
         filter = ((MOreDictFilter) tileEntity.filters.get(index)).clone();
         updateStackList(filter.getOreDictName());
     }
 
-    public GuiMOreDictFilter(EntityPlayer player, TileEntityDigitalMiner tile) {
+    public GuiMOreDictFilter(PlayerEntity player, TileEntityDigitalMiner tile) {
         super(player, tile);
         isNew = true;
         filter = new MOreDictFilter();

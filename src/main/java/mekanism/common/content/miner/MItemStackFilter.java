@@ -7,7 +7,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
 
@@ -33,7 +33,7 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.setInteger("type", 0);
         nbtTags.setBoolean("fuzzy", fuzzy);
@@ -42,7 +42,7 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
     }
 
     @Override
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         fuzzy = nbtTags.getBoolean("fuzzy");
         itemType = new ItemStack(nbtTags);

@@ -13,7 +13,7 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -31,7 +31,7 @@ public final class InventoryUtils {
         return ret;
     }
 
-    public static TransitResponse putStackInInventory(TileEntity tile, TransitRequest request, EnumFacing side, boolean force) {
+    public static TransitResponse putStackInInventory(TileEntity tile, TransitRequest request, Direction side, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(request.getSingleStack());
         }
@@ -76,7 +76,7 @@ public final class InventoryUtils {
         return ItemHandlerHelper.canItemStacksStack(inSlot, toInsert);
     }
 
-    public static InvStack takeDefinedItem(TileEntity tile, EnumFacing side, ItemStack type, int min, int max) {
+    public static InvStack takeDefinedItem(TileEntity tile, Direction side, ItemStack type, int min, int max) {
         InvStack ret = new InvStack(tile, side.getOpposite());
         if (!isItemHandler(tile, side.getOpposite())) {
             return null;
@@ -105,14 +105,14 @@ public final class InventoryUtils {
         return null;
     }
 
-    public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, EnumFacing side, boolean force) {
+    public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
         if (force && tileEntity instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tileEntity).canSendHome(itemStack);
         }
         if (!force && tileEntity instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
             if (config.getEjector().hasStrictInput()) {
-                EnumFacing tileSide = config.getOrientation();
+                Direction tileSide = config.getOrientation();
                 EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
                 if (configColor != null && configColor != color) {
                     return false;
@@ -137,7 +137,7 @@ public final class InventoryUtils {
         return false;
     }
 
-    public static boolean assertItemHandler(String desc, TileEntity tileEntity, EnumFacing side) {
+    public static boolean assertItemHandler(String desc, TileEntity tileEntity, Direction side) {
         if (!isItemHandler(tileEntity, side)) {
             Mekanism.logger.warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!", new Exception());
             if (tileEntity == null) {
@@ -150,11 +150,11 @@ public final class InventoryUtils {
         return true;
     }
 
-    public static boolean isItemHandler(TileEntity tile, EnumFacing side) {
+    public static boolean isItemHandler(TileEntity tile, Direction side) {
         return CapabilityUtils.hasCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
     }
 
-    public static IItemHandler getItemHandler(TileEntity tile, EnumFacing side) {
+    public static IItemHandler getItemHandler(TileEntity tile, Direction side) {
         return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
     }
 

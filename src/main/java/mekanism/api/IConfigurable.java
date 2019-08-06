@@ -1,8 +1,8 @@
 package mekanism.api;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 /**
  * Implement this in your TileEntity class if your block can be modified by a Configurator.
@@ -19,7 +19,7 @@ public interface IConfigurable {
      *
      * @return action that was performed
      */
-    EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side);
+    EnumActionResult onSneakRightClick(PlayerEntity player, Direction side);
 
     /**
      * Called when a player right clicks this block with a Configurator.
@@ -29,5 +29,5 @@ public interface IConfigurable {
      *
      * @return action that was performed
      */
-    EnumActionResult onRightClick(EntityPlayer player, EnumFacing side);
+    EnumActionResult onRightClick(PlayerEntity player, Direction side);
 }

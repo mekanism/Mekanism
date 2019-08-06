@@ -2,11 +2,11 @@ package mekanism.common.capabilities;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import java.util.Map;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class CapabilityWrapperManager<IMPL, WRAPPER> {
 
-    private Map<EnumFacing, WRAPPER> wrappers = new Reference2ObjectArrayMap<>(EnumFacing.values().length + 1);
+    private Map<Direction, WRAPPER> wrappers = new Reference2ObjectArrayMap<>(Direction.values().length + 1);
     private Class<IMPL> typeClass;
     private Class<WRAPPER> wrapperClass;
 
@@ -15,10 +15,10 @@ public class CapabilityWrapperManager<IMPL, WRAPPER> {
         wrapperClass = wrapper;
     }
 
-    public WRAPPER getWrapper(IMPL impl, EnumFacing facing) {
+    public WRAPPER getWrapper(IMPL impl, Direction facing) {
         try {
             if (wrappers.get(facing) == null) {
-                WRAPPER wrapper = wrapperClass.getConstructor(typeClass, EnumFacing.class).newInstance(impl, facing);
+                WRAPPER wrapper = wrapperClass.getConstructor(typeClass, Direction.class).newInstance(impl, facing);
                 wrappers.put(facing, wrapper);
             }
         } catch (ReflectiveOperationException e) {

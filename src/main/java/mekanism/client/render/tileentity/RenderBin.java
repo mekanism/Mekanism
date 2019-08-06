@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -26,7 +26,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
         }
     }
 
-    public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z) {
+    public void render(Direction facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z) {
         String amount = "";
         if (!itemType.isEmpty()) {
             amount = Integer.toString(clientAmount);
@@ -67,7 +67,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
     }
 
     @SuppressWarnings("incomplete-switch")
-    private void renderText(String text, EnumFacing side, float maxScale, double x, double y, double z) {
+    private void renderText(String text, Direction side, float maxScale, double x, double y, double z) {
         GlStateManager.pushMatrix();
         GlStateManager.doPolygonOffset(-10, -10);
         GlStateManager.enablePolygonOffset();

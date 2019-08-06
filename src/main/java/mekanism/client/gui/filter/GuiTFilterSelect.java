@@ -9,7 +9,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter> {
 
-    public GuiTFilterSelect(EntityPlayer player, TileEntityLogisticalSorter tile) {
+    public GuiTFilterSelect(PlayerEntity player, TileEntityLogisticalSorter tile) {
         super(player, tile);
     }
 

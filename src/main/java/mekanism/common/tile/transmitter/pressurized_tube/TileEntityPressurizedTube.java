@@ -21,9 +21,9 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
@@ -39,22 +39,22 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     //Read only handler for support with TOP and getting network data instead of this tube's data
     private IGasHandler nullHandler = new IGasHandler() {
         @Override
-        public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+        public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
             return 0;
         }
 
         @Override
-        public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+        public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
             return null;
         }
 
         @Override
-        public boolean canReceiveGas(EnumFacing side, Gas type) {
+        public boolean canReceiveGas(Direction side, Gas type) {
             return false;
         }
 
         @Override
-        public boolean canDrawGas(EnumFacing side, Gas type) {
+        public boolean canDrawGas(Direction side, Gas type) {
             return false;
         }
 
@@ -86,7 +86,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
         if (!getWorld().isRemote) {
             updateShare();
             IGasHandler[] connectedAcceptors = GasUtils.getConnectedAcceptors(getPos(), getWorld());
-            for (EnumFacing side : getConnections(ConnectionType.PULL)) {
+            for (Direction side : getConnections(ConnectionType.PULL)) {
                 IGasHandler container = connectedAcceptors[side.ordinal()];
                 if (container != null) {
                     GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), false);
@@ -148,7 +148,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("tier")) {
             tier = TubeTier.values()[nbtTags.getInteger("tier")];
@@ -163,10 +163,10 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         if (lastWrite != null && lastWrite.amount > 0) {
-            nbtTags.setTag("cacheGas", lastWrite.write(new NBTTagCompound()));
+            nbtTags.setTag("cacheGas", lastWrite.write(new CompoundNBT()));
         } else {
             nbtTags.removeTag("cacheGas");
         }
@@ -185,7 +185,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     }
 
     @Override
-    public boolean isValidAcceptor(TileEntity tile, EnumFacing side) {
+    public boolean isValidAcceptor(TileEntity tile, Direction side) {
         return GasUtils.isValidAcceptorOnSide(tile, side);
     }
 
@@ -241,7 +241,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     }
 
     @Override
-    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL) {
             return takeGas(stack, doTransfer);
         }
@@ -249,17 +249,17 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     }
 
     @Override
-    public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         return null;
     }
 
     @Override
-    public boolean canReceiveGas(EnumFacing side, Gas type) {
+    public boolean canReceiveGas(Direction side, Gas type) {
         return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL;
     }
 
     @Override
-    public boolean canDrawGas(EnumFacing side, Gas type) {
+    public boolean canDrawGas(Direction side, Gas type) {
         return false;
     }
 
@@ -283,7 +283,7 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     }
 
     @Override
-    public IGasHandler getCachedAcceptor(EnumFacing side) {
+    public IGasHandler getCachedAcceptor(Direction side) {
         TileEntity tile = getCachedTile(side);
         if (CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite())) {
             return CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
@@ -316,12 +316,12 @@ public abstract class TileEntityPressurizedTube extends TileEntityTransmitter<IG
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             if (side == null) {
                 return Capabilities.GAS_HANDLER_CAPABILITY.cast(nullHandler);

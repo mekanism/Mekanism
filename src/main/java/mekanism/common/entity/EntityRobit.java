@@ -29,14 +29,14 @@ import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -45,7 +45,7 @@ import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -80,7 +80,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         getNavigator().setCanSwim(false);
         tasks.addTask(1, new RobitAIPickup(this, 1.0F));
         tasks.addTask(2, new RobitAIFollow(this, 1.0F, 4.0F, 2.0F));
-        tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        tasks.addTask(3, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
         tasks.addTask(3, new EntityAILookIdle(this));
         tasks.addTask(4, new EntityAISwimming(this));
         setAlwaysRenderNameTag(true);
@@ -300,7 +300,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
     @Nonnull
     @Override
-    public EnumActionResult applyPlayerInteraction(EntityPlayer entityplayer, Vec3d vec, EnumHand hand) {
+    public EnumActionResult applyPlayerInteraction(PlayerEntity entityplayer, Vec3d vec, Hand hand) {
         ItemStack stack = entityplayer.getHeldItem(hand);
         if (entityplayer.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
@@ -334,7 +334,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbtTags) {
+    public void writeEntityToNBT(CompoundNBT nbtTags) {
         super.writeEntityToNBT(nbtTags);
         nbtTags.setDouble("electricityStored", getEnergy());
         nbtTags.setString("name", getName());
@@ -349,7 +349,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         NBTTagList tagList = new NBTTagList();
         for (int slotCount = 0; slotCount < inventory.size(); slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
-                NBTTagCompound tagCompound = new NBTTagCompound();
+                CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.setByte("Slot", (byte) slotCount);
                 inventory.get(slotCount).writeToNBT(tagCompound);
                 tagList.appendTag(tagCompound);
@@ -359,7 +359,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbtTags) {
+    public void readEntityFromNBT(CompoundNBT nbtTags) {
         super.readEntityFromNBT(nbtTags);
         setEnergy(nbtTags.getDouble("electricityStored"));
         setCustomNameTag(nbtTags.getString("name"));
@@ -372,7 +372,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         NBTTagList tagList = nbtTags.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+            CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < inventory.size()) {
@@ -416,7 +416,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         dataManager.set(ELECTRICITY, (float) Math.max(Math.min(energy, MAX_ELECTRICITY), 0));
     }
 
-    public EntityPlayer getOwner() {
+    public PlayerEntity getOwner() {
         return world.getPlayerEntityByUUID(getOwnerUUID());
     }
 
@@ -490,16 +490,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     @Override
-    public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer) {
+    public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
         return true;
     }
 
     @Override
-    public void openInventory(@Nonnull EntityPlayer player) {
+    public void openInventory(@Nonnull PlayerEntity player) {
     }
 
     @Override
-    public void closeInventory(@Nonnull EntityPlayer player) {
+    public void closeInventory(@Nonnull PlayerEntity player) {
     }
 
     @Override
@@ -532,7 +532,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         }
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
         for (int slots = 0; slots < nbtTags.tagCount(); slots++) {
-            NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
+            CompoundNBT tagCompound = nbtTags.getCompoundTagAt(slots);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < inventory.size()) {
                 inventory.set(slotID, new ItemStack(tagCompound));
@@ -545,7 +545,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         NBTTagList tagList = new NBTTagList();
         for (int slots = 0; slots < inventory.size(); slots++) {
             if (!inventory.get(slots).isEmpty()) {
-                NBTTagCompound tagCompound = new NBTTagCompound();
+                CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.setByte("Slot", (byte) slots);
                 inventory.get(slots).writeToNBT(tagCompound);
                 tagList.appendTag(tagCompound);

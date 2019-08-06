@@ -1,7 +1,7 @@
 package mekanism.api.gas;
 
 import javax.annotation.Nonnull;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 /**
  * Implement this if your tile entity accepts gas from an external source.
@@ -19,7 +19,7 @@ public interface IGasHandler {
      *
      * @return gas added
      */
-    int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer);
+    int receiveGas(Direction side, GasStack stack, boolean doTransfer);
 
     /**
      * Draws a certain amount of gas from this block.
@@ -28,7 +28,7 @@ public interface IGasHandler {
      *
      * @return gas drawn
      */
-    GasStack drawGas(EnumFacing side, int amount, boolean doTransfer);
+    GasStack drawGas(Direction side, int amount, boolean doTransfer);
 
     /**
      * Whether or not this block can accept gas from a certain side.
@@ -38,7 +38,7 @@ public interface IGasHandler {
      *
      * @return if block accepts gas
      */
-    boolean canReceiveGas(EnumFacing side, Gas type);
+    boolean canReceiveGas(Direction side, Gas type);
 
     /**
      * Whether or not this block can be drawn of gas from a certain side.
@@ -48,7 +48,7 @@ public interface IGasHandler {
      *
      * @return if block can be drawn of gas
      */
-    boolean canDrawGas(EnumFacing side, Gas type);
+    boolean canDrawGas(Direction side, Gas type);
 
     /**
      * Gets the tanks present on this handler. READ ONLY. DO NOT MODIFY.

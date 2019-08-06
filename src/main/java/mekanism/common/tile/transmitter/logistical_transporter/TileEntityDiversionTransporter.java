@@ -13,10 +13,10 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextComponentString;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter {
@@ -33,7 +33,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("modes")) {
             modes = nbtTags.getIntArray("modes");
@@ -42,7 +42,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setIntArray("modes", modes);
         return nbtTags;
@@ -88,7 +88,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side) {
+    protected EnumActionResult onConfigure(PlayerEntity player, int part, Direction side) {
         int newMode = (modes[side.ordinal()] + 1) % 3;
         String description = "ERROR";
         modes[side.ordinal()] = newMode;
@@ -112,7 +112,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public boolean canConnect(EnumFacing side) {
+    public boolean canConnect(Direction side) {
         if (!super.canConnect(side)) {
             return false;
         }

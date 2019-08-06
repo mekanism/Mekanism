@@ -4,7 +4,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -23,7 +23,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> imp
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         itemStack = new ItemStack(nbtTags.getCompoundTag("input"));
         gasType = Gas.readFromNBT(nbtTags.getCompoundTag("gasType"));
     }

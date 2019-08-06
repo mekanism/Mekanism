@@ -5,18 +5,18 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 
 public class TileEntityStructuralGlass extends TileEntity implements IStructuralMultiblock {
 
     public Coord4D master;
 
     @Override
-    public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
+    public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (master != null) {
             TileEntity masterTile = master.getTileEntity(world);
             if (masterTile instanceof IMultiblock) {
@@ -65,7 +65,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
                 return;
             }
             iterated.add(pos);
-            for (EnumFacing side : EnumFacing.values()) {
+            for (Direction side : Direction.values()) {
                 Coord4D coord = pos.offset(side);
                 TileEntity tile = coord.getTileEntity(world);
                 if (!iterated.contains(coord)) {

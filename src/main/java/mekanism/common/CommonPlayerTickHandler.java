@@ -8,9 +8,9 @@ import mekanism.common.item.gear.ItemGasMask;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -24,19 +24,19 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonPlayerTickHandler {
 
-    public static boolean isOnGround(EntityPlayer player) {
+    public static boolean isOnGround(PlayerEntity player) {
         int x = MathHelper.floor(player.posX);
         int y = MathHelper.floor(player.posY - 0.01);
         int z = MathHelper.floor(player.posZ);
         BlockPos pos = new BlockPos(x, y, z);
-        IBlockState s = player.world.getBlockState(pos);
+        BlockState s = player.world.getBlockState(pos);
         AxisAlignedBB box = s.getBoundingBox(player.world, pos).offset(pos);
         AxisAlignedBB playerBox = player.getEntityBoundingBox();
         return !s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(box);
 
     }
 
-    public static boolean isGasMaskOn(EntityPlayer player) {
+    public static boolean isGasMaskOn(PlayerEntity player) {
         ItemStack tank = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
         ItemStack mask = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (!tank.isEmpty() && !mask.isEmpty()) {
@@ -50,7 +50,7 @@ public class CommonPlayerTickHandler {
         return false;
     }
 
-    public static boolean isFlamethrowerOn(EntityPlayer player) {
+    public static boolean isFlamethrowerOn(PlayerEntity player) {
         if (Mekanism.playerState.isFlamethrowerOn(player)) {
             ItemStack currentItem = player.inventory.getCurrentItem();
             return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower;
@@ -65,7 +65,7 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    public void tickEnd(EntityPlayer player) {
+    public void tickEnd(PlayerEntity player) {
         ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
         if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners && !player.isSneaking()) {
             player.stepHeight = 1.002F;
@@ -105,8 +105,8 @@ public class CommonPlayerTickHandler {
                 }
             }
             player.fallDistance = 0.0F;
-            if (player instanceof EntityPlayerMP) {
-                ((EntityPlayerMP) player).connection.floatingTickCount = 0;
+            if (player instanceof ServerPlayerEntity) {
+                ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
             }
             jetpack.useGas(stack);
         }
@@ -130,7 +130,7 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    public boolean isJetpackOn(EntityPlayer player) {
+    public boolean isJetpackOn(PlayerEntity player) {
         if (!player.isCreative() && !player.isSpectator()) {
             ItemStack chest = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
             if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {

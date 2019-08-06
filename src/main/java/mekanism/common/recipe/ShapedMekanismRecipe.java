@@ -18,7 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
@@ -47,7 +47,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
         super(group, result, primer);
     }
 
-    public static ShapedMekanismRecipe create(NBTTagCompound nbtTags) {
+    public static ShapedMekanismRecipe create(CompoundNBT nbtTags) {
         if (!nbtTags.hasKey("result") || !nbtTags.hasKey("input")) {
             Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: missing input or result compound tag.");
             return null;
@@ -61,7 +61,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
 
         Object[] ret = new Object[list.tagCount()];
         for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound compound = list.getCompoundTagAt(i);
+            CompoundNBT compound = list.getCompoundTagAt(i);
             if (compound.hasKey("oredict")) {
                 ret[i] = compound.getString("oredict");
             } else if (compound.hasKey("pattern")) {

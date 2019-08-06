@@ -10,7 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -36,7 +36,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return new int[]{0};
     }
 
@@ -84,7 +84,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 0) {
             return ChargeUtils.canBeOutputted(itemstack, true);
         }
@@ -165,8 +165,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public boolean canOutputEnergy(EnumFacing side) {
-        return side == EnumFacing.DOWN;
+    public boolean canOutputEnergy(Direction side) {
+        return side == Direction.DOWN;
     }
 
     protected float getConfiguredMax() {

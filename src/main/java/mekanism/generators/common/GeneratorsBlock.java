@@ -36,7 +36,7 @@ import mekanism.generators.common.item.generator.ItemBlockTurbineVent;
 import mekanism.generators.common.item.generator.ItemBlockWindGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public enum GeneratorsBlock implements IBlockProvider {
@@ -60,10 +60,10 @@ public enum GeneratorsBlock implements IBlockProvider {
     REACTOR_GLASS(new BlockReactorGlass(), ItemBlockTooltip::new),
     LASER_FOCUS_MATRIX(new BlockLaserFocusMatrix(), ItemBlockTooltip::new);
 
-    private final ItemBlock item;
+    private final BlockItem item;
     private final Block block;
 
-    <ITEM extends ItemBlock & IItemMekanism, BLOCK extends Block> GeneratorsBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
+    <ITEM extends BlockItem & IItemMekanism, BLOCK extends Block> GeneratorsBlock(BLOCK block, Function<BLOCK, ITEM> itemCreator) {
         this.block = block;
         this.item = itemCreator.apply(block);
     }
@@ -76,7 +76,7 @@ public enum GeneratorsBlock implements IBlockProvider {
 
     @Nonnull
     @Override
-    public ItemBlock getItem() {
+    public BlockItem getItem() {
         return item;
     }
 

@@ -11,7 +11,7 @@ import mekanism.common.tile.transmitter.pressurized_tube.TileEntityBasicPressuri
 import mekanism.common.tile.transmitter.pressurized_tube.TileEntityElitePressurizedTube;
 import mekanism.common.tile.transmitter.pressurized_tube.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.pressurized_tube.TileEntityUltimatePressurizedTube;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -30,7 +30,7 @@ public class BlockPressurizedTube extends BlockSmallTransmitter implements ITier
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
         switch (tier) {
             case BASIC:
                 return new TileEntityBasicPressurizedTube();

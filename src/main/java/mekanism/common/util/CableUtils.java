@@ -14,7 +14,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.tile.TileEntityInductionPort;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -38,7 +38,7 @@ public final class CableUtils {
      *
      * @return boolean whether the acceptor is valid
      */
-    public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, EnumFacing side) {
+    public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, Direction side) {
         if (tile == null || isCable(tile)) {
             return false;
         }
@@ -63,7 +63,7 @@ public final class CableUtils {
 
     public static TileEntity[] getConnectedOutputters(TileEntity source, BlockPos pos, World world) {
         TileEntity[] outputters = new TileEntity[]{null, null, null, null, null, null};
-        for (EnumFacing orientation : EnumFacing.values()) {
+        for (Direction orientation : Direction.values()) {
             final TileEntity outputter = MekanismUtils.getTileEntity(world, pos.offset(orientation));
             if (isOutputter(source, outputter, orientation)) {
                 outputters[orientation.ordinal()] = outputter;
@@ -72,12 +72,12 @@ public final class CableUtils {
         return outputters;
     }
 
-    public static boolean isOutputter(TileEntity source, TileEntity tileEntity, EnumFacing side) {
+    public static boolean isOutputter(TileEntity source, TileEntity tileEntity, Direction side) {
         if (tileEntity == null) {
             return false;
         }
 
-        EnumFacing opposite = side.getOpposite();
+        Direction opposite = side.getOpposite();
 
         IStrictEnergyOutputter outputter = CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, opposite);
         if (outputter != null && outputter.canOutputEnergy(opposite)) {
@@ -91,7 +91,7 @@ public final class CableUtils {
 
     }
 
-    public static boolean isAcceptor(TileEntity source, TileEntity tileEntity, EnumFacing side) {
+    public static boolean isAcceptor(TileEntity source, TileEntity tileEntity, Direction side) {
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
             return false;
         }
@@ -115,13 +115,13 @@ public final class CableUtils {
                 //Fake that we have one target given we know that no sides will overlap
                 // This allows us to have slightly better performance
                 EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-                for (EnumFacing side : EnumFacing.values()) {
+                for (Direction side : Direction.values()) {
                     if (emitter.canOutputEnergy(side)) {
                         TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
                         //If it can accept energy or it is a cable
                         if (tile != null && (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile))) {
                             //Get the opposite side as the current side is relative to us
-                            EnumFacing opposite = side.getOpposite();
+                            Direction opposite = side.getOpposite();
                             EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
                             if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor.needsEnergy(opposite)) {
                                 target.addHandler(opposite, acceptor);

@@ -20,12 +20,12 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockDirt.DirtType;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -33,8 +33,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -54,7 +54,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     @Override
-    public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack) {
+    public boolean canHarvestBlock(@Nonnull BlockState state, ItemStack stack) {
         return state.getBlock() != Blocks.BEDROCK;
     }
 
@@ -79,8 +79,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             percent = energy / energyCost;
         }
         float damage = (float) (minDamage + damageDifference * percent);
-        if (attacker instanceof EntityPlayer) {
-            target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), damage);
+        if (attacker instanceof PlayerEntity) {
+            target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) attacker), damage);
         } else {
             target.attackEntityFrom(DamageSource.causeMobDamage(attacker), damage);
         }
@@ -91,34 +91,34 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     @Override
-    public float getDestroySpeed(ItemStack itemstack, IBlockState state) {
+    public float getDestroySpeed(ItemStack itemstack, BlockState state) {
         return getEnergy(itemstack) != 0 ? getMode(itemstack).getEfficiency() : 1F;
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack itemstack, World world, IBlockState state, BlockPos pos, EntityLivingBase entityliving) {
+    public boolean onBlockDestroyed(ItemStack itemstack, World world, BlockState state, BlockPos pos, EntityLivingBase entityliving) {
         setEnergy(itemstack, getEnergy(itemstack) - getDestroyEnergy(itemstack, state.getBlockHardness(world, pos)));
         return true;
     }
 
-    private RayTraceResult doRayTrace(IBlockState state, BlockPos pos, EntityPlayer player) {
+    private RayTraceResult doRayTrace(BlockState state, BlockPos pos, PlayerEntity player) {
         Vec3d positionEyes = player.getPositionEyes(1.0F);
         Vec3d playerLook = player.getLook(1.0F);
-        double blockReachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+        double blockReachDistance = player.getAttributeMap().getAttributeInstance(PlayerEntity.REACH_DISTANCE).getAttributeValue();
         Vec3d maxReach = positionEyes.add(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
         RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
         //noinspection ConstantConditions - idea thinks it's nonnull due to package level annotations, but it's not
-        return res != null ? res : new RayTraceResult(RayTraceResult.Type.MISS, Vec3d.ZERO, EnumFacing.UP, pos);
+        return res != null ? res : new RayTraceResult(RayTraceResult.Type.MISS, Vec3d.ZERO, Direction.UP, pos);
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
+    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player) {
         super.onBlockStartBreak(itemstack, pos, player);
         if (!player.world.isRemote && !player.capabilities.isCreativeMode) {
             Mode mode = getMode(itemstack);
             boolean extended = mode == Mode.EXTENDED_VEIN;
             if (extended || mode == Mode.VEIN) {
-                IBlockState state = player.world.getBlockState(pos);
+                BlockState state = player.world.getBlockState(pos);
                 Block block = state.getBlock();
                 if (block == Blocks.LIT_REDSTONE_ORE) {
                     block = Blocks.REDSTONE_ORE;
@@ -165,7 +165,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (entityplayer.isSneaking()) {
             if (!world.isRemote) {
@@ -181,7 +181,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
         if (!player.isSneaking()) {
             ItemStack stack = player.getHeldItem(hand);
             int diameter = getMode(stack).getDiameter();
@@ -197,7 +197,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return EnumActionResult.PASS;
     }
 
-    private EnumActionResult useItemAs(EntityPlayer player, World world, BlockPos pos, EnumFacing side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
+    private EnumActionResult useItemAs(PlayerEntity player, World world, BlockPos pos, Direction side, ItemStack stack, int diameter, ItemUseConsumer consumer) {
         double energy = getEnergy(stack);
         int hoeUsage = MekanismConfig.current().general.disassemblerEnergyUsageHoe.val();
         if (energy < hoeUsage || consumer.use(stack, player, world, pos, side) == EnumActionResult.FAIL) {
@@ -221,7 +221,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return EnumActionResult.SUCCESS;
     }
 
-    private EnumActionResult useHoe(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing facing) {
+    private EnumActionResult useHoe(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing) {
         if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return EnumActionResult.FAIL;
         }
@@ -229,10 +229,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         if (hook != 0) {
             return hook > 0 ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
         }
-        if (facing != EnumFacing.DOWN && world.isAirBlock(pos.up())) {
-            IBlockState state = world.getBlockState(pos);
+        if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
+            BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            IBlockState newState = null;
+            BlockState newState = null;
             if (block == Blocks.GRASS || block == Blocks.GRASS_PATH) {
                 newState = Blocks.FARMLAND.getDefaultState();
             } else if (block == Blocks.DIRT) {
@@ -251,10 +251,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return EnumActionResult.PASS;
     }
 
-    private EnumActionResult useShovel(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing facing) {
+    private EnumActionResult useShovel(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing) {
         if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return EnumActionResult.FAIL;
-        } else if (facing != EnumFacing.DOWN && world.isAirBlock(pos.up())) {
+        } else if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
             Block block = world.getBlockState(pos).getBlock();
             if (block == Blocks.GRASS) {
                 setBlock(stack, player, world, pos, Blocks.GRASS_PATH.getDefaultState());
@@ -264,7 +264,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return EnumActionResult.PASS;
     }
 
-    private void setBlock(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos, IBlockState state) {
+    private void setBlock(ItemStack stack, PlayerEntity player, World worldIn, BlockPos pos, BlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
         if (!worldIn.isRemote) {
             worldIn.setBlockState(pos, state, 11);
@@ -373,7 +373,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             ignoreBlocks.put(Blocks.LIT_REDSTONE_ORE, Arrays.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
         }
 
-        private final EntityPlayer player;
+        private final PlayerEntity player;
         public final World world;
         public final ItemStack stack;
         public final Coord4D location;
@@ -384,7 +384,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         private final int maxRange;
         private final int maxCount;
 
-        public Finder(EntityPlayer p, ItemStack s, Coord4D loc, RayTraceResult traceResult, int range) {
+        public Finder(PlayerEntity p, ItemStack s, Coord4D loc, RayTraceResult traceResult, int range) {
             player = p;
             world = p.world;
             stack = s;
@@ -401,7 +401,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 return;
             }
             found.add(pointer);
-            for (EnumFacing side : EnumFacing.values()) {
+            for (Direction side : Direction.values()) {
                 Coord4D coord = pointer.offset(side);
                 if (maxRange > 0 && location.distanceTo(coord) > maxRange) {
                     continue;
@@ -434,6 +434,6 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     interface ItemUseConsumer {
 
         //Used to reference useHoe and useShovel via lambda references
-        EnumActionResult use(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing facing);
+        EnumActionResult use(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction facing);
     }
 }

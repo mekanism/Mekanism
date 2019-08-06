@@ -20,10 +20,10 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -109,7 +109,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     @Override
-    public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
+    public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
             if (!manageInventory(player, hand, stack)) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
@@ -184,7 +184,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                     for (int i = 0; i < size; i++) {
                         ValveData data = new ValveData();
                         data.location = Coord4D.read(dataStream);
-                        data.side = EnumFacing.byIndex(dataStream.readInt());
+                        data.side = Direction.byIndex(dataStream.readInt());
                         valveViewing.add(data);
                         TileEntityDynamicTank tileEntity = (TileEntityDynamicTank) data.location.getTileEntity(world);
                         if (tileEntity != null) {
@@ -221,19 +221,19 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return InventoryUtils.EMPTY;
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
     }
 
-    public boolean manageInventory(EntityPlayer player, EnumHand hand, ItemStack itemStack) {
+    public boolean manageInventory(PlayerEntity player, Hand hand, ItemStack itemStack) {
         if (structure == null) {
             return false;
         }

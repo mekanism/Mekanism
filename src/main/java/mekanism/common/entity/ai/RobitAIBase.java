@@ -2,13 +2,13 @@ package mekanism.common.entity.ai;
 
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -75,7 +75,7 @@ public abstract class RobitAIBase extends EntityAIBase {
                         for (int i1 = 0; i1 <= 4; ++i1) {
                             BlockPos pos = new BlockPos(x + l, y, z + i1);
                             BlockPos under = new BlockPos(x + l, y - 1, z + i1);
-                            if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.getBlockState(under).isSideSolid(world, under, EnumFacing.UP) && isEmptyBlock(pos) &&
+                            if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.getBlockState(under).isSideSolid(world, under, Direction.UP) && isEmptyBlock(pos) &&
                                 isEmptyBlock(new BlockPos(x + l, y + 1, z + i1))) {
                                 theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
                                 thePathfinder.clearPath();
@@ -89,7 +89,7 @@ public abstract class RobitAIBase extends EntityAIBase {
     }
 
     private boolean isEmptyBlock(BlockPos pos) {
-        IBlockState iblockstate = world.getBlockState(pos);
+        BlockState iblockstate = world.getBlockState(pos);
         Block block = iblockstate.getBlock();
         return block == Blocks.AIR || !iblockstate.isFullCube();
     }

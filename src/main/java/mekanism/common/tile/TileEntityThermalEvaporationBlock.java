@@ -14,7 +14,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -76,7 +76,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
     public void updateController() {
         if (!(this instanceof TileEntityThermalEvaporationController)) {
-            for (EnumFacing side : EnumFacing.values()) {
+            for (Direction side : Direction.values()) {
                 BlockPos checkPos = pos.offset(side);
                 TileEntity check = MekanismUtils.getTileEntity(world, checkPos);
                 if (check instanceof TileEntityThermalEvaporationBlock) {
@@ -132,12 +132,12 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return InventoryUtils.EMPTY;
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
         }
@@ -170,7 +170,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
                 if (te instanceof TileEntityThermalEvaporationBlock) {
                     ((TileEntityThermalEvaporationBlock) te).attempted = true;
-                    for (EnumFacing side : EnumFacing.values()) {
+                    for (Direction side : Direction.values()) {
                         BlockPos coord = checkPos.offset(side);
                         if (!iterated.contains(coord)) {
                             checkQueue.addLast(coord);

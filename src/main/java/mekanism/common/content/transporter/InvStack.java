@@ -8,7 +8,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
 /**
@@ -23,7 +23,7 @@ public final class InvStack {
     private final TileEntity tileEntity;
 
     /** The side of the inventory we are accessing with this InvStack. */
-    private final EnumFacing side;
+    private final Direction side;
 
     /**
      * A map associating the slot IDs in consideration to the amount of items in those slots we care about. Note that the associated item counts may not be the full count
@@ -37,16 +37,16 @@ public final class InvStack {
     /** The total amount of items tracked by this InvStack. */
     private int itemCount;
 
-    public InvStack(TileEntity inv, EnumFacing facing) {
+    public InvStack(TileEntity inv, Direction facing) {
         tileEntity = inv;
         side = facing;
     }
 
-    public InvStack(TileEntity inv, int slotID, ItemStack stack, EnumFacing facing) {
+    public InvStack(TileEntity inv, int slotID, ItemStack stack, Direction facing) {
         this(inv, stack, getMap(slotID, stack), facing);
     }
 
-    public InvStack(TileEntity inv, ItemStack stack, Map<Integer, Integer> idMap, EnumFacing facing) {
+    public InvStack(TileEntity inv, ItemStack stack, Map<Integer, Integer> idMap, Direction facing) {
         tileEntity = inv;
         side = facing;
         itemMap = idMap;

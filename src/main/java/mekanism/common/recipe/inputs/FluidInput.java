@@ -1,6 +1,6 @@
 package mekanism.common.recipe.inputs;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -16,7 +16,7 @@ public class FluidInput extends MachineInput<FluidInput> {
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         ingredient = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("input"));
     }
 

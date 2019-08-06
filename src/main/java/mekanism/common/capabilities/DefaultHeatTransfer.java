@@ -2,7 +2,7 @@ package mekanism.common.capabilities;
 
 import mekanism.api.IHeatTransfer;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DefaultHeatTransfer implements IHeatTransfer {
@@ -22,7 +22,7 @@ public class DefaultHeatTransfer implements IHeatTransfer {
     }
 
     @Override
-    public double getInsulationCoefficient(EnumFacing side) {
+    public double getInsulationCoefficient(Direction side) {
         return 0;
     }
 
@@ -41,12 +41,12 @@ public class DefaultHeatTransfer implements IHeatTransfer {
     }
 
     @Override
-    public boolean canConnectHeat(EnumFacing side) {
+    public boolean canConnectHeat(Direction side) {
         return false;
     }
 
     @Override
-    public IHeatTransfer getAdjacent(EnumFacing side) {
+    public IHeatTransfer getAdjacent(Direction side) {
         return null;
     }
 }

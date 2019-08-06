@@ -2,7 +2,7 @@ package mekanism.common.capabilities;
 
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 /**
@@ -15,12 +15,12 @@ public class DefaultCableOutputter implements IStrictEnergyOutputter {
     }
 
     @Override
-    public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double pullEnergy(Direction side, double amount, boolean simulate) {
         return 0;
     }
 
     @Override
-    public boolean canOutputEnergy(EnumFacing side) {
+    public boolean canOutputEnergy(Direction side) {
         return true;
     }
 }

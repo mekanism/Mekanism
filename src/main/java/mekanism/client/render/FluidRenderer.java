@@ -10,7 +10,7 @@ import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -209,7 +209,7 @@ public final class FluidRenderer {
 
     public static class ValveRenderData extends RenderData {
 
-        public EnumFacing side;
+        public Direction side;
         public Coord4D valveLocation;
 
         public static ValveRenderData get(RenderData renderData, ValveData valveData) {

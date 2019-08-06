@@ -1,6 +1,6 @@
 package mekanism.api.energy;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 /**
  * Implement this if your TileEntity can accept energy.
@@ -18,7 +18,7 @@ public interface IStrictEnergyAcceptor {
      * @return energy used
      */
     //TODO: Add @Nullable to the side
-    double acceptEnergy(EnumFacing side, double amount, boolean simulate);
+    double acceptEnergy(Direction side, double amount, boolean simulate);
 
     /**
      * Whether or not this tile entity can accept energy from a certain side.
@@ -27,5 +27,5 @@ public interface IStrictEnergyAcceptor {
      *
      * @return if tile entity accepts energy
      */
-    boolean canReceiveEnergy(EnumFacing side);
+    boolean canReceiveEnergy(Direction side);
 }

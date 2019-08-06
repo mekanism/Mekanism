@@ -5,7 +5,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -42,7 +42,7 @@ public class EntityBabySkeleton extends EntitySkeleton {
     }
 
     @Override
-    protected int getExperiencePoints(EntityPlayer p_70693_1_) {
+    protected int getExperiencePoints(PlayerEntity p_70693_1_) {
         if (isChild()) {
             experienceValue = (int) ((float) experienceValue * 2.5F);
         }

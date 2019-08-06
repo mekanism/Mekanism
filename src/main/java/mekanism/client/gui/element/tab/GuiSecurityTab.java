@@ -23,7 +23,7 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -31,15 +31,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
 
-    private final EnumHand currentHand;
+    private final Hand currentHand;
     private boolean isItem;
 
     public GuiSecurityTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def, tile);
-        this.currentHand = EnumHand.MAIN_HAND;
+        this.currentHand = Hand.MAIN_HAND;
     }
 
-    public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def, EnumHand hand) {
+    public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def, Hand hand) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def, null);
         isItem = true;
         currentHand = hand;

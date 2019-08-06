@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -13,12 +13,12 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 public class CoreGuiHandler implements IGuiHandler {
 
     @Override
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getServerGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
         return Mekanism.proxy.getServerGui(ID, player, world, new BlockPos(x, y, z));
     }
 
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getClientGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
         return Mekanism.proxy.getClientGui(ID, player, world, new BlockPos(x, y, z));
     }
 }

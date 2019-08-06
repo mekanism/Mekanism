@@ -16,12 +16,12 @@ import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -85,7 +85,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         }
 
         if (playersUsing.size() > 0 && ((world.isRemote && !clientHasStructure) || (!world.isRemote && structure == null))) {
-            for (EntityPlayer player : playersUsing) {
+            for (PlayerEntity player : playersUsing) {
                 player.closeScreen();
             }
         }
@@ -109,7 +109,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 }
 
                 Coord4D thisCoord = Coord4D.get(this);
-                for (EnumFacing side : EnumFacing.values()) {
+                for (Direction side : Direction.values()) {
                     Coord4D obj = thisCoord.offset(side);
                     if (structure != null && (structure.locations.contains(obj) || structure.internalLocations.contains(obj))) {
                         continue;
@@ -220,7 +220,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (structure == null) {
             if (nbtTags.hasKey("cachedID")) {
@@ -232,7 +232,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         if (cachedID != null) {
             nbtTags.setString("cachedID", cachedID);
@@ -249,7 +249,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     }
 
     @Override
-    public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
+    public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         return false;
     }
 

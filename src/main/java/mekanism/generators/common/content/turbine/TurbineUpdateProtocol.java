@@ -19,7 +19,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData> {
@@ -145,7 +145,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         // Update the structure with number of blades found on rotors
         structure.blades = blades;
 
-        Coord4D startCoord = complex.offset(EnumFacing.UP);
+        Coord4D startCoord = complex.offset(Direction.UP);
         if (startCoord.getTileEntity(pointer.getWorld()) instanceof TileEntityElectromagneticCoil) {
             structure.coils = new NodeCounter(new NodeChecker() {
                 @Override

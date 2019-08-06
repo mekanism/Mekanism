@@ -6,7 +6,7 @@ import java.util.Set;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,7 +19,7 @@ public final class PipeUtils {
 
     public static final FluidTankInfo[] EMPTY = new FluidTankInfo[]{};
 
-    public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side) {
+    public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
         if (tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) ||
             !CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
             return false;
@@ -48,7 +48,7 @@ public final class PipeUtils {
      */
     public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world) {
         final IFluidHandler[] acceptors = new IFluidHandler[]{null, null, null, null, null, null};
-        EmitUtils.forEachSide(world, pos, EnumSet.allOf(EnumFacing.class), (tile, side) ->
+        EmitUtils.forEachSide(world, pos, EnumSet.allOf(Direction.class), (tile, side) ->
               acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()));
         return acceptors;
     }
@@ -62,7 +62,7 @@ public final class PipeUtils {
      *
      * @return the amount of gas emitted
      */
-    public static int emit(Set<EnumFacing> sides, FluidStack stack, TileEntity from) {
+    public static int emit(Set<Direction> sides, FluidStack stack, TileEntity from) {
         if (stack == null || stack.amount == 0) {
             return 0;
         }
@@ -72,7 +72,7 @@ public final class PipeUtils {
         EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
 
             //Insert to access side
-            final EnumFacing accessSide = side.getOpposite();
+            final Direction accessSide = side.getOpposite();
 
             //Collect cap
             CapabilityUtils.runIfCap(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide,

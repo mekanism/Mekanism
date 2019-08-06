@@ -5,7 +5,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,7 +22,7 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
         super(tile, container);
     }
 
-    protected GuiTextFilterBase(EntityPlayer player, TILE tile) {
+    protected GuiTextFilterBase(PlayerEntity player, TILE tile) {
         super(player, tile);
     }
 

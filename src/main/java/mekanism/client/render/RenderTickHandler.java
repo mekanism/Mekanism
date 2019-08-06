@@ -24,7 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
@@ -52,7 +52,7 @@ public class RenderTickHandler {
                     return;
                 }
 
-                EntityPlayer player = mc.player;
+                PlayerEntity player = mc.player;
                 World world = mc.player.world;
                 RayTraceResult pos = player.rayTrace(40.0D, 1.0F);
                 if (pos != null) {
@@ -118,7 +118,7 @@ public class RenderTickHandler {
 
                 // Traverse a copy of jetpack state and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
-                    EntityPlayer p = mc.world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity p = mc.world.getPlayerEntityByUUID(uuid);
 
                     if (p == null) {
                         continue;
@@ -158,7 +158,7 @@ public class RenderTickHandler {
                 // Traverse a copy of gasmask state and do animations
                 if (world.getWorldTime() % 4 == 0) {
                     for (UUID uuid : Mekanism.playerState.getActiveGasmasks()) {
-                        EntityPlayer p = mc.world.getPlayerEntityByUUID(uuid);
+                        PlayerEntity p = mc.world.getPlayerEntityByUUID(uuid);
                         if (p == null || !p.isInWater()) {
                             continue;
                         }
@@ -178,7 +178,7 @@ public class RenderTickHandler {
 
                 // Traverse a copy of flamethrower state and do animations
                 if (world.getWorldTime() % 4 == 0) {
-                    for (EntityPlayer p : world.playerEntities) {
+                    for (PlayerEntity p : world.playerEntities) {
                         if (!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress) {
                             ItemStack currentItem = p.inventory.getCurrentItem();
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ((ItemFlamethrower) currentItem.getItem()).getGas(currentItem) != null) {

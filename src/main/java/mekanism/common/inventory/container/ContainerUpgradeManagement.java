@@ -7,7 +7,7 @@ import mekanism.common.inventory.InventoryList;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -43,20 +43,20 @@ public class ContainerUpgradeManagement extends Container {
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
+    public void onContainerClosed(PlayerEntity entityplayer) {
         super.onContainerClosed(entityplayer);
         ((TileEntityMekanism) tileEntity).close(entityplayer);
         ((TileEntityMekanism) tileEntity).closeInventory(entityplayer);
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
+    public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
         return ((TileEntityMekanism) tileEntity).isUsableByPlayer(entityplayer);
     }
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
         if (currentSlot != null && currentSlot.getHasStack()) {

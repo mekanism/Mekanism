@@ -10,7 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
@@ -140,7 +140,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             return;
         }
 
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             Coord4D sideCoord = coord.offset(side);
             if (isViableNode(sideCoord.getPos())) {
                 if (!iteratedNodes.contains(sideCoord)) {
@@ -154,19 +154,19 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
         return true;
     }
 
-    public EnumFacing getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
+    public Direction getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         if (obj.x == xmin) {
-            return EnumFacing.WEST;
+            return Direction.WEST;
         } else if (obj.x == xmax) {
-            return EnumFacing.EAST;
+            return Direction.EAST;
         } else if (obj.y == ymin) {
-            return EnumFacing.DOWN;
+            return Direction.DOWN;
         } else if (obj.y == ymax) {
-            return EnumFacing.UP;
+            return Direction.UP;
         } else if (obj.z == zmin) {
-            return EnumFacing.NORTH;
+            return Direction.NORTH;
         } else if (obj.z == zmax) {
-            return EnumFacing.SOUTH;
+            return Direction.SOUTH;
         }
         return null;
     }
@@ -446,7 +446,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                 return;
             }
 
-            for (EnumFacing side : EnumFacing.values()) {
+            for (Direction side : Direction.values()) {
                 Coord4D coord = pos.offset(side);
 
                 if (!iterated.contains(coord) && checker.isValid(coord)) {

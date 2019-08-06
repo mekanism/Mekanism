@@ -4,7 +4,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -17,7 +17,7 @@ public class SeparatorRecipe extends MachineRecipe<FluidInput, ChemicalPairOutpu
         energyUsage = energy;
     }
 
-    public SeparatorRecipe(FluidInput input, ChemicalPairOutput output, NBTTagCompound extraNBT) {
+    public SeparatorRecipe(FluidInput input, ChemicalPairOutput output, CompoundNBT extraNBT) {
         super(input, output);
         energyUsage = extraNBT.getDouble("energyUsage");
     }

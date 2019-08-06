@@ -1,8 +1,8 @@
 package mekanism.common.capabilities;
 
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -15,15 +15,15 @@ public class DefaultStorageHelper {
     public static class DefaultStorage<T> implements IStorage<T> {
 
         @Override
-        public NBTBase writeNBT(Capability<T> capability, T instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<T> capability, T instance, Direction side) {
             if (instance instanceof INBTSerializable) {
                 return ((INBTSerializable<?>) instance).serializeNBT();
             }
-            return new NBTTagCompound();
+            return new CompoundNBT();
         }
 
         @Override
-        public void readNBT(Capability<T> capability, T instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<T> capability, T instance, Direction side, NBTBase nbt) {
             if (instance instanceof INBTSerializable) {
                 Class<? extends NBTBase> nbtClass = ((INBTSerializable<?>) instance).serializeNBT().getClass();
                 if (nbtClass.isInstance(nbt)) {
@@ -36,12 +36,12 @@ public class DefaultStorageHelper {
     public static class NullStorage<T> implements IStorage<T> {
 
         @Override
-        public NBTBase writeNBT(Capability<T> capability, T instance, EnumFacing side) {
-            return new NBTTagCompound();
+        public NBTBase writeNBT(Capability<T> capability, T instance, Direction side) {
+            return new CompoundNBT();
         }
 
         @Override
-        public void readNBT(Capability<T> capability, T instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<T> capability, T instance, Direction side, NBTBase nbt) {
         }
     }
 }

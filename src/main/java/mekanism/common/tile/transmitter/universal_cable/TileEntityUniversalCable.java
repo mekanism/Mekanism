@@ -28,9 +28,9 @@ import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -69,11 +69,11 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
             }
         } else {
             updateShare();
-            List<EnumFacing> sides = getConnections(ConnectionType.PULL);
+            List<Direction> sides = getConnections(ConnectionType.PULL);
             if (!sides.isEmpty()) {
                 TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(this, getPos(), getWorld());
                 double maxDraw = tier.getCableCapacity();
-                for (EnumFacing side : sides) {
+                for (Direction side : sides) {
                     TileEntity outputter = connectedOutputters[side.ordinal()];
                     if (outputter != null) {
                         //pre declare some variables for inline assignment & checks
@@ -137,7 +137,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         buffer.amount = nbtTags.getDouble("cacheEnergy");
         if (buffer.amount < 0) {
@@ -150,7 +150,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setDouble("cacheEnergy", lastWrite);
         nbtTags.setInteger("tier", tier.ordinal());
@@ -168,7 +168,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public boolean isValidAcceptor(TileEntity acceptor, EnumFacing side) {
+    public boolean isValidAcceptor(TileEntity acceptor, Direction side) {
         return CableUtils.isValidAcceptorOnSide(MekanismUtils.getTileEntity(world, getPos()), acceptor, side);
     }
 
@@ -196,7 +196,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double acceptEnergy(Direction side, double amount, boolean simulate) {
         double toUse = Math.min(getMaxEnergy() - getEnergy(), amount);
         if (toUse < 0.0001 || (side != null && !canReceiveEnergy(side))) {
             return 0;
@@ -208,7 +208,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         if (side == null) {
             return true;
         }
@@ -255,7 +255,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public EnergyAcceptorWrapper getCachedAcceptor(EnumFacing side) {
+    public EnergyAcceptorWrapper getCachedAcceptor(Direction side) {
         return EnergyAcceptorWrapper.get(getCachedTile(side), side.getOpposite());
     }
 
@@ -284,13 +284,13 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
                || capability == CapabilityEnergy.ENERGY || super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
             return (T) this;
         } else if (capability == CapabilityEnergy.ENERGY) {

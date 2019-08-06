@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import mekanism.common.base.SplitInfo;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 /**
  * Keeps track of a target for emitting from various networks.
@@ -19,19 +19,19 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     /**
      * Map of the sides to the handler for that side.
      */
-    protected final Map<EnumFacing, HANDLER> handlers = new EnumMap<>(EnumFacing.class);
+    protected final Map<Direction, HANDLER> handlers = new EnumMap<>(Direction.class);
     /**
      * Map of sides that want more than we can/are willing to provide. Value is the amount they want.
      */
-    protected final Map<EnumFacing, TYPE> needed = new EnumMap<>(EnumFacing.class);
+    protected final Map<Direction, TYPE> needed = new EnumMap<>(Direction.class);
 
     protected EXTRA extra;
 
-    public void addHandler(EnumFacing side, HANDLER handler) {
+    public void addHandler(Direction side, HANDLER handler) {
         handlers.put(side, handler);
     }
 
-    public Map<EnumFacing, HANDLER> getHandlers() {
+    public Map<Direction, HANDLER> getHandlers() {
         return handlers;
     }
 
@@ -44,7 +44,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      */
     public void sendRemainingSplit(SplitInfo<TYPE> splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
-        for (EnumFacing side : needed.keySet()) {
+        for (Direction side : needed.keySet()) {
             acceptAmount(side, splitInfo, splitInfo.getAmountPerTarget());
         }
     }
@@ -59,7 +59,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      *
      * @implNote Must call {@link SplitInfo#send(Number)} with the amount actually accepted.
      */
-    protected abstract void acceptAmount(EnumFacing side, SplitInfo<TYPE> splitInfo, TYPE amount);
+    protected abstract void acceptAmount(Direction side, SplitInfo<TYPE> splitInfo, TYPE amount);
 
     /**
      * Simulate inserting into the handler.
@@ -70,17 +70,17 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      *
      * @return The amount it was actually willing to accept.
      */
-    protected abstract TYPE simulate(HANDLER handler, EnumFacing side, EXTRA extra);
+    protected abstract TYPE simulate(HANDLER handler, Direction side, EXTRA extra);
 
     /**
      * Calculates how much each handler can take of toSend. If the amount requested is less than the amount per handler/target in splitInfo it immediately sends the
-     * requested amount to the handler via {@link #acceptAmount(EnumFacing, SplitInfo, Number)}
+     * requested amount to the handler via {@link #acceptAmount(Direction, SplitInfo, Number)}
      *
      * @param toSend    The total amount getting sent.
      * @param splitInfo Information about current overall split.
      */
     public void sendPossible(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
-        for (Entry<EnumFacing, HANDLER> entry : handlers.entrySet()) {
+        for (Entry<Direction, HANDLER> entry : handlers.entrySet()) {
             TYPE amountNeeded = simulate(entry.getValue(), entry.getKey(), toSend);
             if (amountNeeded.compareTo(splitInfo.getAmountPerTarget()) <= 0) {
                 //Add the amount, in case something changed from simulation only mark actual sent amount
@@ -98,12 +98,12 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      * @param splitInfo The new split to (re)check.
      */
     public void shiftNeeded(SplitInfo<TYPE> splitInfo) {
-        Iterator<Entry<EnumFacing, TYPE>> iterator = needed.entrySet().iterator();
+        Iterator<Entry<Direction, TYPE>> iterator = needed.entrySet().iterator();
         //Use an iterator rather than a copy of the keyset of the needed submap
         // This allows for us to remove it once we find it without  having to
         // start looping again or make a large number of copies of the set
         while (iterator.hasNext()) {
-            Entry<EnumFacing, TYPE> needInfo = iterator.next();
+            Entry<Direction, TYPE> needInfo = iterator.next();
             TYPE amountNeeded = needInfo.getValue();
             if (amountNeeded.compareTo(splitInfo.getAmountPerTarget()) <= 0) {
                 acceptAmount(needInfo.getKey(), splitInfo, amountNeeded);

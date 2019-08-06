@@ -27,7 +27,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -44,7 +44,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
     private GuiButton autoEjectButton;
     private GuiButton colorButton;
 
-    public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tile) {
+    public GuiLogisticalSorter(PlayerEntity player, TileEntityLogisticalSorter tile) {
         super(tile, new ContainerNull(player, tile));
 
         // Add common Mekanism gui elements

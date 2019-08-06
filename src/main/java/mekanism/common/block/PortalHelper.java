@@ -10,13 +10,13 @@ import net.minecraft.block.BlockPortal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockWorldState;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.state.pattern.BlockPattern;
 import net.minecraft.block.state.pattern.BlockPattern.PatternHelper;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumFacing.AxisDirection;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -36,7 +36,7 @@ public class PortalHelper {
             super(world, pos, axis);
         }
 
-        private boolean isFrame(IBlockState state) {
+        private boolean isFrame(BlockState state) {
             Block block = state.getBlock();
             BlockResourceInfo resourceInfo = null;
             if (block instanceof BlockResource) {
@@ -46,7 +46,7 @@ public class PortalHelper {
         }
 
         @Override
-        protected int getDistanceUntilEdge(BlockPos pos, @Nonnull EnumFacing facing) {
+        protected int getDistanceUntilEdge(BlockPos pos, @Nonnull Direction facing) {
             int i;
             for (i = 0; i < 22; ++i) {
                 BlockPos blockpos = pos.offset(facing, i);
@@ -117,19 +117,19 @@ public class PortalHelper {
             PortalHelper.Size size = new PortalHelper.Size(world, pos, Axis.X);
             if (!size.isValid()) {
                 axis = Axis.X;
-                size = new PortalHelper.Size(world, pos, EnumFacing.Axis.Z);
+                size = new PortalHelper.Size(world, pos, Direction.Axis.Z);
             }
             LoadingCache<BlockPos, BlockWorldState> loadingCache = BlockPattern.createLoadingCache(world, true);
             if (!size.isValid()) {
-                return new PatternHelper(pos, EnumFacing.NORTH, EnumFacing.UP, loadingCache, 1, 1, 1);
+                return new PatternHelper(pos, Direction.NORTH, Direction.UP, loadingCache, 1, 1, 1);
             }
             int[] aint = new int[AxisDirection.values().length];
-            EnumFacing enumfacing = size.rightDir.rotateYCCW();
+            Direction Direction = size.rightDir.rotateYCCW();
             BlockPos blockpos = size.bottomLeft.up(size.getHeight() - 1);
 
             for (AxisDirection direction : AxisDirection.values()) {
-                PatternHelper patternHelper = new PatternHelper(enumfacing.getAxisDirection() == direction ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
-                      EnumFacing.getFacingFromAxis(direction, axis), EnumFacing.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
+                PatternHelper patternHelper = new PatternHelper(Direction.getAxisDirection() == direction ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
+                      Direction.getFacingFromAxis(direction, axis), Direction.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
 
                 for (int i = 0; i < size.getWidth(); ++i) {
                     for (int j = 0; j < size.getHeight(); ++j) {
@@ -146,12 +146,12 @@ public class PortalHelper {
                     axisDirection = direction;
                 }
             }
-            return new PatternHelper(enumfacing.getAxisDirection() == axisDirection ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
-                  EnumFacing.getFacingFromAxis(axisDirection, axis), EnumFacing.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
+            return new PatternHelper(Direction.getAxisDirection() == axisDirection ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
+                  Direction.getFacingFromAxis(axisDirection, axis), Direction.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
         }
 
         @Override
-        public void neighborChanged(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, Block blockIn, BlockPos fromPos) {
+        public void neighborChanged(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, Block blockIn, BlockPos fromPos) {
             Axis axis = state.getValue(AXIS);
             if (axis == Axis.X || axis == Axis.Z) {
                 PortalHelper.Size size = new PortalHelper.Size(world, pos, axis);

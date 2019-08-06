@@ -11,7 +11,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -34,13 +34,13 @@ public enum Upgrade {
         color = c;
     }
 
-    public static Map<Upgrade, Integer> buildMap(@Nullable NBTTagCompound nbtTags) {
+    public static Map<Upgrade, Integer> buildMap(@Nullable CompoundNBT nbtTags) {
         Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
         if (nbtTags != null) {
             if (nbtTags.hasKey("upgrades")) {
                 NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
                 for (int tagCount = 0; tagCount < list.tagCount(); tagCount++) {
-                    NBTTagCompound compound = list.getCompoundTagAt(tagCount);
+                    CompoundNBT compound = list.getCompoundTagAt(tagCount);
                     Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
                     upgrades.put(upgrade, compound.getInteger("amount"));
                 }
@@ -49,7 +49,7 @@ public enum Upgrade {
         return upgrades;
     }
 
-    public static void saveMap(Map<Upgrade, Integer> upgrades, NBTTagCompound nbtTags) {
+    public static void saveMap(Map<Upgrade, Integer> upgrades, CompoundNBT nbtTags) {
         NBTTagList list = new NBTTagList();
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             list.appendTag(getTagFor(entry.getKey(), entry.getValue()));
@@ -57,8 +57,8 @@ public enum Upgrade {
         nbtTags.setTag("upgrades", list);
     }
 
-    public static NBTTagCompound getTagFor(Upgrade upgrade, int amount) {
-        NBTTagCompound compound = new NBTTagCompound();
+    public static CompoundNBT getTagFor(Upgrade upgrade, int amount) {
+        CompoundNBT compound = new CompoundNBT();
         compound.setInteger("type", upgrade.ordinal());
         compound.setInteger("amount", amount);
         return compound;

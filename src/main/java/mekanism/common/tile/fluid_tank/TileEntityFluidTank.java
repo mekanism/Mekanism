@@ -29,13 +29,13 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -85,7 +85,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
+    public boolean canSetFacing(@Nonnull Direction facing) {
         return false;
     }
 
@@ -138,9 +138,9 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
 
     private void activeEmit() {
         if (fluidTank.getFluid() != null) {
-            TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(world);
-            if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP)) {
-                IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
+            TileEntity tileEntity = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(world);
+            if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP)) {
+                IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP);
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, true), tier != FluidTankTier.CREATIVE);
             }
@@ -171,10 +171,10 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     public int pushUp(FluidStack fluid, boolean doFill) {
-        Coord4D up = Coord4D.get(this).offset(EnumFacing.UP);
+        Coord4D up = Coord4D.get(this).offset(Direction.UP);
         TileEntity tileEntity = up.getTileEntity(world);
         if (tileEntity instanceof TileEntityFluidTank) {
-            IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
+            IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN);
             if (PipeUtils.canFill(handler, fluid)) {
                 return handler.fill(fluid, doFill);
             }
@@ -183,7 +183,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return slotID == 1;
     }
 
@@ -197,10 +197,10 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == EnumFacing.DOWN) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
+        if (side == Direction.DOWN) {
             return new int[]{1};
-        } else if (side == EnumFacing.UP) {
+        } else if (side == Direction.UP) {
             return new int[]{0};
         }
         return InventoryUtils.EMPTY;
@@ -208,18 +208,18 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("tier", tier.ordinal());
         nbtTags.setInteger("editMode", editMode.ordinal());
         if (fluidTank.getFluid() != null) {
-            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         tier = FluidTankTier.values()[nbtTags.getInteger("tier")];
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
@@ -264,7 +264,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
         if (tier == FluidTankTier.CREATIVE) {
             return Integer.MAX_VALUE;
         }
-        Coord4D top = Coord4D.get(this).offset(EnumFacing.UP);
+        Coord4D top = Coord4D.get(this).offset(Direction.UP);
         TileEntity topTile = top.getTileEntity(world);
         if (topTile instanceof TileEntityFluidTank) {
             TileEntityFluidTank topTank = (TileEntityFluidTank) topTile;
@@ -302,7 +302,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
         if (!world.isRemote) {
             setActive(!getActive());
             world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
@@ -311,12 +311,12 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     @Override
-    public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
         return EnumActionResult.PASS;
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -324,7 +324,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
@@ -336,15 +336,15 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side != null && side != EnumFacing.DOWN && side != EnumFacing.UP;
+            return side != null && side != Direction.DOWN && side != Direction.UP;
         }
         return super.isCapabilityDisabled(capability, side);
     }
 
     @Override
-    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
         if (tier == FluidTankTier.CREATIVE) {
             return resource.amount;
         }
@@ -352,7 +352,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
         if (filled < resource.amount && !getActive()) {
             filled += pushUp(PipeUtils.copy(resource, resource.amount - filled), doFill);
         }
-        if (filled > 0 && from == EnumFacing.UP) {
+        if (filled > 0 && from == Direction.UP) {
             if (valve == 0) {
                 needsPacket = true;
             }
@@ -364,32 +364,32 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
 
     @Override
     @Nullable
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
         return fluidTank.drain(maxDrain, tier != FluidTankTier.CREATIVE && doDrain);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
-        TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(EnumFacing.DOWN));
-        if (from == EnumFacing.DOWN && getActive() && !(tile instanceof TileEntityFluidTank)) {
+    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
+        TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(Direction.DOWN));
+        if (from == Direction.DOWN && getActive() && !(tile instanceof TileEntityFluidTank)) {
             return false;
         }
         if (tier == FluidTankTier.CREATIVE) {
             return true;
         }
         if (getActive() && tile instanceof TileEntityFluidTank) { // Only fill if tanks underneath have same fluid.
-            return fluidTank.getFluid() == null ? ((TileEntityFluidTank) tile).canFill(EnumFacing.UP, fluid) : fluidTank.getFluid().isFluidEqual(fluid);
+            return fluidTank.getFluid() == null ? ((TileEntityFluidTank) tile).canFill(Direction.UP, fluid) : fluidTank.getFluid().isFluidEqual(fluid);
         }
         return FluidContainerUtils.canFill(fluidTank.getFluid(), fluid);
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluidTank != null && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid) && !getActive() || from != EnumFacing.DOWN;
+    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
+        return fluidTank != null && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid) && !getActive() || from != Direction.DOWN;
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
+    public FluidTankInfo[] getTankInfo(Direction from) {
         return new FluidTankInfo[]{fluidTank.getInfo()};
     }
 

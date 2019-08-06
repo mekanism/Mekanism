@@ -19,7 +19,7 @@ import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEventAccessor;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -76,7 +76,7 @@ public class SoundHandler {
         switch (soundType) {
             case JETPACK:
                 if (!jetpackSounds.contains(uuid)) {
-                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity player = world.getPlayerEntityByUUID(uuid);
                     if (player != null) {
                         jetpackSounds.add(uuid);
                         playSound(new JetpackSound(player));
@@ -85,7 +85,7 @@ public class SoundHandler {
                 break;
             case GAS_MASK:
                 if (!gasmaskSounds.contains(uuid)) {
-                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity player = world.getPlayerEntityByUUID(uuid);
                     if (player != null) {
                         gasmaskSounds.add(uuid);
                         playSound(new GasMaskSound(player));
@@ -94,7 +94,7 @@ public class SoundHandler {
                 break;
             case FLAMETHROWER:
                 if (!flamethrowerSounds.contains(uuid)) {
-                    EntityPlayer player = world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity player = world.getPlayerEntityByUUID(uuid);
                     if (player != null) {
                         flamethrowerSounds.add(uuid);
                         //TODO: Evaluate at some point if there is a better way to do this

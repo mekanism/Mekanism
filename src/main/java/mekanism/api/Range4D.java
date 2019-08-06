@@ -2,8 +2,8 @@ package mekanism.api;
 
 import java.util.HashSet;
 import java.util.Set;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class Range4D {
@@ -40,7 +40,7 @@ public class Range4D {
         this(coord.x, coord.y, coord.z, coord.x + 1, coord.y + 1, coord.z + 1, coord.dimensionId);
     }
 
-    public static Range4D getChunkRange(EntityPlayer player) {
+    public static Range4D getChunkRange(PlayerEntity player) {
         int radius = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getViewDistance();
         return new Range4D(new Chunk3D(player)).expandChunks(radius);
     }
@@ -76,7 +76,7 @@ public class Range4D {
                (range.yMax + 0.99999 > yMin) && (zMax + 0.99999 > range.zMin) && (range.zMax + 0.99999 > zMin);
     }
 
-    public boolean hasPlayerInRange(EntityPlayerMP player) {
+    public boolean hasPlayerInRange(ServerPlayerEntity player) {
         if (player.dimension != dimensionId) {
             return false;
         }

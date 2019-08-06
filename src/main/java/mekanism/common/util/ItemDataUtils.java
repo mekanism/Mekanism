@@ -3,7 +3,7 @@ package mekanism.common.util;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -12,19 +12,19 @@ public final class ItemDataUtils {
     public static final String DATA_ID = "mekData";
 
     @Nonnull
-    public static NBTTagCompound getDataMap(ItemStack stack) {
+    public static CompoundNBT getDataMap(ItemStack stack) {
         initStack(stack);
         return stack.getTagCompound().getCompoundTag(DATA_ID);
     }
 
     @Nullable
-    public static NBTTagCompound getDataMapIfPresent(ItemStack stack) {
+    public static CompoundNBT getDataMapIfPresent(ItemStack stack) {
         return hasDataTag(stack) ? getDataMap(stack) : null;
     }
 
     @Nonnull
-    public static NBTTagCompound getDataMapIfPresentNN(ItemStack stack) {
-        return hasDataTag(stack) ? getDataMap(stack) : new NBTTagCompound();
+    public static CompoundNBT getDataMapIfPresentNN(ItemStack stack) {
+        return hasDataTag(stack) ? getDataMap(stack) : new CompoundNBT();
     }
 
     public static boolean hasData(ItemStack stack, String key) {
@@ -69,9 +69,9 @@ public final class ItemDataUtils {
         return getDataMap(stack).getString(key);
     }
 
-    public static NBTTagCompound getCompound(ItemStack stack, String key) {
+    public static CompoundNBT getCompound(ItemStack stack, String key) {
         if (!hasDataTag(stack)) {
-            return new NBTTagCompound();
+            return new CompoundNBT();
         }
         return getDataMap(stack).getCompoundTag(key);
     }
@@ -103,7 +103,7 @@ public final class ItemDataUtils {
         getDataMap(stack).setString(key, s);
     }
 
-    public static void setCompound(ItemStack stack, String key, NBTTagCompound tag) {
+    public static void setCompound(ItemStack stack, String key, CompoundNBT tag) {
         initStack(stack);
         getDataMap(stack).setTag(key, tag);
     }
@@ -119,10 +119,10 @@ public final class ItemDataUtils {
 
     private static void initStack(ItemStack stack) {
         if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
+            stack.setTagCompound(new CompoundNBT());
         }
         if (!stack.getTagCompound().hasKey(DATA_ID)) {
-            stack.getTagCompound().setTag(DATA_ID, new NBTTagCompound());
+            stack.getTagCompound().setTag(DATA_ID, new CompoundNBT());
         }
     }
 }

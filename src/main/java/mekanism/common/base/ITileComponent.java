@@ -2,17 +2,17 @@ package mekanism.common.base;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public interface ITileComponent {
 
     void tick();
 
-    void read(NBTTagCompound nbtTags);
+    void read(CompoundNBT nbtTags);
 
     void read(ByteBuf dataStream);
 
-    void write(NBTTagCompound nbtTags);
+    void write(CompoundNBT nbtTags);
 
     void write(TileNetworkList data);
 

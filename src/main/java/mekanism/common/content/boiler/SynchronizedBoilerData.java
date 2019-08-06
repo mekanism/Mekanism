@@ -11,7 +11,7 @@ import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -99,7 +99,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     }
 
     @Override
-    public double getInsulationCoefficient(EnumFacing side) {
+    public double getInsulationCoefficient(Direction side) {
         return CASING_INSULATION_COEFFICIENT * locations.size();
     }
 
@@ -124,12 +124,12 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     }
 
     @Override
-    public boolean canConnectHeat(EnumFacing side) {
+    public boolean canConnectHeat(Direction side) {
         return false;
     }
 
     @Override
-    public IHeatTransfer getAdjacent(EnumFacing side) {
+    public IHeatTransfer getAdjacent(Direction side) {
         return null;
     }
 }

@@ -18,9 +18,9 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -60,7 +60,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
         if (!getWorld().isRemote) {
             updateShare();
             IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(getPos(), getWorld());
-            for (EnumFacing side : getConnections(ConnectionType.PULL)) {
+            for (Direction side : getConnections(ConnectionType.PULL)) {
                 IFluidHandler container = connectedAcceptors[side.ordinal()];
                 if (container != null) {
                     FluidStack received = container.drain(getAvailablePull(), false);
@@ -111,7 +111,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("tier")) {
             tier = PipeTier.values()[nbtTags.getInteger("tier")];
@@ -126,10 +126,10 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         if (lastWrite != null && lastWrite.amount > 0) {
-            nbtTags.setTag("cacheFluid", lastWrite.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("cacheFluid", lastWrite.writeToNBT(new CompoundNBT()));
         } else {
             nbtTags.removeTag("cacheFluid");
         }
@@ -148,7 +148,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public boolean isValidAcceptor(TileEntity acceptor, EnumFacing side) {
+    public boolean isValidAcceptor(TileEntity acceptor, Direction side) {
         return PipeUtils.isValidAcceptorOnSide(acceptor, side);
     }
 
@@ -200,17 +200,17 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
         return takeFluid(resource, doFill);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         return getConnectionType(from) == ConnectionType.NORMAL;
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
+    public FluidTankInfo[] getTankInfo(Direction from) {
         if (from != null && getConnectionType(from) != ConnectionType.NONE) {
             //Our buffer or the network's buffer if we have a network
             return getAllTanks();
@@ -232,7 +232,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public IFluidHandler getCachedAcceptor(EnumFacing side) {
+    public IFluidHandler getCachedAcceptor(Direction side) {
         TileEntity tile = getCachedTile(side);
         if (CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
             return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
@@ -279,12 +279,12 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(manager.getWrapper(this, side));
         }

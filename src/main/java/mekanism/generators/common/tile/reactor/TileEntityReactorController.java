@@ -19,8 +19,8 @@ import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -152,7 +152,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+    public CompoundNBT writeToNBT(CompoundNBT tag) {
         super.writeToNBT(tag);
         tag.setBoolean("formed", isFormed());
         if (isFormed()) {
@@ -166,16 +166,16 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             tag.setInteger("injectionRate", 0);
             tag.setBoolean("burning", false);
         }
-        tag.setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
-        tag.setTag("deuteriumTank", deuteriumTank.write(new NBTTagCompound()));
-        tag.setTag("tritiumTank", tritiumTank.write(new NBTTagCompound()));
-        tag.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
-        tag.setTag("steamTank", steamTank.writeToNBT(new NBTTagCompound()));
+        tag.setTag("fuelTank", fuelTank.write(new CompoundNBT()));
+        tag.setTag("deuteriumTank", deuteriumTank.write(new CompoundNBT()));
+        tag.setTag("tritiumTank", tritiumTank.write(new CompoundNBT()));
+        tag.setTag("waterTank", waterTank.writeToNBT(new CompoundNBT()));
+        tag.setTag("steamTank", steamTank.writeToNBT(new CompoundNBT()));
         return tag;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tag) {
+    public void readFromNBT(CompoundNBT tag) {
         super.readFromNBT(tag);
         boolean formed = tag.getBoolean("formed");
         if (formed) {
@@ -291,7 +291,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return isFormed() ? new int[]{0} : InventoryUtils.EMPTY;
     }
 
@@ -301,7 +301,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Allow inserting
             return false;

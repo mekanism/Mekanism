@@ -23,7 +23,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -36,7 +36,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
     private Minecraft mc = FMLClientHandler.instance().getClient();
 
-    private Map<EnumFacing, Map<TransmissionType, DisplayInteger>> cachedOverlays = new EnumMap<>(EnumFacing.class);
+    private Map<Direction, Map<TransmissionType, DisplayInteger>> cachedOverlays = new EnumMap<>(Direction.class);
 
     public RenderConfigurableMachine() {
         rendererDispatcher = TileEntityRendererDispatcher.instance;
@@ -84,7 +84,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         }
     }
 
-    private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type) {
+    private DisplayInteger getOverlayDisplay(Direction side, TransmissionType type) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
             return cachedOverlays.get(side).get(type);
         }

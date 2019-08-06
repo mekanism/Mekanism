@@ -17,10 +17,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -32,13 +32,13 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     private GuiButton fuzzyButton;
 
-    public GuiMItemStackFilter(EntityPlayer player, TileEntityDigitalMiner tile, int index) {
+    public GuiMItemStackFilter(PlayerEntity player, TileEntityDigitalMiner tile, int index) {
         super(player, tile);
         origFilter = (MItemStackFilter) tileEntity.filters.get(index);
         filter = ((MItemStackFilter) tileEntity.filters.get(index)).clone();
     }
 
-    public GuiMItemStackFilter(EntityPlayer player, TileEntityDigitalMiner tile) {
+    public GuiMItemStackFilter(PlayerEntity player, TileEntityDigitalMiner tile) {
         super(player, tile);
         isNew = true;
         filter = new MItemStackFilter();
@@ -105,7 +105,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             if (overTypeInput(xAxis, yAxis)) {
                 ItemStack stack = mc.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    if (stack.getItem() instanceof ItemBlock) {
+                    if (stack.getItem() instanceof BlockItem) {
                         if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                             filter.setItemStack(stack.copy());
                             filter.getItemStack().setCount(1);

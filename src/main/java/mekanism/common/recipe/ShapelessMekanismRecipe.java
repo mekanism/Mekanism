@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
@@ -42,7 +42,7 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
         super(group, result, recipe);
     }
 
-    public static ShapelessMekanismRecipe create(NBTTagCompound nbtTags) {
+    public static ShapelessMekanismRecipe create(CompoundNBT nbtTags) {
         if (!nbtTags.hasKey("result") || !nbtTags.hasKey("input")) {
             Mekanism.logger.error(Mekanism.LOG_TAG + " Shapeless recipe parse error: missing input or result compound tag.");
             return null;
@@ -57,7 +57,7 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
 
         Object[] ret = new Object[list.tagCount()];
         for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound compound = list.getCompoundTagAt(i);
+            CompoundNBT compound = list.getCompoundTagAt(i);
             if (compound.hasKey("oredict")) {
                 ret[i] = compound.getString("oredict");
             } else if (compound.hasKey("itemstack")) {

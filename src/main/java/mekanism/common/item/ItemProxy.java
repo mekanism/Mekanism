@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -38,7 +38,7 @@ public class ItemProxy extends Item implements IItemMekanism {
             ItemDataUtils.removeData(stack, "savedItem");
         } else {
             ItemDataUtils.setBoolean(stack, "hasStack", true);
-            ItemDataUtils.setCompound(stack, "savedItem", save.writeToNBT(new NBTTagCompound()));
+            ItemDataUtils.setCompound(stack, "savedItem", save.writeToNBT(new CompoundNBT()));
         }
     }
 
@@ -51,8 +51,8 @@ public class ItemProxy extends Item implements IItemMekanism {
 
     @Override
     public void onUpdate(ItemStack stacks, World world, Entity entity, int j, boolean flag) {
-        if (entity instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) entity;
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entity;
             for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
                 ItemStack itemStack = player.inventory.mainInventory.get(i);
                 if (!itemStack.isEmpty() && itemStack.getItem() == this) {

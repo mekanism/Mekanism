@@ -8,9 +8,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -20,7 +20,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
     @Override
     public IMessage onMessage(FlamethrowerDataMessage message, MessageContext context) {
         // Queue up the processing on the central thread
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (message.packetType == FlamethrowerPacket.UPDATE) {
                 Mekanism.playerState.setFlamethrowerState(message.uuid, message.value, false);
@@ -55,7 +55,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
         protected Set<UUID> activeFlamethrowers;
 
-        public EnumHand currentHand;
+        public Hand currentHand;
         public UUID uuid;
         public boolean value;
 
@@ -66,7 +66,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
             packetType = type;
         }
 
-        public static FlamethrowerDataMessage MODE_CHANGE(EnumHand hand) {
+        public static FlamethrowerDataMessage MODE_CHANGE(Hand hand) {
             FlamethrowerDataMessage m = new FlamethrowerDataMessage(FlamethrowerPacket.MODE);
             m.currentHand = hand;
             return m;
@@ -108,7 +108,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
                 uuid = PacketHandler.readUUID(dataStream);
                 value = dataStream.readBoolean();
             } else if (packetType == FlamethrowerPacket.MODE) {
-                currentHand = EnumHand.values()[dataStream.readInt()];
+                currentHand = Hand.values()[dataStream.readInt()];
             } else if (packetType == FlamethrowerPacket.FULL) {
                 activeFlamethrowers = new HashSet<>();
 

@@ -23,13 +23,13 @@ import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -48,7 +48,7 @@ public abstract class BlockTileDrops extends Block {
     }
 
     @Nonnull
-    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+    protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         ItemStack itemStack = new ItemStack(this);
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity == null) {
@@ -102,25 +102,25 @@ public abstract class BlockTileDrops extends Block {
         return itemStack;
     }
 
-    protected ItemStack setItemData(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
+    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
         return stack;
     }
 
     /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)}.
+     * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)}.
      *
      * @author Forge
-     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
+     * @see BlockFlowerPot#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
      */
     @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos, @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
+    public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.setBlockToAir(pos);
     }
 
     /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not called, because only {@link
-     * Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
+     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(BlockState)} is not called, because only {@link
+     * Block#getDrops(NonNullList, IBlockAccess, BlockPos, BlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
      * silk touched by default anyway.
      *
      * @return false
@@ -132,32 +132,32 @@ public abstract class BlockTileDrops extends Block {
     }
 
     @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
+    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull BlockState state, int fortune) {
         drops.add(getDropItem(state, world, pos));
     }
 
     /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)}. Used together with {@link
-     * Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)}.
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, BlockState, int)}. Used together with {@link
+     * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
-     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
+     * @see BlockFlowerPot#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)
      */
     @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest) {
         return willHarvest || super.removedByPlayer(state, world, pos, player, false);
     }
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player) {
         return getDropItem(state, world, pos);
     }
 
     //TODO: Try to merge BlockMekanismContainer and this class
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity == null) {
             return;
@@ -170,29 +170,29 @@ public abstract class BlockTileDrops extends Block {
         //TODO: Should this just be TileEntity and then check instance of and abstract things further
         TileEntityMekanism tile = (TileEntityMekanism) tileEntity;
         if (this instanceof IStateFacing) {
-            EnumFacing change = EnumFacing.SOUTH;
-            if (tile.canSetFacing(EnumFacing.DOWN) && tile.canSetFacing(EnumFacing.UP)) {
+            Direction change = Direction.SOUTH;
+            if (tile.canSetFacing(Direction.DOWN) && tile.canSetFacing(Direction.UP)) {
                 int height = Math.round(placer.rotationPitch);
                 if (height >= 65) {
-                    change = EnumFacing.UP;
+                    change = Direction.UP;
                 } else if (height <= -65) {
-                    change = EnumFacing.DOWN;
+                    change = Direction.DOWN;
                 }
             }
-            if (change != EnumFacing.DOWN && change != EnumFacing.UP) {
+            if (change != Direction.DOWN && change != Direction.UP) {
                 int side = MathHelper.floor((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
                 switch (side) {
                     case 0:
-                        change = EnumFacing.NORTH;
+                        change = Direction.NORTH;
                         break;
                     case 1:
-                        change = EnumFacing.EAST;
+                        change = Direction.EAST;
                         break;
                     case 2:
-                        change = EnumFacing.SOUTH;
+                        change = Direction.SOUTH;
                         break;
                     case 3:
-                        change = EnumFacing.WEST;
+                        change = Direction.WEST;
                         break;
                 }
             }
@@ -272,12 +272,12 @@ public abstract class BlockTileDrops extends Block {
     }
 
     //TODO: Method to override for setting some simple tile specific stuff
-    public void setTileData(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack, TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, EntityLivingBase placer, ItemStack stack, TileEntityMekanism tile) {
 
     }
 
     @Override
-    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
+    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull Direction axis) {
         if (this instanceof IStateFacing) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityMekanism) {
@@ -292,7 +292,7 @@ public abstract class BlockTileDrops extends Block {
     }
 
     @Override
-    public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
+    public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof IBoundingBlock) {
             ((IBoundingBlock) tile).onBreak();

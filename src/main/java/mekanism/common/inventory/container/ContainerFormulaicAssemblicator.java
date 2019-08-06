@@ -13,7 +13,7 @@ import mekanism.common.inventory.slot.SlotSpecific;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.ChargeUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,7 @@ public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntit
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
         if (currentSlot != null && currentSlot.getHasStack()) {
@@ -100,7 +100,7 @@ public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntit
                     }
 
                     @Override
-                    public boolean canTakeStack(EntityPlayer player) {
+                    public boolean canTakeStack(PlayerEntity player) {
                         return !tileEntity.autoMode;
                     }
 

@@ -10,16 +10,16 @@ import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,10 +57,10 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!player.isSneaking() && !world.isAirBlock(pos) && stack.getItemDamage() == 0) {
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             int meta = block.getMetaFromState(state);
             if (!world.isRemote && MekanismAPI.isBlockCompatible(block, meta) && state.getBlockHardness(world, pos) != -1) {
@@ -70,7 +70,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
                 isMonitoring = true;
                 if (world.getTileEntity(pos) != null) {
                     TileEntity tile = world.getTileEntity(pos);
-                    NBTTagCompound tag = new NBTTagCompound();
+                    CompoundNBT tag = new CompoundNBT();
                     tile.writeToNBT(tag);
                     data.tileTag = tag;
                 }
@@ -96,8 +96,8 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, @Nonnull IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, World world, @Nonnull BlockPos pos, Direction side, float hitX, float hitY,
+          float hitZ, @Nonnull BlockState state) {
         if (world.isRemote) {
             return true;
         }
@@ -112,7 +112,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
     }
 
     public void setBlockData(ItemStack itemstack, BlockData data) {
-        ItemDataUtils.setCompound(itemstack, "blockData", data.write(new NBTTagCompound()));
+        ItemDataUtils.setCompound(itemstack, "blockData", data.write(new CompoundNBT()));
     }
 
     public BlockData getBlockData(ItemStack itemstack) {

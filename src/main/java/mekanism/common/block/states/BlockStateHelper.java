@@ -18,10 +18,10 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Plane;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Plane;
 
 public class BlockStateHelper {
 
@@ -73,13 +73,13 @@ public class BlockStateHelper {
         return new BlockStateContainer(block, properties.toArray(new IProperty[0]));
     }
 
-    public static IBlockState getActualState(@Nonnull Block block, @Nonnull IBlockState state, @Nonnull TileEntity tile) {
+    public static BlockState getActualState(@Nonnull Block block, @Nonnull BlockState state, @Nonnull TileEntity tile) {
         if (block instanceof IStateFacing) {
-            EnumFacing facing = getFacing(tile);
+            Direction facing = getFacing(tile);
             if (facing != null) {
                 if (((IStateFacing) block).supportsAll()) {
                     state = state.withProperty(facingProperty, facing);
-                } else if (facing != EnumFacing.DOWN && facing != EnumFacing.UP) {
+                } else if (facing != Direction.DOWN && facing != Direction.UP) {
                     state = state.withProperty(horizontalFacingProperty, facing);
                 }
             }
@@ -95,18 +95,18 @@ public class BlockStateHelper {
         }
         if (block instanceof IStateConnection) {
             //Add all the different connection types
-            state = state.withProperty(downConnectionProperty, getStateConnection(tile, EnumFacing.DOWN));
-            state = state.withProperty(upConnectionProperty, getStateConnection(tile, EnumFacing.UP));
-            state = state.withProperty(northConnectionProperty, getStateConnection(tile, EnumFacing.NORTH));
-            state = state.withProperty(southConnectionProperty, getStateConnection(tile, EnumFacing.SOUTH));
-            state = state.withProperty(westConnectionProperty, getStateConnection(tile, EnumFacing.WEST));
-            state = state.withProperty(eastConnectionProperty, getStateConnection(tile, EnumFacing.EAST));
+            state = state.withProperty(downConnectionProperty, getStateConnection(tile, Direction.DOWN));
+            state = state.withProperty(upConnectionProperty, getStateConnection(tile, Direction.UP));
+            state = state.withProperty(northConnectionProperty, getStateConnection(tile, Direction.NORTH));
+            state = state.withProperty(southConnectionProperty, getStateConnection(tile, Direction.SOUTH));
+            state = state.withProperty(westConnectionProperty, getStateConnection(tile, Direction.WEST));
+            state = state.withProperty(eastConnectionProperty, getStateConnection(tile, Direction.EAST));
         }
         return state;
     }
 
     @Nullable
-    private static EnumFacing getFacing(@Nonnull TileEntity tile) {
+    private static Direction getFacing(@Nonnull TileEntity tile) {
         //TODO: Make Glow Panel implement ITileDirectional
         if (tile instanceof ITileDirectional) {
             ITileDirectional directional = (ITileDirectional) tile;
@@ -136,7 +136,7 @@ public class BlockStateHelper {
     }
 
     @Nonnull
-    private static ConnectionType getStateConnection(@Nonnull TileEntity tile, @Nonnull EnumFacing side) {
+    private static ConnectionType getStateConnection(@Nonnull TileEntity tile, @Nonnull Direction side) {
         if (tile instanceof TileEntitySidedPipe) {
             return ((TileEntitySidedPipe) tile).getConnectionType(side);
         }

@@ -12,7 +12,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public final class SecurityUtils {
 
-    public static boolean canAccess(EntityPlayer player, ItemStack stack) {
+    public static boolean canAccess(PlayerEntity player, ItemStack stack) {
         // If protection is disabled, access is always granted
         if (!MekanismConfig.current().general.allowProtection.val()) {
             return true;
@@ -39,7 +39,7 @@ public final class SecurityUtils {
         return canAccess(security.getSecurity(stack), player, security.getOwnerUUID(stack));
     }
 
-    public static boolean canAccess(EntityPlayer player, TileEntity tile) {
+    public static boolean canAccess(PlayerEntity player, TileEntity tile) {
         if (!(tile instanceof ISecurityTile) || !((ISecurityTile) tile).hasSecurity()) {
             //If this tile does not have security allow access
             return true;
@@ -51,7 +51,7 @@ public final class SecurityUtils {
         return canAccess(security.getSecurity().getMode(), player, security.getSecurity().getOwnerUUID());
     }
 
-    private static boolean canAccess(SecurityMode mode, EntityPlayer player, UUID owner) {
+    private static boolean canAccess(SecurityMode mode, PlayerEntity player, UUID owner) {
         // If protection is disabled, access is always granted
         if (!MekanismConfig.current().general.allowProtection.val()) {
             return true;
@@ -85,7 +85,7 @@ public final class SecurityUtils {
         return null;
     }
 
-    public static String getOwnerDisplay(EntityPlayer player, String ownerName) {
+    public static String getOwnerDisplay(PlayerEntity player, String ownerName) {
         if (ownerName == null) {
             return EnumColor.RED + LangUtils.localize("gui.noOwner");
         }
@@ -93,7 +93,7 @@ public final class SecurityUtils {
                                                                           ? EnumColor.BRIGHT_GREEN : EnumColor.RED) + ownerName;
     }
 
-    public static void displayNoAccess(EntityPlayer player) {
+    public static void displayNoAccess(PlayerEntity player) {
         player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
     }
 

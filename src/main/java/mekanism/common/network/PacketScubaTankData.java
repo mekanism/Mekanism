@@ -8,7 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -20,7 +20,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
     @Override
     public IMessage onMessage(ScubaTankDataMessage message, MessageContext context) {
         // Queue up processing on the central thread
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (message.packetType == ScubaTankPacket.UPDATE) {
                 Mekanism.playerState.setGasmaskState(message.uuid, message.value, false);

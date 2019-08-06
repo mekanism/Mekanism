@@ -11,14 +11,14 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.MekanismFluids;
 import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import org.lwjgl.opengl.GL11;
 
 public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTeleporter> {
@@ -40,9 +40,9 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 
             bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate((float) x, (float) y, (float) z);
-            Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
+            Coord4D obj = Coord4D.get(tileEntity).offset(Direction.WEST);
             int type = 0;
-            IBlockState s = obj.getBlockState(tileEntity.getWorld());
+            BlockState s = obj.getBlockState(tileEntity.getWorld());
             if (s.getBlock() instanceof BlockTeleporter) {
                 type = 1;
             }

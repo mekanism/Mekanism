@@ -14,11 +14,11 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -100,7 +100,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     @Override
-    public void markDirtyAcceptor(EnumFacing side) {
+    public void markDirtyAcceptor(Direction side) {
         super.markDirtyAcceptor(side);
         if (getTransmitter().hasTransmitterNetwork()) {
             getTransmitter().getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
@@ -117,7 +117,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
             if (canHaveIncompatibleNetworks()) {
                 //We only need to check if we can have incompatible networks and if we actually have a network
                 boolean networkUpdated = false;
-                for (EnumFacing side : EnumFacing.values()) {
+                for (Direction side : Direction.values()) {
                     if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
                         //Recheck the side that is now enabled, as we manually merge this
                         // cannot be simplified to a first match is good enough
@@ -135,7 +135,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     @Override
-    protected void recheckConnection(EnumFacing side) {
+    protected void recheckConnection(Direction side) {
         if (canHaveIncompatibleNetworks() && getTransmitter().hasTransmitterNetwork()) {
             //We only need to check if we can have incompatible networks and if we actually have a network
             if (recheckConnectionPrechecked(side)) {
@@ -163,7 +163,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         }
     }
 
-    private boolean recheckConnectionPrechecked(EnumFacing side) {
+    private boolean recheckConnectionPrechecked(Direction side) {
         final TileEntity tileEntity = MekanismUtils.getTileEntity(world, getPos().offset(side));
         if (tileEntity instanceof TileEntityTransmitter) {
             N network = getTransmitter().getTransmitterNetwork();
@@ -209,9 +209,9 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         return false;
     }
 
-    public abstract A getCachedAcceptor(EnumFacing side);
+    public abstract A getCachedAcceptor(Direction side);
 
-    protected TileEntity getCachedTile(EnumFacing side) {
+    protected TileEntity getCachedTile(Direction side) {
         ConnectionType type = connectionTypes[side.ordinal()];
         if (type == ConnectionType.PULL || type == ConnectionType.NONE) {
             return null;
@@ -220,7 +220,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     @Override
-    public void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal) {
+    public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, int tierOrdinal) {
         if (getTransmitter().hasTransmitterNetwork()) {
             int upgraded = 0;
             List<IGridTransmitter<A, N, BUFFER>> list = new ArrayList<>(getTransmitter().getTransmitterNetwork().getTransmitters());
@@ -282,12 +282,12 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public abstract void updateShare();
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.GRID_TRANSMITTER_CAPABILITY || capability == Capabilities.ALLOY_INTERACTION_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.GRID_TRANSMITTER_CAPABILITY) {
             return Capabilities.GRID_TRANSMITTER_CAPABILITY.cast(getTransmitter());
         } else if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {

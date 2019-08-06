@@ -1,7 +1,7 @@
 package mekanism.common.integration.wrenches;
 
 import mekanism.api.IMekWrench;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
@@ -24,7 +24,7 @@ public class IC2Proxy implements MekWrenchProxy, IMekWrench {
     }
 
     @Override
-    public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos) {
+    public boolean canUseWrench(ItemStack stack, PlayerEntity player, BlockPos pos) {
         return wrenchClass != null && wrenchClass.isInstance(stack.getItem());
     }
 

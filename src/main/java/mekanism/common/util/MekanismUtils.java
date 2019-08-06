@@ -37,20 +37,20 @@ import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -79,7 +79,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public final class MekanismUtils {
 
-    public static final EnumFacing[] SIDE_DIRS = new EnumFacing[]{EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
+    public static final Direction[] SIDE_DIRS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
     public static final Map<String, Class<?>> classesFound = new HashMap<>();
 
@@ -87,12 +87,12 @@ public final class MekanismUtils {
     /**
      * Pre-calculated cache of translated block orientations
      */
-    private static final EnumFacing[][] baseOrientations = new EnumFacing[EnumFacing.values().length][EnumFacing.values().length];
+    private static final Direction[][] baseOrientations = new Direction[Direction.values().length][Direction.values().length];
 
     static {
-        for (int blockFacing = 0; blockFacing < EnumFacing.values().length; blockFacing++) {
-            for (int side = 0; side < EnumFacing.values().length; side++) {
-                baseOrientations[blockFacing][side] = getBaseOrientation(EnumFacing.values()[side], EnumFacing.values()[blockFacing]);
+        for (int blockFacing = 0; blockFacing < Direction.values().length; blockFacing++) {
+            for (int side = 0; side < Direction.values().length; side++) {
+                baseOrientations[blockFacing][side] = getBaseOrientation(Direction.values()[side], Direction.values()[blockFacing]);
             }
         }
     }
@@ -143,7 +143,7 @@ public final class MekanismUtils {
      *
      * @return left side
      */
-    public static EnumFacing getLeft(EnumFacing orientation) {
+    public static Direction getLeft(Direction orientation) {
         return orientation.rotateY();
     }
 
@@ -154,7 +154,7 @@ public final class MekanismUtils {
      *
      * @return right side
      */
-    public static EnumFacing getRight(EnumFacing orientation) {
+    public static Direction getRight(Direction orientation) {
         return orientation.rotateYCCW();
     }
 
@@ -163,9 +163,9 @@ public final class MekanismUtils {
      *
      * @param blockFacing - what orientation the block is facing
      *
-     * @return EnumFacing.values(), translated to machine orientation
+     * @return Direction.values(), translated to machine orientation
      */
-    public static EnumFacing[] getBaseOrientations(EnumFacing blockFacing) {
+    public static Direction[] getBaseOrientations(Direction blockFacing) {
         return baseOrientations[blockFacing.ordinal()];
     }
 
@@ -177,49 +177,49 @@ public final class MekanismUtils {
      *
      * @return machine orientation
      */
-    public static EnumFacing getBaseOrientation(EnumFacing side, EnumFacing blockFacing) {
-        if (blockFacing == EnumFacing.DOWN) {
+    public static Direction getBaseOrientation(Direction side, Direction blockFacing) {
+        if (blockFacing == Direction.DOWN) {
             switch (side) {
                 case DOWN:
-                    return EnumFacing.NORTH;
+                    return Direction.NORTH;
                 case UP:
-                    return EnumFacing.SOUTH;
+                    return Direction.SOUTH;
                 case NORTH:
-                    return EnumFacing.UP;
+                    return Direction.UP;
                 case SOUTH:
-                    return EnumFacing.DOWN;
+                    return Direction.DOWN;
                 default:
                     return side;
             }
-        } else if (blockFacing == EnumFacing.UP) {
+        } else if (blockFacing == Direction.UP) {
             switch (side) {
                 case DOWN:
-                    return EnumFacing.SOUTH;
+                    return Direction.SOUTH;
                 case UP:
-                    return EnumFacing.NORTH;
+                    return Direction.NORTH;
                 case NORTH:
-                    return EnumFacing.DOWN;
+                    return Direction.DOWN;
                 case SOUTH:
-                    return EnumFacing.UP;
+                    return Direction.UP;
                 default:
                     return side;
             }
-        } else if (blockFacing == EnumFacing.SOUTH || side.getAxis() == Axis.Y) {
+        } else if (blockFacing == Direction.SOUTH || side.getAxis() == Axis.Y) {
             if (side.getAxis() == Axis.Z) {
                 return side.getOpposite();
             }
             return side;
-        } else if (blockFacing == EnumFacing.NORTH) {
+        } else if (blockFacing == Direction.NORTH) {
             if (side.getAxis() == Axis.Z) {
                 return side;
             }
             return side.getOpposite();
-        } else if (blockFacing == EnumFacing.WEST) {
+        } else if (blockFacing == Direction.WEST) {
             if (side.getAxis() == Axis.Z) {
                 return getRight(side);
             }
             return getLeft(side);
-        } else if (blockFacing == EnumFacing.EAST) {
+        } else if (blockFacing == Direction.EAST) {
             if (side.getAxis() == Axis.Z) {
                 return getLeft(side);
             }
@@ -235,7 +235,7 @@ public final class MekanismUtils {
      * @param type      - the TransmissionType to modify
      * @param direction - side to increment output of
      */
-    public static void incrementOutput(ISideConfiguration config, TransmissionType type, EnumFacing direction) {
+    public static void incrementOutput(ISideConfiguration config, TransmissionType type, Direction direction) {
         ArrayList<SideData> outputs = config.getConfig().getOutputs(type);
         SideConfig sideConfig = config.getConfig().getConfig(type);
         int max = outputs.size() - 1;
@@ -257,7 +257,7 @@ public final class MekanismUtils {
      * @param type      - the TransmissionType to modify
      * @param direction - side to increment output of
      */
-    public static void decrementOutput(ISideConfiguration config, TransmissionType type, EnumFacing direction) {
+    public static void decrementOutput(ISideConfiguration config, TransmissionType type, Direction direction) {
         ArrayList<SideData> outputs = config.getConfig().getOutputs(type);
         SideConfig sideConfig = config.getConfig().getConfig(type);
         int max = outputs.size() - 1;
@@ -362,10 +362,10 @@ public final class MekanismUtils {
      * @return if the block is indirectly getting powered by LOADED chunks
      */
     public static boolean isGettingPowered(World world, Coord4D coord) {
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             Coord4D sideCoord = coord.offset(side);
             if (sideCoord.exists(world) && sideCoord.offset(side).exists(world)) {
-                IBlockState blockState = sideCoord.getBlockState(world);
+                BlockState blockState = sideCoord.getBlockState(world);
                 boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, coord.getPos(), side);
                 if (weakPower && isDirectlyGettingPowered(world, sideCoord)) {
                     return true;
@@ -386,7 +386,7 @@ public final class MekanismUtils {
      * @return if the block is directly getting powered
      */
     public static boolean isDirectlyGettingPowered(World world, Coord4D coord) {
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             Coord4D sideCoord = coord.offset(side);
             if (sideCoord.exists(world)) {
                 if (world.getRedstonePower(coord.getPos(), side) > 0) {
@@ -404,7 +404,7 @@ public final class MekanismUtils {
      * @param coord - Coord4D to perform the operation on
      */
     public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord) {
-        for (EnumFacing dir : EnumFacing.values()) {
+        for (Direction dir : Direction.values()) {
             Coord4D offset = coord.offset(dir);
             if (offset.exists(world)) {
                 notifyNeighborofChange(world, offset, coord.getPos());
@@ -429,7 +429,7 @@ public final class MekanismUtils {
      * @param fromPos pos of our block that updated
      */
     public static void notifyNeighborofChange(World world, Coord4D coord, BlockPos fromPos) {
-        IBlockState state = coord.getBlockState(world);
+        BlockState state = coord.getBlockState(world);
         state.getBlock().onNeighborChange(world, coord.getPos(), fromPos);
         state.neighborChanged(world, coord.getPos(), world.getBlockState(fromPos).getBlock(), fromPos);
     }
@@ -441,9 +441,9 @@ public final class MekanismUtils {
      * @param neighborSide The side the neighbor to notify is on
      * @param fromPos      pos of our block that updated
      */
-    public static void notifyNeighborOfChange(World world, EnumFacing neighborSide, BlockPos fromPos) {
+    public static void notifyNeighborOfChange(World world, Direction neighborSide, BlockPos fromPos) {
         BlockPos neighbor = fromPos.offset(neighborSide);
-        IBlockState state = world.getBlockState(neighbor);
+        BlockState state = world.getBlockState(neighbor);
         state.getBlock().onNeighborChange(world, neighbor, fromPos);
         state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos);
     }
@@ -529,7 +529,7 @@ public final class MekanismUtils {
      * @return the fluid at the certain location, null if it doesn't exist
      */
     public static FluidStack getFluid(World world, Coord4D pos, boolean filter) {
-        IBlockState state = pos.getBlockState(world);
+        BlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
         if ((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && state.getValue(BlockLiquid.LEVEL) == 0) {
             if (!filter) {
@@ -556,7 +556,7 @@ public final class MekanismUtils {
      * @return if the block is a dead fluid
      */
     public static boolean isDeadFluid(World world, Coord4D pos) {
-        IBlockState state = pos.getBlockState(world);
+        BlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
         if (block.getMetaFromState(state) == 0) {
             return false;
@@ -588,7 +588,7 @@ public final class MekanismUtils {
      *
      * @apiNote Should only be used from the server side
      */
-    public static void openItemGui(EntityPlayer player, EnumHand hand, int guiID) {
+    public static void openItemGui(PlayerEntity player, Hand hand, int guiID) {
         //current item, hand, gui type
         player.openGui(Mekanism.instance, 0, player.world, player.inventory.currentItem, hand.ordinal(), guiID);
     }
@@ -598,7 +598,7 @@ public final class MekanismUtils {
      *
      * @apiNote Should only be used from the server side
      */
-    public static void openEntityGui(EntityPlayer player, Entity entity, int guiID) {
+    public static void openEntityGui(PlayerEntity player, Entity entity, int guiID) {
         //entity id, gui type
         player.openGui(Mekanism.instance, 1, player.world, entity.getEntityId(), guiID, 0);
     }
@@ -661,7 +661,7 @@ public final class MekanismUtils {
      *
      * @return raytraced value
      */
-    public static RayTraceResult rayTrace(World world, EntityPlayer player) {
+    public static RayTraceResult rayTrace(World world, PlayerEntity player) {
         double reach = Mekanism.proxy.getReach(player);
         Vec3d headVec = getHeadVec(player);
         Vec3d lookVec = player.getLook(1);
@@ -676,13 +676,13 @@ public final class MekanismUtils {
      *
      * @return head location
      */
-    private static Vec3d getHeadVec(EntityPlayer player) {
+    private static Vec3d getHeadVec(PlayerEntity player) {
         double posX = player.posX;
         double posY = player.posY;
         double posZ = player.posZ;
         if (!player.world.isRemote) {
             posY += player.getEyeHeight();
-            if (player instanceof EntityPlayerMP && player.isSneaking()) {
+            if (player instanceof ServerPlayerEntity && player.isSneaking()) {
                 posY -= 0.08;
             }
         }
@@ -839,7 +839,7 @@ public final class MekanismUtils {
     public static InventoryCrafting getDummyCraftingInv() {
         Container tempContainer = new Container() {
             @Override
-            public boolean canInteractWith(@Nonnull EntityPlayer player) {
+            public boolean canInteractWith(@Nonnull PlayerEntity player) {
                 return false;
             }
         };
@@ -900,17 +900,17 @@ public final class MekanismUtils {
     }
 
     /**
-     * Whether or not a given EntityPlayer is considered an Op.
+     * Whether or not a given PlayerEntity is considered an Op.
      *
      * @param p - player to check
      *
      * @return if the player has operator privileges
      */
-    public static boolean isOp(EntityPlayer p) {
-        if (!(p instanceof EntityPlayerMP)) {
+    public static boolean isOp(PlayerEntity p) {
+        if (!(p instanceof ServerPlayerEntity)) {
             return false;
         }
-        EntityPlayerMP player = (EntityPlayerMP) p;
+        ServerPlayerEntity player = (ServerPlayerEntity) p;
         return MekanismConfig.current().general.opsBypassRestrictions.val() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
     }
 
@@ -979,7 +979,7 @@ public final class MekanismUtils {
      * @deprecated use {@link mekanism.common.integration.wrenches.Wrenches#getHandler(ItemStack)}
      */
     @Deprecated
-    public static boolean hasUsableWrench(EntityPlayer player, BlockPos pos) {
+    public static boolean hasUsableWrench(PlayerEntity player, BlockPos pos) {
         ItemStack tool = player.inventory.getCurrentItem();
         if (tool.isEmpty()) {
             return false;
@@ -1039,7 +1039,7 @@ public final class MekanismUtils {
     /**
      * Dismantles a block, dropping it and removing it from the world.
      */
-    public static void dismantleBlock(Block block, IBlockState state, World world, BlockPos pos) {
+    public static void dismantleBlock(Block block, BlockState state, World world, BlockPos pos) {
         block.dropBlockAsItem(world, pos, state, 0);
         world.setBlockToAir(pos);
     }

@@ -9,7 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public abstract class TransporterFilter implements IFilter {
 
@@ -21,7 +21,7 @@ public abstract class TransporterFilter implements IFilter {
 
     public boolean allowDefault;
 
-    public static TransporterFilter readFromNBT(NBTTagCompound nbtTags) {
+    public static TransporterFilter readFromNBT(CompoundNBT nbtTags) {
         TransporterFilter filter = getType(nbtTags.getInteger("type"));
         filter.read(nbtTags);
         return filter;
@@ -58,14 +58,14 @@ public abstract class TransporterFilter implements IFilter {
         return searcher.takeTopStack(getFinder(), singleItem ? 1 : 64);
     }
 
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         nbtTags.setBoolean("allowDefault", allowDefault);
         if (color != null) {
             nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
         }
     }
 
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         allowDefault = nbtTags.getBoolean("allowDefault");
         if (nbtTags.hasKey("color")) {
             color = TransporterUtils.colors.get(nbtTags.getInteger("color"));

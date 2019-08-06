@@ -9,12 +9,12 @@ import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,7 +36,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(EntityPlayer entityplayer, World world, BlockPos pos, EnumHand hand, EnumFacing side, float posX, float posY, float posZ) {
+    public EnumActionResult onItemUse(PlayerEntity entityplayer, World world, BlockPos pos, Hand hand, Direction side, float posX, float posY, float posZ) {
         TileEntity tileEntity = world.getTileEntity(pos);
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (tileEntity instanceof TileEntityChargepad) {

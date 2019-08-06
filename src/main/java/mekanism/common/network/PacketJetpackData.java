@@ -9,7 +9,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -21,7 +21,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
     @Override
     public IMessage onMessage(JetpackDataMessage message, MessageContext context) {
         // Queue up the processing on the central thread
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (message.packetType == JetpackPacket.UPDATE) {
                 Mekanism.playerState.setJetpackState(message.uuid, message.value, false);

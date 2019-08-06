@@ -5,7 +5,7 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.common.InfuseStorage;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -37,7 +37,7 @@ public class InfusionInput extends MachineInput<InfusionInput> implements IWildI
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         inputStack = new ItemStack(nbtTags.getCompoundTag("input"));
         InfuseType type = InfuseRegistry.get(nbtTags.getString("infuseType"));
         int amount = nbtTags.getInteger("infuseAmount");

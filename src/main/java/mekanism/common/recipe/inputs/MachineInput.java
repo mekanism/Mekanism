@@ -6,7 +6,7 @@ import mekanism.common.OreDictCache;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
 
@@ -30,7 +30,7 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
 
     public abstract int hashIngredients();
 
-    public abstract void load(NBTTagCompound nbtTags);
+    public abstract void load(CompoundNBT nbtTags);
 
     /**
      * Test equality to another input. This should return true if the input matches this one, IGNORING AMOUNTS. Allows usage of HashMap optimisation to get recipes.

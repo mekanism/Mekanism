@@ -9,7 +9,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -74,7 +74,7 @@ public class PlayerState {
         }
     }
 
-    public boolean isJetpackOn(EntityPlayer p) {
+    public boolean isJetpackOn(PlayerEntity p) {
         return activeJetpacks.contains(p.getUniqueID());
     }
 
@@ -117,7 +117,7 @@ public class PlayerState {
         }
     }
 
-    public boolean isGasmaskOn(EntityPlayer p) {
+    public boolean isGasmaskOn(PlayerEntity p) {
         return activeGasmasks.contains(p.getUniqueID());
     }
 
@@ -178,7 +178,7 @@ public class PlayerState {
         }
     }
 
-    public boolean isFlamethrowerOn(EntityPlayer p) {
+    public boolean isFlamethrowerOn(PlayerEntity p) {
         return activeFlamethrowers.contains(p.getUniqueID());
     }
 

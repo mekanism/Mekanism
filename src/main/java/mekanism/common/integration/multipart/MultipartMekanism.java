@@ -31,16 +31,16 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -61,7 +61,7 @@ public class MultipartMekanism implements IMCMPAddon {
     public static MultipartTransmitter TRANSMITTER_MP;
     public static MultipartGlowPanel GLOWPANEL_MP;
 
-    public static boolean hasConnectionWith(TileEntity tile, EnumFacing side) {
+    public static boolean hasConnectionWith(TileEntity tile, Direction side) {
         if (tile != null && tile.hasCapability(MCMPCapabilities.MULTIPART_TILE, null)) {
             IMultipartTile multipartTile = tile.getCapability(MCMPCapabilities.MULTIPART_TILE, null);
             if (multipartTile instanceof MultipartTile && ((MultipartTile) multipartTile).getID().equals("transmitter")) {
@@ -80,7 +80,7 @@ public class MultipartMekanism implements IMCMPAddon {
         return true;
     }
 
-    public static Collection<AxisAlignedBB> getTransmitterSideBounds(IMultipartTile tile, EnumFacing side) {
+    public static Collection<AxisAlignedBB> getTransmitterSideBounds(IMultipartTile tile, Direction side) {
         if (tile.getTileEntity() instanceof TileEntityTransmitter) {
             TileEntityTransmitter transmitter = (TileEntityTransmitter) tile.getTileEntity();
             boolean large = transmitter.getTransmitterType().getSize() == Size.LARGE;
@@ -120,11 +120,11 @@ public class MultipartMekanism implements IMCMPAddon {
         return tile;
     }
 
-    public static boolean placeMultipartBlock(Block block, ItemStack is, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY,
-          float hitZ, IBlockState state) {
+    public static boolean placeMultipartBlock(Block block, ItemStack is, PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY,
+          float hitZ, BlockState state) {
         return ItemBlockMultipart.placeAt(is, player, player.getActiveHand(), world, pos, side, hitX, hitY, hitZ,
               block::getStateForPlacement, is.getMetadata(), MultipartRegistry.INSTANCE.getPart(block),
-              ((ItemBlock) is.getItem())::placeBlockAt, ItemBlockMultipart::placePartAt);
+              ((BlockItem) is.getItem())::placeBlockAt, ItemBlockMultipart::placePartAt);
     }
 
     @SubscribeEvent
@@ -156,13 +156,13 @@ public class MultipartMekanism implements IMCMPAddon {
             private MultipartTile tile;
 
             @Override
-            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+            public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable Direction facing) {
                 return capability == MCMPCapabilities.MULTIPART_TILE;
             }
 
             @Nullable
             @Override
-            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+            public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
                 if (capability == MCMPCapabilities.MULTIPART_TILE) {
                     if (tile == null) {
                         tile = new MultipartTile(e.getObject(), id);
@@ -191,9 +191,9 @@ public class MultipartMekanism implements IMCMPAddon {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void drawBlockHighlightEvent(DrawMultipartHighlightEvent ev) {
-        IBlockState state = ev.getPartInfo().getState();
+        BlockState state = ev.getPartInfo().getState();
         if (state.getBlock() instanceof BlockGlowPanel || state.getBlock() instanceof BlockTransmitter) {
-            EntityPlayer player = ev.getPlayer();
+            PlayerEntity player = ev.getPlayer();
             @SuppressWarnings("deprecation")
             AxisAlignedBB bb = state.getBlock().getSelectedBoundingBox(state, ev.getPartInfo().getPartWorld(), ev.getPartInfo().getPartPos());
             //NB rendering code copied from MCMultipart

@@ -13,7 +13,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,14 +21,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogisticalSorter> {
 
-    public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tile, int index) {
+    public GuiTModIDFilter(PlayerEntity player, TileEntityLogisticalSorter tile, int index) {
         super(player, tile);
         origFilter = (TModIDFilter) tileEntity.filters.get(index);
         filter = ((TModIDFilter) tileEntity.filters.get(index)).clone();
         updateStackList(filter.getModID());
     }
 
-    public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tile) {
+    public GuiTModIDFilter(PlayerEntity player, TileEntityLogisticalSorter tile) {
         super(player, tile);
         isNew = true;
         filter = new TModIDFilter();

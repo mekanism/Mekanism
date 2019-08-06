@@ -27,9 +27,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -80,7 +80,7 @@ public class TileComponentEjector implements ITileComponent {
         if (data != null && getEjecting(type)) {
             ITankManager tankManager = (ITankManager) this.tileEntity;
             if (tankManager.getTanks() != null) {
-                Set<EnumFacing> outputSides = getOutputSides(type, data);
+                Set<Direction> outputSides = getOutputSides(type, data);
                 if (type == TransmissionType.GAS) {
                     ejectGas(outputSides, (GasTank) tankManager.getTanks()[data.availableSlots[0]]);
                 } else if (type == TransmissionType.FLUID) {
@@ -90,7 +90,7 @@ public class TileComponentEjector implements ITileComponent {
         }
     }
 
-    private void ejectGas(Set<EnumFacing> outputSides, GasTank tank) {
+    private void ejectGas(Set<Direction> outputSides, GasTank tank) {
         if (tank.getGas() != null && tank.getStored() > 0) {
             GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
             int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
@@ -98,7 +98,7 @@ public class TileComponentEjector implements ITileComponent {
         }
     }
 
-    private void ejectFluid(Set<EnumFacing> outputSides, FluidTank tank) {
+    private void ejectFluid(Set<Direction> outputSides, FluidTank tank) {
         if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
             FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
             int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
@@ -106,16 +106,16 @@ public class TileComponentEjector implements ITileComponent {
         }
     }
 
-    public Set<EnumFacing> getOutputSides(TransmissionType type, SideData data) {
-        Set<EnumFacing> outputSides = EnumSet.noneOf(EnumFacing.class);
+    public Set<Direction> getOutputSides(TransmissionType type, SideData data) {
+        Set<Direction> outputSides = EnumSet.noneOf(Direction.class);
         TileComponentConfig config = ((ISideConfiguration) tileEntity).getConfig();
         SideConfig sideConfig = config.getConfig(type);
         List<SideData> outputs = config.getOutputs(type);
-        EnumFacing[] facings = MekanismUtils.getBaseOrientations(tileEntity.getDirection());
-        for (int i = 0; i < EnumFacing.values().length; i++) {
-            EnumFacing side = facings[i];
+        Direction[] facings = MekanismUtils.getBaseOrientations(tileEntity.getDirection());
+        for (int i = 0; i < Direction.values().length; i++) {
+            Direction side = facings[i];
             if (sideConfig.get(side) == outputs.indexOf(data)) {
-                outputSides.add(EnumFacing.values()[i]);
+                outputSides.add(Direction.values()[i]);
             }
         }
         return outputSides;
@@ -126,9 +126,9 @@ public class TileComponentEjector implements ITileComponent {
         if (data == null || !getEjecting(TransmissionType.ITEM)) {
             return;
         }
-        Set<EnumFacing> outputs = getOutputSides(TransmissionType.ITEM, data);
+        Set<Direction> outputs = getOutputSides(TransmissionType.ITEM, data);
         TransitRequest ejectMap = null;
-        for (EnumFacing side : outputs) {
+        for (Direction side : outputs) {
             if (ejectMap == null) {
                 ejectMap = getEjectItemMap(data);
                 if (ejectMap.isEmpty()) {
@@ -189,17 +189,17 @@ public class TileComponentEjector implements ITileComponent {
         MekanismUtils.saveChunk(tileEntity);
     }
 
-    public void setInputColor(EnumFacing side, EnumColor color) {
+    public void setInputColor(Direction side, EnumColor color) {
         inputColors[side.ordinal()] = color;
         MekanismUtils.saveChunk(tileEntity);
     }
 
-    public EnumColor getInputColor(EnumFacing side) {
+    public EnumColor getInputColor(Direction side) {
         return inputColors[side.ordinal()];
     }
 
     @Override
-    public void read(NBTTagCompound nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         strictInput = nbtTags.getBoolean("strictInput");
         if (nbtTags.hasKey("ejectColor")) {
             outputColor = readColor(nbtTags.getInteger("ejectColor"));
@@ -221,7 +221,7 @@ public class TileComponentEjector implements ITileComponent {
     }
 
     @Override
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         nbtTags.setBoolean("strictInput", strictInput);
         if (outputColor != null) {
             nbtTags.setInteger("ejectColor", getColorIndex(outputColor));

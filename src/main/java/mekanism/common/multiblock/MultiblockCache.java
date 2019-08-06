@@ -3,7 +3,7 @@ package mekanism.common.multiblock;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public abstract class MultiblockCache<T extends SynchronizedData<T>> {
 
@@ -13,7 +13,7 @@ public abstract class MultiblockCache<T extends SynchronizedData<T>> {
 
     public abstract void sync(T data);
 
-    public abstract void load(NBTTagCompound nbtTags);
+    public abstract void load(CompoundNBT nbtTags);
 
-    public abstract void save(NBTTagCompound nbtTags);
+    public abstract void save(CompoundNBT nbtTags);
 }

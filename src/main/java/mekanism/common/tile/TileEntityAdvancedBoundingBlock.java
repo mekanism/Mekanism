@@ -11,12 +11,12 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -122,7 +122,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer) {
+    public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;
@@ -131,7 +131,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public void openInventory(@Nonnull EntityPlayer player) {
+    public void openInventory(@Nonnull PlayerEntity player) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return;
@@ -140,7 +140,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public void closeInventory(@Nonnull EntityPlayer player) {
+    public void closeInventory(@Nonnull PlayerEntity player) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return;
@@ -177,7 +177,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return InventoryUtils.EMPTY;
@@ -186,7 +186,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;
@@ -195,7 +195,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean canExtractItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int i, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;
@@ -205,7 +205,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction) {
+    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction direction) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;
@@ -214,7 +214,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double acceptEnergy(Direction side, double amount, boolean simulate) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null || !canReceiveEnergy(side)) {
             return 0;
@@ -223,7 +223,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;
@@ -240,7 +240,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
+    public double injectEnergy(Direction directionFrom, double amount, double voltage) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null || !canReceiveEnergy(directionFrom)) {
             return amount;
@@ -312,16 +312,16 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags) {
+    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
-            return new NBTTagCompound();
+            return new CompoundNBT();
         }
         return inv.getConfigurationData(nbtTags);
     }
 
     @Override
-    public void setConfigurationData(NBTTagCompound nbtTags) {
+    public void setConfigurationData(CompoundNBT nbtTags) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return;
@@ -339,7 +339,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return super.hasCapability(capability, facing);
         }
@@ -351,7 +351,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return super.getCapability(capability, facing);
         }

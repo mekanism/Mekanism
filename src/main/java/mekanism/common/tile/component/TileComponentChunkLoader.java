@@ -14,7 +14,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -126,12 +126,12 @@ public class TileComponentChunkLoader implements ITileComponent {
     }
 
     @Override
-    public void read(NBTTagCompound nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         prevCoord = Coord4D.read(nbtTags.getCompoundTag("prevCoord"));
         chunkSet.clear();
         NBTTagList list = nbtTags.getTagList("chunkSet", NBT.TAG_COMPOUND);
         for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound compound = list.getCompoundTagAt(i);
+            CompoundNBT compound = list.getCompoundTagAt(i);
             chunkSet.add(new ChunkPos(compound.getInteger("chunkX"), compound.getInteger("chunkZ")));
         }
     }
@@ -141,14 +141,14 @@ public class TileComponentChunkLoader implements ITileComponent {
     }
 
     @Override
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         if (prevCoord != null) {
-            nbtTags.setTag("prevCoord", prevCoord.write(new NBTTagCompound()));
+            nbtTags.setTag("prevCoord", prevCoord.write(new CompoundNBT()));
         }
 
         NBTTagList list = new NBTTagList();
         for (ChunkPos pos : chunkSet) {
-            NBTTagCompound compound = new NBTTagCompound();
+            CompoundNBT compound = new CompoundNBT();
             compound.setInteger("chunkX", pos.x);
             compound.setInteger("chunkZ", pos.z);
             list.appendTag(compound);

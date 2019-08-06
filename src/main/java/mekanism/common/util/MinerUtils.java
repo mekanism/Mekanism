@@ -10,13 +10,13 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.math.BlockPos;
@@ -34,16 +34,16 @@ public final class MinerUtils {
 
     static {
         try {
-            getSilkTouchDrop = ReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", IBlockState.class);
+            getSilkTouchDrop = ReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", BlockState.class);
         } catch (UnableToFindMethodException e) {
             Mekanism.logger.error("Unable to find method Block.getSilkTouchDrop");
         }
     }
 
     public static List<ItemStack> getDrops(World world, Coord4D coord, boolean silk, BlockPos minerPosition) {
-        IBlockState state = coord.getBlockState(world);
+        BlockState state = coord.getBlockState(world);
         Block block = state.getBlock();
-        EntityPlayer fakePlayer = Mekanism.proxy.getDummyPlayer((WorldServer) world, minerPosition).get();
+        PlayerEntity fakePlayer = Mekanism.proxy.getDummyPlayer((WorldServer) world, minerPosition).get();
         if (block.isAir(state, world, coord.getPos())) {
             return Collections.emptyList();
         }
@@ -58,8 +58,8 @@ public final class MinerUtils {
                 TileEntityShulkerBox tileentityshulkerbox = (TileEntityShulkerBox) tileentity;
 
                 if (!tileentityshulkerbox.isCleared() && tileentityshulkerbox.shouldDrop()) {
-                    NBTTagCompound itemTag = new NBTTagCompound();
-                    NBTTagCompound nbtBlockEntity = new NBTTagCompound();
+                    CompoundNBT itemTag = new CompoundNBT();
+                    CompoundNBT nbtBlockEntity = new CompoundNBT();
                     itemTag.setTag("BlockEntityTag", ((TileEntityShulkerBox) tileentity).saveToNbt(nbtBlockEntity));
                     shulkerBoxItem.setTagCompound(itemTag);
                     if (tileentityshulkerbox.hasCustomName()) {

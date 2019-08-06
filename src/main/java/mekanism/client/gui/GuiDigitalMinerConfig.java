@@ -26,7 +26,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -47,7 +47,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     private GuiButton setMaxButton;
     private GuiButton inverseButton;
 
-    public GuiDigitalMinerConfig(EntityPlayer player, TileEntityDigitalMiner tile) {
+    public GuiDigitalMinerConfig(PlayerEntity player, TileEntityDigitalMiner tile) {
         super(tile, new ContainerNull(player, tile));
     }
 

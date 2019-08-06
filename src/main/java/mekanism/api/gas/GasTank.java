@@ -1,6 +1,6 @@
 package mekanism.api.gas;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * An optional way of managing and/or storing gasses. Would be very useful in TileEntity and Entity gas storage.
@@ -32,7 +32,7 @@ public class GasTank implements GasTankInfo {
      *
      * @return tank stored in the tag compound
      */
-    public static GasTank readFromNBT(NBTTagCompound nbtTags) {
+    public static GasTank readFromNBT(CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return null;
         }
@@ -204,9 +204,9 @@ public class GasTank implements GasTankInfo {
      *
      * @return tag compound with this tank's data
      */
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         if (stored != null && stored.getGas() != null && stored.amount > 0) {
-            nbtTags.setTag("stored", stored.write(new NBTTagCompound()));
+            nbtTags.setTag("stored", stored.write(new CompoundNBT()));
         }
         nbtTags.setInteger("maxGas", maxGas);
         return nbtTags;
@@ -217,7 +217,7 @@ public class GasTank implements GasTankInfo {
      *
      * @param nbtTags - tag compound to read from
      */
-    public void read(NBTTagCompound nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         if (nbtTags.hasKey("stored")) {
             stored = GasStack.readFromNBT(nbtTags.getCompoundTag("stored"));
             if (stored != null && stored.amount <= 0) {

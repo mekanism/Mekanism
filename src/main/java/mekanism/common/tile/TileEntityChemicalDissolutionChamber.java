@@ -30,8 +30,8 @@ import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -109,7 +109,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 2) {
             return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, null);
         }
@@ -118,10 +118,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == getLeftSide() || side == EnumFacing.UP) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
+        if (side == getLeftSide() || side == Direction.UP) {
             return new int[]{1};
-        } else if (side == EnumFacing.DOWN) {
+        } else if (side == Direction.DOWN) {
             return new int[]{0};
         } else if (side == getRightSide()) {
             return new int[]{2};
@@ -178,7 +178,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         operatingTicks = nbtTags.getInteger("operatingTicks");
         injectTank.read(nbtTags.getCompoundTag("injectTank"));
@@ -188,21 +188,21 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setTag("injectTank", injectTank.write(new NBTTagCompound()));
-        nbtTags.setTag("gasTank", outputTank.write(new NBTTagCompound()));
+        nbtTags.setTag("injectTank", injectTank.write(new CompoundNBT()));
+        nbtTags.setTag("gasTank", outputTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override
-    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack.getGas())) {
             return injectTank.receive(stack, doTransfer);
         }
@@ -210,12 +210,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         return null;
     }
 
     @Override
-    public boolean canReceiveGas(EnumFacing side, Gas type) {
+    public boolean canReceiveGas(Direction side, Gas type) {
         return side == getLeftSide() && injectTank.canReceive(type) && isValidGas(type);
     }
 
@@ -225,7 +225,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public boolean canDrawGas(EnumFacing side, Gas type) {
+    public boolean canDrawGas(Direction side, Gas type) {
         return false;
     }
 
@@ -236,7 +236,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -244,7 +244,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
@@ -254,7 +254,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return side != null && side != getLeftSide() && side != getRightSide();
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -271,10 +271,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (injectTank.getGas() != null) {
-            ItemDataUtils.setCompound(itemStack, "injectTank", injectTank.getGas().write(new NBTTagCompound()));
+            ItemDataUtils.setCompound(itemStack, "injectTank", injectTank.getGas().write(new CompoundNBT()));
         }
         if (outputTank.getGas() != null) {
-            ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new NBTTagCompound()));
+            ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new CompoundNBT()));
         }
     }
 

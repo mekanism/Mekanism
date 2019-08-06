@@ -7,7 +7,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,9 +19,9 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumFacing.AxisDirection;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -40,7 +40,7 @@ public class RenderResizableCuboid {
     /**
      * The AO map assumes that each direction in the world has a different amount of light going towards it.
      */
-    private static final Map<EnumFacing, Vec3d> aoMap = new EnumMap<>(EnumFacing.class);
+    private static final Map<Direction, Vec3d> aoMap = new EnumMap<>(Direction.class);
     private static final int U_MIN = 0;
     private static final int U_MAX = 1;
     private static final int V_MIN = 2;
@@ -49,12 +49,12 @@ public class RenderResizableCuboid {
     static {
         // Static constants taken directly from minecraft's block renderer
         // ( net.minecraft.client.renderer.BlockModelRenderer.EnumNeighborInfo )
-        aoMap.put(EnumFacing.UP, vec3(1));
-        aoMap.put(EnumFacing.DOWN, vec3(0.5));
-        aoMap.put(EnumFacing.NORTH, vec3(0.8));
-        aoMap.put(EnumFacing.SOUTH, vec3(0.8));
-        aoMap.put(EnumFacing.EAST, vec3(0.6));
-        aoMap.put(EnumFacing.WEST, vec3(0.6));
+        aoMap.put(Direction.UP, vec3(1));
+        aoMap.put(Direction.DOWN, vec3(0.5));
+        aoMap.put(Direction.NORTH, vec3(0.8));
+        aoMap.put(Direction.SOUTH, vec3(0.8));
+        aoMap.put(Direction.EAST, vec3(0.6));
+        aoMap.put(Direction.WEST, vec3(0.6));
     }
 
     protected RenderManager manager = Minecraft.getMinecraft().getRenderManager();
@@ -78,17 +78,17 @@ public class RenderResizableCuboid {
         return new Vec3d(vec3i.getX(), vec3i.getY(), vec3i.getZ());
     }
 
-    public static Vec3d convert(EnumFacing face) {
+    public static Vec3d convert(Direction face) {
         if (face == null) {
             return VEC_ZERO;
         }
         return new Vec3d(face.getXOffset(), face.getYOffset(), face.getZOffset());
     }
 
-    public static EnumFacing[] getNeighbours(EnumFacing face) {
-        EnumFacing[] faces = new EnumFacing[4];
+    public static Direction[] getNeighbours(Direction face) {
+        Direction[] faces = new Direction[4];
         int ordinal = 0;
-        for (EnumFacing next : EnumFacing.values()) {
+        for (Direction next : Direction.values()) {
             if (next.getAxis() != face.getAxis()) {
                 faces[ordinal] = next;
                 ordinal++;
@@ -166,7 +166,7 @@ public class RenderResizableCuboid {
 
         wr.begin(GL11.GL_QUADS, shadeTypes.vertexFormat);
 
-        for (EnumFacing face : EnumFacing.values()) {
+        for (Direction face : Direction.values()) {
             if (cube.shouldSideRender(face)) {
                 renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
             }
@@ -178,7 +178,7 @@ public class RenderResizableCuboid {
         GlStateManager.disableAlpha();
     }
 
-    private void renderCuboidFace(BufferBuilder wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
+    private void renderCuboidFace(BufferBuilder wr, Direction face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
           Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula, IBlockAccess access) {
         int ordinal = face.ordinal();
         if (sprites[ordinal] == null) {
@@ -197,7 +197,7 @@ public class RenderResizableCuboid {
          * light it properly this way */
         face = face.getAxisDirection() == AxisDirection.NEGATIVE ? face : face.getOpposite();
 
-        EnumFacing opposite = face.getOpposite();
+        Direction opposite = face.getOpposite();
 
         for (RenderInfo ri : renderInfoList) {
             renderPoint(wr, face, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes);
@@ -212,7 +212,7 @@ public class RenderResizableCuboid {
         }
     }
 
-    private void renderPoint(BufferBuilder wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV, IBlockLocation locationFormula,
+    private void renderPoint(BufferBuilder wr, Direction face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV, IBlockLocation locationFormula,
           IFacingLocation faceFormula, IBlockAccess access, EnumShadeArgument shadeTypes) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
@@ -233,7 +233,7 @@ public class RenderResizableCuboid {
         } else if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             Vec3d transVertex = locationFormula.transformToWorld(vertex);
             BlockPos pos = convertFloor(transVertex);
-            IBlockState block = access.getBlockState(pos);
+            BlockState block = access.getBlockState(pos);
             int combindedLight = block.getPackedLightmapCoords(access, pos);
             wr.lightmap(combindedLight >> 16 & 65535, combindedLight & 65535);
         }
@@ -241,7 +241,7 @@ public class RenderResizableCuboid {
         wr.endVertex();
     }
 
-    private void applyLocalAO(BufferBuilder wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes, Vec3d vertex) {
+    private void applyLocalAO(BufferBuilder wr, Direction face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes, Vec3d vertex) {
         // This doesn't work. At all.
         boolean allAround = false;
 
@@ -253,7 +253,7 @@ public class RenderResizableCuboid {
         double totalDist = 0;
         Vec3d transVertex = locationFormula.transformToWorld(vertex);
         BlockPos pos = convertFloor(transVertex);
-        IBlockState state = access.getBlockState(pos);
+        BlockState state = access.getBlockState(pos);
         int combindedLight = state.getPackedLightmapCoords(access, pos);
 
         skyLight[0] = combindedLight / 0x10000;
@@ -262,8 +262,8 @@ public class RenderResizableCuboid {
         distances[0] = transVertex.distanceTo(convertMiddle(pos));
 
         int index = 0;
-        EnumFacing[] testArray = allAround ? EnumFacing.values() : getNeighbours(face);
-        for (EnumFacing otherFace : testArray) {
+        Direction[] testArray = allAround ? Direction.values() : getNeighbours(face);
+        for (Direction otherFace : testArray) {
             Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));
             state = access.getBlockState(pos);
@@ -347,7 +347,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[]{ri.xyz[U_MAX], cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
                 arr[2] = new double[]{ri.xyz[U_MIN], cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
                 arr[3] = new double[]{ri.xyz[U_MIN], cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
-                convertToDoubleQuads(quads, arr, EnumFacing.DOWN, sprites[0]);
+                convertToDoubleQuads(quads, arr, Direction.DOWN, sprites[0]);
             }
         }
 
@@ -362,7 +362,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[]{ri.xyz[U_MAX], sizeY + cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
                 arr[2] = new double[]{ri.xyz[U_MIN], sizeY + cuboid.posY, ri.xyz[V_MAX], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
                 arr[3] = new double[]{ri.xyz[U_MIN], sizeY + cuboid.posY, ri.xyz[V_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
-                convertToDoubleQuads(quads, arr, EnumFacing.UP, sprites[1]);
+                convertToDoubleQuads(quads, arr, Direction.UP, sprites[1]);
             }
         }
 
@@ -377,7 +377,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[]{ri.xyz[U_MAX], ri.xyz[V_MAX], cuboid.posZ, -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
                 arr[2] = new double[]{ri.xyz[U_MIN], ri.xyz[V_MAX], cuboid.posZ, -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
                 arr[3] = new double[]{ri.xyz[U_MIN], ri.xyz[V_MIN], cuboid.posZ, -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
-                convertToDoubleQuads(quads, arr, EnumFacing.NORTH, sprites[2]);
+                convertToDoubleQuads(quads, arr, Direction.NORTH, sprites[2]);
             }
         }
 
@@ -392,7 +392,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[]{ri.xyz[U_MAX], ri.xyz[V_MAX], cuboid.posZ + sizeZ, -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
                 arr[2] = new double[]{ri.xyz[U_MIN], ri.xyz[V_MAX], cuboid.posZ + sizeZ, -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
                 arr[3] = new double[]{ri.xyz[U_MIN], ri.xyz[V_MIN], cuboid.posZ + sizeZ, -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
-                convertToDoubleQuads(quads, arr, EnumFacing.SOUTH, sprites[3]);
+                convertToDoubleQuads(quads, arr, Direction.SOUTH, sprites[3]);
             }
         }
 
@@ -407,7 +407,7 @@ public class RenderResizableCuboid {
                 arr[1] = new double[]{cuboid.posX, ri.xyz[V_MAX], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
                 arr[2] = new double[]{cuboid.posX, ri.xyz[V_MAX], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
                 arr[3] = new double[]{cuboid.posX, ri.xyz[V_MIN], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
-                convertToDoubleQuads(quads, arr, EnumFacing.WEST, sprites[4]);
+                convertToDoubleQuads(quads, arr, Direction.WEST, sprites[4]);
             }
         }
 
@@ -422,12 +422,12 @@ public class RenderResizableCuboid {
                 arr[1] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MAX], ri.xyz[U_MAX], -1, ri.uv[U_MAX], ri.uv[V_MAX], 0};
                 arr[2] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MAX], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MAX], 0};
                 arr[3] = new double[]{cuboid.posX + sizeX, ri.xyz[V_MIN], ri.xyz[U_MIN], -1, ri.uv[U_MIN], ri.uv[V_MIN], 0};
-                convertToDoubleQuads(quads, arr, EnumFacing.EAST, sprites[5]);
+                convertToDoubleQuads(quads, arr, Direction.EAST, sprites[5]);
             }
         }
     }
 
-    private void convertToDoubleQuads(List<BakedQuad> quads, double[][] points, EnumFacing face, TextureAtlasSprite sprite) {
+    private void convertToDoubleQuads(List<BakedQuad> quads, double[][] points, Direction face, TextureAtlasSprite sprite) {
         BakedQuad quad = convertToQuad(points, face, sprite);
         quads.add(quad);
 
@@ -436,7 +436,7 @@ public class RenderResizableCuboid {
         quads.add(quad);
     }
 
-    private BakedQuad convertToQuad(double[][] points, EnumFacing face, TextureAtlasSprite sprite) {
+    private BakedQuad convertToQuad(double[][] points, Direction face, TextureAtlasSprite sprite) {
         int[] list = new int[points.length * points[0].length];
         for (int i = 0; i < points.length; i++) {
             double[] arr = points[i];
@@ -476,7 +476,7 @@ public class RenderResizableCuboid {
         return uvarray;
     }
 
-    private float[] getUVArray(TextureAtlasSprite sprite, int flips, EnumFacing face, Vec3d start, Vec3d end) {
+    private float[] getUVArray(TextureAtlasSprite sprite, int flips, Direction face, Vec3d start, Vec3d end) {
         Axis u = face.getAxis() == Axis.X ? Axis.Z : Axis.X;
         Axis v = face.getAxis() == Axis.Y ? Axis.Z : Axis.Y;
 
@@ -499,7 +499,7 @@ public class RenderResizableCuboid {
         return uvarray;
     }
 
-    private List<RenderInfo> getRenderInfos(float[] uv, EnumFacing face, Vec3d size, Vec3d texSize, Vec3d texOffset) {
+    private List<RenderInfo> getRenderInfos(float[] uv, Direction face, Vec3d size, Vec3d texSize, Vec3d texOffset) {
         Axis u = face.getAxis() == Axis.X ? Axis.Z : Axis.X;
         Axis v = face.getAxis() == Axis.Y ? Axis.Z : Axis.Y;
 
@@ -590,7 +590,7 @@ public class RenderResizableCuboid {
         INSTANCE;
 
         @Override
-        public EnumFacing transformToWorld(EnumFacing face) {
+        public Direction transformToWorld(Direction face) {
             return face;
         }
     }
@@ -644,7 +644,7 @@ public class RenderResizableCuboid {
 
     public interface IFacingLocation {
 
-        EnumFacing transformToWorld(EnumFacing face);
+        Direction transformToWorld(Direction face);
     }
 
     private static final class RenderInfo {

@@ -99,14 +99,14 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -192,14 +192,14 @@ public class CommonProxy implements IGuiProvider {
     }
 
     @Override
-    public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+    public Object getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
         return null;
     }
 
-    private Container getServerItemGui(EntityPlayer player, BlockPos pos) {
+    private Container getServerItemGui(PlayerEntity player, BlockPos pos) {
         int currentItem = pos.getX();
         int handOrdinal = pos.getY();
-        if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= EnumHand.values().length) {
+        if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= Hand.values().length) {
             //If it is out of bounds don't do anything
             return null;
         }
@@ -207,7 +207,7 @@ public class CommonProxy implements IGuiProvider {
         if (stack.isEmpty()) {
             return null;
         }
-        EnumHand hand = EnumHand.values()[handOrdinal];
+        Hand hand = Hand.values()[handOrdinal];
         int guiID = pos.getZ();
         switch (guiID) {
             case 0:
@@ -234,7 +234,7 @@ public class CommonProxy implements IGuiProvider {
         return null;
     }
 
-    private Container getServerEntityGui(EntityPlayer player, World world, BlockPos pos) {
+    private Container getServerEntityGui(PlayerEntity player, World world, BlockPos pos) {
         int entityID = pos.getX();
         Entity entity = world.getEntityByID(entityID);
         if (entity == null) {
@@ -273,7 +273,7 @@ public class CommonProxy implements IGuiProvider {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+    public Container getServerGui(int ID, PlayerEntity player, World world, BlockPos pos) {
         //TODO: Replace magic numbers here and in sub methods with static lookup ints
         if (ID == 0) {
             return getServerItemGui(player, pos);
@@ -393,9 +393,9 @@ public class CommonProxy implements IGuiProvider {
     public void preInit() {
     }
 
-    public double getReach(EntityPlayer player) {
-        if (player instanceof EntityPlayerMP) {
-            return player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+    public double getReach(PlayerEntity player) {
+        if (player instanceof ServerPlayerEntity) {
+            return player.getEntityAttribute(PlayerEntity.REACH_DISTANCE).getAttributeValue();
         }
         return 0;
     }
@@ -423,24 +423,24 @@ public class CommonProxy implements IGuiProvider {
         }
     }
 
-    public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world) {
+    public final WeakReference<PlayerEntity> getDummyPlayer(WorldServer world) {
         return MekFakePlayer.getInstance(world);
     }
 
-    public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world, double x, double y, double z) {
+    public final WeakReference<PlayerEntity> getDummyPlayer(WorldServer world, double x, double y, double z) {
         return MekFakePlayer.getInstance(world, x, y, z);
     }
 
-    public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world, BlockPos pos) {
+    public final WeakReference<PlayerEntity> getDummyPlayer(WorldServer world, BlockPos pos) {
         return getDummyPlayer(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public EntityPlayer getPlayer(MessageContext context) {
+    public PlayerEntity getPlayer(MessageContext context) {
         return context.getServerHandler().player;
     }
 
-    public void handlePacket(Runnable runnable, EntityPlayer player) {
-        if (player instanceof EntityPlayerMP) {
+    public void handlePacket(Runnable runnable, PlayerEntity player) {
+        if (player instanceof ServerPlayerEntity) {
             ((WorldServer) player.world).addScheduledTask(runnable);
         }
     }
@@ -452,7 +452,7 @@ public class CommonProxy implements IGuiProvider {
         return -1;
     }
 
-    public void renderLaser(World world, Pos3D from, Pos3D to, EnumFacing direction, double energy) {
+    public void renderLaser(World world, Pos3D from, Pos3D to, Direction direction, double energy) {
     }
 
     public Object getFontRenderer() {

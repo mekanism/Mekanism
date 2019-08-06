@@ -31,12 +31,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TextComponentGroup;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -91,7 +91,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
     @Override
-    public TileEntity getCachedAcceptor(EnumFacing side) {
+    public TileEntity getCachedAcceptor(Direction side) {
         return getCachedTile(side);
     }
 
@@ -105,7 +105,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
     @Override
-    public boolean isValidAcceptor(TileEntity tile, EnumFacing side) {
+    public boolean isValidAcceptor(TileEntity tile, Direction side) {
         return TransporterUtils.isValidAcceptorOnSide(tile, side);
     }
 
@@ -132,7 +132,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
         delay = 3;
 
         // Attempt to pull
-        for (EnumFacing side : getConnections(ConnectionType.PULL)) {
+        for (Direction side : getConnections(ConnectionType.PULL)) {
             final TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(side));
             if (tile != null) {
                 TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.getPullAmount());
@@ -260,7 +260,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
 
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("tier")) {
             tier = TransporterTier.values()[nbtTags.getInteger("tier")];
@@ -270,7 +270,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("tier", tier.ordinal());
         if (getTransmitter().getColor() != null) {
@@ -278,7 +278,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
         }
         NBTTagList stacks = new NBTTagList();
         for (TransporterStack stack : getTransmitter().getTransit()) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             stack.write(tagCompound);
             stacks.appendTag(tagCompound);
         }
@@ -289,7 +289,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
     @Override
-    protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side) {
+    protected EnumActionResult onConfigure(PlayerEntity player, int part, Direction side) {
         TransporterUtils.incrementColor(getTransmitter());
         onPartChanged(null);
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
@@ -307,7 +307,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
     @Override
-    public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
         super.onRightClick(player, side);
         TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
               .translation("tooltip.configurator.viewColor").string(": ");
@@ -375,12 +375,12 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
             return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.cast(getTransmitter());
         }

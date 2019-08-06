@@ -6,7 +6,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class TOreDictFilter extends TransporterFilter implements IOreDictFilter {
 
@@ -23,14 +23,14 @@ public class TOreDictFilter extends TransporterFilter implements IOreDictFilter 
     }
 
     @Override
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.setInteger("type", 1);
         nbtTags.setString("oreDictName", oreDictName);
     }
 
     @Override
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         oreDictName = nbtTags.getString("oreDictName");
     }

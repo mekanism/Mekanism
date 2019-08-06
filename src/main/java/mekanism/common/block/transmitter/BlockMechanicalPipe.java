@@ -11,7 +11,7 @@ import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityBasicMechanica
 import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityEliteMechanicalPipe;
 import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.mechanical_pipe.TileEntityUltimateMechanicalPipe;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -30,7 +30,7 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITiere
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
         switch (tier) {
             case BASIC:
                 return new TileEntityBasicMechanicalPipe();

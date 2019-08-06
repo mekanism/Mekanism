@@ -12,7 +12,7 @@ import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.AbstractManagedEnvironment;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -27,7 +27,7 @@ public class OCDriver extends DriverSidedTileEntity {
     }
 
     @Override
-    public ManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side) {
+    public ManagedEnvironment createEnvironment(World world, BlockPos pos, Direction side) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof IComputerIntegration) {
             return new OCManagedEnvironment((IComputerIntegration) tile);

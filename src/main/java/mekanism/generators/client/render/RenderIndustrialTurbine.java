@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,7 +36,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
             Coord4D coord = tileEntity.structure.complex;
 
             while (true) {
-                coord = coord.offset(EnumFacing.DOWN);
+                coord = coord.offset(Direction.DOWN);
                 TileEntity tile = coord.getTileEntity(tileEntity.getWorld());
                 if (!(tile instanceof TileEntityTurbineRotor)) {
                     break;

@@ -12,7 +12,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,13 +20,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileEntityDigitalMiner> {
 
-    public GuiMMaterialFilter(EntityPlayer player, TileEntityDigitalMiner tile, int index) {
+    public GuiMMaterialFilter(PlayerEntity player, TileEntityDigitalMiner tile, int index) {
         super(player, tile);
         origFilter = (MMaterialFilter) tileEntity.filters.get(index);
         filter = ((MMaterialFilter) tileEntity.filters.get(index)).clone();
     }
 
-    public GuiMMaterialFilter(EntityPlayer player, TileEntityDigitalMiner tile) {
+    public GuiMMaterialFilter(PlayerEntity player, TileEntityDigitalMiner tile) {
         super(player, tile);
         isNew = true;
         filter = new MMaterialFilter();

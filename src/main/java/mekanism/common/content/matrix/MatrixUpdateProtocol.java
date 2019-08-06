@@ -11,7 +11,7 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.induction_cell.TileEntityInductionCell;
 import mekanism.common.tile.induction_provider.TileEntityInductionProvider;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -24,7 +24,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
+        BlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
         return state.getBlock() instanceof BlockInductionCasing;
     }
 

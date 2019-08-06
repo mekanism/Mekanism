@@ -16,10 +16,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,7 +28,7 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityMekanism> extends GuiTypeFilter<FILTER, TILE> {
 
-    protected GuiMaterialFilter(EntityPlayer player, TILE tile) {
+    protected GuiMaterialFilter(PlayerEntity player, TILE tile) {
         super(player, tile);
     }
 
@@ -79,7 +79,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
     protected void materialMouseClicked() {
         ItemStack stack = mc.player.inventory.getItemStack();
         if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            if (stack.getItem() instanceof ItemBlock) {
+            if (stack.getItem() instanceof BlockItem) {
                 if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                     filter.setMaterialItem(stack.copy());
                     filter.getMaterialItem().setCount(1);

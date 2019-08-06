@@ -20,7 +20,7 @@ import mekanism.common.block.states.IStateColor;
 import mekanism.common.block.transmitter.BlockDiversionTransporter;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -32,8 +32,8 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -65,7 +65,7 @@ public class TransmitterModel extends OBJBakedModelBase {
     private static TextureAtlasSprite[] transporter_side_color = new TextureAtlasSprite[2];
     private Map<Integer, List<BakedQuad>> modelCache = new HashMap<>();
     private TransmitterModel itemCache;
-    private IBlockState tempState;
+    private BlockState tempState;
     @Nullable
     private EnumColor color;
     private TextureAtlasSprite particle;
@@ -110,7 +110,7 @@ public class TransmitterModel extends OBJBakedModelBase {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+    public List<BakedQuad> getQuads(BlockState state, Direction side, long rand) {
         if (side != null) {
             return ImmutableList.of();
         }
@@ -166,12 +166,12 @@ public class TransmitterModel extends OBJBakedModelBase {
 
     public List<String> getVisibleGroups(ConnectionType down, ConnectionType up, ConnectionType north, ConnectionType south, ConnectionType west, ConnectionType east) {
         List<String> visible = new ArrayList<>();
-        visible.add(EnumFacing.DOWN.getName() + down.getName().toUpperCase());
-        visible.add(EnumFacing.UP.getName() + up.getName().toUpperCase());
-        visible.add(EnumFacing.NORTH.getName() + north.getName().toUpperCase());
-        visible.add(EnumFacing.SOUTH.getName() + south.getName().toUpperCase());
-        visible.add(EnumFacing.WEST.getName() + west.getName().toUpperCase());
-        visible.add(EnumFacing.EAST.getName() + east.getName().toUpperCase());
+        visible.add(Direction.DOWN.getName() + down.getName().toUpperCase());
+        visible.add(Direction.UP.getName() + up.getName().toUpperCase());
+        visible.add(Direction.NORTH.getName() + north.getName().toUpperCase());
+        visible.add(Direction.SOUTH.getName() + south.getName().toUpperCase());
+        visible.add(Direction.WEST.getName() + west.getName().toUpperCase());
+        visible.add(Direction.EAST.getName() + east.getName().toUpperCase());
         return visible;
     }
 
@@ -225,11 +225,11 @@ public class TransmitterModel extends OBJBakedModelBase {
         return false;
     }
 
-    public byte getIconStatus(Face f, @Nonnull IBlockState state) {
-        return getIconStatus(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z), state);
+    public byte getIconStatus(Face f, @Nonnull BlockState state) {
+        return getIconStatus(Direction.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z), state);
     }
 
-    public byte getIconStatus(EnumFacing side, @Nonnull IBlockState state) {
+    public byte getIconStatus(Direction side, @Nonnull BlockState state) {
         boolean hasDown = state.getValue(BlockStateHelper.downConnectionProperty) != ConnectionType.NONE;
         boolean hasUp = state.getValue(BlockStateHelper.upConnectionProperty) != ConnectionType.NONE;
         boolean hasNorth = state.getValue(BlockStateHelper.northConnectionProperty) != ConnectionType.NONE;
@@ -237,27 +237,27 @@ public class TransmitterModel extends OBJBakedModelBase {
         boolean hasWest = state.getValue(BlockStateHelper.westConnectionProperty) != ConnectionType.NONE;
         boolean hasEast = state.getValue(BlockStateHelper.eastConnectionProperty) != ConnectionType.NONE;
         boolean hasConnection = false;
-        if (side == EnumFacing.DOWN) {
+        if (side == Direction.DOWN) {
             hasConnection = hasDown;
-        } else if (side == EnumFacing.UP) {
+        } else if (side == Direction.UP) {
             hasConnection = hasUp;
-        } else if (side == EnumFacing.NORTH) {
+        } else if (side == Direction.NORTH) {
             hasConnection = hasNorth;
-        } else if (side == EnumFacing.SOUTH) {
+        } else if (side == Direction.SOUTH) {
             hasConnection = hasSouth;
-        } else if (side == EnumFacing.WEST) {
+        } else if (side == Direction.WEST) {
             hasConnection = hasWest;
-        } else if (side == EnumFacing.EAST) {
+        } else if (side == Direction.EAST) {
             hasConnection = hasEast;
         }
         if (!hasConnection && !(state.getBlock() instanceof BlockDiversionTransporter)) {
-            if (hasDown && hasUp && side != EnumFacing.DOWN && side != EnumFacing.UP) {
+            if (hasDown && hasUp && side != Direction.DOWN && side != Direction.UP) {
                 return (byte) 1;
-            } else if (hasNorth && hasSouth && (side == EnumFacing.DOWN || side == EnumFacing.UP)) {
+            } else if (hasNorth && hasSouth && (side == Direction.DOWN || side == Direction.UP)) {
                 return (byte) 1;
-            } else if (hasNorth && hasSouth && (side == EnumFacing.EAST || side == EnumFacing.WEST)) {
+            } else if (hasNorth && hasSouth && (side == Direction.EAST || side == Direction.WEST)) {
                 return (byte) 2;
-            } else if (hasWest && hasEast && side != EnumFacing.EAST && side != EnumFacing.WEST) {
+            } else if (hasWest && hasEast && side != Direction.EAST && side != Direction.WEST) {
                 return (byte) 2;
             }
         }
@@ -281,7 +281,7 @@ public class TransmitterModel extends OBJBakedModelBase {
         public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
-                for (EnumFacing side : EnumFacing.values()) {
+                for (Direction side : Direction.values()) {
                     visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
                 }
                 itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), vertexFormat, textureMap, transformationMap);

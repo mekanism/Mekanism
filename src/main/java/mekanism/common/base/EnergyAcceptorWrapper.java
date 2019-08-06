@@ -12,7 +12,7 @@ import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -24,7 +24,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
     private static final Logger LOGGER = LogManager.getLogger("Mekanism EnergyAcceptorWrapper");
     public Coord4D coord;
 
-    public static EnergyAcceptorWrapper get(TileEntity tileEntity, EnumFacing side) {
+    public static EnergyAcceptorWrapper get(TileEntity tileEntity, Direction side) {
         if (tileEntity == null || tileEntity.getWorld() == null) {
             return null;
         }
@@ -48,7 +48,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
     /**
      * Note: It is assumed that a check for hasCapability was already ran.
      */
-    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability, EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
+    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability, Direction side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
         T acceptor = CapabilityUtils.getCapability(tileEntity, capability, side);
         if (acceptor != null) {
             return makeAcceptor.apply(acceptor);
@@ -58,7 +58,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         return null;
     }
 
-    public abstract boolean needsEnergy(EnumFacing side);
+    public abstract boolean needsEnergy(Direction side);
 
     public static class MekanismAcceptor extends EnergyAcceptorWrapper {
 
@@ -69,17 +69,17 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         @Override
-        public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+        public double acceptEnergy(Direction side, double amount, boolean simulate) {
             return acceptor.acceptEnergy(side, amount, simulate);
         }
 
         @Override
-        public boolean canReceiveEnergy(EnumFacing side) {
+        public boolean canReceiveEnergy(Direction side) {
             return acceptor.canReceiveEnergy(side);
         }
 
         @Override
-        public boolean needsEnergy(EnumFacing side) {
+        public boolean needsEnergy(Direction side) {
             return acceptor.acceptEnergy(side, 1, true) > 0;
         }
     }
@@ -93,7 +93,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         @Override
-        public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+        public double acceptEnergy(Direction side, double amount, boolean simulate) {
             double toTransfer = Math.min(acceptor.getDemandedEnergy(), IC2Integration.toEU(amount));
             if (simulate) {
                 //IC2 has no built in way to simulate, so we have to calculate it ourselves
@@ -104,12 +104,12 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         @Override
-        public boolean canReceiveEnergy(EnumFacing side) {
+        public boolean canReceiveEnergy(Direction side) {
             return acceptor.acceptsEnergyFrom(null, side);
         }
 
         @Override
-        public boolean needsEnergy(EnumFacing side) {
+        public boolean needsEnergy(Direction side) {
             return acceptor.getDemandedEnergy() > 0;
         }
     }
@@ -123,17 +123,17 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         @Override
-        public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+        public double acceptEnergy(Direction side, double amount, boolean simulate) {
             return ForgeEnergyIntegration.fromForge(acceptor.receiveEnergy(ForgeEnergyIntegration.toForge(amount), simulate));
         }
 
         @Override
-        public boolean canReceiveEnergy(EnumFacing side) {
+        public boolean canReceiveEnergy(Direction side) {
             return acceptor.canReceive();
         }
 
         @Override
-        public boolean needsEnergy(EnumFacing side) {
+        public boolean needsEnergy(Direction side) {
             return acceptor.receiveEnergy(1, true) > 0;
         }
     }

@@ -3,7 +3,7 @@ package mekanism.common.item;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
 public interface IItemSustainedTank extends ISustainedTank {
@@ -15,7 +15,7 @@ public interface IItemSustainedTank extends ISustainedTank {
             if (fluidStack == null || fluidStack.amount == 0) {
                 ItemDataUtils.removeData(itemStack, "fluidTank");
             } else {
-                ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
+                ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new CompoundNBT()));
             }
         }
     }

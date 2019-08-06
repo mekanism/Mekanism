@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
@@ -104,12 +104,12 @@ public class EntityObsidianTNT extends Entity {
     }
 
     @Override
-    protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags) {
+    protected void writeEntityToNBT(@Nonnull CompoundNBT nbtTags) {
         nbtTags.setByte("Fuse", (byte) fuse);
     }
 
     @Override
-    protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
+    protected void readEntityFromNBT(@Nonnull CompoundNBT nbtTags) {
         fuse = nbtTags.getByte("Fuse");
     }
 }

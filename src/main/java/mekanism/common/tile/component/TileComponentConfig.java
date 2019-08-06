@@ -18,8 +18,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -63,12 +63,12 @@ public class TileComponentConfig implements ITileComponent {
         canEject.put(type, true);
     }
 
-    public Set<EnumFacing> getSidesForData(TransmissionType type, EnumFacing facing, int dataIndex) {
-        Set<EnumFacing> ret = EnumSet.noneOf(EnumFacing.class);
+    public Set<Direction> getSidesForData(TransmissionType type, Direction facing, int dataIndex) {
+        Set<Direction> ret = EnumSet.noneOf(Direction.class);
         SideConfig config = getConfig(type);
-        EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
+        Direction[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
 
-        for (EnumFacing sideToCheck : EnumFacing.values()) {
+        for (Direction sideToCheck : Direction.values()) {
             if (config.get(translatedFacings[sideToCheck.ordinal()]) == dataIndex) {
                 ret.add(sideToCheck);
             }
@@ -76,15 +76,15 @@ public class TileComponentConfig implements ITileComponent {
         return ret;
     }
 
-    public boolean hasSideForData(TransmissionType type, EnumFacing facing, int dataIndex, EnumFacing sideToTest) {
+    public boolean hasSideForData(TransmissionType type, Direction facing, int dataIndex, Direction sideToTest) {
         if (sideToTest == null) {
             return false;
         }
-        EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
+        Direction[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
         return getConfig(type).get(translatedFacings[sideToTest.ordinal()]) == dataIndex;
     }
 
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side, EnumFacing tileDirection) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, Direction tileDirection) {
         TransmissionType type = null;
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             type = TransmissionType.ITEM;
@@ -130,7 +130,7 @@ public class TileComponentConfig implements ITileComponent {
     }
 
     public void setConfig(TransmissionType type, byte[] config) {
-        assert config.length == EnumFacing.values().length;
+        assert config.length == Direction.values().length;
         setConfig(type, config[0], config[1], config[2], config[3], config[4], config[5]);
     }
 
@@ -150,14 +150,14 @@ public class TileComponentConfig implements ITileComponent {
         return sideConfigs.get(type);
     }
 
-    public SideData getOutput(TransmissionType type, EnumFacing side, EnumFacing facing) {
+    public SideData getOutput(TransmissionType type, Direction side, Direction facing) {
         if (side == null) {
             return EMPTY;
         }
         return getOutput(type, MekanismUtils.getBaseOrientation(side, facing));
     }
 
-    public SideData getOutput(TransmissionType type, EnumFacing side) {
+    public SideData getOutput(TransmissionType type, Direction side) {
         if (side == null) {
             return EMPTY;
         }
@@ -183,7 +183,7 @@ public class TileComponentConfig implements ITileComponent {
     }
 
     @Override
-    public void read(NBTTagCompound nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         if (nbtTags.getBoolean("sideDataStored")) {
             for (TransmissionType type : transmissions) {
                 if (nbtTags.getByteArray("config" + type.ordinal()).length > 0) {
@@ -213,7 +213,7 @@ public class TileComponentConfig implements ITileComponent {
     }
 
     @Override
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         for (TransmissionType type : transmissions) {
             nbtTags.setByteArray("config" + type.ordinal(), sideConfigs.get(type).asByteArray());
             nbtTags.setBoolean("ejecting" + type.ordinal(), ejecting.get(type));

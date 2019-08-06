@@ -1,7 +1,7 @@
 package mekanism.common.util;
 
 import java.util.function.Consumer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Contract;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Contract;
 public final class CapabilityUtils {
 
     @Contract("null, _, _ -> false; _, null, _ -> false")
-    public static boolean hasCapability(ICapabilityProvider provider, Capability<?> cap, EnumFacing side) {
+    public static boolean hasCapability(ICapabilityProvider provider, Capability<?> cap, Direction side) {
         if (provider == null || cap == null) {
             return false;
         }
@@ -17,7 +17,7 @@ public final class CapabilityUtils {
     }
 
     @Contract("null, _, _ -> null; _, null, _ -> null")
-    public static <T> T getCapability(ICapabilityProvider provider, Capability<T> cap, EnumFacing side) {
+    public static <T> T getCapability(ICapabilityProvider provider, Capability<T> cap, Direction side) {
         if (provider == null || cap == null) {
             return null;
         }
@@ -33,18 +33,18 @@ public final class CapabilityUtils {
      * @param action   - handler for completing the action on the capability
      * @param <T>      - type to return
      */
-    public static <T> void runIfCap(ICapabilityProvider provider, Capability<T> cap, EnumFacing side, Consumer<T> action) {
+    public static <T> void runIfCap(ICapabilityProvider provider, Capability<T> cap, Direction side, Consumer<T> action) {
         final T capability = getCapability(provider, cap, side);
         if (capability != null) {
             action.accept(capability);
         }
     }
 
-    public static <T> OptionalCapability withCapability(ICapabilityProvider provider, Capability<T> cap, EnumFacing side, Consumer<T> consumer) {
+    public static <T> OptionalCapability withCapability(ICapabilityProvider provider, Capability<T> cap, Direction side, Consumer<T> consumer) {
         return new OptionalCapability(provider).orElseWith(cap, side, consumer);
     }
 
-    public static <T> OptionalCapability withCapability(boolean testResult, ICapabilityProvider provider, Capability<T> cap, EnumFacing side, Consumer<T> consumer) {
+    public static <T> OptionalCapability withCapability(boolean testResult, ICapabilityProvider provider, Capability<T> cap, Direction side, Consumer<T> consumer) {
         return new OptionalCapability(provider).orElseWith(testResult, cap, side, consumer);
     }
 
@@ -66,7 +66,7 @@ public final class CapabilityUtils {
          *
          * @return this instance if unsuccessful, otherwise a no-op OptionalCapability
          */
-        public <T> OptionalCapability orElseWith(Capability<T> capability, EnumFacing side, Consumer<T> consumer) {
+        public <T> OptionalCapability orElseWith(Capability<T> capability, Direction side, Consumer<T> consumer) {
             T cap = this.provider.getCapability(capability, side);
             if (cap != null) {
                 consumer.accept(cap);
@@ -76,7 +76,7 @@ public final class CapabilityUtils {
         }
 
         /**
-         * Like {@link #orElseWith(Capability, EnumFacing, Consumer)}, but skips if boolean testResult fails.
+         * Like {@link #orElseWith(Capability, Direction, Consumer)}, but skips if boolean testResult fails.
          *
          * @param testResult if this param is false, cap is not processed
          * @param capability the cap to check
@@ -86,7 +86,7 @@ public final class CapabilityUtils {
          *
          * @return this instance if unsuccessful (or testResult is false), otherwise a no-op OptionalCapability
          */
-        public <T> OptionalCapability orElseWith(boolean testResult, Capability<T> capability, EnumFacing side, Consumer<T> consumer) {
+        public <T> OptionalCapability orElseWith(boolean testResult, Capability<T> capability, Direction side, Consumer<T> consumer) {
             if (!testResult) {
                 return this;
             }
@@ -106,12 +106,12 @@ public final class CapabilityUtils {
         }
 
         @Override
-        public <T> OptionalCapability orElseWith(Capability<T> capability, EnumFacing side, Consumer<T> consumer) {
+        public <T> OptionalCapability orElseWith(Capability<T> capability, Direction side, Consumer<T> consumer) {
             return this;
         }
 
         @Override
-        public <T> OptionalCapability orElseWith(boolean testResult, Capability<T> capability, EnumFacing side, Consumer<T> consumer) {
+        public <T> OptionalCapability orElseWith(boolean testResult, Capability<T> capability, Direction side, Consumer<T> consumer) {
             return this;
         }
     }

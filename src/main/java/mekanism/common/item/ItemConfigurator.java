@@ -34,13 +34,13 @@ import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -76,7 +76,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             Block block = world.getBlockState(pos).getBlock();
@@ -146,9 +146,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                     }
                 }
             } else if (getState(stack) == ConfiguratorMode.ROTATE) { //Rotate
-                EnumFacing[] rotations = block.getValidRotations(world, pos);
+                Direction[] rotations = block.getValidRotations(world, pos);
                 if (rotations != null && rotations.length > 0) {
-                    List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, pos));
+                    List<Direction> l = Arrays.asList(block.getValidRotations(world, pos));
                     if (!player.isSneaking() && l.contains(side)) {
                         block.rotateBlock(world, pos, side);
                     } else if (player.isSneaking() && l.contains(side.getOpposite())) {
@@ -196,22 +196,22 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
-    public boolean canWrench(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {
+    public boolean canWrench(PlayerEntity player, Hand hand, ItemStack wrench, RayTraceResult rayTrace) {
         return canUseWrench(wrench, player, rayTrace.getBlockPos());
     }
 
     @Override
     @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
-    public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {
+    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack wrench, RayTraceResult rayTrace) {
     }
 
     @Override
-    public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos) {
+    public boolean canUseWrench(ItemStack stack, PlayerEntity player, BlockPos pos) {
         return getState(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override
-    public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
+    public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, PlayerEntity player) {
         return getState(stack) == ConfiguratorMode.WRENCH;
     }
 

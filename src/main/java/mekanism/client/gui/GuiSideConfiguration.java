@@ -24,10 +24,10 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,7 +45,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
     private GuiButton autoEjectButton;
     private int buttonID = 0;
 
-    public GuiSideConfiguration(EntityPlayer player, ISideConfiguration tile) {
+    public GuiSideConfiguration(PlayerEntity player, ISideConfiguration tile) {
         super((TileEntityMekanism) tile, new ContainerNull(player, (TileEntityMekanism) tile));
         ySize = 95;
         configurable = tile;
@@ -73,7 +73,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
         buttonList.add(autoEjectButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
-            EnumFacing facing = EnumFacing.byIndex(i);
+            Direction facing = Direction.byIndex(i);
             GuiSideDataButton button = new GuiSideDataButton(buttonID++, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
                   () -> configurable.getConfig().getOutput(currentType, facing), () -> configurable.getConfig().getOutput(currentType, facing).color);
             buttonList.add(button);

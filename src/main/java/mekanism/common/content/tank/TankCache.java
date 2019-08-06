@@ -3,7 +3,7 @@ package mekanism.common.content.tank;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -32,13 +32,13 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
         NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+            CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < 2) {
                 inventory.set(slotID, new ItemStack(tagCompound));
@@ -50,12 +50,12 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
     }
 
     @Override
-    public void save(NBTTagCompound nbtTags) {
+    public void save(CompoundNBT nbtTags) {
         nbtTags.setInteger("editMode", editMode.ordinal());
         NBTTagList tagList = new NBTTagList();
         for (int slotCount = 0; slotCount < 2; slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
-                NBTTagCompound tagCompound = new NBTTagCompound();
+                CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.setByte("Slot", (byte) slotCount);
                 inventory.get(slotCount).writeToNBT(tagCompound);
                 tagList.appendTag(tagCompound);
@@ -63,7 +63,7 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
         }
         nbtTags.setTag("Items", tagList);
         if (fluid != null) {
-            nbtTags.setTag("cachedFluid", fluid.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("cachedFluid", fluid.writeToNBT(new CompoundNBT()));
         }
     }
 }

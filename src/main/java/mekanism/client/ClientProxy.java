@@ -197,9 +197,9 @@ import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityThermo
 import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
 import mekanism.common.util.TextComponentGroup;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.PlayerEntitySP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -211,14 +211,14 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -470,7 +470,7 @@ public class ClientProxy extends CommonProxy {
 
         //Register the item inventory model locations for the various blocks
         for (MekanismBlock mekanismBlock : MekanismBlock.values()) {
-            ItemBlock item = mekanismBlock.getItem();
+            BlockItem item = mekanismBlock.getItem();
             if (item instanceof IItemRedirectedModel) {
                 ModelLoader.setCustomModelResourceLocation(item, 0, getInventoryMRL(((IItemRedirectedModel) item).getRedirectLocation()));
             } else {
@@ -508,7 +508,7 @@ public class ClientProxy extends CommonProxy {
         setCustomStateMapper(new StateMapperBase() {
             @Nonnull
             @Override
-            protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
+            protected ModelResourceLocation getModelResourceLocation(@Nonnull BlockState state) {
                 return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "fluid_tank"), "");
             }
         }, MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK, MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK, MekanismBlock.CREATIVE_FLUID_TANK);
@@ -516,7 +516,7 @@ public class ClientProxy extends CommonProxy {
         setCustomStateMapper(new StateMapperBase() {
             @Nonnull
             @Override
-            protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
+            protected ModelResourceLocation getModelResourceLocation(@Nonnull BlockState state) {
                 return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "energy_cube"), "");
             }
         }, MekanismBlock.BASIC_ENERGY_CUBE, MekanismBlock.ADVANCED_ENERGY_CUBE, MekanismBlock.ELITE_ENERGY_CUBE, MekanismBlock.ULTIMATE_ENERGY_CUBE, MekanismBlock.CREATIVE_ENERGY_CUBE);
@@ -565,10 +565,10 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomModelResourceLocation(item.getItem(), 0, new ModelResourceLocation(item.getItem().getRegistryName(), "inventory"));
     }
 
-    private GuiScreen getClientItemGui(EntityPlayer player, BlockPos pos) {
+    private GuiScreen getClientItemGui(PlayerEntity player, BlockPos pos) {
         int currentItem = pos.getX();
         int handOrdinal = pos.getY();
-        if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= EnumHand.values().length) {
+        if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= Hand.values().length) {
             //If it is out of bounds don't do anything
             return null;
         }
@@ -576,7 +576,7 @@ public class ClientProxy extends CommonProxy {
         if (stack.isEmpty()) {
             return null;
         }
-        EnumHand hand = EnumHand.values()[handOrdinal];
+        Hand hand = Hand.values()[handOrdinal];
         int guiID = pos.getZ();
         switch (guiID) {
             case 0:
@@ -604,7 +604,7 @@ public class ClientProxy extends CommonProxy {
         return null;
     }
 
-    private GuiScreen getClientEntityGui(EntityPlayer player, World world, BlockPos pos) {
+    private GuiScreen getClientEntityGui(PlayerEntity player, World world, BlockPos pos) {
         int entityID = pos.getX();
         Entity entity = world.getEntityByID(entityID);
         if (entity == null) {
@@ -643,7 +643,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     @SuppressWarnings("unchecked")
-    public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+    public GuiScreen getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
         //TODO: Replace magic numbers here and in sub methods with static lookup ints
         if (ID == 0) {
             return getClientItemGui(player, pos);
@@ -775,7 +775,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void doSparkle(TileEntity tileEntity, SparkleAnimation anim) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        PlayerEntitySP player = Minecraft.getMinecraft().player;
         // If player is within 16 blocks (256 = 16^2), show the status message/sparkles
         if (tileEntity.getPos().distanceSq(player.getPosition()) <= 256) {
             if (MekanismConfig.current().client.enableMultiblockFormationParticles.val()) {
@@ -820,9 +820,9 @@ public class ClientProxy extends CommonProxy {
                   return -1;
               }, (stack, tintIndex) -> {
                   Item item = stack.getItem();
-                  if (item instanceof ItemBlock) {
+                  if (item instanceof BlockItem) {
                       //TODO: Fix Glow panel item coloring
-                      Block block = ((ItemBlock) item).getBlock();
+                      Block block = ((BlockItem) item).getBlock();
                       if (block instanceof IColoredBlock) {
                           return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
                       }
@@ -952,7 +952,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public double getReach(EntityPlayer player) {
+    public double getReach(PlayerEntity player) {
         return Minecraft.getMinecraft().playerController.getBlockReachDistance();
     }
 
@@ -971,7 +971,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public EntityPlayer getPlayer(MessageContext context) {
+    public PlayerEntity getPlayer(MessageContext context) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             return context.getServerHandler().player;
         }
@@ -979,7 +979,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void handlePacket(Runnable runnable, EntityPlayer player) {
+    public void handlePacket(Runnable runnable, PlayerEntity player) {
         if (player == null || player.world.isRemote) {
             Minecraft.getMinecraft().addScheduledTask(runnable);
         } else {
@@ -999,7 +999,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void renderLaser(World world, Pos3D from, Pos3D to, EnumFacing direction, double energy) {
+    public void renderLaser(World world, Pos3D from, Pos3D to, Direction direction, double energy) {
         Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleLaser(world, from, to, direction, energy));
     }
 

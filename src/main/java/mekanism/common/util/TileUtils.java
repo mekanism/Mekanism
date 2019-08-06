@@ -8,8 +8,8 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.PacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -19,11 +19,11 @@ public class TileUtils {
     // N.B. All the tank I/O functions rely on the fact that an empty NBT Compound is a singular
     // byte and that the Gas/Fluid Stacks initialize to null if they are de-serialized from an
     // empty tag.
-    private static final NBTTagCompound EMPTY_TAG_COMPOUND = new NBTTagCompound();
+    private static final CompoundNBT EMPTY_TAG_COMPOUND = new CompoundNBT();
 
     public static void addTankData(TileNetworkList data, GasTank tank) {
         if (tank.getGas() != null) {
-            data.add(tank.getGas().write(new NBTTagCompound()));
+            data.add(tank.getGas().write(new CompoundNBT()));
         } else {
             data.add(EMPTY_TAG_COMPOUND);
         }
@@ -35,7 +35,7 @@ public class TileUtils {
 
     public static void addFluidStack(TileNetworkList data, FluidStack stack) {
         if (stack != null) {
-            data.add(stack.writeToNBT(new NBTTagCompound()));
+            data.add(stack.writeToNBT(new CompoundNBT()));
         } else {
             data.add(EMPTY_TAG_COMPOUND);
         }
@@ -73,7 +73,7 @@ public class TileUtils {
         }
     }
 
-    public static void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, EnumFacing facing) {
+    public static void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, Direction facing) {
         if (tank.getGas() != null) {
             GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), gasOutput));
             tank.draw(GasUtils.emit(toSend, tile, EnumSet.of(facing)), true);

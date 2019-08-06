@@ -2,7 +2,7 @@ package mekanism.common.capabilities;
 
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DefaultBlockableConnection implements IBlockableConnection {
@@ -12,12 +12,12 @@ public class DefaultBlockableConnection implements IBlockableConnection {
     }
 
     @Override
-    public boolean canConnectMutual(EnumFacing side) {
+    public boolean canConnectMutual(Direction side) {
         return false;
     }
 
     @Override
-    public boolean canConnect(EnumFacing side) {
+    public boolean canConnect(Direction side) {
         return false;
     }
 }

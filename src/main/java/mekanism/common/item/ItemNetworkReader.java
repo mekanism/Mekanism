@@ -13,12 +13,12 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -33,7 +33,7 @@ public class ItemNetworkReader extends ItemEnergized {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
@@ -76,7 +76,7 @@ public class ItemNetworkReader extends ItemEnergized {
                     }
                     Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
 
-                    for (EnumFacing iterSide : EnumFacing.values()) {
+                    for (Direction iterSide : Direction.values()) {
                         Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
                         TileEntity tile = coord.getTileEntity(world);
                         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite())) {

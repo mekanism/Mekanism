@@ -13,7 +13,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,7 +26,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     protected int stackIndex;
     protected GuiButton checkboxButton;
 
-    protected GuiTextFilter(EntityPlayer player, TILE tile) {
+    protected GuiTextFilter(PlayerEntity player, TILE tile) {
         super(player, tile);
     }
 

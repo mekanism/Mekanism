@@ -12,7 +12,7 @@ import mekanism.common.tile.transmitter.logistical_transporter.TileEntityBasicLo
 import mekanism.common.tile.transmitter.logistical_transporter.TileEntityEliteLogisticalTransporter;
 import mekanism.common.tile.transmitter.logistical_transporter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.logistical_transporter.TileEntityUltimateLogisticalTransporter;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.World;
@@ -32,7 +32,7 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
         switch (tier) {
             case BASIC:
                 return new TileEntityBasicLogisticalTransporter();
@@ -47,7 +47,7 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     }
 
     @Override
-    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.TRANSLUCENT || layer == BlockRenderLayer.CUTOUT;
     }
 

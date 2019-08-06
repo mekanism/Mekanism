@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -64,7 +64,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
             renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
         }
 
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             for (BakedQuad quad : cc.getQuads(null, side, 0)) {
                 quad = MekanismRenderer.iconTransform(quad, icon);
                 LightUtil.renderQuadColor(renderer, quad, color.argb());
@@ -77,7 +77,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         }
     }
 
-    public IBakedModel getModelForSide(TileEntityTransmitter part, EnumFacing side) {
+    public IBakedModel getModelForSide(TileEntityTransmitter part, Direction side) {
         String sideName = side.name().toLowerCase(Locale.ROOT);
         String typeName = part.getConnectionType(side).name().toUpperCase();
         String name = sideName + typeName;

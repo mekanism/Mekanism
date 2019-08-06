@@ -10,7 +10,7 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -21,7 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -45,8 +45,8 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     @Override
     public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityLivingBase entityLiving, int itemUseCount) {
-        if (entityLiving instanceof EntityPlayer && getEnergy(itemstack) > 0) {
-            EntityPlayer player = (EntityPlayer) entityLiving;
+        if (entityLiving instanceof PlayerEntity && getEnergy(itemstack) > 0) {
+            PlayerEntity player = (PlayerEntity) entityLiving;
             boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
             ItemStack ammo = findAmmo(player);
 
@@ -111,11 +111,11 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
         return EnumAction.BOW;
     }
 
-    private ItemStack findAmmo(EntityPlayer player) {
-        if (isArrow(player.getHeldItem(EnumHand.OFF_HAND))) {
-            return player.getHeldItem(EnumHand.OFF_HAND);
-        } else if (isArrow(player.getHeldItem(EnumHand.MAIN_HAND))) {
-            return player.getHeldItem(EnumHand.MAIN_HAND);
+    private ItemStack findAmmo(PlayerEntity player) {
+        if (isArrow(player.getHeldItem(Hand.OFF_HAND))) {
+            return player.getHeldItem(Hand.OFF_HAND);
+        } else if (isArrow(player.getHeldItem(Hand.MAIN_HAND))) {
+            return player.getHeldItem(Hand.MAIN_HAND);
         }
         for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
             ItemStack itemstack = player.inventory.getStackInSlot(i);
@@ -132,7 +132,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, @Nonnull EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
         ItemStack itemStackIn = playerIn.getHeldItem(hand);
         boolean flag = !findAmmo(playerIn).isEmpty();
         ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(itemStackIn, worldIn, playerIn, hand, flag);

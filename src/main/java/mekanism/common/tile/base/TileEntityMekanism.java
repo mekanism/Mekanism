@@ -59,18 +59,18 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
@@ -100,7 +100,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     /**
      * The players currently using this block.
      */
-    public Set<EntityPlayer> playersUsing = new HashSet<>();
+    public Set<PlayerEntity> playersUsing = new HashSet<>();
 
     /**
      * A timer used to send packets to clients.
@@ -127,7 +127,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Variables for handling ITileDirectional
     //TODO: Should this be null when we don't support rotations
     @Nonnull
-    private EnumFacing facing = EnumFacing.NORTH;
+    private Direction facing = Direction.NORTH;
     //End variables ITileDirectional
 
     //Variables for handling ITileRedstone
@@ -287,7 +287,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return components;
     }
 
-    public WrenchResult tryWrench(IBlockState state, EntityPlayer player, EnumHand hand, Supplier<RayTraceResult> rayTraceSupplier) {
+    public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, Supplier<RayTraceResult> rayTraceSupplier) {
         ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);
@@ -316,7 +316,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return WrenchResult.PASS;
     }
 
-    public boolean openGui(EntityPlayer player) {
+    public boolean openGui(PlayerEntity player) {
         if (hasGui() && !player.isSneaking()) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
@@ -381,8 +381,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (!world.isRemote) {
             if (doAutoSync && playersUsing.size() > 0) {
                 TileEntityMessage updateMessage = new TileEntityMessage(this);
-                for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(updateMessage, (EntityPlayerMP) player);
+                for (PlayerEntity player : playersUsing) {
+                    Mekanism.packetHandler.sendTo(updateMessage, (ServerPlayerEntity) player);
                 }
             }
         }
@@ -398,11 +398,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         onAdded();
     }
 
-    public void open(EntityPlayer player) {
+    public void open(PlayerEntity player) {
         playersUsing.add(player);
     }
 
-    public void close(EntityPlayer player) {
+    public void close(PlayerEntity player) {
         playersUsing.remove(player);
     }
 
@@ -414,8 +414,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 component.read(dataStream);
             }
             if (isDirectional()) {
-                EnumFacing previousDirection = getDirection();
-                facing = EnumFacing.byIndex(dataStream.readInt());
+                Direction previousDirection = getDirection();
+                facing = Direction.byIndex(dataStream.readInt());
                 if (previousDirection != getDirection()) {
                     MekanismUtils.updateBlock(world, getPos());
                     world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
@@ -502,14 +502,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public abstract void onUpdate();
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         redstone = nbtTags.getBoolean("redstone");
         for (ITileComponent component : components) {
             component.read(nbtTags);
         }
         if (isDirectional() && nbtTags.hasKey("facing")) {
-            facing = EnumFacing.byIndex(nbtTags.getInteger("facing"));
+            facing = Direction.byIndex(nbtTags.getInteger("facing"));
         }
         if (supportsRedstone() && nbtTags.hasKey("controlType")) {
             controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
@@ -519,7 +519,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
                 inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
                 for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-                    NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+                    CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
                     byte slotID = tagCompound.getByte("Slot");
                     if (slotID >= 0 && slotID < getSizeInventory()) {
                         setInventorySlotContents(slotID, new ItemStack(tagCompound));
@@ -537,7 +537,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setBoolean("redstone", redstone);
         for (ITileComponent component : components) {
@@ -555,7 +555,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
                     ItemStack stackInSlot = getStackInSlot(slotCount);
                     if (!stackInSlot.isEmpty()) {
-                        NBTTagCompound tagCompound = new NBTTagCompound();
+                        CompoundNBT tagCompound = new CompoundNBT();
                         tagCompound.setByte("Slot", (byte) slotCount);
                         stackInSlot.writeToNBT(tagCompound);
                         tagList.appendTag(tagCompound);
@@ -575,7 +575,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         } else if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -587,7 +587,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (hasInventory() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -603,7 +603,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
             return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
         }
@@ -636,14 +636,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Nonnull
     @Override
-    public NBTTagCompound getUpdateTag() {
+    public CompoundNBT getUpdateTag() {
         // Forge writes only x/y/z/id info to a new NBT Tag Compound. This is fine, we have a custom network system
         // to send other data so we don't use this one (yet).
         return super.getUpdateTag();
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull NBTTagCompound tag) {
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         // The super implementation of handleUpdateTag is to call this readFromNBT. But, the given TagCompound
         // only has x/y/z/id data, so our readFromNBT will set a bunch of default values which are wrong.
         // So simply call the super's readFromNBT, to let Forge do whatever it wants, but don't treat this like
@@ -655,14 +655,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Methods for implementing ITileDirectional
     @Nonnull
     @Override
-    public EnumFacing getDirection() {
+    public Direction getDirection() {
         return facing;
     }
 
     @Override
-    public void setFacing(@Nonnull EnumFacing direction) {
+    public void setFacing(@Nonnull Direction direction) {
         if (canSetFacing(direction)) {
-            EnumFacing previousDirection = getDirection();
+            Direction previousDirection = getDirection();
             facing = direction;
             if (!world.isRemote && previousDirection != getDirection()) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
@@ -725,14 +725,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer) {
+    public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
         return hasInventory() && !isInvalid() && this.world.isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
     }
 
     @Nonnull
     @Override
     //TODO: Don't have this be abstract, get it from the block instead by default
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         //TODO
         return new int[0];
     }
@@ -744,7 +744,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
         for (int slots = 0; slots < nbtTags.tagCount(); slots++) {
-            NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
+            CompoundNBT tagCompound = nbtTags.getCompoundTagAt(slots);
             byte slotID = tagCompound.getByte("Slot");
             if (slotID >= 0 && slotID < inventory.size()) {
                 inventory.set(slotID, new ItemStack(tagCompound));
@@ -761,7 +761,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             for (int slots = 0; slots < inventory.size(); slots++) {
                 ItemStack itemStack = inventory.get(slots);
                 if (!itemStack.isEmpty()) {
-                    NBTTagCompound tagCompound = new NBTTagCompound();
+                    CompoundNBT tagCompound = new CompoundNBT();
                     tagCompound.setByte("Slot", (byte) slots);
                     itemStack.writeToNBT(tagCompound);
                     tagList.appendTag(tagCompound);
@@ -776,7 +776,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return hasInventory();
     }
 
-    protected IItemHandler getItemHandler(EnumFacing side) {
+    protected IItemHandler getItemHandler(Direction side) {
         return side == null ? nullHandler : itemManager.getWrapper(this, side);
     }
 
@@ -799,12 +799,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public boolean canOutputEnergy(EnumFacing side) {
+    public boolean canOutputEnergy(Direction side) {
         return false;
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         return isElectric();
     }
 
@@ -856,7 +856,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double acceptEnergy(Direction side, double amount, boolean simulate) {
         if (!isElectric()) {
             return 0;
         }
@@ -871,7 +871,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double pullEnergy(Direction side, double amount, boolean simulate) {
         if (!isElectric()) {
             return 0;
         }
@@ -927,7 +927,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double injectEnergy(EnumFacing pushDirection, double amount, double voltage) {
+    public double injectEnergy(Direction pushDirection, double amount, double voltage) {
         // nb: the facing param contains the side relative to the pushing block
         TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(pushDirection.getOpposite()));
         if (MekanismConfig.current().general.blacklistIC2.val() || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)) {

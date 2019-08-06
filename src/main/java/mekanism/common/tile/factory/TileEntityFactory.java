@@ -63,8 +63,8 @@ import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -367,7 +367,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         return configComponent.hasSideForData(TransmissionType.ENERGY, getDirection(), 1, side);
     }
 
@@ -537,7 +537,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         } else if (tier == FactoryTier.BASIC && slotID >= 8 && slotID <= 10) {
@@ -553,7 +553,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (isInputSlot(slotID)) {
@@ -755,7 +755,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         setRecipeType(RecipeType.values()[nbtTags.getInteger("recipeType")]);
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
@@ -775,7 +775,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("recipeType", recipeType.ordinal());
         nbtTags.setInteger("recipeTicks", recipeTicks);
@@ -789,7 +789,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
         for (int i = 0; i < tier.processes; i++) {
             nbtTags.setInteger("progress" + i, progress[i]);
         }
-        nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
+        nbtTags.setTag("gasTank", gasTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
@@ -882,13 +882,13 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override
@@ -897,7 +897,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public EnumFacing getOrientation() {
+    public Direction getOrientation() {
         return getDirection();
     }
 
@@ -907,7 +907,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack.getGas())) {
             return gasTank.receive(stack, doTransfer);
         }
@@ -915,7 +915,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public boolean canReceiveGas(EnumFacing side, Gas type) {
+    public boolean canReceiveGas(Direction side, Gas type) {
         if (configComponent.getOutput(TransmissionType.GAS, side, getDirection()).hasSlot(0)) {
             return recipeType.canReceiveGas(side, type);
         }
@@ -923,12 +923,12 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         return null;
     }
 
     @Override
-    public boolean canDrawGas(EnumFacing side, Gas type) {
+    public boolean canDrawGas(Direction side, Gas type) {
         return false;
     }
 
@@ -939,7 +939,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -948,7 +948,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         }
@@ -960,7 +960,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (configComponent.isCapabilityDisabled(capability, side, getDirection())) {
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
@@ -991,13 +991,13 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags) {
+    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         nbtTags.setBoolean("sorting", sorting);
         return nbtTags;
     }
 
     @Override
-    public void setConfigurationData(NBTTagCompound nbtTags) {
+    public void setConfigurationData(CompoundNBT nbtTags) {
         sorting = nbtTags.getBoolean("sorting");
     }
 

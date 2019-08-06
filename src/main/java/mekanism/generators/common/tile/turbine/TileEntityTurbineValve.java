@@ -24,7 +24,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.content.turbine.TurbineFluidTank;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -68,12 +68,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean canOutputEnergy(EnumFacing side) {
+    public boolean canOutputEnergy(Direction side) {
         return structure != null && !structure.locations.contains(Coord4D.get(this).offset(side));
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         return false;
     }
 
@@ -147,7 +147,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double injectEnergy(EnumFacing direction, double amount, double voltage) {
+    public double injectEnergy(Direction direction, double amount, double voltage) {
         return amount;
     }
 
@@ -161,12 +161,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double acceptEnergy(Direction side, double amount, boolean simulate) {
         return 0;
     }
 
     @Override
-    public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
+    public double pullEnergy(Direction side, double amount, boolean simulate) {
         double toGive = Math.min(getEnergy(), amount);
         if (toGive < 0.0001 || (side != null && !canOutputEnergy(side))) {
             return 0;
@@ -178,7 +178,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
+    public FluidTankInfo[] getTankInfo(Direction from) {
         return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{fluidTank.getInfo()} : PipeUtils.EMPTY;
     }
 
@@ -188,7 +188,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
         int filled = fluidTank.fill(resource, doFill);
         if (doFill) {
             structure.newSteamInput += filled;
@@ -200,7 +200,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         if (fluid.getFluid() == FluidRegistry.getFluid("steam")) {
             return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure);
         }
@@ -243,7 +243,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
                 || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
@@ -254,7 +254,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
                 return (T) this;

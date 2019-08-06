@@ -10,7 +10,7 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.util.ResourceLocation;
@@ -51,7 +51,7 @@ public class BlockPlasticFence extends BlockFence implements IColoredBlock, IBlo
 
         @Nonnull
         @Override
-        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
+        protected ModelResourceLocation getModelResourceLocation(@Nonnull BlockState state) {
             String properties = "east=" + state.getValue(EAST) + ",";
             properties += "north=" + state.getValue(NORTH) + ",";
             properties += "south=" + state.getValue(SOUTH) + ",";

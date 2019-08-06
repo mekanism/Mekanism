@@ -13,9 +13,9 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range4D;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -28,8 +28,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = new HashSet<>();
 
     protected Set<Coord4D> possibleAcceptors = new HashSet<>();
-    protected Map<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<>();
-    protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = new HashMap<>();
+    protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new HashMap<>();
+    protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new HashMap<>();
     protected Range4D packetRange = null;
     protected int capacity = 0;
     protected double doubleCapacity = 0;
@@ -53,7 +53,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                         world = transmitter.world();
                     }
 
-                    for (EnumFacing side : EnumFacing.values()) {
+                    for (Direction side : Direction.values()) {
                         updateTransmitterOnSide(transmitter, side);
                     }
 
@@ -70,11 +70,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
 
         if (!changedAcceptors.isEmpty()) {
-            for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> entry : changedAcceptors.entrySet()) {
+            for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> entry : changedAcceptors.entrySet()) {
                 IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = entry.getKey();
                 if (transmitter.isValid()) {
                     //Update all the changed directions
-                    for (EnumFacing side : entry.getValue()) {
+                    for (Direction side : entry.getValue()) {
                         updateTransmitterOnSide(transmitter, side);
                     }
                 }
@@ -83,10 +83,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    public void updateTransmitterOnSide(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, EnumFacing side) {
+    public void updateTransmitterOnSide(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
         ACCEPTOR acceptor = transmitter.getAcceptor(side);
         Coord4D acceptorCoord = transmitter.coord().offset(side);
-        EnumSet<EnumFacing> directions = acceptorDirections.get(acceptorCoord);
+        EnumSet<Direction> directions = acceptorDirections.get(acceptorCoord);
 
         if (acceptor != null) {
             possibleAcceptors.add(acceptorCoord);
@@ -146,8 +146,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    public void acceptorChanged(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, EnumFacing side) {
-        EnumSet<EnumFacing> directions = changedAcceptors.get(transmitter);
+    public void acceptorChanged(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
+        EnumSet<Direction> directions = changedAcceptors.get(transmitter);
         if (directions != null) {
             directions.add(side);
         } else {
@@ -166,7 +166,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         transmittersToAdd.addAll(net.transmittersToAdd);
         possibleAcceptors.addAll(net.possibleAcceptors);
 
-        for (Entry<Coord4D, EnumSet<EnumFacing>> entry : net.acceptorDirections.entrySet()) {
+        for (Entry<Coord4D, EnumSet<Direction>> entry : net.acceptorDirections.entrySet()) {
             Coord4D coord = entry.getKey();
             if (acceptorDirections.containsKey(coord)) {
                 acceptorDirections.get(coord).addAll(entry.getValue());
@@ -320,7 +320,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         updateDelay = 5;
     }
 
-    public void addUpdate(EntityPlayer player) {
+    public void addUpdate(PlayerEntity player) {
         updateQueue.add(new DelayQueue(player));
     }
 
@@ -368,11 +368,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return possibleAcceptors;
     }
 
-    public Map<Coord4D, EnumSet<EnumFacing>> getAcceptorDirections() {
+    public Map<Coord4D, EnumSet<Direction>> getAcceptorDirections() {
         return acceptorDirections;
     }
 
-    public Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> getChangedAcceptors() {
+    public Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> getChangedAcceptors() {
         return changedAcceptors;
     }
 
@@ -411,10 +411,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public static class DelayQueue {
 
-        public EntityPlayer player;
+        public PlayerEntity player;
         public int delay;
 
-        public DelayQueue(EntityPlayer p) {
+        public DelayQueue(PlayerEntity p) {
             player = p;
             delay = 5;
         }

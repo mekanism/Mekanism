@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSound;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class PlayerSound extends PositionedSound implements ITickableSound {
 
     @Nonnull
-    private WeakReference<EntityPlayer> playerReference;
+    private WeakReference<PlayerEntity> playerReference;
     private float lastX;
     private float lastY;
     private float lastZ;
@@ -26,7 +26,7 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
 
     private boolean donePlaying = false;
 
-    public PlayerSound(@Nonnull EntityPlayer player, @Nonnull ResourceLocation sound) {
+    public PlayerSound(@Nonnull PlayerEntity player, @Nonnull ResourceLocation sound) {
         super(sound, SoundCategory.PLAYERS);
         this.playerReference = new WeakReference<>(player);
         this.lastX = (float) player.posX;
@@ -41,14 +41,14 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
     }
 
     @Nullable
-    private EntityPlayer getPlayer() {
+    private PlayerEntity getPlayer() {
         return playerReference.get();
     }
 
     @Override
     public float getXPosF() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
-        EntityPlayer player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player != null) {
             this.lastX = (float) player.posX;
         }
@@ -58,7 +58,7 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
     @Override
     public float getYPosF() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
-        EntityPlayer player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player != null) {
             this.lastY = (float) player.posY;
         }
@@ -68,7 +68,7 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
     @Override
     public float getZPosF() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
-        EntityPlayer player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player != null) {
             this.lastZ = (float) player.posZ;
         }
@@ -77,7 +77,7 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
 
     @Override
     public void update() {
-        EntityPlayer player = getPlayer();
+        PlayerEntity player = getPlayer();
         if (player == null || player.isDead) {
             this.donePlaying = true;
             this.volume = 0.0F;
@@ -100,7 +100,7 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
         return donePlaying;
     }
 
-    public abstract boolean shouldPlaySound(@Nonnull EntityPlayer player);
+    public abstract boolean shouldPlaySound(@Nonnull PlayerEntity player);
 
     @Override
     public float getVolume() {

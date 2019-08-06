@@ -34,13 +34,13 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -126,9 +126,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             }
 
             if (fluidTank.getFluid() != null) {
-                TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
-                if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN)) {
-                    IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
+                TileEntity tileEntity = Coord4D.get(this).offset(Direction.UP).getTileEntity(world);
+                if (CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN)) {
+                    IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN);
                     FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
                     fluidTank.drain(handler.fill(toDrain, true), true);
                 }
@@ -150,7 +150,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         Collections.shuffle(tempPumpList);
 
         //First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
-        for (EnumFacing orientation : EnumFacing.values()) {
+        for (Direction orientation : Direction.values()) {
             Coord4D wrapper = Coord4D.get(this).offset(orientation);
             FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
             if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid))) {
@@ -182,7 +182,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             }
 
             //Add all the blocks surrounding this recurring node to the recurring node list
-            for (EnumFacing orientation : EnumFacing.values()) {
+            for (Direction orientation : Direction.values()) {
                 Coord4D side = wrapper.offset(orientation);
                 if (Coord4D.get(this).distanceTo(side) <= MekanismConfig.current().general.maxPumpRange.val()) {
                     fluid = MekanismUtils.getFluid(world, side, hasFilter());
@@ -233,7 +233,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("suckedLastOperation", suckedLastOperation);
@@ -243,12 +243,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         }
 
         if (fluidTank.getFluid() != null) {
-            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 
         NBTTagList recurringList = new NBTTagList();
         for (Coord4D wrapper : recurringNodes) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             wrapper.write(tagCompound);
             recurringList.appendTag(tagCompound);
         }
@@ -259,7 +259,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         operatingTicks = nbtTags.getInteger("operatingTicks");
         suckedLastOperation = nbtTags.getBoolean("suckedLastOperation");
@@ -289,7 +289,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 2) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         }
@@ -297,29 +297,29 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
+    public boolean canReceiveEnergy(Direction side) {
         return getOppositeDirection() == side;
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == EnumFacing.UP) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
+        if (side == Direction.UP) {
             return UPSLOTS;
-        } else if (side == EnumFacing.DOWN) {
+        } else if (side == Direction.DOWN) {
             return DOWNSLOTS;
         }
         return SIDESLOTS;
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing direction) {
-        if (direction == EnumFacing.UP) {
+    public FluidTankInfo[] getTankInfo(Direction direction) {
+        if (direction == Direction.UP) {
             return new FluidTankInfo[]{fluidTank.getInfo()};
         }
         return PipeUtils.EMPTY;
@@ -327,7 +327,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     @Override
     public FluidTankInfo[] getAllTanks() {
-        return getTankInfo(EnumFacing.UP);
+        return getTankInfo(Direction.UP);
     }
 
     @Override
@@ -347,34 +347,34 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
     @Override
     @Nullable
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
         return fluidTank.drain(maxDrain, doDrain);
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return from == EnumFacing.byIndex(1) && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
+    public boolean canDrain(Direction from, @Nullable FluidStack fluid) {
+        return from == Direction.byIndex(1) && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
         player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
         return EnumActionResult.SUCCESS;
     }
 
     @Override
-    public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
         return EnumActionResult.PASS;
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.cast(this);
         }

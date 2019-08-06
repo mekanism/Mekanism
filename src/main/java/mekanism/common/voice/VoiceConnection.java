@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemWalkieTalkie;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -38,9 +38,9 @@ public class VoiceConnection extends Thread {
                 int retryCount = 0;
                 while (uuid == null && retryCount <= 100) {
                     try {
-                        List<EntityPlayerMP> l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
+                        List<ServerPlayerEntity> l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
-                        for (EntityPlayerMP playerMP : l) {
+                        for (ServerPlayerEntity playerMP : l) {
                             String playerIP = playerMP.getPlayerIP();
                             if (!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.isFoundLocal()) {
                                 Mekanism.voiceManager.setFoundLocal(true);
@@ -144,7 +144,7 @@ public class VoiceConnection extends Thread {
         return 0;
     }
 
-    public EntityPlayerMP getPlayer() {
+    public ServerPlayerEntity getPlayer() {
         return server.getPlayerList().getPlayerByUUID(uuid);
     }
 }

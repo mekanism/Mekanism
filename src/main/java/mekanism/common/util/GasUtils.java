@@ -13,9 +13,9 @@ import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -26,7 +26,7 @@ import net.minecraft.world.World;
  */
 public final class GasUtils {
 
-    public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<EnumFacing> sides) {
+    public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<Direction> sides) {
         final IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
         EmitUtils.forEachSide(world, pos, sides, (tile, side) ->
               acceptors[side.ordinal()] = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()));
@@ -39,10 +39,10 @@ public final class GasUtils {
      * @return array of IGasAcceptors
      */
     public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world) {
-        return getConnectedAcceptors(pos, world, EnumSet.allOf(EnumFacing.class));
+        return getConnectedAcceptors(pos, world, EnumSet.allOf(Direction.class));
     }
 
-    public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side) {
+    public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
             return false;
         }
@@ -102,7 +102,7 @@ public final class GasUtils {
      *
      * @return the amount of gas emitted
      */
-    public static int emit(GasStack stack, TileEntity from, Set<EnumFacing> sides) {
+    public static int emit(GasStack stack, TileEntity from, Set<Direction> sides) {
         if (stack == null || stack.amount == 0) {
             return 0;
         }
@@ -113,7 +113,7 @@ public final class GasUtils {
         EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
 
             //Invert to get access side
-            final EnumFacing accessSide = side.getOpposite();
+            final Direction accessSide = side.getOpposite();
 
             //Collect cap
             CapabilityUtils.runIfCap(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide,
@@ -135,7 +135,7 @@ public final class GasUtils {
 
     public static void writeSustainedData(GasTank gasTank, ItemStack itemStack) {
         if (gasTank.stored != null && gasTank.stored.getGas() != null) {
-            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.stored.write(new NBTTagCompound()));
+            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.stored.write(new CompoundNBT()));
         }
     }
 

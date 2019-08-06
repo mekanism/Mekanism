@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.robit;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -15,7 +15,7 @@ public class ContainerRobitMain extends ContainerRobit {
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         return ItemStack.EMPTY;
     }
 

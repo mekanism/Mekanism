@@ -5,9 +5,9 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class MModIDFilter extends MinerFilter implements IModIDFilter {
 
@@ -15,14 +15,14 @@ public class MModIDFilter extends MinerFilter implements IModIDFilter {
 
     @Override
     public boolean canFilter(ItemStack itemStack) {
-        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock)) {
+        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof BlockItem)) {
             return false;
         }
         return new ModIDFinder(modID).modifies(itemStack);
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.setInteger("type", 3);
         nbtTags.setString("modID", modID);
@@ -30,7 +30,7 @@ public class MModIDFilter extends MinerFilter implements IModIDFilter {
     }
 
     @Override
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         modID = nbtTags.getString("modID");
     }

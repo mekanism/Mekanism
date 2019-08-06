@@ -31,11 +31,11 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -133,7 +133,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 1) {
             return itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null;
         } else if (slotID == 0) {
@@ -155,12 +155,12 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return configComponent.getOutput(TransmissionType.ITEM, side, getDirection()).availableSlots;
     }
 
     @Override
-    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+    public int receiveGas(Direction side, GasStack stack, boolean doTransfer) {
         if (tier == GasTankTier.CREATIVE) {
             return stack != null ? stack.amount : 0;
         }
@@ -168,7 +168,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+    public GasStack drawGas(Direction side, int amount, boolean doTransfer) {
         if (canDrawGas(side, null)) {
             return gasTank.draw(amount, doTransfer && tier != GasTankTier.CREATIVE);
         }
@@ -176,7 +176,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public boolean canDrawGas(EnumFacing side, Gas type) {
+    public boolean canDrawGas(Direction side, Gas type) {
         if (configComponent.hasSideForData(TransmissionType.GAS, getDirection(), 2, side)) {
             return gasTank.canDraw(type);
         }
@@ -184,7 +184,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public boolean canReceiveGas(EnumFacing side, Gas type) {
+    public boolean canReceiveGas(Direction side, Gas type) {
         if (configComponent.hasSideForData(TransmissionType.GAS, getDirection(), 1, side)) {
             return gasTank.canReceive(type);
         }
@@ -198,7 +198,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -206,7 +206,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
@@ -216,7 +216,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         return configComponent.isCapabilityDisabled(capability, side, getDirection()) || super.isCapabilityDisabled(capability, side);
     }
 
@@ -228,8 +228,8 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
                 int index = (dumping.ordinal() + 1) % GasMode.values().length;
                 dumping = GasMode.values()[index];
             }
-            for (EntityPlayer player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (EntityPlayerMP) player);
+            for (PlayerEntity player : playersUsing) {
+                Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (ServerPlayerEntity) player);
             }
 
             return;
@@ -248,7 +248,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         tier = GasTankTier.values()[nbtTags.getInteger("tier")];
         gasTank.read(nbtTags.getCompoundTag("gasTank"));
@@ -257,10 +257,10 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("tier", tier.ordinal());
-        nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
+        nbtTags.setTag("gasTank", gasTank.write(new CompoundNBT()));
         nbtTags.setInteger("dumping", dumping.ordinal());
         return nbtTags;
     }
@@ -275,8 +275,8 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override
@@ -295,7 +295,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
     }
 
     @Override
-    public EnumFacing getOrientation() {
+    public Direction getOrientation() {
         return getDirection();
     }
 

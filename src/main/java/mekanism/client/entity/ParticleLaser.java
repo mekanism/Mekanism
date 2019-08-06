@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,9 +19,9 @@ import org.lwjgl.opengl.GL11;
 public class ParticleLaser extends Particle {
 
     private double length;
-    private EnumFacing direction;
+    private Direction direction;
 
-    public ParticleLaser(World world, Pos3D start, Pos3D end, EnumFacing dir, double energy) {
+    public ParticleLaser(World world, Pos3D start, Pos3D end, Direction dir, double energy) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
         particleMaxAge = 5;
         particleRed = 1;

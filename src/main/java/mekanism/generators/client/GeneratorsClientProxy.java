@@ -49,9 +49,9 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -99,7 +99,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
         //Register the item inventory model locations for the various blocks
         for (GeneratorsBlock generatorsBlock : GeneratorsBlock.values()) {
-            ItemBlock item = generatorsBlock.getItem();
+            BlockItem item = generatorsBlock.getItem();
             if (item instanceof IItemRedirectedModel) {
                 //TODO: Fix Glow panel item coloring
                 ModelLoader.setCustomModelResourceLocation(item, 0, getInventoryMRL(((IItemRedirectedModel) item).getRedirectLocation()));
@@ -143,7 +143,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
     }
 
     @Override
-    public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+    public GuiScreen getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
         switch (ID) {

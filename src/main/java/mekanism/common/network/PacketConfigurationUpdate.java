@@ -15,10 +15,10 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -27,7 +27,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 
     @Override
     public IMessage onMessage(ConfigurationUpdateMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
 
         PacketHandler.handlePacket(() -> {
             TileEntity tile = message.coord4D.getTileEntity(player.world);
@@ -60,7 +60,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                         ejector.setOutputColor(null);
                     }
                 } else if (message.packetType == ConfigurationPacket.INPUT_COLOR) {
-                    EnumFacing side = EnumFacing.byIndex(message.inputSide);
+                    Direction side = Direction.byIndex(message.inputSide);
                     TileComponentEjector ejector = config.getEjector();
                     if (message.clickType == 0) {
                         ejector.setInputColor(side, TransporterUtils.increment(ejector.getInputColor(side)));
@@ -72,8 +72,8 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                 } else if (message.packetType == ConfigurationPacket.STRICT_INPUT) {
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
-                for (EntityPlayer p : ((TileEntityMekanism) config).playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData()), (EntityPlayerMP) p);
+                for (PlayerEntity p : ((TileEntityMekanism) config).playersUsing) {
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData()), (ServerPlayerEntity) p);
                 }
             }
         }, player);
@@ -92,7 +92,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 
         public Coord4D coord4D;
 
-        public EnumFacing configIndex;
+        public Direction configIndex;
 
         public int inputSide;
 
@@ -117,7 +117,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
             }
             if (packetType == ConfigurationPacket.SIDE_DATA) {
                 clickType = click;
-                configIndex = EnumFacing.byIndex(extra);
+                configIndex = Direction.byIndex(extra);
                 transmission = trans;
             }
             if (packetType == ConfigurationPacket.INPUT_COLOR) {
@@ -155,7 +155,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                 transmission = TransmissionType.values()[dataStream.readInt()];
             } else if (packetType == ConfigurationPacket.SIDE_DATA) {
                 clickType = dataStream.readInt();
-                configIndex = EnumFacing.byIndex(dataStream.readInt());
+                configIndex = Direction.byIndex(dataStream.readInt());
                 transmission = TransmissionType.values()[dataStream.readInt()];
             } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
                 clickType = dataStream.readInt();

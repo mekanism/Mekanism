@@ -10,7 +10,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
@@ -131,10 +131,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public void onPlace() {
         Coord4D current = Coord4D.get(this);
-        MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 1), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 2), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 3), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 4), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 1), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 2), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 3), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 4), current);
         // Check to see if the placement is happening in a blacklisted dimension
         isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val().contains(world.provider.getDimension());
     }
@@ -162,7 +162,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return SLOTS;
     }
 

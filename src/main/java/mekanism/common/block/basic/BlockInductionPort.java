@@ -10,7 +10,7 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.TileEntityInductionPort;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -23,7 +23,7 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
     }
 
     @Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public int getLightValue(BlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity instanceof IActiveState) {
             if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
@@ -40,7 +40,7 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
+    public int getMetaFromState(BlockState state) {
         //TODO
         return 0;
     }
@@ -48,22 +48,22 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
     @Nonnull
     @Override
     @Deprecated
-    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IBlockAccess world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
         return new TileEntityInductionPort();
     }
 
     @Override
-    public boolean hasComparatorInputOverride(IBlockState blockState) {
+    public boolean hasComparatorInputOverride(BlockState blockState) {
         return true;
     }
 
     @Override
-    public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
+    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
         return ((TileEntityInductionPort) world.getTileEntity(pos)).getRedstoneLevel();
     }
 

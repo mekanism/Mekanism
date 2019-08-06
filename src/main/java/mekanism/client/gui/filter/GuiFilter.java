@@ -3,7 +3,7 @@ package mekanism.client.gui.filter;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -15,7 +15,7 @@ public abstract class GuiFilter<TILE extends TileEntityMekanism> extends GuiMeka
         super(tile, container);
     }
 
-    protected GuiFilter(EntityPlayer player, TILE tile) {
+    protected GuiFilter(PlayerEntity player, TILE tile) {
         super(tile, new ContainerFilter(player.inventory, tile));
     }
 

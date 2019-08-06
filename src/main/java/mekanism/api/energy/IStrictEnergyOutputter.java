@@ -1,6 +1,6 @@
 package mekanism.api.energy;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 /**
  * Implement this if your TileEntity can output energy.
@@ -18,7 +18,7 @@ public interface IStrictEnergyOutputter {
      * @return energy sent
      */
     //TODO: Add @Nullable to the side
-    double pullEnergy(EnumFacing side, double amount, boolean simulate);
+    double pullEnergy(Direction side, double amount, boolean simulate);
 
     /**
      * Whether or not this tile entity can output energy on a specific side.
@@ -27,5 +27,5 @@ public interface IStrictEnergyOutputter {
      *
      * @return if the tile entity outputs energy
      */
-    boolean canOutputEnergy(EnumFacing side);
+    boolean canOutputEnergy(Direction side);
 }

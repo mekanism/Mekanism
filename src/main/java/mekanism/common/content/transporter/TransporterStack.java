@@ -15,9 +15,9 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterStack {
@@ -30,7 +30,7 @@ public class TransporterStack {
 
     public boolean initiatedPath = false;
 
-    public EnumFacing idleDir = null;
+    public Direction idleDir = null;
     public Coord4D originalLocation;
     public Coord4D homeLocation;
     private Coord4D clientNext;
@@ -38,7 +38,7 @@ public class TransporterStack {
     private Path pathType;
     private List<Coord4D> pathToTarget = new ArrayList<>();
 
-    public static TransporterStack readFromNBT(NBTTagCompound nbtTags) {
+    public static TransporterStack readFromNBT(CompoundNBT nbtTags) {
         TransporterStack stack = new TransporterStack();
         stack.read(nbtTags);
         return stack;
@@ -91,25 +91,25 @@ public class TransporterStack {
         itemStack = PacketHandler.readStack(dataStream);
     }
 
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         if (color != null) {
             nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
         }
 
         nbtTags.setInteger("progress", progress);
-        nbtTags.setTag("originalLocation", originalLocation.write(new NBTTagCompound()));
+        nbtTags.setTag("originalLocation", originalLocation.write(new CompoundNBT()));
 
         if (idleDir != null) {
             nbtTags.setInteger("idleDir", idleDir.ordinal());
         }
         if (homeLocation != null) {
-            nbtTags.setTag("homeLocation", homeLocation.write(new NBTTagCompound()));
+            nbtTags.setTag("homeLocation", homeLocation.write(new CompoundNBT()));
         }
         nbtTags.setInteger("pathType", pathType.ordinal());
         itemStack.writeToNBT(nbtTags);
     }
 
-    public void read(NBTTagCompound nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         if (nbtTags.hasKey("color")) {
             color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
         }
@@ -118,7 +118,7 @@ public class TransporterStack {
         originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
 
         if (nbtTags.hasKey("idleDir")) {
-            idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
+            idleDir = Direction.values()[nbtTags.getInteger("idleDir")];
         }
         if (nbtTags.hasKey("homeLocation")) {
             homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));
@@ -213,8 +213,8 @@ public class TransporterStack {
         return clientPrev;
     }
 
-    public EnumFacing getSide(ILogisticalTransporter transporter) {
-        EnumFacing side = null;
+    public Direction getSide(ILogisticalTransporter transporter) {
+        Direction side = null;
         if (progress < 50) {
             Coord4D prev = getPrev(transporter);
             if (prev != null) {
@@ -230,11 +230,11 @@ public class TransporterStack {
         //TODO: Look into implications further about what side should be returned.
         // This is mainly to stop a crash I randomly encountered but was unable to reproduce.
         // (I believe the difference returns null when it is the "same" transporter somehow or something)
-        return side == null ? EnumFacing.DOWN : side;
+        return side == null ? Direction.DOWN : side;
     }
 
-    public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from) {
-        EnumFacing opposite = from.getOpposite();
+    public boolean canInsertToTransporter(TileEntity tileEntity, Direction from) {
+        Direction opposite = from.getOpposite();
         ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite);
         if (transporter != null && CapabilityUtils.getCapability(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite).canConnectMutual(opposite)) {
             return transporter.getColor() == color || transporter.getColor() == null;
@@ -242,7 +242,7 @@ public class TransporterStack {
         return false;
     }
 
-    public boolean canInsertToTransporter(ILogisticalTransporter transporter, EnumFacing side) {
+    public boolean canInsertToTransporter(ILogisticalTransporter transporter, Direction side) {
         return transporter.canConnectMutual(side) && (transporter.getColor() == color || transporter.getColor() == null);
     }
 

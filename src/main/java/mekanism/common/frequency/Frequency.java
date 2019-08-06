@@ -9,7 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class Frequency {
 
@@ -30,7 +30,7 @@ public class Frequency {
         ownerUUID = uuid;
     }
 
-    public Frequency(NBTTagCompound nbtTags) {
+    public Frequency(CompoundNBT nbtTags) {
         read(nbtTags);
     }
 
@@ -73,13 +73,13 @@ public class Frequency {
         return closest;
     }
 
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         nbtTags.setString("name", name);
         nbtTags.setString("ownerUUID", ownerUUID.toString());
         nbtTags.setBoolean("publicFreq", publicFreq);
     }
 
-    protected void read(NBTTagCompound nbtTags) {
+    protected void read(CompoundNBT nbtTags) {
         name = nbtTags.getString("name");
         ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
         publicFreq = nbtTags.getBoolean("publicFreq");
@@ -128,15 +128,15 @@ public class Frequency {
         }
 
         @Nullable
-        public static Identity load(NBTTagCompound data) {
+        public static Identity load(CompoundNBT data) {
             if (!data.getString("name").isEmpty()) {
                 return new Identity(data.getString("name"), data.getBoolean("publicFreq"));
             }
             return null;
         }
 
-        public NBTTagCompound serialize() {
-            NBTTagCompound tag = new NBTTagCompound();
+        public CompoundNBT serialize() {
+            CompoundNBT tag = new CompoundNBT();
             tag.setString("name", name);
             tag.setBoolean("publicFreq", publicFreq);
             return tag;

@@ -18,7 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
@@ -119,13 +119,13 @@ public class TransporterManager {
     /**
      * @return TransitResponse of expected items to use
      */
-    public static TransitResponse getPredictedInsert(TileEntity tileEntity, EnumColor color, TransitRequest request, EnumFacing side) {
+    public static TransitResponse getPredictedInsert(TileEntity tileEntity, EnumColor color, TransitRequest request, Direction side) {
         // If the TE in question implements the mekanism interface, check that the color matches and bail
         // fast if it doesn't
         if (tileEntity instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
             if (config.getEjector().hasStrictInput()) {
-                EnumFacing tileSide = config.getOrientation();
+                Direction tileSide = config.getOrientation();
                 EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
                 if (configColor != null && configColor != color) {
                     return TransitResponse.EMPTY;

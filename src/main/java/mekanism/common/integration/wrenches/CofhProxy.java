@@ -2,9 +2,9 @@ package mekanism.common.integration.wrenches;
 
 import cofh.api.item.IToolHammer;
 import mekanism.api.IMekWrench;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 
@@ -21,12 +21,12 @@ public class CofhProxy implements MekWrenchProxy, IMekWrench {
     }
 
     @Override
-    public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos) {
+    public boolean canUseWrench(ItemStack stack, PlayerEntity player, BlockPos pos) {
         return stack.getItem() instanceof IToolHammer && ((IToolHammer) stack.getItem()).isUsable(stack, player, pos);
     }
 
     @Override
-    public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {
+    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack wrench, RayTraceResult rayTrace) {
         if (wrench.getItem() instanceof IToolHammer) {
             ((IToolHammer) wrench.getItem()).toolUsed(wrench, player, rayTrace.getBlockPos());
         }

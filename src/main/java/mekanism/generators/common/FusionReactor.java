@@ -17,12 +17,12 @@ import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorBlock;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -255,7 +255,7 @@ public class FusionReactor {
     public void formMultiblock(boolean keepBurning) {
         updatedThisTick = true;
         Coord4D controllerPosition = Coord4D.get(controller);
-        Coord4D centreOfReactor = controllerPosition.offset(EnumFacing.DOWN, 2);
+        Coord4D centreOfReactor = controllerPosition.offset(Direction.DOWN, 2);
         unformMultiblock(true);
         reactorBlocks.add(controller);
 
@@ -325,7 +325,7 @@ public class FusionReactor {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
                     Coord4D trans = centre.translate(x, y, z);
-                    IBlockState state = trans.getBlockState(controller.getWorld());
+                    BlockState state = trans.getBlockState(controller.getWorld());
                     Block tile = state.getBlock();
                     if (!tile.isAir(state, controller.getWorld(), trans.getPos())) {
                         return false;
@@ -412,7 +412,7 @@ public class FusionReactor {
         return 1 / caseAirConductivity;
     }
 
-    public double getInsulationCoefficient(EnumFacing side) {
+    public double getInsulationCoefficient(Direction side) {
         return 100_000;
     }
 
@@ -430,11 +430,11 @@ public class FusionReactor {
         return caseTemperature;
     }
 
-    public boolean canConnectHeat(EnumFacing side) {
+    public boolean canConnectHeat(Direction side) {
         return false;
     }
 
-    public IHeatTransfer getAdjacent(EnumFacing side) {
+    public IHeatTransfer getAdjacent(Direction side) {
         return null;
     }
 

@@ -3,7 +3,7 @@ package mekanism.generators.common.tile.reactor;
 import javax.annotation.Nonnull;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.capabilities.Capabilities;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock implements ILaserReceptor {
@@ -14,7 +14,7 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
     }
 
     @Override
-    public void receiveLaserEnergy(double energy, EnumFacing side) {
+    public void receiveLaserEnergy(double energy, Direction side) {
         if (getReactor() != null) {
             getReactor().addTemperatureFromEnergyInput(energy);
         }
@@ -26,12 +26,12 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.LASER_RECEPTOR_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
             return Capabilities.LASER_RECEPTOR_CAPABILITY.cast(this);
         }

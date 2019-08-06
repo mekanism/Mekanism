@@ -10,15 +10,15 @@ import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -43,7 +43,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         setSize(0.5F, 0.5F);
     }
 
-    public EntityFlame(EntityPlayer player) {
+    public EntityFlame(PlayerEntity player) {
         this(player.world);
         Pos3D playerPos = new Pos3D(player).translate(0, 1.6, 0);
         Pos3D flameVec = new Pos3D(1, 1, 1);
@@ -131,9 +131,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
             mop = new RayTraceResult(entity);
         }
 
-        if (mop != null && mop.entityHit instanceof EntityPlayer) {
-            EntityPlayer entityplayer = (EntityPlayer) mop.entityHit;
-            if (entityplayer.capabilities.disableDamage || owner instanceof EntityPlayer && !((EntityPlayer) owner).canAttackPlayer(entityplayer)) {
+        if (mop != null && mop.entityHit instanceof PlayerEntity) {
+            PlayerEntity entityplayer = (PlayerEntity) mop.entityHit;
+            if (entityplayer.capabilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(entityplayer)) {
                 mop = null;
             }
         }
@@ -150,7 +150,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     burn(mop.entityHit);
                 }
             } else if (mop.typeOfHit == Type.BLOCK) {
-                IBlockState state = world.getBlockState(mop.getBlockPos());
+                BlockState state = world.getBlockState(mop.getBlockPos());
                 boolean fluid = MekanismUtils.isFluid(world, new Coord4D(mop, world)) || MekanismUtils.isDeadFluid(world, new Coord4D(mop, world));
 
                 Coord4D sideCoord = new Coord4D(mop.getBlockPos().offset(mop.sideHit), world);
@@ -197,7 +197,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
         if (!result.isEmpty()) {
             if (!world.isRemote) {
-                IBlockState state = block.getBlockState(world);
+                BlockState state = block.getBlockState(world);
                 Block newBlock = Block.getBlockFromItem(result.getItem());
                 if (newBlock != Blocks.AIR) {
                     world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
@@ -242,12 +242,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
+    protected void readEntityFromNBT(@Nonnull CompoundNBT nbtTags) {
         mode = ItemFlamethrower.FlamethrowerMode.values()[nbtTags.getInteger("mode")];
     }
 
     @Override
-    protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags) {
+    protected void writeEntityToNBT(@Nonnull CompoundNBT nbtTags) {
         nbtTags.setInteger("mode", mode.ordinal());
     }
 

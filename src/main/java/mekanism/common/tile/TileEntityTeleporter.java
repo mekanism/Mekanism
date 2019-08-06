@@ -30,13 +30,13 @@ import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -80,7 +80,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         upgradeComponent.setSupported(Upgrade.ANCHOR);
     }
 
-    public static void teleportPlayerTo(EntityPlayerMP player, Coord4D coord, TileEntityTeleporter teleporter) {
+    public static void teleportPlayerTo(ServerPlayerEntity player, Coord4D coord, TileEntityTeleporter teleporter) {
         if (player.dimension != coord.dimensionId) {
             player.changeDimension(coord.dimensionId, (world, entity, yaw) -> entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
         } else {
@@ -89,11 +89,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         player.world.updateEntityWithOptionalForce(player, true);
     }
 
-    public static void alignPlayer(EntityPlayerMP player, Coord4D coord) {
-        Coord4D upperCoord = coord.offset(EnumFacing.UP);
-        EnumFacing side = null;
+    public static void alignPlayer(ServerPlayerEntity player, Coord4D coord) {
+        Coord4D upperCoord = coord.offset(Direction.UP);
+        Direction side = null;
         float yaw = player.rotationYaw;
-        for (EnumFacing iterSide : MekanismUtils.SIDE_DIRS) {
+        for (Direction iterSide : MekanismUtils.SIDE_DIRS) {
             if (upperCoord.offset(iterSide).isAirBlock(player.world)) {
                 side = iterSide;
                 break;
@@ -247,7 +247,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return new int[]{0};
     }
 
@@ -301,9 +301,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             if (teleporter != null) {
                 teleporter.didTeleport.add(entity.getPersistentID());
                 teleporter.teleDelay = 5;
-                if (entity instanceof EntityPlayerMP) {
-                    teleportPlayerTo((EntityPlayerMP) entity, closestCoords, teleporter);
-                    alignPlayer((EntityPlayerMP) entity, closestCoords);
+                if (entity instanceof ServerPlayerEntity) {
+                    teleportPlayerTo((ServerPlayerEntity) entity, closestCoords, teleporter);
+                    alignPlayer((ServerPlayerEntity) entity, closestCoords);
                 } else {
                     teleportEntityTo(entity, closestCoords, teleporter);
                 }
@@ -363,12 +363,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     public boolean isFrame(int x, int y, int z) {
-        IBlockState state = world.getBlockState(new BlockPos(x, y, z));
+        BlockState state = world.getBlockState(new BlockPos(x, y, z));
         return state.getBlock() instanceof BlockTeleporterFrame;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("frequency")) {
             frequency = new Frequency(nbtTags.getCompoundTag("frequency"));
@@ -378,10 +378,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         if (frequency != null) {
-            NBTTagCompound frequencyTag = new NBTTagCompound();
+            CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
             nbtTags.setTag("frequency", frequencyTag);
         }
@@ -464,7 +464,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return ChargeUtils.canBeOutputted(itemstack, false);
     }
 

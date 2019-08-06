@@ -14,7 +14,7 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class TileComponentSecurity implements ITileComponent {
 
@@ -118,7 +118,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void read(NBTTagCompound nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
         if (nbtTags.hasKey("ownerUUID")) {
             ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
@@ -149,13 +149,13 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         nbtTags.setInteger("securityMode", securityMode.ordinal());
         if (ownerUUID != null) {
             nbtTags.setString("ownerUUID", ownerUUID.toString());
         }
         if (frequency != null) {
-            NBTTagCompound frequencyTag = new NBTTagCompound();
+            CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
             nbtTags.setTag("securityFreq", frequencyTag);
         }

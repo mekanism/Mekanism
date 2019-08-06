@@ -13,8 +13,8 @@ import net.minecraft.client.particle.ParticleRedstone;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -191,7 +191,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         BlockPos pos = new BlockPos(entity);
         for (BlockPos posi = pos; posi.getY() > 0; posi = posi.down()) {
             if (posi.getY() < 256 && !world.isAirBlock(posi)) {
-                return posi.getY() + 1 + (entity instanceof EntityPlayer ? 1 : 0);
+                return posi.getY() + 1 + (entity instanceof PlayerEntity ? 1 : 0);
             }
         }
         return -1;
@@ -250,7 +250,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
+    protected void readEntityFromNBT(@Nonnull CompoundNBT nbtTags) {
         color = EnumColor.values()[nbtTags.getInteger("color")];
         if (nbtTags.hasKey("latched")) {
             latched = Coord4D.read(nbtTags.getCompoundTag("latched"));
@@ -262,10 +262,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags) {
+    protected void writeEntityToNBT(@Nonnull CompoundNBT nbtTags) {
         nbtTags.setInteger("color", color.ordinal());
         if (latched != null) {
-            nbtTags.setTag("latched", latched.write(new NBTTagCompound()));
+            nbtTags.setTag("latched", latched.write(new CompoundNBT()));
         }
         if (latchedEntity != null) {
             nbtTags.setLong("idMost", latchedEntity.getUniqueID().getMostSignificantBits());

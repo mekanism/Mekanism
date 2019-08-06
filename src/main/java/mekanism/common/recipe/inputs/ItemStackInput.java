@@ -2,7 +2,7 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -21,7 +21,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput> implements IWil
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         ingredient = new ItemStack(nbtTags.getCompoundTag("input"));
         ingredientHash = hashIngredients();
         wildVersion = null;

@@ -16,13 +16,13 @@ import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.Face;
@@ -120,7 +120,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand) {
+    public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand) {
         if (side != null) {
             return ImmutableList.of();
         }
@@ -182,7 +182,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
                 color = overrideColor;
             }
 
-            EnumFacing facing = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
+            Direction facing = Direction.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
             UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(vertexFormat);
             builder.setContractUVs(true);
             builder.setQuadOrientation(facing);

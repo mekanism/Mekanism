@@ -10,7 +10,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends Transmitter<ACCEPTOR, NETWORK, BUFFER> {
@@ -37,7 +37,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     }
 
     @Override
-    public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side) {
+    public Coord4D getAdjacentConnectableTransmitterCoord(Direction side) {
         Coord4D sideCoord = coord().offset(side);
         TileEntity potentialTransmitterTile = sideCoord.getTileEntity(world());
         if (!containingTile.canConnectMutual(side)) {
@@ -66,7 +66,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     }
 
     @Override
-    public ACCEPTOR getAcceptor(EnumFacing side) {
+    public ACCEPTOR getAcceptor(Direction side) {
         return getTileEntity().getCachedAcceptor(side);
     }
 

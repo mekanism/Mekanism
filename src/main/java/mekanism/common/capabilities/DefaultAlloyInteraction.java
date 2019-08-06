@@ -2,9 +2,9 @@ package mekanism.common.capabilities;
 
 import mekanism.api.IAlloyInteraction;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DefaultAlloyInteraction implements IAlloyInteraction {
@@ -14,6 +14,6 @@ public class DefaultAlloyInteraction implements IAlloyInteraction {
     }
 
     @Override
-    public void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal) {
+    public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, int tierOrdinal) {
     }
 }

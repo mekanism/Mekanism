@@ -26,9 +26,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -261,18 +261,18 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean buildStructure() {
-        EnumFacing right = getRightSide();
-        EnumFacing left = getLeftSide();
+        Direction right = getRightSide();
+        Direction left = getLeftSide();
         height = 0;
         controllerConflict = false;
         updatedThisTick = true;
 
         Coord4D startPoint = Coord4D.get(this);
-        while (startPoint.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock) {
-            startPoint = startPoint.offset(EnumFacing.UP);
+        while (startPoint.offset(Direction.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock) {
+            startPoint = startPoint.offset(Direction.UP);
         }
 
-        Coord4D test = startPoint.offset(EnumFacing.DOWN).offset(right, 2);
+        Coord4D test = startPoint.offset(Direction.DOWN).offset(right, 2);
         isLeftOnFace = test.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock;
         startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
         if (!scanTopLayer(startPoint)) {
@@ -281,9 +281,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
         height = 1;
 
-        Coord4D middlePointer = startPoint.offset(EnumFacing.DOWN);
+        Coord4D middlePointer = startPoint.offset(Direction.DOWN);
         while (scanLowerLayer(middlePointer)) {
-            middlePointer = middlePointer.offset(EnumFacing.DOWN);
+            middlePointer = middlePointer.offset(Direction.DOWN);
         }
         renderY = middlePointer.y + 1;
         if (height < 3 || height > MAX_HEIGHT) {
@@ -296,8 +296,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean scanTopLayer(Coord4D current) {
-        EnumFacing right = getRightSide();
-        EnumFacing back = getOppositeDirection();
+        Direction right = getRightSide();
+        Direction back = getOppositeDirection();
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
                 Coord4D pointer = current.offset(right, x).offset(back, z);
@@ -305,7 +305,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 int corner = getCorner(x, z);
                 if (corner != -1) {
                     if (!addSolarPanel(pointer.getTileEntity(world), corner)) {
-                        if (pointer.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
+                        if (pointer.offset(Direction.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
                             return false;
                         }
                     }
@@ -313,7 +313,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                     if (!pointer.isAirBlock(world)) {
                         return false;
                     }
-                } else if (pointer.offset(EnumFacing.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
+                } else if (pointer.offset(Direction.UP).getTileEntity(world) instanceof TileEntityThermalEvaporationBlock || !addTankPart(pointerTile)) {
                     return false;
                 }
             }
@@ -339,8 +339,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean scanLowerLayer(Coord4D current) {
-        EnumFacing right = getRightSide();
-        EnumFacing back = getOppositeDirection();
+        Direction right = getRightSide();
+        Direction back = getOppositeDirection();
         boolean foundCenter = false;
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
@@ -386,8 +386,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public boolean addSolarPanel(TileEntity tile, int i) {
-        if (tile != null && !tile.isInvalid() && CapabilityUtils.hasCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN)) {
-            solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, EnumFacing.DOWN);
+        if (tile != null && !tile.isInvalid() && CapabilityUtils.hasCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN)) {
+            solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN);
             return true;
         }
         return false;
@@ -401,7 +401,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (!structured) {
             return null;
         }
-        EnumFacing right = getRightSide();
+        Direction right = getRightSide();
         Coord4D startPoint = Coord4D.get(this).offset(right);
         startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
         startPoint = startPoint.offset(right.getOpposite()).offset(getOppositeDirection());
@@ -462,7 +462,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         inputTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
         outputTank.readFromNBT(nbtTags.getCompoundTag("brineTank"));
@@ -475,10 +475,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.setTag("waterTank", inputTank.writeToNBT(new NBTTagCompound()));
-        nbtTags.setTag("brineTank", outputTank.writeToNBT(new NBTTagCompound()));
+        nbtTags.setTag("waterTank", inputTank.writeToNBT(new CompoundNBT()));
+        nbtTags.setTag("brineTank", outputTank.writeToNBT(new CompoundNBT()));
 
         nbtTags.setFloat("temperature", temperature);
 
@@ -488,8 +488,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override
@@ -539,7 +539,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     //have an inventory, which causes a crash trying to insert into them
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return getController() == null ? InventoryUtils.EMPTY : SLOTS;
     }
 
@@ -554,7 +554,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return false;
         }

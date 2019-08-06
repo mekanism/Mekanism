@@ -14,7 +14,7 @@ import mekanism.common.tile.transmitter.universal_cable.TileEntityBasicUniversal
 import mekanism.common.tile.transmitter.universal_cable.TileEntityEliteUniversalCable;
 import mekanism.common.tile.transmitter.universal_cable.TileEntityUltimateUniversalCable;
 import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.World;
@@ -34,7 +34,7 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
         switch (tier) {
             case BASIC:
                 return new TileEntityBasicUniversalCable();
@@ -49,7 +49,7 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
     }
 
     @Override
-    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.CUTOUT;
     }
 

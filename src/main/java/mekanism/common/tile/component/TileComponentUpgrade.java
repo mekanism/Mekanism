@@ -13,7 +13,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile> implements ITileComponent {
 
@@ -162,7 +162,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
     }
 
     @Override
-    public void read(NBTTagCompound nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         upgrades = Upgrade.buildMap(nbtTags);
         for (Upgrade upgrade : getSupportedTypes()) {
             tileEntity.recalculateUpgrades(upgrade);
@@ -170,7 +170,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
     }
 
     @Override
-    public void write(NBTTagCompound nbtTags) {
+    public void write(CompoundNBT nbtTags) {
         Upgrade.saveMap(upgrades, nbtTags);
     }
 

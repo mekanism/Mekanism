@@ -7,13 +7,13 @@ import java.util.Stack;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.PlayerEntitySP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandGameRule;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
@@ -106,11 +106,11 @@ public class CommandMek extends CommandTreeBase {
     }
 
     private void teleport(Entity player, double x, double y, double z) {
-        if (player instanceof EntityPlayerMP) {
-            EntityPlayerMP mp = (EntityPlayerMP) player;
+        if (player instanceof ServerPlayerEntity) {
+            ServerPlayerEntity mp = (ServerPlayerEntity) player;
             mp.connection.setPlayerLocation(x, y, z, mp.rotationYaw, mp.rotationPitch);
         } else {
-            EntityPlayerSP sp = (EntityPlayerSP) player;
+            PlayerEntitySP sp = (PlayerEntitySP) player;
             sp.setLocationAndAngles(x, y, z, sp.rotationYaw, sp.rotationPitch);
         }
     }

@@ -1,7 +1,7 @@
 package mekanism.common.content.boiler;
 
 import mekanism.common.multiblock.MultiblockCache;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
@@ -25,7 +25,7 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         if (nbtTags.hasKey("cachedWater")) {
             water = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedWater"));
         }
@@ -36,12 +36,12 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
     }
 
     @Override
-    public void save(NBTTagCompound nbtTags) {
+    public void save(CompoundNBT nbtTags) {
         if (water != null) {
-            nbtTags.setTag("cachedWater", water.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("cachedWater", water.writeToNBT(new CompoundNBT()));
         }
         if (steam != null) {
-            nbtTags.setTag("cachedSteam", steam.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("cachedSteam", steam.writeToNBT(new CompoundNBT()));
         }
         nbtTags.setDouble("temperature", temperature);
     }

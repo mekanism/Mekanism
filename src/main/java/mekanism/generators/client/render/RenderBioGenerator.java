@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -25,7 +25,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 
     private static final int stages = 40;
     private ModelBioGenerator model = new ModelBioGenerator();
-    private Map<EnumFacing, DisplayInteger[]> energyDisplays = new EnumMap<>(EnumFacing.class);
+    private Map<Direction, DisplayInteger[]> energyDisplays = new EnumMap<>(Direction.class);
 
     @Override
     public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
@@ -58,7 +58,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
     }
 
     @SuppressWarnings("incomplete-switch")
-    private DisplayInteger[] getDisplayList(EnumFacing side) {
+    private DisplayInteger[] getDisplayList(Direction side) {
         if (energyDisplays.containsKey(side)) {
             return energyDisplays.get(side);
         }

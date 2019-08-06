@@ -23,10 +23,10 @@ import mekanism.common.util.TileUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -126,7 +126,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("lavaTank")) {
             lavaTank.readFromNBT(nbtTags.getCompoundTag("lavaTank"));
@@ -135,16 +135,16 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         if (lavaTank.getFluid() != null) {
-            nbtTags.setTag("lavaTank", lavaTank.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("lavaTank", lavaTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, true);
         } else if (slotID == 0) {
@@ -156,7 +156,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public double getBoost() {
         int lavaBoost = 0;
         double netherBoost = 0D;
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             Coord4D coord = Coord4D.get(this).offset(side);
             if (isLava(coord.getPos())) {
                 lavaBoost++;
@@ -178,7 +178,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         return side == getRightSide() ? new int[]{1} : new int[]{0};
     }
 
@@ -243,17 +243,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public int fill(EnumFacing from, @Nonnull FluidStack resource, boolean doFill) {
+    public int fill(Direction from, @Nonnull FluidStack resource, boolean doFill) {
         return lavaTank.fill(resource, doFill);
     }
 
     @Override
-    public boolean canFill(EnumFacing from, @Nonnull FluidStack fluid) {
+    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         return fluid.getFluid().equals(FluidRegistry.LAVA) && from != getDirection();
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
+    public FluidTankInfo[] getTankInfo(Direction from) {
         if (from == getDirection()) {
             return PipeUtils.EMPTY;
         }
@@ -268,7 +268,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (lavaTank.getFluid() != null) {
-            ItemDataUtils.setCompound(itemStack, "lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
+            ItemDataUtils.setCompound(itemStack, "lavaTank", lavaTank.getFluid().writeToNBT(new CompoundNBT()));
         }
     }
 
@@ -288,7 +288,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public double getInsulationCoefficient(EnumFacing side) {
+    public double getInsulationCoefficient(Direction side) {
         return canConnectHeat(side) ? 0 : 10000;
     }
 
@@ -318,12 +318,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public boolean canConnectHeat(EnumFacing side) {
-        return side == EnumFacing.DOWN;
+    public boolean canConnectHeat(Direction side) {
+        return side == Direction.DOWN;
     }
 
     @Override
-    public IHeatTransfer getAdjacent(EnumFacing side) {
+    public IHeatTransfer getAdjacent(Direction side) {
         if (canConnectHeat(side)) {
             TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
             if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
@@ -334,13 +334,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || (side != getDirection() && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) ||
                super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }

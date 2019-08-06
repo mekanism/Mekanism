@@ -1,20 +1,20 @@
 package mekanism.common.inventory;
 
 import mekanism.common.base.ISustainedInventory;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 
 public class InventoryPersonalChest extends InventoryBasic {
 
     private final ItemStack itemStack;
     private boolean reading;
-    public EnumHand currentHand;
+    public Hand currentHand;
 
-    public InventoryPersonalChest(ItemStack stack, EnumHand hand) {
+    public InventoryPersonalChest(ItemStack stack, Hand hand) {
         super("PersonalChest", false, 55);
         itemStack = stack;
         currentHand = hand;
@@ -30,12 +30,12 @@ public class InventoryPersonalChest extends InventoryBasic {
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(PlayerEntity player) {
         read();
     }
 
     @Override
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(PlayerEntity player) {
         write();
     }
 
@@ -43,7 +43,7 @@ public class InventoryPersonalChest extends InventoryBasic {
         NBTTagList tagList = new NBTTagList();
         for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
             if (!getStackInSlot(slotCount).isEmpty()) {
-                NBTTagCompound tagCompound = new NBTTagCompound();
+                CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.setByte("Slot", (byte) slotCount);
                 getStackInSlot(slotCount).writeToNBT(tagCompound);
                 tagList.appendTag(tagCompound);
@@ -62,7 +62,7 @@ public class InventoryPersonalChest extends InventoryBasic {
         NBTTagList tagList = ((ISustainedInventory) getStack().getItem()).getInventory(getStack());
         if (tagList != null) {
             for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-                NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+                CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
                 byte slotID = tagCompound.getByte("Slot");
                 if (slotID >= 0 && slotID < getSizeInventory()) {
                     setInventorySlotContents(slotID, new ItemStack(tagCompound));

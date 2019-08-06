@@ -14,16 +14,16 @@ import mcmultipart.api.world.IMultipartBlockAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.ITileNetwork;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.IBlockAccess;
 
 /**
  * Used to route {@link ITileNetwork} packets sent to multipart containers with more than one possible recipient.<br>
  * <br>
- * When MCMP is enabled single byte EnumFacing ordinal headers are added to packets sent by glow panels and transmitters that are then used by this class to route packets
+ * When MCMP is enabled single byte Direction ordinal headers are added to packets sent by glow panels and transmitters that are then used by this class to route packets
  * to the part attached to the appropriate side.<br>
  * <br>
- * In this case, since transmitters do not attach to a side and therefore have no matching EnumFacing the special value 6 is used to represent the center slot.
+ * In this case, since transmitters do not attach to a side and therefore have no matching Direction the special value 6 is used to represent the center slot.
  */
 public class MultipartTileNetworkJoiner implements ITileNetwork {
 
@@ -72,7 +72,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
      * @param data   The network data list
      * @param facing The side this part is attached to or <code>null</code> for the center slot
      */
-    public static void addMultipartHeader(TileEntity entity, TileNetworkList data, EnumFacing facing) {
+    public static void addMultipartHeader(TileEntity entity, TileNetworkList data, Direction facing) {
         int tileNetworkParts = 0;
         IMultipartContainer container = MultipartMekanism.getContainer(entity.getWorld(), entity.getPos());
         if (container != null) {

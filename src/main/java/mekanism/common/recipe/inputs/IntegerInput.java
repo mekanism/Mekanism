@@ -1,6 +1,6 @@
 package mekanism.common.recipe.inputs;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class IntegerInput extends MachineInput<IntegerInput> {
 
@@ -14,7 +14,7 @@ public class IntegerInput extends MachineInput<IntegerInput> {
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         ingredient = nbtTags.getInteger("input");
     }
 

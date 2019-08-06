@@ -13,7 +13,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -50,12 +50,12 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public boolean canEmitTo(TileEntity tileEntity, EnumFacing side) {
+    public boolean canEmitTo(TileEntity tileEntity, Direction side) {
         return false;
     }
 
     @Override
-    public boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side) {
+    public boolean canReceiveFrom(TileEntity tileEntity, Direction side) {
         return false;
     }
 
@@ -65,12 +65,12 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public boolean canConnectMutual(EnumFacing side) {
+    public boolean canConnectMutual(Direction side) {
         return false;
     }
 
     @Override
-    public boolean canConnect(EnumFacing side) {
+    public boolean canConnect(Direction side) {
         return false;
     }
 
@@ -134,12 +134,12 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side) {
+    public Coord4D getAdjacentConnectableTransmitterCoord(Direction side) {
         return null;
     }
 
     @Override
-    public TileEntity getAcceptor(EnumFacing side) {
+    public TileEntity getAcceptor(Direction side) {
         return null;
     }
 

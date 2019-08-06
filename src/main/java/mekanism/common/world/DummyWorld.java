@@ -4,7 +4,7 @@ import java.io.File;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.MinecraftException;
@@ -64,7 +64,7 @@ public class DummyWorld extends World {
         }
 
         @Override
-        public void saveWorldInfoWithPlayer(WorldInfo worldInformation, NBTTagCompound tagCompound) {
+        public void saveWorldInfoWithPlayer(WorldInfo worldInformation, CompoundNBT tagCompound) {
 
         }
 

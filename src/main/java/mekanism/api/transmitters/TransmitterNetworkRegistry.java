@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -228,7 +228,7 @@ public class TransmitterNetworkRegistry {
                     connectedTransmitters.add(transmitter);
                     transmitter.setOrphan(false);
 
-                    for (EnumFacing direction : EnumFacing.values()) {
+                    for (Direction direction : Direction.values()) {
                         if (direction.getAxis().isHorizontal() && !transmitter.world().isBlockLoaded(from.getPos().offset(direction))) {
                             continue;
                         }

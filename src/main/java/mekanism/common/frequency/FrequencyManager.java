@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -236,7 +236,7 @@ public class FrequencyManager {
         }
 
         @Override
-        public void readFromNBT(@Nonnull NBTTagCompound nbtTags) {
+        public void readFromNBT(@Nonnull CompoundNBT nbtTags) {
             try {
                 String frequencyClass = nbtTags.getString("frequencyClass");//todo fix this using a classname from nbt!
                 if (nbtTags.hasKey("ownerUUID")) {
@@ -245,8 +245,8 @@ public class FrequencyManager {
                 NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
                 loadedFrequencies = new HashSet<>();
                 for (int i = 0; i < list.tagCount(); i++) {
-                    NBTTagCompound compound = list.getCompoundTagAt(i);
-                    Constructor<?> c = Class.forName(frequencyClass).getConstructor(NBTTagCompound.class);
+                    CompoundNBT compound = list.getCompoundTagAt(i);
+                    Constructor<?> c = Class.forName(frequencyClass).getConstructor(CompoundNBT.class);
                     Frequency freq = (Frequency) c.newInstance(compound);
                     loadedFrequencies.add(freq);
                 }
@@ -257,14 +257,14 @@ public class FrequencyManager {
 
         @Nonnull
         @Override
-        public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound nbtTags) {
+        public CompoundNBT writeToNBT(@Nonnull CompoundNBT nbtTags) {
             nbtTags.setString("frequencyClass", manager.frequencyClass.getName());
             if (manager.ownerUUID != null) {
                 nbtTags.setString("ownerUUID", manager.ownerUUID.toString());
             }
             NBTTagList list = new NBTTagList();
             for (Frequency freq : manager.getFrequencies()) {
-                NBTTagCompound compound = new NBTTagCompound();
+                CompoundNBT compound = new CompoundNBT();
                 freq.write(compound);
                 list.appendTag(compound);
             }

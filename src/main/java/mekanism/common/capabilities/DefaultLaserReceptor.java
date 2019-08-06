@@ -2,7 +2,7 @@ package mekanism.common.capabilities;
 
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DefaultLaserReceptor implements ILaserReceptor {
@@ -12,7 +12,7 @@ public class DefaultLaserReceptor implements ILaserReceptor {
     }
 
     @Override
-    public void receiveLaserEnergy(double energy, EnumFacing side) {
+    public void receiveLaserEnergy(double energy, Direction side) {
     }
 
     @Override

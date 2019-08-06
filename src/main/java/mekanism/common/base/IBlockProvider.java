@@ -3,7 +3,7 @@ package mekanism.common.base;
 import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -14,7 +14,7 @@ public interface IBlockProvider extends IItemProvider {
 
     default boolean blockMatches(ItemStack otherStack) {
         Item item = otherStack.getItem();
-        return item instanceof ItemBlock && blockMatches(((ItemBlock) item).getBlock());
+        return item instanceof BlockItem && blockMatches(((BlockItem) item).getBlock());
     }
 
     default boolean blockMatches(Block other) {

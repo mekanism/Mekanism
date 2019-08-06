@@ -16,8 +16,8 @@ import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMess
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,12 +32,12 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 
     @Override
     public IMessage onMessage(LogisticalSorterGuiMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
                 if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
-                    LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player, message.coord4D, message.index);
+                    LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (ServerPlayerEntity) player, message.coord4D, message.index);
                 }
             } else if (message.coord4D.getTileEntity(player.world) instanceof TileEntityLogisticalSorter) {
                 try {
@@ -95,7 +95,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
             }
         }
 
-        public static void openServerGui(SorterGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i) {
+        public static void openServerGui(SorterGuiPacket t, int guiType, World world, ServerPlayerEntity playerMP, Coord4D obj, int i) {
             Container container = null;
 
             playerMP.closeContainer();
@@ -120,7 +120,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
         }
 
         @SideOnly(Side.CLIENT)
-        public static GuiScreen getGui(SorterGuiPacket packetType, int type, EntityPlayer player, World world, BlockPos pos, int index) {
+        public static GuiScreen getGui(SorterGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
             if (type == 0) {
                 return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter) world.getTileEntity(pos));
             } else if (type == 4) {

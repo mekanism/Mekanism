@@ -2,7 +2,7 @@ package mekanism.common.capabilities;
 
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DefaultSpecialConfigData extends DefaultConfigCardAccess implements ISpecialConfigData {
@@ -12,12 +12,12 @@ public class DefaultSpecialConfigData extends DefaultConfigCardAccess implements
     }
 
     @Override
-    public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags) {
+    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         return null;
     }
 
     @Override
-    public void setConfigurationData(NBTTagCompound nbtTags) {
+    public void setConfigurationData(CompoundNBT nbtTags) {
     }
 
     @Override

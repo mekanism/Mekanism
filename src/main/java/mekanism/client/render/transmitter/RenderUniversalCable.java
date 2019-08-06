@@ -6,7 +6,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.universal_cable.TileEntityUniversalCable;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniversalCable> {
 
@@ -18,7 +18,7 @@ public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniv
     }
 
     @Override
-    protected void renderSide(BufferBuilder renderer, EnumFacing side, TileEntityUniversalCable cable) {
+    protected void renderSide(BufferBuilder renderer, Direction side, TileEntityUniversalCable cable) {
         bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
     }

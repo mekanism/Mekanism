@@ -8,10 +8,10 @@ import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -20,7 +20,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 
     @Override
     public IMessage onMessage(SecurityModeMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (message.packetType == SecurityPacketType.BLOCK) {
                 TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
@@ -50,7 +50,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 
         public SecurityPacketType packetType;
         public Coord4D coord4D;
-        public EnumHand currentHand;
+        public Hand currentHand;
         public SecurityMode value;
 
         public SecurityModeMessage() {
@@ -62,7 +62,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
             value = control;
         }
 
-        public SecurityModeMessage(EnumHand hand, SecurityMode control) {
+        public SecurityModeMessage(Hand hand, SecurityMode control) {
             packetType = SecurityPacketType.ITEM;
             currentHand = hand;
             value = control;
@@ -85,7 +85,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
             if (packetType == SecurityPacketType.BLOCK) {
                 coord4D = Coord4D.read(dataStream);
             } else {
-                currentHand = EnumHand.values()[dataStream.readInt()];
+                currentHand = Hand.values()[dataStream.readInt()];
             }
             value = SecurityMode.values()[dataStream.readInt()];
         }

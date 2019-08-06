@@ -15,9 +15,9 @@ import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
 import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import mekanism.common.tile.induction_cell.TileEntityInductionCell;
 import mekanism.common.tile.induction_provider.TileEntityInductionProvider;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -97,7 +97,7 @@ public class WailaDataProvider implements IWailaDataProvider {
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
+    public CompoundNBT getNBTData(ServerPlayerEntity player, TileEntity te, CompoundNBT tag, World world, BlockPos pos) {
         return tag;
     }
 }

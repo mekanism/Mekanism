@@ -13,7 +13,7 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, Void> {
@@ -37,7 +37,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             if (coord == null || coord.equals(stack.homeLocation)) {
                 continue;
             }
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            EnumSet<Direction> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
@@ -47,8 +47,8 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             }
 
             AcceptorData data = null;
-            for (EnumFacing side : sides) {
-                EnumFacing opposite = side.getOpposite();
+            for (Direction side : sides) {
+                Direction opposite = side.getOpposite();
                 TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, opposite);
                 if (!response.isEmpty()) {
                     if (data == null) {
@@ -107,9 +107,9 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
         private Coord4D location;
         private TransitResponse response;
-        private Set<EnumFacing> sides;
+        private Set<Direction> sides;
 
-        public AcceptorData(Coord4D coord, TransitResponse ret, EnumFacing side) {
+        public AcceptorData(Coord4D coord, TransitResponse ret, Direction side) {
             location = coord;
             response = ret;
             sides = EnumSet.of(side);
@@ -123,7 +123,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             return location;
         }
 
-        public Set<EnumFacing> getSides() {
+        public Set<Direction> getSides() {
             return sides;
         }
     }

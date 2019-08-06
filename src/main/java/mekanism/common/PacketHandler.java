@@ -65,13 +65,13 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -118,12 +118,12 @@ public class PacketHandler {
                 output.writeFloat((Float) data);
             } else if (data instanceof String) {
                 writeString(output, (String) data);
-            } else if (data instanceof EnumFacing) {
-                output.writeInt(((EnumFacing) data).ordinal());
+            } else if (data instanceof Direction) {
+                output.writeInt(((Direction) data).ordinal());
             } else if (data instanceof ItemStack) {
                 writeStack(output, (ItemStack) data);
-            } else if (data instanceof NBTTagCompound) {
-                writeNBT(output, (NBTTagCompound) data);
+            } else if (data instanceof CompoundNBT) {
+                writeNBT(output, (CompoundNBT) data);
             } else if (data instanceof int[]) {
                 for (int i : (int[]) data) {
                     output.writeInt(i);
@@ -158,11 +158,11 @@ public class PacketHandler {
         return ByteBufUtils.readItemStack(input);
     }
 
-    public static void writeNBT(ByteBuf output, NBTTagCompound nbtTags) {
+    public static void writeNBT(ByteBuf output, CompoundNBT nbtTags) {
         ByteBufUtils.writeTag(output, nbtTags);
     }
 
-    public static NBTTagCompound readNBT(ByteBuf input) {
+    public static CompoundNBT readNBT(ByteBuf input) {
         return ByteBufUtils.readTag(input);
     }
 
@@ -172,11 +172,11 @@ public class PacketHandler {
         }
     }
 
-    public static EntityPlayer getPlayer(MessageContext context) {
+    public static PlayerEntity getPlayer(MessageContext context) {
         return Mekanism.proxy.getPlayer(context);
     }
 
-    public static void handlePacket(Runnable runnable, EntityPlayer player) {
+    public static void handlePacket(Runnable runnable, PlayerEntity player) {
         Mekanism.proxy.handlePacket(runnable, player);
     }
 
@@ -231,7 +231,7 @@ public class PacketHandler {
      * @param message - the message to send
      * @param player  - the player to send it to
      */
-    public void sendTo(IMessage message, EntityPlayerMP player) {
+    public void sendTo(IMessage message, ServerPlayerEntity player) {
         netHandler.sendTo(message, player);
     }
 
@@ -283,7 +283,7 @@ public class PacketHandler {
     public void sendToCuboid(IMessage message, AxisAlignedBB cuboid, int dimId) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (server != null && cuboid != null) {
-            for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
+            for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
                 if (player.dimension == dimId && cuboid.contains(new Vec3d(player.posX, player.posY, player.posZ))) {
                     sendTo(message, player);
                 }
@@ -317,7 +317,7 @@ public class PacketHandler {
     public void sendToReceivers(IMessage message, Range4D range) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (server != null) {
-            for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
+            for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
                 if (range.hasPlayerInRange(player)) {
                     sendTo(message, player);
                 }

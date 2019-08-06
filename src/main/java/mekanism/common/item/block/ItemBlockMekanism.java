@@ -3,11 +3,11 @@ package mekanism.common.item.block;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.item.IItemMekanism;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class ItemBlockMekanism extends ItemBlock implements IItemMekanism {
+public class ItemBlockMekanism extends BlockItem implements IItemMekanism {
 
     public ItemBlockMekanism(Block block) {
         super(block);

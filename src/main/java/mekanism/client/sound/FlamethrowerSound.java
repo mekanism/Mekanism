@@ -3,7 +3,7 @@ package mekanism.client.sound;
 import javax.annotation.Nonnull;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.Mekanism;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,13 +16,13 @@ public class FlamethrowerSound extends PlayerSound {
 
     private boolean active;
 
-    private FlamethrowerSound(@Nonnull EntityPlayer player, boolean active) {
+    private FlamethrowerSound(@Nonnull PlayerEntity player, boolean active) {
         super(player, active ? ON_SOUND : IDLE_SOUND);
         this.active = active;
     }
 
     @Override
-    public boolean shouldPlaySound(@Nonnull EntityPlayer player) {
+    public boolean shouldPlaySound(@Nonnull PlayerEntity player) {
         if (!ClientTickHandler.hasFlamethrower(player)) {
             return false;
         }
@@ -31,14 +31,14 @@ public class FlamethrowerSound extends PlayerSound {
 
     public static class Active extends FlamethrowerSound {
 
-        public Active(@Nonnull EntityPlayer player) {
+        public Active(@Nonnull PlayerEntity player) {
             super(player, true);
         }
     }
 
     public static class Idle extends FlamethrowerSound {
 
-        public Idle(@Nonnull EntityPlayer player) {
+        public Idle(@Nonnull PlayerEntity player) {
             super(player, false);
         }
     }

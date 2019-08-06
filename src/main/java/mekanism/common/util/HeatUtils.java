@@ -2,14 +2,14 @@ package mekanism.common.util;
 
 import mekanism.api.IHeatTransfer;
 import mekanism.common.capabilities.Capabilities;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class HeatUtils {
 
     public static double[] simulate(IHeatTransfer source) {
         double[] heatTransferred = new double[]{0, 0};
-        for (EnumFacing side : EnumFacing.values()) {
+        for (Direction side : Direction.values()) {
             IHeatTransfer sink = source.getAdjacent(side);
             if (sink != null) {
                 double invConduction = sink.getInverseConductionCoefficient() + source.getInverseConductionCoefficient();

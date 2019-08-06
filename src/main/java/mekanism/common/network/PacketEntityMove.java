@@ -5,7 +5,7 @@ import mekanism.api.Pos3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -14,7 +14,7 @@ public class PacketEntityMove implements IMessageHandler<EntityMoveMessage, IMes
 
     @Override
     public IMessage onMessage(EntityMoveMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             Entity entity = player.world.getEntityByID(message.entityId);
             if (entity != null) {

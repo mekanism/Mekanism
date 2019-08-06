@@ -2,7 +2,7 @@ package mekanism.common.capabilities;
 
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 @Deprecated
@@ -13,7 +13,7 @@ public class DefaultTubeConnection implements ITubeConnection {
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
+    public boolean canTubeConnect(Direction side) {
         return false;
     }
 }

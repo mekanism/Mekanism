@@ -7,7 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 
@@ -104,7 +104,7 @@ public final class HolidayManager {
 
         public abstract YearlyDate getDate();
 
-        public abstract void onEvent(EntityPlayer player);
+        public abstract void onEvent(PlayerEntity player);
 
         public ResourceLocation filterSound(ResourceLocation sound) {
             return sound;
@@ -121,7 +121,7 @@ public final class HolidayManager {
         }
 
         @Override
-        public void onEvent(EntityPlayer player) {
+        public void onEvent(PlayerEntity player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
             player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
             player.sendMessage(new TextComponentString(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
@@ -158,7 +158,7 @@ public final class HolidayManager {
         }
 
         @Override
-        public void onEvent(EntityPlayer player) {
+        public void onEvent(PlayerEntity player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.WHITE, EnumColor.YELLOW}, 13);
             player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
             player.sendMessage(new TextComponentString(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));

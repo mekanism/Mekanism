@@ -11,11 +11,11 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -41,7 +41,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         super(tile, container);
     }
 
-    protected GuiFilterBase(EntityPlayer player, TILE tile) {
+    protected GuiFilterBase(PlayerEntity player, TILE tile) {
         super(player, tile);
     }
 
@@ -124,7 +124,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             ItemStack stack = mc.player.inventory.getItemStack();
             ItemStack toUse = ItemStack.EMPTY;
             if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                if (stack.getItem() instanceof ItemBlock) {
+                if (stack.getItem() instanceof BlockItem) {
                     if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                         toUse = stack.copy();
                         toUse.setCount(1);

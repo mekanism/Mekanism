@@ -18,8 +18,8 @@ import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -31,7 +31,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
     @Override
     public IMessage onMessage(TransmitterUpdateMessage message, MessageContext context) {
-        EntityPlayer player = PacketHandler.getPlayer(context);
+        PlayerEntity player = PacketHandler.getPlayer(context);
         if (player == null) {
             return null;
         }
@@ -173,7 +173,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
                 case FLUID:
                     if (fluidStack != null) {
                         dataStream.writeBoolean(true);
-                        PacketHandler.writeNBT(dataStream, fluidStack.writeToNBT(new NBTTagCompound()));
+                        PacketHandler.writeNBT(dataStream, fluidStack.writeToNBT(new CompoundNBT()));
                     } else {
                         dataStream.writeBoolean(false);
                     }

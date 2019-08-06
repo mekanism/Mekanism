@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces;
 
 import javax.annotation.Nonnull;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 //TODO: Should this and the other interfaces just be directly part of TileEntityMekanism
 // Having them separate makes it a little easier to keep track of
@@ -13,7 +13,7 @@ public interface ITileDirectional {
         return true;
     }
 
-    void setFacing(@Nonnull EnumFacing direction);
+    void setFacing(@Nonnull Direction direction);
 
     //TODO: This shouldn't be needed because the blockstate knows what directions it can go
 
@@ -24,26 +24,26 @@ public interface ITileDirectional {
      *
      * @return if the block's orientation can be changed
      */
-    default boolean canSetFacing(@Nonnull EnumFacing facing) {
+    default boolean canSetFacing(@Nonnull Direction facing) {
         return isDirectional();
     }
 
     @Nonnull
-    EnumFacing getDirection();
+    Direction getDirection();
 
     @Nonnull
-    default EnumFacing getOppositeDirection() {
+    default Direction getOppositeDirection() {
         return getDirection().getOpposite();
     }
 
     //TODO
     @Nonnull
-    default EnumFacing getRightSide() {
+    default Direction getRightSide() {
         return MekanismUtils.getRight(getDirection());
     }
 
     @Nonnull
-    default EnumFacing getLeftSide() {
+    default Direction getLeftSide() {
         return MekanismUtils.getLeft(getDirection());
     }
 }

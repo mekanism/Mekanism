@@ -24,7 +24,7 @@ import mekanism.common.transmitters.grid.InventoryNetwork.AcceptorData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -60,7 +60,7 @@ public final class TransporterPathfinder {
             }
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
-                public boolean isValid(TransporterStack stack, EnumFacing dir, TileEntity tile) {
+                public boolean isValid(TransporterStack stack, Direction dir, TileEntity tile) {
                     return InventoryUtils.canInsert(tile, stack.color, response.getStack(), dir, false);
                 }
             }, start.world(), dest, start.coord(), stack);
@@ -115,7 +115,7 @@ public final class TransporterPathfinder {
         if (stack.homeLocation != null) {
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
-                public boolean isValid(TransporterStack stack, EnumFacing side, TileEntity tile) {
+                public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
                     return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
             }, start.world(), stack.homeLocation, start.coord(), stack);
@@ -150,7 +150,7 @@ public final class TransporterPathfinder {
             ArrayList<Coord4D> ret = new ArrayList<>();
             ret.add(start);
             if (transportStack.idleDir == null) {
-                EnumFacing newSide = findSide();
+                Direction newSide = findSide();
                 if (newSide == null) {
                     return null;
                 }
@@ -172,7 +172,7 @@ public final class TransporterPathfinder {
                 newPath.setPathType(Path.DEST);
                 return newPath;
             }
-            EnumFacing newSide = findSide();
+            Direction newSide = findSide();
             if (newSide == null) {
                 return null;
             }
@@ -181,7 +181,7 @@ public final class TransporterPathfinder {
             return new Destination(ret, true, null, 0).setPathType(Path.NONE);
         }
 
-        private void loopSide(List<Coord4D> list, EnumFacing side) {
+        private void loopSide(List<Coord4D> list, Direction side) {
             int count = 1;
             while (true) {
                 Coord4D coord = start.offset(side, count);
@@ -193,17 +193,17 @@ public final class TransporterPathfinder {
             }
         }
 
-        private EnumFacing findSide() {
+        private Direction findSide() {
             if (transportStack.idleDir == null) {
-                for (EnumFacing side : EnumFacing.values()) {
+                for (Direction side : Direction.values()) {
                     TileEntity tile = start.offset(side).getTileEntity(world);
                     if (transportStack.canInsertToTransporter(tile, side)) {
                         return side;
                     }
                 }
             } else {
-                EnumFacing opposite = transportStack.idleDir.getOpposite();
-                for (EnumFacing side : EnumSet.complementOf(EnumSet.of(opposite))) {
+                Direction opposite = transportStack.idleDir.getOpposite();
+                for (Direction side : EnumSet.complementOf(EnumSet.of(opposite))) {
                     TileEntity tile = start.offset(side).getTileEntity(world);
                     if (transportStack.canInsertToTransporter(tile, side)) {
                         return side;
@@ -296,7 +296,7 @@ public final class TransporterPathfinder {
         private final DestChecker destChecker;
 
         private double finalScore;
-        private EnumFacing side;
+        private Direction side;
         private List<Coord4D> results;
         private World world;
 
@@ -329,7 +329,7 @@ public final class TransporterPathfinder {
 
             int blockCount = 0;
 
-            for (EnumFacing direction : EnumFacing.values()) {
+            for (Direction direction : Direction.values()) {
                 Coord4D neighbor = start.offset(direction);
                 if (!transportStack.canInsertToTransporter(neighbor.getTileEntity(world), direction) &&
                     (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, direction, neighbor.getTileEntity(world)))) {
@@ -341,8 +341,8 @@ public final class TransporterPathfinder {
             }
 
             double maxSearchDistance = start.distanceTo(finalNode) * 2;
-            List<EnumFacing> directionsToCheck = new ArrayList<>();
-            Coord4D[] neighbors = new Coord4D[EnumFacing.values().length];
+            List<Direction> directionsToCheck = new ArrayList<>();
+            Coord4D[] neighbors = new Coord4D[Direction.values().length];
             TileEntity[] neighborEntities = new TileEntity[neighbors.length];
             while (!openSet.isEmpty()) {
                 Coord4D currentNode = null;
@@ -363,7 +363,7 @@ public final class TransporterPathfinder {
                 TileEntity currentNodeTile = currentNode.getTileEntity(world);
                 ILogisticalTransporter currentNodeTransporter = CapabilityUtils.getCapability(currentNodeTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
                 directionsToCheck.clear();
-                for (EnumFacing direction : EnumFacing.values()) {
+                for (Direction direction : Direction.values()) {
                     Coord4D neighbor = currentNode.offset(direction);
                     neighbors[direction.ordinal()] = neighbor;
                     TileEntity neighborEntity = neighbor.getTileEntity(world);
@@ -375,7 +375,7 @@ public final class TransporterPathfinder {
                 }
 
                 double currentScore = gScore.get(currentNode);
-                for (EnumFacing direction : directionsToCheck) {
+                for (Direction direction : directionsToCheck) {
                     Coord4D neighbor = neighbors[direction.ordinal()];
                     TileEntity neighborEntity = neighborEntities[direction.ordinal()];
                     if (transportStack.canInsertToTransporter(neighborEntity, direction)) {
@@ -417,7 +417,7 @@ public final class TransporterPathfinder {
             return path;
         }
 
-        public EnumFacing getSide() {
+        public Direction getSide() {
             return side;
         }
 
@@ -427,7 +427,7 @@ public final class TransporterPathfinder {
 
         public static class DestChecker {
 
-            public boolean isValid(TransporterStack stack, EnumFacing side, TileEntity tile) {
+            public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
                 return false;
             }
         }

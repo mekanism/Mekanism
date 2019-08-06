@@ -20,12 +20,12 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -50,8 +50,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public void onUpdate() {
         if (!world.isRemote) {
             if (playersUsing.size() > 0) {
-                for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
+                for (PlayerEntity player : playersUsing) {
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
                 }
             }
 
@@ -113,7 +113,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         if (side != getDirection()) {
             return SLOTS;
         }
@@ -121,7 +121,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return slotID == 1;
     }
 
@@ -133,11 +133,11 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         NBTTagList filterTags = new NBTTagList();
         for (OredictionificatorFilter filter : filters) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.appendTag(tagCompound);
         }
@@ -148,7 +148,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("filters")) {
             NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
@@ -213,17 +213,17 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public void openInventory(@Nonnull EntityPlayer player) {
+    public void openInventory(@Nonnull PlayerEntity player) {
         if (!world.isRemote) {
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 
     @Override
-    public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags) {
+    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         NBTTagList filterTags = new NBTTagList();
         for (OredictionificatorFilter filter : filters) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.appendTag(tagCompound);
         }
@@ -234,7 +234,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public void setConfigurationData(NBTTagCompound nbtTags) {
+    public void setConfigurationData(CompoundNBT nbtTags) {
         if (nbtTags.hasKey("filters")) {
             NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
@@ -253,7 +253,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         ItemDataUtils.setBoolean(itemStack, "hasOredictionificatorConfig", true);
         NBTTagList filterTags = new NBTTagList();
         for (OredictionificatorFilter filter : filters) {
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.appendTag(tagCompound);
         }
@@ -280,7 +280,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
@@ -288,7 +288,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
@@ -298,7 +298,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return side == getDirection();
         }
@@ -306,8 +306,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     public static class OredictionificatorFilter implements IFilter {
@@ -315,7 +315,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         public String filter;
         public int index;
 
-        public static OredictionificatorFilter readFromNBT(NBTTagCompound nbtTags) {
+        public static OredictionificatorFilter readFromNBT(CompoundNBT nbtTags) {
             OredictionificatorFilter filter = new OredictionificatorFilter();
             filter.read(nbtTags);
             return filter;
@@ -327,12 +327,12 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             return filter;
         }
 
-        public void write(NBTTagCompound nbtTags) {
+        public void write(CompoundNBT nbtTags) {
             nbtTags.setString("filter", filter);
             nbtTags.setInteger("index", index);
         }
 
-        protected void read(NBTTagCompound nbtTags) {
+        protected void read(CompoundNBT nbtTags) {
             filter = nbtTags.getString("filter");
             index = nbtTags.getInteger("index");
         }

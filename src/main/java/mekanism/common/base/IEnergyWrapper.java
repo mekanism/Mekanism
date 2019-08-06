@@ -13,7 +13,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.ic2.IC2Integration;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -31,13 +31,13 @@ public interface IEnergyWrapper extends IStrictEnergyStorage, IStrictEnergyAccep
     //IC2
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    default boolean isTeleporterCompatible(EnumFacing side) {
+    default boolean isTeleporterCompatible(Direction side) {
         return !MekanismConfig.current().general.blacklistIC2.val() && canOutputEnergy(side);
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    default boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction) {
+    default boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction direction) {
         return !MekanismConfig.current().general.blacklistIC2.val() && canReceiveEnergy(direction);
     }
 
@@ -85,7 +85,7 @@ public interface IEnergyWrapper extends IStrictEnergyStorage, IStrictEnergyAccep
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    default boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction) {
+    default boolean emitsEnergyTo(IEnergyAcceptor receiver, Direction direction) {
         return !MekanismConfig.current().general.blacklistIC2.val() && canOutputEnergy(direction) && receiver instanceof IEnergyConductor;
     }
 

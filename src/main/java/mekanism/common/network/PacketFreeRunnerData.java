@@ -5,7 +5,7 @@ import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.gear.ItemFreeRunners;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -16,7 +16,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
 
     @Override
     public IMessage onMessage(FreeRunnerDataMessage message, MessageContext ctx) {
-        EntityPlayer entityPlayer = PacketHandler.getPlayer(ctx);
+        PlayerEntity entityPlayer = PacketHandler.getPlayer(ctx);
 
         PacketHandler.handlePacket(() -> {
             if (message.packetType == FreeRunnerPacket.UPDATE) {

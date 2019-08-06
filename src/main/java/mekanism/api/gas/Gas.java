@@ -3,7 +3,7 @@ package mekanism.api.gas;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.Fluid;
@@ -75,7 +75,7 @@ public class Gas {
      *
      * @return Gas stored in the tag compound
      */
-    public static Gas readFromNBT(NBTTagCompound nbtTags) {
+    public static Gas readFromNBT(CompoundNBT nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return null;
         }
@@ -242,7 +242,7 @@ public class Gas {
      *
      * @return the tag compound this gas was written to
      */
-    public NBTTagCompound write(NBTTagCompound nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.setString("gasName", getName());
 
         return nbtTags;

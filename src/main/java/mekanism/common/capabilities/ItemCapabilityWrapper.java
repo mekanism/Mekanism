@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -22,7 +22,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction facing) {
         for (ItemCapability cap : capabilities) {
             if (cap.canProcess(capability)) {
                 return true;
@@ -32,7 +32,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction facing) {
         for (ItemCapability cap : capabilities) {
             if (cap.canProcess(capability)) {
                 return (T) cap;

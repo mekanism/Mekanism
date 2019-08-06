@@ -6,7 +6,7 @@ import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 
 public abstract class Finder {
@@ -81,7 +81,7 @@ public abstract class Finder {
 
         @Override
         public boolean modifies(ItemStack stack) {
-            if (stack.isEmpty() || !(stack.getItem() instanceof ItemBlock)) {
+            if (stack.isEmpty() || !(stack.getItem() instanceof BlockItem)) {
                 return false;
             }
             return Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()).getMaterial() == materialType;

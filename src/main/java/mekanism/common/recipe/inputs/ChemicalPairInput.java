@@ -2,7 +2,7 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * An input of gasses for recipe use.
@@ -36,7 +36,7 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
     }
 
     @Override
-    public void load(NBTTagCompound nbtTags) {
+    public void load(CompoundNBT nbtTags) {
         leftGas = GasStack.readFromNBT(nbtTags.getCompoundTag("leftInput"));
         rightGas = GasStack.readFromNBT(nbtTags.getCompoundTag("rightInput"));
     }

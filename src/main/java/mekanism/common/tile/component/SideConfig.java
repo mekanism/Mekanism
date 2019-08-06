@@ -2,11 +2,11 @@ package mekanism.common.tile.component;
 
 import java.util.Observable;
 import java.util.Observer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 public class SideConfig {
 
-    private byte[] directions = new byte[EnumFacing.values().length];
+    private byte[] directions = new byte[Direction.values().length];
     private Observable observable = new Observable();
 
     public SideConfig() {
@@ -14,7 +14,7 @@ public class SideConfig {
 
     public SideConfig(byte[] b) {
         this(b[0], b[1], b[2], b[3], b[4], b[5]);
-        assert b.length == EnumFacing.values().length;
+        assert b.length == Direction.values().length;
     }
 
     public SideConfig(byte d, byte u, byte n, byte s, byte w, byte e) {
@@ -32,7 +32,7 @@ public class SideConfig {
         observable.notifyObservers(this);
     }
 
-    public byte get(EnumFacing f) {
+    public byte get(Direction f) {
         return directions[f.ordinal()];
     }
 
@@ -40,7 +40,7 @@ public class SideConfig {
         return directions;
     }
 
-    public void set(EnumFacing f, byte value) {
+    public void set(Direction f, byte value) {
         directions[f.ordinal()] = value;
         observable.notifyObservers(this);
     }

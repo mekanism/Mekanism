@@ -10,7 +10,7 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -52,7 +52,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
     }
 
     @Override
-    public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot) {
+    public int getArmorDisplay(PlayerEntity player, @Nonnull ItemStack armor, int slot) {
         return 12;
     }
 }

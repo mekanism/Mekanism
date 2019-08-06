@@ -34,7 +34,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -318,7 +318,7 @@ public class MekanismRenderer {
         return Minecraft.getMinecraft().getRenderPartialTicks();
     }
 
-    public static void rotate(EnumFacing facing, float north, float south, float west, float east) {
+    public static void rotate(Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
                 GlStateManager.rotate(north, 0, 1, 0);
@@ -424,11 +424,11 @@ public class MekanismRenderer {
             return maxZ - minZ;
         }
 
-        public void setSideRender(EnumFacing side, boolean value) {
+        public void setSideRender(Direction side, boolean value) {
             renderSides[side.ordinal()] = value;
         }
 
-        public boolean shouldSideRender(EnumFacing side) {
+        public boolean shouldSideRender(Direction side) {
             return renderSides[side.ordinal()];
         }
 

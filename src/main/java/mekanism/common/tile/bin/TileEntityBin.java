@@ -25,14 +25,14 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -199,11 +199,11 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
 
             if (delayTicks == 0) {
                 if (!bottomStack.isEmpty() && getActive()) {
-                    TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(world);
-                    ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, EnumFacing.UP);
+                    TileEntity tile = Coord4D.get(this).offset(Direction.DOWN).getTileEntity(world);
+                    ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP);
                     TransitResponse response;
                     if (transporter == null) {
-                        response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), EnumFacing.DOWN, false);
+                        response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false);
                     } else {
                         response = TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0);
                     }
@@ -221,24 +221,24 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         nbtTags.setInteger("itemCount", cacheCount);
         nbtTags.setInteger("tier", tier.ordinal());
         if (!bottomStack.isEmpty()) {
-            nbtTags.setTag("bottomStack", bottomStack.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("bottomStack", bottomStack.writeToNBT(new CompoundNBT()));
         }
         if (!topStack.isEmpty()) {
-            nbtTags.setTag("topStack", topStack.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("topStack", topStack.writeToNBT(new CompoundNBT()));
         }
         if (getItemCount() > 0) {
-            nbtTags.setTag("itemType", itemType.writeToNBT(new NBTTagCompound()));
+            nbtTags.setTag("itemType", itemType.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         cacheCount = nbtTags.getInteger("itemCount");
         tier = BinTier.values()[nbtTags.getInteger("tier")];
@@ -384,16 +384,16 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     }
 
     @Override
-    public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer) {
+    public boolean isUsableByPlayer(@Nonnull PlayerEntity entityplayer) {
         return true;
     }
 
     @Override
-    public void openInventory(@Nonnull EntityPlayer player) {
+    public void openInventory(@Nonnull PlayerEntity player) {
     }
 
     @Override
-    public void closeInventory(@Nonnull EntityPlayer player) {
+    public void closeInventory(@Nonnull PlayerEntity player) {
     }
 
     @Override
@@ -426,30 +426,30 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         //This is legacy for the sided inventory stuff, using IItemHandler returns a
         // BinItemHandler that does not use this method
-        if (side == EnumFacing.UP) {
+        if (side == Direction.UP) {
             return UPSLOTS;
-        } else if (side == EnumFacing.DOWN) {
+        } else if (side == Direction.DOWN) {
             return DOWNSLOTS;
         }
         return InventoryUtils.EMPTY;
     }
 
     @Override
-    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return isItemValidForSlot(i, itemstack);
     }
 
     @Override
-    public boolean canExtractItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int i, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return i == 0 && isValid(itemstack);
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override
@@ -472,24 +472,24 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     }
 
     @Override
-    public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onSneakRightClick(PlayerEntity player, Direction side) {
         setActive(!getActive());
         world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
         return EnumActionResult.SUCCESS;
     }
 
     @Override
-    public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
+    public EnumActionResult onRightClick(PlayerEntity player, Direction side) {
         return EnumActionResult.PASS;
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.cast(this);
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {

@@ -2,7 +2,7 @@ package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -53,12 +53,12 @@ public abstract class ContainerMekanism<TILE extends TileEntityMekanism> extends
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
+    public void onContainerClosed(PlayerEntity entityplayer) {
         super.onContainerClosed(entityplayer);
         closeInventory(entityplayer);
     }
 
-    protected void closeInventory(EntityPlayer entityplayer) {
+    protected void closeInventory(PlayerEntity entityplayer) {
         if (tileEntity != null) {
             tileEntity.close(entityplayer);
             tileEntity.closeInventory(entityplayer);
@@ -66,7 +66,7 @@ public abstract class ContainerMekanism<TILE extends TileEntityMekanism> extends
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
+    public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
         return tileEntity == null || tileEntity.isUsableByPlayer(entityplayer);
     }
 }

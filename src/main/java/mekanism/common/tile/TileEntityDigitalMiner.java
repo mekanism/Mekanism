@@ -53,16 +53,16 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityShulkerBox;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -139,7 +139,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     @Override
     public void onUpdate() {
         if (getActive()) {
-            for (EntityPlayer player : new HashSet<>(playersUsing)) {
+            for (PlayerEntity player : new HashSet<>(playersUsing)) {
                 if (player.openContainer instanceof ContainerNull || player.openContainer instanceof ContainerFilter) {
                     player.closeScreen();
                 }
@@ -189,7 +189,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                                 continue;
                             }
 
-                            IBlockState state = coord.getBlockState(world);
+                            BlockState state = coord.getBlockState(world);
                             Block block = state.getBlock();
                             int meta = block.getMetaFromState(state);
 
@@ -264,8 +264,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             }
 
             if (playersUsing.size() > 0) {
-                for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getSmallPacket(new TileNetworkList())), (EntityPlayerMP) player);
+                for (PlayerEntity player : playersUsing) {
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getSmallPacket(new TileNetworkList())), (ServerPlayerEntity) player);
                 }
             }
             prevEnergy = getEnergy();
@@ -309,7 +309,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public boolean setReplace(Coord4D obj, int index) {
         ItemStack stack = getReplace(index);
         BlockPos pos = obj.getPos();
-        EntityPlayer fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, this.pos).get());
+        PlayerEntity fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, this.pos).get());
 
         //if its a shulker box, remove it TE so it can't drop itself in breakBlock - we've already captured its itemblock
         TileEntity te = world.getTileEntity(pos);
@@ -321,7 +321,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
         if (!stack.isEmpty()) {
             world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer), 3);
-            IBlockState s = obj.getBlockState(world);
+            BlockState s = obj.getBlockState(world);
             if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock()).canBlockStay(world, pos, s)) {
                 s.getBlock().dropBlockAsItem(world, pos, s, 1);
                 world.setBlockToAir(pos);
@@ -345,8 +345,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     private boolean canMine(Coord4D coord) {
-        IBlockState state = coord.getBlockState(world);
-        EntityPlayer dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get());
+        BlockState state = coord.getBlockState(world);
+        PlayerEntity dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get());
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
         return !event.isCanceled();
@@ -366,7 +366,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         }
 
         if (doPull && getPullInv() != null) {
-            InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), EnumFacing.UP, filter.replaceStack.copy(), 1, 1);
+            InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), Direction.UP, filter.replaceStack.copy(), 1, 1);
             if (stack != null) {
                 stack.use();
                 return StackUtils.size(filter.replaceStack, 1);
@@ -429,7 +429,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     public TileEntity getEjectInv() {
-        final EnumFacing side = getOppositeDirection();
+        final Direction side = getOppositeDirection();
         final BlockPos pos = getPos().up().offset(side, 2);
         if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
@@ -503,15 +503,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public void openInventory(@Nonnull EntityPlayer player) {
+    public void openInventory(@Nonnull PlayerEntity player) {
         super.openInventory(player);
         if (!world.isRemote) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (EntityPlayerMP) player);
+            Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (ServerPlayerEntity) player);
         }
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
+    public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         running = nbtTags.getBoolean("running");
         delay = nbtTags.getInteger("delay");
@@ -522,7 +522,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Nonnull
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+    public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
         if (searcher.state == State.SEARCHING) {
             reset();
@@ -592,7 +592,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                     // Move filter up
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex - 1);
-                    for (EntityPlayer player : playersUsing) {
+                    for (PlayerEntity player : playersUsing) {
                         openInventory(player);
                     }
                     break;
@@ -601,7 +601,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
                     // Move filter down
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex + 1);
-                    for (EntityPlayer player : playersUsing) {
+                    for (PlayerEntity player : playersUsing) {
                         openInventory(player);
                     }
                     break;
@@ -609,8 +609,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             }
 
             MekanismUtils.saveChunk(this);
-            for (EntityPlayer player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
+            for (PlayerEntity player : playersUsing) {
+                Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
             }
             return;
         }
@@ -784,8 +784,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 
     @Override
@@ -801,9 +801,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
         //Allow for automation via the top (as that is where it can auto pull from)
-        return side == EnumFacing.UP || side == getOppositeDirection() ? INV_SLOTS : InventoryUtils.EMPTY;
+        return side == Direction.UP || side == getOppositeDirection() ? INV_SLOTS : InventoryUtils.EMPTY;
     }
 
     @Override
@@ -812,7 +812,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     public TileEntity getEjectTile() {
-        final EnumFacing side = getOppositeDirection();
+        final Direction side = getOppositeDirection();
         final BlockPos pos = getPos().up().offset(side);
         if (world.isBlockLoaded(pos)) {
             return world.getTileEntity(pos);
@@ -821,8 +821,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
-        if (side == EnumFacing.UP) {
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
+        if (side == Direction.UP) {
             if (slotID == 27) {
                 return ChargeUtils.canBeDischarged(itemstack);
             }
@@ -832,7 +832,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         if (side == getOppositeDirection()) {
             if (slotID == 27) {
                 return !ChargeUtils.canBeDischarged(itemstack);
@@ -940,14 +940,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         } else if (method == 10) {
             return new Object[]{searcher != null ? searcher.found : 0};
         }
-        for (EntityPlayer player : playersUsing) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (EntityPlayerMP) player);
+        for (PlayerEntity player : playersUsing) {
+            Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
         }
         return null;
     }
 
     @Override
-    public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags) {
+    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         nbtTags.setInteger("radius", radius);
         nbtTags.setInteger("minY", minY);
         nbtTags.setInteger("maxY", maxY);
@@ -957,7 +957,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         nbtTags.setBoolean("inverse", inverse);
         NBTTagList filterTags = new NBTTagList();
         for (MinerFilter filter : filters) {
-            filterTags.appendTag(filter.write(new NBTTagCompound()));
+            filterTags.appendTag(filter.write(new CompoundNBT()));
         }
         if (filterTags.tagCount() != 0) {
             nbtTags.setTag("filters", filterTags);
@@ -966,7 +966,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public void setConfigurationData(NBTTagCompound nbtTags) {
+    public void setConfigurationData(CompoundNBT nbtTags) {
         setRadius(Math.min(nbtTags.getInteger("radius"), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
         minY = nbtTags.getInteger("minY");
         maxY = nbtTags.getInteger("maxY");
@@ -1002,7 +1002,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         NBTTagList filterTags = new NBTTagList();
 
         for (MinerFilter filter : filters) {
-            filterTags.appendTag(filter.write(new NBTTagCompound()));
+            filterTags.appendTag(filter.write(new CompoundNBT()));
         }
 
         if (filterTags.tagCount() != 0) {
@@ -1045,9 +1045,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean canBoundReceiveEnergy(BlockPos coord, EnumFacing side) {
-        EnumFacing left = getLeftSide();
-        EnumFacing right = getRightSide();
+    public boolean canBoundReceiveEnergy(BlockPos coord, Direction side) {
+        Direction left = getLeftSide();
+        Direction right = getRightSide();
         if (coord.equals(getPos().offset(left))) {
             return side == left;
         } else if (coord.equals(getPos().offset(right))) {
@@ -1057,18 +1057,18 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean canReceiveEnergy(EnumFacing side) {
-        return side == getLeftSide() || side == getRightSide() || side == EnumFacing.DOWN;
+    public boolean canReceiveEnergy(Direction side) {
+        return side == getLeftSide() || side == getRightSide() || side == Direction.DOWN;
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, Direction side) {
         return capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, Direction side) {
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
         }
@@ -1076,7 +1076,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean hasOffsetCapability(@Nonnull Capability<?> capability, EnumFacing side, @Nonnull Vec3i offset) {
+    public boolean hasOffsetCapability(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
         if (isOffsetCapabilityDisabled(capability, side, offset)) {
             return false;
         }
@@ -1089,7 +1089,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public <T> T getOffsetCapability(@Nonnull Capability<T> capability, EnumFacing side, @Nonnull Vec3i offset) {
+    public <T> T getOffsetCapability(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
         if (isOffsetCapabilityDisabled(capability, side, offset)) {
             return null;
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -1103,15 +1103,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side, @Nonnull Vec3i offset) {
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Input
             if (offset.equals(new Vec3i(0, 1, 0))) {
                 //If input then disable if wrong face of input
-                return side != EnumFacing.UP;
+                return side != Direction.UP;
             }
             //Output
-            EnumFacing back = getOppositeDirection();
+            Direction back = getOppositeDirection();
             if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
                 //If output then disable if wrong face of output
                 return side != back;
@@ -1121,10 +1121,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
             if (offset.equals(Vec3i.NULL_VECTOR)) {
                 //Disable if it is the bottom port but wrong side of it
-                return side != EnumFacing.DOWN;
+                return side != Direction.DOWN;
             }
-            EnumFacing left = getLeftSide();
-            EnumFacing right = getRightSide();
+            Direction left = getLeftSide();
+            Direction right = getRightSide();
             if (offset.equals(new Vec3i(left.getXOffset(), 0, left.getZOffset()))) {
                 //Disable if left power port but wrong side of the port
                 return side != left;
@@ -1138,7 +1138,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         //Return some capabilities as disabled, and handle them with offset capabilities instead
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
@@ -1163,11 +1163,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Nonnull
     @Override
-    public BlockFaceShape getOffsetBlockFaceShape(@Nonnull EnumFacing face, @Nonnull Vec3i offset) {
+    public BlockFaceShape getOffsetBlockFaceShape(@Nonnull Direction face, @Nonnull Vec3i offset) {
         if (offset.equals(new Vec3i(0, 1, 0))) {
             return BlockFaceShape.SOLID;
         }
-        EnumFacing back = getOppositeDirection();
+        Direction back = getOppositeDirection();
         if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
             return BlockFaceShape.SOLID;
         }

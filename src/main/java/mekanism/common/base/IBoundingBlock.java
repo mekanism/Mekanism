@@ -2,7 +2,7 @@ package mekanism.common.base;
 
 import javax.annotation.Nonnull;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3i;
 
 /**
@@ -31,7 +31,7 @@ public interface IBoundingBlock {
      * @return A BlockFaceShape
      */
     @Nonnull
-    default BlockFaceShape getOffsetBlockFaceShape(@Nonnull EnumFacing face, @Nonnull Vec3i offset) {
+    default BlockFaceShape getOffsetBlockFaceShape(@Nonnull Direction face, @Nonnull Vec3i offset) {
         return BlockFaceShape.UNDEFINED;
     }
 }

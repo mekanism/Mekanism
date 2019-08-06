@@ -7,7 +7,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
@@ -62,8 +62,8 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == EnumFacing.DOWN || SecurityUtils.getSecurity(this, Side.SERVER) != SecurityMode.PUBLIC) {
+    public int[] getSlotsForFace(@Nonnull Direction side) {
+        if (side == Direction.DOWN || SecurityUtils.getSecurity(this, Side.SERVER) != SecurityMode.PUBLIC) {
             return InventoryUtils.EMPTY;
         } else if (INV == null) {
             INV = new int[54];
@@ -75,25 +75,25 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
     }
 
     @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Still allow for the capability if it is not public. It just won't
             // return any slots for the face. It doesn't properly sync when the state
             // changes so the pipes stay connected/disconnected and have to be replaced.
             // Leaving the slotsForFace to determine the ability to insert/extract in
             // those cases fixes that issue.
-            return side == EnumFacing.DOWN;
+            return side == Direction.DOWN;
         }
         return super.isCapabilityDisabled(capability, side);
     }
 
     @Override
-    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull Direction side) {
         return true;
     }
 
     @Override
-    public boolean canSetFacing(@Nonnull EnumFacing facing) {
-        return facing != EnumFacing.DOWN && facing != EnumFacing.UP;
+    public boolean canSetFacing(@Nonnull Direction facing) {
+        return facing != Direction.DOWN && facing != Direction.UP;
     }
 }

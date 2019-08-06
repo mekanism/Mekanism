@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.fixers.MekanismDataFixers.MekFixers;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class TEFixer extends BaseMekanismFixer {
 
@@ -26,14 +26,14 @@ public class TEFixer extends BaseMekanismFixer {
 
     @Override
     @Nonnull
-    public NBTTagCompound fixTagCompound(@Nonnull NBTTagCompound compound) {
+    public CompoundNBT fixTagCompound(@Nonnull CompoundNBT compound) {
         String teLoc = compound.getString("id");
         //Fix multipart
         if (teLoc.equals("mcmultipart:multipart.ticking") || teLoc.equals("mcmultipart:multipart.nonticking")) {
             if (compound.hasKey("parts")) {
-                NBTTagCompound parts = compound.getCompoundTag("parts");
+                CompoundNBT parts = compound.getCompoundTag("parts");
                 for (String sID : parts.getKeySet()) {
-                    NBTTagCompound part = parts.getCompoundTag(sID);
+                    CompoundNBT part = parts.getCompoundTag(sID);
                     if (part.hasKey("tile")) {
                         fixTagCompound(part.getCompoundTag("tile"));
                     }

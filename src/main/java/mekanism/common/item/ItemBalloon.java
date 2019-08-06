@@ -11,12 +11,12 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -47,9 +47,9 @@ public class ItemBalloon extends ItemMekanism {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
         if (!world.isRemote) {
-            Pos3D pos = new Pos3D(hand == EnumHand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
+            Pos3D pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
             world.spawnEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 0.25, pos.z - 0.5, color));
         }
         ItemStack itemstack = entityplayer.getHeldItem(hand);
@@ -75,7 +75,7 @@ public class ItemBalloon extends ItemMekanism {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             AxisAlignedBB bound = new AxisAlignedBB(pos, pos.add(1, 3, 1));
@@ -86,7 +86,7 @@ public class ItemBalloon extends ItemMekanism {
             if (world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
                 pos = pos.down();
             }
-            if (!world.isSideSolid(pos, EnumFacing.UP)) {
+            if (!world.isSideSolid(pos, Direction.UP)) {
                 return EnumActionResult.FAIL;
             }
             if (canReplace(world, pos.up()) && canReplace(world, pos.up(2))) {
@@ -104,7 +104,7 @@ public class ItemBalloon extends ItemMekanism {
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand) {
+    public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, EntityLivingBase entity, Hand hand) {
         if (player.isSneaking()) {
             if (!player.world.isRemote) {
                 AxisAlignedBB bound = new AxisAlignedBB(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2,
@@ -133,7 +133,7 @@ public class ItemBalloon extends ItemMekanism {
         @Override
         public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
             Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().provider.getDimension());
-            EnumFacing side = source.getBlockState().getValue(BlockDispenser.FACING);
+            Direction side = source.getBlockState().getValue(BlockDispenser.FACING);
 
             List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());
             boolean latched = false;

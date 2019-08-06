@@ -18,7 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -32,14 +32,14 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     private GuiButton nextButton;
     private GuiButton checkboxButton;
 
-    public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tile, int index) {
+    public GuiOredictionificatorFilter(PlayerEntity player, TileEntityOredictionificator tile, int index) {
         super(tile, new ContainerFilter(player.inventory, tile));
         origFilter = tileEntity.filters.get(index);
         filter = tileEntity.filters.get(index).clone();
         updateRenderStack();
     }
 
-    public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tile) {
+    public GuiOredictionificatorFilter(PlayerEntity player, TileEntityOredictionificator tile) {
         super(tile, new ContainerFilter(player.inventory, tile));
         filter = new OredictionificatorFilter();
         isNew = true;
