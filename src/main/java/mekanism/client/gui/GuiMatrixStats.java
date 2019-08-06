@@ -12,7 +12,7 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
 
-    public GuiMatrixStats(InventoryPlayer inventory, TileEntityInductionCasing tile) {
+    public GuiMatrixStats(PlayerInventory inventory, TileEntityInductionCasing tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, resource));

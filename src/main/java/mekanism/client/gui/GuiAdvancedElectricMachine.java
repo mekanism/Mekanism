@@ -21,8 +21,8 @@ import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityAdvancedElectricMachine<RECIPE>> {
 
-    public GuiAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<RECIPE> tile) {
+    public GuiAdvancedElectricMachine(PlayerInventory inventory, TileEntityAdvancedElectricMachine<RECIPE> tile) {
         super(tile, new ContainerAdvancedElectricMachine<>(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
@@ -89,7 +89,7 @@ public class GuiAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<REC
 
     public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas) {
         if (gas != null) {
-            mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            mc.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             MekanismRenderer.color(gas);
             drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, gas.getGas().getSprite(), sizeX, sizeY);
             MekanismRenderer.resetColor();

@@ -8,14 +8,14 @@ import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ContainerAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityAdvancedElectricMachine<RECIPE>> {
 
-    public ContainerAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<RECIPE> tile) {
+    public ContainerAdvancedElectricMachine(PlayerInventory inventory, TileEntityAdvancedElectricMachine<RECIPE> tile) {
         super(tile, inventory);
     }
 

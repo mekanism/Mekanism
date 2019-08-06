@@ -1,6 +1,6 @@
 package mekanism.client.render.particle;
 
-import net.minecraft.client.particle.ParticleBubble;
+import net.minecraft.client.particle.BubbleParticle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EntityScubaBubbleFX extends ParticleBubble {
+public class EntityScubaBubbleFX extends BubbleParticle {
 
     public EntityScubaBubbleFX(World world, double posX, double posY, double posZ, double velX, double velY, double velZ) {
         super(world, posX, posY, posZ, velX, velY, velZ);

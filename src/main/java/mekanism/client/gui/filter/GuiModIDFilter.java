@@ -9,7 +9,7 @@ import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,7 +24,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
     protected abstract void updateStackList(String modName);
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
             if (!text.getText().isEmpty()) {

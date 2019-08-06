@@ -12,7 +12,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -38,7 +38,7 @@ public enum Upgrade {
         Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
         if (nbtTags != null) {
             if (nbtTags.hasKey("upgrades")) {
-                NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
+                ListNBT list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
                 for (int tagCount = 0; tagCount < list.tagCount(); tagCount++) {
                     CompoundNBT compound = list.getCompoundTagAt(tagCount);
                     Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
@@ -50,7 +50,7 @@ public enum Upgrade {
     }
 
     public static void saveMap(Map<Upgrade, Integer> upgrades, CompoundNBT nbtTags) {
-        NBTTagList list = new NBTTagList();
+        ListNBT list = new ListNBT();
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             list.appendTag(getTagFor(entry.getKey(), entry.getValue()));
         }

@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RecipeUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
@@ -15,7 +15,7 @@ public class RecipeFormula {
 
     public NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
     public IRecipe recipe;
-    private InventoryCrafting dummy = MekanismUtils.getDummyCraftingInv();
+    private CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
 
     public RecipeFormula(World world, NonNullList<ItemStack> inv) {
         this(world, inv, 0);

@@ -20,7 +20,7 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator> {
 
-    public GuiHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator tile) {
+    public GuiHeatGenerator(PlayerInventory inventory, TileEntityHeatGenerator tile) {
         super(tile, new ContainerHeatGenerator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

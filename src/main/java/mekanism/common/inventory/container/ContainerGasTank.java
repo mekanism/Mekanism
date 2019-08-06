@@ -5,13 +5,13 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.gas_tank.TileEntityGasTank;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerGasTank extends ContainerMekanism<TileEntityGasTank> {
 
-    public ContainerGasTank(InventoryPlayer inventory, TileEntityGasTank tile) {
+    public ContainerGasTank(PlayerInventory inventory, TileEntityGasTank tile) {
         super(tile, inventory);
     }
 

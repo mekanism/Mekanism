@@ -30,10 +30,10 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -133,7 +133,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                     }
                     if (!player.inventory.addItemStackToInventory(stack)) {
                         BlockPos dropPos = pos.offset(bin.getDirection());
-                        Entity item = new EntityItem(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
+                        Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
                         item.addVelocity(-item.motionX, -item.motionY, -item.motionZ);
                         world.spawnEntity(item);
                     } else {

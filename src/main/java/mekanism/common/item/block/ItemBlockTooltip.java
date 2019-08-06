@@ -8,7 +8,7 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

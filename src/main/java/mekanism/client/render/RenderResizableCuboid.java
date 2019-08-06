@@ -12,10 +12,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -57,7 +57,7 @@ public class RenderResizableCuboid {
         aoMap.put(Direction.WEST, vec3(0.6));
     }
 
-    protected RenderManager manager = Minecraft.getMinecraft().getRenderManager();
+    protected EntityRendererManager manager = Minecraft.getInstance().getRenderManager();
 
     public static Vec3d withValue(Vec3d vector, Axis axis, double value) {
         if (axis == Axis.X) {
@@ -155,7 +155,7 @@ public class RenderResizableCuboid {
         Vec3d textureOffset = new Vec3d(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D, cube.textureOffsetZ / 16D);
         Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
 
-        manager.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        manager.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder wr = tess.getBuffer();

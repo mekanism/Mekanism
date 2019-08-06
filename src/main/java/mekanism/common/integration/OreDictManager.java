@@ -19,11 +19,11 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.StackUtils;
 import mekanism.common.world.DummyWorld;
 import net.minecraft.block.BlockPlanks;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Items;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -454,7 +454,7 @@ public final class OreDictManager {
         } catch (Exception ignored) {
         }
 
-        InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
+        CraftingInventory tempCrafting = new CraftingInventory(tempContainer, 3, 3);
 
         for (int i = 1; i < 9; i++) {
             tempCrafting.setInventorySlotContents(i, ItemStack.EMPTY);
@@ -473,7 +473,7 @@ public final class OreDictManager {
         }
     }
 
-    private static void addSawmillLog(InventoryCrafting tempCrafting, ItemStack log, DummyWorld world) {
+    private static void addSawmillLog(CraftingInventory tempCrafting, ItemStack log, DummyWorld world) {
         tempCrafting.setInventorySlotContents(0, log);
         IRecipe matchingRecipe = CraftingManager.findMatchingRecipe(tempCrafting, world);
         ItemStack resultEntry = matchingRecipe != null ? matchingRecipe.getRecipeOutput() : ItemStack.EMPTY;

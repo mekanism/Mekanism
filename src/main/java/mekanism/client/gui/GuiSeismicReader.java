@@ -14,8 +14,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.util.Rectangle;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSeismicReader extends GuiScreen {
+public class GuiSeismicReader extends Screen {
 
     private final ItemStack itemStack;
     private Coord4D pos;
@@ -37,8 +37,8 @@ public class GuiSeismicReader extends GuiScreen {
     private World worldObj;
     private List<Pair<Integer, Block>> blockList = new ArrayList<>();
     private Rectangle tooltip;
-    private GuiButton upButton;
-    private GuiButton downButton;
+    private Button upButton;
+    private Button downButton;
 
     private int currentLayer;
 
@@ -173,7 +173,7 @@ public class GuiSeismicReader extends GuiScreen {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == upButton.id) {
             currentLayer++;

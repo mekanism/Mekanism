@@ -4,13 +4,13 @@ import javax.annotation.Nonnull;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public abstract class ContainerFluidStorage<TILE extends TileEntityMekanism> extends ContainerMekanism<TILE> {
 
-    protected ContainerFluidStorage(TILE tank, InventoryPlayer inventory) {
+    protected ContainerFluidStorage(TILE tank, PlayerInventory inventory) {
         super(tank, inventory);
     }
 

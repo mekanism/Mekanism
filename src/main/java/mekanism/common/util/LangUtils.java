@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import java.util.IllegalFormatException;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
@@ -53,8 +53,8 @@ public final class LangUtils {
         }
     }
 
-    public static TextComponentTranslation translationWithColour(String langKey, TextFormatting color) {
-        TextComponentTranslation translation = new TextComponentTranslation(langKey);
+    public static TranslationTextComponent translationWithColour(String langKey, TextFormatting color) {
+        TranslationTextComponent translation = new TranslationTextComponent(langKey);
         translation.getStyle().setColor(color);
         return translation;
     }
@@ -64,8 +64,8 @@ public final class LangUtils {
         return component;
     }
 
-    public static TextComponentTranslation onOffColoured(boolean isOn) {
-        TextComponentTranslation translation = new TextComponentTranslation(transOnOffKey(isOn));
+    public static TranslationTextComponent onOffColoured(boolean isOn) {
+        TranslationTextComponent translation = new TranslationTextComponent(transOnOffKey(isOn));
         translation.getStyle().setColor(isOn ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
         return translation;
     }

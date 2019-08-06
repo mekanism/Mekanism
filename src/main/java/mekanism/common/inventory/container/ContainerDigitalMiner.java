@@ -5,13 +5,13 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerDigitalMiner extends ContainerMekanism<TileEntityDigitalMiner> {
 
-    public ContainerDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tile) {
+    public ContainerDigitalMiner(PlayerInventory inventory, TileEntityDigitalMiner tile) {
         super(tile, inventory);
     }
 

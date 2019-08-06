@@ -23,26 +23,26 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Items;
+import net.minecraft.pathfinding.GroundPathNavigator;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigateGround;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -59,7 +59,7 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = MekanismHooks.GALACTICRAFT_MOD_ID)
-public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable {
+public class EntityRobit extends CreatureEntity implements IInventory, ISustainedInventory, IEntityBreathable {
 
     private static final DataParameter<Float> ELECTRICITY = EntityDataManager.createKey(EntityRobit.class, DataSerializers.FLOAT);
     private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
@@ -80,9 +80,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         getNavigator().setCanSwim(false);
         tasks.addTask(1, new RobitAIPickup(this, 1.0F));
         tasks.addTask(2, new RobitAIFollow(this, 1.0F, 4.0F, 2.0F));
-        tasks.addTask(3, new EntityAIWatchClosest(this, PlayerEntity.class, 8.0F));
-        tasks.addTask(3, new EntityAILookIdle(this));
-        tasks.addTask(4, new EntityAISwimming(this));
+        tasks.addTask(3, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        tasks.addTask(3, new LookRandomlyGoal(this));
+        tasks.addTask(4, new SwimGoal(this));
         setAlwaysRenderNameTag(true);
     }
 
@@ -96,8 +96,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
     @Nonnull
     @Override
-    public PathNavigateGround getNavigator() {
-        return (PathNavigateGround) navigator;
+    public GroundPathNavigator getNavigator() {
+        return (GroundPathNavigator) navigator;
     }
 
     @Override
@@ -188,7 +188,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
             if (!world.isRemote) {
                 if (furnaceBurnTime == 0 && canSmelt()) {
-                    currentItemBurnTime = furnaceBurnTime = TileEntityFurnace.getItemBurnTime(inventory.get(29));
+                    currentItemBurnTime = furnaceBurnTime = FurnaceTileEntity.getItemBurnTime(inventory.get(29));
                     if (furnaceBurnTime > 0) {
                         if (!inventory.get(29).isEmpty()) {
                             inventory.get(29).shrink(1);
@@ -213,10 +213,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     private void collectItems() {
-        List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().grow(1.5, 1.5, 1.5));
+        List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, getEntityBoundingBox().grow(1.5, 1.5, 1.5));
 
         if (!items.isEmpty()) {
-            for (EntityItem item : items) {
+            for (ItemEntity item : items) {
                 if (item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit || item.isDead) {
                     continue;
                 }
@@ -320,7 +320,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     public void drop() {
-        EntityItem entityItem = new EntityItem(world, posX, posY + 0.3, posZ, MekanismItem.ROBIT.getItemStack());
+        ItemEntity entityItem = new ItemEntity(world, posX, posY + 0.3, posZ, MekanismItem.ROBIT.getItemStack());
         ItemRobit item = (ItemRobit) entityItem.getItem().getItem();
         item.setEnergy(entityItem.getItem(), getEnergy());
         item.setInventory(((ISustainedInventory) this).getInventory(), entityItem.getItem());
@@ -346,7 +346,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         if (homeLocation != null) {
             homeLocation.write(nbtTags);
         }
-        NBTTagList tagList = new NBTTagList();
+        ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < inventory.size(); slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
@@ -369,7 +369,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         setFollowing(nbtTags.getBoolean("follow"));
         setDropPickup(nbtTags.getBoolean("dropPickup"));
         homeLocation = Coord4D.read(nbtTags);
-        NBTTagList tagList = nbtTags.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        ListNBT tagList = nbtTags.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
@@ -526,7 +526,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
+    public void setInventory(ListNBT nbtTags, Object... data) {
         if (nbtTags == null || nbtTags.tagCount() == 0) {
             return;
         }
@@ -541,8 +541,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     @Override
-    public NBTTagList getInventory(Object... data) {
-        NBTTagList tagList = new NBTTagList();
+    public ListNBT getInventory(Object... data) {
+        ListNBT tagList = new ListNBT();
         for (int slots = 0; slots < inventory.size(); slots++) {
             if (!inventory.get(slots).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();

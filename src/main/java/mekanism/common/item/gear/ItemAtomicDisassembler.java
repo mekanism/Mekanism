@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
@@ -21,13 +22,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockDirt.DirtType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -38,8 +39,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -60,11 +63,11 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        super.addInformation(itemstack, world, list, flag);
-        Mode mode = getMode(itemstack);
-        list.add(LangUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + mode.getModeName());
-        list.add(LangUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + mode.getEfficiency());
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        super.addInformation(stack, world, tooltip, flag);
+        Mode mode = getMode(stack);
+        tooltip.add(LangUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + mode.getModeName());
+        tooltip.add(LangUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + mode.getEfficiency());
     }
 
     @Override
@@ -108,7 +111,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         Vec3d maxReach = positionEyes.add(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
         RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
         //noinspection ConstantConditions - idea thinks it's nonnull due to package level annotations, but it's not
-        return res != null ? res : new RayTraceResult(RayTraceResult.Type.MISS, Vec3d.ZERO, Direction.UP, pos);
+        return res != null ? res : new RayTraceResult(Type.MISS, Vec3d.ZERO, Direction.UP, pos);
     }
 
     @Override
@@ -171,7 +174,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (!world.isRemote) {
                 toggleMode(itemstack);
                 Mode mode = getMode(itemstack);
-                entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle")
+                entityplayer.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle")
                                                                  + " " + EnumColor.INDIGO + mode.getModeName() + EnumColor.AQUA + " (" + mode.getEfficiency() + ")"));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);

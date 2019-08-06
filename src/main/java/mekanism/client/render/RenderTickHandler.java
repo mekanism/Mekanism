@@ -41,7 +41,7 @@ public class RenderTickHandler {
 
     public static int modeSwitchTimer = 0;
     public Random rand = new Random();
-    public Minecraft mc = Minecraft.getMinecraft();
+    public Minecraft mc = Minecraft.getInstance();
 
     @SubscribeEvent
     public void tickEnd(RenderTickEvent event) {

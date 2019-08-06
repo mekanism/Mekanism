@@ -15,10 +15,10 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -120,7 +120,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
         }
 
         @OnlyIn(Dist.CLIENT)
-        public static GuiScreen getGui(SorterGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
+        public static Screen getGui(SorterGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
             if (type == 0) {
                 return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter) world.getTileEntity(pos));
             } else if (type == 4) {

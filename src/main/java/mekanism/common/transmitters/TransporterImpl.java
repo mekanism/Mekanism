@@ -31,7 +31,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -85,7 +85,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             setColor(TransporterUtils.colors.get(nbtTags.getInteger("color")));
         }
         if (nbtTags.hasKey("stacks")) {
-            NBTTagList tagList = nbtTags.getTagList("stacks", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("stacks", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
                 TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompoundTagAt(i));
                 transit.put(nextId++, stack);

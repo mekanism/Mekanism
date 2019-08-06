@@ -35,7 +35,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -205,7 +205,7 @@ public class MultipartMekanism implements IMCMPAddon {
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * ev.getPartialTicks();
             double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * ev.getPartialTicks();
             double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * ev.getPartialTicks();
-            RenderGlobal.drawSelectionBoundingBox(bb.grow(0.002).offset(-x, -y, -z), 0.0F, 0.0F, 0.0F, 0.4F);
+            WorldRenderer.drawSelectionBoundingBox(bb.grow(0.002).offset(-x, -y, -z), 0.0F, 0.0F, 0.0F, 0.4F);
             GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();

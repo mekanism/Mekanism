@@ -32,7 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.client.event.MouseEvent;
@@ -262,7 +262,7 @@ public class ClientTickHandler {
                     mc.player.setAir(mc.player.getAir() + received.amount);
                 }
                 if (mc.player.getAir() == max) {
-                    for (PotionEffect effect : mc.player.getActivePotionEffects()) {
+                    for (EffectInstance effect : mc.player.getActivePotionEffects()) {
                         for (int i = 0; i < 9; i++) {
                             effect.onUpdate(mc.player);
                         }

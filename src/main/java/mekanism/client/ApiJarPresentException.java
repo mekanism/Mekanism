@@ -3,7 +3,7 @@ package mekanism.client;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiErrorScreen;
+import net.minecraft.client.gui.screen.ErrorScreen;
 import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
 
 /**
@@ -22,11 +22,11 @@ public class ApiJarPresentException extends CustomModLoadingErrorDisplayExceptio
     }
 
     @Override
-    public void initGui(GuiErrorScreen errorScreen, FontRenderer fontRenderer) {
+    public void initGui(ErrorScreen errorScreen, FontRenderer fontRenderer) {
     }
 
     @Override
-    public void drawScreen(@Nullable GuiErrorScreen errorScreen, @Nullable FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime) {
+    public void drawScreen(@Nullable ErrorScreen errorScreen, @Nullable FontRenderer fontRenderer, int mouseRelX, int mouseRelY, float tickTime) {
         if (errorScreen == null || fontRenderer == null) {
             return;
         }

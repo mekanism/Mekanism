@@ -8,9 +8,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.item.Items;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -85,8 +85,8 @@ public class BlockObsidianTNT extends Block {
 
     @Override
     public void onEntityCollision(World world, BlockPos pos, BlockState state, Entity entity) {
-        if (entity instanceof EntityArrow && !world.isRemote) {
-            EntityArrow entityarrow = (EntityArrow) entity;
+        if (entity instanceof AbstractArrowEntity && !world.isRemote) {
+            AbstractArrowEntity entityarrow = (AbstractArrowEntity) entity;
             if (entityarrow.isBurning()) {
                 explode(world, pos);
                 world.removeBlock(pos, false);

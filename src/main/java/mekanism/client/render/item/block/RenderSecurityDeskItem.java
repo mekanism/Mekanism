@@ -9,7 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,7 +31,7 @@ public class RenderSecurityDeskItem extends MekanismItemStackRenderer {
         GlStateManager.scale(0.8F, 0.8F, 0.8F);
         GlStateManager.translate(0, -0.8F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk.png"));
-        securityDesk.render(0.0625F, Minecraft.getMinecraft().renderEngine);
+        securityDesk.render(0.0625F, Minecraft.getInstance().renderEngine);
     }
 
     @Override

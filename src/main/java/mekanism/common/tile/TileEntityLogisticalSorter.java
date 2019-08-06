@@ -39,7 +39,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -167,7 +167,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
         nbtTags.setInteger("rrIndex", rrIndex);
 
-        NBTTagList filterTags = new NBTTagList();
+        ListNBT filterTags = new ListNBT();
 
         for (TransporterFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
@@ -194,7 +194,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         rrIndex = nbtTags.getInteger("rrIndex");
 
         if (nbtTags.hasKey("filters")) {
-            NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
                 filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
             }
@@ -408,7 +408,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         nbtTags.setBoolean("singleItem", singleItem);
         nbtTags.setInteger("rrIndex", rrIndex);
 
-        NBTTagList filterTags = new NBTTagList();
+        ListNBT filterTags = new ListNBT();
         for (TransporterFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
@@ -431,7 +431,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         rrIndex = nbtTags.getInteger("rrIndex");
 
         if (nbtTags.hasKey("filters")) {
-            NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
                 filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
             }
@@ -454,7 +454,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         ItemDataUtils.setBoolean(itemStack, "roundRobin", roundRobin);
         ItemDataUtils.setBoolean(itemStack, "singleItem", singleItem);
 
-        NBTTagList filterTags = new NBTTagList();
+        ListNBT filterTags = new ListNBT();
         for (TransporterFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
@@ -475,7 +475,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             roundRobin = ItemDataUtils.getBoolean(itemStack, "roundRobin");
             singleItem = ItemDataUtils.getBoolean(itemStack, "singleItem");
             if (ItemDataUtils.hasData(itemStack, "filters")) {
-                NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
+                ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
                 for (int i = 0; i < tagList.tagCount(); i++) {
                     filters.add(TransporterFilter.readFromNBT(tagList.getCompoundTagAt(i)));
                 }

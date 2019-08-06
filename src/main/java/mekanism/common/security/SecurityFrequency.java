@@ -8,8 +8,8 @@ import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class SecurityFrequency extends Frequency {
@@ -43,9 +43,9 @@ public class SecurityFrequency extends Frequency {
         nbtTags.setInteger("securityMode", securityMode.ordinal());
 
         if (!trusted.isEmpty()) {
-            NBTTagList trustedList = new NBTTagList();
+            ListNBT trustedList = new ListNBT();
             for (String s : trusted) {
-                trustedList.appendTag(new NBTTagString(s));
+                trustedList.appendTag(new StringNBT(s));
             }
             nbtTags.setTag("trusted", trustedList);
         }
@@ -62,7 +62,7 @@ public class SecurityFrequency extends Frequency {
         securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
 
         if (nbtTags.hasKey("trusted")) {
-            NBTTagList trustedList = nbtTags.getTagList("trusted", NBT.TAG_STRING);
+            ListNBT trustedList = nbtTags.getTagList("trusted", NBT.TAG_STRING);
             for (int i = 0; i < trustedList.tagCount(); i++) {
                 trusted.add(trustedList.getStringTagAt(i));
             }

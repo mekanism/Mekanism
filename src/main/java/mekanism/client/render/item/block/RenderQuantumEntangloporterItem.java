@@ -9,7 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,7 +25,7 @@ public class RenderQuantumEntangloporterItem extends MekanismItemStackRenderer {
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.translate(0, -1.0F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter.png"));
-        quantumEntangloporter.render(0.0625F, Minecraft.getMinecraft().renderEngine, true);
+        quantumEntangloporter.render(0.0625F, Minecraft.getInstance().renderEngine, true);
     }
 
     @Override

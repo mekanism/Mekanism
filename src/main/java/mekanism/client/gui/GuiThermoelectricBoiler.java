@@ -15,7 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoilerCasing> {
 
-    public GuiThermoelectricBoiler(InventoryPlayer inventory, TileEntityBoilerCasing tile) {
+    public GuiThermoelectricBoiler(PlayerInventory inventory, TileEntityBoilerCasing tile) {
         super(tile, new ContainerFilter(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.STAT, resource));

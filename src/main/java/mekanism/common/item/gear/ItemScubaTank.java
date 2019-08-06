@@ -2,6 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -14,15 +15,16 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,14 +41,14 @@ public class ItemScubaTank extends ItemArmorMekanism implements IGasItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        GasStack gasStack = getGas(itemstack);
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        GasStack gasStack = getGas(stack);
         if (gasStack == null) {
-            list.add(LangUtils.localize("tooltip.noGas") + ".");
+            tooltip.add(LangUtils.localize("tooltip.noGas") + ".");
         } else {
-            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+            tooltip.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
         }
-        list.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
+        tooltip.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(stack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(stack));
     }
 
     @Override
@@ -182,7 +184,7 @@ public class ItemScubaTank extends ItemArmorMekanism implements IGasItem {
     }
 
     @Override
-    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }

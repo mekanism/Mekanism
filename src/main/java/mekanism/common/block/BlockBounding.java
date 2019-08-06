@@ -9,7 +9,7 @@ import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFlowerPot;
+import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
@@ -120,7 +120,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
-     * @see BlockFlowerPot#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)
+     * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)
      */
     @Override
     public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest) {
@@ -148,7 +148,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)}.
      *
      * @author Forge
-     * @see BlockFlowerPot#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
+     * @see FlowerPotBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
      */
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, ItemStack stack) {

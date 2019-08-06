@@ -8,7 +8,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,7 +31,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE e
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == deleteButton.id) {
             Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));

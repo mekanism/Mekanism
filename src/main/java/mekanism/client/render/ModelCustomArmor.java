@@ -28,7 +28,7 @@ public class ModelCustomArmor extends ModelBiped {
     public static GlowArmor GLOW_BIG = new GlowArmor(1.0F);
     public static GlowArmor GLOW_SMALL = new GlowArmor(0.5F);
 
-    public static Minecraft mc = Minecraft.getMinecraft();
+    public static Minecraft mc = Minecraft.getInstance();
 
     public ArmorModel modelType;
 

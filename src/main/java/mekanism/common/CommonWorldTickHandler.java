@@ -9,7 +9,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.chunk.ServerChunkProvider;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -42,7 +42,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent
     public void onTick(WorldTickEvent event) {
-        if (event.side == Side.SERVER) {
+        if (event.side == Dist.DEDICATED_SERVER) {
             if (event.phase == Phase.START) {
                 tickStart(event.world);
             } else if (event.phase == Phase.END) {
@@ -83,7 +83,7 @@ public class CommonWorldTickHandler {
                     long xSeed = fmlRandom.nextLong() >> 2 + 1L;
                     long zSeed = fmlRandom.nextLong() >> 2 + 1L;
                     fmlRandom.setSeed((xSeed * nextChunk.x + zSeed * nextChunk.z) ^ world.getSeed());
-                    Mekanism.genHandler.generate(fmlRandom, nextChunk.x, nextChunk.z, world, ((ChunkProviderServer) world.getChunkProvider()).chunkGenerator, world.getChunkProvider());
+                    Mekanism.genHandler.generate(fmlRandom, nextChunk.x, nextChunk.z, world, ((ServerChunkProvider) world.getChunkProvider()).chunkGenerator, world.getChunkProvider());
                     Mekanism.logger.info("Regenerating ores at chunk " + nextChunk);
                 }
                 if (chunksToGen.isEmpty()) {

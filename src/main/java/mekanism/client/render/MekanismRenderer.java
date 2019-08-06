@@ -21,17 +21,17 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -58,7 +58,7 @@ public class MekanismRenderer {
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
     public static TextureAtlasSprite missingIcon;
-    private static TextureMap texMap = null;
+    private static AtlasTexture texMap = null;
 
     public static void init() {
         MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
@@ -69,7 +69,7 @@ public class MekanismRenderer {
         return machineRenderer;
     }
 
-    public static void initFluidTextures(TextureMap map) {
+    public static void initFluidTextures(AtlasTexture map) {
         missingIcon = map.getMissingSprite();
         texMap = map;
     }
@@ -191,7 +191,7 @@ public class MekanismRenderer {
     }
 
     public static void bindTexture(ResourceLocation texture) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+        Minecraft.getInstance().renderEngine.bindTexture(texture);
     }
 
     //Color
@@ -315,7 +315,7 @@ public class MekanismRenderer {
     }
 
     public static float getPartialTick() {
-        return Minecraft.getMinecraft().getRenderPartialTicks();
+        return Minecraft.getInstance().getRenderPartialTicks();
     }
 
     public static void rotate(Direction facing, float north, float south, float west, float east) {

@@ -7,13 +7,13 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.SideData;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiSideDataButton extends GuiButton {
+public class GuiSideDataButton extends Button {
 
     private final Supplier<SideData> sideDataSupplier;
     private final Supplier<EnumColor> colorSupplier;

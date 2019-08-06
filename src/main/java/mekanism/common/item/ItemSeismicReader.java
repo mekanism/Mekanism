@@ -9,14 +9,14 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public class ItemSeismicReader extends ItemEnergized {
@@ -55,14 +55,14 @@ public class ItemSeismicReader extends ItemEnergized {
 
         if (getEnergy(itemstack) < ENERGY_USAGE && !entityplayer.capabilities.isCreativeMode) {
             if (!world.isRemote) {
-                entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
+                entityplayer.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
                                                                  LangUtils.localize("tooltip.seismicReader.needsEnergy")));
             }
 
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         } else if (!MekanismUtils.isChunkVibrated(chunk)) {
             if (!world.isRemote) {
-                entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
+                entityplayer.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
                                                                  LangUtils.localize("tooltip.seismicReader.noVibrations")));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);

@@ -6,14 +6,14 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Items;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public abstract class ContainerEnergyStorage<TILE extends TileEntityMekanism> extends ContainerMekanism<TILE> {
 
-    protected ContainerEnergyStorage(TILE tile, InventoryPlayer inventory) {
+    protected ContainerEnergyStorage(TILE tile, PlayerInventory inventory) {
         super(tile, inventory);
     }
 

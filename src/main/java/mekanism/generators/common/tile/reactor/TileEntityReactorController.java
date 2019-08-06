@@ -119,7 +119,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             if (--playSoundCooldown > 0) {
                 return;
             }
-            if (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound)) {
+            if (activeSound == null || !Minecraft.getInstance().getSoundHandler().isSoundPlaying(activeSound)) {
                 activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), 1.0f, getPos());
                 playSoundCooldown = 20;
             }

@@ -48,8 +48,8 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("mekanism.key.feetMode", Keyboard.KEY_H, keybindCategory);
     public static KeyBinding voiceKey = new KeyBinding("mekanism.key.voice", Keyboard.KEY_U, keybindCategory);
 
-    public static KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
-    public static KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
+    public static KeyBinding sneakKey = Minecraft.getInstance().gameSettings.keyBindSneak;
+    public static KeyBinding jumpKey = Minecraft.getInstance().gameSettings.keyBindJump;
 
     private static Builder BINDINGS = new Builder()
           .addBinding(modeSwitchKey, false)

@@ -11,7 +11,7 @@ import mekanism.common.base.IItemNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

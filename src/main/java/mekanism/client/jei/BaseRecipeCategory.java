@@ -24,7 +24,7 @@ import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
@@ -146,6 +146,6 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
         group.set(slot, stack);
     }
 
-    public static class GuiDummy extends Gui {
+    public static class GuiDummy extends AbstractGui {
     }
 }

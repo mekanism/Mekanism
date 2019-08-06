@@ -24,7 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -135,7 +135,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public CompoundNBT writeToNBT(CompoundNBT nbtTags) {
         super.writeToNBT(nbtTags);
-        NBTTagList filterTags = new NBTTagList();
+        ListNBT filterTags = new ListNBT();
         for (OredictionificatorFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
@@ -151,7 +151,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public void readFromNBT(CompoundNBT nbtTags) {
         super.readFromNBT(nbtTags);
         if (nbtTags.hasKey("filters")) {
-            NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
                 filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
             }
@@ -221,7 +221,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        NBTTagList filterTags = new NBTTagList();
+        ListNBT filterTags = new ListNBT();
         for (OredictionificatorFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
@@ -236,7 +236,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
         if (nbtTags.hasKey("filters")) {
-            NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
                 filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
             }
@@ -251,7 +251,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         ItemDataUtils.setBoolean(itemStack, "hasOredictionificatorConfig", true);
-        NBTTagList filterTags = new NBTTagList();
+        ListNBT filterTags = new ListNBT();
         for (OredictionificatorFilter filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
@@ -266,7 +266,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public void readSustainedData(ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, "hasOredictionificatorConfig")) {
             if (ItemDataUtils.hasData(itemStack, "filters")) {
-                NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
+                ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
                 for (int i = 0; i < tagList.tagCount(); i++) {
                     filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
                 }

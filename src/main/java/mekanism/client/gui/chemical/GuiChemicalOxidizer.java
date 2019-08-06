@@ -18,7 +18,7 @@ import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,7 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiChemicalOxidizer extends GuiChemical<TileEntityChemicalOxidizer> {
 
-    public GuiChemicalOxidizer(InventoryPlayer inventory, TileEntityChemicalOxidizer tile) {
+    public GuiChemicalOxidizer(PlayerInventory inventory, TileEntityChemicalOxidizer tile) {
         super(tile, new ContainerChemicalOxidizer(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));

@@ -19,7 +19,7 @@ import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityChanceMachine<RECIPE>> {
 
-    public GuiChanceMachine(InventoryPlayer inventory, TileEntityChanceMachine<RECIPE> tile) {
+    public GuiChanceMachine(PlayerInventory inventory, TileEntityChanceMachine<RECIPE> tile) {
         super(tile, new ContainerChanceMachine<>(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

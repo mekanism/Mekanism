@@ -11,15 +11,15 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEntityBoilerCasing> {
+public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
 
     private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
     private FluidStack WATER = new FluidStack(FluidRegistry.WATER, 1);
@@ -38,7 +38,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                 data.fluidType = WATER;
 
                 if (data.height >= 1 && waterStored.getFluid() != null) {
-                    bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                    bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.pushMatrix();
                     GlStateManager.enableCull();
                     GlStateManager.enableBlend();
@@ -80,7 +80,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                 data.fluidType = STEAM;
 
                 if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null) {
-                    bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                    bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.pushMatrix();
                     GlStateManager.enableCull();
                     GlStateManager.enableBlend();

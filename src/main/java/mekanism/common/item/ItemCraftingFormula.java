@@ -8,13 +8,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -107,7 +107,7 @@ public class ItemCraftingFormula extends ItemMekanism {
         if (!ItemDataUtils.hasData(stack, "Items")) {
             return null;
         }
-        NBTTagList tagList = ItemDataUtils.getList(stack, "Items");
+        ListNBT tagList = ItemDataUtils.getList(stack, "Items");
         NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
@@ -124,7 +124,7 @@ public class ItemCraftingFormula extends ItemMekanism {
             ItemDataUtils.removeData(stack, "Items");
             return;
         }
-        NBTTagList tagList = new NBTTagList();
+        ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < 9; slotCount++) {
             if (!inv.get(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();

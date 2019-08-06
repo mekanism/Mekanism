@@ -6,7 +6,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiElement {
 
-    public static final Minecraft mc = Minecraft.getMinecraft();
+    public static final Minecraft mc = Minecraft.getInstance();
 
     protected final ResourceLocation RESOURCE;
     protected final IGuiWrapper guiObj;
@@ -36,26 +36,26 @@ public abstract class GuiElement {
     }
 
     public void offsetX(int xSize) {
-        if (guiObj instanceof GuiContainer) {
-            ((GuiContainer) guiObj).xSize += xSize;
+        if (guiObj instanceof ContainerScreen) {
+            ((ContainerScreen) guiObj).xSize += xSize;
         }
     }
 
     public void offsetY(int ySize) {
-        if (guiObj instanceof GuiContainer) {
-            ((GuiContainer) guiObj).ySize += ySize;
+        if (guiObj instanceof ContainerScreen) {
+            ((ContainerScreen) guiObj).ySize += ySize;
         }
     }
 
     public void offsetLeft(int guiLeft) {
-        if (guiObj instanceof GuiContainer) {
-            ((GuiContainer) guiObj).guiLeft += guiLeft;
+        if (guiObj instanceof ContainerScreen) {
+            ((ContainerScreen) guiObj).guiLeft += guiLeft;
         }
     }
 
     public void offsetTop(int guiTop) {
-        if (guiObj instanceof GuiContainer) {
-            ((GuiContainer) guiObj).guiTop += guiTop;
+        if (guiObj instanceof ContainerScreen) {
+            ((ContainerScreen) guiObj).guiTop += guiTop;
         }
     }
 

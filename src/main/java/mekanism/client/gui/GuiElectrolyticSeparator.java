@@ -26,8 +26,8 @@ import mekanism.common.tile.gas_tank.TileEntityGasTank.GasMode;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,7 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrolyticSeparator> {
 
-    public GuiElectrolyticSeparator(InventoryPlayer inventory, TileEntityElectrolyticSeparator tile) {
+    public GuiElectrolyticSeparator(PlayerInventory inventory, TileEntityElectrolyticSeparator tile) {
         super(tile, new ContainerElectrolyticSeparator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

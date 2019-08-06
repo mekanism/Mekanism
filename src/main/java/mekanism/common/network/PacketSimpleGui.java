@@ -9,7 +9,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
@@ -79,8 +79,8 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
         }
 
         @OnlyIn(Dist.CLIENT)
-        public static GuiScreen getGui(int handler, int id, PlayerEntity player, World world, Coord4D obj) {
-            return (GuiScreen) handlers.get(handler).getClientGui(id, player, world, obj.getPos());
+        public static Screen getGui(int handler, int id, PlayerEntity player, World world, Coord4D obj) {
+            return (Screen) handlers.get(handler).getClientGui(id, player, world, obj.getPos());
         }
 
         @Override

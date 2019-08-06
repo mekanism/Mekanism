@@ -12,7 +12,7 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -124,7 +124,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
 
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event) {
-        if (event.getEntity() instanceof EntityItem && isMonitoring) {
+        if (event.getEntity() instanceof ItemEntity && isMonitoring) {
             event.setCanceled(true);
         }
     }

@@ -33,10 +33,10 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -50,14 +50,14 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     private Hand currentHand;
     private ItemStack itemStack = ItemStack.EMPTY;
     private PlayerEntity entityPlayer;
-    private GuiButton publicButton;
-    private GuiButton privateButton;
-    private GuiButton setButton;
-    private GuiButton deleteButton;
-    private GuiButton teleportButton;
-    private GuiButton checkboxButton;
+    private Button publicButton;
+    private Button privateButton;
+    private Button setButton;
+    private Button deleteButton;
+    private Button teleportButton;
+    private Button checkboxButton;
     private GuiScrollList scrollList;
-    private GuiTextField frequencyField;
+    private TextFieldWidget frequencyField;
     private boolean privateMode;
     private Frequency clientFreq;
     private byte clientStatus;
@@ -66,7 +66,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     private boolean isInit = true;
     private final boolean isPortable;
 
-    public GuiTeleporter(InventoryPlayer inventory, TileEntityTeleporter tile) {
+    public GuiTeleporter(PlayerInventory inventory, TileEntityTeleporter tile) {
         super(tile, new ContainerTeleporter(inventory, tile));
         isPortable = false;
         ResourceLocation resource = getGuiLocation();
@@ -125,14 +125,14 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(publicButton = new GuiButton(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public")));
-        buttonList.add(privateButton = new GuiButton(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private")));
-        buttonList.add(setButton = new GuiButton(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set")));
-        buttonList.add(deleteButton = new GuiButton(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(publicButton = new Button(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public")));
+        buttonList.add(privateButton = new Button(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private")));
+        buttonList.add(setButton = new Button(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set")));
+        buttonList.add(deleteButton = new Button(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete")));
         if (!itemStack.isEmpty()) {
-            buttonList.add(teleportButton = new GuiButton(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport")));
+            buttonList.add(teleportButton = new Button(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport")));
         }
-        frequencyField = new GuiTextField(5, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
+        frequencyField = new TextFieldWidget(5, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
         buttonList.add(checkboxButton = new GuiButtonDisableableImage(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
@@ -238,7 +238,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == publicButton.id) {
             privateMode = false;

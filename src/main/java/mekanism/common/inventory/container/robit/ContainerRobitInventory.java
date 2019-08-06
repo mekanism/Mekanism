@@ -3,13 +3,13 @@ package mekanism.common.inventory.container.robit;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerRobitInventory extends ContainerRobit {
 
-    public ContainerRobitInventory(InventoryPlayer inventory, EntityRobit entity) {
+    public ContainerRobitInventory(PlayerInventory inventory, EntityRobit entity) {
         super(entity, inventory);
     }
 

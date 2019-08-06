@@ -20,7 +20,7 @@ import mekanism.common.recipe.ingredients.ItemStackMekIngredient;
 import mekanism.common.recipe.ingredients.OredictMekIngredient;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.init.Items;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 
 public class GasConversionHandler {

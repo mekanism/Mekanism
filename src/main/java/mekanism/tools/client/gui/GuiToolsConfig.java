@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiToolsConfig extends GuiConfig {
 
-    public GuiToolsConfig(GuiScreen parent) {
+    public GuiToolsConfig(Screen parent) {
         super(parent, getConfigElements(), MekanismTools.MODID, false, false, "MekanismTools");
     }
 
@@ -41,7 +41,7 @@ public class GuiToolsConfig extends GuiConfig {
         }
 
         @Override
-        protected GuiScreen buildChildScreen() {
+        protected Screen buildChildScreen() {
             return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("tools.general")).getChildElements(), owningScreen.modID,
                   Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
                   configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
@@ -55,7 +55,7 @@ public class GuiToolsConfig extends GuiConfig {
         }
 
         @Override
-        protected GuiScreen buildChildScreen() {
+        protected Screen buildChildScreen() {
             return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("tools.armor-balance")).getChildElements(), owningScreen.modID,
                   Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
                   configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
@@ -69,7 +69,7 @@ public class GuiToolsConfig extends GuiConfig {
         }
 
         @Override
-        protected GuiScreen buildChildScreen() {
+        protected Screen buildChildScreen() {
             return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("tools.tool-balance")).getChildElements(), owningScreen.modID,
                   Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
                   configElement.requiresMcRestart() || owningScreen.allRequireMcRestart, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));

@@ -4,7 +4,7 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

@@ -11,11 +11,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.CompoundNBT;
@@ -112,7 +112,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         double entityDist = 0.0D;
 
         for (Entity entity1 : list) {
-            if ((entity1 instanceof EntityItem || entity1.canBeCollidedWith()) && entity1 != owner) {
+            if ((entity1 instanceof ItemEntity || entity1.canBeCollidedWith()) && entity1 != owner) {
                 float boundsScale = 0.3F;
                 AxisAlignedBB newBounds = entity1.getEntityBoundingBox().expand(boundsScale, boundsScale, boundsScale);
                 RayTraceResult RayTraceResult1 = newBounds.calculateIntercept(localVec, motionVec);
@@ -140,9 +140,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
         if (mop != null) {
             if (mop.typeOfHit == Type.ENTITY && mop.entityHit != null && !mop.entityHit.isImmuneToFire()) {
-                if (mop.entityHit instanceof EntityItem && mode != ItemFlamethrower.FlamethrowerMode.COMBAT) {
+                if (mop.entityHit instanceof ItemEntity && mode != ItemFlamethrower.FlamethrowerMode.COMBAT) {
                     if (mop.entityHit.ticksExisted > 100) {
-                        if (!smeltItem((EntityItem) mop.entityHit)) {
+                        if (!smeltItem((ItemEntity) mop.entityHit)) {
                             burn(mop.entityHit);
                         }
                     }
@@ -172,7 +172,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
     }
 
-    private boolean smeltItem(EntityItem item) {
+    private boolean smeltItem(ItemEntity item) {
         ItemStack result = FurnaceRecipes.instance().getSmeltingResult(item.getItem());
         if (!result.isEmpty()) {
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
@@ -203,7 +203,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
                 } else {
                     world.removeBlock(block.getPos(), false);
-                    EntityItem item = new EntityItem(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());
+                    ItemEntity item = new ItemEntity(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());
                     item.motionX = 0;
                     item.motionY = 0;
                     item.motionZ = 0;

@@ -5,15 +5,15 @@ import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerThermalEvaporationController extends ContainerMekanism<TileEntityThermalEvaporationController> {
 
-    public ContainerThermalEvaporationController(InventoryPlayer inventory,
+    public ContainerThermalEvaporationController(PlayerInventory inventory,
           TileEntityThermalEvaporationController tile) {
         super(tile, inventory);
     }

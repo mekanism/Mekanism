@@ -16,8 +16,8 @@ import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -28,9 +28,9 @@ import net.minecraftforge.oredict.OreDictionary;
 @OnlyIn(Dist.CLIENT)
 public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator> {
 
-    private GuiButton prevButton;
-    private GuiButton nextButton;
-    private GuiButton checkboxButton;
+    private Button prevButton;
+    private Button nextButton;
+    private Button checkboxButton;
 
     public GuiOredictionificatorFilter(PlayerEntity player, TileEntityOredictionificator tile, int index) {
         super(tile, new ContainerFilter(player.inventory, tile));
@@ -47,8 +47,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        buttonList.add(saveButton = new GuiButton(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
-        buttonList.add(deleteButton = new GuiButton(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(saveButton = new Button(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
+        buttonList.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
         buttonList.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation()));
         buttonList.add(prevButton = new GuiButtonDisableableImage(3, guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation()));
         buttonList.add(nextButton = new GuiButtonDisableableImage(4, guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation()));
@@ -78,8 +78,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     @Override
-    protected GuiTextField createTextField() {
-        return new GuiTextField(2, fontRenderer, guiLeft + 33, guiTop + 48, 96, 12);
+    protected TextFieldWidget createTextField() {
+        return new TextFieldWidget(2, fontRenderer, guiLeft + 33, guiTop + 48, 96, 12);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == saveButton.id) {
             if (!text.getText().isEmpty()) {

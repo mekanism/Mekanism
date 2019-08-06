@@ -11,8 +11,8 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -88,7 +88,7 @@ public abstract class GuiGauge<T> extends GuiElement {
                 scale = 0;
             }
 
-            mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            mc.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             for (int i = 0; i < number; i++) {
                 guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
             }

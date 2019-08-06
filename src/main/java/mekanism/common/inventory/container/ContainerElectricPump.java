@@ -7,14 +7,14 @@ import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerElectricPump extends ContainerMekanism<TileEntityElectricPump> {
 
-    public ContainerElectricPump(InventoryPlayer inventory, TileEntityElectricPump tile) {
+    public ContainerElectricPump(PlayerInventory inventory, TileEntityElectricPump tile) {
         super(tile, inventory);
     }
 

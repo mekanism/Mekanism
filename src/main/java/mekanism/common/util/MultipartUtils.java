@@ -8,6 +8,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -80,7 +81,7 @@ public final class MultipartUtils {
         if (result == null) {
             return null;
         }
-        result = new RayTraceResult(RayTraceResult.Type.BLOCK, result.hitVec, result.sideHit, pos);
+        result = new RayTraceResult(Type.BLOCK, result.hitVec, result.sideHit, pos);
         result.subHit = subHit;
         result.hitInfo = hitInfo;
         return new AdvancedRayTraceResult(result, bounds);

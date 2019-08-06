@@ -4,13 +4,13 @@ import javax.annotation.Nonnull;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerSecurityDesk extends ContainerMekanism<TileEntitySecurityDesk> {
 
-    public ContainerSecurityDesk(InventoryPlayer inventory, TileEntitySecurityDesk tile) {
+    public ContainerSecurityDesk(PlayerInventory inventory, TileEntitySecurityDesk tile) {
         super(tile, inventory);
     }
 

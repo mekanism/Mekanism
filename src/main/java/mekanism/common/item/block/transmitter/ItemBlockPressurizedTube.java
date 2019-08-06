@@ -14,7 +14,7 @@ import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

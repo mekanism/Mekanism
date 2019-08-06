@@ -46,16 +46,16 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.BlockItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -119,7 +119,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
-        IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+        Registry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         registerItemStackModel(modelRegistry, "heat_generator", model -> RenderHeatGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "solar_generator", model -> RenderSolarGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "bio_generator", model -> RenderBioGeneratorItem.model = model);
@@ -128,7 +128,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         registerItemStackModel(modelRegistry, "advanced_solar_generator", model -> RenderAdvancedSolarGeneratorItem.model = model);
     }
 
-    private void registerItemStackModel(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
+    private void registerItemStackModel(Registry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
         ModelResourceLocation resourceLocation = getInventoryMRL(type);
         modelRegistry.putObject(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.getObject(resourceLocation))));
     }
@@ -143,7 +143,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
     }
 
     @Override
-    public GuiScreen getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
+    public Screen getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
         switch (ID) {

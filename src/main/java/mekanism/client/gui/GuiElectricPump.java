@@ -16,7 +16,7 @@ import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump> {
 
 
-    public GuiElectricPump(InventoryPlayer inventory, TileEntityElectricPump tile) {
+    public GuiElectricPump(PlayerInventory inventory, TileEntityElectricPump tile) {
         super(tile, new ContainerElectricPump(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));

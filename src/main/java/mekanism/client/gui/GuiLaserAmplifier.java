@@ -16,9 +16,9 @@ import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,11 +27,11 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier> {
 
-    private GuiTextField minField;
-    private GuiTextField maxField;
-    private GuiTextField timerField;
+    private TextFieldWidget minField;
+    private TextFieldWidget maxField;
+    private TextFieldWidget timerField;
 
-    public GuiLaserAmplifier(InventoryPlayer inventory, TileEntityLaserAmplifier tile) {
+    public GuiLaserAmplifier(PlayerInventory inventory, TileEntityLaserAmplifier tile) {
         super(tile, new ContainerLaserAmplifier(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiNumberGauge(new INumberInfoHandler() {
@@ -171,17 +171,17 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     public void initGui() {
         super.initGui();
         String prevTime = timerField != null ? timerField.getText() : "";
-        timerField = new GuiTextField(0, fontRenderer, guiLeft + 96, guiTop + 28, 36, 11);
+        timerField = new TextFieldWidget(0, fontRenderer, guiLeft + 96, guiTop + 28, 36, 11);
         timerField.setMaxStringLength(4);
         timerField.setText(prevTime);
 
         String prevMin = minField != null ? minField.getText() : "";
-        minField = new GuiTextField(1, fontRenderer, guiLeft + 96, guiTop + 43, 72, 11);
+        minField = new TextFieldWidget(1, fontRenderer, guiLeft + 96, guiTop + 43, 72, 11);
         minField.setMaxStringLength(10);
         minField.setText(prevMin);
 
         String prevMax = maxField != null ? maxField.getText() : "";
-        maxField = new GuiTextField(2, fontRenderer, guiLeft + 96, guiTop + 58, 72, 11);
+        maxField = new TextFieldWidget(2, fontRenderer, guiLeft + 96, guiTop + 58, 72, 11);
         maxField.setMaxStringLength(10);
         maxField.setText(prevMax);
     }

@@ -24,8 +24,8 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,9 +33,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator> {
 
-    private GuiButton toggleButton;
+    private Button toggleButton;
 
-    public GuiRotaryCondensentrator(InventoryPlayer inventory, TileEntityRotaryCondensentrator tile) {
+    public GuiRotaryCondensentrator(PlayerInventory inventory, TileEntityRotaryCondensentrator tile) {
         super(tile, new ContainerRotaryCondensentrator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
@@ -85,7 +85,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == toggleButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(0)));

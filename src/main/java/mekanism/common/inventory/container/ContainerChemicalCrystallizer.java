@@ -8,13 +8,13 @@ import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerChemicalCrystallizer extends ContainerMekanism<TileEntityChemicalCrystallizer> {
 
-    public ContainerChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tile) {
+    public ContainerChemicalCrystallizer(PlayerInventory inventory, TileEntityChemicalCrystallizer tile) {
         super(tile, inventory);
     }
 

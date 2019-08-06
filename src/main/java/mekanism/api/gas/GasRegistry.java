@@ -30,9 +30,9 @@ public class GasRegistry {
             return null;
         }
 
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Dist.CLIENT) {
             if (hasAlreadyStitched()) {
-                gas.updateIcon(Minecraft.getMinecraft().getTextureMapBlocks());
+                gas.updateIcon(Minecraft.getInstance().getTextureMapBlocks());
                 if (gas.getSpriteRaw() == null) {
                     LOG.error("Gas {} registered post texture stitch without valid sprite!", gas.getName());
                 }

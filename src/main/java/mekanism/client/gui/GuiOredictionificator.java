@@ -24,9 +24,9 @@ import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilte
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,7 +41,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     private int dragOffset = 0;
     private float scroll;
 
-    public GuiOredictionificator(InventoryPlayer inventory, TileEntityOredictionificator tile) {
+    public GuiOredictionificator(PlayerInventory inventory, TileEntityOredictionificator tile) {
         super(tile, new ContainerOredictionificator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
@@ -73,11 +73,11 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(new GuiButton(0, guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(new Button(0, guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter")));
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
             Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0));

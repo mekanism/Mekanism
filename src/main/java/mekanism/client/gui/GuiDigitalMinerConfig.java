@@ -24,10 +24,10 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,15 +37,15 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMiner, MinerFilter> {
 
-    private GuiTextField radiusField;
-    private GuiTextField minField;
-    private GuiTextField maxField;
-    private GuiButton newFilterButton;
-    private GuiButton backButton;
-    private GuiButton setRadiButton;
-    private GuiButton setMinButton;
-    private GuiButton setMaxButton;
-    private GuiButton inverseButton;
+    private TextFieldWidget radiusField;
+    private TextFieldWidget minField;
+    private TextFieldWidget maxField;
+    private Button newFilterButton;
+    private Button backButton;
+    private Button setRadiButton;
+    private Button setMinButton;
+    private Button setMaxButton;
+    private Button inverseButton;
 
     public GuiDigitalMinerConfig(PlayerEntity player, TileEntityDigitalMiner tile) {
         super(tile, new ContainerNull(player, tile));
@@ -139,7 +139,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(newFilterButton = new GuiButton(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(newFilterButton = new Button(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
         buttonList.add(backButton = new GuiButtonDisableableImage(1, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
         buttonList.add(setRadiButton = new GuiButtonDisableableImage(2, guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation()));
         buttonList.add(setMinButton = new GuiButtonDisableableImage(3, guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation()));
@@ -150,21 +150,21 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
         String prevMin = minField != null ? minField.getText() : "";
         String prevMax = maxField != null ? maxField.getText() : "";
 
-        radiusField = new GuiTextField(1, fontRenderer, guiLeft + 12, guiTop + 67, 26, 11);
+        radiusField = new TextFieldWidget(1, fontRenderer, guiLeft + 12, guiTop + 67, 26, 11);
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.current().general.digitalMinerMaxRadius.val()).length());
         radiusField.setText(prevRad);
 
-        minField = new GuiTextField(2, fontRenderer, guiLeft + 12, guiTop + 92, 26, 11);
+        minField = new TextFieldWidget(2, fontRenderer, guiLeft + 12, guiTop + 92, 26, 11);
         minField.setMaxStringLength(3);
         minField.setText(prevMin);
 
-        maxField = new GuiTextField(3, fontRenderer, guiLeft + 12, guiTop + 117, 26, 11);
+        maxField = new TextFieldWidget(3, fontRenderer, guiLeft + 12, guiTop + 117, 26, 11);
         maxField.setMaxStringLength(3);
         maxField.setText(prevMax);
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == newFilterButton.id) {
             sendPacket(MinerGuiPacket.SERVER, 5, 0, null);

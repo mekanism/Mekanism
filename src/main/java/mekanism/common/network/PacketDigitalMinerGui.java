@@ -19,10 +19,10 @@ import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -139,7 +139,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
         }
 
         @OnlyIn(Dist.CLIENT)
-        public static GuiScreen getGui(MinerGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
+        public static Screen getGui(MinerGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
             if (type == 0) {
                 return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner) world.getTileEntity(pos));
             } else if (type == 4) {

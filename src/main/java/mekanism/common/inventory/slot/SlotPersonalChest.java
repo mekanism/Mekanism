@@ -3,7 +3,7 @@ package mekanism.common.inventory.slot;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class SlotPersonalChest extends Slot {

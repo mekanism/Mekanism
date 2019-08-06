@@ -21,8 +21,9 @@ import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Mouse;
@@ -233,7 +234,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
 
     protected void sendDataFromClick(TileNetworkList data) {
         Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
-        SoundHandler.playSound(net.minecraft.init.SoundEvents.UI_BUTTON_CLICK);
+        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
     }
 
     private void setNextRenderStack(StackData data) {

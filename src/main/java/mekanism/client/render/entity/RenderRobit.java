@@ -5,16 +5,16 @@ import mekanism.client.model.ModelRobit;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderRobit extends RenderLiving<EntityRobit> {
+public class RenderRobit extends MobRenderer<EntityRobit> {
 
-    public RenderRobit(RenderManager renderManager) {
+    public RenderRobit(EntityRendererManager renderManager) {
         super(renderManager, new ModelRobit(), 0.5F);
     }
 

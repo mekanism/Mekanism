@@ -16,8 +16,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.gui.button.GuiReactorLogicButton;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,10 +27,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter> {
 
     private List<GuiReactorLogicButton> typeButtons = new ArrayList<>();
-    private GuiButton coolingButton;
+    private Button coolingButton;
     private int buttonID = 0;
 
-    public GuiReactorLogicAdapter(InventoryPlayer inventory, final TileEntityReactorLogicAdapter tile) {
+    public GuiReactorLogicAdapter(PlayerInventory inventory, final TileEntityReactorLogicAdapter tile) {
         super(tile, new ContainerNull(inventory.player, tile));
     }
 
@@ -48,7 +48,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == coolingButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(0)));

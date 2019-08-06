@@ -1,8 +1,8 @@
 package mekanism.api.gas;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
@@ -186,7 +186,7 @@ public class Gas {
      * @return associated IIcon
      */
     public TextureAtlasSprite getSprite() {
-        TextureMap texMap = Minecraft.getMinecraft().getTextureMapBlocks();
+        AtlasTexture texMap = Minecraft.getInstance().getTextureMapBlocks();
         if (from_fluid) {
             return texMap.getAtlasSprite(fluid.getStill().toString());
         }
@@ -209,14 +209,14 @@ public class Gas {
      *
      * @return this Gas object
      */
-    public Gas registerIcon(TextureMap map) {
+    public Gas registerIcon(AtlasTexture map) {
         map.registerSprite(iconLocation);
         from_fluid = false;
 
         return this;
     }
 
-    public Gas updateIcon(TextureMap map) {
+    public Gas updateIcon(AtlasTexture map) {
         TextureAtlasSprite tex = map.getTextureExtry(iconLocation.toString());
 
         if (tex != null) {

@@ -4,7 +4,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 
@@ -121,7 +121,7 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
     }
 
     public ITextComponent getTranslatedColouredComponent() {
-        ITextComponent t = new TextComponentTranslation(getTranslationKey());
+        ITextComponent t = new TranslationTextComponent(getTranslationKey());
         t.getStyle().setColor(textFormatting);
         return t;
     }

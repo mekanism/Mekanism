@@ -6,9 +6,9 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 
-public class RenderWindGenerator extends TileEntitySpecialRenderer<TileEntityWindGenerator> {
+public class RenderWindGenerator extends TileEntityRenderer<TileEntityWindGenerator> {
 
     private ModelWindGenerator model = new ModelWindGenerator();
 

@@ -9,15 +9,15 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
-    public ContainerFactory(InventoryPlayer inventory, TileEntityFactory tile) {
+    public ContainerFactory(PlayerInventory inventory, TileEntityFactory tile) {
         super(tile, inventory);
     }
 

@@ -5,14 +5,14 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class MekanismItemStackRenderer extends TileEntityItemStackRenderer {
+public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRenderer {
 
     protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType);
 

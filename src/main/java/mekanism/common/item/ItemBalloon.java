@@ -7,8 +7,8 @@ import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.LangUtils;
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,7 +29,7 @@ public class ItemBalloon extends ItemMekanism {
     public ItemBalloon(EnumColor color) {
         super(color.registry_prefix + "_balloon");
         this.color = color;
-        BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, new DispenserBehavior());
+        DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, new DispenserBehavior());
     }
 
     @Override
@@ -127,13 +127,13 @@ public class ItemBalloon extends ItemMekanism {
         return world.isAirBlock(pos) || world.getBlockState(pos).getBlock().isReplaceable(world, pos);
     }
 
-    public class DispenserBehavior extends BehaviorDefaultDispenseItem {
+    public class DispenserBehavior extends DefaultDispenseItemBehavior {
 
         @Nonnull
         @Override
         public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
             Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().provider.getDimension());
-            Direction side = source.getBlockState().getValue(BlockDispenser.FACING);
+            Direction side = source.getBlockState().getValue(DispenserBlock.FACING);
 
             List<LivingEntity> entities = source.getWorld().getEntitiesWithinAABB(LivingEntity.class, coord.offset(side).getBoundingBox());
             boolean latched = false;

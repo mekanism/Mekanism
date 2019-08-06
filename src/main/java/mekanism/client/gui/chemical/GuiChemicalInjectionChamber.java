@@ -4,14 +4,14 @@ import mekanism.client.gui.GuiAdvancedElectricMachine;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine<InjectionRecipe> {
 
-    public GuiChemicalInjectionChamber(InventoryPlayer inventory, TileEntityAdvancedElectricMachine<InjectionRecipe> tile) {
+    public GuiChemicalInjectionChamber(PlayerInventory inventory, TileEntityAdvancedElectricMachine<InjectionRecipe> tile) {
         super(inventory, tile);
     }
 

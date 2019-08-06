@@ -14,8 +14,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.ResourceLocation;
@@ -53,7 +53,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     private static TextureAtlasSprite getStillGasSprite(Minecraft minecraft, Gas gas) {
-        TextureMap textureMapBlocks = minecraft.getTextureMapBlocks();
+        AtlasTexture textureMapBlocks = minecraft.getTextureMapBlocks();
         ResourceLocation gasStill = gas.getIcon();
         TextureAtlasSprite gasStillSprite = null;
         if (gasStill != null) {
@@ -115,7 +115,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
     private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, Gas gas, int scaledAmount,
           TextureAtlasSprite sprite) {
-        minecraft.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        minecraft.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         MekanismRenderer.color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;

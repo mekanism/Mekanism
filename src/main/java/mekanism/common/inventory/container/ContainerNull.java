@@ -2,7 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 public class ContainerNull extends ContainerMekanism<TileEntityMekanism> {
 
@@ -23,6 +23,6 @@ public class ContainerNull extends ContainerMekanism<TileEntityMekanism> {
     }
 
     @Override
-    protected void addInventorySlots(InventoryPlayer inventory) {
+    protected void addInventorySlots(PlayerInventory inventory) {
     }
 }

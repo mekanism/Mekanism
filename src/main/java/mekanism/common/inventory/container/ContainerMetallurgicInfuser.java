@@ -10,14 +10,14 @@ import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMetallurgicInfuser> {
 
-    public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tile) {
+    public ContainerMetallurgicInfuser(PlayerInventory inventory, TileEntityMetallurgicInfuser tile) {
         super(tile, inventory);
     }
 

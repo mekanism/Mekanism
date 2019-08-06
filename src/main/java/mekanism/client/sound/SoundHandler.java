@@ -16,7 +16,7 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.entity.player.PlayerEntity;
@@ -108,24 +108,24 @@ public class SoundHandler {
     }
 
     public static void playSound(SoundEvent sound) {
-        playSound(PositionedSoundRecord.getRecord(sound, 1.0F, (float) MekanismConfig.current().client.baseSoundVolume.val()));
+        playSound(SimpleSound.getRecord(sound, 1.0F, (float) MekanismConfig.current().client.baseSoundVolume.val()));
     }
 
     public static void playSound(ISound sound) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+        Minecraft.getInstance().getSoundHandler().playSound(sound);
     }
 
     public static ISound startTileSound(ResourceLocation soundLoc, float volume, BlockPos pos) {
         // First, check to see if there's already a sound playing at the desired location
         ISound s = soundMap.get(pos.toLong());
-        if (s == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(s)) {
+        if (s == null || !Minecraft.getInstance().getSoundHandler().isSoundPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
-            s = new PositionedSoundRecord(soundLoc, SoundCategory.BLOCKS, (float) (volume * MekanismConfig.current().client.baseSoundVolume.val()), 1.0f,
+            s = new SimpleSound(soundLoc, SoundCategory.BLOCKS, (float) (volume * MekanismConfig.current().client.baseSoundVolume.val()), 1.0f,
                   true, 0, ISound.AttenuationType.LINEAR, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) {
                 @Override
                 public float getVolume() {
                     if (this.sound == null) {
-                        this.createAccessor(Minecraft.getMinecraft().getSoundHandler());
+                        this.createAccessor(Minecraft.getInstance().getSoundHandler());
                     }
                     return super.getVolume();
                 }
@@ -148,7 +148,7 @@ public class SoundHandler {
         if (s != null) {
             // TODO: Saw some code that suggests there is a soundmap MC already tracks; investigate further
             // and maybe we can avoid this dedicated soundmap
-            Minecraft.getMinecraft().getSoundHandler().stopSound(s);
+            Minecraft.getInstance().getSoundHandler().stopSound(s);
             soundMap.remove(posKey);
         }
     }
@@ -204,7 +204,7 @@ public class SoundHandler {
         // uneven spikes of CPU usage
         private int checkInterval = 60 + ThreadLocalRandom.current().nextInt(20);
 
-        private Minecraft mc = Minecraft.getMinecraft();
+        private Minecraft mc = Minecraft.getInstance();
 
         TileSound(ISound original, float volume) {
             this.original = original;

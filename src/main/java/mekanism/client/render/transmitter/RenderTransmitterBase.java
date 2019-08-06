@@ -13,10 +13,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -27,13 +27,13 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.lwjgl.opengl.GL11;
 
-public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> extends TileEntitySpecialRenderer<T> {
+public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> extends TileEntityRenderer<T> {
 
     /* Credit to Eternal Energy */
     public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;
     private static OBJModel contentsModel;
     private static Map<String, IBakedModel> contentsMap = new HashMap<>();
-    protected Minecraft mc = Minecraft.getMinecraft();
+    protected Minecraft mc = Minecraft.getInstance();
 
     public RenderTransmitterBase() {
         if (contentsModel == null) {

@@ -9,13 +9,13 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerChemicalOxidizer extends ContainerMekanism<TileEntityChemicalOxidizer> {
 
-    public ContainerChemicalOxidizer(InventoryPlayer inventory, TileEntityChemicalOxidizer tile) {
+    public ContainerChemicalOxidizer(PlayerInventory inventory, TileEntityChemicalOxidizer tile) {
         super(tile, inventory);
     }
 

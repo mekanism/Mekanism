@@ -23,15 +23,15 @@ import mekanism.common.tile.transmitter.logistical_transporter.TileEntityLogisti
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -46,10 +46,10 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
-    private EntityItem entityItem = new EntityItem(null);
-    private Render<EntityItem> renderer = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
+    private ItemEntity entityItem = new ItemEntity(null);
+    private EntityRenderer<ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getEntityClassRenderObject(ItemEntity.class);
 
-    public static void onStitch(TextureMap map) {
+    public static void onStitch(AtlasTexture map) {
         cachedOverlays.clear();
 
         gunpowderIcon = map.getTextureExtry("minecraft:items/gunpowder");
@@ -124,7 +124,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     GlStateManager.color(1, 1, 1, 0.8F);
-                    bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                    bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.translate((float) x, (float) y, (float) z);
                     GlStateManager.scale(0.5F, 0.5F, 0.5F);
                     GlStateManager.translate(0.5F, 0.5F, 0.5F);

@@ -20,7 +20,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -77,12 +77,12 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
+            String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Dist.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Dist.CLIENT);
             String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
             String ownerText = SecurityUtils.getOwnerDisplay(mc.player, getOwnerUsername());
             String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 
-            if (isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT)) {
+            if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tileEntity, Dist.CLIENT)) {
                 displayTooltips(Arrays.asList(securityText, ownerText, overrideText), xAxis, yAxis);
             } else {
                 displayTooltips(Arrays.asList(securityText, ownerText), xAxis, yAxis);

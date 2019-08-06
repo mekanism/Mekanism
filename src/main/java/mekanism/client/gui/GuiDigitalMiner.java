@@ -25,8 +25,8 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
@@ -42,15 +42,15 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     public static final int SILK_TOUCH_BUTTON_ID = 4;
     public static final int AUTOEJECT_BUTTON_ID = 5;
     public static final int AUTO_PULL_BUTTON_ID = 6;
-    private GuiButton startButton;
-    private GuiButton stopButton;
-    private GuiButton configButton;
-    private GuiButton resetButton;
-    private GuiButton silkTouchButton;
-    private GuiButton autoEjectButton;
-    private GuiButton autoPullButton;
+    private Button startButton;
+    private Button stopButton;
+    private Button configButton;
+    private Button resetButton;
+    private Button silkTouchButton;
+    private Button autoEjectButton;
+    private Button autoPullButton;
 
-    public GuiDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tile) {
+    public GuiDigitalMiner(PlayerInventory inventory, TileEntityDigitalMiner tile) {
         super(tile, new ContainerDigitalMiner(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
@@ -79,9 +79,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(this.startButton = new GuiButton(START_BUTTON_ID, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start")));
-        buttonList.add(this.stopButton = new GuiButton(STOP_BUTTON_ID, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop")));
-        buttonList.add(this.configButton = new GuiButton(CONFIG_BUTTON_ID, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config")));
+        buttonList.add(this.startButton = new Button(START_BUTTON_ID, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start")));
+        buttonList.add(this.stopButton = new Button(STOP_BUTTON_ID, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop")));
+        buttonList.add(this.configButton = new Button(CONFIG_BUTTON_ID, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config")));
         buttonList.add(this.resetButton = new GuiButtonDisableableImage(RESET_BUTTON_ID, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation()));
         buttonList.add(this.silkTouchButton = new GuiButtonDisableableImage(SILK_TOUCH_BUTTON_ID, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation()));
         buttonList.add(this.autoEjectButton = new GuiButtonDisableableImage(AUTOEJECT_BUTTON_ID, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation()));
@@ -90,7 +90,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         switch (guibutton.id) {
             case START_BUTTON_ID:

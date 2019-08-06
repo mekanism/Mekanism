@@ -15,7 +15,7 @@ import mekanism.common.security.SecurityFrequency;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 
 public final class SecurityUtils {
@@ -94,19 +94,19 @@ public final class SecurityUtils {
     }
 
     public static void displayNoAccess(PlayerEntity player) {
-        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
+        player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
     }
 
-    public static SecurityMode getSecurity(ISecurityTile security, Side side) {
+    public static SecurityMode getSecurity(ISecurityTile security, Dist side) {
         if (!security.hasSecurity()) {
             return SecurityMode.PUBLIC;
         }
-        if (side == Side.SERVER) {
+        if (side == Dist.DEDICATED_SERVER) {
             SecurityFrequency freq = security.getSecurity().getFrequency();
             if (freq != null && freq.override) {
                 return freq.securityMode;
             }
-        } else if (side == Side.CLIENT) {
+        } else if (side == Dist.CLIENT) {
             SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getOwnerUUID());
             if (data != null && data.override) {
                 return data.mode;
@@ -115,16 +115,16 @@ public final class SecurityUtils {
         return security.getSecurity().getMode();
     }
 
-    public static String getSecurityDisplay(ItemStack stack, Side side) {
+    public static String getSecurityDisplay(ItemStack stack, Dist side) {
         ISecurityItem security = (ISecurityItem) stack.getItem();
         SecurityMode mode = security.getSecurity(stack);
         if (security.getOwnerUUID(stack) != null) {
-            if (side == Side.SERVER) {
+            if (side == Dist.DEDICATED_SERVER) {
                 SecurityFrequency freq = getFrequency(security.getOwnerUUID(stack));
                 if (freq != null && freq.override) {
                     mode = freq.securityMode;
                 }
-            } else if (side == Side.CLIENT) {
+            } else if (side == Dist.CLIENT) {
                 SecurityData data = MekanismClient.clientSecurityMap.get(security.getOwnerUUID(stack));
                 if (data != null && data.override) {
                     mode = data.mode;
@@ -134,19 +134,19 @@ public final class SecurityUtils {
         return mode.getDisplay();
     }
 
-    public static String getSecurityDisplay(TileEntity tile, Side side) {
+    public static String getSecurityDisplay(TileEntity tile, Dist side) {
         ISecurityTile security = (ISecurityTile) tile;
         if (!security.hasSecurity()) {
             return SecurityMode.PUBLIC.getDisplay();
         }
         SecurityMode mode = security.getSecurity().getMode();
         if (security.getSecurity().getOwnerUUID() != null) {
-            if (side == Side.SERVER) {
+            if (side == Dist.DEDICATED_SERVER) {
                 SecurityFrequency freq = getFrequency(security.getSecurity().getOwnerUUID());
                 if (freq != null && freq.override) {
                     mode = freq.securityMode;
                 }
-            } else if (side == Side.CLIENT) {
+            } else if (side == Dist.CLIENT) {
                 SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getOwnerUUID());
                 if (data != null && data.override) {
                     mode = data.mode;
@@ -156,12 +156,12 @@ public final class SecurityUtils {
         return mode.getDisplay();
     }
 
-    public static boolean isOverridden(ItemStack stack, Side side) {
+    public static boolean isOverridden(ItemStack stack, Dist side) {
         ISecurityItem security = (ISecurityItem) stack.getItem();
         if (security.getOwnerUUID(stack) == null) {
             return false;
         }
-        if (side == Side.SERVER) {
+        if (side == Dist.DEDICATED_SERVER) {
             SecurityFrequency freq = getFrequency(security.getOwnerUUID(stack));
             return freq != null && freq.override;
         }
@@ -169,12 +169,12 @@ public final class SecurityUtils {
         return data != null && data.override;
     }
 
-    public static boolean isOverridden(TileEntity tile, Side side) {
+    public static boolean isOverridden(TileEntity tile, Dist side) {
         ISecurityTile security = (ISecurityTile) tile;
         if (!security.hasSecurity() || security.getSecurity().getOwnerUUID() == null) {
             return false;
         }
-        if (side == Side.SERVER) {
+        if (side == Dist.DEDICATED_SERVER) {
             SecurityFrequency freq = getFrequency(security.getSecurity().getOwnerUUID());
             return freq != null && freq.override;
         }

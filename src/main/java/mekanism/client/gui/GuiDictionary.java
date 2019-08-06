@@ -9,9 +9,9 @@ import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,7 +25,7 @@ public class GuiDictionary extends GuiMekanism {
 
     private final GuiScrollList scrollList;
 
-    public GuiDictionary(InventoryPlayer inventory) {
+    public GuiDictionary(PlayerInventory inventory) {
         super(new ContainerDictionary(inventory));
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 8, 30, 160, 4));
     }

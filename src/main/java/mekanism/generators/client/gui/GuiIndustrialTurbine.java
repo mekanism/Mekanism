@@ -21,8 +21,8 @@ import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbineCasing> {
 
-    public GuiIndustrialTurbine(InventoryPlayer inventory, TileEntityTurbineCasing tile) {
+    public GuiIndustrialTurbine(PlayerInventory inventory, TileEntityTurbineCasing tile) {
         super(tile, new ContainerFilter(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, resource));

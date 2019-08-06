@@ -9,19 +9,19 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.ShulkerBoxTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
@@ -43,24 +43,24 @@ public final class MinerUtils {
     public static List<ItemStack> getDrops(World world, Coord4D coord, boolean silk, BlockPos minerPosition) {
         BlockState state = coord.getBlockState(world);
         Block block = state.getBlock();
-        PlayerEntity fakePlayer = Mekanism.proxy.getDummyPlayer((WorldServer) world, minerPosition).get();
+        PlayerEntity fakePlayer = Mekanism.proxy.getDummyPlayer((ServerWorld) world, minerPosition).get();
         if (block.isAir(state, world, coord.getPos())) {
             return Collections.emptyList();
         }
 
-        if (block instanceof BlockShulkerBox) {
+        if (block instanceof ShulkerBoxBlock) {
             //special case Shulker Boxes because bad Mojang code / no forge patch
             ItemStack shulkerBoxItem = new ItemStack(Item.getItemFromBlock(block));
             TileEntity tileentity = world.getTileEntity(coord.getPos());
 
             //copied from BlockShulkerBox.breakBlock
-            if (tileentity instanceof TileEntityShulkerBox) {
-                TileEntityShulkerBox tileentityshulkerbox = (TileEntityShulkerBox) tileentity;
+            if (tileentity instanceof ShulkerBoxTileEntity) {
+                ShulkerBoxTileEntity tileentityshulkerbox = (ShulkerBoxTileEntity) tileentity;
 
                 if (!tileentityshulkerbox.isCleared() && tileentityshulkerbox.shouldDrop()) {
                     CompoundNBT itemTag = new CompoundNBT();
                     CompoundNBT nbtBlockEntity = new CompoundNBT();
-                    itemTag.setTag("BlockEntityTag", ((TileEntityShulkerBox) tileentity).saveToNbt(nbtBlockEntity));
+                    itemTag.setTag("BlockEntityTag", ((ShulkerBoxTileEntity) tileentity).saveToNbt(nbtBlockEntity));
                     shulkerBoxItem.setTagCompound(itemTag);
                     if (tileentityshulkerbox.hasCustomName()) {
                         shulkerBoxItem.setStackDisplayName(tileentityshulkerbox.getName());

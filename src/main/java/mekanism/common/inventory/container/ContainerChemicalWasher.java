@@ -8,15 +8,15 @@ import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerChemicalWasher extends ContainerMekanism<TileEntityChemicalWasher> {
 
-    public ContainerChemicalWasher(InventoryPlayer inventory, TileEntityChemicalWasher tile) {
+    public ContainerChemicalWasher(PlayerInventory inventory, TileEntityChemicalWasher tile) {
         super(tile, inventory);
     }
 

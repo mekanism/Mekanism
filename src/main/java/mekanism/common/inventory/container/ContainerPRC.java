@@ -7,13 +7,13 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerPRC extends ContainerMekanism<TileEntityPRC> {
 
-    public ContainerPRC(InventoryPlayer inventory, TileEntityPRC tile) {
+    public ContainerPRC(PlayerInventory inventory, TileEntityPRC tile) {
         super(tile, inventory);
     }
 

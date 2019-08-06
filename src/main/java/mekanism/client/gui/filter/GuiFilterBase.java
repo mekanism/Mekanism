@@ -10,11 +10,11 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,12 +30,12 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected boolean isNew;
     protected int ticker;
 
-    protected GuiButton saveButton;
-    protected GuiButton deleteButton;
-    protected GuiButton backButton;
-    protected GuiButton replaceButton;
-    protected GuiButton defaultButton;
-    protected GuiButton colorButton;
+    protected Button saveButton;
+    protected Button deleteButton;
+    protected Button backButton;
+    protected Button replaceButton;
+    protected Button defaultButton;
+    protected Button colorButton;
 
     protected GuiFilterBase(TILE tile, Container container) {
         super(tile, container);
@@ -92,7 +92,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         }
     }
 
-    protected void actionPerformedMinerCommon(GuiButton guibutton, MinerFilter filter) {
+    protected void actionPerformedMinerCommon(Button guibutton, MinerFilter filter) {
         if (guibutton.id == backButton.id) {
             sendPacketToServer(isNew ? 5 : 0);
         } else if (guibutton.id == replaceButton.id) {
@@ -100,7 +100,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         }
     }
 
-    protected void actionPerformedTransporter(GuiButton guibutton, TransporterFilter filter) {
+    protected void actionPerformedTransporter(Button guibutton, TransporterFilter filter) {
         if (guibutton.id == backButton.id) {
             sendPacketToServer(isNew ? 4 : 0);
         } else if (guibutton.id == defaultButton.id) {

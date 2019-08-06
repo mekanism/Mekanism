@@ -16,7 +16,7 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiSolarNeutronActivator extends GuiMekanismTile<TileEntitySolarNeutronActivator> {
 
-    public GuiSolarNeutronActivator(InventoryPlayer inventory, TileEntitySolarNeutronActivator tile) {
+    public GuiSolarNeutronActivator(PlayerInventory inventory, TileEntitySolarNeutronActivator tile) {
         super(tile, new ContainerSolarNeutronActivator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));

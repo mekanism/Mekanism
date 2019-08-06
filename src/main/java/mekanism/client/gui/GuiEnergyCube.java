@@ -15,7 +15,7 @@ import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube> {
 
-    public GuiEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube tile) {
+    public GuiEnergyCube(PlayerInventory inventory, TileEntityEnergyCube tile) {
         super(tile, new ContainerEnergyCube(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

@@ -13,7 +13,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater> {
 
-    public GuiFuelwoodHeater(InventoryPlayer inventory, TileEntityFuelwoodHeater tile) {
+    public GuiFuelwoodHeater(PlayerInventory inventory, TileEntityFuelwoodHeater tile) {
         super(tile, new ContainerFuelwoodHeater(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 14, 28));

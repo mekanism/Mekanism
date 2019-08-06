@@ -9,19 +9,19 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.init.Blocks;
 import org.lwjgl.opengl.GL11;
 
 public final class MinerVisualRenderer {
 
     private static final double offset = 0.01;
-    private static Minecraft mc = Minecraft.getMinecraft();
+    private static Minecraft mc = Minecraft.getInstance();
     private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 
     public static void render(TileEntityDigitalMiner miner) {
@@ -34,7 +34,7 @@ public final class MinerVisualRenderer {
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         GlStateManager.enableCull();
         GlStateManager.color(1, 1, 1, 0.8F);
-        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         getList(new MinerRenderData(miner)).render();
         MekanismRenderer.resetColor();
         GlStateManager.disableCull();

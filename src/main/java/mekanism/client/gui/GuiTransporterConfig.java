@@ -25,9 +25,9 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -41,9 +41,9 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
     private Map<Integer, GuiPos> slotPosMap = new HashMap<>();
     private ISideConfiguration configurable;
     private List<GuiSideDataButton> sideDataButtons = new ArrayList<>();
-    private GuiButton backButton;
-    private GuiButton strictInputButton;
-    private GuiButton colorButton;
+    private Button backButton;
+    private Button strictInputButton;
+    private Button colorButton;
     private int buttonID = 0;
 
     public GuiTransporterConfig(PlayerEntity player, ISideConfiguration tile) {
@@ -76,7 +76,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         TileEntity tile = (TileEntity) configurable;
         if (guibutton.id == backButton.id) {

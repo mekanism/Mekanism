@@ -3,11 +3,11 @@ package mekanism.common.inventory.container;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityInductionCasing;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 public class ContainerInductionMatrix extends ContainerEnergyStorage<TileEntityInductionCasing> {
 
-    public ContainerInductionMatrix(InventoryPlayer inventory, TileEntityInductionCasing tile) {
+    public ContainerInductionMatrix(PlayerInventory inventory, TileEntityInductionCasing tile) {
         super(tile, inventory);
     }
 

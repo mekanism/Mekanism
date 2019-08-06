@@ -16,9 +16,9 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,8 +27,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiUpgradeManagement extends GuiMekanism {
 
-    private GuiButton backButton;
-    private GuiButton removeButton;
+    private Button backButton;
+    private Button removeButton;
     private IUpgradeTile tileEntity;
     private Upgrade selectedType;
     private boolean isDragging = false;
@@ -37,7 +37,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     private int delay;
     private float scroll;
 
-    public GuiUpgradeManagement(InventoryPlayer inventory, IUpgradeTile tile) {
+    public GuiUpgradeManagement(PlayerInventory inventory, IUpgradeTile tile) {
         super(new ContainerUpgradeManagement(inventory, tile));
         tileEntity = tile;
     }
@@ -52,7 +52,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         TileEntity tile = (TileEntity) tileEntity;
         if (guibutton.id == backButton.id) {

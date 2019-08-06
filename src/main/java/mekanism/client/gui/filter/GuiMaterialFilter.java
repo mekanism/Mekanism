@@ -15,10 +15,10 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,7 +33,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == saveButton.id) {
             if (!filter.getMaterialItem().isEmpty()) {

@@ -30,7 +30,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -115,7 +115,7 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
     }
 
     @Override
-    public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
+    public void getSubBlocks(ItemGroup creativetabs, NonNullList<ItemStack> list) {
         //Empty
         list.add(new ItemStack(this));
         //Charged

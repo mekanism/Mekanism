@@ -27,9 +27,9 @@ public class ItemBlockOredictionificator extends ItemBlockAdvancedTooltip implem
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-        list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
-        if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
+        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getInstance().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+        list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Dist.CLIENT));
+        if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
             list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
         }
         list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +

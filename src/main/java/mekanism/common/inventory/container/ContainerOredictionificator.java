@@ -4,13 +4,13 @@ import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityOredictionificator;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerOredictionificator extends ContainerMekanism<TileEntityOredictionificator> {
 
-    public ContainerOredictionificator(InventoryPlayer inventory, TileEntityOredictionificator tile) {
+    public ContainerOredictionificator(PlayerInventory inventory, TileEntityOredictionificator tile) {
         super(tile, inventory);
     }
 

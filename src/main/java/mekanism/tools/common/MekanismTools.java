@@ -9,9 +9,9 @@ import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.init.Items;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.item.Items;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -110,7 +110,7 @@ public class MekanismTools implements IModule {
     }
 
     private void setEntityArmorWithChance(Random random, LivingEntity entity, ToolsItem sword, ToolsItem helmet, ToolsItem chestplate, ToolsItem leggings, ToolsItem boots) {
-        if (entity instanceof EntityZombie && random.nextInt(100) < 50) {
+        if (entity instanceof ZombieEntity && random.nextInt(100) < 50) {
             setStackIfEmpty(entity, EquipmentSlotType.MAINHAND, sword.getItemStack());
         }
         if (random.nextInt(100) < 50) {
@@ -130,7 +130,7 @@ public class MekanismTools implements IModule {
     @SubscribeEvent
     public void onLivingSpecialSpawn(LivingSpawnEvent.SpecialSpawn event) {
         LivingEntity entity = event.getEntityLiving();
-        if (entity instanceof EntityZombie || entity instanceof EntitySkeleton) {
+        if (entity instanceof ZombieEntity || entity instanceof SkeletonEntity) {
             //Don't bother calculating random numbers unless the instanceof checks pass
             Random random = event.getWorld().rand;
             double chance = random.nextDouble();

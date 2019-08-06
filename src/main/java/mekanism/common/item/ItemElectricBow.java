@@ -9,16 +9,16 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Enchantments;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemArrow;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.item.ArrowItem;
+import net.minecraft.item.Items;
+import net.minecraft.item.UseAction;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -68,10 +68,10 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                 if (f > 1.0F) {
                     f = 1.0F;
                 }
-                boolean noConsume = flag && itemstack.getItem() instanceof ItemArrow;
+                boolean noConsume = flag && itemstack.getItem() instanceof ArrowItem;
                 if (!world.isRemote) {
-                    ItemArrow itemarrow = (ItemArrow) (ammo.getItem() instanceof ItemArrow ? ammo.getItem() : Items.ARROW);
-                    EntityArrow entityarrow = itemarrow.createArrow(world, itemstack, player);
+                    ArrowItem itemarrow = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
+                    AbstractArrowEntity entityarrow = itemarrow.createArrow(world, itemstack, player);
                     entityarrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
                     if (f == 1.0F) {
                         entityarrow.setIsCritical(true);
@@ -80,7 +80,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                         setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? 1200 : 120));
                     }
                     if (noConsume) {
-                        entityarrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
+                        entityarrow.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
                     entityarrow.setFire(getFireState(itemstack) ? 100 : 0);
                     world.spawnEntity(entityarrow);
@@ -95,7 +95,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                         player.inventory.deleteStack(ammo);
                     }
                 }
-                player.addStat(StatList.getObjectUseStats(this));
+                player.addStat(Stats.getObjectUseStats(this));
             }
         }
     }
@@ -107,8 +107,8 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     @Nonnull
     @Override
-    public EnumAction getItemUseAction(ItemStack itemstack) {
-        return EnumAction.BOW;
+    public UseAction getItemUseAction(ItemStack itemstack) {
+        return UseAction.BOW;
     }
 
     private ItemStack findAmmo(PlayerEntity player) {
@@ -127,7 +127,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     }
 
     protected boolean isArrow(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof ItemArrow;
+        return !stack.isEmpty() && stack.getItem() instanceof ArrowItem;
     }
 
     @Nonnull

@@ -12,7 +12,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController> {
 
-    public GuiThermalEvaporationController(InventoryPlayer inventory, TileEntityThermalEvaporationController tile) {
+    public GuiThermalEvaporationController(PlayerInventory inventory, TileEntityThermalEvaporationController tile) {
         super(tile, new ContainerThermalEvaporationController(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiFluidGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));

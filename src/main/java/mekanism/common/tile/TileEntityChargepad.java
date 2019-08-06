@@ -11,7 +11,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EnumParticleTypes;

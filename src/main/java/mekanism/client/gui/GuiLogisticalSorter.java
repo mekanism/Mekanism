@@ -26,9 +26,9 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -39,10 +39,10 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSorter, TransporterFilter> {
 
-    private GuiButton singleItemButton;
-    private GuiButton roundRobinButton;
-    private GuiButton autoEjectButton;
-    private GuiButton colorButton;
+    private Button singleItemButton;
+    private Button roundRobinButton;
+    private Button autoEjectButton;
+    private Button colorButton;
 
     public GuiLogisticalSorter(PlayerEntity player, TileEntityLogisticalSorter tile) {
         super(tile, new ContainerNull(player, tile));
@@ -142,7 +142,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         super.initGui();
         // Add buttons to gui
         buttonList.clear();
-        buttonList.add(new GuiButton(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(new Button(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
         buttonList.add(singleItemButton = new GuiButtonDisableableImage(1, guiLeft + 12, guiTop + 58, 14, 14, 204, 14, -14, getGuiLocation()));
         buttonList.add(roundRobinButton = new GuiButtonDisableableImage(2, guiLeft + 12, guiTop + 84, 14, 14, 190, 14, -14, getGuiLocation()));
         buttonList.add(autoEjectButton = new GuiButtonDisableableImage(3, guiLeft + 12, guiTop + 110, 14, 14, 176, 14, -14, getGuiLocation()));
@@ -150,7 +150,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == BUTTON_NEW) {
             sendPacket(SorterGuiPacket.SERVER, 4, 0, null);

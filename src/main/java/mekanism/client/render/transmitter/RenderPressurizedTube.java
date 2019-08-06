@@ -9,7 +9,7 @@ import mekanism.common.tile.transmitter.pressurized_tube.TileEntityPressurizedTu
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.transmitters.grid.GasNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.Direction;
 
 public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPressurizedTube> {
@@ -26,7 +26,7 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
 
     @Override
     protected void renderSide(BufferBuilder renderer, Direction side, TileEntityPressurizedTube tube) {
-        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         Gas gas = tube.getTransmitter().getTransmitterNetwork().refGas;
         ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
         c.setRGBFromInt(gas.getTint());

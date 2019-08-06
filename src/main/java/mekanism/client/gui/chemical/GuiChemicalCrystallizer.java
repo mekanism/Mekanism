@@ -27,7 +27,7 @@ import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -44,7 +44,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     private int stackIndex = 0;
     private Gas prevGas;
 
-    public GuiChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tile) {
+    public GuiChemicalCrystallizer(PlayerInventory inventory, TileEntityChemicalCrystallizer tile) {
         super(tile, new ContainerChemicalCrystallizer(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));

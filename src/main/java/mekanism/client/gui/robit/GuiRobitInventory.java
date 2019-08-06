@@ -3,14 +3,14 @@ package mekanism.client.gui.robit;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitInventory;
 import mekanism.common.util.LangUtils;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiRobitInventory extends GuiRobit {
 
-    public GuiRobitInventory(InventoryPlayer inventory, EntityRobit entity) {
+    public GuiRobitInventory(PlayerInventory inventory, EntityRobit entity) {
         super(entity, new ContainerRobitInventory(inventory, entity));
     }
 

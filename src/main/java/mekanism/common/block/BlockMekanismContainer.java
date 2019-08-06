@@ -21,8 +21,8 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockFlowerPot;
+import net.minecraft.block.ContainerBlock;
+import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
@@ -30,8 +30,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatBase;
-import net.minecraft.stats.StatList;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -39,11 +39,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.IWorldNameable;
+import net.minecraft.util.INameable;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
-public abstract class BlockMekanismContainer extends BlockContainer {
+public abstract class BlockMekanismContainer extends ContainerBlock {
 
     protected BlockMekanismContainer(Material materialIn) {
         super(materialIn);
@@ -113,23 +113,23 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     /**
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)}.
      * <br>
-     * This is like Vanilla's {@link BlockContainer#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)} except that uses the custom {@link
+     * This is like Vanilla's {@link ContainerBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)} except that uses the custom {@link
      * ItemStack} from {@link #getDropItem(BlockState, IBlockAccess, BlockPos)}
      *
      * @author Forge
-     * @see BlockFlowerPot#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
+     * @see FlowerPotBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
      */
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        StatBase blockStats = StatList.getBlockStats(this);
+        Stat blockStats = Stats.getBlockStats(this);
         if (blockStats != null) {
             player.addStat(blockStats);
         }
         player.addExhaustion(0.005F);
         if (!world.isRemote) {
             ItemStack dropItem = getDropItem(state, world, pos);
-            if (te instanceof IWorldNameable) {
-                dropItem.setStackDisplayName(((IWorldNameable) te).getName());
+            if (te instanceof INameable) {
+                dropItem.setStackDisplayName(((INameable) te).getName());
             }
             Block.spawnAsEntity(world, pos, dropItem);
         }
@@ -160,7 +160,7 @@ public abstract class BlockMekanismContainer extends BlockContainer {
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
-     * @see BlockFlowerPot#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)
+     * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)
      */
     @Override
     public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest) {

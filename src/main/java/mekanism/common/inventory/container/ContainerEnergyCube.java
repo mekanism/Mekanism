@@ -3,11 +3,11 @@ package mekanism.common.inventory.container;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.energy_cube.TileEntityEnergyCube;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 public class ContainerEnergyCube extends ContainerEnergyStorage<TileEntityEnergyCube> {
 
-    public ContainerEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube tile) {
+    public ContainerEnergyCube(PlayerInventory inventory, TileEntityEnergyCube tile) {
         super(tile, inventory);
     }
 

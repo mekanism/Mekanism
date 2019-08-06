@@ -38,13 +38,13 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -57,8 +57,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ChunkCache;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.LightType;
+import net.minecraft.world.Region;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -504,8 +504,8 @@ public final class MekanismUtils {
      * @param pos   - coordinates of the block to update
      */
     public static void updateAllLightTypes(World world, BlockPos pos) {
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
-        world.checkLightFor(EnumSkyBlock.SKY, pos);
+        world.checkLightFor(LightType.BLOCK, pos);
+        world.checkLightFor(LightType.SKY, pos);
     }
 
     /**
@@ -836,14 +836,14 @@ public final class MekanismUtils {
         return tank;
     }
 
-    public static InventoryCrafting getDummyCraftingInv() {
+    public static CraftingInventory getDummyCraftingInv() {
         Container tempContainer = new Container() {
             @Override
             public boolean canInteractWith(@Nonnull PlayerEntity player) {
                 return false;
             }
         };
-        return new InventoryCrafting(tempContainer, 3, 3);
+        return new CraftingInventory(tempContainer, 3, 3);
     }
 
     /**
@@ -854,7 +854,7 @@ public final class MekanismUtils {
      *
      * @return output ItemStack
      */
-    public static ItemStack findRepairRecipe(InventoryCrafting inv, World world) {
+    public static ItemStack findRepairRecipe(CraftingInventory inv, World world) {
         NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             if (!inv.getStackInSlot(i).isEmpty()) {
@@ -1002,7 +1002,7 @@ public final class MekanismUtils {
     @Nonnull
     public static String getLastKnownUsername(UUID uuid) {
         String ret = UsernameCache.getLastKnownUsername(uuid);
-        if (ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) { // see if MC/Yggdrasil knows about it?!
+        if (ret == null && !warnedFails.contains(uuid) && FMLCommonHandler.instance().getEffectiveSide() == Dist.DEDICATED_SERVER) { // see if MC/Yggdrasil knows about it?!
             GameProfile gp = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
             if (gp != null) {
                 ret = gp.getName();
@@ -1016,7 +1016,7 @@ public final class MekanismUtils {
     }
 
     public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
-        return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+        return worldIn instanceof Region ? ((Region) worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
     }
 
     /**

@@ -48,7 +48,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -207,7 +207,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             frequency.valid = false;
         }
 
-        NBTTagList tagList = nbtTags.getTagList("upgradesInv", Constants.NBT.TAG_COMPOUND);
+        ListNBT tagList = nbtTags.getTagList("upgradesInv", Constants.NBT.TAG_COMPOUND);
         //TODO: Given we only have one slot I think we can manually clear or something
         //inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
@@ -231,7 +231,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         }
 
         //Upgrades inventory
-        NBTTagList tagList = new NBTTagList();
+        ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < getInventory().size(); slotCount++) {
             ItemStack stackInSlot = getInventory().get(slotCount);
             if (!stackInSlot.isEmpty()) {

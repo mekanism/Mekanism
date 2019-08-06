@@ -5,7 +5,7 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -63,7 +63,7 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull Direction side) {
-        if (side == Direction.DOWN || SecurityUtils.getSecurity(this, Side.SERVER) != SecurityMode.PUBLIC) {
+        if (side == Direction.DOWN || SecurityUtils.getSecurity(this, Dist.DEDICATED_SERVER) != SecurityMode.PUBLIC) {
             return InventoryUtils.EMPTY;
         } else if (INV == null) {
             INV = new int[54];

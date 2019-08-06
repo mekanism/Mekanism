@@ -3,13 +3,13 @@ package mekanism.common.inventory.container;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerFilter extends ContainerMekanism<TileEntityMekanism> {
 
-    public ContainerFilter(InventoryPlayer inventory, TileEntityMekanism tile) {
+    public ContainerFilter(PlayerInventory inventory, TileEntityMekanism tile) {
         super(tile, inventory);
     }
 

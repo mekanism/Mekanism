@@ -3,7 +3,7 @@ package mekanism.common.content.matrix;
 import mekanism.common.multiblock.MultiblockCache;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -23,7 +23,7 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
+        ListNBT tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
@@ -36,7 +36,7 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
 
     @Override
     public void save(CompoundNBT nbtTags) {
-        NBTTagList tagList = new NBTTagList();
+        ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < 2; slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();

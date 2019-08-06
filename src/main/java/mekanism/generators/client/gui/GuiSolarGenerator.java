@@ -14,7 +14,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.block.BlockAdvancedSolarGenerator;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator> {
 
-    public GuiSolarGenerator(InventoryPlayer inventory, TileEntitySolarGenerator tile) {
+    public GuiSolarGenerator(PlayerInventory inventory, TileEntitySolarGenerator tile) {
         super(tile, new ContainerSolarGenerator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

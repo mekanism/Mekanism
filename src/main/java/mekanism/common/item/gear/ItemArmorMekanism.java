@@ -4,10 +4,10 @@ import java.util.Locale;
 import mekanism.common.Mekanism;
 import mekanism.common.item.IItemMekanism;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemArmorMekanism extends ItemArmor implements IItemMekanism {
+public class ItemArmorMekanism extends ArmorItem implements IItemMekanism {
 
     public ItemArmorMekanism(ArmorMaterial material, EquipmentSlotType slot, String name) {
         this(material, 0, slot, name);

@@ -18,7 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
@@ -109,7 +109,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
-        return new TextComponentString(getName());
+        return new StringTextComponent(getName());
     }
 
     @Override

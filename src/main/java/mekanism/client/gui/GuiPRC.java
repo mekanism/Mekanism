@@ -22,7 +22,7 @@ import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiPRC extends GuiMekanismTile<TileEntityPRC> {
 
-    public GuiPRC(InventoryPlayer inventory, TileEntityPRC tile) {
+    public GuiPRC(PlayerInventory inventory, TileEntityPRC tile) {
         super(tile, new ContainerPRC(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

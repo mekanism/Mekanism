@@ -20,7 +20,7 @@ import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

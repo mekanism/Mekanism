@@ -6,15 +6,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.profiler.Profiler;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.MinecraftException;
+import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.world.chunk.storage.ChunkLoader;
+import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.storage.SaveHandler;
+import net.minecraft.world.storage.SessionLockException;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.chunk.storage.IChunkLoader;
-import net.minecraft.world.gen.structure.template.TemplateManager;
+import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.storage.IPlayerFileData;
-import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 
 /**
@@ -25,7 +25,7 @@ import net.minecraft.world.storage.WorldInfo;
 public class DummyWorld extends World {
 
     public DummyWorld() {
-        super(new DummySaveHandler(), new DummyWorldInfo(), new WorldProvider() {
+        super(new DummySaveHandler(), new DummyWorldInfo(), new Dimension() {
             @Override
             public DimensionType getDimensionType() {
                 return DimensionType.OVERWORLD;
@@ -34,7 +34,7 @@ public class DummyWorld extends World {
     }
 
     @Override
-    protected IChunkProvider createChunkProvider() {
+    protected AbstractChunkProvider createChunkProvider() {
         throw new UnsupportedOperationException();
     }
 
@@ -45,7 +45,7 @@ public class DummyWorld extends World {
 
     public static class DummyWorldInfo extends WorldInfo {}
 
-    public static class DummySaveHandler implements ISaveHandler {
+    public static class DummySaveHandler implements SaveHandler {
 
         @Nullable
         @Override
@@ -54,12 +54,12 @@ public class DummyWorld extends World {
         }
 
         @Override
-        public void checkSessionLock() throws MinecraftException {
+        public void checkSessionLock() throws SessionLockException {
 
         }
 
         @Override
-        public IChunkLoader getChunkLoader(WorldProvider provider) {
+        public ChunkLoader getChunkLoader(Dimension provider) {
             throw new UnsupportedOperationException();
         }
 

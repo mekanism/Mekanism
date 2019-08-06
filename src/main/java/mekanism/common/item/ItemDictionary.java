@@ -16,7 +16,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public class ItemDictionary extends ItemMekanism {
@@ -36,12 +36,12 @@ public class ItemDictionary extends ItemMekanism {
                 ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
                 List<String> names = OreDictCache.getOreDictName(testStack);
                 if (!names.isEmpty()) {
-                    player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
+                    player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
                     for (String name : names) {
-                        player.sendMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
+                        player.sendMessage(new StringTextComponent(EnumColor.DARK_GREEN + " - " + name));
                     }
                 } else {
-                    player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
+                    player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
                 }
             }
             return ActionResultType.SUCCESS;

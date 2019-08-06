@@ -33,7 +33,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -276,7 +276,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
         if (getTransmitter().getColor() != null) {
             nbtTags.setInteger("color", TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         }
-        NBTTagList stacks = new NBTTagList();
+        ListNBT stacks = new ListNBT();
         for (TransporterStack stack : getTransmitter().getTransit()) {
             CompoundNBT tagCompound = new CompoundNBT();
             stack.write(tagCompound);

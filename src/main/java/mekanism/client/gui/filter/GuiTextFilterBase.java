@@ -4,9 +4,9 @@ import java.io.IOException;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,7 +16,7 @@ import org.lwjgl.input.Keyboard;
 public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism> extends GuiFilterBase<FILTER, TILE> {
 
     protected ItemStack renderStack = ItemStack.EMPTY;
-    protected GuiTextField text;
+    protected TextFieldWidget text;
 
     protected GuiTextFilterBase(TILE tile, Container container) {
         super(tile, container);
@@ -28,7 +28,7 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
 
     protected abstract void setText();
 
-    protected abstract GuiTextField createTextField();
+    protected abstract TextFieldWidget createTextField();
 
     protected boolean wasTextboxKey(char c, int i) {
         return Character.isLetter(c) || Character.isDigit(c) || isTextboxKey(c, i);

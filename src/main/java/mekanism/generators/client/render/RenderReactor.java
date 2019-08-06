@@ -11,13 +11,13 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorController> {
+public class RenderReactor extends TileEntityRenderer<TileEntityReactorController> {
 
     private ModelEnergyCore core = new ModelEnergyCore();
 

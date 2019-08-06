@@ -8,14 +8,14 @@ import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class ContainerDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityDoubleElectricMachine<RECIPE>> {
 
-    public ContainerDoubleElectricMachine(InventoryPlayer inventory, TileEntityDoubleElectricMachine<RECIPE> tile) {
+    public ContainerDoubleElectricMachine(PlayerInventory inventory, TileEntityDoubleElectricMachine<RECIPE> tile) {
         super(tile, inventory);
     }
 

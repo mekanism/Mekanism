@@ -39,7 +39,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -579,7 +579,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             redstoneReactive ^= true;
             refreshConnections();
             notifyTileChange();
-            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO
+            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO
                                                        + (redstoneReactive ? "on." : "off.")));
         }
         return ActionResultType.SUCCESS;

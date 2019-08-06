@@ -6,16 +6,16 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ContainerReactorController extends ContainerMekanism<TileEntityReactorController> {
 
-    public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController tile) {
+    public ContainerReactorController(PlayerInventory inventory, TileEntityReactorController tile) {
         super(tile, inventory);
     }
 

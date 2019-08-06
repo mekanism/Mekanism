@@ -2,6 +2,7 @@ package mekanism.generators.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -12,11 +13,12 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,17 +35,17 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        GasStack gasStack = getGas(itemstack);
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        GasStack gasStack = getGas(stack);
         if (gasStack == null) {
-            list.add(LangUtils.localize("tooltip.noGas") + ".");
-            list.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.insufficientFuel"));
+            tooltip.add(LangUtils.localize("tooltip.noGas") + ".");
+            tooltip.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.insufficientFuel"));
         } else {
-            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
-            if (gasStack.amount == getMaxGas(itemstack)) {
-                list.add(EnumColor.DARK_GREEN + LangUtils.localize("tooltip.readyForReaction") + "!");
+            tooltip.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+            if (gasStack.amount == getMaxGas(stack)) {
+                tooltip.add(EnumColor.DARK_GREEN + LangUtils.localize("tooltip.readyForReaction") + "!");
             } else {
-                list.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.insufficientFuel"));
+                tooltip.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.insufficientFuel"));
             }
         }
     }
@@ -128,7 +130,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
     }
 
     @Override
-    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }

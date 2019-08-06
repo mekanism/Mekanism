@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.CompoundIngredient;
 import net.minecraftforge.common.crafting.IIngredientFactory;
 import net.minecraftforge.common.crafting.JsonContext;
@@ -40,7 +40,7 @@ public class MultiOredictIngredient extends CompoundIngredient {
         @Nonnull
         @Override
         public Ingredient parse(JsonContext context, JsonObject json) {
-            JsonArray oreJsonArray = JsonUtils.getJsonArray(json, "ores");
+            JsonArray oreJsonArray = JSONUtils.getJsonArray(json, "ores");
             if (oreJsonArray.size() < 2) {
                 throw new JsonSyntaxException("ores must contain at least 2 values");
             }

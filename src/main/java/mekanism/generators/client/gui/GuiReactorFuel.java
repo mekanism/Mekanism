@@ -19,8 +19,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,9 +29,9 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiReactorFuel extends GuiReactorInfo {
 
-    private GuiTextField injectionRateField;
+    private TextFieldWidget injectionRateField;
 
-    public GuiReactorFuel(InventoryPlayer inventory, final TileEntityReactorController tile) {
+    public GuiReactorFuel(PlayerInventory inventory, final TileEntityReactorController tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
@@ -112,7 +112,7 @@ public class GuiReactorFuel extends GuiReactorInfo {
     public void initGui() {
         super.initGui();
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
-        injectionRateField = new GuiTextField(0, fontRenderer, guiLeft + 98, guiTop + 115, 26, 11);
+        injectionRateField = new TextFieldWidget(0, fontRenderer, guiLeft + 98, guiTop + 115, 26, 11);
         injectionRateField.setMaxStringLength(2);
         injectionRateField.setText(prevRad);
     }

@@ -14,7 +14,7 @@ import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.security.ISecurityItem;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -52,7 +52,7 @@ public class RecipeUtils {
         return stack.getItem() instanceof ItemBlockFactory;
     }
 
-    public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn) {
+    public static ItemStack getCraftingResult(CraftingInventory inv, ItemStack toReturn) {
         int invLength = inv.getSizeInventory();
         if (toReturn.getItem() instanceof IEnergizedItem) {
             double energyFound = 0;
@@ -172,7 +172,7 @@ public class RecipeUtils {
         return toReturn;
     }
 
-    public static IRecipe getRecipeFromGrid(InventoryCrafting inv, World world) {
+    public static IRecipe getRecipeFromGrid(CraftingInventory inv, World world) {
         return CraftingManager.findMatchingRecipe(inv, world);
     }
 }

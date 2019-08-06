@@ -21,13 +21,13 @@ import mekanism.common.block.transmitter.BlockDiversionTransporter;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -83,7 +83,7 @@ public class TransmitterModel extends OBJBakedModelBase {
               new Vector3f(s, s, s), null);
     }
 
-    public static void registerIcons(TextureMap map) {
+    public static void registerIcons(AtlasTexture map) {
         transporter_center[0] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterGlass"));
         transporter_center_color[0] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterGlassColored"));
         transporter_side[0] = map.registerSprite(new ResourceLocation(Mekanism.MODID, "blocks/models/multipart/LogisticalTransporterVerticalGlass"));

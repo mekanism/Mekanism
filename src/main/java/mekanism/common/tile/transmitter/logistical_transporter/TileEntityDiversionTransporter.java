@@ -17,7 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter {
 
@@ -105,7 +105,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         }
         refreshConnections();
         notifyTileChange();
-        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " +
+        player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " +
                                                    LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
         Mekanism.packetHandler.sendUpdatePacket(this);
         return ActionResultType.SUCCESS;

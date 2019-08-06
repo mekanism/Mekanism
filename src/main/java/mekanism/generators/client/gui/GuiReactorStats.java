@@ -12,7 +12,7 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +22,7 @@ public class GuiReactorStats extends GuiReactorInfo {
 
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
 
-    public GuiReactorStats(InventoryPlayer inventory, final TileEntityReactorController tile) {
+    public GuiReactorStats(PlayerInventory inventory, final TileEntityReactorController tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(

@@ -6,13 +6,13 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiReactorLogicButton extends GuiButton {
+public class GuiReactorLogicButton extends Button {
 
     @Nonnull
     private final TileEntityReactorLogicAdapter tile;

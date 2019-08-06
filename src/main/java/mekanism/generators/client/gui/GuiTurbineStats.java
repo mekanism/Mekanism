@@ -13,7 +13,7 @@ import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
 
-    public GuiTurbineStats(InventoryPlayer inventory, TileEntityTurbineCasing tile) {
+    public GuiTurbineStats(PlayerInventory inventory, TileEntityTurbineCasing tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, resource));

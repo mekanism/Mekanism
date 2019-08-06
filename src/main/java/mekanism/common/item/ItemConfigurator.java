@@ -44,7 +44,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -89,7 +89,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                     SideData initial = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
-                            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + getViewModeText(
+                            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + getViewModeText(
                                   transmissionType) + ": " + initial.color + initial.localize() + " (" + initial.color.getColoredName() + ")"));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
@@ -97,7 +97,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
                                     MekanismUtils.incrementOutput(config, transmissionType, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
                                     SideData data = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
-                                    player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
+                                    player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
                                                                                + getToggleModeText(transmissionType) + ": " + data.color + data.localize() + " (" +
                                                                                data.color.getColoredName() + ")"));
                                     if (config instanceof TileEntityMekanism) {

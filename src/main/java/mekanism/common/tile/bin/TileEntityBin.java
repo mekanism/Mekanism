@@ -26,7 +26,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,7 +35,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -375,7 +375,7 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
-        return new TextComponentString(getName());
+        return new StringTextComponent(getName());
     }
 
     @Override

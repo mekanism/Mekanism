@@ -7,8 +7,8 @@ import mekanism.common.item.ItemProxy;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemDataUtils;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
@@ -33,7 +33,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
     }
 
     @Override
-    public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world) {
+    public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World world) {
         return !getCraftingResult(inv).isEmpty();
     }
 
@@ -43,7 +43,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+    public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
         return getResult(inv);
     }
 
@@ -101,7 +101,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
     @Nonnull
     @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 

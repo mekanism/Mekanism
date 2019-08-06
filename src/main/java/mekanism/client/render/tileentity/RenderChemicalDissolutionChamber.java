@@ -6,12 +6,12 @@ import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderChemicalDissolutionChamber extends TileEntitySpecialRenderer<TileEntityChemicalDissolutionChamber> {
+public class RenderChemicalDissolutionChamber extends TileEntityRenderer<TileEntityChemicalDissolutionChamber> {
 
     private ModelChemicalDissolutionChamber model = new ModelChemicalDissolutionChamber();
 

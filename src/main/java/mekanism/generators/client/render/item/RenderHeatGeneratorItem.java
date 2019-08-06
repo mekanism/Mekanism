@@ -10,7 +10,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHeatGenerator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,7 +26,7 @@ public class RenderHeatGeneratorItem extends MekanismItemStackRenderer {
         GlStateManager.rotate(180, 0, 0, 1);
         GlStateManager.translate(0, -1.0F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
-        heatGenerator.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine);
+        heatGenerator.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().renderEngine);
     }
 
     @Override

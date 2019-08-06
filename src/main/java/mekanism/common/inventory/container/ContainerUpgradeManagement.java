@@ -8,10 +8,10 @@ import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -19,7 +19,7 @@ public class ContainerUpgradeManagement extends Container {
 
     private IUpgradeTile tileEntity;
 
-    public ContainerUpgradeManagement(InventoryPlayer inventory, IUpgradeTile tile) {
+    public ContainerUpgradeManagement(PlayerInventory inventory, IUpgradeTile tile) {
         tileEntity = tile;
 
         //Bit of a hack I guess, but we need to give it access to the inventory list, not the Frequency

@@ -5,9 +5,9 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 
-public class RenderSolarGenerator extends TileEntitySpecialRenderer<TileEntitySolarGenerator> {
+public class RenderSolarGenerator extends TileEntityRenderer<TileEntitySolarGenerator> {
 
     private ModelSolarGenerator model = new ModelSolarGenerator();
 

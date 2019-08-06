@@ -9,13 +9,13 @@ import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityElectricMachine<RECIPE>> {
 
-    public ContainerElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine<RECIPE> tile) {
+    public ContainerElectricMachine(PlayerInventory inventory, TileEntityElectricMachine<RECIPE> tile) {
         super(tile, inventory);
     }
 

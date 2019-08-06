@@ -201,15 +201,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.PlayerEntitySP;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -222,10 +222,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -565,7 +565,7 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomModelResourceLocation(item.getItem(), 0, new ModelResourceLocation(item.getItem().getRegistryName(), "inventory"));
     }
 
-    private GuiScreen getClientItemGui(PlayerEntity player, BlockPos pos) {
+    private Screen getClientItemGui(PlayerEntity player, BlockPos pos) {
         int currentItem = pos.getX();
         int handOrdinal = pos.getY();
         if (currentItem < 0 || currentItem >= player.inventory.mainInventory.size() || handOrdinal < 0 || handOrdinal >= Hand.values().length) {
@@ -604,7 +604,7 @@ public class ClientProxy extends CommonProxy {
         return null;
     }
 
-    private GuiScreen getClientEntityGui(PlayerEntity player, World world, BlockPos pos) {
+    private Screen getClientEntityGui(PlayerEntity player, World world, BlockPos pos) {
         int entityID = pos.getX();
         Entity entity = world.getEntityByID(entityID);
         if (entity == null) {
@@ -643,7 +643,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     @SuppressWarnings("unchecked")
-    public GuiScreen getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
+    public Screen getClientGui(int ID, PlayerEntity player, World world, BlockPos pos) {
         //TODO: Replace magic numbers here and in sub methods with static lookup ints
         if (ID == 0) {
             return getClientItemGui(player, pos);
@@ -755,7 +755,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void handleTeleporterUpdate(PortableTeleporterMessage message) {
-        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        Screen screen = Minecraft.getInstance().currentScreen;
 
         if (screen instanceof GuiTeleporter && !((GuiTeleporter) screen).isStackEmpty()) {
             GuiTeleporter teleporter = (GuiTeleporter) screen;
@@ -769,13 +769,13 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void addHitEffects(Coord4D coord, RayTraceResult mop) {
-        if (Minecraft.getMinecraft().world != null) {
-            Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord.getPos(), mop);
+        if (Minecraft.getInstance().world != null) {
+            Minecraft.getInstance().effectRenderer.addBlockHitEffects(coord.getPos(), mop);
         }
     }
 
     private void doSparkle(TileEntity tileEntity, SparkleAnimation anim) {
-        PlayerEntitySP player = Minecraft.getMinecraft().player;
+        PlayerEntitySP player = Minecraft.getInstance().player;
         // If player is within 16 blocks (256 = 16^2), show the status message/sparkles
         if (tileEntity.getPos().distanceSq(player.getPosition()) <= 256) {
             if (MekanismConfig.current().client.enableMultiblockFormationParticles.val()) {
@@ -798,14 +798,14 @@ public class ClientProxy extends CommonProxy {
 
     private void registerBlockColorHandler(IBlockColor blockColor, IItemColor itemColor, MekanismBlock... blocks) {
         for (MekanismBlock mekanismBlock : blocks) {
-            Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColor, mekanismBlock.getBlock());
-            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColor, mekanismBlock.getItem());
+            Minecraft.getInstance().getBlockColors().registerBlockColorHandler(blockColor, mekanismBlock.getBlock());
+            Minecraft.getInstance().getItemColors().registerItemColorHandler(itemColor, mekanismBlock.getItem());
         }
     }
 
     private void registerItemColorHandler(IItemColor itemColor, MekanismItem... items) {
         for (MekanismItem mekanismItem : items) {
-            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColor, mekanismItem.getItem());
+            Minecraft.getInstance().getItemColors().registerItemColorHandler(itemColor, mekanismItem.getItem());
         }
     }
 
@@ -902,7 +902,7 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
-        IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+        Registry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         registerItemStackModel(modelRegistry, "jetpack", model -> RenderJetpack.model = model);
         registerItemStackModel(modelRegistry, "jetpack_armored", model -> RenderArmoredJetpack.model = model);
         registerItemStackModel(modelRegistry, "gas_mask", model -> RenderGasMask.model = model);
@@ -929,7 +929,7 @@ public class ClientProxy extends CommonProxy {
         return new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, type), "inventory");
     }
 
-    private void registerItemStackModel(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
+    private void registerItemStackModel(Registry<ModelResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
         ModelResourceLocation resourceLocation = getInventoryMRL(type);
         modelRegistry.putObject(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.getObject(resourceLocation))));
     }
@@ -947,19 +947,19 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, RenderObsidianTNTPrimed::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, RenderRobit::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, RenderBalloon::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, RenderSkeleton::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, SkeletonRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, RenderFlame::new);
     }
 
     @Override
     public double getReach(PlayerEntity player) {
-        return Minecraft.getMinecraft().playerController.getBlockReachDistance();
+        return Minecraft.getInstance().playerController.getBlockReachDistance();
     }
 
     @Override
     public boolean isPaused() {
         if (FMLClientHandler.instance().getClient().isSingleplayer() && !FMLClientHandler.instance().getClient().getIntegratedServer().getPublic()) {
-            GuiScreen screen = FMLClientHandler.instance().getClient().currentScreen;
+            Screen screen = FMLClientHandler.instance().getClient().currentScreen;
             return screen != null && screen.doesGuiPauseGame();
         }
         return false;
@@ -967,7 +967,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public File getMinecraftDir() {
-        return Minecraft.getMinecraft().gameDir;
+        return Minecraft.getInstance().gameDir;
     }
 
     @Override
@@ -975,17 +975,17 @@ public class ClientProxy extends CommonProxy {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             return context.getServerHandler().player;
         }
-        return Minecraft.getMinecraft().player;
+        return Minecraft.getInstance().player;
     }
 
     @Override
     public void handlePacket(Runnable runnable, PlayerEntity player) {
         if (player == null || player.world.isRemote) {
-            Minecraft.getMinecraft().addScheduledTask(runnable);
+            Minecraft.getInstance().addScheduledTask(runnable);
         } else {
             //Single player
-            if (player.world instanceof WorldServer) {
-                ((WorldServer) player.world).addScheduledTask(runnable);
+            if (player.world instanceof ServerWorld) {
+                ((ServerWorld) player.world).addScheduledTask(runnable);
             } else {
                 MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
                 if (server != null) {
@@ -1000,12 +1000,12 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void renderLaser(World world, Pos3D from, Pos3D to, Direction direction, double energy) {
-        Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleLaser(world, from, to, direction, energy));
+        Minecraft.getInstance().effectRenderer.addEffect(new ParticleLaser(world, from, to, direction, energy));
     }
 
     @Override
     public FontRenderer getFontRenderer() {
-        return Minecraft.getMinecraft().fontRenderer;
+        return Minecraft.getInstance().fontRenderer;
     }
 
     @Override

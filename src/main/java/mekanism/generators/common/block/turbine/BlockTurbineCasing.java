@@ -15,7 +15,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -77,10 +77,10 @@ public class BlockTurbineCasing extends BlockMekanismContainer implements IHasTi
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EntityLiving.SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, MobEntity.SpawnPlacementType type) {
         TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity != null) {
-            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+            if (FMLCommonHandler.instance().getEffectiveSide() == Dist.DEDICATED_SERVER) {
                 if (tileEntity.structure != null) {
                     return false;
                 }

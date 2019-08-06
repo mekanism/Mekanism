@@ -13,7 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -60,7 +60,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onTick(PlayerTickEvent event) {
-        if (event.phase == Phase.END && event.side == Side.SERVER) {
+        if (event.phase == Phase.END && event.side == Dist.DEDICATED_SERVER) {
             tickEnd(event.player);
         }
     }
@@ -121,7 +121,7 @@ public class CommonPlayerTickHandler {
                 player.setAir(player.getAir() + received.amount);
             }
             if (player.getAir() == max) {
-                for (PotionEffect effect : player.getActivePotionEffects()) {
+                for (EffectInstance effect : player.getActivePotionEffects()) {
                     for (int i = 0; i < 9; i++) {
                         effect.onUpdate(player);
                     }

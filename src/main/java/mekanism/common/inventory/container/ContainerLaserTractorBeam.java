@@ -3,13 +3,13 @@ package mekanism.common.inventory.container;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerLaserTractorBeam extends ContainerMekanism<TileEntityLaserTractorBeam> {
 
-    public ContainerLaserTractorBeam(InventoryPlayer inventory, TileEntityLaserTractorBeam tile) {
+    public ContainerLaserTractorBeam(PlayerInventory inventory, TileEntityLaserTractorBeam tile) {
         super(tile, inventory);
     }
 

@@ -2,13 +2,13 @@ package mekanism.generators.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerHeatGenerator extends ContainerFuelGenerator<TileEntityHeatGenerator> {
 
-    public ContainerHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator generator) {
+    public ContainerHeatGenerator(PlayerInventory inventory, TileEntityHeatGenerator generator) {
         super(inventory, generator);
     }
 

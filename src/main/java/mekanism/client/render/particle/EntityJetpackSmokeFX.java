@@ -1,7 +1,7 @@
 package mekanism.client.render.particle;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleSmokeNormal;
+import net.minecraft.client.particle.SmokeParticle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EntityJetpackSmokeFX extends ParticleSmokeNormal {
+public class EntityJetpackSmokeFX extends SmokeParticle {
 
     private static Minecraft mc = FMLClientHandler.instance().getClient();
 

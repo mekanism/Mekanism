@@ -7,7 +7,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 

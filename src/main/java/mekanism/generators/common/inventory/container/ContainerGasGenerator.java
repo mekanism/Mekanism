@@ -5,13 +5,13 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.FuelHandler;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerGasGenerator extends ContainerFuelGenerator<TileEntityGasGenerator> {
 
-    public ContainerGasGenerator(InventoryPlayer inventory, TileEntityGasGenerator generator) {
+    public ContainerGasGenerator(PlayerInventory inventory, TileEntityGasGenerator generator) {
         super(inventory, generator);
     }
 

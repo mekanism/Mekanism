@@ -7,12 +7,12 @@ import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurbineRotor> {
+public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRotor> {
 
     private static final float BASE_SPEED = 512F;
     public static boolean internalRender = false;

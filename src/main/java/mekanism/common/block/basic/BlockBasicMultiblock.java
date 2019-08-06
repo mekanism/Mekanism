@@ -12,7 +12,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityLiving.SpawnPlacementType;
+import net.minecraft.entity.MobEntity.SpawnPlacementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -57,7 +57,7 @@ public class BlockBasicMultiblock extends BlockTileDrops {
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, SpawnPlacementType type) {
         TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity != null) {
-            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+            if (FMLCommonHandler.instance().getEffectiveSide() == Dist.DEDICATED_SERVER) {
                 if (tileEntity.structure != null) {
                     return false;
                 }

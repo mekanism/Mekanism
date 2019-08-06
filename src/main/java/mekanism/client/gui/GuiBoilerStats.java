@@ -14,7 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,7 +25,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
     private final GuiGraph boilGraph;
     private final GuiGraph maxGraph;
 
-    public GuiBoilerStats(InventoryPlayer inventory, TileEntityBoilerCasing tile) {
+    public GuiBoilerStats(PlayerInventory inventory, TileEntityBoilerCasing tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, resource));

@@ -8,7 +8,7 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -33,7 +33,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
     }
 
     @Override
-    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }

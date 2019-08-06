@@ -21,7 +21,7 @@ import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiReactorHeat extends GuiReactorInfo {
 
-    public GuiReactorHeat(InventoryPlayer inventory, TileEntityReactorController tile) {
+    public GuiReactorHeat(PlayerInventory inventory, TileEntityReactorController tile) {
         super(tile, new ContainerNull(inventory.player, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(

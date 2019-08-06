@@ -25,10 +25,10 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +38,7 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
 
-    public GuiFactory(InventoryPlayer inventory, TileEntityFactory tile) {
+    public GuiFactory(PlayerInventory inventory, TileEntityFactory tile) {
         super(tile, new ContainerFactory(inventory, tile));
         ySize += 11;
         ResourceLocation resource = tileEntity.tier.guiLocation;
@@ -108,7 +108,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
 
     public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, TextureAtlasSprite icon) {
         if (icon != null) {
-            mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            mc.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, icon, sizeX, sizeY);
         }
     }

@@ -4,13 +4,13 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraft.world.gen.feature.Feature;
 
-public class WorldGenSalt extends WorldGenerator {
+public class WorldGenSalt extends Feature {
 
     private Block blockGen;
 

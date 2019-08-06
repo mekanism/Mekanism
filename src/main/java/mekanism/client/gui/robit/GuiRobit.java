@@ -8,8 +8,8 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.inventory.Container;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,11 +18,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class GuiRobit extends GuiMekanism {
 
     protected final EntityRobit robit;
-    private GuiButton mainButton;
-    private GuiButton craftingButton;
-    private GuiButton inventoryButton;
-    private GuiButton smeltingButton;
-    private GuiButton repairButton;
+    private Button mainButton;
+    private Button craftingButton;
+    private Button inventoryButton;
+    private Button smeltingButton;
+    private Button repairButton;
 
     protected GuiRobit(EntityRobit robit, Container container) {
         super(container);
@@ -42,7 +42,7 @@ public abstract class GuiRobit extends GuiMekanism {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (!shouldOpenGui(guibutton.id)) {
             //Don't do anything when the button is the same one as the one we are on

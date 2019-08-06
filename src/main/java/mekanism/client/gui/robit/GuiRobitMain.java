@@ -12,9 +12,9 @@ import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,19 +26,19 @@ public class GuiRobitMain extends GuiMekanism {
     private final EntityRobit robit;
 
     private boolean displayNameChange;
-    private GuiTextField nameChangeField;
-    private GuiButton confirmName;
-    private GuiButton teleportHomeButton;
-    private GuiButton pickupButton;
-    private GuiButton renameButton;
-    private GuiButton followButton;
-    private GuiButton mainButton;
-    private GuiButton craftingButton;
-    private GuiButton inventoryButton;
-    private GuiButton smeltingButton;
-    private GuiButton repairButton;
+    private TextFieldWidget nameChangeField;
+    private Button confirmName;
+    private Button teleportHomeButton;
+    private Button pickupButton;
+    private Button renameButton;
+    private Button followButton;
+    private Button mainButton;
+    private Button craftingButton;
+    private Button inventoryButton;
+    private Button smeltingButton;
+    private Button repairButton;
 
-    public GuiRobitMain(InventoryPlayer inventory, EntityRobit entity) {
+    public GuiRobitMain(PlayerInventory inventory, EntityRobit entity) {
         super(new ContainerRobitMain(inventory, entity));
         xSize += 25;
         robit = entity;
@@ -59,7 +59,7 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(Button guibutton) {
         if (guibutton.id == confirmName.id) {
             changeName();
         } else if (guibutton.id == teleportHomeButton.id) {
@@ -88,10 +88,10 @@ public class GuiRobitMain extends GuiMekanism {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(confirmName = new GuiButton(0, guiLeft + 58, guiTop + 47, 60, 20, LangUtils.localize("gui.confirm")));
+        buttonList.add(confirmName = new Button(0, guiLeft + 58, guiTop + 47, 60, 20, LangUtils.localize("gui.confirm")));
         confirmName.visible = displayNameChange;
 
-        nameChangeField = new GuiTextField(1, fontRenderer, guiLeft + 48, guiTop + 21, 80, 12);
+        nameChangeField = new TextFieldWidget(1, fontRenderer, guiLeft + 48, guiTop + 21, 80, 12);
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused(true);
 

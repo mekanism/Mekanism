@@ -67,7 +67,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -76,7 +76,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -516,7 +516,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (hasInventory()) {
             if (handleInventory()) {
-                NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
+                ListNBT tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
                 inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
                 for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
                     CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);
@@ -551,7 +551,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (hasInventory()) {
             if (handleInventory()) {
-                NBTTagList tagList = new NBTTagList();
+                ListNBT tagList = new ListNBT();
                 for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
                     ItemStack stackInSlot = getStackInSlot(slotCount);
                     if (!stackInSlot.isEmpty()) {
@@ -738,7 +738,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public void setInventory(NBTTagList nbtTags, Object... data) {
+    public void setInventory(ListNBT nbtTags, Object... data) {
         if (nbtTags == null || nbtTags.tagCount() == 0 || !handleInventory()) {
             return;
         }
@@ -754,8 +754,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public NBTTagList getInventory(Object... data) {
-        NBTTagList tagList = new NBTTagList();
+    public ListNBT getInventory(Object... data) {
+        ListNBT tagList = new ListNBT();
         if (handleInventory()) {
             NonNullList<ItemStack> inventory = getInventory();
             for (int slots = 0; slots < inventory.size(); slots++) {
@@ -789,7 +789,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
-        return new TextComponentString(getName());
+        return new StringTextComponent(getName());
     }
     //End methods ITileContainer
 
@@ -997,7 +997,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
-            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound))) {
+            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundHandler().isSoundPlaying(activeSound))) {
                 activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), getInitialVolume(), getPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way

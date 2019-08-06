@@ -51,7 +51,7 @@ import mekanism.common.util.MinerUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBush;
+import net.minecraft.block.BushBlock;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,16 +59,16 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.tileentity.ShulkerBoxTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -309,20 +309,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public boolean setReplace(Coord4D obj, int index) {
         ItemStack stack = getReplace(index);
         BlockPos pos = obj.getPos();
-        PlayerEntity fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, this.pos).get());
+        PlayerEntity fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, this.pos).get());
 
         //if its a shulker box, remove it TE so it can't drop itself in breakBlock - we've already captured its itemblock
         TileEntity te = world.getTileEntity(pos);
-        TileEntityShulkerBox tileEntityShulkerBox = null;
-        if (te instanceof TileEntityShulkerBox) {
-            tileEntityShulkerBox = (TileEntityShulkerBox) te;
+        ShulkerBoxTileEntity tileEntityShulkerBox = null;
+        if (te instanceof ShulkerBoxTileEntity) {
+            tileEntityShulkerBox = (ShulkerBoxTileEntity) te;
             world.removeTileEntity(pos);
         }
 
         if (!stack.isEmpty()) {
             world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer), 3);
             BlockState s = obj.getBlockState(world);
-            if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock()).canBlockStay(world, pos, s)) {
+            if (s.getBlock() instanceof BushBlock && !((BushBlock) s.getBlock()).canBlockStay(world, pos, s)) {
                 s.getBlock().dropBlockAsItem(world, pos, s, 1);
                 world.removeBlock(pos, false);
             }
@@ -346,7 +346,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     private boolean canMine(Coord4D coord) {
         BlockState state = coord.getBlockState(world);
-        PlayerEntity dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get());
+        PlayerEntity dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, pos).get());
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
         return !event.isCanceled();
@@ -955,7 +955,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         nbtTags.setBoolean("doPull", doPull);
         nbtTags.setBoolean("silkTouch", silkTouch);
         nbtTags.setBoolean("inverse", inverse);
-        NBTTagList filterTags = new NBTTagList();
+        ListNBT filterTags = new ListNBT();
         for (MinerFilter filter : filters) {
             filterTags.appendTag(filter.write(new CompoundNBT()));
         }
@@ -975,7 +975,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         silkTouch = nbtTags.getBoolean("silkTouch");
         inverse = nbtTags.getBoolean("inverse");
         if (nbtTags.hasKey("filters")) {
-            NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
                 filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
             }
@@ -999,7 +999,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         ItemDataUtils.setBoolean(itemStack, "silkTouch", silkTouch);
         ItemDataUtils.setBoolean(itemStack, "inverse", inverse);
 
-        NBTTagList filterTags = new NBTTagList();
+        ListNBT filterTags = new ListNBT();
 
         for (MinerFilter filter : filters) {
             filterTags.appendTag(filter.write(new CompoundNBT()));
@@ -1022,7 +1022,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             inverse = ItemDataUtils.getBoolean(itemStack, "inverse");
 
             if (ItemDataUtils.hasData(itemStack, "filters")) {
-                NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
+                ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
                 for (int i = 0; i < tagList.tagCount(); i++) {
                     filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
                 }

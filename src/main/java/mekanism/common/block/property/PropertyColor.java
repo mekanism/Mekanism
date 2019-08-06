@@ -12,14 +12,14 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.EnumColor;
 import mekanism.api.IColor;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.block.properties.PropertyHelper;
+import net.minecraft.block.properties.AbstractProperty;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 //There are a good number of unchecked cast warnings due to the fact that forge has a hard class structure requirement of
 // T extends Comparable<T> so we cannot just use PropertyHelper<IColor> or there will be type clashes in EnumColor due to
 // enums extending Comparable as well
-public class PropertyColor<T extends IColor<T>> extends PropertyHelper<T> {
+public class PropertyColor<T extends IColor<T>> extends AbstractProperty<T> {
 
     private final ImmutableSet<T> allowedValues;
 

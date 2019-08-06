@@ -8,19 +8,19 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBalloon extends Render<EntityBalloon> {
+public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
     public ModelBalloon model = new ModelBalloon();
-    private Minecraft mc = Minecraft.getMinecraft();
+    private Minecraft mc = Minecraft.getInstance();
 
-    public RenderBalloon(RenderManager renderManager) {
+    public RenderBalloon(EntityRendererManager renderManager) {
         super(renderManager);
     }
 

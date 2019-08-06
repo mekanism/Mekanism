@@ -3,17 +3,17 @@ package mekanism.common.entity.ai;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.init.Blocks;
-import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public abstract class RobitAIBase extends EntityAIBase {
+public abstract class RobitAIBase extends Goal {
 
     /**
      * The robit entity.
@@ -33,7 +33,7 @@ public abstract class RobitAIBase extends EntityAIBase {
     /**
      * The robit's pathfinder.
      */
-    protected PathNavigateGround thePathfinder;
+    protected GroundPathNavigator thePathfinder;
 
     /**
      * The ticker for updates.

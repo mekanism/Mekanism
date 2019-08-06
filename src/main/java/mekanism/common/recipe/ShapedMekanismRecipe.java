@@ -13,14 +13,14 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.block.Block;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -53,7 +53,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
             return null;
         }
         ItemStack result = new ItemStack(nbtTags.getCompoundTag("result"));
-        NBTTagList list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
+        ListNBT list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
         if (result.isEmpty() || list.tagCount() == 0) {
             Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid result stack or input data list.");
             return null;
@@ -85,12 +85,12 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
 
     // Copy of net.minecraftforge.oredict.ShapedOreRecipe
     public static ShapedOreRecipe factory(JsonContext context, JsonObject json) {
-        String group = JsonUtils.getString(json, "group", "");
+        String group = JSONUtils.getString(json, "group", "");
         //if (!group.isEmpty() && group.indexOf(':') == -1)
         //    group = context.getModId() + ":" + group;
 
         Map<Character, Ingredient> ingMap = new HashMap<>();
-        for (Entry<String, JsonElement> entry : JsonUtils.getJsonObject(json, "key").entrySet()) {
+        for (Entry<String, JsonElement> entry : JSONUtils.getJsonObject(json, "key").entrySet()) {
             if (entry.getKey().length() != 1) {
                 throw new JsonSyntaxException("Invalid key entry: '" + entry.getKey() + "' is an invalid symbol (must be 1 character only).");
             }
@@ -102,14 +102,14 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
 
         ingMap.put(' ', Ingredient.EMPTY);
 
-        JsonArray patternJ = JsonUtils.getJsonArray(json, "pattern");
+        JsonArray patternJ = JSONUtils.getJsonArray(json, "pattern");
         if (patternJ.size() == 0) {
             throw new JsonSyntaxException("Invalid pattern: empty pattern not allowed");
         }
 
         String[] pattern = new String[patternJ.size()];
         for (int x = 0; x < pattern.length; ++x) {
-            String line = JsonUtils.getString(patternJ.get(x), "pattern[" + x + "]");
+            String line = JSONUtils.getString(patternJ.get(x), "pattern[" + x + "]");
             if (x > 0 && pattern[0].length() != line.length()) {
                 throw new JsonSyntaxException("Invalid pattern: each row must  be the same width");
             }
@@ -119,7 +119,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
         CraftingHelper.ShapedPrimer primer = new CraftingHelper.ShapedPrimer();
         primer.width = pattern[0].length();
         primer.height = pattern.length;
-        primer.mirrored = JsonUtils.getBoolean(json, "mirrored", true);
+        primer.mirrored = JSONUtils.getBoolean(json, "mirrored", true);
         primer.input = NonNullList.withSize(primer.width * primer.height, Ingredient.EMPTY);
 
         Set<Character> keys = new HashSet<>(ingMap.keySet());
@@ -140,13 +140,13 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
         if (!keys.isEmpty()) {
             throw new JsonSyntaxException("Key defines symbols that aren't used in pattern: " + keys);
         }
-        ItemStack result = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
+        ItemStack result = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "result"), context);
         return new ShapedMekanismRecipe(group.isEmpty() ? null : new ResourceLocation(group), result, primer);
     }
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+    public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
         return RecipeUtils.getCraftingResult(inv, output.copy());
     }
 

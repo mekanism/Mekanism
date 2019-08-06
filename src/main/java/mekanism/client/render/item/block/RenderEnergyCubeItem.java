@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,11 +44,11 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-        energyCube.render(0.0625F, tier, Minecraft.getMinecraft().renderEngine, true);
+        energyCube.render(0.0625F, tier, Minecraft.getInstance().renderEngine, true);
 
         for (Direction side : Direction.values()) {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-            energyCube.renderSide(0.0625F, side, side == Direction.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getMinecraft().renderEngine);
+            energyCube.renderSide(0.0625F, side, side == Direction.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getInstance().renderEngine);
         }
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();

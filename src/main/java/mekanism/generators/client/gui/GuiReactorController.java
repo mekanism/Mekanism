@@ -13,7 +13,7 @@ import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiReactorController extends GuiMekanismTile<TileEntityReactorController> {
 
-    public GuiReactorController(InventoryPlayer inventory, final TileEntityReactorController tile) {
+    public GuiReactorController(PlayerInventory inventory, final TileEntityReactorController tile) {
         super(tile, new ContainerReactorController(inventory, tile));
         if (tileEntity.isFormed()) {
             ResourceLocation resource = getGuiLocation();

@@ -5,13 +5,13 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerSolarNeutronActivator extends ContainerMekanism<TileEntitySolarNeutronActivator> {
 
-    public ContainerSolarNeutronActivator(InventoryPlayer inventory, TileEntitySolarNeutronActivator tile) {
+    public ContainerSolarNeutronActivator(PlayerInventory inventory, TileEntitySolarNeutronActivator tile) {
         super(tile, inventory);
     }
 

@@ -16,10 +16,9 @@ import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -36,7 +35,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IIte
      */
     public int MAX_GAS = 96000;
 
-    public ItemBlockGasTank(Block block) {
+    public ItemBlockGasTank(BlockGasTank block) {
         super(block);
         setMaxStackSize(1);
     }
@@ -59,9 +58,9 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IIte
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-        list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
-        if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
+        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getInstance().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+        list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Dist.CLIENT));
+        if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
             list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
         }
         list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
@@ -100,7 +99,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip implements IGasItem, IIte
     }
 
     @Override
-    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull ItemGroup tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }

@@ -4,8 +4,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.inventory.Container;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,7 +31,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism> exte
         int start = 0;
         MekanismRenderer.color(fluid);
         TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
-        mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        mc.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         while (true) {
             int renderRemaining;
             if (scale > 16) {

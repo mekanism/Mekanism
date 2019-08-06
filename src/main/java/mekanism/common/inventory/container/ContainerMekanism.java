@@ -3,15 +3,15 @@ package mekanism.common.inventory.container;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 
 public abstract class ContainerMekanism<TILE extends TileEntityMekanism> extends Container {
 
     protected TILE tileEntity;
 
-    protected ContainerMekanism(TILE tile, InventoryPlayer inventory) {
+    protected ContainerMekanism(TILE tile, PlayerInventory inventory) {
         this.tileEntity = tile;
         if (shouldAddSlots()) {
             addSlots();
@@ -26,7 +26,7 @@ public abstract class ContainerMekanism<TILE extends TileEntityMekanism> extends
         return 84;
     }
 
-    protected void addInventorySlots(InventoryPlayer inventory) {
+    protected void addInventorySlots(PlayerInventory inventory) {
         int offset = getInventoryOffset();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
@@ -45,7 +45,7 @@ public abstract class ContainerMekanism<TILE extends TileEntityMekanism> extends
 
     protected abstract void addSlots();
 
-    protected void openInventory(InventoryPlayer inventory) {
+    protected void openInventory(PlayerInventory inventory) {
         if (tileEntity != null) {
             tileEntity.open(inventory.player);
             tileEntity.openInventory(inventory.player);

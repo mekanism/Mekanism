@@ -8,8 +8,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.chunk.ServerChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -59,7 +59,7 @@ public class CommandChunk extends CommandTreeBase {
             String msg = String.format("%s chunk %d, %d", direction, pos.x, pos.z);
             MinecraftServer server = event.getWorld().getMinecraftServer();
             if (server != null) {
-                server.getPlayerList().sendMessage(new TextComponentString(msg));
+                server.getPlayerList().sendMessage(new StringTextComponent(msg));
             }
         }
     }
@@ -86,7 +86,7 @@ public class CommandChunk extends CommandTreeBase {
         if (sender.getEntityWorld().isRemote) {
             return;
         }
-        ChunkProviderServer sp = (ChunkProviderServer) sender.getEntityWorld().getChunkProvider();
+        ServerChunkProvider sp = (ServerChunkProvider) sender.getEntityWorld().getChunkProvider();
         int startCount = sp.getLoadedChunkCount();
         sp.queueUnloadAll();
         sp.tick();

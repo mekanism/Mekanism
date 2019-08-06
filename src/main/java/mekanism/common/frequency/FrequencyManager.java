@@ -13,7 +13,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
@@ -242,7 +242,7 @@ public class FrequencyManager {
                 if (nbtTags.hasKey("ownerUUID")) {
                     loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
                 }
-                NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
+                ListNBT list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
                 loadedFrequencies = new HashSet<>();
                 for (int i = 0; i < list.tagCount(); i++) {
                     CompoundNBT compound = list.getCompoundTagAt(i);
@@ -262,7 +262,7 @@ public class FrequencyManager {
             if (manager.ownerUUID != null) {
                 nbtTags.setString("ownerUUID", manager.ownerUUID.toString());
             }
-            NBTTagList list = new NBTTagList();
+            ListNBT list = new ListNBT();
             for (Frequency freq : manager.getFrequencies()) {
                 CompoundNBT compound = new CompoundNBT();
                 freq.write(compound);

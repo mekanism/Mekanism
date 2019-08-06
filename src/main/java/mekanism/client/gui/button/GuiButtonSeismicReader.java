@@ -3,14 +3,14 @@ package mekanism.client.gui.button;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiButtonSeismicReader extends GuiButton {
+public class GuiButtonSeismicReader extends Button {
 
     private final ResourceLocation resourceLocation;
     private final int offsetX;

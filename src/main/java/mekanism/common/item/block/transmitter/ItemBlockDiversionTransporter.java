@@ -11,7 +11,7 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

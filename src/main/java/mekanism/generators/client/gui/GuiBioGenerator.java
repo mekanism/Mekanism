@@ -15,7 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator> {
 
-    public GuiBioGenerator(InventoryPlayer inventory, TileEntityBioGenerator tile) {
+    public GuiBioGenerator(PlayerInventory inventory, TileEntityBioGenerator tile) {
         super(tile, new ContainerBioGenerator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

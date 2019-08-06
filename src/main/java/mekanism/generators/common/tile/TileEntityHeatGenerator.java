@@ -21,11 +21,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.GeneratorsBlock;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -173,7 +173,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     public int getFuel(ItemStack itemstack) {
-        return TileEntityFurnace.getItemBurnTime(itemstack) / 2;
+        return FurnaceTileEntity.getItemBurnTime(itemstack) / 2;
     }
 
     @Nonnull

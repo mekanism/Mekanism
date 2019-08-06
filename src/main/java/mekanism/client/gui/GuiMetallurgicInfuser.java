@@ -24,9 +24,9 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgicInfuser> {
 
-    public GuiMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tile) {
+    public GuiMetallurgicInfuser(PlayerInventory inventory, TileEntityMetallurgicInfuser tile) {
         super(tile, new ContainerMetallurgicInfuser(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
@@ -77,7 +77,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tileEntity.infuseStored.getType() != null) {
-            mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            mc.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             int displayInt = tileEntity.getScaledInfuseLevel(52);
             drawTexturedRectFromIcon(guiLeft + 7, guiTop + 17 + 52 - displayInt, tileEntity.infuseStored.getType().sprite, 4, displayInt);
         }

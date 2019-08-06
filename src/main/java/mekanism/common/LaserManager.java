@@ -19,7 +19,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.world.BlockEvent;
@@ -67,7 +67,7 @@ public class LaserManager {
 
         BlockState state = blockCoord.getBlockState(world);
         Block blockHit = state.getBlock();
-        PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, laserPos).get();
+        PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((ServerWorld) world, laserPos).get();
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) {

@@ -7,15 +7,15 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IColoredBlock;
-import net.minecraft.block.BlockFence;
+import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockPlasticFence extends BlockFence implements IColoredBlock, IBlockOreDict {
+public class BlockPlasticFence extends FenceBlock implements IColoredBlock, IBlockOreDict {
 
     private final EnumColor color;
 

@@ -3,13 +3,13 @@ package mekanism.common.inventory.container;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerLaserAmplifier extends ContainerMekanism<TileEntityLaserAmplifier> {
 
-    public ContainerLaserAmplifier(InventoryPlayer inventory, TileEntityLaserAmplifier tile) {
+    public ContainerLaserAmplifier(PlayerInventory inventory, TileEntityLaserAmplifier tile) {
         super(tile, inventory);
     }
 

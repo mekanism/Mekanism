@@ -14,7 +14,7 @@ import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrator> {
 
-    public GuiSeismicVibrator(InventoryPlayer inventory, TileEntitySeismicVibrator tile) {
+    public GuiSeismicVibrator(PlayerInventory inventory, TileEntitySeismicVibrator tile) {
         super(tile, new ContainerSeismicVibrator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));

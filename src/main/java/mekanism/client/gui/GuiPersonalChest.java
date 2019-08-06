@@ -7,7 +7,7 @@ import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,14 +15,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiPersonalChest extends GuiMekanismTile<TileEntityPersonalChest> {
 
-    public GuiPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tile) {
+    public GuiPersonalChest(PlayerInventory inventory, TileEntityPersonalChest tile) {
         super(tile, new ContainerPersonalChest(inventory, tile));
         xSize += 26;
         ySize += 64;
         addGuiElement(new GuiSecurityTab(this, tileEntity, getGuiLocation()));
     }
 
-    public GuiPersonalChest(InventoryPlayer inventory, InventoryPersonalChest inv) {
+    public GuiPersonalChest(PlayerInventory inventory, InventoryPersonalChest inv) {
         super(null, new ContainerPersonalChest(inventory, inv));
         xSize += 26;
         ySize += 64;

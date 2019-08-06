@@ -71,9 +71,9 @@ import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -81,13 +81,12 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeProvider;
+import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -115,7 +114,6 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -679,8 +677,8 @@ public class Mekanism {
         //Add baby skeleton spawner
         if (MekanismConfig.current().general.spawnBabySkeletons.val()) {
             for (Biome biome : BiomeProvider.allowedBiomes) {
-                if (biome.getSpawnableList(EnumCreatureType.MONSTER) != null && biome.getSpawnableList(EnumCreatureType.MONSTER).size() > 0) {
-                    EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EnumCreatureType.MONSTER, biome);
+                if (biome.getSpawnableList(EntityClassification.MONSTER) != null && biome.getSpawnableList(EntityClassification.MONSTER).size() > 0) {
+                    EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EntityClassification.MONSTER, biome);
                 }
             }
         }
@@ -866,7 +864,7 @@ public class Mekanism {
     public void onWorldUnload(WorldEvent.Unload event) {
         // Make sure the global fake player drops its reference to the World
         // when the server shuts down
-        if (event.getWorld() instanceof WorldServer) {
+        if (event.getWorld() instanceof ServerWorld) {
             MekFakePlayer.releaseInstance(event.getWorld());
         }
     }

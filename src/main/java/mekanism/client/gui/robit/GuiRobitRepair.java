@@ -6,17 +6,17 @@ import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.RepairContainer;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.client.CCustomPayloadPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,12 +25,12 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiRobitRepair extends GuiRobit implements IContainerListener {
 
-    private final ContainerRepair repairContainer;
-    private final InventoryPlayer playerInventory;
+    private final RepairContainer repairContainer;
+    private final PlayerInventory playerInventory;
 
-    private GuiTextField itemNameField;
+    private TextFieldWidget itemNameField;
 
-    public GuiRobitRepair(InventoryPlayer inventory, EntityRobit entity) {
+    public GuiRobitRepair(PlayerInventory inventory, EntityRobit entity) {
         super(entity, new ContainerRobitRepair(inventory, entity));
         playerInventory = inventory;
         repairContainer = (ContainerRobitRepair) inventorySlots;
@@ -40,7 +40,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     public void initGui() {
         super.initGui();
         Keyboard.enableRepeatEvents(true);
-        itemNameField = new GuiTextField(0, fontRenderer, guiLeft + 62, guiTop + 24, 103, 12);
+        itemNameField = new TextFieldWidget(0, fontRenderer, guiLeft + 62, guiTop + 24, 103, 12);
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
@@ -99,7 +99,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     protected void keyTyped(char c, int i) throws IOException {
         if (itemNameField.textboxKeyTyped(c, i)) {
             repairContainer.updateItemName(itemNameField.getText());
-            mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
+            mc.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
         } else {
             super.keyTyped(c, i);
         }
@@ -150,7 +150,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
             itemNameField.setEnabled(!itemstack.isEmpty());
             if (!itemstack.isEmpty()) {
                 repairContainer.updateItemName(itemNameField.getText());
-                mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
+                mc.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
             }
         }
     }

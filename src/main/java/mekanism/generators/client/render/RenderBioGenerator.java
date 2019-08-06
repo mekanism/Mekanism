@@ -13,15 +13,15 @@ import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioGenerator> {
+public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerator> {
 
     private static final int stages = 40;
     private ModelBioGenerator model = new ModelBioGenerator();
@@ -37,7 +37,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             GlStateManager.translate((float) x, (float) y, (float) z);
-            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             getDisplayList(tileEntity.getDirection())[tileEntity.getScaledFuelLevel(stages - 1)].render();
             MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.enableLighting();

@@ -7,7 +7,7 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> {
 
-    public GuiDynamicTank(InventoryPlayer inventory, TileEntityDynamicTank tile) {
+    public GuiDynamicTank(PlayerInventory inventory, TileEntityDynamicTank tile) {
         super(tile, new ContainerDynamicTank(inventory, tile));
         addGuiElement(new GuiContainerEditMode(this, tileEntity, getGuiLocation()));
     }

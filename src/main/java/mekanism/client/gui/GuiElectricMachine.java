@@ -19,7 +19,7 @@ import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends GuiMekanismTile<TileEntityElectricMachine<RECIPE>> {
 
-    public GuiElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine<RECIPE> tile) {
+    public GuiElectricMachine(PlayerInventory inventory, TileEntityElectricMachine<RECIPE> tile) {
         super(tile, new ContainerElectricMachine<>(inventory, tile));
         ResourceLocation resource = tileEntity.guiLocation;
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

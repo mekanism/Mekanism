@@ -3,7 +3,7 @@ package mekanism.common.entity.ai;
 import java.util.Iterator;
 import java.util.List;
 import mekanism.common.entity.EntityRobit;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
 /*
@@ -12,7 +12,7 @@ import net.minecraft.util.math.AxisAlignedBB;
  */
 public class RobitAIPickup extends RobitAIBase {
 
-    private EntityItem closest;
+    private ItemEntity closest;
 
     public RobitAIPickup(EntityRobit entityRobit, float speed) {
         super(entityRobit, speed);
@@ -26,14 +26,14 @@ public class RobitAIPickup extends RobitAIBase {
         if (closest != null && closest.getDistanceSq(closest) > 100 && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ) != null) {
             return true;
         }
-        List<EntityItem> items = theRobit.world.getEntitiesWithinAABB(EntityItem.class,
+        List<ItemEntity> items = theRobit.world.getEntitiesWithinAABB(ItemEntity.class,
               new AxisAlignedBB(theRobit.posX - 10, theRobit.posY - 10, theRobit.posZ - 10, theRobit.posX + 10, theRobit.posY + 10, theRobit.posZ + 10));
-        Iterator<EntityItem> iter = items.iterator();
+        Iterator<ItemEntity> iter = items.iterator();
         //Cached for slight performance
         double closestDistance = -1;
 
         while (iter.hasNext()) {
-            EntityItem entity = iter.next();
+            ItemEntity entity = iter.next();
             double distance = theRobit.getDistance(entity);
             if (distance <= 10) {
                 if (closestDistance == -1 || distance < closestDistance) {

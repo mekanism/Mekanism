@@ -9,13 +9,13 @@ import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.tile.prefab.TileEntityChanceMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends ContainerMekanism<TileEntityChanceMachine<RECIPE>> {
 
-    public ContainerChanceMachine(InventoryPlayer inventory, TileEntityChanceMachine<RECIPE> tile) {
+    public ContainerChanceMachine(PlayerInventory inventory, TileEntityChanceMachine<RECIPE> tile) {
         super(tile, inventory);
     }
 

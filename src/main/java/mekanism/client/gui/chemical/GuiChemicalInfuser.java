@@ -18,7 +18,7 @@ import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,7 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser> {
 
-    public GuiChemicalInfuser(InventoryPlayer inventory, TileEntityChemicalInfuser tile) {
+    public GuiChemicalInfuser(PlayerInventory inventory, TileEntityChemicalInfuser tile) {
         super(tile, new ContainerChemicalInfuser(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));

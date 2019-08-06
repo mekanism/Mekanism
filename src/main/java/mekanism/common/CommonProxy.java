@@ -98,11 +98,11 @@ import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -110,7 +110,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
@@ -423,15 +423,15 @@ public class CommonProxy implements IGuiProvider {
         }
     }
 
-    public final WeakReference<PlayerEntity> getDummyPlayer(WorldServer world) {
+    public final WeakReference<PlayerEntity> getDummyPlayer(ServerWorld world) {
         return MekFakePlayer.getInstance(world);
     }
 
-    public final WeakReference<PlayerEntity> getDummyPlayer(WorldServer world, double x, double y, double z) {
+    public final WeakReference<PlayerEntity> getDummyPlayer(ServerWorld world, double x, double y, double z) {
         return MekFakePlayer.getInstance(world, x, y, z);
     }
 
-    public final WeakReference<PlayerEntity> getDummyPlayer(WorldServer world, BlockPos pos) {
+    public final WeakReference<PlayerEntity> getDummyPlayer(ServerWorld world, BlockPos pos) {
         return getDummyPlayer(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
@@ -441,7 +441,7 @@ public class CommonProxy implements IGuiProvider {
 
     public void handlePacket(Runnable runnable, PlayerEntity player) {
         if (player instanceof ServerPlayerEntity) {
-            ((WorldServer) player.world).addScheduledTask(runnable);
+            ((ServerWorld) player.world).addScheduledTask(runnable);
         }
     }
 

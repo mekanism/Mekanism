@@ -2,13 +2,13 @@ package mekanism.common.inventory;
 
 import mekanism.common.base.ISustainedInventory;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Hand;
 
-public class InventoryPersonalChest extends InventoryBasic {
+public class InventoryPersonalChest extends Inventory {
 
     private final ItemStack itemStack;
     private boolean reading;
@@ -40,7 +40,7 @@ public class InventoryPersonalChest extends InventoryBasic {
     }
 
     public void write() {
-        NBTTagList tagList = new NBTTagList();
+        ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
             if (!getStackInSlot(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
@@ -59,7 +59,7 @@ public class InventoryPersonalChest extends InventoryBasic {
             return;
         }
         reading = true;
-        NBTTagList tagList = ((ISustainedInventory) getStack().getItem()).getInventory(getStack());
+        ListNBT tagList = ((ISustainedInventory) getStack().getItem()).getInventory(getStack());
         if (tagList != null) {
             for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
                 CompoundNBT tagCompound = tagList.getCompoundTagAt(tagCount);

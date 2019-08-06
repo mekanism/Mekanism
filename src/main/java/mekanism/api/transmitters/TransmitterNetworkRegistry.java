@@ -74,7 +74,7 @@ public class TransmitterNetworkRegistry {
 
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
-        if (event.phase == Phase.END && event.side == Side.SERVER) {
+        if (event.phase == Phase.END && event.side == Dist.DEDICATED_SERVER) {
             tickEnd();
         }
     }

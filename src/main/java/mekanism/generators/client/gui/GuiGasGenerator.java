@@ -16,7 +16,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator> {
 
-    public GuiGasGenerator(InventoryPlayer inventory, TileEntityGasGenerator tile) {
+    public GuiGasGenerator(PlayerInventory inventory, TileEntityGasGenerator tile) {
         super(tile, new ContainerGasGenerator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

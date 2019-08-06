@@ -10,9 +10,9 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntityTurbineCasing> {
+public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {
 
     private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
 
@@ -55,7 +55,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = STEAM;
 
-                bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
                 if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != null) {
                     GlStateManager.pushMatrix();

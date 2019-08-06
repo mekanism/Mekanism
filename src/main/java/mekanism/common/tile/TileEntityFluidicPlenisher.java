@@ -33,10 +33,10 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.Fluid;
@@ -203,7 +203,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 
-        NBTTagList activeList = new NBTTagList();
+        ListNBT activeList = new ListNBT();
         for (Coord4D wrapper : activeNodes) {
             CompoundNBT tagCompound = new CompoundNBT();
             wrapper.write(tagCompound);
@@ -213,7 +213,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             nbtTags.setTag("activeNodes", activeList);
         }
 
-        NBTTagList usedList = new NBTTagList();
+        ListNBT usedList = new ListNBT();
         for (Coord4D obj : usedNodes) {
             activeList.appendTag(obj.write(new CompoundNBT()));
         }
@@ -234,14 +234,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         }
 
         if (nbtTags.hasKey("activeNodes")) {
-            NBTTagList tagList = nbtTags.getTagList("activeNodes", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("activeNodes", NBT.TAG_COMPOUND);
 
             for (int i = 0; i < tagList.tagCount(); i++) {
                 activeNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
             }
         }
         if (nbtTags.hasKey("usedNodes")) {
-            NBTTagList tagList = nbtTags.getTagList("usedNodes", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("usedNodes", NBT.TAG_COMPOUND);
 
             for (int i = 0; i < tagList.tagCount(); i++) {
                 usedNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
@@ -334,7 +334,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         activeNodes.clear();
         usedNodes.clear();
         finishedCalc = false;
-        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
+        player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
         return ActionResultType.SUCCESS;
     }
 

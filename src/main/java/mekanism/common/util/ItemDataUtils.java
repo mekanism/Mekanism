@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public final class ItemDataUtils {
@@ -76,9 +76,9 @@ public final class ItemDataUtils {
         return getDataMap(stack).getCompoundTag(key);
     }
 
-    public static NBTTagList getList(ItemStack stack, String key) {
+    public static ListNBT getList(ItemStack stack, String key) {
         if (!hasDataTag(stack)) {
-            return new NBTTagList();
+            return new ListNBT();
         }
         return getDataMap(stack).getTagList(key, NBT.TAG_COMPOUND);
     }
@@ -108,7 +108,7 @@ public final class ItemDataUtils {
         getDataMap(stack).setTag(key, tag);
     }
 
-    public static void setList(ItemStack stack, String key, NBTTagList tag) {
+    public static void setList(ItemStack stack, String key, ListNBT tag) {
         initStack(stack);
         getDataMap(stack).setTag(key, tag);
     }

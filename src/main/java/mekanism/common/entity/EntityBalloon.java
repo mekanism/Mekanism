@@ -9,7 +9,7 @@ import mekanism.api.Pos3D;
 import mekanism.common.MekanismSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleRedstone;
+import net.minecraft.client.particle.RedstoneParticle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
@@ -225,9 +225,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private void doParticle() {
         Pos3D pos = new Pos3D(posX + (rand.nextFloat() * .6 - 0.3), posY + (rand.nextFloat() * .6 - 0.3), posZ + (rand.nextFloat() * .6 - 0.3));
 
-        Particle fx = new ParticleRedstone.Factory().createParticle(0, world, pos.x, pos.y, pos.z, 0, 0, 0);
+        Particle fx = new RedstoneParticle.Factory().createParticle(0, world, pos.x, pos.y, pos.z, 0, 0, 0);
         fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
-        Minecraft.getMinecraft().effectRenderer.addEffect(fx);
+        Minecraft.getInstance().effectRenderer.addEffect(fx);
     }
 
     @Override

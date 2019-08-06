@@ -6,17 +6,17 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
+public class RenderBin extends TileEntityRenderer<TileEntityBin> {
 
-    private final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+    private final ItemRenderer renderItem = Minecraft.getInstance().getRenderItem();
 
     @Override
     public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {

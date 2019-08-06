@@ -3,15 +3,15 @@ package mekanism.common.inventory.container.robit;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ContainerRepair;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.RepairContainer;
 import net.minecraft.util.math.BlockPos;
 
-public class ContainerRobitRepair extends ContainerRepair {
+public class ContainerRobitRepair extends RepairContainer {
 
     public EntityRobit robit;
 
-    public ContainerRobitRepair(InventoryPlayer inventory, EntityRobit entity) {
+    public ContainerRobitRepair(PlayerInventory inventory, EntityRobit entity) {
         super(inventory, entity.world, BlockPos.ORIGIN, inventory.player);
         robit = entity;
     }

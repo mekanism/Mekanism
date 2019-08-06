@@ -17,7 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerWindGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +27,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
 
     private final DecimalFormat powerFormat = new DecimalFormat("0.##");
 
-    public GuiWindGenerator(InventoryPlayer inventory, TileEntityWindGenerator tile) {
+    public GuiWindGenerator(PlayerInventory inventory, TileEntityWindGenerator tile) {
         super(tile, new ContainerWindGenerator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));

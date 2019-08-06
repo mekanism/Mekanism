@@ -7,15 +7,15 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.block.Block;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -49,7 +49,7 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
         }
 
         ItemStack result = new ItemStack(nbtTags.getCompoundTag("result"));
-        NBTTagList list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
+        ListNBT list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
         if (result.isEmpty() || list.tagCount() == 0) {
             Mekanism.logger.error(Mekanism.LOG_TAG + " Shapeless recipe parse error: invalid result stack or input data list.");
             return null;
@@ -72,22 +72,22 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
 
     // Copy of net.minecraftforge.oredict.ShapelessOreRecipe
     public static ShapelessMekanismRecipe factory(JsonContext context, JsonObject json) {
-        String group = JsonUtils.getString(json, "group", "");
+        String group = JSONUtils.getString(json, "group", "");
 
         NonNullList<Ingredient> ings = NonNullList.create();
-        for (JsonElement ele : JsonUtils.getJsonArray(json, "ingredients")) {
+        for (JsonElement ele : JSONUtils.getJsonArray(json, "ingredients")) {
             ings.add(CraftingHelper.getIngredient(ele, context));
         }
         if (ings.isEmpty()) {
             throw new JsonParseException("No ingredients for shapeless recipe");
         }
-        ItemStack itemstack = ShapedRecipes.deserializeItem(JsonUtils.getJsonObject(json, "result"), true);
+        ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"), true);
         return new ShapelessMekanismRecipe(group.isEmpty() ? null : new ResourceLocation(group), ings, itemstack);
     }
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+    public ItemStack getCraftingResult(@Nonnull CraftingInventory inv) {
         return RecipeUtils.getCraftingResult(inv, output.copy());
     }
 

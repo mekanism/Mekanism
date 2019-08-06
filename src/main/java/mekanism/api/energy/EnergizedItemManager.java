@@ -36,8 +36,7 @@ public class EnergizedItemManager {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof IEnergizedItem) {
             IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
             if (energizedItem.canReceive(itemStack)) {
-                double energyToSend = Math.min(energizedItem.getMaxTransfer(itemStack),
-                      Math.min(energizedItem.getMaxEnergy(itemStack) - energizedItem.getEnergy(itemStack), amount));
+                double energyToSend = Math.min(energizedItem.getMaxTransfer(itemStack), Math.min(energizedItem.getMaxEnergy(itemStack) - energizedItem.getEnergy(itemStack), amount));
                 energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) + energyToSend);
                 return energyToSend;
             }

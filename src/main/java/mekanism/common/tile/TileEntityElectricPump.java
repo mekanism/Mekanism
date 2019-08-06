@@ -37,11 +37,11 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.Fluid;
@@ -246,7 +246,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 
-        NBTTagList recurringList = new NBTTagList();
+        ListNBT recurringList = new ListNBT();
         for (Coord4D wrapper : recurringNodes) {
             CompoundNBT tagCompound = new CompoundNBT();
             wrapper.write(tagCompound);
@@ -270,7 +270,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
         }
         if (nbtTags.hasKey("recurringNodes")) {
-            NBTTagList tagList = nbtTags.getTagList("recurringNodes", NBT.TAG_COMPOUND);
+            ListNBT tagList = nbtTags.getTagList("recurringNodes", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.tagCount(); i++) {
                 recurringNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
             }
@@ -359,7 +359,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
+        player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
         return ActionResultType.SUCCESS;
     }
 

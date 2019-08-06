@@ -8,13 +8,13 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderThermalEvaporationController extends TileEntitySpecialRenderer<TileEntityThermalEvaporationController> {
+public class RenderThermalEvaporationController extends TileEntityRenderer<TileEntityThermalEvaporationController> {
 
     @Override
     public void render(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
@@ -26,7 +26,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
             data.length = 2;
             data.width = 2;
             data.fluidType = tileEntity.inputTank.getFluid();
-            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();
             GlStateManager.enableBlend();

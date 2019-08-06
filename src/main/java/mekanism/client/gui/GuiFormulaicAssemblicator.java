@@ -23,9 +23,9 @@ import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,14 +34,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator> {
 
-    private GuiButton encodeFormulaButton;
-    private GuiButton stockControlButton;
-    private GuiButton fillEmptyButton;
-    private GuiButton craftSingleButton;
-    private GuiButton craftAvailableButton;
-    private GuiButton autoModeButton;
+    private Button encodeFormulaButton;
+    private Button stockControlButton;
+    private Button fillEmptyButton;
+    private Button craftSingleButton;
+    private Button craftAvailableButton;
+    private Button autoModeButton;
 
-    public GuiFormulaicAssemblicator(InventoryPlayer inventory, TileEntityFormulaicAssemblicator tile) {
+    public GuiFormulaicAssemblicator(PlayerInventory inventory, TileEntityFormulaicAssemblicator tile) {
         super(tile, new ContainerFormulaicAssemblicator(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
@@ -73,7 +73,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == encodeFormulaButton.id) {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, TileNetworkList.withContents(1)));

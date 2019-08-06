@@ -6,10 +6,10 @@ import mekanism.common.inventory.slot.SlotPersonalChest;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 @ChestContainer(isLargeChest = true)
@@ -18,21 +18,21 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     private IInventory itemInventory;
     private boolean isBlock;
 
-    public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tile) {
+    public ContainerPersonalChest(PlayerInventory inventory, TileEntityPersonalChest tile) {
         super(tile, inventory);
         itemInventory = null;
         isBlock = true;
         addAndOpen(inventory);
     }
 
-    public ContainerPersonalChest(InventoryPlayer inventory, IInventory inv) {
+    public ContainerPersonalChest(PlayerInventory inventory, IInventory inv) {
         super(null, inventory);
         itemInventory = inv;
         isBlock = false;
         addAndOpen(inventory);
     }
 
-    private void addAndOpen(InventoryPlayer inventory) {
+    private void addAndOpen(PlayerInventory inventory) {
         //Manually handle this stuff so that it gets called at the correct time
         addSlots();
         addInventorySlots(inventory);
@@ -69,7 +69,7 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     }
 
     @Override
-    protected void openInventory(InventoryPlayer inventory) {
+    protected void openInventory(PlayerInventory inventory) {
         if (isBlock) {
             tileEntity.open(inventory.player);
             tileEntity.openInventory(inventory.player);

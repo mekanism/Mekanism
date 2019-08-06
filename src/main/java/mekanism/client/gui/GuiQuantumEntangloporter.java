@@ -21,9 +21,9 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,16 +32,16 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter> {
 
-    private GuiButton publicButton;
-    private GuiButton privateButton;
-    private GuiButton setButton;
-    private GuiButton deleteButton;
-    private GuiButton checkboxButton;
+    private Button publicButton;
+    private Button privateButton;
+    private Button setButton;
+    private Button deleteButton;
+    private Button checkboxButton;
     private GuiScrollList scrollList;
-    private GuiTextField frequencyField;
+    private TextFieldWidget frequencyField;
     private boolean privateMode;
 
-    public GuiQuantumEntangloporter(InventoryPlayer inventory, TileEntityQuantumEntangloporter tile) {
+    public GuiQuantumEntangloporter(PlayerInventory inventory, TileEntityQuantumEntangloporter tile) {
         super(tile, new ContainerQuantumEntangloporter(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
@@ -59,11 +59,11 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(publicButton = new GuiButton(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public")));
-        buttonList.add(privateButton = new GuiButton(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private")));
-        buttonList.add(setButton = new GuiButton(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set")));
-        buttonList.add(deleteButton = new GuiButton(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete")));
-        frequencyField = new GuiTextField(4, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
+        buttonList.add(publicButton = new Button(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public")));
+        buttonList.add(privateButton = new Button(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private")));
+        buttonList.add(setButton = new Button(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set")));
+        buttonList.add(deleteButton = new Button(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete")));
+        frequencyField = new TextFieldWidget(4, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
         buttonList.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
@@ -151,7 +151,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == publicButton.id) {
             privateMode = false;

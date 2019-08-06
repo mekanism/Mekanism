@@ -5,7 +5,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.thermodynamic_conductor.TileEntityThermodynamicConductor;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.Direction;
 
 public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEntityThermodynamicConductor> {
@@ -19,7 +19,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEn
 
     @Override
     public void renderSide(BufferBuilder renderer, Direction side, TileEntityThermodynamicConductor cable) {
-        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         renderTransparency(renderer, MekanismRenderer.heatIcon, getModelForSide(cable, side), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
     }
 }

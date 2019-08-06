@@ -9,8 +9,8 @@ import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.inventory.Container;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorController> {
 
-    private GuiButton backButton;
+    private Button backButton;
 
     public GuiReactorInfo(TileEntityReactorController tile, Container container) {
         super(tile, container);
@@ -32,7 +32,7 @@ public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorCo
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == backButton.id) {
             Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));

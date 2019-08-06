@@ -2,12 +2,12 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 
 public class ContainerFluidTank extends ContainerFluidStorage<TileEntityFluidTank> {
 
-    public ContainerFluidTank(InventoryPlayer inventory, TileEntityFluidTank tile) {
+    public ContainerFluidTank(PlayerInventory inventory, TileEntityFluidTank tile) {
         super(tile, inventory);
     }
 

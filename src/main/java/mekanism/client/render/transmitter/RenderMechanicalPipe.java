@@ -16,9 +16,9 @@ import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -75,7 +75,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 MekanismRenderer.color(fluid);
             }
 
-            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate((float) x, (float) y, (float) z);
 
             boolean gas = fluidStack == null ? fluid.isGaseous() : fluid.isGaseous(fluidStack);
@@ -221,7 +221,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
     public boolean renderFluidInOut(BufferBuilder renderer, Direction side, TileEntityMechanicalPipe pipe) {
         if (pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null) {
-            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
             TextureAtlasSprite tex;
             if (fn.buffer != null) {

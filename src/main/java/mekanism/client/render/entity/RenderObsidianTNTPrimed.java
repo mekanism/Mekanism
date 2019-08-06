@@ -9,25 +9,25 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
+public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
 
-    public RenderObsidianTNTPrimed(RenderManager renderManager) {
+    public RenderObsidianTNTPrimed(EntityRendererManager renderManager) {
         super(renderManager);
         shadowSize = 0.5F;
     }
 
     @Override
     public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
-        BlockRendererDispatcher renderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRendererDispatcher();
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x, (float) y + 0.5F, (float) z);
 
@@ -68,6 +68,6 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
 
     @Override
     protected ResourceLocation getEntityTexture(@Nonnull EntityObsidianTNT entity) {
-        return TextureMap.LOCATION_BLOCKS_TEXTURE;
+        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 }

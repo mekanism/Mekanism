@@ -23,7 +23,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -60,7 +60,7 @@ public class ItemConfigurationCard extends ItemMekanism {
                         if (data != null) {
                             data.setString("dataType", getNameFromTile(tileEntity, side));
                             setData(stack, data);
-                            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
+                            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
                                                                        LangUtils.localize("tooltip.configurationCard.got").replaceAll("%s",
                                                                              EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
                         }
@@ -73,11 +73,11 @@ public class ItemConfigurationCard extends ItemMekanism {
                                 special.setConfigurationData(getData(stack));
                             }
 
-                            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.DARK_GREEN +
+                            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.DARK_GREEN +
                                                                        LangUtils.localize("tooltip.configurationCard.set").replaceAll("%s",
                                                                              EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
                         } else {
-                            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
+                            player.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
                                                                        LangUtils.localize("tooltip.configurationCard.unequal") + "."));
                         }
                         return ActionResultType.SUCCESS;

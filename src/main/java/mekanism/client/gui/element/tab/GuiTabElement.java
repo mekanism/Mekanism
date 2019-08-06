@@ -3,7 +3,7 @@ package mekanism.client.gui.element.tab;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTileEntityElement;
 import mekanism.client.sound.SoundHandler;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;

@@ -4,14 +4,14 @@ import java.util.UUID;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.world.World;
 
-public class EntityBabySkeleton extends EntitySkeleton {
+public class EntityBabySkeleton extends SkeletonEntity {
 
     private static final UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
     private static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, 1);
@@ -32,7 +32,7 @@ public class EntityBabySkeleton extends EntitySkeleton {
     public void setChild(boolean child) {
         dataManager.set(IS_CHILD, child);
         if (world != null && !world.isRemote) {
-            IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+            IAttributeInstance iattributeinstance = this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
             iattributeinstance.removeModifier(babySpeedBoostModifier);
             if (child) {
                 iattributeinstance.applyModifier(babySpeedBoostModifier);

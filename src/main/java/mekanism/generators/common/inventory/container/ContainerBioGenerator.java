@@ -2,8 +2,8 @@ package mekanism.generators.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerBioGenerator extends ContainerFuelGenerator<TileEntityBioGenerator> {
 
-    public ContainerBioGenerator(InventoryPlayer inventory, TileEntityBioGenerator generator) {
+    public ContainerBioGenerator(PlayerInventory inventory, TileEntityBioGenerator generator) {
         super(inventory, generator);
     }
 

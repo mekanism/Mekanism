@@ -10,13 +10,13 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank> {
+public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank> {
 
     @Override
     public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
@@ -30,7 +30,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
             data.fluidType = tileEntity.structure.fluidStored;
 
             if (data.location != null && data.height >= 1) {
-                bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                 GlStateManager.pushMatrix();
                 GlStateManager.enableCull();
                 GlStateManager.enableBlend();

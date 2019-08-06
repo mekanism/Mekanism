@@ -11,8 +11,8 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,7 +24,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     protected List<ItemStack> iterStacks;
     protected int stackSwitch;
     protected int stackIndex;
-    protected GuiButton checkboxButton;
+    protected Button checkboxButton;
 
     protected GuiTextFilter(PlayerEntity player, TILE tile) {
         super(player, tile);
@@ -36,8 +36,8 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
-    protected GuiTextField createTextField() {
-        return new GuiTextField(2, fontRenderer, guiLeft + 35, guiTop + 47, 95, 12);
+    protected TextFieldWidget createTextField() {
+        return new TextFieldWidget(2, fontRenderer, guiLeft + 35, guiTop + 47, 95, 12);
     }
 
     @Override
@@ -88,7 +88,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == checkboxButton.id) {
             setText();

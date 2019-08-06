@@ -6,12 +6,12 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHeatGenerator> {
+public class RenderHeatGenerator extends TileEntityRenderer<TileEntityHeatGenerator> {
 
     private ModelHeatGenerator model = new ModelHeatGenerator();
 

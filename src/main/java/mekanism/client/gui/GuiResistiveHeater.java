@@ -24,9 +24,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,10 +35,10 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater> {
 
-    private GuiTextField energyUsageField;
-    private GuiButton checkboxButton;
+    private TextFieldWidget energyUsageField;
+    private Button checkboxButton;
 
-    public GuiResistiveHeater(InventoryPlayer inventory, TileEntityResistiveHeater tile) {
+    public GuiResistiveHeater(PlayerInventory inventory, TileEntityResistiveHeater tile) {
         super(tile, new ContainerResistiveHeater(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
@@ -62,7 +62,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         super.initGui();
         buttonList.clear();
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
-        energyUsageField = new GuiTextField(0, fontRenderer, guiLeft + 49, guiTop + 52, 66, 11);
+        energyUsageField = new TextFieldWidget(0, fontRenderer, guiLeft + 49, guiTop + 52, 66, 11);
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setEnableBackgroundDrawing(false);
         energyUsageField.setText(prevEnergyUsage);
@@ -70,7 +70,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == checkboxButton.id) {
             setEnergyUsage();

@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -53,7 +53,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getInstance().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
         if (getFrequency(itemstack) != null) {
             list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + getFrequency(itemstack).name);
             list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY +
@@ -70,7 +70,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             if (getOwnerUUID(itemstack) == null) {
                 setOwnerUUID(itemstack, entityplayer.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
-                entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
+                entityplayer.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
             } else if (SecurityUtils.canAccess(entityplayer, itemstack)) {
                 MekanismUtils.openItemGui(entityplayer, hand, 14);
             } else {

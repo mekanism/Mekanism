@@ -8,12 +8,12 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.ToolsConfig;
 import mekanism.common.config.ToolsConfig.ArmorBalance;
 import mekanism.common.config.ToolsConfig.ToolBalance;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ArmorItem.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.util.EnumHelper;
 
 public enum Materials {

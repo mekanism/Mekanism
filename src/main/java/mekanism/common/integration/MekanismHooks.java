@@ -25,9 +25,9 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -35,7 +35,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -310,7 +310,7 @@ public final class MekanismHooks {
             if (crystalSeed.isPresent()) {
                 NonNullList<ItemStack> seeds = NonNullList.create();
                 //there appears to be no way to get this via api, so fall back to unloc names
-                crystalSeed.get().getSubItems(CreativeTabs.SEARCH, seeds);
+                crystalSeed.get().getSubItems(ItemGroup.SEARCH, seeds);
                 //Crystal seeds use a meta AND NBT to determine growth state, so we need to ignore the NBT, and use the meta which should be fixed on what stage it's at
                 MachineInput.addCustomItemMatcher(crystalSeed.get().getClass(), (def, test) -> def.getItem() == test.getItem() && def.getMetadata() == test.getMetadata());
                 for (ItemStack stack : seeds) {

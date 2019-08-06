@@ -7,13 +7,13 @@ import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerChemicalInfuser extends ContainerMekanism<TileEntityChemicalInfuser> {
 
-    public ContainerChemicalInfuser(InventoryPlayer inventory, TileEntityChemicalInfuser tile) {
+    public ContainerChemicalInfuser(PlayerInventory inventory, TileEntityChemicalInfuser tile) {
         super(tile, inventory);
     }
 

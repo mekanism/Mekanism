@@ -11,7 +11,7 @@ import mekanism.common.block.interfaces.IBlockOreDict;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFire;
+import net.minecraft.block.FireBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
@@ -57,7 +57,7 @@ public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOr
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
         if (!world.isRemote) {
             Block newBlock = world.getBlockState(fromPos).getBlock();
-            if (resource == BlockResourceInfo.REFINED_OBSIDIAN && newBlock instanceof BlockFire) {
+            if (resource == BlockResourceInfo.REFINED_OBSIDIAN && newBlock instanceof FireBlock) {
                 BlockPortalOverride.instance.trySpawnPortal(world, fromPos);
             }
         }

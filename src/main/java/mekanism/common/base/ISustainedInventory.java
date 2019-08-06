@@ -1,6 +1,6 @@
 package mekanism.common.base;
 
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 
 /**
  * Internal interface used in blocks and items that are capable of storing sustained inventories.
@@ -15,7 +15,7 @@ public interface ISustainedInventory {
      * @param nbtTags - NBTTagList value to set
      * @param data    - ItemStack parameter if using on item
      */
-    void setInventory(NBTTagList nbtTags, Object... data);
+    void setInventory(ListNBT nbtTags, Object... data);
 
     /**
      * Gets the inventory tag list from an item or block.
@@ -24,5 +24,5 @@ public interface ISustainedInventory {
      *
      * @return inventory tag list
      */
-    NBTTagList getInventory(Object... data);
+    ListNBT getInventory(Object... data);
 }

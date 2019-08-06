@@ -29,7 +29,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,6 +41,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -91,9 +92,9 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
-        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-        list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
-        if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
+        list.add(SecurityUtils.getOwnerDisplay(Minecraft.getInstance().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+        list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Dist.CLIENT));
+        if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
             list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
         }
         list.add(EnumColor.INDIGO + LangUtils.localizeWithFormat("mekanism.tooltip.portableTank.bucketMode", LangUtils.transYesNo(getBucketMode(itemstack))));
@@ -144,7 +145,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
             if (SecurityUtils.canAccess(entityplayer, itemstack)) {
                 RayTraceResult pos = rayTrace(world, entityplayer, !entityplayer.isSneaking());
                 //It can be null if there is nothing in range
-                if (pos != null && pos.typeOfHit == RayTraceResult.Type.BLOCK) {
+                if (pos != null && pos.typeOfHit == Type.BLOCK) {
                     Coord4D coord = new Coord4D(pos.getBlockPos(), world);
                     if (!world.provider.canMineBlock(entityplayer, coord.getPos())) {
                         return new ActionResult<>(ActionResultType.FAIL, itemstack);

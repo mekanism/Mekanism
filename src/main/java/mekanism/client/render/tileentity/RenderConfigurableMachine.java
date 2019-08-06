@@ -12,14 +12,14 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.TileComponentConfig;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -32,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntitySpecialRenderer<S> {
+public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntityRenderer<S> {
 
     private Minecraft mc = FMLClientHandler.instance().getClient();
 
@@ -65,7 +65,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
                             MekanismRenderer.color(data.color, 0.6F);
-                            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                             GlStateManager.translate((float) x, (float) y, (float) z);
                             int display = getOverlayDisplay(pos.sideHit, type).display;
                             GlStateManager.callList(display);

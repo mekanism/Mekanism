@@ -13,10 +13,10 @@ import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGui
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -123,7 +123,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
         }
 
         @OnlyIn(Dist.CLIENT)
-        public static GuiScreen getGui(OredictionificatorGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
+        public static Screen getGui(OredictionificatorGuiPacket packetType, int type, PlayerEntity player, World world, BlockPos pos, int index) {
             if (type == 0) {
                 return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator) world.getTileEntity(pos));
             } else if (packetType == OredictionificatorGuiPacket.CLIENT) {

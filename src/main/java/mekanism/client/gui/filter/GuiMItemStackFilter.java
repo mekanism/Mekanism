@@ -16,10 +16,10 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +30,7 @@ import org.lwjgl.input.Keyboard;
 @OnlyIn(Dist.CLIENT)
 public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, TileEntityDigitalMiner> {
 
-    private GuiButton fuzzyButton;
+    private Button fuzzyButton;
 
     public GuiMItemStackFilter(PlayerEntity player, TileEntityDigitalMiner tile, int index) {
         super(player, tile);
@@ -46,8 +46,8 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        buttonList.add(saveButton = new GuiButton(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttonList.add(deleteButton = new GuiButton(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttonList.add(saveButton = new Button(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
+        buttonList.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
         buttonList.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
         buttonList.add(replaceButton = new GuiButtonDisableableImage(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
         buttonList.add(fuzzyButton = new GuiButtonDisableableImage(4, guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation()));
@@ -59,7 +59,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == saveButton.id) {
             if (!filter.getItemStack().isEmpty()) {

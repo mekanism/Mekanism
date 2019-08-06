@@ -16,7 +16,7 @@ import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher> {
 
-    public GuiFluidicPlenisher(InventoryPlayer inventory, TileEntityFluidicPlenisher tile) {
+    public GuiFluidicPlenisher(PlayerInventory inventory, TileEntityFluidicPlenisher tile) {
         super(tile, new ContainerFluidicPlenisher(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));

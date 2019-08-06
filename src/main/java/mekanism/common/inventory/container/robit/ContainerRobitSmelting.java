@@ -3,13 +3,13 @@ package mekanism.common.inventory.container.robit;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnaceOutput;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.FurnaceResultSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.FurnaceTileEntity;
 
 public class ContainerRobitSmelting extends ContainerRobit {
 
@@ -17,7 +17,7 @@ public class ContainerRobitSmelting extends ContainerRobit {
     private int lastBurnTime = 0;
     private int lastItemBurnTime = 0;
 
-    public ContainerRobitSmelting(InventoryPlayer inventory, EntityRobit entity) {
+    public ContainerRobitSmelting(PlayerInventory inventory, EntityRobit entity) {
         super(entity, inventory);
     }
 
@@ -78,7 +78,7 @@ public class ContainerRobitSmelting extends ContainerRobit {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (TileEntityFurnace.isItemFuel(slotStack)) {
+                } else if (FurnaceTileEntity.isItemFuel(slotStack)) {
                     if (!mergeItemStack(slotStack, 1, 2, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -112,8 +112,8 @@ public class ContainerRobitSmelting extends ContainerRobit {
     }
 
     @Override
-    protected void addInventorySlots(InventoryPlayer inventory) {
-        addSlotToContainer(new SlotFurnaceOutput(inventory.player, robit, 30, 116, 35));
+    protected void addInventorySlots(PlayerInventory inventory) {
+        addSlotToContainer(new FurnaceResultSlot(inventory.player, robit, 30, 116, 35));
         super.addInventorySlots(inventory);
     }
 }

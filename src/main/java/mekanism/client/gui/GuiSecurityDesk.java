@@ -17,9 +17,9 @@ import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,16 +30,16 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
 
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private static final int MAX_LENGTH = 24;
-    private GuiButton removeButton;
-    private GuiButton publicButton;
-    private GuiButton privateButton;
-    private GuiButton trustedButton;
-    private GuiButton checkboxButton;
-    private GuiButton overrideButton;
+    private Button removeButton;
+    private Button publicButton;
+    private Button privateButton;
+    private Button trustedButton;
+    private Button checkboxButton;
+    private Button overrideButton;
     private GuiScrollList scrollList;
-    private GuiTextField trustedField;
+    private TextFieldWidget trustedField;
 
-    public GuiSecurityDesk(InventoryPlayer inventory, TileEntitySecurityDesk tile) {
+    public GuiSecurityDesk(PlayerInventory inventory, TileEntitySecurityDesk tile) {
         super(tile, new ContainerSecurityDesk(inventory, tile));
         addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 4));
         ySize += 64;
@@ -49,8 +49,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(removeButton = new GuiButton(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove")));
-        trustedField = new GuiTextField(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
+        buttonList.add(removeButton = new Button(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove")));
+        trustedField = new TextFieldWidget(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
         buttonList.add(publicButton = new GuiButtonDisableableImage(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation()));
@@ -133,7 +133,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) throws IOException {
+    protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == removeButton.id) {
             int selection = scrollList.getSelection();

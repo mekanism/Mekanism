@@ -181,48 +181,48 @@ public class PacketHandler {
     }
 
     public void initialize() {
-        netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
-        netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Side.CLIENT);
+        netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Dist.CLIENT);
         //FREE ID 2
         //FREE ID 3
-        netHandler.registerMessage(PacketItemStack.class, ItemStackMessage.class, 4, Side.SERVER);
-        netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.CLIENT);
-        netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.SERVER);
-        netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Side.CLIENT);
-        netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Side.SERVER);
-        netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
-        netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
-        netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Side.SERVER);
-        netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.CLIENT);
-        netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.SERVER);
-        netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Side.SERVER);
-        netHandler.registerMessage(PacketRedstoneControl.class, RedstoneControlMessage.class, 12, Side.SERVER);
+        netHandler.registerMessage(PacketItemStack.class, ItemStackMessage.class, 4, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Dist.CLIENT);
+        netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Dist.CLIENT);
+        netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Dist.CLIENT);
+        netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Dist.CLIENT);
+        netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketRedstoneControl.class, RedstoneControlMessage.class, 12, Dist.DEDICATED_SERVER);
         //FREE ID 13
-        netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Side.CLIENT);
-        netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Side.SERVER);
-        netHandler.registerMessage(PacketNewFilter.class, NewFilterMessage.class, 15, Side.SERVER);
-        netHandler.registerMessage(PacketEditFilter.class, EditFilterMessage.class, 16, Side.SERVER);
-        netHandler.registerMessage(PacketConfigurationUpdate.class, ConfigurationUpdateMessage.class, 17, Side.SERVER);
-        netHandler.registerMessage(PacketSimpleGui.class, SimpleGuiMessage.class, 18, Side.CLIENT);
-        netHandler.registerMessage(PacketSimpleGui.class, SimpleGuiMessage.class, 18, Side.SERVER);
-        netHandler.registerMessage(PacketDigitalMinerGui.class, DigitalMinerGuiMessage.class, 19, Side.CLIENT);
-        netHandler.registerMessage(PacketDigitalMinerGui.class, DigitalMinerGuiMessage.class, 19, Side.SERVER);
-        netHandler.registerMessage(PacketJetpackData.class, JetpackDataMessage.class, 20, Side.CLIENT);
-        netHandler.registerMessage(PacketJetpackData.class, JetpackDataMessage.class, 20, Side.SERVER);
-        netHandler.registerMessage(PacketKey.class, KeyMessage.class, 21, Side.SERVER);
-        netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Side.CLIENT);
-        netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Side.SERVER);
-        netHandler.registerMessage(PacketConfigSync.class, ConfigSyncMessage.class, 23, Side.CLIENT);
-        netHandler.registerMessage(PacketBoxBlacklist.class, BoxBlacklistMessage.class, 24, Side.CLIENT);
+        netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Dist.CLIENT);
+        netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketNewFilter.class, NewFilterMessage.class, 15, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketEditFilter.class, EditFilterMessage.class, 16, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketConfigurationUpdate.class, ConfigurationUpdateMessage.class, 17, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketSimpleGui.class, SimpleGuiMessage.class, 18, Dist.CLIENT);
+        netHandler.registerMessage(PacketSimpleGui.class, SimpleGuiMessage.class, 18, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketDigitalMinerGui.class, DigitalMinerGuiMessage.class, 19, Dist.CLIENT);
+        netHandler.registerMessage(PacketDigitalMinerGui.class, DigitalMinerGuiMessage.class, 19, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketJetpackData.class, JetpackDataMessage.class, 20, Dist.CLIENT);
+        netHandler.registerMessage(PacketJetpackData.class, JetpackDataMessage.class, 20, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketKey.class, KeyMessage.class, 21, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Dist.CLIENT);
+        netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketConfigSync.class, ConfigSyncMessage.class, 23, Dist.CLIENT);
+        netHandler.registerMessage(PacketBoxBlacklist.class, BoxBlacklistMessage.class, 24, Dist.CLIENT);
         //FREE ID 25
-        netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Side.SERVER);
-        netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.CLIENT);
-        netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.SERVER);
-        netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
-        netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
-        netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Side.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, FreeRunnerDataMessage.class, 31, Side.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, FreeRunnerDataMessage.class, 31, Side.SERVER);
+        netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Dist.CLIENT);
+        netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Dist.CLIENT);
+        netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Dist.CLIENT);
+        netHandler.registerMessage(PacketFreeRunnerData.class, FreeRunnerDataMessage.class, 31, Dist.CLIENT);
+        netHandler.registerMessage(PacketFreeRunnerData.class, FreeRunnerDataMessage.class, 31, Dist.DEDICATED_SERVER);
     }
 
     /**

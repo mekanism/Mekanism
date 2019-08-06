@@ -5,15 +5,15 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFire;
-import net.minecraft.block.BlockPortal;
+import net.minecraft.block.FireBlock;
+import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockWorldState;
+import net.minecraft.util.CachedBlockInfo;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.pattern.BlockPattern;
-import net.minecraft.block.state.pattern.BlockPattern.PatternHelper;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.pattern.BlockPattern;
+import net.minecraft.block.pattern.BlockPattern.PatternHelper;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 //TODO: Rename
 public class PortalHelper {
 
-    public static class Size extends BlockPortal.Size {
+    public static class Size extends NetherPortalBlock.Size {
 
         private int portalBlockCount;
 
@@ -98,7 +98,7 @@ public class PortalHelper {
         }
     }
 
-    public static class BlockPortalOverride extends BlockPortal {
+    public static class BlockPortalOverride extends NetherPortalBlock {
 
         public static final BlockPortalOverride instance = new BlockPortalOverride();
 
@@ -119,7 +119,7 @@ public class PortalHelper {
                 axis = Axis.X;
                 size = new PortalHelper.Size(world, pos, Direction.Axis.Z);
             }
-            LoadingCache<BlockPos, BlockWorldState> loadingCache = BlockPattern.createLoadingCache(world, true);
+            LoadingCache<BlockPos, CachedBlockInfo> loadingCache = BlockPattern.createLoadingCache(world, true);
             if (!size.isValid()) {
                 return new PatternHelper(pos, Direction.NORTH, Direction.UP, loadingCache, 1, 1, 1);
             }
@@ -189,7 +189,7 @@ public class PortalHelper {
             if (e.getState().getBlock() == Blocks.OBSIDIAN) {
                 World world = e.getWorld();
                 Block newBlock = world.getBlockState(e.getPos()).getBlock();
-                if (newBlock instanceof BlockFire) {
+                if (newBlock instanceof FireBlock) {
                     BlockPortalOverride.instance.trySpawnPortal(world, e.getPos());
                 }
             }

@@ -6,12 +6,12 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer<TileEntityAdvancedSolarGenerator> {
+public class RenderAdvancedSolarGenerator extends TileEntityRenderer<TileEntityAdvancedSolarGenerator> {
 
     private ModelAdvancedSolarGenerator model = new ModelAdvancedSolarGenerator();
 

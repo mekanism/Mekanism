@@ -3,14 +3,14 @@ package mekanism.common.inventory.container;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.FurnaceTileEntity;
 
 public class ContainerFuelwoodHeater extends ContainerMekanism<TileEntityFuelwoodHeater> {
 
-    public ContainerFuelwoodHeater(InventoryPlayer inventory, TileEntityFuelwoodHeater tile) {
+    public ContainerFuelwoodHeater(PlayerInventory inventory, TileEntityFuelwoodHeater tile) {
         super(tile, inventory);
     }
 
@@ -22,7 +22,7 @@ public class ContainerFuelwoodHeater extends ContainerMekanism<TileEntityFuelwoo
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            if (TileEntityFurnace.getItemBurnTime(slotStack) > 0) {
+            if (FurnaceTileEntity.getItemBurnTime(slotStack) > 0) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;

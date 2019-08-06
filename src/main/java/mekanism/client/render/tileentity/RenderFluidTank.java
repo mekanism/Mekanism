@@ -11,16 +11,16 @@ import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.block.Blocks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTank> {
+public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
 
     public static final RenderFluidTank INSTANCE = new RenderFluidTank();
 
@@ -45,7 +45,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
         if (fluid != null && fluidScale > 0) {
             GlStateManager.pushMatrix();
             glChanged = enableGL();
-            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate((float) x, (float) y, (float) z);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 
@@ -67,7 +67,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
         if (valveFluid != null && !valveFluid.getFluid().isGaseous(valveFluid)) {
             GlStateManager.pushMatrix();
             glChanged = enableGL();
-            bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translate((float) x, (float) y, (float) z);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(valveFluid);
             MekanismRenderer.color(valveFluid);

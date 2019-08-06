@@ -24,7 +24,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -47,7 +47,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public static final int SLOT_CRAFT_MATRIX_FIRST = 27;
     public static final int SLOT_CRAFT_MATRIX_LAST = 35;
 
-    public InventoryCrafting dummyInv = MekanismUtils.getDummyCraftingInv();
+    public CraftingInventory dummyInv = MekanismUtils.getDummyCraftingInv();
 
     public int BASE_TICKS_REQUIRED = 40;
 
