@@ -192,7 +192,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 Block block = world.getBlockState(pos).getBlock();
                 if (block == Blocks.DIRT || block == Blocks.GRASS_PATH) {
                     return useItemAs(player, world, pos, side, stack, diameter, this::useHoe);
-                } else if (block == Blocks.GRASS) {
+                } else if (block == Blocks.GRASS_BLOCK) {
                     return useItemAs(player, world, pos, side, stack, diameter, this::useShovel);
                 }
             }
@@ -236,7 +236,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             BlockState newState = null;
-            if (block == Blocks.GRASS || block == Blocks.GRASS_PATH) {
+            if (block == Blocks.GRASS_BLOCK || block == Blocks.GRASS_PATH) {
                 newState = Blocks.FARMLAND.getDefaultState();
             } else if (block == Blocks.DIRT) {
                 DirtType type = state.getValue(BlockDirt.VARIANT);
@@ -259,7 +259,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             return ActionResultType.FAIL;
         } else if (facing != Direction.DOWN && world.isAirBlock(pos.up())) {
             Block block = world.getBlockState(pos).getBlock();
-            if (block == Blocks.GRASS) {
+            if (block == Blocks.GRASS_BLOCK) {
                 setBlock(stack, player, world, pos, Blocks.GRASS_PATH.getDefaultState());
                 return ActionResultType.SUCCESS;
             }
