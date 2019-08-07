@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -39,6 +38,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -250,7 +250,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             byte type = dataStream.readByte();
             if (type == 0) {

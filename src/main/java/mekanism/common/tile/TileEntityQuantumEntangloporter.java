@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +48,7 @@ import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -246,15 +246,15 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
             if (type == 0) {
-                String name = PacketHandler.readString(dataStream);
+                String name = dataStream.readString();
                 boolean isPublic = dataStream.readBoolean();
                 setFrequency(name, isPublic);
             } else if (type == 1) {
-                String freq = PacketHandler.readString(dataStream);
+                String freq = dataStream.readString();
                 boolean isPublic = dataStream.readBoolean();
                 FrequencyManager manager = getManager(new InventoryFrequency(freq, null).setPublic(isPublic));
                 if (manager != null) {

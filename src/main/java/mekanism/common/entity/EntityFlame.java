@@ -1,6 +1,5 @@
 package mekanism.common.entity;
 
-import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -19,8 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
@@ -233,7 +232,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     private void spawnParticlesAt(Pos3D pos) {
         for (int i = 0; i < 10; i++) {
-            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.x + (rand.nextFloat() - 0.5), pos.y + (rand.nextFloat() - 0.5),
+            world.addParticle(ParticleTypes.SMOKE, pos.x + (rand.nextFloat() - 0.5), pos.y + (rand.nextFloat() - 0.5),
                   pos.z + (rand.nextFloat() - 0.5), 0, 0, 0);
         }
     }

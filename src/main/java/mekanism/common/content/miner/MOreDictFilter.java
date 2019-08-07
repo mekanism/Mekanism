@@ -1,6 +1,5 @@
 package mekanism.common.content.miner;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IOreDictFilter;
@@ -8,6 +7,7 @@ import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
 
@@ -43,9 +43,9 @@ public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
     }
 
     @Override
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        oreDictName = PacketHandler.readString(dataStream);
+        oreDictName = dataStream.readString();
     }
 
     @Override

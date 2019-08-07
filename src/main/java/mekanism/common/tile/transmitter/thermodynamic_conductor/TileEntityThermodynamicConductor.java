@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter.thermodynamic_conductor;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import mekanism.api.IHeatTransfer;
@@ -20,6 +19,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -125,7 +125,7 @@ public abstract class TileEntityThermodynamicConductor extends TileEntityTransmi
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
+    public void handlePacketData(PacketBuffer dataStream) throws Exception {
         tier = ConductorTier.values()[dataStream.readInt()];
         super.handlePacketData(dataStream);
         temperature = dataStream.readDouble();

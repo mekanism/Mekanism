@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
@@ -14,20 +13,21 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ArrowItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.UseAction;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
@@ -160,7 +160,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     }
 
     @Override
-    public void handlePacketData(ItemStack stack, ByteBuf dataStream) {
+    public void handlePacketData(ItemStack stack, PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             boolean state = dataStream.readBoolean();
             setFireState(stack, state);

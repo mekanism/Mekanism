@@ -1,6 +1,5 @@
 package mekanism.common.content.matrix;
 
-import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -10,6 +9,7 @@ import mekanism.common.tile.induction_cell.TileEntityInductionCell;
 import mekanism.common.tile.induction_provider.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
@@ -217,7 +217,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         return data;
     }
 
-    public void readStructureData(ByteBuf dataStream) {
+    public void readStructureData(PacketBuffer dataStream) {
         cachedTotal = dataStream.readDouble();
         storageCap = dataStream.readDouble();
         transferCap = dataStream.readDouble();

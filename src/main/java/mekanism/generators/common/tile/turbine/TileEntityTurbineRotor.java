@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.turbine;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
@@ -8,12 +7,13 @@ import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.generators.common.GeneratorsBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
@@ -135,7 +135,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             int prevBlades = blades;

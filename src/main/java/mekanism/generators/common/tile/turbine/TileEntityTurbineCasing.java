@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.turbine;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
@@ -24,6 +23,7 @@ import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
@@ -172,7 +172,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (!world.isRemote) {
             if (structure != null) {
                 byte type = dataStream.readByte();

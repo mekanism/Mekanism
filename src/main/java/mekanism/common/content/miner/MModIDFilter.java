@@ -1,13 +1,12 @@
 package mekanism.common.content.miner;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
-import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public class MModIDFilter extends MinerFilter implements IModIDFilter {
 
@@ -43,9 +42,9 @@ public class MModIDFilter extends MinerFilter implements IModIDFilter {
     }
 
     @Override
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        modID = PacketHandler.readString(dataStream);
+        modID = dataStream.readString();
     }
 
     @Override

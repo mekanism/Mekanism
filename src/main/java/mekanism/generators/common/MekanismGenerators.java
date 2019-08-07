@@ -3,7 +3,6 @@ package mekanism.generators.common;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 import buildcraft.api.mj.MjAPI;
-import io.netty.buffer.ByteBuf;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -27,6 +26,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -152,12 +152,12 @@ public class MekanismGenerators implements IModule {
     }
 
     @Override
-    public void writeConfig(ByteBuf dataStream, MekanismConfig config) {
+    public void writeConfig(PacketBuffer dataStream, MekanismConfig config) {
         config.generators.write(dataStream);
     }
 
     @Override
-    public void readConfig(ByteBuf dataStream, MekanismConfig destConfig) {
+    public void readConfig(PacketBuffer dataStream, MekanismConfig destConfig) {
         destConfig.generators.read(dataStream);
     }
 

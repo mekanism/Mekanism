@@ -2,7 +2,6 @@ package mekanism.common.tile.base;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +68,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -408,7 +408,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             redstone = dataStream.readBoolean();
             for (ITileComponent component : components) {

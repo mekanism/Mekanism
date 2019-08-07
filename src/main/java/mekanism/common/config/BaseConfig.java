@@ -1,9 +1,9 @@
 package mekanism.common.config;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.config.options.Option;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -45,7 +45,7 @@ public abstract class BaseConfig {
      *
      * @param config buffer to save to
      */
-    public void write(ByteBuf config) {
+    public void write(PacketBuffer config) {
         options.forEach(o -> o.write(config));
     }
 
@@ -54,7 +54,7 @@ public abstract class BaseConfig {
      *
      * @param config buffer to read from
      */
-    public void read(ByteBuf config) {
+    public void read(PacketBuffer config) {
         options.forEach(o -> o.read(config));
     }
 }

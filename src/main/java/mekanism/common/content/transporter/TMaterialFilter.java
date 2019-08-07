@@ -1,6 +1,5 @@
 package mekanism.common.content.transporter;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -8,10 +7,11 @@ import mekanism.common.content.transporter.Finder.MaterialFinder;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public class TMaterialFilter extends TransporterFilter implements IMaterialFilter {
 
@@ -55,7 +55,7 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
     }
 
     @Override
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         materialItem = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
     }

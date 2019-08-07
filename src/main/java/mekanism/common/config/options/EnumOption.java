@@ -1,10 +1,10 @@
 package mekanism.common.config.options;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.config.BaseConfig;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -17,7 +17,6 @@ public class EnumOption<T extends Enum<T>> extends Option<EnumOption<T>> {
     private T value;
     private final T defaultValue;
     private final Class<T> enumClass;
-    private final T[] enumValues;
 
     @SuppressWarnings("unchecked")
     public EnumOption(BaseConfig owner, String category, String key, T defaultValue, @Nullable String comment) {
@@ -25,7 +24,6 @@ public class EnumOption<T extends Enum<T>> extends Option<EnumOption<T>> {
         this.defaultValue = Objects.requireNonNull(defaultValue);
         this.value = defaultValue;
         this.enumClass = (Class<T>) defaultValue.getClass();
-        this.enumValues = enumClass.getEnumConstants();
     }
 
     public EnumOption(BaseConfig owner, String category, String key, T defaultValue) {
@@ -49,12 +47,12 @@ public class EnumOption<T extends Enum<T>> extends Option<EnumOption<T>> {
     }
 
     @Override
-    public void write(ByteBuf buf) {
-        buf.writeInt(this.value.ordinal());
+    public void write(PacketBuffer buf) {
+        buf.writeEnumValue(this.value);
     }
 
     @Override
-    public void read(ByteBuf buf) {
-        this.value = this.enumValues[buf.readInt()];
+    public void read(PacketBuffer buf) {
+        this.value = buf.readEnumValue(enumClass);
     }
 }

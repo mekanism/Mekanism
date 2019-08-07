@@ -1,8 +1,8 @@
 package mekanism.common.base;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public interface ITileComponent {
 
@@ -10,7 +10,7 @@ public interface ITileComponent {
 
     void read(CompoundNBT nbtTags);
 
-    void read(ByteBuf dataStream);
+    void read(PacketBuffer dataStream);
 
     void write(CompoundNBT nbtTags);
 

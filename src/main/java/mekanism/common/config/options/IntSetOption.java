@@ -1,11 +1,11 @@
 package mekanism.common.config.options;
 
-import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.config.BaseConfig;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -71,7 +71,7 @@ public class IntSetOption extends Option<IntSetOption> {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(PacketBuffer buf) {
         buf.writeInt(this.value.size());
         for (int i : value) {
             buf.writeInt(i);
@@ -79,7 +79,7 @@ public class IntSetOption extends Option<IntSetOption> {
     }
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(PacketBuffer buf) {
         int size = buf.readInt();
         this.value.clear();
         for (int i = 0; i < size; i++) {

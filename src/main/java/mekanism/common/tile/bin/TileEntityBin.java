@@ -1,6 +1,5 @@
 package mekanism.common.tile.bin;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
@@ -26,14 +25,15 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -261,13 +261,13 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             clientAmount = dataStream.readInt();
             tier = BinTier.values()[dataStream.readInt()];
             if (clientAmount > 0) {
-                itemType = PacketHandler.readStack(dataStream);
+                itemType = dataStream.readItemStack();
             } else {
                 itemType = ItemStack.EMPTY;
             }

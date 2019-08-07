@@ -1,6 +1,5 @@
 package mekanism.common.frequency;
 
-import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -10,6 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public class Frequency {
 
@@ -34,7 +34,7 @@ public class Frequency {
         read(nbtTags);
     }
 
-    public Frequency(ByteBuf dataStream) {
+    public Frequency(PacketBuffer dataStream) {
         read(dataStream);
     }
 
@@ -87,15 +87,15 @@ public class Frequency {
 
     public void write(TileNetworkList data) {
         data.add(name);
-        data.add(ownerUUID.toString());
+        data.add(ownerUUID);
         data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
         data.add(publicFreq);
     }
 
-    protected void read(ByteBuf dataStream) {
-        name = PacketHandler.readString(dataStream);
-        ownerUUID = UUID.fromString(PacketHandler.readString(dataStream));
-        clientOwner = PacketHandler.readString(dataStream);
+    protected void read(PacketBuffer dataStream) {
+        name = dataStream.readString();
+        ownerUUID = dataStream.readUniqueId();
+        clientOwner = dataStream.readString();
         publicFreq = dataStream.readBoolean();
     }
 

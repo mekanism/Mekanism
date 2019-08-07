@@ -1,6 +1,5 @@
 package mekanism.common.content.miner;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -8,6 +7,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
 
@@ -59,7 +59,7 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
     }
 
     @Override
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         fuzzy = dataStream.readBoolean();
         itemType = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());

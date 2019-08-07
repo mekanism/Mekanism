@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
@@ -29,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
@@ -490,7 +490,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
             if (type == 0) {
@@ -525,7 +525,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                     NonNullList<ItemStack> inv = NonNullList.withSize(9, ItemStack.EMPTY);
                     for (int i = 0; i < 9; i++) {
                         if (dataStream.readBoolean()) {
-                            inv.set(i, PacketHandler.readStack(dataStream));
+                            inv.set(i, dataStream.readItemStack());
                         }
                     }
                     formula = new RecipeFormula(world, inv);

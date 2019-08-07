@@ -1,6 +1,5 @@
 package mekanism.common.entity;
 
-import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;

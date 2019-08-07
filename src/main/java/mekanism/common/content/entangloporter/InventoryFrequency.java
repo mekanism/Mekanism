@@ -1,6 +1,5 @@
 package mekanism.common.content.entangloporter;
 
-import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.TileNetworkList;
@@ -13,6 +12,7 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidTank;
@@ -39,7 +39,7 @@ public class InventoryFrequency extends Frequency {
         super(nbtTags);
     }
 
-    public InventoryFrequency(ByteBuf dataStream) {
+    public InventoryFrequency(PacketBuffer dataStream) {
         super(dataStream);
     }
 
@@ -103,7 +103,7 @@ public class InventoryFrequency extends Frequency {
     }
 
     @Override
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());

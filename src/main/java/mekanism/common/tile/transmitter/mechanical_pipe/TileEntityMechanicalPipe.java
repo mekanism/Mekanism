@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter.mechanical_pipe;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,6 +18,7 @@ import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -266,7 +266,7 @@ public abstract class TileEntityMechanicalPipe extends TileEntityTransmitter<IFl
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
+    public void handlePacketData(PacketBuffer dataStream) throws Exception {
         tier = PipeTier.values()[dataStream.readInt()];
         super.handlePacketData(dataStream);
     }

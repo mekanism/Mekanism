@@ -1,6 +1,5 @@
 package mekanism.common.item.block.machine;
 
-import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,20 +28,23 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
@@ -50,8 +52,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem, IItemNetwork,
       ITieredItem<FluidTankTier>, IItemRedirectedModel {
@@ -264,7 +264,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
     }
 
     @Override
-    public void handlePacketData(ItemStack stack, ByteBuf dataStream) {
+    public void handlePacketData(ItemStack stack, PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             setBucketMode(stack, dataStream.readBoolean());
         }

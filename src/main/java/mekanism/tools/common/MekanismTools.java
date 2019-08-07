@@ -1,6 +1,5 @@
 package mekanism.tools.common;
 
-import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Random;
 import mekanism.common.Mekanism;
@@ -17,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -167,12 +167,12 @@ public class MekanismTools implements IModule {
     }
 
     @Override
-    public void writeConfig(ByteBuf dataStream, MekanismConfig config) {
+    public void writeConfig(PacketBuffer dataStream, MekanismConfig config) {
         config.tools.write(dataStream);
     }
 
     @Override
-    public void readConfig(ByteBuf dataStream, MekanismConfig destConfig) {
+    public void readConfig(PacketBuffer dataStream, MekanismConfig destConfig) {
         destConfig.tools.read(dataStream);
     }
 

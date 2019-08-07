@@ -1,10 +1,10 @@
 package mekanism.common.config.options;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.config.BaseConfig;
 import mekanism.common.util.FieldsAreNonnullByDefault;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -40,18 +40,18 @@ public abstract class Option<THISTYPE extends Option> {
     public abstract void load(Configuration config);
 
     /**
-     * Serialise value to network buffer Must write the same way {@link #read(ByteBuf)} reads
+     * Serialise value to network buffer Must write the same way {@link #read(PacketBuffer)} reads
      *
      * @param buf where to write to.
      */
-    public abstract void write(ByteBuf buf);
+    public abstract void write(PacketBuffer buf);
 
     /**
-     * Deserialise from network buffer Must read the same way {@link #write(ByteBuf)} writes
+     * Deserialise from network buffer Must read the same way {@link #write(PacketBuffer)} writes
      *
      * @param buf where to read from
      */
-    public abstract void read(ByteBuf buf);
+    public abstract void read(PacketBuffer buf);
 
     public THISTYPE setRequiresWorldRestart(boolean requiresWorldRestart) {
         this.requiresWorldRestart = requiresWorldRestart;

@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -19,14 +18,15 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityMekanism implements IMultiblock<T> {
 
@@ -194,7 +194,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (structure == null) {
@@ -210,7 +210,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     structure.volLength = dataStream.readInt();
                     structure.renderLocation = Coord4D.read(dataStream);
                     if (dataStream.readBoolean()) {
-                        structure.inventoryID = PacketHandler.readString(dataStream);
+                        structure.inventoryID = dataStream.readString();
                     } else {
                         structure.inventoryID = null;
                     }

@@ -1,9 +1,9 @@
 package mekanism.common.config.options;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.config.BaseConfig;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -63,12 +63,12 @@ public class FloatOption extends Option<FloatOption> {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(PacketBuffer buf) {
         buf.writeFloat(this.value);
     }
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(PacketBuffer buf) {
         this.value = buf.readFloat();
     }
 }

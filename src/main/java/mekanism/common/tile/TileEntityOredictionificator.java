@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -25,6 +24,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -159,7 +159,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             int type = dataStream.readInt();
@@ -321,7 +321,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             return filter;
         }
 
-        public static OredictionificatorFilter readFromPacket(ByteBuf dataStream) {
+        public static OredictionificatorFilter readFromPacket(PacketBuffer dataStream) {
             OredictionificatorFilter filter = new OredictionificatorFilter();
             filter.read(dataStream);
             return filter;
@@ -342,8 +342,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             data.add(index);
         }
 
-        protected void read(ByteBuf dataStream) {
-            filter = PacketHandler.readString(dataStream);
+        protected void read(PacketBuffer dataStream) {
+            filter = dataStream.readString();
             index = dataStream.readInt();
         }
 

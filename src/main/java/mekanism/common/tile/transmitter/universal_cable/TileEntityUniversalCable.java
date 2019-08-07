@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter.universal_cable;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
-import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -29,6 +28,7 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -271,7 +271,7 @@ public abstract class TileEntityUniversalCable extends TileEntityTransmitter<Ene
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
+    public void handlePacketData(PacketBuffer dataStream) throws Exception {
         tier = CableTier.values()[dataStream.readInt()];
         super.handlePacketData(dataStream);
     }

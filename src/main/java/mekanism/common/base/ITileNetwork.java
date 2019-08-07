@@ -1,7 +1,7 @@
 package mekanism.common.base;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
+import net.minecraft.network.PacketBuffer;
 
 /**
  * Internal interface used for blocks that send data between clients and the server
@@ -15,7 +15,7 @@ public interface ITileNetwork {
      *
      * @param dataStream Datastream to parse
      */
-    void handlePacketData(ByteBuf dataStream) throws Exception;
+    void handlePacketData(PacketBuffer dataStream) throws Exception;
 
     /**
      * Gets an ArrayList of data this tile entity keeps synchronized with the client.

@@ -1,7 +1,7 @@
 package mekanism.common.security;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import net.minecraft.network.PacketBuffer;
 
 public class SecurityData {
 
@@ -16,14 +16,14 @@ public class SecurityData {
         override = frequency.override;
     }
 
-    public static SecurityData read(ByteBuf dataStream) {
+    public static SecurityData read(PacketBuffer dataStream) {
         SecurityData data = new SecurityData();
         data.mode = SecurityMode.values()[dataStream.readInt()];
         data.override = dataStream.readBoolean();
         return data;
     }
 
-    public void write(ByteBuf dataStream) {
+    public void write(PacketBuffer dataStream) {
         dataStream.writeInt(mode.ordinal());
         dataStream.writeBoolean(override);
     }

@@ -1,6 +1,5 @@
 package mekanism.common.integration.multipart;
 
-import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntIterator;
@@ -13,6 +12,7 @@ import mcmultipart.api.slot.IPartSlot;
 import mcmultipart.api.world.IMultipartBlockAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.ITileNetwork;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.IWorldReader;
@@ -92,7 +92,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
+    public void handlePacketData(PacketBuffer dataStream) throws Exception {
         while (dataStream.readableBytes() > 0) {
             byte side = dataStream.readByte();
             ITileNetwork networkTile = tileSideMap.get(side);

@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Iterator;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -26,7 +25,6 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.CapabilityUtils;
@@ -41,6 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -203,7 +202,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
             if (type == 0) {
@@ -267,7 +266,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         }
     }
 
-    private void readState(ByteBuf dataStream) {
+    private void readState(PacketBuffer dataStream) {
         int c = dataStream.readInt();
         if (c != -1) {
             color = TransporterUtils.colors.get(c);
@@ -279,7 +278,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         singleItem = dataStream.readBoolean();
     }
 
-    private void readFilters(ByteBuf dataStream) {
+    private void readFilters(PacketBuffer dataStream) {
         filters.clear();
         int amount = dataStream.readInt();
         for (int i = 0; i < amount; i++) {

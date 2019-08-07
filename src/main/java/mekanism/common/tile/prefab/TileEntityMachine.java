@@ -1,6 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
@@ -9,6 +8,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -41,7 +41,7 @@ public abstract class TileEntityMachine extends TileEntityMekanism implements IU
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             setEnergyPerTick(dataStream.readDouble());

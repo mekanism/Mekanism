@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter.logistical_transporter;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,6 +33,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -173,7 +173,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
+    public void handlePacketData(PacketBuffer dataStream) throws Exception {
         if (FMLEnvironment.dist.isClient()) {
             int type = dataStream.readInt();
             if (type == 0) {
@@ -249,7 +249,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
     }
 
 
-    private void readStack(ByteBuf dataStream) {
+    private void readStack(PacketBuffer dataStream) {
         int id = dataStream.readInt();
         TransporterStack stack = TransporterStack.readFromPacket(dataStream);
         if (stack.progress == 0) {

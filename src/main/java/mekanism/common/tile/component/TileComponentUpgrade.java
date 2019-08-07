@@ -1,6 +1,5 @@
 package mekanism.common.tile.component;
 
-import io.netty.buffer.ByteBuf;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
@@ -14,6 +13,7 @@ import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile> implements ITileComponent {
 
@@ -138,7 +138,7 @@ public class TileComponentUpgrade<TILE extends TileEntityMekanism & IUpgradeTile
     }
 
     @Override
-    public void read(ByteBuf dataStream) {
+    public void read(PacketBuffer dataStream) {
         upgrades.clear();
         int amount = dataStream.readInt();
 

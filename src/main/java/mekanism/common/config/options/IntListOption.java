@@ -1,9 +1,9 @@
 package mekanism.common.config.options;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.config.BaseConfig;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -63,7 +63,7 @@ public class IntListOption extends Option<IntListOption> {
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(PacketBuffer buf) {
         buf.writeInt(this.value.length);
         for (int i : value) {
             buf.writeInt(i);
@@ -71,7 +71,7 @@ public class IntListOption extends Option<IntListOption> {
     }
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(PacketBuffer buf) {
         int size = buf.readInt();
         this.value = new int[size];
         for (int i = 0; i < size; i++) {

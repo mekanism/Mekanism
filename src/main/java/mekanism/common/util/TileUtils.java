@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
@@ -9,6 +8,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -41,16 +41,16 @@ public class TileUtils {
         }
     }
 
-    public static void readTankData(ByteBuf dataStream, GasTank tank) {
-        tank.setGas(GasStack.readFromNBT(PacketHandler.readNBT(dataStream)));
+    public static void readTankData(PacketBuffer dataStream, GasTank tank) {
+        tank.setGas(GasStack.readFromNBT(dataStream.readCompoundTag()));
     }
 
-    public static void readTankData(ByteBuf dataStream, FluidTank tank) {
+    public static void readTankData(PacketBuffer dataStream, FluidTank tank) {
         tank.setFluid(readFluidStack(dataStream));
     }
 
-    public static FluidStack readFluidStack(ByteBuf dataStream) {
-        return FluidStack.loadFluidStackFromNBT(PacketHandler.readNBT(dataStream));
+    public static FluidStack readFluidStack(PacketBuffer dataStream) {
+        return FluidStack.loadFluidStackFromNBT(dataStream.readCompoundTag());
     }
 
 

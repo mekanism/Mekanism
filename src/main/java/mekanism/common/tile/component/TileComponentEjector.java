@@ -1,6 +1,5 @@
 package mekanism.common.tile.component;
 
-import io.netty.buffer.ByteBuf;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
@@ -28,6 +27,7 @@ import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
@@ -212,7 +212,7 @@ public class TileComponentEjector implements ITileComponent {
     }
 
     @Override
-    public void read(ByteBuf dataStream) {
+    public void read(PacketBuffer dataStream) {
         strictInput = dataStream.readBoolean();
         outputColor = readColor(dataStream.readInt());
         for (int i = 0; i < 6; i++) {

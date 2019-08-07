@@ -1,6 +1,5 @@
 package mekanism.common.tile.component;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -19,6 +18,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -195,7 +195,7 @@ public class TileComponentConfig implements ITileComponent {
     }
 
     @Override
-    public void read(ByteBuf dataStream) {
+    public void read(PacketBuffer dataStream) {
         transmissions.clear();
 
         int amount = dataStream.readInt();

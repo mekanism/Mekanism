@@ -1,9 +1,9 @@
 package mekanism.common.config;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.common.config.options.BooleanOption;
 import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.IntOption;
+import net.minecraft.network.PacketBuffer;
 
 /**
  * Created by Thiakil on 15/03/2019.
@@ -44,12 +44,12 @@ public class ClientConfig extends BaseConfig {
           "Align HUD with left (if true) or right (if false)");
 
     @Override
-    public void write(ByteBuf config) {
+    public void write(PacketBuffer config) {
         throw new UnsupportedOperationException("Client config shouldn't be synced");
     }
 
     @Override
-    public void read(ByteBuf config) {
+    public void read(PacketBuffer config) {
         throw new UnsupportedOperationException("Client config shouldn't be synced");
     }
 }

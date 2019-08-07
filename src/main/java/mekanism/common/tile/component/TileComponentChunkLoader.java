@@ -1,6 +1,5 @@
 package mekanism.common.tile.component;
 
-import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -16,6 +15,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
@@ -137,7 +137,7 @@ public class TileComponentChunkLoader implements ITileComponent {
     }
 
     @Override
-    public void read(ByteBuf dataStream) {
+    public void read(PacketBuffer dataStream) {
     }
 
     @Override

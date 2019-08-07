@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +29,7 @@ import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.TextComponentGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -282,7 +282,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
+    public void handlePacketData(PacketBuffer dataStream) throws Exception {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             currentTransmitterConnections = dataStream.readByte();
             currentAcceptorConnections = dataStream.readByte();

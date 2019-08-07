@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,14 +14,15 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
 
@@ -89,7 +89,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     }
 
     @Override
-    public void handlePacketData(ItemStack stack, ByteBuf dataStream) {
+    public void handlePacketData(ItemStack stack, PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int channel = dataStream.readInt();
             setChannel(stack, channel);

@@ -1,6 +1,5 @@
 package mekanism.common.content.transporter;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -9,6 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TItemStackFilter extends TransporterFilter implements IItemStackFilter {
@@ -75,7 +75,7 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     }
 
     @Override
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         sizeMode = dataStream.readBoolean();
         min = dataStream.readInt();

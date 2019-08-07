@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
@@ -32,6 +31,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -243,7 +243,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int amount = dataStream.readInt();
             if (amount == 0) {
@@ -259,7 +259,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             int amount = dataStream.readInt();
             if (amount > 0) {
                 infuseStored.setAmount(amount);
-                infuseStored.setType(InfuseRegistry.get(PacketHandler.readString(dataStream)));
+                infuseStored.setType(InfuseRegistry.get(dataStream.readString()));
             } else {
                 infuseStored.setEmpty();
             }

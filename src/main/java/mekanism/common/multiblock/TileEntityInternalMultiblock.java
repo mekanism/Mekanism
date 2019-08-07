@@ -1,10 +1,10 @@
 package mekanism.common.multiblock;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IBlockProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInternalMultiblock extends TileEntityMekanism {
@@ -20,11 +20,11 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (dataStream.readBoolean()) {
-                multiblockUUID = PacketHandler.readString(dataStream);
+                multiblockUUID = dataStream.readString();
             } else {
                 multiblockUUID = null;
             }

@@ -1,10 +1,10 @@
 package mekanism.common.config;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.IntOption;
 import mekanism.common.config.options.IntSetOption;
 import mekanism.generators.common.block.states.GeneratorType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -70,7 +70,7 @@ public class GeneratorsConfig extends BaseConfig {
     }
 
     @Override
-    public void read(ByteBuf config) {
+    public void read(PacketBuffer config) {
         super.read(config);
         validate();
     }

@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter.logistical_transporter;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -15,6 +14,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.StringTextComponent;
@@ -49,7 +49,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
+    public void handlePacketData(PacketBuffer dataStream) throws Exception {
         super.handlePacketData(dataStream);
         if (getWorld().isRemote) {
             modes[0] = dataStream.readInt();

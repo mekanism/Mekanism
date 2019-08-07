@@ -1,6 +1,5 @@
 package mekanism.common.content.transporter;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -10,6 +9,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public abstract class TransporterFilter implements IFilter {
 
@@ -27,7 +27,7 @@ public abstract class TransporterFilter implements IFilter {
         return filter;
     }
 
-    public static TransporterFilter readFromPacket(ByteBuf dataStream) {
+    public static TransporterFilter readFromPacket(PacketBuffer dataStream) {
         TransporterFilter filter = getType(dataStream.readInt());
         filter.read(dataStream);
         return filter;
@@ -81,7 +81,7 @@ public abstract class TransporterFilter implements IFilter {
         }
     }
 
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         allowDefault = dataStream.readBoolean();
         int c = dataStream.readInt();
         if (c != -1) {

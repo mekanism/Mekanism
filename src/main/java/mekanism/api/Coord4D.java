@@ -1,12 +1,12 @@
 package mekanism.api;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -16,7 +16,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
 
@@ -91,13 +90,13 @@ public class Coord4D {
     }
 
     /**
-     * Returns a new Coord4D from a ByteBuf.
+     * Returns a new Coord4D from a PacketBuffer.
      *
      * @param dataStream - data input to read from
      *
      * @return the Coord4D from the data input
      */
-    public static Coord4D read(ByteBuf dataStream) {
+    public static Coord4D read(PacketBuffer dataStream) {
         return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
     }
 
@@ -180,11 +179,11 @@ public class Coord4D {
     }
 
     /**
-     * Writes this Coord4D's data to a ByteBuf for packet transfer.
+     * Writes this Coord4D's data to a PacketBuffer for packet transfer.
      *
-     * @param dataStream - the ByteBuf to add the data to
+     * @param dataStream - the PacketBuffer to add the data to
      */
-    public void write(ByteBuf dataStream) {
+    public void write(PacketBuffer dataStream) {
         dataStream.writeInt(x);
         dataStream.writeInt(y);
         dataStream.writeInt(z);

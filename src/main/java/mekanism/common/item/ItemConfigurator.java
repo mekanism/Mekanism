@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
-import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +36,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -236,7 +236,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     /*end cofh IToolHammer */
 
     @Override
-    public void handlePacketData(ItemStack stack, ByteBuf dataStream) {
+    public void handlePacketData(ItemStack stack, PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int state = dataStream.readInt();
             setState(stack, ConfiguratorMode.values()[state]);

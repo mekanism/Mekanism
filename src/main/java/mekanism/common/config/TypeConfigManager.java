@@ -1,6 +1,5 @@
 package mekanism.common.config;
 
-import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
@@ -8,6 +7,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.config.options.Option;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -66,14 +66,14 @@ public class TypeConfigManager<T extends Enum<T>> extends Option<TypeConfigManag
     }
 
     @Override
-    public void write(ByteBuf buf) {
+    public void write(PacketBuffer buf) {
         for (T type : validValuesSupplier.get()) {
             buf.writeBoolean(config.contains(type));
         }
     }
 
     @Override
-    public void read(ByteBuf buf) {
+    public void read(PacketBuffer buf) {
         config.clear();
         for (T type : validValuesSupplier.get()) {
             if (buf.readBoolean()) {

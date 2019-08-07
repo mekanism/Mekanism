@@ -1,6 +1,5 @@
 package mekanism.common.content.miner;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
@@ -8,6 +7,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public abstract class MinerFilter implements IFilter {
 
@@ -21,7 +21,7 @@ public abstract class MinerFilter implements IFilter {
         return filter;
     }
 
-    public static MinerFilter readFromPacket(ByteBuf dataStream) {
+    public static MinerFilter readFromPacket(PacketBuffer dataStream) {
         MinerFilter filter = getType(dataStream.readInt());
         filter.read(dataStream);
         return filter;
@@ -70,7 +70,7 @@ public abstract class MinerFilter implements IFilter {
         }
     }
 
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         requireStack = dataStream.readBoolean();
         if (dataStream.readBoolean()) {
             replaceStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());

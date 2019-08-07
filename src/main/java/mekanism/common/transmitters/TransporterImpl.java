@@ -1,6 +1,5 @@
 package mekanism.common.transmitters;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +32,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -71,7 +71,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         }
     }
 
-    public void readFromPacket(ByteBuf dataStream) {
+    public void readFromPacket(PacketBuffer dataStream) {
         transit.clear();
         int count = dataStream.readInt();
         for (int i = 0; i < count; i++) {

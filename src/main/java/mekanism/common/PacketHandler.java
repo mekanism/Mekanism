@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
@@ -65,12 +64,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class PacketHandler {
 
     private static final String PROTOCOL_VERSION = Integer.toString(1);
-    private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder
-          .named(new ResourceLocation(Mekanism.MODID, "main_channel"))
-          .clientAcceptedVersions(PROTOCOL_VERSION::equals)
-          .serverAcceptedVersions(PROTOCOL_VERSION::equals)
-          .networkProtocolVersion(() -> PROTOCOL_VERSION)
-          .simpleChannel();
+    private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(Mekanism.MODID, "main_channel"))
+          .clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals).networkProtocolVersion(() -> PROTOCOL_VERSION).simpleChannel();
 
     /**
      * Encodes an Object[] of data into a DataOutputStream.
@@ -95,13 +90,15 @@ public class PacketHandler {
             } else if (data instanceof Float) {
                 output.writeFloat((Float) data);
             } else if (data instanceof String) {
-                writeString(output, (String) data);
+                output.writeString((String) data);
+            } else if (data instanceof UUID) {
+                output.writeUniqueId((UUID) data);
             } else if (data instanceof Direction) {
                 output.writeInt(((Direction) data).ordinal());
             } else if (data instanceof ItemStack) {
-                writeStack(output, (ItemStack) data);
+                output.writeItemStack((ItemStack) data);
             } else if (data instanceof CompoundNBT) {
-                writeNBT(output, (CompoundNBT) data);
+                output.writeCompoundTag((CompoundNBT) data);
             } else if (data instanceof int[]) {
                 for (int i : (int[]) data) {
                     output.writeInt(i);
@@ -118,36 +115,6 @@ public class PacketHandler {
                 throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));
             }
         }
-    }
-
-    //TODO: Replace these helper read/write things with just direct calls
-    public static void writeString(PacketBuffer output, String s) {
-        output.writeString(s);
-    }
-
-    public static String readString(PacketBuffer input) {
-        return input.readString();
-    }
-
-    public static void writeStack(PacketBuffer output, ItemStack stack) {
-        output.writeItemStack(stack);
-    }
-
-    public static ItemStack readStack(PacketBuffer input) {
-        return input.readItemStack();
-    }
-
-    public static void writeNBT(PacketBuffer output, CompoundNBT nbtTags) {
-        output.writeCompoundTag(nbtTags);
-    }
-
-    public static CompoundNBT readNBT(PacketBuffer input) {
-        return input.readCompoundTag();
-    }
-
-    @Nonnull
-    public static UUID readUUID(PacketBuffer dataStream) {
-        return dataStream.readUniqueId();
     }
 
     public static void log(String log) {

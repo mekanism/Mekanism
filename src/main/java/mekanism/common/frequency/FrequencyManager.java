@@ -1,6 +1,5 @@
 package mekanism.common.frequency;
 
-import io.netty.buffer.ByteBuf;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,6 +13,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
@@ -194,12 +194,12 @@ public class FrequencyManager {
         }
     }
 
-    public Set<Frequency> readFrequencies(ByteBuf dataStream) {
+    public Set<Frequency> readFrequencies(PacketBuffer dataStream) {
         Set<Frequency> ret = new HashSet<>();
         int size = dataStream.readInt();
         try {
             for (int i = 0; i < size; i++) {
-                Frequency freq = frequencyClass.getConstructor(new Class[]{ByteBuf.class}).newInstance(dataStream);
+                Frequency freq = frequencyClass.getConstructor(new Class[]{PacketBuffer.class}).newInstance(dataStream);
                 freq.read(dataStream);
                 ret.add(freq);
             }

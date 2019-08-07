@@ -1,12 +1,10 @@
 package mekanism.common.content.transporter;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -16,6 +14,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import org.apache.commons.lang3.tuple.Pair;
@@ -44,7 +43,7 @@ public class TransporterStack {
         return stack;
     }
 
-    public static TransporterStack readFromPacket(ByteBuf dataStream) {
+    public static TransporterStack readFromPacket(PacketBuffer dataStream) {
         TransporterStack stack = new TransporterStack();
         stack.read(dataStream);
         return stack;
@@ -72,7 +71,7 @@ public class TransporterStack {
         data.add(itemStack);
     }
 
-    public void read(ByteBuf dataStream) {
+    public void read(PacketBuffer dataStream) {
         int c = dataStream.readInt();
         if (c != -1) {
             color = TransporterUtils.colors.get(c);
@@ -88,7 +87,7 @@ public class TransporterStack {
             clientNext = Coord4D.read(dataStream);
         }
         clientPrev = Coord4D.read(dataStream);
-        itemStack = PacketHandler.readStack(dataStream);
+        itemStack = dataStream.readItemStack();
     }
 
     public void write(CompoundNBT nbtTags) {

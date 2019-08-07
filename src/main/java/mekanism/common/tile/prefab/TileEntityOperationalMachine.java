@@ -1,6 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Upgrade;
@@ -9,6 +8,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class TileEntityOperationalMachine extends TileEntityMachine implements IComparatorSupport {
@@ -29,7 +29,7 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             operatingTicks = dataStream.readInt();

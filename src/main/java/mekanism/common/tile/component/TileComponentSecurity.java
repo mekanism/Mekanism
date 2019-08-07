@@ -1,6 +1,5 @@
 package mekanism.common.tile.component;
 
-import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
@@ -15,6 +14,7 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 public class TileComponentSecurity implements ITileComponent {
 
@@ -130,12 +130,12 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void read(ByteBuf dataStream) {
+    public void read(PacketBuffer dataStream) {
         securityMode = SecurityMode.values()[dataStream.readInt()];
 
         if (dataStream.readBoolean()) {
-            ownerUUID = UUID.fromString(PacketHandler.readString(dataStream));
-            clientOwner = PacketHandler.readString(dataStream);
+            ownerUUID = dataStream.readUniqueId()
+            clientOwner = dataStream.readString();
         } else {
             ownerUUID = null;
             clientOwner = null;
@@ -167,7 +167,7 @@ public class TileComponentSecurity implements ITileComponent {
 
         if (ownerUUID != null) {
             data.add(true);
-            data.add(ownerUUID.toString());
+            data.add(ownerUUID);
             data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
         } else {
             data.add(false);

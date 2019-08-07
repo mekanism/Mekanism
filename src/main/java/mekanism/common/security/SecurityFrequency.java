@@ -1,6 +1,5 @@
 package mekanism.common.security;
 
-import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
@@ -10,6 +9,7 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class SecurityFrequency extends Frequency {
@@ -32,7 +32,7 @@ public class SecurityFrequency extends Frequency {
         super(nbtTags);
     }
 
-    public SecurityFrequency(ByteBuf dataStream) {
+    public SecurityFrequency(PacketBuffer dataStream) {
         super(dataStream);
     }
 
@@ -64,7 +64,7 @@ public class SecurityFrequency extends Frequency {
         if (nbtTags.contains("trusted")) {
             ListNBT trustedList = nbtTags.getList("trusted", NBT.TAG_STRING);
             for (int i = 0; i < trustedList.size(); i++) {
-                trusted.add(trustedList.getStringTagAt(i));
+                trusted.add(trustedList.getString(i));
             }
         }
     }
@@ -83,7 +83,7 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
-    protected void read(ByteBuf dataStream) {
+    protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
 
         trusted = new HashList<>();
@@ -95,7 +95,7 @@ public class SecurityFrequency extends Frequency {
         int size = dataStream.readInt();
 
         for (int i = 0; i < size; i++) {
-            trusted.add(PacketHandler.readString(dataStream));
+            trusted.add(dataStream.readString());
         }
     }
 }

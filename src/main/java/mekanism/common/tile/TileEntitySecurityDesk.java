@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -22,6 +21,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.api.distmarker.Dist;
@@ -120,16 +120,16 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
             if (type == 0) {
                 if (frequency != null) {
-                    frequency.trusted.add(PacketHandler.readString(dataStream));
+                    frequency.trusted.add(dataStream.readString());
                 }
             } else if (type == 1) {
                 if (frequency != null) {
-                    frequency.trusted.remove(PacketHandler.readString(dataStream));
+                    frequency.trusted.remove(dataStream.readString());
                 }
             } else if (type == 2) {
                 if (frequency != null) {
@@ -150,8 +150,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (dataStream.readBoolean()) {
-                clientOwner = PacketHandler.readString(dataStream);
-                ownerUUID = PacketHandler.readUUID(dataStream);
+                clientOwner = dataStream.readString();
+                ownerUUID = dataStream.readUniqueId();
             } else {
                 clientOwner = null;
                 ownerUUID = null;
@@ -197,8 +197,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (ownerUUID != null) {
             data.add(true);
             data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
-            data.add(ownerUUID.getMostSignificantBits());
-            data.add(ownerUUID.getLeastSignificantBits());
+            data.add(ownerUUID);
         } else {
             data.add(false);
         }

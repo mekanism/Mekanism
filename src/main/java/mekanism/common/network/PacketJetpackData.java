@@ -1,6 +1,5 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +12,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketJetpackData {
@@ -57,7 +55,7 @@ public class PacketJetpackData {
                 // TODO: Why is this a dimensional thing?!
                 // because we dont send a packet when a player starts tracking another player (net.minecraftforge.event.entity.player.PlayerEvent.StartTracking)
                 if (!player.world.isRemote) {
-                    Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+                    Mekanism.packetHandler.sendToDimension(message, player.world.getDimension());
                 }
             } else if (message.packetType == JetpackPacket.MODE) {
                 // Use has changed the mode of their jetpack; update it

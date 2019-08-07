@@ -1,6 +1,5 @@
 package mekanism.common.tile.factory;
 
-import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -64,6 +63,7 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -705,7 +705,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) {
+    public void handlePacketData(PacketBuffer dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
             if (type == 0) {
@@ -730,7 +730,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
             int amount = dataStream.readInt();
             if (amount > 0) {
                 infuseStored.setAmount(amount);
-                infuseStored.setType(InfuseRegistry.get(PacketHandler.readString(dataStream)));
+                infuseStored.setType(InfuseRegistry.get(dataStream.readString()));
             } else {
                 infuseStored.setEmpty();
             }
