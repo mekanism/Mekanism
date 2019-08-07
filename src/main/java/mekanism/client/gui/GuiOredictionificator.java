@@ -17,6 +17,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerOredictionificator;
+import mekanism.common.network.PacketOredictionificatorGui;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiPacket;
 import mekanism.common.tile.TileEntityOredictionificator;
@@ -26,9 +27,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.oredict.OreDictionary;
@@ -80,7 +81,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
-            Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0));
+            Mekanism.packetHandler.sendToServer(new PacketOredictionificatorGui(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0));
         }
     }
 
@@ -140,7 +141,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
             for (int i = 0; i < 3; i++) {
                 if (tileEntity.filters.get(getFilterIndex() + i) != null && overFilter(xAxis, yAxis, i * 22 + 18)) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                    Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
+                    Mekanism.packetHandler.sendToServer(new PacketOredictionificatorGui(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
                 }
             }
         }

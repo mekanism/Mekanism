@@ -19,7 +19,7 @@ import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
+import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -28,10 +28,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Keyboard;
@@ -126,7 +126,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
     }
 
     private void sendPacket(SorterGuiPacket type, int guiID, int extra, @Nullable SoundEvent sound) {
-        Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(type, Coord4D.get(tileEntity), guiID, extra, 0));
+        Mekanism.packetHandler.sendToServer(new PacketLogisticalSorterGui(type, Coord4D.get(tileEntity), guiID, extra, 0));
         if (sound != null) {
             SoundHandler.playSound(sound);
         }

@@ -24,7 +24,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketEntityMove;
-import mekanism.common.network.PacketPortalFX.PortalFXMessage;
+import mekanism.common.network.PacketPortalFX;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -309,7 +309,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
                     teleportEntityTo(entity, closestCoords, teleporter);
                 }
                 for (Coord4D coords : frequency.activeCoords) {
-                    Mekanism.packetHandler.sendToAllTracking(new PortalFXMessage(coords), coords);
+                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), coords);
                 }
                 setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
                 world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);

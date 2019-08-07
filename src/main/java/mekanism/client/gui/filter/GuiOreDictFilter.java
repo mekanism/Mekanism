@@ -6,8 +6,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketEditFilter.EditFilterMessage;
-import mekanism.common.network.PacketNewFilter.NewFilterMessage;
+import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.widget.button.Button;
@@ -33,7 +32,7 @@ public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE exten
             }
             if (filter.getOreDictName() != null && !filter.getOreDictName().isEmpty()) {
                 if (isNew) {
-                    Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
+                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
                 } else {
                     Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
                 }

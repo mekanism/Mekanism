@@ -1,9 +1,9 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
@@ -11,25 +11,53 @@ import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
-import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class PacketPortableTeleporter implements IMessageHandler<PortableTeleporterMessage, IMessage> {
+public class PacketPortableTeleporter {
 
-    @Override
-    public IMessage onMessage(PortableTeleporterMessage message, MessageContext context) {
+    private PortableTeleporterPacketType packetType;
+    private List<Frequency> publicCache = new ArrayList<>();
+    private List<Frequency> privateCache = new ArrayList<>();
+    private Frequency frequency;
+    private Hand currentHand;
+    private byte status;
+
+    public PacketPortableTeleporter(PortableTeleporterPacketType type, Hand hand, Frequency freq) {
+        packetType = type;
+        currentHand = hand;
+        if (type == PortableTeleporterPacketType.DATA_REQUEST) {
+            frequency = freq;
+        } else if (type == PortableTeleporterPacketType.SET_FREQ) {
+            frequency = freq;
+        } else if (type == PortableTeleporterPacketType.DEL_FREQ) {
+            frequency = freq;
+        } else if (type == PortableTeleporterPacketType.TELEPORT) {
+            frequency = freq;
+        }
+    }
+
+    private PacketPortableTeleporter(Hand hand, Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs) {
+        packetType = PortableTeleporterPacketType.DATA_RESPONSE;
+
+        currentHand = hand;
+        frequency = freq;
+        status = b;
+
+        publicCache = publicFreqs;
+        privateCache = privateFreqs;
+    }
+
+    public static void handle(PacketPortableTeleporter message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             ItemStack itemstack = player.getHeldItem(message.currentHand);
@@ -89,13 +117,13 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                                         ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
                                     }
                                     player.closeScreen();
-                                    Mekanism.packetHandler.sendToAllTracking(new PortalFXMessage(new Coord4D(player)), coords);
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(player)), coords);
                                     if (player instanceof ServerPlayerEntity) {
                                         TileEntityTeleporter.teleportPlayerTo((ServerPlayerEntity) player, coords, teleporter);
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);
                                     }
                                     world.playSound(player, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                                    Mekanism.packetHandler.sendToAllTracking(new PortalFXMessage(coords), coords);
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), coords);
                                 } catch (Exception ignored) {
                                 }
                             }
@@ -104,10 +132,89 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                 }
             }
         }, player);
-        return null;
     }
 
-    public void sendDataResponse(Frequency given, World world, PlayerEntity player, ItemPortableTeleporter item, ItemStack itemstack, Hand hand) {
+    public static void encode(PacketPortableTeleporter pkt, PacketBuffer buf) {
+        buf.writeEnumValue(pkt.packetType);
+        buf.writeEnumValue(pkt.currentHand);
+        if (pkt.packetType == PortableTeleporterPacketType.DATA_REQUEST) {
+            if (pkt.frequency != null) {
+                buf.writeBoolean(true);
+                buf.writeString(pkt.frequency.name);
+                buf.writeBoolean(pkt.frequency.publicFreq);
+            } else {
+                buf.writeBoolean(false);
+            }
+        } else if (pkt.packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
+            if (pkt.frequency != null) {
+                buf.writeBoolean(true);
+                buf.writeString(pkt.frequency.name);
+                buf.writeBoolean(pkt.frequency.publicFreq);
+            } else {
+                buf.writeBoolean(false);
+            }
+            buf.writeByte(pkt.status);
+
+            TileNetworkList data = new TileNetworkList();
+            data.add(pkt.publicCache.size());
+            for (Frequency freq : pkt.publicCache) {
+                freq.write(data);
+            }
+            data.add(pkt.privateCache.size());
+
+            for (Frequency freq : pkt.privateCache) {
+                freq.write(data);
+            }
+
+            PacketHandler.encode(data.toArray(), buf);
+        } else if (pkt.packetType == PortableTeleporterPacketType.SET_FREQ) {
+            buf.writeString(pkt.frequency.name);
+            buf.writeBoolean(pkt.frequency.publicFreq);
+        } else if (pkt.packetType == PortableTeleporterPacketType.DEL_FREQ) {
+            buf.writeString(pkt.frequency.name);
+            buf.writeBoolean(pkt.frequency.publicFreq);
+        } else if (pkt.packetType == PortableTeleporterPacketType.TELEPORT) {
+            buf.writeString(pkt.frequency.name);
+            buf.writeBoolean(pkt.frequency.publicFreq);
+        }
+    }
+
+    public static PacketPortableTeleporter decode(PacketBuffer buf) {
+        PortableTeleporterPacketType packetType = buf.readEnumValue(PortableTeleporterPacketType.class);
+        Hand currentHand = buf.readEnumValue(Hand.class);
+        List<Frequency> publicCache = new ArrayList<>();
+        List<Frequency> privateCache = new ArrayList<>();
+        Frequency frequency = null;
+        byte status = 0;
+        if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
+            if (buf.readBoolean()) {
+                frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+            }
+        } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
+            if (buf.readBoolean()) {
+                frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+            }
+            status = buf.readByte();
+
+            int amount = buf.readInt();
+            for (int i = 0; i < amount; i++) {
+                publicCache.add(new Frequency(buf));
+            }
+            amount = buf.readInt();
+            for (int i = 0; i < amount; i++) {
+                privateCache.add(new Frequency(buf));
+            }
+        } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
+            frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+        } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
+            frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+        } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
+            frequency = new Frequency(buf.readString(), null).setPublic(buf.readBoolean());
+        }
+        return new PacketPortableTeleporter(currentHand, frequency, status, publicCache, privateCache);
+    }
+
+    public static void sendDataResponse(Frequency given, World world, PlayerEntity player, ItemPortableTeleporter item, ItemStack itemstack, Hand hand) {
         List<Frequency> publicFreqs = new ArrayList<>(getManager(null, world).getFrequencies());
         List<Frequency> privateFreqs = new ArrayList<>(getManager(player.getUniqueID(), world).getFrequencies());
         byte status = 3;
@@ -139,10 +246,10 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                 }
             }
         }
-        Mekanism.packetHandler.sendTo(new PortableTeleporterMessage(hand, given, status, publicFreqs, privateFreqs), (ServerPlayerEntity) player);
+        Mekanism.packetHandler.sendTo(new PacketPortableTeleporter(hand, given, status, publicFreqs, privateFreqs), (ServerPlayerEntity) player);
     }
 
-    public FrequencyManager getManager(UUID owner, World world) {
+    public static FrequencyManager getManager(UUID owner, World world) {
         if (owner == null) {
             return Mekanism.publicTeleporters;
         } else if (!Mekanism.privateTeleporters.containsKey(owner)) {
@@ -159,135 +266,5 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
         SET_FREQ,
         DEL_FREQ,
         TELEPORT
-    }
-
-    public static class PortableTeleporterMessage implements IMessage {
-
-        public PortableTeleporterPacketType packetType;
-
-        public Hand currentHand;
-        public Frequency frequency;
-        public byte status;
-
-        public List<Frequency> publicCache = new ArrayList<>();
-        public List<Frequency> privateCache = new ArrayList<>();
-
-        public PortableTeleporterMessage() {
-        }
-
-        public PortableTeleporterMessage(PortableTeleporterPacketType type, Hand hand, Frequency freq) {
-            packetType = type;
-            currentHand = hand;
-            if (type == PortableTeleporterPacketType.DATA_REQUEST) {
-                frequency = freq;
-            } else if (type == PortableTeleporterPacketType.SET_FREQ) {
-                frequency = freq;
-            } else if (type == PortableTeleporterPacketType.DEL_FREQ) {
-                frequency = freq;
-            } else if (type == PortableTeleporterPacketType.TELEPORT) {
-                frequency = freq;
-            }
-        }
-
-        public PortableTeleporterMessage(Hand hand, Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs) {
-            packetType = PortableTeleporterPacketType.DATA_RESPONSE;
-
-            currentHand = hand;
-            frequency = freq;
-            status = b;
-
-            publicCache = publicFreqs;
-            privateCache = privateFreqs;
-        }
-
-        @Override
-        public void toBytes(ByteBuf buffer) {
-            buffer.writeInt(packetType.ordinal());
-
-            if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
-                buffer.writeInt(currentHand.ordinal());
-                if (frequency != null) {
-                    buffer.writeBoolean(true);
-                    PacketHandler.writeString(buffer, frequency.name);
-                    buffer.writeBoolean(frequency.publicFreq);
-                } else {
-                    buffer.writeBoolean(false);
-                }
-            } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
-                buffer.writeInt(currentHand.ordinal());
-
-                if (frequency != null) {
-                    buffer.writeBoolean(true);
-                    PacketHandler.writeString(buffer, frequency.name);
-                    buffer.writeBoolean(frequency.publicFreq);
-                } else {
-                    buffer.writeBoolean(false);
-                }
-
-                buffer.writeByte(status);
-
-                TileNetworkList data = new TileNetworkList();
-                data.add(publicCache.size());
-
-                for (Frequency freq : publicCache) {
-                    freq.write(data);
-                }
-
-                data.add(privateCache.size());
-
-                for (Frequency freq : privateCache) {
-                    freq.write(data);
-                }
-
-                PacketHandler.encode(data.toArray(), buffer);
-            } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
-                buffer.writeInt(currentHand.ordinal());
-                PacketHandler.writeString(buffer, frequency.name);
-                buffer.writeBoolean(frequency.publicFreq);
-            } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
-                buffer.writeInt(currentHand.ordinal());
-                PacketHandler.writeString(buffer, frequency.name);
-                buffer.writeBoolean(frequency.publicFreq);
-            } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
-                buffer.writeInt(currentHand.ordinal());
-                PacketHandler.writeString(buffer, frequency.name);
-                buffer.writeBoolean(frequency.publicFreq);
-            }
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buffer) {
-            packetType = PortableTeleporterPacketType.values()[buffer.readInt()];
-            if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
-                currentHand = Hand.values()[buffer.readInt()];
-                if (buffer.readBoolean()) {
-                    frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
-                }
-            } else if (packetType == PortableTeleporterPacketType.DATA_RESPONSE) {
-                currentHand = Hand.values()[buffer.readInt()];
-                if (buffer.readBoolean()) {
-                    frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
-                }
-                status = buffer.readByte();
-
-                int amount = buffer.readInt();
-                for (int i = 0; i < amount; i++) {
-                    publicCache.add(new Frequency(buffer));
-                }
-                amount = buffer.readInt();
-                for (int i = 0; i < amount; i++) {
-                    privateCache.add(new Frequency(buffer));
-                }
-            } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
-                currentHand = Hand.values()[buffer.readInt()];
-                frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
-            } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
-                currentHand = Hand.values()[buffer.readInt()];
-                frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
-            } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
-                currentHand = Hand.values()[buffer.readInt()];
-                frequency = new Frequency(PacketHandler.readString(buffer), null).setPublic(buffer.readBoolean());
-            }
-        }
     }
 }

@@ -25,6 +25,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -116,7 +117,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
             privateMode = !item.getFrequency(stack).publicFreq;
             setFrequency(item.getFrequency(stack).name);
         } else {
-            Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
+            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
         }
         ySize = 175;
     }
@@ -139,7 +140,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         updateButtons();
         if (!itemStack.isEmpty()) {
             if (!isInit) {
-                Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
+                Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
             } else {
                 isInit = false;
             }
@@ -258,8 +259,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
                     TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
                 } else {
-                    Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
-                    Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
+                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
+                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
                 }
                 scrollList.clearSelection();
             }
@@ -362,7 +363,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
         } else {
             Frequency newFreq = new Frequency(freq, null).setPublic(!privateMode);
-            Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));
+            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));
         }
     }
 

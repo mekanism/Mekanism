@@ -21,7 +21,7 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
-import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
+import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -30,10 +30,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,8 +41,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -200,7 +199,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
         if (!entityplayer.isSneaking()) {
             if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (ServerPlayerEntity) entityplayer, Coord4D.get(tileEntity), -1);
+                PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (ServerPlayerEntity) entityplayer, Coord4D.get(tileEntity), -1);
             } else {
                 SecurityUtils.displayNoAccess(entityplayer);
             }

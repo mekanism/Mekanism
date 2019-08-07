@@ -26,6 +26,7 @@ import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack;
+import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import net.minecraft.client.Minecraft;
@@ -130,7 +131,7 @@ public class ClientTickHandler {
     public static void portableTeleport(PlayerEntity player, Hand hand, Frequency freq) {
         int delay = MekanismConfig.current().general.portableTeleporterDelay.val();
         if (delay == 0) {
-            Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, hand, freq));
+            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.TELEPORT, hand, freq));
         } else {
             portableTeleports.put(player, new TeleportData(hand, freq, mc.world.getWorldTime() + delay));
         }
@@ -206,7 +207,7 @@ public class ClientTickHandler {
                 }
 
                 if (mc.world.getWorldTime() == entry.getValue().teleportTime) {
-                    Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
+                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
                     iter.remove();
                 }
             }
