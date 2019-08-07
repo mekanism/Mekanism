@@ -8,7 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
-import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketDataRequest;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -42,7 +42,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
     public void validate() {
         super.validate();
         if (world.isRemote) {
-            Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
     }
 

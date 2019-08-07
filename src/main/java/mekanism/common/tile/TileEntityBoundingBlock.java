@@ -7,7 +7,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
@@ -47,7 +47,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     public void validate() {
         super.validate();
         if (world.isRemote) {
-            Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
     }
 

@@ -1,8 +1,8 @@
 package mekanism.common;
 
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
-import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
+import mekanism.common.network.PacketBoxBlacklist;
+import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
@@ -28,10 +28,10 @@ public class CommonPlayerTracker {
         MinecraftServer server = event.player.getServer();
         if (!event.player.world.isRemote) {
             if (server == null || !server.isSinglePlayer()) {
-                Mekanism.packetHandler.sendTo(new ConfigSyncMessage(MekanismConfig.local()), (ServerPlayerEntity) event.player);
+                Mekanism.packetHandler.sendTo(new PacketConfigSync(MekanismConfig.local()), (ServerPlayerEntity) event.player);
                 Mekanism.logger.info("Sent config to '" + event.player.getDisplayNameString() + ".'");
             }
-            Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (ServerPlayerEntity) event.player);
+            Mekanism.packetHandler.sendTo(new PacketBoxBlacklist(), (ServerPlayerEntity) event.player);
             syncChangedData((ServerPlayerEntity) event.player);
             Mekanism.packetHandler.sendTo(new SecurityUpdateMessage(SecurityPacket.FULL, null, null), (ServerPlayerEntity) event.player);
         }

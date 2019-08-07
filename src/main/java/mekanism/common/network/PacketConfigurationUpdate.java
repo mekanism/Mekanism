@@ -1,6 +1,6 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -8,7 +8,6 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -17,16 +16,42 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationUpdateMessage, IMessage> {
+public class PacketConfigurationUpdate {
 
-    @Override
-    public IMessage onMessage(ConfigurationUpdateMessage message, MessageContext context) {
+    private ConfigurationPacket packetType;
+    private TransmissionType transmission;
+    private Direction configIndex;
+    private Coord4D coord4D;
+    private int inputSide;
+    private int clickType;
+
+    public PacketConfigurationUpdate(ConfigurationPacket type, Coord4D coord, int click, int extra, TransmissionType trans) {
+        packetType = type;
+        coord4D = coord;
+
+        if (packetType == ConfigurationPacket.EJECT) {
+            transmission = trans;
+        }
+        if (packetType == ConfigurationPacket.EJECT_COLOR) {
+            clickType = click;
+        }
+        if (packetType == ConfigurationPacket.SIDE_DATA) {
+            clickType = click;
+            configIndex = Direction.byIndex(extra);
+            transmission = trans;
+        }
+        if (packetType == ConfigurationPacket.INPUT_COLOR) {
+            clickType = click;
+            inputSide = extra;
+        }
+    }
+
+    public static void handle(PacketConfigurationUpdate message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
 
         PacketHandler.handlePacket(() -> {
@@ -80,89 +105,52 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
         return null;
     }
 
+    public static void encode(PacketConfigurationUpdate pkt, PacketBuffer buf) {
+        buf.writeInt(pkt.packetType.ordinal());
+        pkt.coord4D.write(buf);
+
+        if (pkt.packetType != ConfigurationPacket.EJECT && pkt.packetType != ConfigurationPacket.STRICT_INPUT) {
+            buf.writeInt(pkt.clickType);
+        }
+        if (pkt.packetType == ConfigurationPacket.EJECT) {
+            buf.writeEnumValue(pkt.transmission);
+        }
+        if (pkt.packetType == ConfigurationPacket.SIDE_DATA) {
+            buf.writeEnumValue(pkt.configIndex);
+            buf.writeEnumValue(pkt.transmission);
+        }
+        if (pkt.packetType == ConfigurationPacket.INPUT_COLOR) {
+            buf.writeInt(pkt.inputSide);
+        }
+    }
+
+    public static PacketConfigurationUpdate decode(PacketBuffer buf) {
+        ConfigurationPacket packetType = ConfigurationPacket.values()[buf.readInt()];
+        Coord4D coord4D = Coord4D.read(buf);
+        int clickType = 0;
+        int extra = 0;
+        TransmissionType transmission = null;
+
+        if (packetType == ConfigurationPacket.EJECT) {
+            transmission = buf.readEnumValue(TransmissionType.class);
+        } else if (packetType == ConfigurationPacket.SIDE_DATA) {
+            clickType = buf.readInt();
+            extra = buf.readEnumValue(Direction.class).ordinal();//configIndex
+            transmission = buf.readEnumValue(TransmissionType.class);
+        } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
+            clickType = buf.readInt();
+        } else if (packetType == ConfigurationPacket.INPUT_COLOR) {
+            clickType = buf.readInt();
+            extra = buf.readInt();//inputSide
+        }
+        return new PacketConfigurationUpdate(packetType, coord4D, clickType, extra, transmission);
+    }
+
     public enum ConfigurationPacket {
         EJECT,
         SIDE_DATA,
         EJECT_COLOR,
         INPUT_COLOR,
         STRICT_INPUT
-    }
-
-    public static class ConfigurationUpdateMessage implements IMessage {
-
-        public Coord4D coord4D;
-
-        public Direction configIndex;
-
-        public int inputSide;
-
-        public TransmissionType transmission;
-
-        public int clickType;
-
-        public ConfigurationPacket packetType;
-
-        public ConfigurationUpdateMessage() {
-        }
-
-        public ConfigurationUpdateMessage(ConfigurationPacket type, Coord4D coord, int click, int extra, TransmissionType trans) {
-            packetType = type;
-            coord4D = coord;
-
-            if (packetType == ConfigurationPacket.EJECT) {
-                transmission = trans;
-            }
-            if (packetType == ConfigurationPacket.EJECT_COLOR) {
-                clickType = click;
-            }
-            if (packetType == ConfigurationPacket.SIDE_DATA) {
-                clickType = click;
-                configIndex = Direction.byIndex(extra);
-                transmission = trans;
-            }
-            if (packetType == ConfigurationPacket.INPUT_COLOR) {
-                clickType = click;
-                inputSide = extra;
-            }
-        }
-
-        @Override
-        public void toBytes(ByteBuf dataStream) {
-            dataStream.writeInt(packetType.ordinal());
-            coord4D.write(dataStream);
-
-            if (packetType != ConfigurationPacket.EJECT && packetType != ConfigurationPacket.STRICT_INPUT) {
-                dataStream.writeInt(clickType);
-            }
-            if (packetType == ConfigurationPacket.EJECT) {
-                dataStream.writeInt(transmission.ordinal());
-            }
-            if (packetType == ConfigurationPacket.SIDE_DATA) {
-                dataStream.writeInt(configIndex.ordinal());
-                dataStream.writeInt(transmission.ordinal());
-            }
-            if (packetType == ConfigurationPacket.INPUT_COLOR) {
-                dataStream.writeInt(inputSide);
-            }
-        }
-
-        @Override
-        public void fromBytes(ByteBuf dataStream) {
-            packetType = ConfigurationPacket.values()[dataStream.readInt()];
-            coord4D = Coord4D.read(dataStream);
-
-            if (packetType == ConfigurationPacket.EJECT) {
-                transmission = TransmissionType.values()[dataStream.readInt()];
-            } else if (packetType == ConfigurationPacket.SIDE_DATA) {
-                clickType = dataStream.readInt();
-                configIndex = Direction.byIndex(dataStream.readInt());
-                transmission = TransmissionType.values()[dataStream.readInt()];
-            } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
-                clickType = dataStream.readInt();
-            } else if (packetType == ConfigurationPacket.INPUT_COLOR) {
-                clickType = dataStream.readInt();
-                inputSide = dataStream.readInt();
-            }
-        }
     }
 }

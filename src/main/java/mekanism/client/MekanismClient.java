@@ -11,7 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.network.PacketKey.KeyMessage;
+import mekanism.common.network.PacketKey;
 import mekanism.common.security.SecurityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -28,7 +28,7 @@ public class MekanismClient extends Mekanism {
     public static void updateKey(KeyBinding key, int type) {
         boolean down = Minecraft.getInstance().currentScreen == null && key.isKeyDown();
         if (down != keyMap.has(Minecraft.getInstance().player, type)) {
-            Mekanism.packetHandler.sendToServer(new KeyMessage(type, down));
+            Mekanism.packetHandler.sendToServer(new PacketKey(type, down));
             keyMap.update(Minecraft.getInstance().player, type, down);
         }
     }

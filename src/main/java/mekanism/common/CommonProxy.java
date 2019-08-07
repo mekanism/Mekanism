@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
@@ -113,6 +114,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -435,8 +437,8 @@ public class CommonProxy implements IGuiProvider {
         return getDummyPlayer(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public PlayerEntity getPlayer(MessageContext context) {
-        return context.getServerHandler().player;
+    public PlayerEntity getPlayer(Supplier<Context> context) {
+        return context.get().getSender();
     }
 
     public void handlePacket(Runnable runnable, PlayerEntity player) {

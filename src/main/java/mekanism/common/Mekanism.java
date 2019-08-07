@@ -53,7 +53,7 @@ import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
@@ -758,7 +758,7 @@ public class Mekanism {
     @SubscribeEvent
     public void onNetworkClientRequest(NetworkClientRequest event) {
         try {
-            packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(event.tileEntity)));
+            packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(event.tileEntity)));
         } catch (Exception ignored) {
         }
     }

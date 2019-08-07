@@ -44,6 +44,7 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -77,14 +78,14 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -332,7 +333,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public void onLoad() {
         super.onLoad();
         if (world.isRemote) {
-            Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
         if (isElectric() && MekanismUtils.useIC2()) {
             register();
@@ -489,7 +490,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         boolean wasInvalid = this.tileEntityInvalid;//workaround for pending tile entity invalidate/revalidate cycle
         super.validate();
         if (world.isRemote) {
-            Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
         if (isElectric() && wasInvalid && MekanismUtils.useIC2()) {//re-register if we got invalidated and are an electric block
             register();

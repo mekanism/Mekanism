@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -11,13 +12,9 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketConfigSync;
-import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
 import mekanism.common.network.PacketConfigurationUpdate;
-import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketContainerEditMode;
-import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketDropperUse;
@@ -35,7 +32,6 @@ import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketKey;
-import mekanism.common.network.PacketKey.KeyMessage;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketNewFilter;
@@ -68,6 +64,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -77,12 +74,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -107,7 +102,7 @@ public class PacketHandler {
      * @param dataValues - an Object[] of data to encode
      * @param output     - the output stream to write to
      */
-    public static void encode(Object[] dataValues, ByteBuf output) {
+    public static void encode(Object[] dataValues, PacketBuffer output) {
         for (Object data : dataValues) {
             if (data instanceof Byte) {
                 output.writeByte((Byte) data);
@@ -149,28 +144,38 @@ public class PacketHandler {
         }
     }
 
-    public static void writeString(ByteBuf output, String s) {
-        ByteBufUtils.writeUTF8String(output, s);
+    //TODO: Replace these helper read/write things with just direct calls
+    public static void writeString(PacketBuffer output, String s) {
+        output.writeString(s);
     }
 
-    public static String readString(ByteBuf input) {
-        return ByteBufUtils.readUTF8String(input);
+    public static String readString(PacketBuffer input) {
+        return input.readString();
     }
 
-    public static void writeStack(ByteBuf output, ItemStack stack) {
-        ByteBufUtils.writeItemStack(output, stack);
+    public static void writeStack(PacketBuffer output, ItemStack stack) {
+        output.writeItemStack(stack);
     }
 
-    public static ItemStack readStack(ByteBuf input) {
-        return ByteBufUtils.readItemStack(input);
+    public static ItemStack readStack(PacketBuffer input) {
+        return input.readItemStack();
     }
 
-    public static void writeNBT(ByteBuf output, CompoundNBT nbtTags) {
-        ByteBufUtils.writeTag(output, nbtTags);
+    public static void writeNBT(PacketBuffer output, CompoundNBT nbtTags) {
+        output.writeCompoundTag(nbtTags);
     }
 
-    public static CompoundNBT readNBT(ByteBuf input) {
-        return ByteBufUtils.readTag(input);
+    public static CompoundNBT readNBT(PacketBuffer input) {
+        return input.readCompoundTag();
+    }
+
+    @Nonnull
+    public static UUID readUUID(PacketBuffer dataStream) {
+        return dataStream.readUniqueId();
+    }
+
+    public static void writeUUID(PacketBuffer dataStream, UUID uuid) {
+        dataStream.writeUniqueId(uuid);
     }
 
     public static void log(String log) {
@@ -179,7 +184,7 @@ public class PacketHandler {
         }
     }
 
-    public static PlayerEntity getPlayer(MessageContext context) {
+    public static PlayerEntity getPlayer(Supplier<Context> context) {
         return Mekanism.proxy.getPlayer(context);
     }
 
@@ -192,13 +197,11 @@ public class PacketHandler {
 
         netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Dist.CLIENT);
-        //FREE ID 2
-        //FREE ID 3
         netHandler.registerMessage(PacketItemStack.class, ItemStackMessage.class, 4, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Dist.CLIENT);
         netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Dist.CLIENT);
-        netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketDataRequest.class, PacketDataRequest::encode, PacketDataRequest::decode, PacketDataRequest::handle);
         netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Dist.CLIENT);
         netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Dist.DEDICATED_SERVER);
@@ -206,25 +209,23 @@ public class PacketHandler {
         netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketRedstoneControl.class, RedstoneControlMessage.class, 12, Dist.DEDICATED_SERVER);
-        //FREE ID 13
         netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Dist.CLIENT);
         netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketNewFilter.class, NewFilterMessage.class, 15, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketEditFilter.class, EditFilterMessage.class, 16, Dist.DEDICATED_SERVER);
-        netHandler.registerMessage(PacketConfigurationUpdate.class, ConfigurationUpdateMessage.class, 17, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
         netHandler.registerMessage(PacketSimpleGui.class, SimpleGuiMessage.class, 18, Dist.CLIENT);
         netHandler.registerMessage(PacketSimpleGui.class, SimpleGuiMessage.class, 18, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketDigitalMinerGui.class, DigitalMinerGuiMessage.class, 19, Dist.CLIENT);
         netHandler.registerMessage(PacketDigitalMinerGui.class, DigitalMinerGuiMessage.class, 19, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketJetpackData.class, JetpackDataMessage.class, 20, Dist.CLIENT);
         netHandler.registerMessage(PacketJetpackData.class, JetpackDataMessage.class, 20, Dist.DEDICATED_SERVER);
-        netHandler.registerMessage(PacketKey.class, KeyMessage.class, 21, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
         netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Dist.CLIENT);
         netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Dist.DEDICATED_SERVER);
-        netHandler.registerMessage(PacketConfigSync.class, ConfigSyncMessage.class, 23, Dist.CLIENT);
+        netHandler.registerMessage(disc++, PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
         netHandler.registerMessage(disc++, PacketBoxBlacklist.class, PacketBoxBlacklist::encode, PacketBoxBlacklist::decode, PacketBoxBlacklist::handle);
-        //FREE ID 25
-        netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketContainerEditMode.class, PacketContainerEditMode::encode, PacketContainerEditMode::decode, PacketContainerEditMode::handle);
         netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Dist.CLIENT);
         netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Dist.DEDICATED_SERVER);
@@ -332,15 +333,5 @@ public class PacketHandler {
                 }
             }
         }
-    }
-
-    @Nonnull
-    public static UUID readUUID(ByteBuf dataStream) {
-        return new UUID(dataStream.readLong(), dataStream.readLong());
-    }
-
-    public static void writeUUID(ByteBuf dataStream, UUID uuid) {
-        dataStream.writeLong(uuid.getMostSignificantBits());
-        dataStream.writeLong(uuid.getLeastSignificantBits());
     }
 }

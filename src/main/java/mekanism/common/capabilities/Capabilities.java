@@ -10,7 +10,6 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -51,12 +50,6 @@ public class Capabilities {
     @CapabilityInject(IAlloyInteraction.class)
     public static Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY = null;
 
-    //Kept in for compatibility with any mods that may try to reference it.
-    // However, nothing in Mekanism uses this anymore
-    @Deprecated
-    @CapabilityInject(ITubeConnection.class)
-    public static Capability<ITubeConnection> TUBE_CONNECTION_CAPABILITY = null;
-
     @CapabilityInject(IConfigCardAccess.class)
     public static Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY = null;
 
@@ -85,7 +78,6 @@ public class Capabilities {
         DefaultBlockableConnection.register();
 
         DefaultGasHandler.register();
-        DefaultTubeConnection.register();
 
         DefaultConfigurable.register();
         DefaultTileNetwork.register();

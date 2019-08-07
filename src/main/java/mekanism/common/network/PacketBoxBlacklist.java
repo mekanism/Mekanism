@@ -10,7 +10,12 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketBoxBlacklist {
 
-    public static PacketBoxBlacklist decode(PacketBuffer buf) {
+    //TODO: Actually store the data in the Packet, so that it doesn't get handled until handle is called
+
+    public static void handle(PacketBoxBlacklist message, Supplier<Context> context) {
+    }
+
+    public static void encode(PacketBoxBlacklist pkt, PacketBuffer buf) {
         Set<Block> boxIgnore = MekanismAPI.getBoxIgnore();
         buf.writeInt(boxIgnore.size());
         for (Block info : boxIgnore) {
@@ -21,10 +26,10 @@ public class PacketBoxBlacklist {
         for (String modid : boxModIgnore) {
             buf.writeString(modid);
         }
-        return new PacketBoxBlacklist();
     }
 
-    public static void encode(PacketBoxBlacklist pkt, PacketBuffer buf) {
+    public static PacketBoxBlacklist decode(PacketBuffer buf) {
+        //TODO: This is wrong
         MekanismAPI.getBoxIgnore().clear();
         int amount = buf.readInt();
         for (int i = 0; i < amount; i++) {
@@ -35,8 +40,6 @@ public class PacketBoxBlacklist {
             MekanismAPI.addBoxBlacklistMod(buf.readString());
         }
         Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " explicit blocks, " + amountMods + " mod wildcards)");
-    }
-
-    public static void handle(PacketBoxBlacklist message, Supplier<Context> context) {
+        return new PacketBoxBlacklist();
     }
 }

@@ -1,48 +1,35 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.network.PacketKey.KeyMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class PacketKey implements IMessageHandler<KeyMessage, IMessage> {
+public class PacketKey {
 
-    @Override
-    public IMessage onMessage(KeyMessage message, MessageContext context) {
+    public int key;
+    public boolean add;
+
+    public PacketKey(int k, boolean a) {
+        key = k;
+        add = a;
+    }
+
+    public static void handle(PacketKey message, Supplier<Context> context) {
         if (message.add) {
             Mekanism.keyMap.add(PacketHandler.getPlayer(context), message.key);
         } else {
             Mekanism.keyMap.remove(PacketHandler.getPlayer(context), message.key);
         }
-        return null;
     }
 
-    public static class KeyMessage implements IMessage {
+    public static void encode(PacketKey pkt, PacketBuffer buf) {
+        buf.writeInt(pkt.key);
+        buf.writeBoolean(pkt.add);
+    }
 
-        public int key;
-        public boolean add;
-
-        public KeyMessage() {
-        }
-
-        public KeyMessage(int k, boolean a) {
-            key = k;
-            add = a;
-        }
-
-        @Override
-        public void toBytes(ByteBuf dataStream) {
-            dataStream.writeInt(key);
-            dataStream.writeBoolean(add);
-        }
-
-        @Override
-        public void fromBytes(ByteBuf dataStream) {
-            key = dataStream.readInt();
-            add = dataStream.readBoolean();
-        }
+    public static PacketKey decode(PacketBuffer buf) {
+        return new PacketKey(buf.readInt(), buf.readBoolean());
     }
 }

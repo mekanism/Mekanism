@@ -40,6 +40,7 @@ public interface IModule {
      * @param dataStream - the incoming ByteBuf of the sync packet
      * @param destConfig - configuration to read to
      */
+    //TODO: Change to PacketBuffer
     void readConfig(ByteBuf dataStream, MekanismConfig destConfig);
 
     /**
