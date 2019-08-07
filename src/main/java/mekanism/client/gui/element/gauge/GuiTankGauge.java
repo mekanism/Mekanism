@@ -8,7 +8,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.network.PacketDropperUse.DropperUseMessage;
+import mekanism.common.network.PacketDropperUse;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -43,7 +43,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
                         if (button == 0 && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                             button = 2;
                         }
-                        Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
+                        Mekanism.packetHandler.sendToServer(new PacketDropperUse(Coord4D.get(tile), button, index));
                     }
                 }
             }

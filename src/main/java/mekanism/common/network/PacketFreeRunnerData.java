@@ -1,22 +1,32 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
 import java.util.UUID;
+import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.gear.ItemFreeRunners;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerData.FreeRunnerDataMessage, IMessage> {
+public class PacketFreeRunnerData {
 
-    @Override
-    public IMessage onMessage(FreeRunnerDataMessage message, MessageContext ctx) {
-        PlayerEntity entityPlayer = PacketHandler.getPlayer(ctx);
+    private FreeRunnerPacket packetType;
+    private boolean value;
+    private UUID uuid;
+
+    public PacketFreeRunnerData(FreeRunnerPacket packetType, UUID uuid, boolean value) {
+        this.packetType = packetType;
+        this.value = value;
+        if (packetType == FreeRunnerPacket.UPDATE) {
+            this.uuid = uuid;
+        }
+    }
+
+    public static void handle(PacketFreeRunnerData message, Supplier<Context> context) {
+        PlayerEntity entityPlayer = PacketHandler.getPlayer(context);
 
         PacketHandler.handlePacket(() -> {
             if (message.packetType == FreeRunnerPacket.UPDATE) {
@@ -26,8 +36,8 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
                     Mekanism.freeRunnerOn.remove(message.uuid);
                 }
                 if (!entityPlayer.world.isRemote) {
-                    Mekanism.packetHandler.sendToDimension(new FreeRunnerDataMessage(FreeRunnerPacket.UPDATE, message.uuid, message.value),
-                          entityPlayer.world.provider.getDimension());
+                    Mekanism.packetHandler.sendToDimension(new PacketFreeRunnerData(FreeRunnerPacket.UPDATE, message.uuid, message.value),
+                          entityPlayer.world.getDimension());
                 }
             } else if (message.packetType == FreeRunnerPacket.MODE) {
                 ItemStack stack = entityPlayer.getItemStackFromSlot(EquipmentSlotType.FEET);
@@ -40,66 +50,47 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
                 }
             }
         }, entityPlayer);
-        return null;
+    }
+
+    public static void encode(PacketFreeRunnerData pkt, PacketBuffer buf) {
+        buf.writeEnumValue(pkt.packetType);
+        if (pkt.packetType == FreeRunnerPacket.MODE) {
+            buf.writeBoolean(pkt.value);
+        } else if (pkt.packetType == FreeRunnerPacket.UPDATE) {
+            buf.writeUniqueId(pkt.uuid);
+            buf.writeBoolean(pkt.value);
+        } else if (pkt.packetType == FreeRunnerPacket.FULL) {
+            buf.writeInt(Mekanism.freeRunnerOn.size());
+            synchronized (Mekanism.freeRunnerOn) {
+                for (UUID uuidToSend : Mekanism.freeRunnerOn) {
+                    buf.writeUniqueId(uuidToSend);
+                }
+            }
+        }
+    }
+
+    public static PacketFreeRunnerData decode(PacketBuffer buf) {
+        FreeRunnerPacket packetType = buf.readEnumValue(FreeRunnerPacket.class);
+        boolean value = false;
+        UUID uuid = null;
+        if (packetType == FreeRunnerPacket.MODE) {
+            value = buf.readBoolean();
+        } else if (packetType == FreeRunnerPacket.UPDATE) {
+            uuid = buf.readUniqueId();
+            value = buf.readBoolean();
+        } else if (packetType == FreeRunnerPacket.FULL) {
+            Mekanism.freeRunnerOn.clear();
+            int amount = buf.readInt();
+            for (int i = 0; i < amount; i++) {
+                Mekanism.freeRunnerOn.add(buf.readUniqueId());
+            }
+        }
+        return new PacketFreeRunnerData(packetType, uuid, value);
     }
 
     public enum FreeRunnerPacket {
         UPDATE,
         FULL,
         MODE
-    }
-
-    public static class FreeRunnerDataMessage implements IMessage {
-
-        public FreeRunnerPacket packetType;
-
-        public UUID uuid;
-        public boolean value;
-
-        public FreeRunnerDataMessage() {
-        }
-
-        public FreeRunnerDataMessage(FreeRunnerPacket packetType, UUID uuid, boolean value) {
-            this.packetType = packetType;
-            this.value = value;
-            if (packetType == FreeRunnerPacket.UPDATE) {
-                this.uuid = uuid;
-            }
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf) {
-            buf.writeInt(packetType.ordinal());
-            if (packetType == FreeRunnerPacket.MODE) {
-                buf.writeBoolean(value);
-            } else if (packetType == FreeRunnerPacket.UPDATE) {
-                PacketHandler.writeUUID(buf, uuid);
-                buf.writeBoolean(value);
-            } else if (packetType == FreeRunnerPacket.FULL) {
-                buf.writeInt(Mekanism.freeRunnerOn.size());
-                synchronized (Mekanism.freeRunnerOn) {
-                    for (UUID uuidToSend : Mekanism.freeRunnerOn) {
-                        PacketHandler.writeUUID(buf, uuidToSend);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf) {
-            packetType = FreeRunnerPacket.values()[buf.readInt()];
-            if (packetType == FreeRunnerPacket.MODE) {
-                value = buf.readBoolean();
-            } else if (packetType == FreeRunnerPacket.UPDATE) {
-                uuid = PacketHandler.readUUID(buf);
-                value = buf.readBoolean();
-            } else if (packetType == FreeRunnerPacket.FULL) {
-                Mekanism.freeRunnerOn.clear();
-                int amount = buf.readInt();
-                for (int i = 0; i < amount; i++) {
-                    Mekanism.freeRunnerOn.add(PacketHandler.readUUID(buf));
-                }
-            }
-        }
     }
 }

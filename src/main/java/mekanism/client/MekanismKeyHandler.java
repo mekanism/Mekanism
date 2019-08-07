@@ -14,11 +14,11 @@ import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
+import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
-import mekanism.common.network.PacketFreeRunnerData.FreeRunnerDataMessage;
+import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
-import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
+import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TextComponentGroup;
@@ -30,13 +30,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -86,21 +86,21 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 int toSet = (configuratorMode.ordinal() + 1) % ConfiguratorMode.values().length;
                 configuratorMode = ConfiguratorMode.values()[toSet];
                 configurator.setState(toolStack, configuratorMode);
-                Mekanism.packetHandler.sendToServer(new ItemStackMessage(Hand.MAIN_HAND, Collections.singletonList(toSet)));
+                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(toSet)));
                 player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
                       .translation("mekanism.tooltip.configureState", LangUtils.withColor(configuratorMode.getNameComponent(), configuratorMode.getColor().textFormatting)));
             } else if (player.isSneaking() && item instanceof ItemElectricBow) {
                 ItemElectricBow bow = (ItemElectricBow) item;
                 boolean newBowState = !bow.getFireState(toolStack);
                 bow.setFireState(toolStack, newBowState);
-                Mekanism.packetHandler.sendToServer(new ItemStackMessage(Hand.MAIN_HAND, Collections.singletonList(newBowState)));
+                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newBowState)));
                 player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
                       .translation("mekanism.tooltip.fireMode", LangUtils.onOffColoured(newBowState)));
             } else if (player.isSneaking() && item instanceof ItemBlockFluidTank) {
                 ItemBlockFluidTank fluidTank = (ItemBlockFluidTank) item;
                 boolean newBucketMode = !fluidTank.getBucketMode(toolStack);
                 fluidTank.setBucketMode(toolStack, newBucketMode);
-                Mekanism.packetHandler.sendToServer(new ItemStackMessage(Hand.MAIN_HAND, Collections.singletonList(fluidTank.getBucketMode(toolStack))));
+                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(fluidTank.getBucketMode(toolStack))));
                 player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
                       .translation("mekanism.tooltip.portableTank.bucketMode", LangUtils.onOffColoured(newBucketMode)));
             } else if (player.isSneaking() && item instanceof ItemWalkieTalkie) {
@@ -111,12 +111,12 @@ public class MekanismKeyHandler extends MekKeyHandler {
                         newChan = 1;
                     }
                     wt.setChannel(toolStack, newChan);
-                    Mekanism.packetHandler.sendToServer(new ItemStackMessage(Hand.MAIN_HAND, Collections.singletonList(newChan)));
+                    Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newChan)));
                 }
             } else if (player.isSneaking() && item instanceof ItemFlamethrower) {
                 ItemFlamethrower flamethrower = (ItemFlamethrower) item;
                 flamethrower.incrementMode(toolStack);
-                Mekanism.packetHandler.sendToServer(FlamethrowerDataMessage.MODE_CHANGE(Hand.MAIN_HAND));
+                Mekanism.packetHandler.sendToServer(PacketFlamethrowerData.MODE_CHANGE(Hand.MAIN_HAND));
                 player.sendMessage(new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
                       .translation("mekanism.tooltip.flamethrower.modeBump", flamethrower.getMode(toolStack).getTextComponent()));
             }
@@ -133,7 +133,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     jetpack.incrementMode(chestStack);
                 }
 
-                Mekanism.packetHandler.sendToServer(JetpackDataMessage.MODE_CHANGE(player.isSneaking()));
+                Mekanism.packetHandler.sendToServer(PacketJetpackData.MODE_CHANGE(player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             } else if (chestItem instanceof ItemScubaTank) {
                 ItemScubaTank scubaTank = (ItemScubaTank) chestItem;
@@ -153,7 +153,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 } else {
                     freeRunners.incrementMode(feetStack);
                 }
-                Mekanism.packetHandler.sendToServer(new FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.isSneaking()));
+                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             }
         }

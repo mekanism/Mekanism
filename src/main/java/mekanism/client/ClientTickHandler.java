@@ -25,7 +25,7 @@ import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketFreeRunnerData;
-import mekanism.common.network.PacketItemStack.ItemStackMessage;
+import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import net.minecraft.client.Minecraft;
@@ -33,15 +33,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Hand;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -179,7 +179,7 @@ public class ClientTickHandler {
                 } else {
                     Mekanism.freeRunnerOn.remove(playerUUID);
                 }
-                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.UPDATE, playerUUID, freeRunnerOn));
+                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.UPDATE, playerUUID, freeRunnerOn));
             }
 
             ItemStack bootStack = mc.player.getItemStackFromSlot(EquipmentSlotType.FEET);
@@ -293,7 +293,7 @@ public class ClientTickHandler {
                     newVal = ConfiguratorMode.values().length + newVal;
                 }
                 configurator.setState(stack, ConfiguratorMode.values()[newVal]);
-                Mekanism.packetHandler.sendToServer(new ItemStackMessage(Hand.MAIN_HAND, Collections.singletonList(newVal)));
+                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newVal)));
                 event.setCanceled(true);
             }
         }

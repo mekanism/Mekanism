@@ -1,22 +1,29 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITankManager.DropperHandler;
-import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMessage> {
+public class PacketDropperUse {
 
-    @Override
-    public IMessage onMessage(DropperUseMessage message, MessageContext context) {
+    private Coord4D coord4D;
+    private int mouseButton;
+    private int tankId;
+
+    public PacketDropperUse(Coord4D coord, int button, int id) {
+        coord4D = coord;
+        mouseButton = button;
+        tankId = id;
+    }
+
+    public static void handle(PacketDropperUse message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
@@ -31,38 +38,16 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
                 }
             }
         }, player);
-        return null;
     }
 
-    public static class DropperUseMessage implements IMessage {
+    public static void encode(PacketDropperUse pkt, PacketBuffer buf) {
+        pkt.coord4D.write(buf);
+        buf.writeInt(pkt.mouseButton);
+        buf.writeInt(pkt.tankId);
+    }
 
-        public Coord4D coord4D;
-
-        public int mouseButton;
-        public int tankId;
-
-        public DropperUseMessage() {
-        }
-
-        public DropperUseMessage(Coord4D coord, int button, int id) {
-            coord4D = coord;
-            mouseButton = button;
-            tankId = id;
-        }
-
-        @Override
-        public void toBytes(ByteBuf dataStream) {
-            coord4D.write(dataStream);
-            dataStream.writeInt(mouseButton);
-            dataStream.writeInt(tankId);
-        }
-
-        @Override
-        public void fromBytes(ByteBuf dataStream) {
-            coord4D = Coord4D.read(dataStream);
-
-            mouseButton = dataStream.readInt();
-            tankId = dataStream.readInt();
-        }
+    public static PacketDropperUse decode(PacketBuffer buf) {
+        Coord4D coord4D = Coord4D.read(buf);
+        return new PacketDropperUse(coord4D, buf.readInt(), buf.readInt());
     }
 }

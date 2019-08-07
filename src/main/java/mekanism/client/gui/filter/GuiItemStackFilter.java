@@ -5,7 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IItemStackFilter;
-import mekanism.common.network.PacketEditFilter.EditFilterMessage;
+import mekanism.common.network.PacketEditFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.widget.button.Button;
@@ -34,7 +34,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE e
     protected void actionPerformed(Button guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == deleteButton.id) {
-            Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(0);
         }
     }

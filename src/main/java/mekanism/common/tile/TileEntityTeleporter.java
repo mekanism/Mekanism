@@ -23,7 +23,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
+import mekanism.common.network.PacketEntityMove;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -322,7 +322,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             entity.changeDimension(coord.dimensionId, (world, entity2, yaw) -> entity2.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
         } else {
             entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
-            Mekanism.packetHandler.sendToAllTracking(new EntityMoveMessage(entity), new Coord4D(entity));
+            Mekanism.packetHandler.sendToAllTracking(new PacketEntityMove(entity), new Coord4D(entity));
         }
     }
 

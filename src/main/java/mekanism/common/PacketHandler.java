@@ -18,19 +18,12 @@ import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketDropperUse;
-import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketEntityMove;
-import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
 import mekanism.common.network.PacketFlamethrowerData;
-import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketFreeRunnerData;
-import mekanism.common.network.PacketFreeRunnerData.FreeRunnerDataMessage;
 import mekanism.common.network.PacketItemStack;
-import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketKey;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
@@ -197,7 +190,7 @@ public class PacketHandler {
 
         netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Dist.CLIENT);
-        netHandler.registerMessage(PacketItemStack.class, ItemStackMessage.class, 4, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketItemStack.class, PacketItemStack::encode, PacketItemStack::decode, PacketItemStack::handle);
         netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Dist.CLIENT);
         netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Dist.CLIENT);
@@ -212,27 +205,24 @@ public class PacketHandler {
         netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Dist.CLIENT);
         netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketNewFilter.class, NewFilterMessage.class, 15, Dist.DEDICATED_SERVER);
-        netHandler.registerMessage(PacketEditFilter.class, EditFilterMessage.class, 16, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
         netHandler.registerMessage(disc++, PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
         netHandler.registerMessage(PacketSimpleGui.class, SimpleGuiMessage.class, 18, Dist.CLIENT);
         netHandler.registerMessage(PacketSimpleGui.class, SimpleGuiMessage.class, 18, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(PacketDigitalMinerGui.class, DigitalMinerGuiMessage.class, 19, Dist.CLIENT);
         netHandler.registerMessage(PacketDigitalMinerGui.class, DigitalMinerGuiMessage.class, 19, Dist.DEDICATED_SERVER);
-        netHandler.registerMessage(PacketJetpackData.class, JetpackDataMessage.class, 20, Dist.CLIENT);
-        netHandler.registerMessage(PacketJetpackData.class, JetpackDataMessage.class, 20, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketJetpackData.class, PacketJetpackData::encode, PacketJetpackData::decode, PacketJetpackData::handle);
         netHandler.registerMessage(disc++, PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
         netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Dist.CLIENT);
         netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Dist.DEDICATED_SERVER);
         netHandler.registerMessage(disc++, PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
         netHandler.registerMessage(disc++, PacketBoxBlacklist.class, PacketBoxBlacklist::encode, PacketBoxBlacklist::decode, PacketBoxBlacklist::handle);
         netHandler.registerMessage(disc++, PacketContainerEditMode.class, PacketContainerEditMode::encode, PacketContainerEditMode::decode, PacketContainerEditMode::handle);
-        netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Dist.CLIENT);
-        netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Dist.DEDICATED_SERVER);
-        netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Dist.DEDICATED_SERVER);
-        netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Dist.CLIENT);
+        netHandler.registerMessage(disc++, PacketFlamethrowerData.class, PacketFlamethrowerData::encode, PacketFlamethrowerData::decode, PacketFlamethrowerData::handle);
+        netHandler.registerMessage(disc++, PacketDropperUse.class, PacketDropperUse::encode, PacketDropperUse::decode, PacketDropperUse::handle);
+        netHandler.registerMessage(disc++, PacketEntityMove.class, PacketEntityMove::encode, PacketEntityMove::decode, PacketEntityMove::handle);
         netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Dist.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, FreeRunnerDataMessage.class, 31, Dist.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, FreeRunnerDataMessage.class, 31, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
     }
 
     /**

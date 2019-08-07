@@ -5,6 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.content.filter.IModIDFilter;
+import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -34,7 +35,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
                 } else {
-                    Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
+                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
                 sendPacketToServer(0);
             } else {
@@ -42,7 +43,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter, TILE extends T
                 ticker = 20;
             }
         } else if (guibutton.id == 1) {
-            Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(0);
         }
     }

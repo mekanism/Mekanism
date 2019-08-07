@@ -3,9 +3,9 @@ package mekanism.common;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketConfigSync;
-import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
+import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
-import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
+import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
@@ -54,9 +54,9 @@ public class CommonPlayerTracker {
 
     private void syncChangedData(ServerPlayerEntity player) {
         // TODO: Coalesce all these sync events into a single message
-        Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), player);
+        Mekanism.packetHandler.sendTo(PacketJetpackData.FULL(Mekanism.playerState.getActiveJetpacks()), player);
         Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), player);
-        Mekanism.packetHandler.sendTo(FlamethrowerDataMessage.FULL(Mekanism.playerState.getActiveFlamethrowers()), player);
-        Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), player);
+        Mekanism.packetHandler.sendTo(PacketFlamethrowerData.FULL(Mekanism.playerState.getActiveFlamethrowers()), player);
+        Mekanism.packetHandler.sendTo(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), player);
     }
 }

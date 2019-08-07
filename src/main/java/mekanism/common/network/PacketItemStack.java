@@ -2,26 +2,38 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import java.util.List;
+import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessage> {
+public class PacketItemStack {
 
-    @Override
-    public IMessage onMessage(ItemStackMessage message, MessageContext context) {
+    private List<Object> parameters;
+    private ByteBuf storedBuffer;
+    private Hand currentHand;
+
+    public PacketItemStack(Hand hand, List<Object> params) {
+        currentHand = hand;
+        parameters = params;
+    }
+
+    private PacketItemStack(Hand hand, ByteBuf storedBuffer) {
+        currentHand = hand;
+        this.storedBuffer = storedBuffer;
+    }
+
+    public static void handle(PacketItemStack message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
         if (player == null) {
-            return null;
+            return;
         }
         PacketHandler.handlePacket(() -> {
             ItemStack stack = player.getHeldItem(message.currentHand);
@@ -35,39 +47,18 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
                 message.storedBuffer.release();
             }
         }, player);
-        return null;
     }
 
-    public static class ItemStackMessage implements IMessage {
-
-        public Hand currentHand;
-
-        public List<Object> parameters;
-
-        public ByteBuf storedBuffer = null;
-
-        public ItemStackMessage() {
+    public static void encode(PacketItemStack pkt, PacketBuffer buf) {
+        buf.writeEnumValue(pkt.currentHand);
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server != null) {
+            PacketHandler.log("Sending ItemStack packet");
         }
+        PacketHandler.encode(pkt.parameters.toArray(), buf);
+    }
 
-        public ItemStackMessage(Hand hand, List<Object> params) {
-            currentHand = hand;
-            parameters = params;
-        }
-
-        @Override
-        public void toBytes(ByteBuf dataStream) {
-            dataStream.writeInt(currentHand.ordinal());
-            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-            if (server != null) {
-                PacketHandler.log("Sending ItemStack packet");
-            }
-            PacketHandler.encode(parameters.toArray(), dataStream);
-        }
-
-        @Override
-        public void fromBytes(ByteBuf dataStream) {
-            currentHand = Hand.values()[dataStream.readInt()];
-            storedBuffer = dataStream.copy();
-        }
+    public static PacketItemStack decode(PacketBuffer buf) {
+        return new PacketItemStack(buf.readEnumValue(Hand.class), buf.copy());
     }
 }

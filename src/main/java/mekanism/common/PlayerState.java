@@ -6,12 +6,11 @@ import java.util.UUID;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
-import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
+import mekanism.common.network.PacketFlamethrowerData;
+import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PlayerState {
@@ -65,7 +64,7 @@ public class PlayerState {
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(JetpackDataMessage.UPDATE(uuid, isActive));
+                Mekanism.packetHandler.sendToServer(PacketJetpackData.UPDATE(uuid, isActive));
             }
 
             // Start a sound playing if the person is now flying
@@ -157,7 +156,7 @@ public class PlayerState {
             if (changed) {
                 // If the player is the "local" player, we need to tell the server the state has changed
                 if (isLocal) {
-                    Mekanism.packetHandler.sendToServer(FlamethrowerDataMessage.UPDATE(uuid, isActive));
+                    Mekanism.packetHandler.sendToServer(PacketFlamethrowerData.UPDATE(uuid, isActive));
                 }
 
                 // Start a sound playing if the person is now using a flamethrower

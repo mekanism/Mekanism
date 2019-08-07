@@ -7,7 +7,7 @@ import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.network.PacketEditFilter.EditFilterMessage;
+import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityOredictionificator;
@@ -133,12 +133,12 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
                 } else {
-                    Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
+                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
                 sendPacketToServer(52);
             }
         } else if (guibutton.id == deleteButton.id) {
-            Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
             sendPacketToServer(52);
         } else if (guibutton.id == backButton.id) {
             sendPacketToServer(52);
