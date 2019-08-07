@@ -132,7 +132,7 @@ public class PacketOredictionificatorGui {
         if (guiType == 0) {
             TileEntityOredictionificator tile = (TileEntityOredictionificator) obj.getTileEntity(world);
             for (PlayerEntity player : tile.playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) player);
+                Mekanism.packetHandler.sendTo(new PacketTileEntity(obj, tile.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) player);
             }
         }
     }

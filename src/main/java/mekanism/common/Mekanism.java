@@ -55,6 +55,7 @@ import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.recipe.BinRecipe;
@@ -722,7 +723,7 @@ public class Mekanism {
     @SubscribeEvent
     public void onEnergyTransferred(EnergyTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.ENERGY, event.energyNetwork.firstTransmitter().coord(), event.power),
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.ENERGY, event.energyNetwork.firstTransmitter().coord(), event.power),
                   event.energyNetwork.getPacketRange());
         } catch (Exception ignored) {
         }
@@ -731,7 +732,7 @@ public class Mekanism {
     @SubscribeEvent
     public void onGasTransferred(GasTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.GAS, event.gasNetwork.firstTransmitter().coord(), event.transferType, event.didTransfer),
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.GAS, event.gasNetwork.firstTransmitter().coord(), event.transferType, event.didTransfer),
                   event.gasNetwork.getPacketRange());
         } catch (Exception ignored) {
         }
@@ -740,7 +741,7 @@ public class Mekanism {
     @SubscribeEvent
     public void onLiquidTransferred(FluidTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.FLUID, event.fluidNetwork.firstTransmitter().coord(), event.fluidType, event.didTransfer),
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.FLUID, event.fluidNetwork.firstTransmitter().coord(), event.fluidType, event.didTransfer),
                   event.fluidNetwork.getPacketRange());
         } catch (Exception ignored) {
         }
@@ -749,7 +750,7 @@ public class Mekanism {
     @SubscribeEvent
     public void onTransmittersAddedEvent(TransmittersAddedEvent event) {
         try {
-            packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, event.network.firstTransmitter().coord(), event.newNetwork, event.newTransmitters),
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.UPDATE, event.network.firstTransmitter().coord(), event.newNetwork, event.newTransmitters),
                   event.network.getPacketRange());
         } catch (Exception ignored) {
         }

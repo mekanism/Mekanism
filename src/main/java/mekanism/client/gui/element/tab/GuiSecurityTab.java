@@ -10,7 +10,7 @@ import mekanism.client.gui.element.GuiTileEntityElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
+import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -20,11 +20,11 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -157,9 +157,9 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
 
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                     if (isItem) {
-                        Mekanism.packetHandler.sendToServer(new SecurityModeMessage(currentHand, SecurityMode.values()[ordinalToSet]));
+                        Mekanism.packetHandler.sendToServer(new PacketSecurityMode(currentHand, SecurityMode.values()[ordinalToSet]));
                     } else {
-                        Mekanism.packetHandler.sendToServer(new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
+                        Mekanism.packetHandler.sendToServer(new PacketSecurityMode(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
                     }
                 }
             }

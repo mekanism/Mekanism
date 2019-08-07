@@ -20,6 +20,7 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
@@ -175,7 +176,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             }
 
             if (deletes.size() > 0 || needsSync.size() > 0) {
-                TileEntityMessage msg = new TileEntityMessage(coord, getTileEntity().makeBatchPacket(needsSync, deletes));
+                TileEntityMessage msg = new PacketTileEntity(coord, getTileEntity().makeBatchPacket(needsSync, deletes));
                 // Now remove any entries from transit that have been deleted
                 deletes.forEach(id -> transit.remove(id));
 
@@ -239,7 +240,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 int stackId = nextId++;
                 transit.put(stackId, stack);
                 Coord4D coord = coord();
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(coord, getTileEntity().makeSyncPacket(stackId, stack)), coord);
+                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(coord, getTileEntity().makeSyncPacket(stackId, stack)), coord);
                 MekanismUtils.saveChunk(getTileEntity());
             }
             return response;

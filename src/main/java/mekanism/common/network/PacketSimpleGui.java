@@ -1,32 +1,45 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IGuiProvider;
-import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessage> {
+public class PacketSimpleGui {
 
     public static List<IGuiProvider> handlers = new ArrayList<>();
 
-    @Override
-    public IMessage onMessage(SimpleGuiMessage message, MessageContext context) {
+    private Coord4D coord4D;
+    private int guiHandler;
+    private int windowId;
+    private int guiId;
+
+    public PacketSimpleGui(Coord4D coord, int handler, int gui) {
+        coord4D = coord;
+        guiHandler = handler;
+        guiId = gui;
+    }
+
+    public PacketSimpleGui(Coord4D coord, int handler, int gui, int id) {
+        this(coord, handler, gui);
+        windowId = id;
+    }
+
+    public static void handle(PacketSimpleGui message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
@@ -35,69 +48,38 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
                     if (message.guiId == -1) {
                         return;
                     }
-                    SimpleGuiMessage.openServerGui(message.guiHandler, message.guiId, (ServerPlayerEntity) player, player.world, message.coord4D);
+                    openServerGui(message.guiHandler, message.guiId, (ServerPlayerEntity) player, player.world, message.coord4D);
                 }
             } else {
-                FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
+                FMLCommonHandler.instance().showGuiScreen(getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
                 player.openContainer.windowId = message.windowId;
             }
         }, player);
-        return null;
     }
 
-    public static class SimpleGuiMessage implements IMessage {
+    public static void encode(PacketSimpleGui pkt, PacketBuffer buf) {
+        pkt.coord4D.write(buf);
+        buf.writeInt(pkt.guiHandler);
+        buf.writeInt(pkt.guiId);
+        buf.writeInt(pkt.windowId);
+    }
 
-        public Coord4D coord4D;
+    public static PacketSimpleGui decode(PacketBuffer buf) {
+        return new PacketSimpleGui(Coord4D.read(buf), buf.readInt(), buf.readInt(), buf.readInt());
+    }
 
-        public int guiHandler;
+    public static void openServerGui(int handler, int id, ServerPlayerEntity playerMP, World world, Coord4D obj) {
+        playerMP.closeContainer();
+        playerMP.getNextWindowId();
+        int window = playerMP.currentWindowId;
+        Mekanism.packetHandler.sendTo(new PacketSimpleGui(obj, handler, id, window), playerMP);
+        playerMP.openContainer = handlers.get(handler).getServerGui(id, playerMP, world, obj.getPos());
+        playerMP.openContainer.windowId = window;
+        playerMP.openContainer.addListener(playerMP);
+    }
 
-        public int guiId;
-
-        public int windowId;
-
-        public SimpleGuiMessage() {
-        }
-
-        public SimpleGuiMessage(Coord4D coord, int handler, int gui) {
-            coord4D = coord;
-            guiHandler = handler;
-            guiId = gui;
-        }
-
-        public SimpleGuiMessage(Coord4D coord, int handler, int gui, int id) {
-            this(coord, handler, gui);
-            windowId = id;
-        }
-
-        public static void openServerGui(int handler, int id, ServerPlayerEntity playerMP, World world, Coord4D obj) {
-            playerMP.closeContainer();
-            playerMP.getNextWindowId();
-            int window = playerMP.currentWindowId;
-            Mekanism.packetHandler.sendTo(new SimpleGuiMessage(obj, handler, id, window), playerMP);
-            playerMP.openContainer = handlers.get(handler).getServerGui(id, playerMP, world, obj.getPos());
-            playerMP.openContainer.windowId = window;
-            playerMP.openContainer.addListener(playerMP);
-        }
-
-        @OnlyIn(Dist.CLIENT)
-        public static Screen getGui(int handler, int id, PlayerEntity player, World world, Coord4D obj) {
-            return (Screen) handlers.get(handler).getClientGui(id, player, world, obj.getPos());
-        }
-
-        @Override
-        public void toBytes(ByteBuf dataStream) {
-            coord4D.write(dataStream);
-            dataStream.writeInt(guiHandler);
-            dataStream.writeInt(guiId);
-            dataStream.writeInt(windowId);
-        }
-
-        @Override
-        public void fromBytes(ByteBuf dataStream) {
-            coord4D = Coord4D.read(dataStream);
-            guiHandler = dataStream.readInt();
-            guiId = dataStream.readInt();
-            windowId = dataStream.readInt();
-        }
+    @OnlyIn(Dist.CLIENT)
+    public static Screen getGui(int handler, int id, PlayerEntity player, World world, Coord4D obj) {
+        return (Screen) handlers.get(handler).getClientGui(id, player, world, obj.getPos());
     }
 }

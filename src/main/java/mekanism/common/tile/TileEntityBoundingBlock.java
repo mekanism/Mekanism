@@ -8,7 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
@@ -70,7 +70,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
                     onNoPower();
                 }
                 prevPower = power;
-                Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(tileEntity), this);
+                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(tileEntity), this);
             }
         }
     }

@@ -72,7 +72,7 @@ public class PacketConfigurationUpdate {
                     }
 
                     tile.markDirty();
-                    Mekanism.packetHandler.sendToAllTracking(new TileEntityMessage(message.coord4D, network.getNetworkedData()), message.coord4D);
+                    Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(message.coord4D, network.getNetworkedData()), message.coord4D);
                     //Notify the neighbor on that side our state changed
                     MekanismUtils.notifyNeighborOfChange(tile.getWorld(), message.configIndex, tile.getPos());
                 } else if (message.packetType == ConfigurationPacket.EJECT_COLOR) {
@@ -98,7 +98,7 @@ public class PacketConfigurationUpdate {
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
                 for (PlayerEntity p : ((TileEntityMekanism) config).playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData()), (ServerPlayerEntity) p);
+                    Mekanism.packetHandler.sendTo(new PacketTileEntity(message.coord4D, network.getNetworkedData()), (ServerPlayerEntity) p);
                 }
             }
         }, player);

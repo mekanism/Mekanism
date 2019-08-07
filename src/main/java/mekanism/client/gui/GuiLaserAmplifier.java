@@ -11,6 +11,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.LangUtils;
@@ -138,7 +139,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
                 return;
             }
             TileNetworkList data = TileNetworkList.withContents(0, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             minField.setText("");
         }
     }
@@ -153,7 +154,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
                 return;
             }
             TileNetworkList data = TileNetworkList.withContents(1, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             maxField.setText("");
         }
     }
@@ -162,7 +163,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
         if (!timerField.getText().isEmpty()) {
             int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
             TileNetworkList data = TileNetworkList.withContents(2, toUse);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
             timerField.setText("");
         }
     }

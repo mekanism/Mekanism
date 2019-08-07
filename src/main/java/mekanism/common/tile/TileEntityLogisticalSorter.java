@@ -25,6 +25,7 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -129,7 +130,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             }
             if (playersUsing.size() > 0) {
                 for (PlayerEntity player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
+                    Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
                 }
             }
 
@@ -577,7 +578,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         }
 
         for (PlayerEntity player : playersUsing) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
+            Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
         }
         return null;
     }

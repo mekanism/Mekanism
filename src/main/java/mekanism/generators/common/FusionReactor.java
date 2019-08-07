@@ -11,7 +11,7 @@ import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorBlock;
@@ -248,7 +248,7 @@ public class FusionReactor {
         burning = burning && keepBurning;
 
         if (!controller.getWorld().isRemote) {
-            Mekanism.packetHandler.sendToDimension(new TileEntityMessage(controller), controller.getWorld().provider.getDimension());
+            Mekanism.packetHandler.sendToDimension(new PacketTileEntity(controller), controller.getWorld().provider.getDimension());
         }
     }
 
@@ -267,7 +267,7 @@ public class FusionReactor {
         formed = true;
 
         if (!controller.getWorld().isRemote) {
-            Mekanism.packetHandler.sendToDimension(new TileEntityMessage(controller), controller.getWorld().provider.getDimension());
+            Mekanism.packetHandler.sendToDimension(new PacketTileEntity(controller), controller.getWorld().provider.getDimension());
         }
     }
 

@@ -19,7 +19,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.IOreDictFilter;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -233,7 +233,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     }
 
     protected void sendDataFromClick(TileNetworkList data) {
-        Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
     }
 

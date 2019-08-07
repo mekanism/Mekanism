@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.util.ItemRegistryUtils;
@@ -57,7 +57,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void sendPacketToServer(int guiID) {
-        Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, guiID));
+        Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 0, guiID));
     }
 
     @Override

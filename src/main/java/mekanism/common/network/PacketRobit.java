@@ -1,20 +1,39 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
+public class PacketRobit {
 
-    @Override
-    public IMessage onMessage(RobitMessage message, MessageContext context) {
+    private RobitPacketType activeType;
+    private int entityId;
+    private int guiID;
+    private String name;
+
+    public PacketRobit(RobitPacketType type, int entityId) {
+        activeType = type;
+        this.entityId = entityId;
+    }
+
+    public PacketRobit(int entityId, @Nonnull String name) {
+        activeType = RobitPacketType.NAME;
+        this.entityId = entityId;
+        this.name = name;
+    }
+
+    public PacketRobit(int entityId, int guiID) {
+        activeType = RobitPacketType.GUI;
+        this.entityId = entityId;
+        this.guiID = guiID;
+    }
+
+    public static void handle(PacketRobit message, Supplier<Context> context) {
         PlayerEntity player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
             EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
@@ -38,7 +57,27 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
                 }
             }
         }, player);
-        return null;
+    }
+
+    public static void encode(PacketRobit pkt, PacketBuffer buf) {
+        buf.writeEnumValue(pkt.activeType);
+        buf.writeInt(pkt.entityId);
+        if (pkt.activeType == RobitPacketType.NAME) {
+            buf.writeString(pkt.name);
+        } else if (pkt.activeType == RobitPacketType.GUI) {
+            buf.writeInt(pkt.guiID);
+        }
+    }
+
+    public static PacketRobit decode(PacketBuffer buf) {
+        RobitPacketType activeType = buf.readEnumValue(RobitPacketType.class);
+        int entityId = buf.readInt();
+        if (activeType == RobitPacketType.NAME) {
+            return new PacketRobit(entityId, buf.readString());
+        } else if (activeType == RobitPacketType.GUI) {
+            return new PacketRobit(entityId, buf.readInt());
+        }
+        return new PacketRobit(activeType, entityId);
     }
 
     public enum RobitPacketType {
@@ -47,56 +86,5 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
         NAME,
         GO_HOME,
         DROP_PICKUP
-    }
-
-    public static class RobitMessage implements IMessage {
-
-        public RobitPacketType activeType;
-
-        public int entityId;
-        public int guiID;
-        public String name;
-
-        public RobitMessage() {
-        }
-
-        public RobitMessage(RobitPacketType type, int entityId) {
-            activeType = type;
-            this.entityId = entityId;
-        }
-
-        public RobitMessage(int entityId, @Nonnull String name) {
-            activeType = RobitPacketType.NAME;
-            this.entityId = entityId;
-            this.name = name;
-        }
-
-        public RobitMessage(int entityId, int guiID) {
-            activeType = RobitPacketType.GUI;
-            this.entityId = entityId;
-            this.guiID = guiID;
-        }
-
-        @Override
-        public void toBytes(ByteBuf dataStream) {
-            dataStream.writeInt(activeType.ordinal());
-            dataStream.writeInt(entityId);
-            if (activeType == RobitPacketType.NAME) {
-                PacketHandler.writeString(dataStream, name);
-            } else if (activeType == RobitPacketType.GUI) {
-                dataStream.writeInt(guiID);
-            }
-        }
-
-        @Override
-        public void fromBytes(ByteBuf dataStream) {
-            activeType = RobitPacketType.values()[dataStream.readInt()];
-            entityId = dataStream.readInt();
-            if (activeType == RobitPacketType.NAME) {
-                name = PacketHandler.readString(dataStream);
-            } else if (activeType == RobitPacketType.GUI) {
-                guiID = dataStream.readInt();
-            }
-        }
     }
 }

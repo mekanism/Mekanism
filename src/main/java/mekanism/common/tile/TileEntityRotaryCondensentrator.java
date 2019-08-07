@@ -22,7 +22,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -159,9 +159,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 mode = mode == 0 ? 1 : 0;
             }
             for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (ServerPlayerEntity) player);
+                Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
             }
-
             return;
         }
 

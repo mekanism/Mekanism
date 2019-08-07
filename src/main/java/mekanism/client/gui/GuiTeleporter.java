@@ -26,8 +26,8 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter;
-import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -257,7 +257,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
                 if (tileEntity != null) {
                     TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                    Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+                    Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
                 } else {
                     Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DEL_FREQ, currentHand, freq));
                     Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, null));
@@ -360,7 +360,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         }
         if (tileEntity != null) {
             TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
-            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
         } else {
             Frequency newFreq = new Frequency(freq, null).setPublic(!privateMode);
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));

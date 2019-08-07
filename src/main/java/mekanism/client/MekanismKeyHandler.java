@@ -17,9 +17,8 @@ import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack;
-import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
+import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TextComponentGroup;
 import net.minecraft.client.Minecraft;
@@ -138,7 +137,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             } else if (chestItem instanceof ItemScubaTank) {
                 ItemScubaTank scubaTank = (ItemScubaTank) chestItem;
                 scubaTank.toggleFlowing(chestStack);
-                Mekanism.packetHandler.sendToServer(ScubaTankDataMessage.MODE_CHANGE(false));
+                Mekanism.packetHandler.sendToServer(PacketScubaTankData.MODE_CHANGE(false));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             }
         } else if (kb == freeRunnerModeSwitchKey) {

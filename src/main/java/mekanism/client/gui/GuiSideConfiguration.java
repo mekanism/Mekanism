@@ -17,7 +17,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
-import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.util.LangUtils;
@@ -87,7 +87,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
         TileEntity tile = (TileEntity) configurable;
         if (guibutton.id == backButton.id) {
             int guiId = Mekanism.proxy.getGuiId(tile.getBlockType());
-            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+            Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tile), 0, guiId));
         } else if (guibutton.id == autoEjectButton.id) {
             Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
         } else {

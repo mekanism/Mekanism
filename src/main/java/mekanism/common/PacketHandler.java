@@ -31,18 +31,13 @@ import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.network.PacketRemoveUpgrade;
-import mekanism.common.network.PacketRemoveUpgrade.RemoveUpgradeMessage;
 import mekanism.common.network.PacketRobit;
-import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketSecurityMode;
-import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.network.PacketTransmitterUpdate;
-import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -56,8 +51,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
@@ -157,10 +150,6 @@ public class PacketHandler {
         return dataStream.readUniqueId();
     }
 
-    public static void writeUUID(PacketBuffer dataStream, UUID uuid) {
-        dataStream.writeUniqueId(uuid);
-    }
-
     public static void log(String log) {
         if (MekanismConfig.current().general.logPackets.val()) {
             Mekanism.logger.info(log);
@@ -178,16 +167,16 @@ public class PacketHandler {
     public void initialize() {
         int disc = 0;
 
-        netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Dist.DEDICATED_SERVER);
-        netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Dist.CLIENT);
+        netHandler.registerMessage(disc++, PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
+        netHandler.registerMessage(disc++, PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
         netHandler.registerMessage(disc++, PacketItemStack.class, PacketItemStack::encode, PacketItemStack::decode, PacketItemStack::handle);
         netHandler.registerMessage(disc++, PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
         netHandler.registerMessage(disc++, PacketPortalFX.class, PacketPortalFX::encode, PacketPortalFX::decode, PacketPortalFX::handle);
         netHandler.registerMessage(disc++, PacketDataRequest.class, PacketDataRequest::encode, PacketDataRequest::decode, PacketDataRequest::handle);
         netHandler.registerMessage(disc++, PacketOredictionificatorGui.class, PacketOredictionificatorGui::encode, PacketOredictionificatorGui::decode, PacketOredictionificatorGui::handle);
-        netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketSecurityMode.class, PacketSecurityMode::encode, PacketSecurityMode::decode, PacketSecurityMode::handle);
         netHandler.registerMessage(disc++, PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
-        netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Dist.DEDICATED_SERVER);
+        netHandler.registerMessage(disc++, PacketRemoveUpgrade.class, PacketRemoveUpgrade::encode, PacketRemoveUpgrade::decode, PacketRemoveUpgrade::handle);
         netHandler.registerMessage(disc++, PacketRedstoneControl.class, PacketRedstoneControl::encode, PacketRedstoneControl::decode, PacketRedstoneControl::handle);
         netHandler.registerMessage(disc++, PacketLogisticalSorterGui.class, PacketLogisticalSorterGui::encode, PacketLogisticalSorterGui::decode, PacketLogisticalSorterGui::handle);
         netHandler.registerMessage(disc++, PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
@@ -275,7 +264,7 @@ public class PacketHandler {
     }
 
     public <TILE extends TileEntity & ITileNetwork> void sendUpdatePacket(TILE tile) {
-        sendToAllTracking(new TileEntityMessage(tile), tile);
+        sendToAllTracking(new PacketTileEntity(tile), tile);
     }
 
     public void sendToAllTracking(IMessage message, TileEntity tile) {

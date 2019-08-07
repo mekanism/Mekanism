@@ -10,8 +10,8 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
-import mekanism.common.network.PacketRemoveUpgrade.RemoveUpgradeMessage;
-import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.network.PacketRemoveUpgrade;
+import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -58,10 +58,10 @@ public class GuiUpgradeManagement extends GuiMekanism {
         if (guibutton.id == backButton.id) {
             Block block = tile.getBlockType();
             if (block instanceof IHasGui) {
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, ((IHasGui) block).getGuiID()));
+                Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tile), 0, ((IHasGui) block).getGuiID()));
             }
         } else if (guibutton.id == removeButton.id) {
-            Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
+            Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tile), selectedType));
         }
     }
 

@@ -38,6 +38,7 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -51,9 +52,9 @@ import mekanism.common.util.MinerUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.BushBlock;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -69,6 +70,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -76,8 +79,6 @@ import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -265,7 +266,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
             if (playersUsing.size() > 0) {
                 for (PlayerEntity player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getSmallPacket(new TileNetworkList())), (ServerPlayerEntity) player);
+                    Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getSmallPacket(new TileNetworkList())), (ServerPlayerEntity) player);
                 }
             }
             prevEnergy = getEnergy();
@@ -506,7 +507,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     public void openInventory(@Nonnull PlayerEntity player) {
         super.openInventory(player);
         if (!world.isRemote) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (ServerPlayerEntity) player);
+            Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
         }
     }
 
@@ -610,7 +611,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
             MekanismUtils.saveChunk(this);
             for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
+                Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
             }
             return;
         }
@@ -941,7 +942,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
             return new Object[]{searcher != null ? searcher.found : 0};
         }
         for (PlayerEntity player : playersUsing) {
-            Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
+            Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
         }
         return null;
     }

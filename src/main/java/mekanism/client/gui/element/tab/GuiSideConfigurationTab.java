@@ -3,7 +3,7 @@ package mekanism.client.gui.element.tab;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -26,6 +26,6 @@ public class GuiSideConfigurationTab extends GuiTabElement<TileEntity> {
 
     @Override
     public void buttonClicked() {
-        Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 9));
+        Mekanism.packetHandler.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 0, 9));
     }
 }

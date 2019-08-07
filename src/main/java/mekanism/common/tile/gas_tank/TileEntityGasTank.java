@@ -20,7 +20,7 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -229,7 +229,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
                 dumping = GasMode.values()[index];
             }
             for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new TileEntityMessage(this), (ServerPlayerEntity) player);
+                Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
             }
 
             return;

@@ -45,7 +45,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -381,7 +381,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         onUpdate();
         if (!world.isRemote) {
             if (doAutoSync && playersUsing.size() > 0) {
-                TileEntityMessage updateMessage = new TileEntityMessage(this);
+                TileEntityMessage updateMessage = new PacketTileEntity(this);
                 for (PlayerEntity player : playersUsing) {
                     Mekanism.packetHandler.sendTo(updateMessage, (ServerPlayerEntity) player);
                 }

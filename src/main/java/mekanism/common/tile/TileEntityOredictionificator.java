@@ -14,7 +14,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -51,7 +51,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         if (!world.isRemote) {
             if (playersUsing.size() > 0) {
                 for (PlayerEntity player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
+                    Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
                 }
             }
 

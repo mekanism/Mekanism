@@ -8,7 +8,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
+import mekanism.common.network.PacketScubaTankData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -107,7 +107,7 @@ public class PlayerState {
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(ScubaTankDataMessage.UPDATE(uuid, isActive));
+                Mekanism.packetHandler.sendToServer(PacketScubaTankData.UPDATE(uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a gasmask

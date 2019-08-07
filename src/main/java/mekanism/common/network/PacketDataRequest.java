@@ -45,7 +45,7 @@ public class PacketDataRequest {
                 }
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null)) {
                     ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player);
+                    Mekanism.packetHandler.sendTo(new PacketTileEntity(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player);
                 }
             }
         }, player);

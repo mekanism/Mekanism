@@ -58,7 +58,7 @@ public class PacketEditFilter {
                     sorter.filters.add(index, (TransporterFilter) message.edited);
                 }
                 for (PlayerEntity iterPlayer : sorter.playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(sorter, sorter.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
+                    Mekanism.packetHandler.sendTo(new PacketTileEntity(sorter, sorter.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
                 }
             } else if (message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner) {
                 TileEntityDigitalMiner miner = (TileEntityDigitalMiner) message.coord4D.getTileEntity(worldServer);
@@ -72,7 +72,7 @@ public class PacketEditFilter {
                     miner.filters.add(index, (MinerFilter) message.edited);
                 }
                 for (PlayerEntity iterPlayer : miner.playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(miner, miner.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
+                    Mekanism.packetHandler.sendTo(new PacketTileEntity(miner, miner.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
                 }
             } else if (message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator) {
                 TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator) message.coord4D.getTileEntity(worldServer);
@@ -85,7 +85,7 @@ public class PacketEditFilter {
                     oredictionificator.filters.add(index, (OredictionificatorFilter) message.edited);
                 }
                 for (PlayerEntity iterPlayer : oredictionificator.playersUsing) {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(oredictionificator, oredictionificator.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
+                    Mekanism.packetHandler.sendTo(new PacketTileEntity(oredictionificator, oredictionificator.getFilterPacket(new TileNetworkList())), (ServerPlayerEntity) iterPlayer);
                 }
             }
         });

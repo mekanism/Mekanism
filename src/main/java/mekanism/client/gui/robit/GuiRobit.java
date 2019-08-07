@@ -5,6 +5,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.GuiButtonDisableableImage;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -49,15 +50,15 @@ public abstract class GuiRobit extends GuiMekanism {
             return;
         }
         if (guibutton.id == mainButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(robit.getEntityId(), 21));
+            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 21));
         } else if (guibutton.id == craftingButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(robit.getEntityId(), 22));
+            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 22));
         } else if (guibutton.id == inventoryButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(robit.getEntityId(), 23));
+            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 23));
         } else if (guibutton.id == smeltingButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(robit.getEntityId(), 24));
+            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 24));
         } else if (guibutton.id == repairButton.id) {
-            Mekanism.packetHandler.sendToServer(new RobitMessage(robit.getEntityId(), 25));
+            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), 25));
         }
     }
 
