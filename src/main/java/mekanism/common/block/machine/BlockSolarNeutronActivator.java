@@ -140,12 +140,6 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
 
     @Override
     @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull World world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
@@ -182,18 +176,6 @@ public class BlockSolarNeutronActivator extends BlockMekanismContainer implement
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
-        return true;
     }
 
     @Override

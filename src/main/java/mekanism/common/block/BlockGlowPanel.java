@@ -166,37 +166,6 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
         return true;
     }
 
-    @Override
-    @Deprecated
-    public boolean isBlockNormalCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullBlock(BlockState state) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        return BlockFaceShape.UNDEFINED;
-    }
-
     @Nullable
     @Override
     public Class<? extends TileEntityGlowPanel> getTileClass() {

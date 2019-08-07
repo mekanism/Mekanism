@@ -144,12 +144,6 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
         return new TileEntityChemicalOxidizer();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -195,12 +189,6 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

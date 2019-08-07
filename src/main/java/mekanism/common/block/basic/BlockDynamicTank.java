@@ -24,12 +24,6 @@ public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel,
     }
 
     @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
     public int getLightOpacity(BlockState state, IWorldReader world, BlockPos pos) {
         return 0;
     }

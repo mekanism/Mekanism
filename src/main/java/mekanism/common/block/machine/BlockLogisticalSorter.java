@@ -214,12 +214,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
         return new TileEntityLogisticalSorter();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -288,26 +282,6 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
             return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).getDirection()).offset(0.5, 0.5, 0.5);
         }
         return super.getBoundingBox(state, world, pos);
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
-        //TODO: This was true before, but I think it should be false?
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        return BlockFaceShape.UNDEFINED;
     }
 
     @Override

@@ -82,18 +82,6 @@ public class BlockLaserFocusMatrix extends Block implements IHasTileEntity<TileE
     }
 
     @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
     }
@@ -107,13 +95,6 @@ public class BlockLaserFocusMatrix extends Block implements IHasTileEntity<TileE
             return false;
         }
         return super.shouldSideBeRendered(state, world, pos, side);
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
-        //TODO
-        return false;
     }
 
     @Nullable

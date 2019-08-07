@@ -300,12 +300,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         return null;
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -360,12 +354,6 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
             ((IFactory) stack.getItem()).setRecipeType(((TileEntityFactory) tile).getRecipeType().ordinal(), stack);
         }
         return stack;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

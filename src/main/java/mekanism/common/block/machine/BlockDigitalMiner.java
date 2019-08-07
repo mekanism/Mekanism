@@ -140,12 +140,6 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
         return new TileEntityDigitalMiner();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -191,12 +185,6 @@ public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockE
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

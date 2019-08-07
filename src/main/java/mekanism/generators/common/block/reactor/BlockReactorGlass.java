@@ -83,18 +83,6 @@ public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntit
     }
 
     @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
     }

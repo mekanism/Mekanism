@@ -23,12 +23,6 @@ public class BlockBoilerCasing extends BlockBasicMultiblock implements IHasInven
     }
 
     @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
     public int getLightOpacity(BlockState state, IWorldReader world, BlockPos pos) {
         return 0;
     }

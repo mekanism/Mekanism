@@ -79,24 +79,6 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
         return new TileEntityStructuralGlass();
     }
 
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullBlock(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override

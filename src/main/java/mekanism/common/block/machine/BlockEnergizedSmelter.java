@@ -151,12 +151,6 @@ public class BlockEnergizedSmelter extends BlockMekanismContainer implements IBl
         return new TileEntityEnergizedSmelter();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -202,12 +196,6 @@ public class BlockEnergizedSmelter extends BlockMekanismContainer implements IBl
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

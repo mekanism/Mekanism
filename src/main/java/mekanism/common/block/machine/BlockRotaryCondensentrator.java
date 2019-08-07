@@ -148,12 +148,6 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
         return new TileEntityRotaryCondensentrator();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -199,18 +193,6 @@ public class BlockRotaryCondensentrator extends BlockMekanismContainer implement
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
-        return true;
     }
 
     @Override

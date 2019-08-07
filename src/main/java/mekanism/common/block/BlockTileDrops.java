@@ -42,6 +42,7 @@ import net.minecraftforge.fluids.FluidStack;
  * Special handling for block drops that need TileEntity data
  */
 public abstract class BlockTileDrops extends Block {
+    //TODO: Block shape using VoxelShape
 
     protected BlockTileDrops(Material materialIn) {
         super(materialIn);

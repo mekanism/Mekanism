@@ -137,12 +137,6 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
         return new TileEntityChargepad();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -179,25 +173,6 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
     @Deprecated
     public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
         return CHARGEPAD_BOUNDS;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        return face == Direction.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
 
     @Override

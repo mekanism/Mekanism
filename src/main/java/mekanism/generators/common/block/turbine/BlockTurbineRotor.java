@@ -122,25 +122,6 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
         return new TileEntityTurbineRotor();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        return face != Direction.UP && face != Direction.DOWN ? BlockFaceShape.MIDDLE_POLE : BlockFaceShape.CENTER;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override

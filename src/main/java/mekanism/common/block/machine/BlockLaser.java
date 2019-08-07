@@ -144,12 +144,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
         return new TileEntityLaser();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -206,26 +200,6 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
             return MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLaser) tile).getDirection()).offset(0.5, 0.5, 0.5);
         }
         return super.getBoundingBox(state, world, pos);
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
-        //TODO: Was true but should this be false
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        return BlockFaceShape.UNDEFINED;
     }
 
     @Override

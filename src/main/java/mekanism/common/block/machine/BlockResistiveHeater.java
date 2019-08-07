@@ -142,12 +142,6 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
         return new TileEntityResistiveHeater();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -193,12 +187,6 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

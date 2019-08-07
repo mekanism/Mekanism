@@ -151,12 +151,6 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
         return new TileEntityCombiner();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -202,12 +196,6 @@ public class BlockCombiner extends BlockMekanismContainer implements IBlockElect
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

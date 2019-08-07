@@ -135,12 +135,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
         return new TileEntityFuelwoodHeater();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -186,12 +180,6 @@ public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasG
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

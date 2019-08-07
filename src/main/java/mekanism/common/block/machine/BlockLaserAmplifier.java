@@ -142,12 +142,6 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
         return new TileEntityLaserAmplifier();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -206,12 +200,6 @@ public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasM
     @Override
     public boolean canConnectRedstone(BlockState state, IWorldReader world, BlockPos pos, Direction side) {
         return true;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

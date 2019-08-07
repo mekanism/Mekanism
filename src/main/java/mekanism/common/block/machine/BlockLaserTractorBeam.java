@@ -142,12 +142,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
         return new TileEntityLaserTractorBeam();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -193,12 +187,6 @@ public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHa
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

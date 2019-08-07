@@ -87,25 +87,6 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
         return new TileEntitySolarGenerator();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        return BlockFaceShape.UNDEFINED;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override

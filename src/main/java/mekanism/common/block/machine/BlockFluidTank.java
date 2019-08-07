@@ -153,12 +153,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
         return null;
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -283,25 +277,6 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Deprecated
     public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
         return TANK_BOUNDS;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
-        return side == Direction.UP || side == Direction.DOWN;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        return face != Direction.UP && face != Direction.DOWN ? BlockFaceShape.UNDEFINED : BlockFaceShape.SOLID;
     }
 
     @Override

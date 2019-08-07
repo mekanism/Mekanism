@@ -151,12 +151,6 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
         return new TileEntityCrusher();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -202,12 +196,6 @@ public class BlockCrusher extends BlockMekanismContainer implements IBlockElectr
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override

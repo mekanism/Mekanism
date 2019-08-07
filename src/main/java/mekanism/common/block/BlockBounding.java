@@ -202,32 +202,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        BlockPos mainPos = getMainBlockPos(world, pos);
-        if (mainPos != null) {
-            TileEntity tile = world.getTileEntity(mainPos);
-            if (tile instanceof IBoundingBlock) {
-                return ((IBoundingBlock) tile).getOffsetBlockFaceShape(face, pos.subtract(mainPos));
-            }
-        }
-        return BlockFaceShape.UNDEFINED;
-    }
-
-    @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
     }

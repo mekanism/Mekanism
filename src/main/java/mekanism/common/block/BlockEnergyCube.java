@@ -167,12 +167,6 @@ public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui, 
 
     @Override
     @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
     public boolean hasComparatorInputOverride(BlockState state) {
         return true;
     }

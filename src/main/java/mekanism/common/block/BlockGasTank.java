@@ -124,12 +124,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
         return false;
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @Nonnull
     @Override
     @Deprecated
@@ -165,25 +159,6 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui, ISt
     public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
         TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
         return tileEntity.getRedstoneLevel();
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullBlock(BlockState state) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public BlockFaceShape getBlockFaceShape(IWorldReader world, BlockState state, BlockPos pos, Direction face) {
-        return face == Direction.UP || face == Direction.DOWN ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
     }
 
     @Override

@@ -155,12 +155,6 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
         return new TileEntityMetallurgicInfuser();
     }
 
-    @Override
-    @Deprecated
-    public boolean isOpaqueCube(BlockState state) {
-        return false;
-    }
-
     @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
@@ -206,12 +200,6 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
                 ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
             }
         }
-    }
-
-    @Override
-    @Deprecated
-    public boolean isFullCube(BlockState state) {
-        return false;
     }
 
     @Override
