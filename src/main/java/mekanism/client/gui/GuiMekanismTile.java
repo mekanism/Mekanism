@@ -41,7 +41,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism> extends G
                 }
             }
 
-            ItemStack stack = mc.player.inventory.getItemStack();
+            ItemStack stack = minecraft.player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && hovering != null) {
                 SideData data = getFromSlot(hovering);
                 if (data != null) {

@@ -122,7 +122,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     protected void minerFilterClickCommon(int xAxis, int yAxis, MinerFilter filter) {
         if (overReplaceOutput(xAxis, yAxis)) {
             boolean doNull = false;
-            ItemStack stack = mc.player.inventory.getItemStack();
+            ItemStack stack = minecraft.player.inventory.getItemStack();
             ItemStack toUse = ItemStack.EMPTY;
             if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 if (stack.getItem() instanceof BlockItem) {

@@ -52,7 +52,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 @OnlyIn(Dist.CLIENT)
 public class ClientTickHandler {
 
-    public static Minecraft mc = FMLClientHandler.instance().getClient();
+    public static Minecraft minecraft = FMLClientHandler.instance().getClient();
     public static Random rand = new Random();
     public static Set<IClientTicker> tickingSet = new HashSet<>();
     public static Map<PlayerEntity, TeleportData> portableTeleports = new HashMap<>();
@@ -65,7 +65,7 @@ public class ClientTickHandler {
     }
 
     public static boolean isJetpackActive(PlayerEntity player) {
-        if (player != mc.player) {
+        if (player != minecraft.player) {
             return Mekanism.playerState.isJetpackOn(player);
         }
         if (!player.isCreative() && !player.isSpectator()) {
@@ -75,13 +75,13 @@ public class ClientTickHandler {
                 if (jetpack.getGas(chest) != null) {
                     JetpackMode mode = jetpack.getMode(chest);
                     if (mode == JetpackMode.NORMAL) {
-                        return mc.currentScreen == null && mc.gameSettings.keyBindJump.isKeyDown();
+                        return minecraft.currentScreen == null && minecraft.gameSettings.keyBindJump.isKeyDown();
                     } else if (mode == JetpackMode.HOVER) {
-                        boolean ascending = mc.gameSettings.keyBindJump.isKeyDown();
-                        boolean descending = mc.gameSettings.keyBindSneak.isKeyDown();
-                        //if ((!ascending && !descending) || (ascending && descending) || mc.currentScreen != null || (descending && mc.currentScreen == null))
+                        boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
+                        boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
+                        //if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null || (descending && minecraft.currentScreen == null))
                         //Simplifies to
-                        if (!ascending || descending || mc.currentScreen != null) {
+                        if (!ascending || descending || minecraft.currentScreen != null) {
                             return !CommonPlayerTickHandler.isOnGround(player);
                         }
                         return true;
@@ -93,14 +93,14 @@ public class ClientTickHandler {
     }
 
     public static boolean isGasMaskOn(PlayerEntity player) {
-        if (player != mc.player) {
+        if (player != minecraft.player) {
             return Mekanism.playerState.isGasmaskOn(player);
         }
         return CommonPlayerTickHandler.isGasMaskOn(player);
     }
 
     public static boolean isFreeRunnerOn(PlayerEntity player) {
-        if (player != mc.player) {
+        if (player != minecraft.player) {
             return Mekanism.freeRunnerOn.contains(player.getUniqueID());
         }
 
@@ -114,10 +114,10 @@ public class ClientTickHandler {
     }
 
     public static boolean isFlamethrowerOn(PlayerEntity player) {
-        if (player != mc.player) {
+        if (player != minecraft.player) {
             return Mekanism.playerState.isFlamethrowerOn(player);
         }
-        return hasFlamethrower(player) && mc.gameSettings.keyBindUseItem.isKeyDown();
+        return hasFlamethrower(player) && minecraft.gameSettings.keyBindUseItem.isKeyDown();
     }
 
     public static boolean hasFlamethrower(PlayerEntity player) {
@@ -133,7 +133,7 @@ public class ClientTickHandler {
         if (delay == 0) {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.TELEPORT, hand, freq));
         } else {
-            portableTeleports.put(player, new TeleportData(hand, freq, mc.world.getWorldTime() + delay));
+            portableTeleports.put(player, new TeleportData(hand, freq, minecraft.world.getWorldTime() + delay));
         }
     }
 
@@ -159,23 +159,23 @@ public class ClientTickHandler {
             }
         }
 
-        if (mc.world != null) {
+        if (minecraft.world != null) {
             shouldReset = true;
         } else if (shouldReset) {
             MekanismClient.reset();
             shouldReset = false;
         }
 
-        if (mc.world != null && mc.player != null && !Mekanism.proxy.isPaused()) {
+        if (minecraft.world != null && minecraft.player != null && !Mekanism.proxy.isPaused()) {
             if (!initHoliday || MekanismClient.ticksPassed % 1200 == 0) {
                 HolidayManager.check();
                 initHoliday = true;
             }
 
-            UUID playerUUID = mc.player.getUniqueID();
-            boolean freeRunnerOn = isFreeRunnerOn(mc.player);
+            UUID playerUUID = minecraft.player.getUniqueID();
+            boolean freeRunnerOn = isFreeRunnerOn(minecraft.player);
             if (Mekanism.freeRunnerOn.contains(playerUUID) != freeRunnerOn) {
-                if (freeRunnerOn && mc.currentScreen == null) {
+                if (freeRunnerOn && minecraft.currentScreen == null) {
                     Mekanism.freeRunnerOn.add(playerUUID);
                 } else {
                     Mekanism.freeRunnerOn.remove(playerUUID);
@@ -183,18 +183,18 @@ public class ClientTickHandler {
                 Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.UPDATE, playerUUID, freeRunnerOn));
             }
 
-            ItemStack bootStack = mc.player.getItemStackFromSlot(EquipmentSlotType.FEET);
-            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !mc.player.isSneaking()) {
-                mc.player.stepHeight = 1.002F;
-            } else if (mc.player.stepHeight == 1.002F) {
-                mc.player.stepHeight = 0.6F;
+            ItemStack bootStack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.FEET);
+            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.isSneaking()) {
+                minecraft.player.stepHeight = 1.002F;
+            } else if (minecraft.player.stepHeight == 1.002F) {
+                minecraft.player.stepHeight = 0.6F;
             }
 
             // Update player's state for various items; this also automatically notifies server if something changed and
             // kicks off sounds as necessary
-            Mekanism.playerState.setJetpackState(playerUUID, isJetpackActive(mc.player), true);
-            Mekanism.playerState.setGasmaskState(playerUUID, isGasMaskOn(mc.player), true);
-            Mekanism.playerState.setFlamethrowerState(playerUUID, hasFlamethrower(mc.player), isFlamethrowerOn(mc.player), true);
+            Mekanism.playerState.setJetpackState(playerUUID, isJetpackActive(minecraft.player), true);
+            Mekanism.playerState.setGasmaskState(playerUUID, isGasMaskOn(minecraft.player), true);
+            Mekanism.playerState.setFlamethrowerState(playerUUID, hasFlamethrower(minecraft.player), isFlamethrowerOn(minecraft.player), true);
 
             for (Iterator<Entry<PlayerEntity, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
                 Entry<PlayerEntity, TeleportData> entry = iter.next();
@@ -203,69 +203,69 @@ public class ClientTickHandler {
                     double x = player.posX + rand.nextDouble() - 0.5D;
                     double y = player.posY + rand.nextDouble() * 2 - 2D;
                     double z = player.posZ + rand.nextDouble() - 0.5D;
-                    mc.world.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
+                    minecraft.world.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
                 }
 
-                if (mc.world.getWorldTime() == entry.getValue().teleportTime) {
+                if (minecraft.world.getWorldTime() == entry.getValue().teleportTime) {
                     Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
                     iter.remove();
                 }
             }
 
-            ItemStack chestStack = mc.player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+            ItemStack chestStack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
             if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemJetpack) {
-                MekanismClient.updateKey(mc.gameSettings.keyBindJump, KeySync.ASCEND);
-                MekanismClient.updateKey(mc.gameSettings.keyBindSneak, KeySync.DESCEND);
+                MekanismClient.updateKey(minecraft.gameSettings.keyBindJump, KeySync.ASCEND);
+                MekanismClient.updateKey(minecraft.gameSettings.keyBindSneak, KeySync.DESCEND);
             }
 
-            if (!mc.player.isCreative() && !mc.player.isSpectator()) {
-                if (isFlamethrowerOn(mc.player)) {
-                    ItemFlamethrower flamethrower = (ItemFlamethrower) mc.player.inventory.getCurrentItem().getItem();
-                    flamethrower.useGas(mc.player.inventory.getCurrentItem());
+            if (!minecraft.player.isCreative() && !minecraft.player.isSpectator()) {
+                if (isFlamethrowerOn(minecraft.player)) {
+                    ItemFlamethrower flamethrower = (ItemFlamethrower) minecraft.player.inventory.getCurrentItem().getItem();
+                    flamethrower.useGas(minecraft.player.inventory.getCurrentItem());
                 }
             }
 
-            if (isJetpackActive(mc.player)) {
+            if (isJetpackActive(minecraft.player)) {
                 ItemJetpack jetpack = (ItemJetpack) chestStack.getItem();
                 JetpackMode mode = jetpack.getMode(chestStack);
                 if (mode == JetpackMode.NORMAL) {
-                    mc.player.motionY = Math.min(mc.player.motionY + 0.15D, 0.5D);
-                    mc.player.fallDistance = 0.0F;
+                    minecraft.player.motionY = Math.min(minecraft.player.motionY + 0.15D, 0.5D);
+                    minecraft.player.fallDistance = 0.0F;
                 } else if (mode == JetpackMode.HOVER) {
-                    boolean ascending = mc.gameSettings.keyBindJump.isKeyDown();
-                    boolean descending = mc.gameSettings.keyBindSneak.isKeyDown();
-                    if ((!ascending && !descending) || (ascending && descending) || mc.currentScreen != null) {
-                        if (mc.player.motionY > 0) {
-                            mc.player.motionY = Math.max(mc.player.motionY - 0.15D, 0);
-                        } else if (mc.player.motionY < 0) {
-                            if (!CommonPlayerTickHandler.isOnGround(mc.player)) {
-                                mc.player.motionY = Math.min(mc.player.motionY + 0.15D, 0);
+                    boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
+                    boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
+                    if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null) {
+                        if (minecraft.player.motionY > 0) {
+                            minecraft.player.motionY = Math.max(minecraft.player.motionY - 0.15D, 0);
+                        } else if (minecraft.player.motionY < 0) {
+                            if (!CommonPlayerTickHandler.isOnGround(minecraft.player)) {
+                                minecraft.player.motionY = Math.min(minecraft.player.motionY + 0.15D, 0);
                             }
                         }
                     } else if (ascending) {
-                        mc.player.motionY = Math.min(mc.player.motionY + 0.15D, 0.2D);
-                    } else if (!CommonPlayerTickHandler.isOnGround(mc.player)) {
-                        mc.player.motionY = Math.max(mc.player.motionY - 0.15D, -0.2D);
+                        minecraft.player.motionY = Math.min(minecraft.player.motionY + 0.15D, 0.2D);
+                    } else if (!CommonPlayerTickHandler.isOnGround(minecraft.player)) {
+                        minecraft.player.motionY = Math.max(minecraft.player.motionY - 0.15D, -0.2D);
                     }
-                    mc.player.fallDistance = 0.0F;
+                    minecraft.player.fallDistance = 0.0F;
                 }
                 jetpack.useGas(chestStack);
             }
 
-            if (isGasMaskOn(mc.player)) {
+            if (isGasMaskOn(minecraft.player)) {
                 ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
                 final int max = 300;
                 tank.useGas(chestStack);
-                GasStack received = tank.useGas(chestStack, max - mc.player.getAir());
+                GasStack received = tank.useGas(chestStack, max - minecraft.player.getAir());
 
                 if (received != null) {
-                    mc.player.setAir(mc.player.getAir() + received.amount);
+                    minecraft.player.setAir(minecraft.player.getAir() + received.amount);
                 }
-                if (mc.player.getAir() == max) {
-                    for (EffectInstance effect : mc.player.getActivePotionEffects()) {
+                if (minecraft.player.getAir() == max) {
+                    for (EffectInstance effect : minecraft.player.getActivePotionEffects()) {
                         for (int i = 0; i < 9; i++) {
-                            effect.onUpdate(mc.player);
+                            effect.onUpdate(minecraft.player);
                         }
                     }
                 }
@@ -275,8 +275,8 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onMouseEvent(MouseEvent event) {
-        if (MekanismConfig.current().client.allowConfiguratorModeScroll.val() && mc.player != null && mc.player.isSneaking()) {
-            ItemStack stack = mc.player.getHeldItemMainhand();
+        if (MekanismConfig.current().client.allowConfiguratorModeScroll.val() && minecraft.player != null && minecraft.player.isSneaking()) {
+            ItemStack stack = minecraft.player.getHeldItemMainhand();
             int delta = event.getDwheel();
 
             if (stack.getItem() instanceof ItemConfigurator && delta != 0) {

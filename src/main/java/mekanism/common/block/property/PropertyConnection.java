@@ -2,9 +2,9 @@ package mekanism.common.block.property;
 
 import java.util.Arrays;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.state.EnumProperty;
 
-public class PropertyConnection extends PropertyEnum<ConnectionType> {
+public class PropertyConnection extends EnumProperty<ConnectionType> {
 
     protected PropertyConnection(String name) {
         super(name, ConnectionType.class, Arrays.asList(ConnectionType.values()));

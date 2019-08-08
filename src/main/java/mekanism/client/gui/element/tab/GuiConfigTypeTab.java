@@ -62,21 +62,21 @@ public class GuiConfigTypeTab extends GuiElement {
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         if (visible) {
-            mc.textureManager.bindTexture(RESOURCE);
+            minecraft.textureManager.bindTexture(RESOURCE);
             guiObj.drawTexturedRect(guiWidth + getLeftBound(false) - 4, guiHeight + yPos, 0, left ? 0 : 26, 26, 26);
             guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos + 4, 26, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
-            mc.textureManager.bindTexture(defaultLocation);
+            minecraft.textureManager.bindTexture(defaultLocation);
         }
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         if (visible) {
-            mc.textureManager.bindTexture(RESOURCE);
+            minecraft.textureManager.bindTexture(RESOURCE);
             if (inBounds(xAxis, yAxis)) {
                 displayTooltip(transmission.localize(), xAxis, yAxis);
             }
-            mc.textureManager.bindTexture(defaultLocation);
+            minecraft.textureManager.bindTexture(defaultLocation);
         }
     }
 

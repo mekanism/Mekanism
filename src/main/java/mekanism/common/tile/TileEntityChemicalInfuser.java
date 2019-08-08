@@ -30,7 +30,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, ISustainedData, IUpgradeInfoHandler, ITankManager {
 

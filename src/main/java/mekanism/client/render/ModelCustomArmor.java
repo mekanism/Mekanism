@@ -28,7 +28,7 @@ public class ModelCustomArmor extends BipedModel {
     public static GlowArmor GLOW_BIG = new GlowArmor(1.0F);
     public static GlowArmor GLOW_SMALL = new GlowArmor(0.5F);
 
-    public static Minecraft mc = Minecraft.getInstance();
+    public static Minecraft minecraft = Minecraft.getInstance();
 
     public ArmorModel modelType;
 
@@ -186,7 +186,7 @@ public class ModelCustomArmor extends BipedModel {
             if (ModelCustomArmor.this.modelType != null) {
                 GlStateManager.pushMatrix();
                 GlStateManager.translatef(0, 0, 0.06F);
-                mc.textureManager.bindTexture(modelType.resource);
+                minecraft.textureManager.bindTexture(modelType.resource);
                 if (useModel(biped.modelType, partRender, biped)) {
                     if (biped.modelType == ArmorModel.JETPACK) {
                         ArmorModel.jetpackModel.render(0.0625F);

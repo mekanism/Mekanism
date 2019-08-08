@@ -3,7 +3,8 @@ package mekanism.client.render.obj;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
@@ -23,7 +24,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
 
     @Nonnull
     @Override
-    public IModel loadModel(@Nonnull ResourceLocation loc) throws Exception {
+    public IUnbakedModel loadModel(@Nonnull ResourceLocation loc) throws Exception {
         ResourceLocation file = new ResourceLocation(loc.getNamespace(), loc.getPath());
         if (!modelCache.containsKey(file)) {
             IModel model = OBJLoader.INSTANCE.loadModel(file);

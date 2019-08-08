@@ -204,7 +204,7 @@ public class SoundHandler {
         // uneven spikes of CPU usage
         private int checkInterval = 60 + ThreadLocalRandom.current().nextInt(20);
 
-        private Minecraft mc = Minecraft.getInstance();
+        private Minecraft minecraft = Minecraft.getInstance();
 
         TileSound(ISound original, float volume) {
             this.original = original;
@@ -214,13 +214,13 @@ public class SoundHandler {
         @Override
         public void update() {
             // Every configured interval, see if we need to adjust muffling
-            if (mc.world.getTotalWorldTime() % checkInterval == 0) {
+            if (minecraft.world.getTotalWorldTime() % checkInterval == 0) {
 
                 // Run the event bus with the original sound. Note that we must making sure to set the GLOBAL/STATIC
                 // flag that ensures we don't wrap already muffled sounds. This is...NOT ideal and makes some
                 // significant (hopefully well-informed) assumptions about locking/ordering of all these calls.
                 IN_MUFFLED_CHECK = true;
-                ISound s = ForgeHooksClient.playSound(mc.getSoundHandler().sndManager, original);
+                ISound s = ForgeHooksClient.playSound(minecraft.getSoundHandler().sndManager, original);
                 IN_MUFFLED_CHECK = false;
 
                 if (s == this) {
@@ -239,7 +239,7 @@ public class SoundHandler {
         private float getMufflingFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            TileEntity te = mc.world.getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
+            TileEntity te = minecraft.world.getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
             if (te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
                 int mufflerCount = ((IUpgradeTile) te).getComponent().getUpgrades(Upgrade.MUFFLING);
                 return 1.0f - (mufflerCount / (float) Upgrade.MUFFLING.getMax());

@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RenderBin extends TileEntityRenderer<TileEntityBin> {
 
-    private final ItemRenderer renderItem = Minecraft.getInstance().getRenderItem();
+    private final ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
 
     @Override
     public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage) {

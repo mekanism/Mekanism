@@ -24,11 +24,11 @@ public class GuiButtonSeismicReader extends Button {
     }
 
     @Override
-    public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void drawButton(@Nonnull Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             MekanismRenderer.resetColor();
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            mc.getTextureManager().bindTexture(this.resourceLocation);
+            minecraft.getTextureManager().bindTexture(this.resourceLocation);
             if (!this.enabled) {
                 GlStateManager.color3f(0.25F, 0.25F, 0.25F);
             } else if (this.hovered) {

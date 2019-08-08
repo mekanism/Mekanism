@@ -28,10 +28,10 @@ public class MetallurgicInfuserRecipeWrapper<RECIPE extends MetallurgicInfuserRe
     }
 
     @Override
-    public void drawInfo(Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-        if (mc.currentScreen != null) {
-            mc.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            mc.currentScreen.drawTexturedModalRect(2, 2, recipe.getInput().infuse.getType().sprite, 4, 52);
+    public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+        if (minecraft.currentScreen != null) {
+            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            minecraft.currentScreen.drawTexturedModalRect(2, 2, recipe.getInput().infuse.getType().sprite, 4, 52);
         }
     }
 

@@ -69,10 +69,10 @@ public class GuiScrollList extends GuiElement {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         drawBlack(guiWidth, guiHeight);
         drawSelected(guiWidth, guiHeight, selected);
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     public void drawBlack(int guiWidth, int guiHeight) {
@@ -139,9 +139,9 @@ public class GuiScrollList extends GuiElement {
             }
         }
 
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         drawScroll();
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

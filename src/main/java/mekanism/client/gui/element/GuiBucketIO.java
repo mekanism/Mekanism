@@ -21,15 +21,15 @@ public class GuiBucketIO extends GuiElement {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 66, 0, 0, 26, 57);
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        mc.textureManager.bindTexture(RESOURCE);
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

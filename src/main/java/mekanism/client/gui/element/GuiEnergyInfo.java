@@ -34,9 +34,9 @@ public class GuiEnergyInfo extends GuiElement {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

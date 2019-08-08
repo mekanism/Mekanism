@@ -34,20 +34,20 @@ public class GuiAmplifierTab extends GuiTileEntityElement<TileEntityLaserAmplifi
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
         int outputOrdinal = tileEntity.outputMode.ordinal();
         guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18 * outputOrdinal, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
             displayTooltip(LangUtils.localize("gui.redstoneOutput") + ": " + tileEntity.outputMode.getName(), xAxis, yAxis);
         }
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

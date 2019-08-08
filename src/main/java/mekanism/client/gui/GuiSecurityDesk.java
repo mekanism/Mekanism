@@ -81,7 +81,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
             removeButton.enabled = scrollList.hasSelection();
         }
 
-        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(mc.player.getUniqueID())) {
+        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(minecraft.player.getUniqueID())) {
             publicButton.enabled = tileEntity.frequency.securityMode != SecurityMode.PUBLIC;
             privateButton.enabled = tileEntity.frequency.securityMode != SecurityMode.PRIVATE;
             trustedButton.enabled = tileEntity.frequency.securityMode != SecurityMode.TRUSTED;
@@ -188,7 +188,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(mc.player.getUniqueID())) {
+        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(minecraft.player.getUniqueID())) {
             drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
         } else {
             drawTexturedModalRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);

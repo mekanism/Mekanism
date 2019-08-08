@@ -3,7 +3,9 @@ package mekanism.client.render.item;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import net.minecraft.block.BlockState;
@@ -33,7 +35,7 @@ public class ItemLayerWrapper implements IBakedModel {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, long rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand) {
         return internal.getQuads(state, side, rand);
     }
 
@@ -72,7 +74,7 @@ public class ItemLayerWrapper implements IBakedModel {
     @Nonnull
     @Override
     public ItemOverrideList getOverrides() {
-        return ItemOverrideList.NONE;
+        return ItemOverrideList.EMPTY;
     }
 
     @Nonnull

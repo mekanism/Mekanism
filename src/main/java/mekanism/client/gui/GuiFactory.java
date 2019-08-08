@@ -121,7 +121,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
             int xAxis = x - guiLeft;
             int yAxis = y - guiTop;
             if (xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83) {
-                ItemStack stack = mc.player.inventory.getItemStack();
+                ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                     TileNetworkList data = TileNetworkList.withContents(1);
                     Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));

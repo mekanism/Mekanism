@@ -9,7 +9,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class TileEntityOperationalMachine extends TileEntityMachine implements IComparatorSupport {
 

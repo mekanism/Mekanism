@@ -10,7 +10,6 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 //TODO
 public abstract class TileEntityMachine extends TileEntityMekanism implements IUpgradeTile {

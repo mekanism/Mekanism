@@ -33,7 +33,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
     public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;
     private static OBJModel contentsModel;
     private static Map<String, IBakedModel> contentsMap = new HashMap<>();
-    protected Minecraft mc = Minecraft.getInstance();
+    protected Minecraft minecraft = Minecraft.getInstance();
 
     public RenderTransmitterBase() {
         if (contentsModel == null) {

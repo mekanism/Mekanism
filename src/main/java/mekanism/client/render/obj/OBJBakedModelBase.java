@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
@@ -120,7 +121,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(BlockState blockState, Direction side, long rand) {
+    public List<BakedQuad> getQuads(BlockState blockState, Direction side, @Nonnull Random rand) {
         if (side != null) {
             return ImmutableList.of();
         }

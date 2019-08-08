@@ -35,7 +35,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (inBounds(xAxis, yAxis)) {
-            ItemStack stack = GuiElement.mc.player.inventory.getItemStack();
+            ItemStack stack = GuiElement.minecraft.player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {

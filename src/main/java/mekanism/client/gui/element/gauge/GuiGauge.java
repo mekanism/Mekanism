@@ -60,12 +60,12 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, texX, texY, width, height);
         if (!dummy) {
             renderScale(guiWidth, guiHeight);
         }
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     public void renderScale(int guiWidth, int guiHeight) {
@@ -88,7 +88,7 @@ public abstract class GuiGauge<T> extends GuiElement {
                 scale = 0;
             }
 
-            mc.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             for (int i = 0; i < number; i++) {
                 guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
             }
@@ -98,14 +98,14 @@ public abstract class GuiGauge<T> extends GuiElement {
             }
         }
         MekanismRenderer.resetColor();
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         if (xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1) {
-            ItemStack stack = mc.player.inventory.getItemStack();
+            ItemStack stack = minecraft.player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
                 if (guiObj instanceof GuiMekanismTile) {
                     TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();

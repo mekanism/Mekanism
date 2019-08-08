@@ -104,7 +104,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             if (overTypeInput(xAxis, yAxis)) {
-                ItemStack stack = mc.player.inventory.getItemStack();
+                ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     if (stack.getItem() instanceof BlockItem) {
                         if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {

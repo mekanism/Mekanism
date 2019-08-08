@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiElement {
 
-    public static final Minecraft mc = Minecraft.getInstance();
+    public static final Minecraft minecraft = Minecraft.getInstance();
 
     protected final ResourceLocation RESOURCE;
     protected final IGuiWrapper guiObj;

@@ -66,7 +66,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
             boolean flag = true;
             String s = I18n.format("container.repair.cost", repairContainer.maximumCost);
 
-            if (repairContainer.maximumCost >= 40 && !mc.player.isCreative()) {
+            if (repairContainer.maximumCost >= 40 && !minecraft.player.isCreative()) {
                 s = LangUtils.localize("container.repair.expensive");
                 k = 16736352;
             } else if (!repairContainer.getSlot(2).getHasStack()) {
@@ -99,7 +99,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     protected void keyTyped(char c, int i) throws IOException {
         if (itemNameField.textboxKeyTyped(c, i)) {
             repairContainer.updateItemName(itemNameField.getText());
-            mc.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
+            minecraft.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
         } else {
             super.keyTyped(c, i);
         }
@@ -150,7 +150,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
             itemNameField.setEnabled(!itemstack.isEmpty());
             if (!itemstack.isEmpty()) {
                 repairContainer.updateItemName(itemNameField.getText());
-                mc.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
+                minecraft.player.connection.sendPacket(new CCustomPayloadPacket("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
             }
         }
     }

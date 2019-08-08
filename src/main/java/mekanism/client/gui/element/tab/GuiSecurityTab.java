@@ -57,7 +57,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 32, 0, 0, 26, 26);
         SecurityMode mode = getSecurity();
         SecurityData data = MekanismClient.clientSecurityMap.get(getOwner());
@@ -65,21 +65,21 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
             mode = data.mode;
         }
         int renderX = 26 + (18 * mode.ordinal());
-        if (getOwner() != null && getOwner().equals(mc.player.getUniqueID()) && (data == null || !data.override)) {
+        if (getOwner() != null && getOwner().equals(minecraft.player.getUniqueID()) && (data == null || !data.override)) {
             guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
         } else {
             guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 36, 18, 18);
         }
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        mc.textureManager.bindTexture(RESOURCE);
+        minecraft.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
             String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Dist.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Dist.CLIENT);
             String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
-            String ownerText = SecurityUtils.getOwnerDisplay(mc.player, getOwnerUsername());
+            String ownerText = SecurityUtils.getOwnerDisplay(minecraft.player, getOwnerUsername());
             String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 
             if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tileEntity, Dist.CLIENT)) {
@@ -88,13 +88,13 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
                 displayTooltips(Arrays.asList(securityText, ownerText), xAxis, yAxis);
             }
         }
-        mc.textureManager.bindTexture(defaultLocation);
+        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     private SecurityFrequency getFrequency() {
         if (isItem) {
             if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
-                mc.player.closeScreen();
+                minecraft.player.closeScreen();
                 return null;
             }
             return SecurityUtils.getFrequency(getOwner());
@@ -109,7 +109,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
 
         if (isItem) {
             if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
-                mc.player.closeScreen();
+                minecraft.player.closeScreen();
                 return SecurityMode.PUBLIC;
             }
             return ((ISecurityItem) getItem().getItem()).getSecurity(getItem());
@@ -120,7 +120,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
     private UUID getOwner() {
         if (isItem) {
             if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
-                mc.player.closeScreen();
+                minecraft.player.closeScreen();
                 return null;
             }
             return ((ISecurityItem) getItem().getItem()).getOwnerUUID(getItem());
@@ -131,7 +131,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
     private String getOwnerUsername() {
         if (isItem) {
             if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
-                mc.player.closeScreen();
+                minecraft.player.closeScreen();
                 return null;
             }
             return MekanismClient.clientUUIDMap.get(((ISecurityItem) getItem().getItem()).getOwnerUUID(getItem()));
@@ -140,7 +140,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
     }
 
     private ItemStack getItem() {
-        return mc.player.getHeldItem(currentHand);
+        return minecraft.player.getHeldItem(currentHand);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && MekanismConfig.current().general.allowProtection.val()) {
-            if (getOwner() != null && mc.player.getUniqueID().equals(getOwner())) {
+            if (getOwner() != null && minecraft.player.getUniqueID().equals(getOwner())) {
                 if (inBounds(xAxis, yAxis)) {
                     SecurityMode current = getSecurity();
                     int ordinalToSet = current.ordinal() < (SecurityMode.values().length - 1) ? current.ordinal() + 1 : 0;

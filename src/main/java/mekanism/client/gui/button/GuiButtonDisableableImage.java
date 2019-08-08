@@ -35,12 +35,12 @@ public class GuiButtonDisableableImage extends Button {
     }
 
     @Override
-    public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void drawButton(@Nonnull Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             //Ensure the color gets reset. The default GuiButtonImage doesn't so other GuiButton's can have the color leak out of them
             MekanismRenderer.resetColor();
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            mc.getTextureManager().bindTexture(this.resourceLocation);
+            minecraft.getTextureManager().bindTexture(this.resourceLocation);
             GlStateManager.disableDepth();
             int j = this.yTexStart;
 

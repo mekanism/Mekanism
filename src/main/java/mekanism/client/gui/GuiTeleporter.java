@@ -265,7 +265,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
             }
         } else if (guibutton.id == 4) {
             if (clientFreq != null && clientStatus == 1) {
-                mc.setIngameFocus();
+                minecraft.mainWindow.setIngameFocus();
                 ClientTickHandler.portableTeleport(entityPlayer, currentHand, clientFreq);
             }
         } else if (guibutton.id == checkboxButton.id) {

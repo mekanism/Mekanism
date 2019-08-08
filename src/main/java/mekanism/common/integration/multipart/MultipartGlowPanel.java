@@ -28,7 +28,7 @@ public class MultipartGlowPanel implements IMultipart {
 
     @Override
     public IPartSlot getSlotFromWorld(IBlockReader world, BlockPos pos, BlockState state) {
-        return EnumFaceSlot.values()[state.getValue(BlockStateHelper.facingProperty).ordinal()];
+        return EnumFaceSlot.values()[state.get(BlockStateHelper.facingProperty).ordinal()];
     }
 
     @Override

@@ -29,10 +29,10 @@ public class GuiSideDataButton extends Button {
     }
 
     @Override
-    public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void drawButton(@Nonnull Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            mc.getTextureManager().bindTexture(this.resourceLocation);
+            minecraft.getTextureManager().bindTexture(this.resourceLocation);
             SideData data = sideDataSupplier.get();
             if (data == TileComponentConfig.EMPTY) {
                 drawTexturedModalRect(this.x, this.y, 176, 28, this.width, this.height);

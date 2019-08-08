@@ -1,25 +1,25 @@
 package mekanism.common.block.property;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.EnumColor;
 import mekanism.api.IColor;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.block.properties.AbstractProperty;
+import net.minecraft.state.Property;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 //There are a good number of unchecked cast warnings due to the fact that forge has a hard class structure requirement of
 // T extends Comparable<T> so we cannot just use PropertyHelper<IColor> or there will be type clashes in EnumColor due to
 // enums extending Comparable as well
-public class PropertyColor<T extends IColor<T>> extends AbstractProperty<T> {
+public class PropertyColor<T extends IColor<T>> extends Property<T> {
 
     private final ImmutableSet<T> allowedValues;
 

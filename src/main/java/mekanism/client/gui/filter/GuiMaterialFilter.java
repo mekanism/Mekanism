@@ -78,7 +78,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
     }
 
     protected void materialMouseClicked() {
-        ItemStack stack = mc.player.inventory.getItemStack();
+        ItemStack stack = minecraft.player.inventory.getItemStack();
         if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
             if (stack.getItem() instanceof BlockItem) {
                 if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {

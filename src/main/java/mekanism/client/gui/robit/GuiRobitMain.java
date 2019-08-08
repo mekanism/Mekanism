@@ -64,7 +64,7 @@ public class GuiRobitMain extends GuiMekanism {
             changeName();
         } else if (guibutton.id == teleportHomeButton.id) {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
-            mc.displayGuiScreen(null);
+            minecraft.displayGuiScreen(null);
         } else if (guibutton.id == pickupButton.id) {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId()));
         } else if (guibutton.id == renameButton.id) {
@@ -114,7 +114,7 @@ public class GuiRobitMain extends GuiMekanism {
             if (i == GLFW.GLFW_KEY_ENTER) {
                 changeName();
             } else if (i == GLFW.GLFW_KEY_ESCAPE) {
-                mc.player.closeScreen();
+                minecraft.player.closeScreen();
             }
             nameChangeField.textboxKeyTyped(c, i);
         }

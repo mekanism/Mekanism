@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -110,7 +111,7 @@ public class TransmitterModel extends OBJBakedModelBase {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, long rand) {
+    public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand) {
         if (side != null) {
             return ImmutableList.of();
         }
@@ -122,19 +123,19 @@ public class TransmitterModel extends OBJBakedModelBase {
             if (state.getBlock() instanceof IStateColor && layer == BlockRenderLayer.TRANSLUCENT) {
                 //Only try getting the color property for ones that will have a color
 
-                IColor iColor = (IColor) state.getValue(BlockStateHelper.colorProperty);
+                IColor iColor = (IColor) state.get(BlockStateHelper.colorProperty);
                 if (iColor != EnumColor.NONE) {
                     color = (EnumColor) iColor;
                 }
             }
 
             try {
-                ConnectionType down = state.getValue(BlockStateHelper.downConnectionProperty);
-                ConnectionType up = state.getValue(BlockStateHelper.upConnectionProperty);
-                ConnectionType north = state.getValue(BlockStateHelper.northConnectionProperty);
-                ConnectionType south = state.getValue(BlockStateHelper.southConnectionProperty);
-                ConnectionType west = state.getValue(BlockStateHelper.westConnectionProperty);
-                ConnectionType east = state.getValue(BlockStateHelper.eastConnectionProperty);
+                ConnectionType down = state.get(BlockStateHelper.downConnectionProperty);
+                ConnectionType up = state.get(BlockStateHelper.upConnectionProperty);
+                ConnectionType north = state.get(BlockStateHelper.northConnectionProperty);
+                ConnectionType south = state.get(BlockStateHelper.southConnectionProperty);
+                ConnectionType west = state.get(BlockStateHelper.westConnectionProperty);
+                ConnectionType east = state.get(BlockStateHelper.eastConnectionProperty);
 
                 int hash = 1;
                 hash = hash * 31 + layer.ordinal();
@@ -230,12 +231,12 @@ public class TransmitterModel extends OBJBakedModelBase {
     }
 
     public byte getIconStatus(Direction side, @Nonnull BlockState state) {
-        boolean hasDown = state.getValue(BlockStateHelper.downConnectionProperty) != ConnectionType.NONE;
-        boolean hasUp = state.getValue(BlockStateHelper.upConnectionProperty) != ConnectionType.NONE;
-        boolean hasNorth = state.getValue(BlockStateHelper.northConnectionProperty) != ConnectionType.NONE;
-        boolean hasSouth = state.getValue(BlockStateHelper.southConnectionProperty) != ConnectionType.NONE;
-        boolean hasWest = state.getValue(BlockStateHelper.westConnectionProperty) != ConnectionType.NONE;
-        boolean hasEast = state.getValue(BlockStateHelper.eastConnectionProperty) != ConnectionType.NONE;
+        boolean hasDown = state.get(BlockStateHelper.downConnectionProperty) != ConnectionType.NONE;
+        boolean hasUp = state.get(BlockStateHelper.upConnectionProperty) != ConnectionType.NONE;
+        boolean hasNorth = state.get(BlockStateHelper.northConnectionProperty) != ConnectionType.NONE;
+        boolean hasSouth = state.get(BlockStateHelper.southConnectionProperty) != ConnectionType.NONE;
+        boolean hasWest = state.get(BlockStateHelper.westConnectionProperty) != ConnectionType.NONE;
+        boolean hasEast = state.get(BlockStateHelper.eastConnectionProperty) != ConnectionType.NONE;
         boolean hasConnection = false;
         if (side == Direction.DOWN) {
             hasConnection = hasDown;

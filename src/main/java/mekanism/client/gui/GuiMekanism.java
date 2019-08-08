@@ -160,8 +160,8 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         super.handleMouseInput();
         int delta = Mouse.getEventDWheel();
         if (delta != 0) {
-            int xAxis = Mouse.getEventX() * width / mc.displayWidth - guiLeft;
-            int yAxis = height - Mouse.getEventY() * height / mc.displayHeight - 1 - guiTop;
+            int xAxis = Mouse.getEventX() * width / minecraft.mainWindow.getWidth() - guiLeft;
+            int yAxis = height - Mouse.getEventY() * height / minecraft.mainWindow.getHeight() - 1 - guiTop;
             guiElements.forEach(element -> element.mouseWheel(xAxis, yAxis, delta));
         }
     }

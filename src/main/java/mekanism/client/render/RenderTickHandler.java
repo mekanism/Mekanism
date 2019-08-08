@@ -42,26 +42,26 @@ public class RenderTickHandler {
 
     public static int modeSwitchTimer = 0;
     public Random rand = new Random();
-    public Minecraft mc = Minecraft.getInstance();
+    public Minecraft minecraft = Minecraft.getInstance();
 
     @SubscribeEvent
     public void tickEnd(RenderTickEvent event) {
         if (event.phase == Phase.END) {
-            if (mc.player != null && mc.world != null && !mc.isGamePaused()) {
-                FontRenderer font = mc.fontRenderer;
+            if (minecraft.player != null && minecraft.world != null && !minecraft.isGamePaused()) {
+                FontRenderer font = minecraft.fontRenderer;
                 if (font == null) {
                     return;
                 }
 
-                PlayerEntity player = mc.player;
-                World world = mc.player.world;
+                PlayerEntity player = minecraft.player;
+                World world = minecraft.player.world;
                 BlockRayTraceResult pos = player.rayTrace(40.0D, 1.0F);
                 if (pos != null) {
                     Coord4D obj = new Coord4D(pos.getPos(), world);
                     Block block = obj.getBlock(world);
 
-                    if (block != null && MekanismAPI.debug && mc.currentScreen == null
-                        && !mc.gameSettings.showDebugInfo) {
+                    if (block != null && MekanismAPI.debug && minecraft.currentScreen == null
+                        && !minecraft.gameSettings.showDebugInfo) {
                         String tileDisplay = "";
 
                         if (obj.getTileEntity(world) != null) {
@@ -79,9 +79,9 @@ public class RenderTickHandler {
                 }
 
                 //todo use vanilla status bar text?
-                if (modeSwitchTimer > 1 && mc.currentScreen == null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator) {
+                if (modeSwitchTimer > 1 && minecraft.currentScreen == null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator) {
                     ItemStack stack = player.getHeldItemMainhand();
-                    ScaledResolution scaledresolution = new ScaledResolution(mc);
+                    ScaledResolution scaledresolution = new ScaledResolution(minecraft);
                     ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getState(stack);
 
                     int x = scaledresolution.getScaledWidth();
@@ -97,10 +97,10 @@ public class RenderTickHandler {
                     ClientTickHandler.wheelStatus = 0;
                 }
 
-                if (mc.currentScreen == null && !mc.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()) {
+                if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()) {
                     ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
-                    ScaledResolution scaledresolution = new ScaledResolution(mc);
+                    ScaledResolution scaledresolution = new ScaledResolution(minecraft);
 
                     int y = scaledresolution.getScaledHeight();
                     boolean alignLeft = MekanismConfig.current().client.alignHUDLeft.val();
@@ -119,7 +119,7 @@ public class RenderTickHandler {
 
                 // Traverse a copy of jetpack state and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
-                    PlayerEntity p = mc.world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity p = minecraft.world.getPlayerEntityByUUID(uuid);
 
                     if (p == null) {
                         continue;
@@ -159,7 +159,7 @@ public class RenderTickHandler {
                 // Traverse a copy of gasmask state and do animations
                 if (world.getWorldTime() % 4 == 0) {
                     for (UUID uuid : Mekanism.playerState.getActiveGasmasks()) {
-                        PlayerEntity p = mc.world.getPlayerEntityByUUID(uuid);
+                        PlayerEntity p = minecraft.world.getPlayerEntityByUUID(uuid);
                         if (p == null || !p.isInWater()) {
                             continue;
                         }
@@ -189,7 +189,7 @@ public class RenderTickHandler {
                                 double flameYCoord = 1.5;
                                 double flameZCoord = 0;
                                 Pos3D flameMotion = new Pos3D(p.motionX, p.onGround ? 0 : p.motionY, p.motionZ);
-                                if (player == p && mc.gameSettings.thirdPersonView == 0) {
+                                if (player == p && minecraft.gameSettings.thirdPersonView == 0) {
                                     flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(flameXCoord, flameYCoord + 0.1, flameZCoord);
                                 } else {
                                     flameXCoord += 0.25F;
@@ -226,11 +226,11 @@ public class RenderTickHandler {
         } else if (s.equals(ParticleTypes.BUBBLE)) {
             fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
         }
-        mc.effectRenderer.addEffect(fx);
+        minecraft.effectRenderer.addEffect(fx);
     }
 
     private void drawString(ScaledResolution res, String s, boolean leftSide, int y, int color) {
-        FontRenderer font = mc.fontRenderer;
+        FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
         if (leftSide) {
             font.drawStringWithShadow(s, 2, y, color);

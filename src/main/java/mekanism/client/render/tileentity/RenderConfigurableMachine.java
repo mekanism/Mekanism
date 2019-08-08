@@ -34,7 +34,7 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntityRenderer<S> {
 
-    private Minecraft mc = FMLClientHandler.instance().getClient();
+    private Minecraft minecraft = FMLClientHandler.instance().getClient();
 
     private Map<Direction, Map<TransmissionType, DisplayInteger>> cachedOverlays = new EnumMap<>(Direction.class);
 
@@ -44,10 +44,10 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
     @Override
     public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage) {
-        ItemStack itemStack = mc.player.inventory.getCurrentItem();
+        ItemStack itemStack = minecraft.player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
-            BlockRayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
+            BlockRayTraceResult pos = minecraft.player.rayTrace(8.0D, 1.0F);
             if (pos != null) {
                 BlockPos bp = pos.getPos();
                 TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");

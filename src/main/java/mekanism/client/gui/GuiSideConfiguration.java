@@ -153,8 +153,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
     public void updateScreen() {
         super.updateScreen();
         TileEntity tile = (TileEntity) configurable;
-        if (tile == null || mc.world.getTileEntity(tile.getPos()) == null) {
-            mc.displayGuiScreen(null);
+        if (tile == null || minecraft.world.getTileEntity(tile.getPos()) == null) {
+            minecraft.displayGuiScreen(null);
         }
     }
 

@@ -165,7 +165,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         minField.mouseClicked(mouseX, mouseY, button);
         maxField.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && overTypeInput(mouseX - guiLeft, mouseY - guiTop)) {
-            ItemStack stack = mc.player.inventory.getItemStack();
+            ItemStack stack = minecraft.player.inventory.getItemStack();
             if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 filter.setItemStack(stack.copy());
                 filter.getItemStack().setCount(1);

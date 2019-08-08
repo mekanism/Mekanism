@@ -83,7 +83,7 @@ public class GuiDictionary extends GuiMekanism {
             }
 
             if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
-                ItemStack stack = mc.player.inventory.getItemStack();
+                ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     itemType = stack.copy();
                     itemType.setCount(1);

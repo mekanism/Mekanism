@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
     public ModelBalloon model = new ModelBalloon();
-    private Minecraft mc = Minecraft.getInstance();
+    private Minecraft minecraft = Minecraft.getInstance();
 
     public RenderBalloon(EntityRendererManager renderManager) {
         super(renderManager);
@@ -54,7 +54,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x, (float) y, (float) z);
         GlStateManager.rotatef(180, 1, 0, 0);
-        mc.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
+        minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
         model.render(0.0625F, color);
         GlStateManager.popMatrix();
     }

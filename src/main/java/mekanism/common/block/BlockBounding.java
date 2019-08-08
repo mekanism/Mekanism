@@ -74,12 +74,12 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     @Deprecated
     public BlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(BlockStateBounding.advancedProperty, meta > 0);
+        return getDefaultState().with(BlockStateBounding.advancedProperty, meta > 0);
     }
 
     @Override
     public int getMetaFromState(BlockState state) {
-        return state.getValue(BlockStateBounding.advancedProperty) ? 1 : 0;
+        return state.get(BlockStateBounding.advancedProperty) ? 1 : 0;
     }
 
     @Override
@@ -208,7 +208,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull BlockState state) {
-        if (state.getValue(BlockStateBounding.advancedProperty)) {
+        if (state.get(BlockStateBounding.advancedProperty)) {
             return new TileEntityAdvancedBoundingBlock();
         }
         return new TileEntityBoundingBlock();

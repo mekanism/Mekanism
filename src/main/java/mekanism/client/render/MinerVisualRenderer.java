@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 public final class MinerVisualRenderer {
 
     private static final double offset = 0.01;
-    private static Minecraft mc = Minecraft.getInstance();
+    private static Minecraft minecraft = Minecraft.getInstance();
     private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 
     public static void render(TileEntityDigitalMiner miner) {
@@ -34,7 +34,7 @@ public final class MinerVisualRenderer {
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         GlStateManager.enableCull();
         GlStateManager.color4f(1, 1, 1, 0.8F);
-        mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        minecraft.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         getList(new MinerRenderData(miner)).render();
         MekanismRenderer.resetColor();
         GlStateManager.disableCull();
@@ -59,7 +59,7 @@ public final class MinerVisualRenderer {
                 for (int y = data.minY - data.yCoord; y <= data.maxY - data.yCoord; y++) {
                     for (int z = -data.radius; z <= data.radius; z++) {
                         if (x == -data.radius || x == data.radius || y == data.minY - data.yCoord || y == data.maxY - data.yCoord || z == -data.radius || z == data.radius) {
-                            models.add(createModel(new Coord4D(x, y, z, mc.world.getDimension().getType())));
+                            models.add(createModel(new Coord4D(x, y, z, minecraft.world.getDimension().getType())));
                         }
                     }
                 }
