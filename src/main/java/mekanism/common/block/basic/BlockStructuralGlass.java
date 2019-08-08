@@ -12,9 +12,10 @@ import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.MobEntity.SpawnPlacementType;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -22,7 +23,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,21 +53,21 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
         return false;
     }
 
     @Override
     @Deprecated
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldSideBeRendered(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
+    public boolean shouldSideBeRendered(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
         //Not structural glass
         return world.getBlockState(pos.offset(side)).getBlock() != this;
     }
 
     @Override
     @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideSolid(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
         return false;
     }
 
@@ -87,18 +89,18 @@ public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, I
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IWorldReader world, BlockPos pos) {
+    public int getLightOpacity(BlockState state, IBlockReader world, BlockPos pos) {
         return 0;
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity entityplayer, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntityStructuralGlass tileEntity = (TileEntityStructuralGlass) MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity != null) {
             if (world.isRemote) {
                 return true;
             }
-            return tileEntity.onActivate(entityplayer, hand, entityplayer.getHeldItem(hand));
+            return tileEntity.onActivate(player, hand, player.getHeldItem(hand));
         }
         return false;
     }

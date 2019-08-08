@@ -199,7 +199,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             TileUtils.readTankData(dataStream, fuelTank);
             generationRate = dataStream.readDouble();
             output = dataStream.readDouble();

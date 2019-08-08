@@ -174,7 +174,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             TileUtils.readTankData(dataStream, inputFluidTank);
             TileUtils.readTankData(dataStream, inputGasTank);
             TileUtils.readTankData(dataStream, outputGasTank);

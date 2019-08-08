@@ -13,10 +13,9 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,9 +27,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public abstract class BlockTransmitter extends BlockTileDrops implements IStateConnection {
@@ -42,7 +42,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
         setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 
-    protected static TileEntitySidedPipe getTileEntitySidedPipe(IWorldReader world, BlockPos pos) {
+    protected static TileEntitySidedPipe getTileEntitySidedPipe(IBlockReader world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         TileEntitySidedPipe sidedPipe = null;
         if (tileEntity instanceof TileEntitySidedPipe) {
@@ -71,7 +71,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, getTileEntitySidedPipe(world, pos));
     }
 
@@ -89,15 +89,14 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack stack = player.getHeldItem(hand);
         if (stack.isEmpty()) {
             return false;
         }
         IMekWrench wrenchHandler = Wrenches.getHandler(stack);
         if (wrenchHandler != null) {
-            RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), facing, pos);
-            if (wrenchHandler.canUseWrench(player, hand, stack, raytrace) && player.isSneaking()) {
+            if (wrenchHandler.canUseWrench(player, hand, stack, hit) && player.isSneaking()) {
                 if (!world.isRemote) {
                     MekanismUtils.dismantleBlock(this, state, world, pos);
                 }
@@ -126,7 +125,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateC
     }
 
     @Override
-    public void onNeighborChange(IWorldReader world, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChange(IBlockReader world, BlockPos pos, BlockPos neighbor) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile != null) {
             Direction side = Direction.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());

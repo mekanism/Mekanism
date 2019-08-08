@@ -9,9 +9,9 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -19,9 +19,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -60,12 +61,12 @@ public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntit
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) {
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (tileEntity.tryWrench(state, player, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+        if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
         return false;
@@ -90,7 +91,7 @@ public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntit
     @Override
     @Deprecated
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldSideBeRendered(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
+    public boolean shouldSideBeRendered(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
         Block blockOffset = world.getBlockState(pos.offset(side)).getBlock();
         if (blockOffset instanceof BlockReactorGlass || blockOffset instanceof BlockLaserFocusMatrix) {
             return false;
@@ -100,7 +101,7 @@ public class BlockReactorGlass extends Block implements IHasTileEntity<TileEntit
 
     @Override
     @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideSolid(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
         //TODO
         return false;
     }

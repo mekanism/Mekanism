@@ -167,7 +167,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             on = dataStream.readBoolean();
             collectedEnergy = dataStream.readDouble();
             lastFired = dataStream.readDouble();

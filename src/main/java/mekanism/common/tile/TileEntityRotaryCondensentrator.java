@@ -153,7 +153,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 mode = mode == 0 ? 1 : 0;
@@ -165,7 +165,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         }
 
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             mode = dataStream.readInt();
             clientEnergyUsed = dataStream.readDouble();
             TileUtils.readTankData(dataStream, fluidTank);

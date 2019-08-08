@@ -130,7 +130,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             clientEnergyUsed = dataStream.readDouble();
             TileUtils.readTankData(dataStream, fluidTank);
             TileUtils.readTankData(dataStream, inputTank);

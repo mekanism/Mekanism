@@ -121,7 +121,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 if (frequency != null) {
@@ -148,7 +148,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             if (dataStream.readBoolean()) {
                 clientOwner = dataStream.readString();
                 ownerUUID = dataStream.readUniqueId();

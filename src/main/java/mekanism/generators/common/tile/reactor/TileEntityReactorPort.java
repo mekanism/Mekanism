@@ -341,7 +341,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             boolean prevEject = fluidEject;
             fluidEject = dataStream.readBoolean();
             if (prevEject != fluidEject) {

@@ -31,7 +31,7 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine imp
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             operatingTicks = dataStream.readInt();
             ticksRequired = dataStream.readInt();
         }

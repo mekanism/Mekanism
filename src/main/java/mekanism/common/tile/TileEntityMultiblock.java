@@ -196,7 +196,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             if (structure == null) {
                 structure = getNewStructure();
             }

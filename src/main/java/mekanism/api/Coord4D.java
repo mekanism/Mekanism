@@ -13,7 +13,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
@@ -59,11 +59,11 @@ public class Coord4D {
         this.dimension = dimension;
     }
 
-    public Coord4D(BlockPos pos, IWorldReader world) {
+    public Coord4D(BlockPos pos, IBlockReader world) {
         this(pos.getX(), pos.getY(), pos.getZ(), world.getDimension().getType());
     }
 
-    public Coord4D(BlockRayTraceResult mop, IWorldReader world) {
+    public Coord4D(BlockRayTraceResult mop, IBlockReader world) {
         this(mop.getPos(), world);
     }
 
@@ -107,7 +107,7 @@ public class Coord4D {
      *
      * @return the state of this Coord4D's block
      */
-    public BlockState getBlockState(IWorldReader world) {
+    public BlockState getBlockState(IBlockReader world) {
         return world.getBlockState(getPos());
     }
 
@@ -122,7 +122,7 @@ public class Coord4D {
      *
      * @return the TileEntity of this Coord4D's block
      */
-    public TileEntity getTileEntity(IWorldReader world) {
+    public TileEntity getTileEntity(IBlockReader world) {
         if (world instanceof World && !exists((World) world)) {
             return null;
         }
@@ -136,7 +136,7 @@ public class Coord4D {
      *
      * @return the Block value of this Coord4D's block
      */
-    public Block getBlock(IWorldReader world) {
+    public Block getBlock(IBlockReader world) {
         if (world instanceof World && !exists((World) world)) {
             return null;
         }
@@ -240,7 +240,7 @@ public class Coord4D {
         return new Coord4D(x + (side.getXOffset() * amount), y + (side.getYOffset() * amount), z + (side.getZOffset() * amount), dimension);
     }
 
-    public ItemStack getStack(IWorldReader world) {
+    public ItemStack getStack(IBlockReader world) {
         BlockState state = getBlockState(world);
         if (state == null || state.getBlock().isAir(state, world, null)) {
             return ItemStack.EMPTY;
@@ -296,7 +296,7 @@ public class Coord4D {
      *
      * @return Whether or not the defined side of this Coord4D is visible.
      */
-    public boolean sideVisible(Direction side, IWorldReader world) {
+    public boolean sideVisible(Direction side, IBlockReader world) {
         return world.isAirBlock(step(side).getPos());
     }
 
@@ -329,7 +329,7 @@ public class Coord4D {
      *
      * @return the chunk of this Coord4D
      */
-    public boolean exists(IWorldReader world) {
+    public boolean exists(IBlockReader world) {
         return world.isBlockLoaded(new BlockPos(x, y, z));//world.getChunkProvider() == null || world.getChunkProvider().getLoadedChunk(x >> 4, z >> 4) != null;
     }
 
@@ -340,7 +340,7 @@ public class Coord4D {
      *
      * @return the chunk of this Coord4D
      */
-    public IChunk getChunk(IWorldReader world) {
+    public IChunk getChunk(IBlockReader world) {
         return world.getChunk(getPos());
     }
 
@@ -360,7 +360,7 @@ public class Coord4D {
      *
      * @return if this Coord4D is an air block
      */
-    public boolean isAirBlock(IWorldReader world) {
+    public boolean isAirBlock(IBlockReader world) {
         return world.isAirBlock(getPos());
     }
 
@@ -371,7 +371,7 @@ public class Coord4D {
      *
      * @return if this Coord4D is replaceable
      */
-    public boolean isReplaceable(IWorldReader world) {
+    public boolean isReplaceable(IBlockReader world) {
         return getBlock(world).isReplaceable(world, getPos());
     }
 

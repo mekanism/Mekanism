@@ -43,7 +43,7 @@ public abstract class TileEntityMachine extends TileEntityMekanism implements IU
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             setEnergyPerTick(dataStream.readDouble());
             setMaxEnergy(dataStream.readDouble());
         }

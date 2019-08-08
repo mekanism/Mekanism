@@ -15,7 +15,7 @@ import mekanism.common.base.ITileNetwork;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 
 /**
  * Used to route {@link ITileNetwork} packets sent to multipart containers with more than one possible recipient.<br>
@@ -42,7 +42,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
         IMultipartContainer container = null;
 
         TileEntity first = (TileEntity) tileList.get(0);
-        IWorldReader world = first.getWorld();
+        IBlockReader world = first.getWorld();
         if (world instanceof IMultipartBlockAccess) {
             container = ((IMultipartBlockAccess) world).getPartInfo().getContainer();
         } else {

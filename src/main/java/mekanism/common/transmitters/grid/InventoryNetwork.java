@@ -14,7 +14,6 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, Void> {
 
@@ -65,7 +64,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             //Future!
         }
     }

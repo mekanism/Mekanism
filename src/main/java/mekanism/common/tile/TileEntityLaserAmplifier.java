@@ -195,7 +195,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             switch (dataStream.readInt()) {
                 case 0:
                     minThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
@@ -215,7 +215,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             on = dataStream.readBoolean();
             minThreshold = dataStream.readDouble();
             maxThreshold = dataStream.readDouble();

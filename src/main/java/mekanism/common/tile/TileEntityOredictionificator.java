@@ -161,7 +161,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 didProcess = dataStream.readBoolean();

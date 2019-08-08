@@ -213,7 +213,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 if (getReactor() != null) {
@@ -225,7 +225,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             boolean formed = dataStream.readBoolean();
             if (formed) {
                 if (getReactor() == null || !getReactor().formed) {

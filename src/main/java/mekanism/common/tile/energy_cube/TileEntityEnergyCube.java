@@ -176,7 +176,7 @@ public abstract class TileEntityEnergyCube extends TileEntityMekanism implements
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             EnergyCubeTier prevTier = tier;
             tier = EnergyCubeTier.values()[dataStream.readInt()];
             if (prevTier != tier) {

@@ -8,7 +8,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void> {
 
@@ -68,7 +67,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
         double newHeatLost = 0;
         double newHeatTransferred = 0;
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
                     IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity().getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null);

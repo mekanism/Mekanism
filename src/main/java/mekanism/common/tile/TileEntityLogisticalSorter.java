@@ -203,7 +203,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 int clickType = dataStream.readInt();
@@ -242,7 +242,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         boolean wasActive = getActive();
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             int type = dataStream.readInt();
 
             if (type == 0) {

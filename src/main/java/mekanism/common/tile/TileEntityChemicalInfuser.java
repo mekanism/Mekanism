@@ -112,7 +112,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             clientEnergyUsed = dataStream.readDouble();
             TileUtils.readTankData(dataStream, leftTank);
             TileUtils.readTankData(dataStream, rightTank);

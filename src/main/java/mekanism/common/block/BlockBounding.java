@@ -3,7 +3,6 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
@@ -13,7 +12,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -23,14 +21,15 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock> {
 
     @Nullable
-    private static BlockPos getMainBlockPos(IWorldReader world, BlockPos thisPos) {
+    private static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {
         TileEntity te = world.getTileEntity(thisPos);
         if (te instanceof TileEntityBoundingBlock && !thisPos.equals(((TileEntityBoundingBlock) te).getMainPos())) {
             return ((TileEntityBoundingBlock) te).getMainPos();
@@ -84,13 +83,14 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return false;
         }
         BlockState state1 = world.getBlockState(mainPos);
-        return state1.getBlock().onBlockActivated(world, mainPos, state1, player, hand, side, hitX, hitY, hitZ);
+        //TODO: Use proper ray trace result
+        return state1.getBlock().onBlockActivated(state1, world, mainPos, player, hand, hit1);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IWorldReader, BlockPos, BlockState, int)}. Used together with {@link
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
@@ -132,10 +132,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     /**
-     * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IWorldReader, BlockPos, BlockState, int)}.
+     * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}.
      */
     @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IWorldReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
+    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return;
@@ -158,7 +158,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     /**
      * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(BlockState)} is not called, because only {@link
-     * Block#getDrops(NonNullList, IWorldReader, BlockPos, BlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
+     * Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
      * silk touched by default anyway.
      *
      * @return false

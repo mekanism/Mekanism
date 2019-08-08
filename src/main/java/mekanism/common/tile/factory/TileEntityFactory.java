@@ -706,7 +706,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 sorting = !sorting;
@@ -719,7 +719,7 @@ public abstract class TileEntityFactory extends TileEntityMachine implements ICo
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             RecipeType oldRecipe = recipeType;
             recipeType = RecipeType.values()[dataStream.readInt()];
             upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());

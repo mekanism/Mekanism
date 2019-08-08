@@ -197,7 +197,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             producingEnergy = dataStream.readDouble();
 
             lastTransferLoss = dataStream.readDouble();

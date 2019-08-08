@@ -95,14 +95,14 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
             setMaxEnergy(energyUsage * 400);
             return;
         }
 
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             energyUsage = dataStream.readDouble();
             temperature = dataStream.readDouble();
             setMaxEnergy(dataStream.readDouble());

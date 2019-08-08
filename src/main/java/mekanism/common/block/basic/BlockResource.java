@@ -16,7 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 //TODO: Should we even be extending BlockTileDrops for BlockResource (probably not), as it doesn't have a tile
@@ -48,7 +48,7 @@ public class BlockResource extends BlockTileDrops implements IHasModel, IBlockOr
     }
 
     @Override
-    public boolean isBeaconBase(IWorldReader world, BlockPos pos, BlockPos beacon) {
+    public boolean isBeaconBase(IBlockReader world, BlockPos pos, BlockPos beacon) {
         return resource.isBeaconBase();
     }
 

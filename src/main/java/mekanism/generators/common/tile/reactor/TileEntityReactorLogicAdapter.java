@@ -76,7 +76,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 activeCooled = !activeCooled;
@@ -88,7 +88,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             logicType = ReactorLogic.values()[dataStream.readInt()];
             activeCooled = dataStream.readBoolean();
             prevOutputting = dataStream.readBoolean();

@@ -28,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, IStateFacing, IColoredBlock, IHasTileEntity<TileEntityGlowPanel> {
@@ -76,7 +76,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
         return color;
     }
 
-    public static boolean canStay(IWorldReader world, BlockPos pos) {
+    public static boolean canStay(IBlockReader world, BlockPos pos) {
         boolean canStay = false;
         if (Mekanism.hooks.MCMPLoaded) {
             canStay = MultipartMekanism.hasCenterSlot(world, pos);
@@ -92,7 +92,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
         return canStay;
     }
 
-    private static TileEntityGlowPanel getTileEntityGlowPanel(IWorldReader world, BlockPos pos) {
+    private static TileEntityGlowPanel getTileEntityGlowPanel(IBlockReader world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         TileEntityGlowPanel glowPanel = null;
         if (tileEntity instanceof TileEntityGlowPanel) {
@@ -121,7 +121,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, getTileEntityGlowPanel(world, pos));
     }
 
@@ -138,7 +138,7 @@ public class BlockGlowPanel extends BlockTileDrops implements IBlockOreDict, ISt
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockReader world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
         if (tileEntity != null) {
             return bounds[tileEntity.side.ordinal()];

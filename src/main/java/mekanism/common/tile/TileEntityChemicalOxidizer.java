@@ -121,7 +121,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             TileUtils.readTankData(dataStream, gasTank);
         }
     }

@@ -32,7 +32,7 @@ public abstract class TileEntityInductionCell extends TileEntityMekanism impleme
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             electricityStored = dataStream.readDouble();
         }
     }

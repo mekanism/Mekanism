@@ -178,7 +178,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             finishedCalc = dataStream.readBoolean();
             TileUtils.readTankData(dataStream, fluidTank);
         }

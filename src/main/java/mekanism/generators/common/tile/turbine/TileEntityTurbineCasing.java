@@ -185,7 +185,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             if (clientHasStructure) {
                 structure.volume = dataStream.readInt();
                 structure.lowerVolume = dataStream.readInt();

@@ -283,7 +283,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             currentTransmitterConnections = dataStream.readByte();
             currentAcceptorConnections = dataStream.readByte();
             for (int i = 0; i < 6; i++) {

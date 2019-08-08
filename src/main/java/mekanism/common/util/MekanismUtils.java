@@ -57,7 +57,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.LightType;
 import net.minecraft.world.Region;
 import net.minecraft.world.World;
@@ -127,7 +127,7 @@ public final class MekanismUtils {
      *
      * @return if machine is active
      */
-    public static boolean isActive(IWorldReader world, BlockPos pos) {
+    public static boolean isActive(IBlockReader world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity != null) {
             if (tileEntity instanceof IActiveState) {
@@ -1016,7 +1016,7 @@ public final class MekanismUtils {
         return ret != null ? ret : "<???>";
     }
 
-    public static TileEntity getTileEntitySafe(IWorldReader worldIn, BlockPos pos) {
+    public static TileEntity getTileEntitySafe(IBlockReader worldIn, BlockPos pos) {
         return worldIn instanceof Region ? ((Region) worldIn).getTileEntity(pos, Chunk.CreateEntityType.CHECK) : worldIn.getTileEntity(pos);
     }
 

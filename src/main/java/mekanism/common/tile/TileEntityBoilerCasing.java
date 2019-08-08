@@ -244,7 +244,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             if (clientHasStructure) {
                 clientWaterCapacity = dataStream.readInt();
                 clientSteamCapacity = dataStream.readInt();

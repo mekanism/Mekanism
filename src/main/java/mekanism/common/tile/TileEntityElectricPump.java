@@ -219,7 +219,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             TileUtils.readTankData(dataStream, fluidTank);
         }
     }

@@ -555,7 +555,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             switch (type) {
                 case 0:
@@ -618,7 +618,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         boolean wasActive = getActive();
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 readBasicData(dataStream);

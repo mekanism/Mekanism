@@ -152,7 +152,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             seesSun = dataStream.readBoolean();
         }
     }

@@ -48,10 +48,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -89,7 +90,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
@@ -145,7 +146,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public int getLightValue(BlockState state, IWorldReader world, BlockPos pos) {
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         if (MekanismConfig.current().client.enableAmbientLighting.val()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
             if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
@@ -156,21 +157,20 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity entityplayer, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) {
             return true;
         }
         //TODO: Make this be moved into the logistical sorter tile
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        ItemStack stack = entityplayer.getHeldItem(hand);
+        ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);
             if (wrenchHandler != null) {
-                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-                    if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-                        if (entityplayer.isSneaking()) {
+                if (wrenchHandler.canUseWrench(player, hand, stack, hit)) {
+                    if (SecurityUtils.canAccess(player, tileEntity)) {
+                        wrenchHandler.wrenchUsed(player, hand, stack, hit);
+                        if (player.isSneaking()) {
                             MekanismUtils.dismantleBlock(this, state, world, pos);
                             return true;
                         }
@@ -191,18 +191,18 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
                             world.notifyNeighborsOfStateChange(pos, this, true);
                         }
                     } else {
-                        SecurityUtils.displayNoAccess(entityplayer);
+                        SecurityUtils.displayNoAccess(player);
                     }
                     return true;
                 }
             }
         }
 
-        if (!entityplayer.isSneaking()) {
-            if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
-                PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (ServerPlayerEntity) entityplayer, Coord4D.get(tileEntity), -1);
+        if (!player.isSneaking()) {
+            if (SecurityUtils.canAccess(player, tileEntity)) {
+                PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (ServerPlayerEntity) player, Coord4D.get(tileEntity), -1);
             } else {
-                SecurityUtils.displayNoAccess(entityplayer);
+                SecurityUtils.displayNoAccess(player);
             }
             return true;
         }
@@ -276,7 +276,7 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockReader world, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         if (tile instanceof TileEntityLogisticalSorter) {
             return MultipartUtils.rotate(LOGISTICAL_SORTER_BOUNDS.offset(-0.5, -0.5, -0.5), ((TileEntityLogisticalSorter) tile).getDirection()).offset(0.5, 0.5, 0.5);

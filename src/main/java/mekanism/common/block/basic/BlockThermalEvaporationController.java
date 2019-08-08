@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IHasInventory;
 import mekanism.common.block.interfaces.IHasModel;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -16,21 +17,22 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasTileEntity<TileEntityThermalEvaporationController> {
+public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasGui,
+      IHasTileEntity<TileEntityThermalEvaporationController> {
 
     public BlockThermalEvaporationController() {
         super(Material.IRON);
@@ -54,7 +56,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
@@ -70,7 +72,7 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    public int getLightValue(BlockState state, IWorldReader world, BlockPos pos) {
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity instanceof IActiveState) {
             if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
@@ -96,15 +98,15 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     }
 
     @Override
-    public int getLightOpacity(BlockState state, IWorldReader world, BlockPos pos) {
+    public int getLightOpacity(BlockState state, IBlockReader world, BlockPos pos) {
         return 0;
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity entityplayer, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-        if (!entityplayer.isSneaking()) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (!player.isSneaking()) {
             if (!world.isRemote) {
-                entityplayer.openGui(Mekanism.instance, 33, world, pos.getX(), pos.getY(), pos.getZ());
+                player.openGui(Mekanism.instance, getGuiID(), world, pos.getX(), pos.getY(), pos.getZ());
             }
             return true;
         }
@@ -120,5 +122,10 @@ public class BlockThermalEvaporationController extends BlockTileDrops implements
     @Override
     public Class<? extends TileEntityThermalEvaporationController> getTileClass() {
         return TileEntityThermalEvaporationController.class;
+    }
+
+    @Override
+    public int getGuiID() {
+        return 33;
     }
 }

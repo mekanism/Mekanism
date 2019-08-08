@@ -172,7 +172,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             if (clientHasStructure) {
                 clientCapacity = dataStream.readInt();
                 structure.editMode = ContainerEditMode.values()[dataStream.readInt()];

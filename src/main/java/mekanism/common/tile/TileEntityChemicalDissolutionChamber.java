@@ -161,7 +161,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             operatingTicks = dataStream.readInt();
             TileUtils.readTankData(dataStream, injectTank);
             TileUtils.readTankData(dataStream, outputTank);

@@ -152,7 +152,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             bioFuelSlot.fluidStored = dataStream.readInt();
         }
     }

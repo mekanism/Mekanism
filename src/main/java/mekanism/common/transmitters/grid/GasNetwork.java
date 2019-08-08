@@ -18,7 +18,6 @@ import mekanism.common.util.EmitUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
@@ -59,7 +58,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             if (net.refGas != null && net.gasScale > gasScale) {
                 gasScale = net.gasScale;
                 refGas = net.refGas;
@@ -170,7 +169,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             prevTransferAmount = 0;
             if (transferDelay == 0) {
                 didTransfer = false;

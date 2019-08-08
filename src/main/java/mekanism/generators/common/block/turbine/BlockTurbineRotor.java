@@ -12,9 +12,8 @@ import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -24,9 +23,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -74,24 +74,24 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity entityplayer, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) {
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+        if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
 
-        ItemStack stack = entityplayer.getHeldItem(hand);
+        ItemStack stack = player.getHeldItem(hand);
         TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tileEntity;
-        if (!entityplayer.isSneaking()) {
+        if (!player.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() == GeneratorsItem.TURBINE_BLADE.getItem()) {
                 if (rod.addBlade()) {
-                    if (!entityplayer.isCreative()) {
+                    if (!player.isCreative()) {
                         stack.shrink(1);
                         if (stack.getCount() == 0) {
-                            entityplayer.setHeldItem(hand, ItemStack.EMPTY);
+                            player.setHeldItem(hand, ItemStack.EMPTY);
                         }
                     }
                 }
@@ -99,17 +99,17 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
             }
         } else if (stack.isEmpty()) {
             if (rod.removeBlade()) {
-                if (!entityplayer.isCreative()) {
-                    entityplayer.setHeldItem(hand, GeneratorsItem.TURBINE_BLADE.getItemStack());
-                    entityplayer.inventory.markDirty();
+                if (!player.isCreative()) {
+                    player.setHeldItem(hand, GeneratorsItem.TURBINE_BLADE.getItemStack());
+                    player.inventory.markDirty();
                 }
             }
         } else if (stack.getItem() == GeneratorsItem.TURBINE_BLADE.getItem()) {
             if (stack.getCount() < stack.getMaxStackSize()) {
                 if (rod.removeBlade()) {
-                    if (!entityplayer.isCreative()) {
+                    if (!player.isCreative()) {
                         stack.grow(1);
-                        entityplayer.inventory.markDirty();
+                        player.inventory.markDirty();
                     }
                 }
             }
@@ -132,13 +132,13 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
     @Nonnull
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(BlockState state, IWorldReader world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockReader world, BlockPos pos) {
         return ROTOR_BOUNDS;
     }
 
     @Override
     @Deprecated
-    public boolean isSideSolid(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, Direction side) {
+    public boolean isSideSolid(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, Direction side) {
         //TODO
         return false;
     }

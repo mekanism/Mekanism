@@ -39,7 +39,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -50,7 +50,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     }
 
     @Nonnull
-    protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
+    protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         ItemStack itemStack = new ItemStack(this);
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity == null) {
@@ -106,7 +106,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
         return itemStack;
     }
 
-    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
+    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
         return stack;
     }
 
@@ -114,7 +114,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean)}.
      * <br>
      * This is like Vanilla's {@link ContainerBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)} except that uses the custom {@link
-     * ItemStack} from {@link #getDropItem(BlockState, IWorldReader, BlockPos)}
+     * ItemStack} from {@link #getDropItem(BlockState, IBlockReader, BlockPos)}
      *
      * @author Forge
      * @see FlowerPotBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
@@ -139,7 +139,7 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
 
     /**
      * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(BlockState)} is not called, because only {@link
-     * Block#getDrops(NonNullList, IWorldReader, BlockPos, BlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
+     * Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
      * silk touched by default anyway.
      *
      * @return false
@@ -151,12 +151,12 @@ public abstract class BlockMekanismContainer extends ContainerBlock {
     }
 
     @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IWorldReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
+    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
         drops.add(getDropItem(state, world, pos));
     }
 
     /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IWorldReader, BlockPos, BlockState, int)}. Used together with {@link
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
      * @author Forge

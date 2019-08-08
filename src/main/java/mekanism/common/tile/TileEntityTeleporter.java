@@ -391,7 +391,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 String name = dataStream.readString();
@@ -410,7 +410,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             if (dataStream.readBoolean()) {
                 frequency = new Frequency(dataStream);
             } else {

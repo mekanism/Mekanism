@@ -222,7 +222,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 int index = (dumping.ordinal() + 1) % GasMode.values().length;
@@ -235,7 +235,7 @@ public abstract class TileEntityGasTank extends TileEntityMekanism implements IG
             return;
         }
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             GasTankTier prevTier = tier;
             tier = GasTankTier.values()[dataStream.readInt()];
             gasTank.setMaxGas(tier.getStorage());

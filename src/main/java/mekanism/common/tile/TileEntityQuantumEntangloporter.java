@@ -247,7 +247,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 String name = dataStream.readString();
@@ -266,7 +266,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             lastTransferLoss = dataStream.readDouble();
             lastEnvironmentLoss = dataStream.readDouble();
             if (dataStream.readBoolean()) {

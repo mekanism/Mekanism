@@ -263,7 +263,7 @@ public abstract class TileEntityBin extends TileEntityMekanism implements ISided
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             clientAmount = dataStream.readInt();
             tier = BinTier.values()[dataStream.readInt()];
             if (clientAmount > 0) {

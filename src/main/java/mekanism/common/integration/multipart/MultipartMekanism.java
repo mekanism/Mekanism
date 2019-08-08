@@ -44,7 +44,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -90,7 +90,7 @@ public class MultipartMekanism implements IMCMPAddon {
         return Collections.emptyList();
     }
 
-    static IMultipartContainer getContainer(IWorldReader world, BlockPos pos) {
+    static IMultipartContainer getContainer(IBlockReader world, BlockPos pos) {
         IMultipartContainer container = null;
         if (world instanceof IMultipartBlockAccess) {
             container = ((IMultipartBlockAccess) world).getPartInfo().getContainer();
@@ -103,7 +103,7 @@ public class MultipartMekanism implements IMCMPAddon {
         return container;
     }
 
-    public static boolean hasCenterSlot(IWorldReader world, BlockPos pos) {
+    public static boolean hasCenterSlot(IBlockReader world, BlockPos pos) {
         boolean hasCenterSlot = false;
         IMultipartContainer container = getContainer(world, pos);
         if (container != null) {
@@ -112,7 +112,7 @@ public class MultipartMekanism implements IMCMPAddon {
         return hasCenterSlot;
     }
 
-    public static TileEntity unwrapTileEntity(IWorldReader world) {
+    public static TileEntity unwrapTileEntity(IBlockReader world) {
         TileEntity tile = null;
         if (world instanceof IMultipartBlockAccess) {
             tile = ((IMultipartBlockAccess) world).getPartInfo().getTile().getTileEntity();

@@ -121,7 +121,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             boolean prevMode = mode;
             mode = dataStream.readBoolean();
             if (prevMode != mode) {

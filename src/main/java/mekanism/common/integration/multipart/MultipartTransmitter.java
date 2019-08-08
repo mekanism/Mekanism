@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class MultipartTransmitter implements IMultipart {
@@ -26,7 +26,7 @@ public class MultipartTransmitter implements IMultipart {
     }
 
     @Override
-    public IPartSlot getSlotFromWorld(IWorldReader world, BlockPos pos, BlockState state) {
+    public IPartSlot getSlotFromWorld(IBlockReader world, BlockPos pos, BlockState state) {
         return EnumCenterSlot.CENTER;
     }
 

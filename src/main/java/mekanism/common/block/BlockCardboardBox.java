@@ -19,11 +19,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -57,18 +57,18 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 
     @Override
-    public boolean isReplaceable(IWorldReader world, @Nonnull BlockPos pos) {
+    public boolean isReplaceable(IBlockReader world, @Nonnull BlockPos pos) {
         return testingPlace;
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity entityplayer, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote && entityplayer.isSneaking()) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (!world.isRemote && player.isSneaking()) {
             TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
 
             if (tileEntity != null && tileEntity.storedData != null) {
@@ -80,7 +80,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
                 }
                 testingPlace = false;
                 if (data.block != null) {
-                    BlockState newstate = data.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, entityplayer, hand);
+                    BlockState newstate = data.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, player, hand);
                     data.meta = newstate.getBlock().getMetaFromState(newstate);
                 }
                 world.setBlockState(pos, data.block.getStateFromMeta(data.meta), 3);
@@ -89,12 +89,12 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
                     world.getTileEntity(pos).read(data.tileTag);
                 }
                 if (data.block != null) {
-                    data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), entityplayer, new ItemStack(data.block, 1, data.meta));
+                    data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), player, new ItemStack(data.block, 1, data.meta));
                 }
                 spawnAsEntity(world, pos, MekanismBlock.CARDBOARD_BOX.getItemStack());
             }
         }
-        return entityplayer.isSneaking();
+        return player.isSneaking();
     }
 
     @Override
@@ -104,7 +104,7 @@ public class BlockCardboardBox extends BlockMekanismContainer implements IHasMod
 
     @Nonnull
     @Override
-    protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
+    protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         TileEntityCardboardBox tile = (TileEntityCardboardBox) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this);
         if (tile == null) {

@@ -137,7 +137,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             int prevBlades = blades;
             int prevPosition = position;
             blades = dataStream.readInt();

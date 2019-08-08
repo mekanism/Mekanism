@@ -13,7 +13,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockInductionPort extends BlockBasicMultiblock implements IStateActive, IHasInventory, IHasTileEntity<TileEntityInductionPort> {
@@ -23,7 +23,7 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
     }
 
     @Override
-    public int getLightValue(BlockState state, IWorldReader world, BlockPos pos) {
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity instanceof IActiveState) {
             if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
@@ -48,7 +48,7 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
     @Nonnull
     @Override
     @Deprecated
-    public BlockState getActualState(@Nonnull BlockState state, IWorldReader world, BlockPos pos) {
+    public BlockState getActualState(@Nonnull BlockState state, IBlockReader world, BlockPos pos) {
         return BlockStateHelper.getActualState(this, state, MekanismUtils.getTileEntitySafe(world, pos));
     }
 

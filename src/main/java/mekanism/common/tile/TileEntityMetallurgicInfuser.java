@@ -244,7 +244,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int amount = dataStream.readInt();
             if (amount == 0) {
                 infuseStored.setEmpty();
@@ -255,7 +255,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         }
 
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             int amount = dataStream.readInt();
             if (amount > 0) {
                 infuseStored.setAmount(amount);

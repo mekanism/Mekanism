@@ -491,7 +491,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             int type = dataStream.readInt();
             if (type == 0) {
                 toggleAutoMode();
@@ -515,7 +515,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             autoMode = dataStream.readBoolean();
             operatingTicks = dataStream.readInt();
             isRecipe = dataStream.readBoolean();

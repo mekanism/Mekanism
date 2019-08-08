@@ -233,7 +233,7 @@ public abstract class TileEntityFluidTank extends TileEntityMekanism implements 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             FluidTankTier prevTier = tier;
             tier = FluidTankTier.values()[dataStream.readInt()];
             fluidTank.setCapacity(tier.getStorage());

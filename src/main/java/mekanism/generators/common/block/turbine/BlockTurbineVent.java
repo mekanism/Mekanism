@@ -13,21 +13,22 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class BlockTurbineVent extends BlockMekanismContainer implements IHasTileEntity<TileEntityTurbineVent> {
 
@@ -60,15 +61,15 @@ public class BlockTurbineVent extends BlockMekanismContainer implements IHasTile
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity entityplayer, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) {
             return true;
         }
         TileEntityMekanism tileEntity = (TileEntityMekanism) world.getTileEntity(pos);
-        if (tileEntity.tryWrench(state, entityplayer, hand, () -> new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos)) != WrenchResult.PASS) {
+        if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
-        return ((IMultiblock<?>) tileEntity).onActivate(entityplayer, hand, entityplayer.getHeldItem(hand));
+        return ((IMultiblock<?>) tileEntity).onActivate(player, hand, player.getHeldItem(hand));
     }
 
     @Override
@@ -77,7 +78,7 @@ public class BlockTurbineVent extends BlockMekanismContainer implements IHasTile
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, MobEntity.SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
         TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
         if (tileEntity != null) {
             if (FMLCommonHandler.instance().getEffectiveSide() == Dist.DEDICATED_SERVER) {
@@ -88,7 +89,7 @@ public class BlockTurbineVent extends BlockMekanismContainer implements IHasTile
                 return false;
             }
         }
-        return super.canCreatureSpawn(state, world, pos, type);
+        return super.canCreatureSpawn(state, world, pos, type, entityType);
     }
 
     @Nullable

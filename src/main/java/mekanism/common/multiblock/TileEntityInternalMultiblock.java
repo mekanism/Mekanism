@@ -22,7 +22,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             if (dataStream.readBoolean()) {
                 multiblockUUID = dataStream.readString();
             } else {

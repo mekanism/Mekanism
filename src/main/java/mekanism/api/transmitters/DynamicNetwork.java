@@ -18,7 +18,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.eventbus.api.Event;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IClientTicker, INetworkDataHandler {
@@ -218,7 +217,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void register() {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             TransmitterNetworkRegistry.getInstance().registerNetwork(this);
         } else {
             MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte) 1));
@@ -230,7 +229,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         transmittersToAdd.clear();
         transmittersAdded.clear();
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             TransmitterNetworkRegistry.getInstance().removeNetwork(this);
         } else {
             MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte) 0));
@@ -277,7 +276,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void onUpdate() {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             Iterator<DelayQueue> i = updateQueue.iterator();
 
             try {

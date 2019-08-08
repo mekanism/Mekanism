@@ -251,7 +251,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (!world.isRemote) {
             byte type = dataStream.readByte();
             if (type == 0) {
                 dumpLeft = GasMode.values()[dumpLeft.ordinal() == GasMode.values().length - 1 ? 0 : dumpLeft.ordinal() + 1];
@@ -263,7 +263,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
         super.handlePacketData(dataStream);
 
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             TileUtils.readTankData(dataStream, fluidTank);
             TileUtils.readTankData(dataStream, leftTank);
             TileUtils.readTankData(dataStream, rightTank);

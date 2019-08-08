@@ -75,6 +75,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -288,18 +289,17 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return components;
     }
 
-    public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, Supplier<RayTraceResult> rayTraceSupplier) {
+    public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
         ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);
             if (wrenchHandler != null) {
-                RayTraceResult raytrace = rayTraceSupplier.get();
-                if (wrenchHandler.canUseWrench(player, hand, stack, raytrace)) {
+                if (wrenchHandler.canUseWrench(player, hand, stack, rayTrace)) {
                     if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                         SecurityUtils.displayNoAccess(player);
                         return WrenchResult.NO_SECURITY;
                     }
-                    wrenchHandler.wrenchUsed(player, hand, stack, raytrace);
+                    wrenchHandler.wrenchUsed(player, hand, stack, rayTrace);
                     if (player.isSneaking()) {
                         MekanismUtils.dismantleBlock(getBlockType(), state, world, pos);
                         return WrenchResult.DISMANTLED;
@@ -409,7 +409,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (world.isRemote) {
             redstone = dataStream.readBoolean();
             for (ITileComponent component : components) {
                 component.read(dataStream);
