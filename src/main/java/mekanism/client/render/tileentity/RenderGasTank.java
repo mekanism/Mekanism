@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderGasTank extends TileEntityRenderer<TileEntityGasTank> {
 
     @Override
-    public void render(TileEntityGasTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
-        MekanismRenderer.machineRenderer().render(tileEntity, x, y, z, partialTick, destroyStage, alpha);
+    public void render(TileEntityGasTank tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+        MekanismRenderer.machineRenderer().render(tileEntity, x, y, z, partialTick, destroyStage);
     }
 }

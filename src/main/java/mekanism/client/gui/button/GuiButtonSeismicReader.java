@@ -30,9 +30,9 @@ public class GuiButtonSeismicReader extends Button {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             mc.getTextureManager().bindTexture(this.resourceLocation);
             if (!this.enabled) {
-                GlStateManager.color(0.25F, 0.25F, 0.25F);
+                GlStateManager.color3f(0.25F, 0.25F, 0.25F);
             } else if (this.hovered) {
-                GlStateManager.color(0.5F, 0.5F, 1);
+                GlStateManager.color3f(0.5F, 0.5F, 1);
             }
             this.drawTexturedModalRect(this.x, this.y, this.offsetX, this.offsetY, this.width, this.height);
             MekanismRenderer.resetColor();

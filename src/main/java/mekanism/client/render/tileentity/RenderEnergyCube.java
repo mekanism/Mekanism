@@ -29,7 +29,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
     private ModelEnergyCore core = new ModelEnergyCore();
 
     @Override
-    public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
@@ -92,6 +92,6 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
             GlStateManager.popMatrix();
         }
 
-        MekanismRenderer.machineRenderer().render(tileEntity, x, y, z, partialTick, destroyStage, alpha);
+        MekanismRenderer.machineRenderer().render(tileEntity, x, y, z, partialTick, destroyStage);
     }
 }

@@ -40,7 +40,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(1, 1, 1, 1 - alpha);
+        GlStateManager.color4f(1, 1, 1, 1 - alpha);
 
         bindTexture(getEntityTexture(entity));
 

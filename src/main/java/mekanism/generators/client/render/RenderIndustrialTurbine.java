@@ -26,7 +26,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
     private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
 
     @Override
-    public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         renderAModelAt(tileEntity, x, y, z, partialTick, destroyStage);
     }
 

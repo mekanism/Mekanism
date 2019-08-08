@@ -248,7 +248,7 @@ public class ModelArmoredJetpack extends ModelBase {
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         GlStateManager.enableCull();
-        GlStateManager.color(1, 1, 1, 0.2F);
+        GlStateManager.color4f(1, 1, 1, 0.2F);
 
         WingbladeL.render(size);
         WingbladeR.render(size);

@@ -19,7 +19,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
     private final ItemRenderer renderItem = Minecraft.getInstance().getRenderItem();
 
     @Override
-    public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.getDirection());
         if (!obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.getOppositeDirection())) {
             render(tileEntity.getDirection(), tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);

@@ -16,7 +16,7 @@ public class RenderChemicalDissolutionChamber extends TileEntityRenderer<TileEnt
     private ModelChemicalDissolutionChamber model = new ModelChemicalDissolutionChamber();
 
     @Override
-    public void render(TileEntityChemicalDissolutionChamber tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityChemicalDissolutionChamber tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));

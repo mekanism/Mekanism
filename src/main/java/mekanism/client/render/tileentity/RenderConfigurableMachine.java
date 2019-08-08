@@ -43,7 +43,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
     }
 
     @Override
-    public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage) {
         ItemStack itemStack = mc.player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {

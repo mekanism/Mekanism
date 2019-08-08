@@ -196,7 +196,8 @@ public class MekanismRenderer {
 
     //Color
     public static void resetColor() {
-        GlStateManager.color(1, 1, 1, 1);
+        //TODO: Should this be GlStateManager.clearColor
+        GlStateManager.color4f(1, 1, 1, 1);
     }
 
     private static float getRed(int color) {
@@ -212,14 +213,14 @@ public class MekanismRenderer {
     }
 
     public static void color(int color) {
-        GlStateManager.color(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
+        GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
     }
 
     public static void color(@Nullable FluidStack fluid, float fluidScale) {
         if (fluid != null) {
             int color = fluid.getFluid().getColor(fluid);
             if (fluid.getFluid().isGaseous(fluid)) {
-                GlStateManager.color(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+                GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
             } else {
                 color(color);
             }
@@ -247,7 +248,7 @@ public class MekanismRenderer {
     public static void color(@Nullable Gas gas) {
         if (gas != null) {
             int color = gas.getTint();
-            GlStateManager.color(getRed(color), getGreen(color), getBlue(color));
+            GlStateManager.color3f(getRed(color), getGreen(color), getBlue(color));
         }
     }
 
@@ -265,7 +266,7 @@ public class MekanismRenderer {
 
     public static void color(@Nullable EnumColor color, float alpha, float multiplier) {
         if (color != null) {
-            GlStateManager.color(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+            GlStateManager.color4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
         }
     }
 

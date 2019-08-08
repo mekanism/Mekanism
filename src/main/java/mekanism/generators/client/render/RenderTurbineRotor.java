@@ -19,7 +19,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
     private ModelTurbine model = new ModelTurbine();
 
     @Override
-    public void render(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         renderAModelAt(tileEntity, x, y, z, partialTick);
     }
 

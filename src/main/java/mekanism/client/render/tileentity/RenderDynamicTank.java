@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank> {
 
     @Override
-    public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null &&
             tileEntity.structure.fluidStored.amount != 0) {
             RenderData data = new RenderData();

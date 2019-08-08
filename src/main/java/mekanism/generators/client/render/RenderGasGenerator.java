@@ -16,7 +16,7 @@ public class RenderGasGenerator extends TileEntityRenderer<TileEntityGasGenerato
     private ModelGasGenerator model = new ModelGasGenerator();
 
     @Override
-    public void render(TileEntityGasGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityGasGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));

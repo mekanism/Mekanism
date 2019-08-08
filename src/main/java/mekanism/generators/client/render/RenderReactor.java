@@ -22,7 +22,7 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
     private ModelEnergyCore core = new ModelEnergyCore();
 
     @Override
-    public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         if (tileEntity.isBurning()) {
             GlStateManager.pushMatrix();
             GlStateManager.translatef((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);

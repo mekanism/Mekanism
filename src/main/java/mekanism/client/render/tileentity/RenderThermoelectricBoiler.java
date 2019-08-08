@@ -25,7 +25,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
     private FluidStack WATER = new FluidStack(FluidRegistry.WATER, 1);
 
     @Override
-    public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null &&
             tileEntity.structure.upperRenderLocation != null) {
             FluidStack waterStored = tileEntity.structure.waterStored;

@@ -26,7 +26,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
     private Map<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
 
     @Override
-    public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         if (tileEntity.shouldRender) {
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();

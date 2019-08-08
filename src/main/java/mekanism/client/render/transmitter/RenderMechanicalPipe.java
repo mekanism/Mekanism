@@ -104,7 +104,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private void renderDisplayLists(DisplayInteger[] displayLists, float scale, boolean gas) {
         if (displayLists != null) {
             if (gas) {
-                GlStateManager.color(1, 1, 1, scale);
+                GlStateManager.color4f(1, 1, 1, scale);
                 displayLists[stages - 1].render();
                 MekanismRenderer.resetColor();
             } else {
