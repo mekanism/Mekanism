@@ -15,7 +15,7 @@ import net.minecraft.util.Direction;
 public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPressurizedTube> {
 
     @Override
-    public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage) {
         if (!MekanismConfig.current().client.opaqueTransmitters.val()) {
             TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
             if (transmitter.hasTransmitterNetwork() && transmitter.getTransmitterNetwork().refGas != null && transmitter.getTransmitterNetwork().gasScale != 0) {

@@ -10,10 +10,10 @@ import mekanism.common.multiblock.MultiblockManager;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ServerChunkProvider;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 
 public class CommonWorldTickHandler {
 
@@ -42,7 +42,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent
     public void onTick(WorldTickEvent event) {
-        if (event.side == Dist.DEDICATED_SERVER) {
+        if (event.side == LogicalSide.SERVER) {
             if (event.phase == Phase.START) {
                 tickStart(event.world);
             } else if (event.phase == Phase.END) {

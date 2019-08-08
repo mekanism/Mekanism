@@ -417,7 +417,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
     }
 
     public PlayerEntity getOwner() {
-        return world.getPlayerEntityByUUID(getOwnerUUID());
+        return world.getPlayerByUuid(getOwnerUUID());
     }
 
     public String getOwnerName() {

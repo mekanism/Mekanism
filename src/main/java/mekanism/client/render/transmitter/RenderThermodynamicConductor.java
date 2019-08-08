@@ -11,7 +11,7 @@ import net.minecraft.util.Direction;
 public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEntityThermodynamicConductor> {
 
     @Override
-    public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage) {
         if (!MekanismConfig.current().client.opaqueTransmitters.val()) {
             render(transmitter, x, y, z, 15);
         }

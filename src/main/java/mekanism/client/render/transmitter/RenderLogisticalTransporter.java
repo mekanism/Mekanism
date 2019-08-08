@@ -52,13 +52,13 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     public static void onStitch(AtlasTexture map) {
         cachedOverlays.clear();
 
-        gunpowderIcon = map.getTextureExtry("minecraft:items/gunpowder");
-        torchOffIcon = map.getTextureExtry("minecraft:blocks/redstone_torch_off");
-        torchOnIcon = map.getTextureExtry("minecraft:blocks/redstone_torch_on");
+        gunpowderIcon = map.getAtlasSprite("minecraft:items/gunpowder");
+        torchOffIcon = map.getAtlasSprite("minecraft:blocks/redstone_torch_off");
+        torchOnIcon = map.getAtlasSprite("minecraft:blocks/redstone_torch_on");
     }
 
     @Override
-    public void render(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage) {
         if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }
@@ -255,7 +255,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 break;
         }
         MekanismRenderer.renderObject(toReturn);
-        DisplayInteger.endList();
+        GlStateManager.endList();
         return display;
     }
 

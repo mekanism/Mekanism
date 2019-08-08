@@ -11,7 +11,7 @@ import net.minecraft.util.Direction;
 public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniversalCable> {
 
     @Override
-    public void render(TileEntityUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage) {
         if (!MekanismConfig.current().client.opaqueTransmitters.val() && cable.currentPower != 0) {
             render(cable, x, y, z, 15);
         }

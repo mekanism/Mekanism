@@ -10,10 +10,10 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -74,7 +74,7 @@ public class TransmitterNetworkRegistry {
 
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
-        if (event.phase == Phase.END && event.side == Dist.DEDICATED_SERVER) {
+        if (event.phase == Phase.END && event.side == LogicalSide.SERVER) {
             tickEnd();
         }
     }

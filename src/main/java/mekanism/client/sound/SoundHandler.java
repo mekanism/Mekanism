@@ -26,12 +26,12 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 // SoundHandler is the central point for sounds on Mek client side. There are roughly three classes of sounds to deal
 // with:
@@ -76,7 +76,7 @@ public class SoundHandler {
         switch (soundType) {
             case JETPACK:
                 if (!jetpackSounds.contains(uuid)) {
-                    PlayerEntity player = world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity player = world.getPlayerByUuid(uuid);
                     if (player != null) {
                         jetpackSounds.add(uuid);
                         playSound(new JetpackSound(player));
@@ -85,7 +85,7 @@ public class SoundHandler {
                 break;
             case GAS_MASK:
                 if (!gasmaskSounds.contains(uuid)) {
-                    PlayerEntity player = world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity player = world.getPlayerByUuid(uuid);
                     if (player != null) {
                         gasmaskSounds.add(uuid);
                         playSound(new GasMaskSound(player));
@@ -94,7 +94,7 @@ public class SoundHandler {
                 break;
             case FLAMETHROWER:
                 if (!flamethrowerSounds.contains(uuid)) {
-                    PlayerEntity player = world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity player = world.getPlayerByUuid(uuid);
                     if (player != null) {
                         flamethrowerSounds.add(uuid);
                         //TODO: Evaluate at some point if there is a better way to do this
@@ -112,16 +112,17 @@ public class SoundHandler {
     }
 
     public static void playSound(ISound sound) {
-        Minecraft.getInstance().getSoundHandler().playSound(sound);
+        Minecraft.getInstance().getSoundHandler().play(sound);
     }
 
     public static ISound startTileSound(ResourceLocation soundLoc, float volume, BlockPos pos) {
         // First, check to see if there's already a sound playing at the desired location
         ISound s = soundMap.get(pos.toLong());
-        if (s == null || !Minecraft.getInstance().getSoundHandler().isSoundPlaying(s)) {
+        if (s == null || !Minecraft.getInstance().getSoundHandler().isPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             s = new SimpleSound(soundLoc, SoundCategory.BLOCKS, (float) (volume * MekanismConfig.current().client.baseSoundVolume.val()), 1.0f,
-                  true, 0, ISound.AttenuationType.LINEAR, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) {
+                  true, 0, ISound.AttenuationType.LINEAR, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f,
+                  false) {
                 @Override
                 public float getVolume() {
                     if (this.sound == null) {
@@ -148,7 +149,7 @@ public class SoundHandler {
         if (s != null) {
             // TODO: Saw some code that suggests there is a soundmap MC already tracks; investigate further
             // and maybe we can avoid this dedicated soundmap
-            Minecraft.getInstance().getSoundHandler().stopSound(s);
+            Minecraft.getInstance().getSoundHandler().stop(s);
             soundMap.remove(posKey);
         }
     }
@@ -189,7 +190,7 @@ public class SoundHandler {
         // Finally, update our soundMap so that we can actually have a shot at stopping this sound; note that we also
         // need to "unoffset" the sound position so that we build the correct key for the sound map
         // Aside: I really, really, wish Forge returned the final result sound as part of playSound :/
-        BlockPos pos = new BlockPos(resultSound.getXPosF() - 0.5f, resultSound.getYPosF() - 0.5f, resultSound.getZPosF() - 0.5);
+        BlockPos pos = new BlockPos(resultSound.getX() - 0.5f, resultSound.getY() - 0.5f, resultSound.getZ() - 0.5);
         soundMap.put(pos.toLong(), resultSound);
     }
 
@@ -212,7 +213,7 @@ public class SoundHandler {
         }
 
         @Override
-        public void update() {
+        public void tick() {
             // Every configured interval, see if we need to adjust muffling
             if (minecraft.world.getTotalWorldTime() % checkInterval == 0) {
 
@@ -239,7 +240,7 @@ public class SoundHandler {
         private float getMufflingFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            TileEntity te = minecraft.world.getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
+            TileEntity te = minecraft.world.getTileEntity(new BlockPos(original.getX(), original.getY(), original.getZ()));
             if (te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
                 int mufflerCount = ((IUpgradeTile) te).getComponent().getUpgrades(Upgrade.MUFFLING);
                 return 1.0f - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
@@ -297,18 +298,18 @@ public class SoundHandler {
         }
 
         @Override
-        public float getXPosF() {
-            return original.getXPosF();
+        public float getX() {
+            return original.getX();
         }
 
         @Override
-        public float getYPosF() {
-            return original.getYPosF();
+        public float getY() {
+            return original.getY();
         }
 
         @Override
-        public float getZPosF() {
-            return original.getZPosF();
+        public float getZ() {
+            return original.getZ();
         }
 
         @Nonnull

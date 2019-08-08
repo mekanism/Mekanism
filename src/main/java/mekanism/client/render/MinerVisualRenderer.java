@@ -70,7 +70,7 @@ public final class MinerVisualRenderer {
             MekanismRenderer.renderObject(model);
         }
 
-        DisplayInteger.endList();
+        GlStateManager.endList();
 
         return display;
     }

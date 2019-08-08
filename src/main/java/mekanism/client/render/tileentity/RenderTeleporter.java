@@ -95,7 +95,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
         }
 
         MekanismRenderer.renderObject(toReturn);
-        DisplayInteger.endList();
+        GlStateManager.endList();
 
         return display;
     }

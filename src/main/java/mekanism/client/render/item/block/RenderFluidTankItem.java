@@ -113,7 +113,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            DisplayInteger.endList();
+            GlStateManager.endList();
         }
 
         return displays;

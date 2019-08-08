@@ -161,7 +161,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         }
 
         MekanismRenderer.renderObject(toReturn);
-        DisplayInteger.endList();
+        GlStateManager.endList();
 
         return display;
     }

@@ -72,7 +72,7 @@ public final class FluidRenderer {
             MekanismRenderer.renderObject(toReturn);
         }
 
-        DisplayInteger.endList();
+        GlStateManager.endList();
 
         return display;
     }
@@ -152,7 +152,7 @@ public final class FluidRenderer {
             MekanismRenderer.renderObject(toReturn);
         }
 
-        DisplayInteger.endList();
+        GlStateManager.endList();
 
         return display;
     }

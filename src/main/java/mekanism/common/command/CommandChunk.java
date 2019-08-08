@@ -12,7 +12,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.chunk.ServerChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.command.CommandTreeBase;
 
 public class CommandChunk extends CommandTreeBase {
@@ -50,7 +50,7 @@ public class CommandChunk extends CommandTreeBase {
     }
 
     private void handleChunkEvent(ChunkEvent event, String direction) {
-        if (event.getWorld().isRemote) {
+        if (event.getWorld().isRemote()) {
             return;
         }
         ChunkPos pos = event.getChunk().getPos();

@@ -33,9 +33,9 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.RenderTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderTickHandler {
@@ -119,7 +119,7 @@ public class RenderTickHandler {
 
                 // Traverse a copy of jetpack state and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
-                    PlayerEntity p = minecraft.world.getPlayerEntityByUUID(uuid);
+                    PlayerEntity p = minecraft.world.getPlayerByUuid(uuid);
 
                     if (p == null) {
                         continue;
@@ -159,7 +159,7 @@ public class RenderTickHandler {
                 // Traverse a copy of gasmask state and do animations
                 if (world.getWorldTime() % 4 == 0) {
                     for (UUID uuid : Mekanism.playerState.getActiveGasmasks()) {
-                        PlayerEntity p = minecraft.world.getPlayerEntityByUUID(uuid);
+                        PlayerEntity p = minecraft.world.getPlayerByUuid(uuid);
                         if (p == null || !p.isInWater()) {
                             continue;
                         }

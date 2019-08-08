@@ -46,7 +46,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     }
 
     @Override
-    public float getXPosF() {
+    public float getX() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
@@ -56,7 +56,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     }
 
     @Override
-    public float getYPosF() {
+    public float getY() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
@@ -66,7 +66,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     }
 
     @Override
-    public float getZPosF() {
+    public float getZ() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
@@ -76,7 +76,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     }
 
     @Override
-    public void update() {
+    public void tick() {
         PlayerEntity player = getPlayer();
         if (player == null || !player.isAlive()) {
             this.donePlaying = true;

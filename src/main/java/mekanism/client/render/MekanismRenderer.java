@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
@@ -25,25 +26,25 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
@@ -70,7 +71,7 @@ public class MekanismRenderer {
     }
 
     public static void initFluidTextures(AtlasTexture map) {
-        missingIcon = map.getMissingSprite();
+        missingIcon = MissingTextureSprite.func_217790_a();
         texMap = map;
     }
 
@@ -113,7 +114,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getTextureAtlasSprite(ResourceLocation spriteLocation) {
-        TextureAtlasSprite sprite = texMap.getTextureExtry(spriteLocation.toString());
+        TextureAtlasSprite sprite = texMap.getSprite(spriteLocation);
         return sprite != null ? sprite : missingIcon;
     }
 
@@ -458,12 +459,8 @@ public class MekanismRenderer {
         public static DisplayInteger createAndStart() {
             DisplayInteger newInteger = new DisplayInteger();
             newInteger.display = GLAllocation.generateDisplayLists(1);
-            GlStateManager.glNewList(newInteger.display, GL11.GL_COMPILE);
+            GlStateManager.newList(newInteger.display, GL11.GL_COMPILE);
             return newInteger;
-        }
-
-        public static void endList() {
-            GlStateManager.glEndList();
         }
 
         @Override

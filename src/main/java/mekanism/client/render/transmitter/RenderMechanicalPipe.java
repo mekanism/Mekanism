@@ -36,7 +36,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     }
 
     @Override
-    public void render(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage) {
         if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }
@@ -213,7 +213,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             }
 
             MekanismRenderer.renderObject(toReturn);
-            DisplayInteger.endList();
+            GlStateManager.endList();
         }
 
         return displays;

@@ -123,7 +123,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            DisplayInteger.endList();
+            GlStateManager.endList();
         }
 
         return displays;
@@ -156,7 +156,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
                 MekanismRenderer.renderObject(toReturn);
             }
 
-            DisplayInteger.endList();
+            GlStateManager.endList();
         }
 
         return displays;

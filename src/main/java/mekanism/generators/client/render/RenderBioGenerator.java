@@ -107,7 +107,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
             model3D.maxY = 0.4375 + ((float) i / stages) * 0.4375 + 0.001;
 
             MekanismRenderer.renderObject(model3D);
-            DisplayInteger.endList();
+            GlStateManager.endList();
         }
 
         energyDisplays.put(side, displays);

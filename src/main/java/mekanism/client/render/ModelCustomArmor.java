@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelCustomArmor extends BipedModel {
+public class ModelCustomArmor extends BipedModel<LivingEntity> {
 
     public static ModelCustomArmor INSTANCE = new ModelCustomArmor();
 
@@ -67,15 +67,12 @@ public class ModelCustomArmor extends BipedModel {
         return biped;
     }
 
-    public void init(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float size) {
+    public void init(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float size) {
         reset();
 
         isSneak = entity.isSneaking();
-        isRiding = entity.isRiding();
-
-        if (entity instanceof LivingEntity) {
-            isChild = ((LivingEntity) entity).isChild();
-        }
+        isSitting = entity.isRiding();
+        isChild = entity.isChild();
 
         if (modelType.armorSlot == 0) {
             bipedHead.isHidden = false;
@@ -90,7 +87,7 @@ public class ModelCustomArmor extends BipedModel {
             bipedRightLeg.showModel = true;
         }
 
-        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, size, entity);
+        setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, size);
     }
 
     public void reset() {
@@ -123,7 +120,7 @@ public class ModelCustomArmor extends BipedModel {
     }
 
     @Override
-    public void render(@Nonnull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void render(@Nonnull LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         init(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
@@ -149,21 +146,19 @@ public class ModelCustomArmor extends BipedModel {
         }
     }
 
-    public static class GlowArmor extends BipedModel {
+    public static class GlowArmor extends BipedModel<LivingEntity> {
 
         public GlowArmor(float size) {
             super(size);
         }
 
         @Override
-        public void render(@Nonnull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        public void render(@Nonnull LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             isSneak = entity.isSneaking();
-            isRiding = entity.isRiding();
-            if (entity instanceof LivingEntity) {
-                isChild = ((LivingEntity) entity).isChild();
-            }
+            isSitting = entity.isRiding();
+            isChild = entity.isChild();
 
-            setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+            setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
             MekanismRenderer.disableGlow(glowInfo);

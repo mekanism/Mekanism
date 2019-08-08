@@ -5,25 +5,26 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.FireBlock;
 import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.CachedBlockInfo;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.block.pattern.BlockPattern.PatternHelper;
-import net.minecraft.block.Blocks;
+import net.minecraft.util.CachedBlockInfo;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 //TODO: Rename
 public class PortalHelper {
@@ -187,7 +188,7 @@ public class PortalHelper {
         @SubscribeEvent
         public void onNeighborNotify(NeighborNotifyEvent e) {
             if (e.getState().getBlock() == Blocks.OBSIDIAN) {
-                World world = e.getWorld();
+                IWorld world = e.getWorld();
                 Block newBlock = world.getBlockState(e.getPos()).getBlock();
                 if (newBlock instanceof FireBlock) {
                     BlockPortalOverride.instance.trySpawnPortal(world, e.getPos());

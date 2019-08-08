@@ -17,10 +17,11 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 
 public class CommonPlayerTickHandler {
 
@@ -60,7 +61,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onTick(PlayerTickEvent event) {
-        if (event.phase == Phase.END && event.side == Dist.DEDICATED_SERVER) {
+        if (event.phase == Phase.END && event.side == LogicalSide.SERVER) {
             tickEnd(event.player);
         }
     }
