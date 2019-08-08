@@ -73,8 +73,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     public void updateButtons() {
-        saveButton.enabled = filter.filter != null && !filter.filter.isEmpty();
-        deleteButton.enabled = !isNew;
+        saveButton.active = filter.filter != null && !filter.filter.isEmpty();
+        deleteButton.active = !isNew;
     }
 
     @Override

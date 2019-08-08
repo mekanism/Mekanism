@@ -124,9 +124,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     }
 
     private void updateEnabledButtons() {
-        startButton.enabled = tileEntity.searcher.state == State.IDLE || !tileEntity.running;
-        stopButton.enabled = tileEntity.searcher.state != State.IDLE && tileEntity.running;
-        configButton.enabled = tileEntity.searcher.state == State.IDLE;
+        startButton.active = tileEntity.searcher.state == State.IDLE || !tileEntity.running;
+        stopButton.active = tileEntity.searcher.state != State.IDLE && tileEntity.running;
+        configButton.active = tileEntity.searcher.state == State.IDLE;
     }
 
     @Override

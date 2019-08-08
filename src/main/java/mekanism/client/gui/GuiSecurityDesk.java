@@ -78,21 +78,21 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
                 }
             }
             scrollList.setText(text);
-            removeButton.enabled = scrollList.hasSelection();
+            removeButton.active = scrollList.hasSelection();
         }
 
         if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(minecraft.player.getUniqueID())) {
-            publicButton.enabled = tileEntity.frequency.securityMode != SecurityMode.PUBLIC;
-            privateButton.enabled = tileEntity.frequency.securityMode != SecurityMode.PRIVATE;
-            trustedButton.enabled = tileEntity.frequency.securityMode != SecurityMode.TRUSTED;
-            checkboxButton.enabled = true;
-            overrideButton.enabled = true;
+            publicButton.active = tileEntity.frequency.securityMode != SecurityMode.PUBLIC;
+            privateButton.active = tileEntity.frequency.securityMode != SecurityMode.PRIVATE;
+            trustedButton.active = tileEntity.frequency.securityMode != SecurityMode.TRUSTED;
+            checkboxButton.active = true;
+            overrideButton.active = true;
         } else {
-            publicButton.enabled = false;
-            privateButton.enabled = false;
-            trustedButton.enabled = false;
-            checkboxButton.enabled = false;
-            overrideButton.enabled = false;
+            publicButton.active = false;
+            privateButton.active = false;
+            trustedButton.active = false;
+            checkboxButton.active = false;
+            overrideButton.active = false;
         }
     }
 

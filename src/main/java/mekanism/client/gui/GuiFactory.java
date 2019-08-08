@@ -27,6 +27,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -34,7 +35,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
@@ -117,7 +117,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     @Override
     protected void mouseClicked(int x, int y, int button) throws IOException {
         super.mouseClicked(x, y, button);
-        if (button == 0 || Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        if (button == 0 || InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
             int xAxis = x - guiLeft;
             int yAxis = y - guiTop;
             if (xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83) {

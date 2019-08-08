@@ -5,6 +5,7 @@ import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,12 +22,13 @@ public class GuiButtonDisableableImage extends Button {
     private final int hoverOffset;
     private final int disabledOffset;
 
-    public GuiButtonDisableableImage(int id, int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, ResourceLocation resource) {
-        this(id, x, y, width, height, offsetX, offsetY, hoverOffset, 0, resource);
+    public GuiButtonDisableableImage(int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, ResourceLocation resource, IPressable pressable) {
+        this(x, y, width, height, offsetX, offsetY, hoverOffset, 0, resource, pressable);
     }
 
-    public GuiButtonDisableableImage(int id, int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, int disabledOffset, ResourceLocation resource) {
-        super(id, x, y, width, height, "");
+    //public Button(int x, int y, int width, int height, String p_i51141_5_, Button.IPressable p_i51141_6_) {
+    public GuiButtonDisableableImage(int x, int y, int width, int height, int offsetX, int offsetY, int hoverOffset, int disabledOffset, ResourceLocation resource, IPressable pressable) {
+        super(x, y, width, height, "", pressable);
         this.xTexStart = offsetX;
         this.yTexStart = offsetY;
         this.hoverOffset = hoverOffset;
@@ -35,24 +37,23 @@ public class GuiButtonDisableableImage extends Button {
     }
 
     @Override
-    public void drawButton(@Nonnull Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             //Ensure the color gets reset. The default GuiButtonImage doesn't so other GuiButton's can have the color leak out of them
             MekanismRenderer.resetColor();
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            minecraft.getTextureManager().bindTexture(this.resourceLocation);
-            GlStateManager.disableDepth();
+            MekanismRenderer.bindTexture(this.resourceLocation);
+            GlStateManager.disableDepthTest();
             int j = this.yTexStart;
 
-            if (!this.enabled) {
+            if (!this.active) {
                 //Add support for having a different texture for when it is disabled
                 j += this.disabledOffset;
-            } else if (this.hovered) {
+            } else if (isMouseOver(mouseX, mouseY)) {
                 j += this.hoverOffset;
             }
 
-            this.drawTexturedModalRect(this.x, this.y, this.xTexStart, j, this.width, this.height);
-            GlStateManager.enableDepth();
+            drawTexturedModalRect(this.x, this.y, this.xTexStart, j, this.width, this.height);
+            GlStateManager.enableDepthTest();
         }
     }
 }

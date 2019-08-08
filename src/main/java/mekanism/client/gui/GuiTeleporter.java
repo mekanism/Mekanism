@@ -182,22 +182,22 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         }
         scrollList.setText(text);
         if (privateMode) {
-            publicButton.enabled = true;
-            privateButton.enabled = false;
+            publicButton.active = true;
+            privateButton.active = false;
         } else {
-            publicButton.enabled = false;
-            privateButton.enabled = true;
+            publicButton.active = false;
+            privateButton.active = true;
         }
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? getPrivateCache().get(scrollList.getSelection()) : getPublicCache().get(scrollList.getSelection());
-            setButton.enabled = getFrequency() == null || !getFrequency().equals(freq);
-            deleteButton.enabled = getOwner().equals(freq.ownerUUID);
+            setButton.active = getFrequency() == null || !getFrequency().equals(freq);
+            deleteButton.active = getOwner().equals(freq.ownerUUID);
         } else {
-            setButton.enabled = false;
-            deleteButton.enabled = false;
+            setButton.active = false;
+            deleteButton.active = false;
         }
         if (!itemStack.isEmpty()) {
-            teleportButton.enabled = clientFreq != null && clientStatus == 1;
+            teleportButton.active = clientFreq != null && clientStatus == 1;
         }
     }
 

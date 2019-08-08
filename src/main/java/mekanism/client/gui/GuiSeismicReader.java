@@ -68,8 +68,8 @@ public class GuiSeismicReader extends Screen {
     }
 
     private void updateEnabledButtons() {
-        upButton.enabled = currentLayer + 1 <= blockList.size() - 1;
-        downButton.enabled = currentLayer - 1 >= 1;
+        upButton.active = currentLayer + 1 <= blockList.size() - 1;
+        downButton.active = currentLayer - 1 >= 1;
     }
 
     @Override
@@ -191,11 +191,11 @@ public class GuiSeismicReader extends Screen {
         if (!stack.isEmpty()) {
             try {
                 GlStateManager.pushMatrix();
-                GlStateManager.enableDepth();
+                GlStateManager.enableDepthTest();
                 RenderHelper.enableGUIStandardItemLighting();
                 itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
-                GlStateManager.disableDepth();
+                GlStateManager.disableDepthTest();
                 GlStateManager.popMatrix();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);

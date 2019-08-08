@@ -27,6 +27,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +36,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSorter, TransporterFilter> {
@@ -162,7 +162,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TileEntityLogisticalSor
         } else if (guibutton.id == autoEjectButton.id) {
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)));
         } else if (guibutton.id == colorButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0)));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
+                  GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0)));
         }
     }
 

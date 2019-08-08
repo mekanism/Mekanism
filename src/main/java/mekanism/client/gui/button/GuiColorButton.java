@@ -14,16 +14,15 @@ public class GuiColorButton extends Button {
 
     private final Supplier<EnumColor> colorSupplier;
 
-    public GuiColorButton(int id, int x, int y, int width, int height, Supplier<EnumColor> colorSupplier) {
-        super(id, x, y, width, height, "");
+    public GuiColorButton(int x, int y, int width, int height, Supplier<EnumColor> colorSupplier, IPressable pressable) {
+        super(x, y, width, height, "", pressable);
         this.colorSupplier = colorSupplier;
     }
 
     @Override
-    public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             //Ensure the color gets reset. The default GuiButtonImage doesn't so other GuiButton's can have the color leak out of them
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             EnumColor color = colorSupplier.get();
             if (color != null) {
                 drawRect(this.x, this.y, this.x + this.width, this.y + this.height, MekanismRenderer.getColorARGB(color, 1));

@@ -1,19 +1,20 @@
 package mekanism.client.gui.robit;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
+import net.java.games.input.Keyboard;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.RepairContainer;
-import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.RepairContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CCustomPayloadPacket;

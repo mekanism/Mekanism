@@ -82,7 +82,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     private void updateEnabledButtons() {
-        removeButton.enabled = selectedType != null;
+        removeButton.active = selectedType != null;
     }
 
     @Override

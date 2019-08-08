@@ -98,12 +98,12 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     private void updateEnabledButtons() {
-        encodeFormulaButton.enabled = !tileEntity.autoMode && tileEntity.isRecipe && canEncode();
-        stockControlButton.enabled = tileEntity.formula != null;
-        fillEmptyButton.enabled = !tileEntity.autoMode;
-        craftSingleButton.enabled = !tileEntity.autoMode && tileEntity.isRecipe;
-        craftAvailableButton.enabled = !tileEntity.autoMode && tileEntity.isRecipe;
-        autoModeButton.enabled = tileEntity.formula != null;
+        encodeFormulaButton.active = !tileEntity.autoMode && tileEntity.isRecipe && canEncode();
+        stockControlButton.active = tileEntity.formula != null;
+        fillEmptyButton.active = !tileEntity.autoMode;
+        craftSingleButton.active = !tileEntity.autoMode && tileEntity.isRecipe;
+        craftAvailableButton.active = !tileEntity.autoMode && tileEntity.isRecipe;
+        autoModeButton.active = tileEntity.formula != null;
     }
 
     @Override

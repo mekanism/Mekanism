@@ -1,14 +1,16 @@
 package mekanism.client.entity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,14 +18,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
-public class ParticleLaser extends Particle {
+public class ParticleLaser extends SpriteTexturedParticle {
 
     private double length;
     private Direction direction;
 
     public ParticleLaser(World world, Pos3D start, Pos3D end, Direction dir, double energy) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
-        particleMaxAge = 5;
+        maxAge = 5;
         particleRed = 1;
         particleGreen = 0;
         particleBlue = 0;
@@ -31,11 +33,12 @@ public class ParticleLaser extends Particle {
         particleScale = (float) Math.min(energy / 50000, 0.6);
         length = end.distance(start);
         direction = dir;
-        particleTexture = MekanismRenderer.laserIcon;
+        sprite = MekanismRenderer.laserIcon;
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull ActiveRenderInfo renderInfo, float partialTicks, float rotationX, float rotationZ, float rotationYZ,
+          float rotationXY, float rotationXZ) {
         Tessellator tessellator = Tessellator.getInstance();
         tessellator.draw();
 
@@ -64,10 +67,10 @@ public class ParticleLaser extends Particle {
     }
 
     private void drawLaser(BufferBuilder buffer, Tessellator tessellator) {
-        float uMin = particleTexture.getInterpolatedU(0);
-        float uMax = particleTexture.getInterpolatedU(16);
-        float vMin = particleTexture.getInterpolatedV(0);
-        float vMax = particleTexture.getInterpolatedV(16);
+        float uMin = sprite.getInterpolatedU(0);
+        float uMax = sprite.getInterpolatedU(16);
+        float vMin = sprite.getInterpolatedV(0);
+        float vMax = sprite.getInterpolatedV(16);
         GlStateManager.disableCull();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 45);
@@ -86,8 +89,10 @@ public class ParticleLaser extends Particle {
         tessellator.draw();
     }
 
+    @Nonnull
     @Override
-    public int getFXLayer() {
-        return 1;
+    public IParticleRenderType getRenderType() {
+        //TODO: Check this, the FX layer returned 1
+        return IParticleRenderType.CUSTOM;
     }
 }

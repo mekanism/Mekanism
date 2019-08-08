@@ -17,6 +17,7 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE extends TileEntityMekanism> extends GuiTypeFilter<FILTER, TILE> {
@@ -79,14 +79,14 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
 
     protected void materialMouseClicked() {
         ItemStack stack = minecraft.player.inventory.getItemStack();
-        if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
             if (stack.getItem() instanceof BlockItem) {
                 if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                     filter.setMaterialItem(stack.copy());
                     filter.getMaterialItem().setCount(1);
                 }
             }
-        } else if (stack.isEmpty() && Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
             filter.setMaterialItem(ItemStack.EMPTY);
         }
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -20,8 +20,8 @@ public class GuiSideDataButton extends Button {
     private final ResourceLocation resourceLocation;
     private final int slotPosMapIndex;
 
-    public GuiSideDataButton(int id, int x, int y, ResourceLocation resource, int slotPosMapIndex, Supplier<SideData> sideDataSupplier, Supplier<EnumColor> colorSupplier) {
-        super(id, x, y, 14, 14, "");
+    public GuiSideDataButton(int x, int y, ResourceLocation resource, int slotPosMapIndex, Supplier<SideData> sideDataSupplier, Supplier<EnumColor> colorSupplier, IPressable pressable) {
+        super(x, y, 14, 14, "", pressable);
         this.resourceLocation = resource;
         this.slotPosMapIndex = slotPosMapIndex;
         this.sideDataSupplier = sideDataSupplier;
@@ -29,10 +29,9 @@ public class GuiSideDataButton extends Button {
     }
 
     @Override
-    public void drawButton(@Nonnull Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            minecraft.getTextureManager().bindTexture(this.resourceLocation);
+            MekanismRenderer.bindTexture(this.resourceLocation);
             SideData data = sideDataSupplier.get();
             if (data == TileComponentConfig.EMPTY) {
                 drawTexturedModalRect(this.x, this.y, 176, 28, this.width, this.height);
@@ -42,7 +41,7 @@ public class GuiSideDataButton extends Button {
                 if (doColor) {
                     MekanismRenderer.color(getColor());
                 }
-                drawTexturedModalRect(this.x, this.y, 176, this.hovered ? 0 : 14, this.width, this.height);
+                drawTexturedModalRect(this.x, this.y, 176, isMouseOver(mouseX, mouseY) ? 0 : 14, this.width, this.height);
                 if (doColor) {
                     MekanismRenderer.resetColor();
                 }

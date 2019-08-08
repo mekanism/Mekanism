@@ -198,14 +198,14 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         if (!stack.isEmpty()) {
             try {
                 GlStateManager.pushMatrix();
-                GlStateManager.enableDepth();
+                GlStateManager.enableDepthTest();
                 RenderHelper.enableGUIStandardItemLighting();
                 if (scale != 1) {
                     GlStateManager.translatef(scale, scale, scale);
                 }
                 itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
-                GlStateManager.disableDepth();
+                GlStateManager.disableDepthTest();
                 GlStateManager.popMatrix();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);

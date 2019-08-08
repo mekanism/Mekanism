@@ -98,19 +98,19 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         }
         scrollList.setText(text);
         if (privateMode) {
-            publicButton.enabled = true;
-            privateButton.enabled = false;
+            publicButton.active = true;
+            privateButton.active = false;
         } else {
-            publicButton.enabled = false;
-            privateButton.enabled = true;
+            publicButton.active = false;
+            privateButton.active = true;
         }
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? tileEntity.privateCache.get(scrollList.getSelection()) : tileEntity.publicCache.get(scrollList.getSelection());
-            setButton.enabled = tileEntity.getFrequency(null) == null || !tileEntity.getFrequency(null).equals(freq);
-            deleteButton.enabled = tileEntity.getSecurity().getOwnerUUID().equals(freq.ownerUUID);
+            setButton.active = tileEntity.getFrequency(null) == null || !tileEntity.getFrequency(null).equals(freq);
+            deleteButton.active = tileEntity.getSecurity().getOwnerUUID().equals(freq.ownerUUID);
         } else {
-            setButton.enabled = false;
-            deleteButton.enabled = false;
+            setButton.active = false;
+            deleteButton.active = false;
         }
     }
 
