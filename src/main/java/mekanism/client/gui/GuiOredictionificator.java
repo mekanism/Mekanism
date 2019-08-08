@@ -157,12 +157,13 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     }
 
     @Override
-    protected void mouseReleased(int x, int y, int type) {
-        super.mouseReleased(x, y, type);
+    public boolean mouseReleased(double mouseX, double mouseY, int type) {
+        super.mouseReleased(mouseX, mouseY, type);
         if (type == 0 && isDragging) {
             dragOffset = 0;
             isDragging = false;
         }
+        return true;
     }
 
     @Override

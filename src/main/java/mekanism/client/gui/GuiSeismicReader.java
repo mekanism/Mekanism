@@ -193,7 +193,7 @@ public class GuiSeismicReader extends Screen {
                 GlStateManager.pushMatrix();
                 GlStateManager.enableDepthTest();
                 RenderHelper.enableGUIStandardItemLighting();
-                itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
                 GlStateManager.disableDepthTest();
                 GlStateManager.popMatrix();

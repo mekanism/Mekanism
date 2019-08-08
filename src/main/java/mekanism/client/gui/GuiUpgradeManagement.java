@@ -202,12 +202,13 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int type) {
+    public boolean mouseReleased(double mouseX, double mouseY, int type) {
         super.mouseReleased(mouseX, mouseY, type);
         if (type == 0 && isDragging) {
             dragOffset = 0;
             isDragging = false;
         }
+        return true;
     }
 
     @Override

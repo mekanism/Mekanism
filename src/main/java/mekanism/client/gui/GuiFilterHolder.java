@@ -204,12 +204,13 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int type) {
+    public boolean mouseReleased(double mouseX, double mouseY, int type) {
         super.mouseReleased(mouseX, mouseY, type);
         if (type == 0 && isDragging) {
             dragOffset = 0;
             isDragging = false;
         }
+        return true;
     }
 
     protected void updateStackList(IOreDictFilter filter) {

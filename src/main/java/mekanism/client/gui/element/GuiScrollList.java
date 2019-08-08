@@ -182,14 +182,15 @@ public class GuiScrollList extends GuiElement {
     }
 
     @Override
-    public void mouseReleased(int xAxis, int yAxis, int type) {
-        super.mouseReleased(xAxis, yAxis, type);
+    public boolean mouseReleased(double mouseX, double mouseY, int type) {
+        super.mouseReleased(mouseX, mouseY, type);
         if (type == 0) {
             if (isDragging) {
                 dragOffset = 0;
                 isDragging = false;
             }
         }
+        return true;
     }
 
     @Override

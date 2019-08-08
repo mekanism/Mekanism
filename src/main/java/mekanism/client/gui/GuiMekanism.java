@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Mouse;
 
@@ -122,21 +124,20 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
 
     @Override
     public void displayTooltip(String s, int x, int y) {
-        drawHoveringText(s, x, y);
-        //Fix unwanted lighting changes made by drawHoveringText
-        RenderHelper.disableStandardItemLighting();
+        displayTooltips(Collections.singletonList(s), x, y);
     }
 
     @Override
     public void displayTooltips(List<String> list, int xAxis, int yAxis) {
-        drawHoveringText(list, xAxis, yAxis);
+        //TODO: Evaluate if we want to use this for splitting the text
+        GuiUtils.drawHoveringText(list, xAxis, yAxis, width, height, -1, font);
         //Fix unwanted lighting changes made by drawHoveringText
         RenderHelper.disableStandardItemLighting();
     }
 
     @Override
     public FontRenderer getFont() {
-        return fontRenderer;
+        return font;
     }
 
     @Override
@@ -148,11 +149,12 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int type) {
+    public boolean mouseReleased(double mouseX, double mouseY, int type) {
         super.mouseReleased(mouseX, mouseY, type);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        double xAxis = mouseX - guiLeft;
+        double yAxis = mouseY - guiTop;
         guiElements.forEach(element -> element.mouseReleased(xAxis, yAxis, type));
+        return true;
     }
 
     @Override
@@ -164,10 +166,6 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
             int yAxis = height - Mouse.getEventY() * height / minecraft.mainWindow.getHeight() - 1 - guiTop;
             guiElements.forEach(element -> element.mouseWheel(xAxis, yAxis, delta));
         }
-    }
-
-    protected FontRenderer getFontRenderer() {
-        return fontRenderer;
     }
 
     @Override
@@ -203,7 +201,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
                 if (scale != 1) {
                     GlStateManager.translatef(scale, scale, scale);
                 }
-                itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
                 GlStateManager.disableDepthTest();
                 GlStateManager.popMatrix();

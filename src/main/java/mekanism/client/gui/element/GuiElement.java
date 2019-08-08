@@ -85,7 +85,8 @@ public abstract class GuiElement {
     public void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
     }
 
-    public void mouseReleased(int x, int y, int type) {
+    public boolean mouseReleased(double mouseX, double mouseY, int type) {
+        return true;
     }
 
     public void mouseWheel(int x, int y, int delta) {
