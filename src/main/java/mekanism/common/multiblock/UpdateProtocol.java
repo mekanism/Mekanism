@@ -92,7 +92,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
                             isValid = false;
                             break;
                         } else if (!isAir(xPos, yPos, zPos)) {
-                            innerNodes.add(new Coord4D(xPos, yPos, zPos, pointer.getWorld().provider.getDimension()));
+                            innerNodes.add(new Coord4D(xPos, yPos, zPos, pointer.getWorld().getDimension().getType()));
                         }
                     }
                     if (!isValid) {
@@ -225,7 +225,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
      */
     public boolean isViableNode(int x, int y, int z) {
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
+        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().getDimension().getType()).getTileEntity(pointer.getWorld());
         if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(pointer)) {
             return true;
         }

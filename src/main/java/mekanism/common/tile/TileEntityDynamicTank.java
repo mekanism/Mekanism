@@ -243,10 +243,10 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
             if (FluidUtil.getFluidContained(copyStack) == null) {
                 if (structure.fluidStored != null) {
-                    int filled = handler.fill(structure.fluidStored, !player.capabilities.isCreativeMode);
+                    int filled = handler.fill(structure.fluidStored, !player.isCreative());
                     copyStack = handler.getContainer();
                     if (filled > 0) {
-                        if (player.capabilities.isCreativeMode) {
+                        if (player.isCreative()) {
                             structure.fluidStored.amount -= filled;
                         } else if (itemStack.getCount() == 1) {
                             structure.fluidStored.amount -= filled;
@@ -269,14 +269,14 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                     return false;
                 }
                 boolean filled = false;
-                FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
+                FluidStack drained = handler.drain(needed, !player.isCreative());
                 copyStack = handler.getContainer();
 
                 if (copyStack.getCount() == 0) {
                     copyStack = ItemStack.EMPTY;
                 }
                 if (drained != null) {
-                    if (player.capabilities.isCreativeMode) {
+                    if (player.isCreative()) {
                         filled = true;
                     } else if (!copyStack.isEmpty()) {
                         if (itemStack.getCount() == 1) {

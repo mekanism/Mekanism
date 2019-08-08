@@ -843,7 +843,8 @@ public class Mekanism {
                     return;
                 }
                 ChunkPos coordPair = event.getChunk().getPos();
-                worldTickHandler.addRegenChunk(event.getWorld().provider.getDimension(), coordPair);
+                //TODO: Is this correct
+                worldTickHandler.addRegenChunk(event.getWorld().getDimension().getType().getId(), coordPair);
             }
         }
     }

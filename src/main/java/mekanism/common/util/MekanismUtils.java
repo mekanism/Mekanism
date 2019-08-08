@@ -54,8 +54,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.LightType;
@@ -662,7 +662,7 @@ public final class MekanismUtils {
      *
      * @return raytraced value
      */
-    public static RayTraceResult rayTrace(World world, PlayerEntity player) {
+    public static BlockRayTraceResult rayTrace(World world, PlayerEntity player) {
         double reach = Mekanism.proxy.getReach(player);
         Vec3d headVec = getHeadVec(player);
         Vec3d lookVec = player.getLook(1);

@@ -37,7 +37,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         if (super.isValidInnerNode(x, y, z)) {
             return true;
         }
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
+        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().getDimension().getType()).getTileEntity(pointer.getWorld());
         return tile instanceof TileEntityPressureDisperser || tile instanceof TileEntitySuperheatingElement;
     }
 
@@ -66,7 +66,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         final Coord4D initDisperser = dispersers.iterator().next();
 
         //Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
-        Coord4D pos = new Coord4D(structure.renderLocation.x, initDisperser.y, structure.renderLocation.z, pointer.getWorld().provider.getDimension());
+        Coord4D pos = new Coord4D(structure.renderLocation.x, initDisperser.y, structure.renderLocation.z, pointer.getWorld().getDimension().getType());
         for (int x = 1; x < structure.volLength - 1; x++) {
             for (int z = 1; z < structure.volWidth - 1; z++) {
                 Coord4D coord4D = pos.translate(x, 0, z);
@@ -104,7 +104,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
             for (int y = structure.renderLocation.y; y < initDisperser.y; y++) {
                 for (int z = structure.renderLocation.z; z < structure.renderLocation.z + structure.volWidth; z++) {
                     if (pointer.getWorld().isAirBlock(new BlockPos(x, y, z)) || isViableNode(x, y, z)) {
-                        initAir = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension());
+                        initAir = new Coord4D(x, y, z, pointer.getWorld().getDimension().getType());
                         totalAir++;
                     }
                 }
@@ -137,7 +137,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 
         int steamHeight = (structure.renderLocation.y + structure.volHeight - 2) - initDisperser.y;
         structure.steamVolume = structure.volWidth * structure.volLength * steamHeight;
-        structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y + 1, structure.renderLocation.z, pointer.getWorld().provider.getDimension());
+        structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y + 1, structure.renderLocation.z, pointer.getWorld().getDimension().getType());
         return true;
     }
 

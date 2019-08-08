@@ -33,7 +33,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
         if (super.isValidInnerNode(x, y, z)) {
             return true;
         }
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
+        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().getDimension().getType()).getTileEntity(pointer.getWorld());
         return tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider;
     }
 

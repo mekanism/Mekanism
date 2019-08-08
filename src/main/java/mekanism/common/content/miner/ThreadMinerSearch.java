@@ -91,7 +91,7 @@ public class ThreadMinerSearch extends Thread {
                     acceptedItems.put(info, filterFound);
                 }
                 if (tileEntity.inverse == (filterFound == null)) {
-                    set(i, new Coord4D(x, y, z, world.provider.getDimension()));
+                    set(i, new Coord4D(x, y, z, world.getDimension().getType()));
                     replaceMap.put(i, filterFound);
                     found++;
                 }

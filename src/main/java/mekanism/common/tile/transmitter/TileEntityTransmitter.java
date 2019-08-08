@@ -248,7 +248,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                 }
             }
             if (upgraded > 0) {
-                if (!player.capabilities.isCreativeMode) {
+                if (!player.isCreative()) {
                     stack.shrink(1);
                     if (stack.getCount() == 0) {
                         player.setHeldItem(hand, ItemStack.EMPTY);

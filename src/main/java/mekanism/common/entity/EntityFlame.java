@@ -22,6 +22,8 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -73,7 +75,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     public void tick() {
-        if (isDead) {
+        if (!isAlive()) {
             return;
         }
         ticksExisted++;
@@ -139,24 +141,28 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
 
         if (mop != null) {
-            if (mop.typeOfHit == Type.ENTITY && mop.entityHit != null && !mop.entityHit.isImmuneToFire()) {
-                if (mop.entityHit instanceof ItemEntity && mode != ItemFlamethrower.FlamethrowerMode.COMBAT) {
-                    if (mop.entityHit.ticksExisted > 100) {
-                        if (!smeltItem((ItemEntity) mop.entityHit)) {
-                            burn(mop.entityHit);
+            if (mop instanceof EntityRayTraceResult) {
+                EntityRayTraceResult entityResult = (EntityRayTraceResult) mop;
+                if (entityResult.getEntity() != null && !entityResult.getEntity().isImmuneToFire()) {
+                    if (entityResult.getEntity() instanceof ItemEntity && mode != ItemFlamethrower.FlamethrowerMode.COMBAT) {
+                        if (entityResult.getEntity().ticksExisted > 100) {
+                            if (!smeltItem((ItemEntity) entityResult.getEntity())) {
+                                burn(entityResult.getEntity());
+                            }
                         }
+                    } else {
+                        burn(entityResult.getEntity());
                     }
-                } else {
-                    burn(mop.entityHit);
                 }
-            } else if (mop.typeOfHit == Type.BLOCK) {
-                BlockState state = world.getBlockState(mop.getBlockPos());
-                boolean fluid = MekanismUtils.isFluid(world, new Coord4D(mop, world)) || MekanismUtils.isDeadFluid(world, new Coord4D(mop, world));
+            } else if (mop instanceof BlockRayTraceResult) {
+                BlockRayTraceResult blockResult = (BlockRayTraceResult) mop;
+                BlockState state = world.getBlockState(blockResult.getPos());
+                boolean fluid = MekanismUtils.isFluid(world, new Coord4D(blockResult, world)) || MekanismUtils.isDeadFluid(world, new Coord4D(blockResult, world));
 
-                Coord4D sideCoord = new Coord4D(mop.getBlockPos().offset(mop.sideHit), world);
+                Coord4D sideCoord = new Coord4D(blockResult.getPos().offset(blockResult.getFace()), world);
 
                 if (MekanismConfig.current().general.aestheticWorldDamage.val() && !fluid && (sideCoord.isAirBlock(world) || sideCoord.isReplaceable(world))) {
-                    if (mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop, world))) {
+                    if (mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(blockResult, world))) {
                         if (mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !world.isRemote) {
                             world.setBlockState(sideCoord.getPos(), Blocks.FIRE.getDefaultState());
                         }

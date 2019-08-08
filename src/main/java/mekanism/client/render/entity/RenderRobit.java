@@ -1,6 +1,7 @@
 package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.model.ModelRobit;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.util.MekanismUtils;
@@ -12,12 +13,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderRobit extends MobRenderer<EntityRobit> {
+public class RenderRobit extends MobRenderer<EntityRobit, ModelRobit> {
 
     public RenderRobit(EntityRendererManager renderManager) {
         super(renderManager, new ModelRobit(), 0.5F);
     }
 
+    @Nullable
     @Override
     protected ResourceLocation getEntityTexture(@Nonnull EntityRobit robit) {
         if ((Math.abs(robit.posX - robit.prevPosX) + Math.abs(robit.posX - robit.prevPosX)) > 0.001) {

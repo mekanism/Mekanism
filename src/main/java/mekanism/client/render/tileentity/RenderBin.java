@@ -69,7 +69,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
     @SuppressWarnings("incomplete-switch")
     private void renderText(String text, Direction side, float maxScale, double x, double y, double z) {
         GlStateManager.pushMatrix();
-        GlStateManager.doPolygonOffset(-10, -10);
+        GlStateManager.polygonOffset(-10, -10);
         GlStateManager.enablePolygonOffset();
         float displayWidth = 1;
         float displayHeight = 1;

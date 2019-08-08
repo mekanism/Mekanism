@@ -12,12 +12,12 @@ public class ContainerRobitRepair extends RepairContainer {
     public EntityRobit robit;
 
     public ContainerRobitRepair(PlayerInventory inventory, EntityRobit entity) {
-        super(inventory, entity.world, BlockPos.ORIGIN, inventory.player);
+        super(inventory, entity.world, BlockPos.ZERO, inventory.player);
         robit = entity;
     }
 
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
-        return !robit.isDead;
+        return robit.isAlive();
     }
 }

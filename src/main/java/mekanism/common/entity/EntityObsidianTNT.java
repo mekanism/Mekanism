@@ -54,7 +54,7 @@ public class EntityObsidianTNT extends Entity {
 
     @Override
     public boolean canBeCollidedWith() {
-        return !isDead;
+        return isAlive();
     }
 
     @Override

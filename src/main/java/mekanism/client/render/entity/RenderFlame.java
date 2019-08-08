@@ -65,7 +65,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
 
         for (int j = 0; j < 4; j++) {
             GlStateManager.rotatef(90, 1, 0, 0);
-            GlStateManager.glNormal3f(0.0F, 0.0F, scale);
+            GlStateManager.normal3f(0.0F, 0.0F, scale);
 
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex(f2, f4).endVertex();

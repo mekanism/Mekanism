@@ -73,7 +73,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism {
                     tile.write(tag);
                     data.tileTag = tag;
                 }
-                if (!player.capabilities.isCreativeMode) {
+                if (!player.isCreative()) {
                     stack.shrink(1);
                 }
 

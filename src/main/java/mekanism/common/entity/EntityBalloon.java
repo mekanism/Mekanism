@@ -108,7 +108,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
         if (world.isRemote) {
             if (dataManager.get(IS_LATCHED) == 1) {
-                latched = new Coord4D(dataManager.get(LATCHED_X), dataManager.get(LATCHED_Y), dataManager.get(LATCHED_Z), world.provider.getDimension());
+                latched = new Coord4D(dataManager.get(LATCHED_X), dataManager.get(LATCHED_Y), dataManager.get(LATCHED_Z), world.getDimension().getType());
             } else {
                 latched = null;
             }
@@ -145,7 +145,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                 latched = null;
                 dataManager.set(IS_LATCHED, (byte) 0);
             }
-            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || latchedEntity.isDead || !world.loadedEntityList.contains(latchedEntity))) {
+            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive() || !world.loadedEntityList.contains(latchedEntity))) {
                 latchedEntity = null;
                 dataManager.set(IS_LATCHED, (byte) 0);
             }
@@ -237,7 +237,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public boolean canBeCollidedWith() {
-        return !isDead;
+        return isAlive();
     }
 
     @Override

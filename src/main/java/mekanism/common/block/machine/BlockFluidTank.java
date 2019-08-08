@@ -195,7 +195,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
             IFluidHandlerItem handler = FluidUtil.getFluidHandler(copyStack);
             if (FluidUtil.getFluidContained(copyStack) == null) {
                 if (tileEntity.fluidTank.getFluid() != null) {
-                    int filled = handler.fill(tileEntity.fluidTank.getFluid(), !player.capabilities.isCreativeMode);
+                    int filled = handler.fill(tileEntity.fluidTank.getFluid(), !player.isCreative());
                     copyStack = handler.getContainer();
                     if (filled > 0) {
                         if (itemStack.getCount() == 1) {
@@ -219,13 +219,13 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
                     return false;
                 }
                 boolean filled = false;
-                FluidStack drained = handler.drain(needed, !player.capabilities.isCreativeMode);
+                FluidStack drained = handler.drain(needed, !player.isCreative());
                 copyStack = handler.getContainer();
                 if (copyStack.getCount() == 0) {
                     copyStack = ItemStack.EMPTY;
                 }
                 if (drained != null) {
-                    if (player.capabilities.isCreativeMode) {
+                    if (player.isCreative()) {
                         filled = true;
                     } else if (!copyStack.isEmpty()) {
                         if (itemStack.getCount() == 1) {

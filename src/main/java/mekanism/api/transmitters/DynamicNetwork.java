@@ -214,7 +214,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 maxZ = coord.z;
             }
         }
-        return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, initTransmitter.world().provider.getDimension());
+        return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, initTransmitter.world().getDimension().getType());
     }
 
     public void register() {

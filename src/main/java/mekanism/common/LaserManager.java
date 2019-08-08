@@ -17,9 +17,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
 import net.minecraft.world.ServerWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.world.BlockEvent;
@@ -32,15 +33,15 @@ public class LaserManager {
 
     public static LaserInfo fireLaser(Pos3D from, Direction direction, double energy, World world) {
         Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
-        RayTraceResult mop = world.rayTraceBlocks(from, to);
+        BlockRayTraceResult mop = world.rayTraceBlocks(from, to);
         if (mop != null) {
             to = new Pos3D(mop.hitVec);
-            Coord4D toCoord = new Coord4D(mop.getBlockPos(), world);
+            Coord4D toCoord = new Coord4D(mop.getPos(), world);
             TileEntity tile = toCoord.getTileEntity(world);
-            if (isReceptor(tile, mop.sideHit)) {
-                ILaserReceptor receptor = getReceptor(tile, mop.sideHit);
+            if (isReceptor(tile, mop.getFace())) {
+                ILaserReceptor receptor = getReceptor(tile, mop.getFace());
                 if (!receptor.canLasersDig()) {
-                    receptor.receiveLaserEnergy(energy, mop.sideHit);
+                    receptor.receiveLaserEnergy(energy, mop.getFace());
                 }
             }
         }
@@ -86,13 +87,13 @@ public class LaserManager {
         return ret;
     }
 
-    public static RayTraceResult fireLaserClient(TileEntity from, Direction direction, double energy, World world) {
+    public static BlockRayTraceResult fireLaserClient(TileEntity from, Direction direction, double energy, World world) {
         return fireLaserClient(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
     }
 
-    public static RayTraceResult fireLaserClient(Pos3D from, Direction direction, double energy, World world) {
+    public static BlockRayTraceResult fireLaserClient(Pos3D from, Direction direction, double energy, World world) {
         Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
-        RayTraceResult mop = world.rayTraceBlocks(from, to);
+        BlockRayTraceResult mop = world.rayTraceBlocks(from, to);
         if (mop != null) {
             to = new Pos3D(mop.hitVec);
         }
@@ -111,11 +112,11 @@ public class LaserManager {
 
     public static class LaserInfo {
 
-        public RayTraceResult movingPos;
+        public BlockRayTraceResult movingPos;
 
         public boolean foundEntity;
 
-        public LaserInfo(RayTraceResult mop, boolean b) {
+        public LaserInfo(BlockRayTraceResult mop, boolean b) {
             movingPos = mop;
             foundEntity = b;
         }

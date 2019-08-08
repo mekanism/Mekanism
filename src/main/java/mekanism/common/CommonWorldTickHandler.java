@@ -67,7 +67,8 @@ public class CommonWorldTickHandler {
                 return;
             }
 
-            int dimensionId = world.provider.getDimension();
+            //TODO: I think this is wrong
+            int dimensionId = world.getDimension().getType().getId();
             //Credit to E. Beef
             if (chunkRegenMap.containsKey(dimensionId)) {
                 Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionId);

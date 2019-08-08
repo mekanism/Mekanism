@@ -43,7 +43,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void validate() {
         super.validate();
-        Biome b = world.provider.getBiomeForCoords(getPos());
+        Biome b = world.getDimension().getBiome(getPos());
 
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
@@ -68,7 +68,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
             // significant penalty.
-            seesSun = world.isDaytime() && canSeeSky() && !world.provider.isNether();
+            seesSun = world.isDaytime() && canSeeSky() && !world.getDimension().isNether();
 
             if (canOperate()) {
                 setActive(true);
@@ -80,7 +80,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected boolean canSeeSky() {
-        return world.canSeeSky(getPos());
+        return world.canBlockSeeSky(getPos());
     }
 
     @Override

@@ -70,7 +70,7 @@ public class BlockObsidianTNT extends Block {
             world.removeBlock(pos, false);
             if (stack.getItem() == Items.FLINT_AND_STEEL) {
                 stack.damageItem(1, entityplayer);
-            } else if (!entityplayer.capabilities.isCreativeMode) {
+            } else if (!entityplayer.isCreative()) {
                 stack.shrink(1);
             }
             return true;

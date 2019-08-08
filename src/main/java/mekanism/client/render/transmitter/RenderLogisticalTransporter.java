@@ -1,5 +1,8 @@
 package mekanism.client.render.transmitter;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -25,17 +28,14 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockRayTraceResult;
 import org.lwjgl.opengl.GL11;
 
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
@@ -112,9 +112,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             }
             ItemStack itemStack = mc.player.inventory.getCurrentItem();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
-                RayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
-                if (pos != null && pos.sideHit != null && pos.getBlockPos().equals(transporter.getPos())) {
-                    int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.sideHit.ordinal()];
+                BlockRayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
+                if (pos != null && pos.getFace() != null && pos.getPos().equals(transporter.getPos())) {
+                    int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.getFace().ordinal()];
                     GlStateManager.pushMatrix();
                     GlStateManager.enableCull();
                     GlStateManager.disableLighting();
@@ -129,7 +129,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlStateManager.translatef(0.5F, 0.5F, 0.5F);
                     GlStateManager.translatef(0.5F, 0.5F, 0.5F);
 
-                    int display = getOverlayDisplay(pos.sideHit, mode).display;
+                    int display = getOverlayDisplay(pos.getFace(), mode).display;
                     GlStateManager.callList(display);
 
                     MekanismRenderer.resetColor();

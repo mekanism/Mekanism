@@ -35,7 +35,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
         // an initial activity status and the client (in MP) will show the windmills turning while not
         // generating any power
-        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val().contains(world.provider.getDimension());
+        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val().contains(world.getDimension().getType().getId());
         if (isBlacklistDimension) {
             setActive(false);
         }
@@ -86,7 +86,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
     public float getMultiplier() {
-        if (world.canSeeSky(getPos().add(0, 4, 0))) {
+        if (world.canBlockSeeSky(getPos().add(0, 4, 0))) {
             final float minY = (float) MekanismConfig.current().generators.windGenerationMinY.val();
             final float maxY = (float) MekanismConfig.current().generators.windGenerationMaxY.val();
             final float minG = (float) MekanismConfig.current().generators.windGenerationMin.val();
@@ -136,7 +136,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 3), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(Direction.UP, 4), current);
         // Check to see if the placement is happening in a blacklisted dimension
-        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val().contains(world.provider.getDimension());
+        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val().contains(world.getDimension().getType().getId());
     }
 
     @Override

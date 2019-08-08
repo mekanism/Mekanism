@@ -318,11 +318,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
-        if (entity.world.provider.getDimension() != coord.dimensionId) {
-            entity.changeDimension(coord.dimensionId, (world, entity2, yaw) -> entity2.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
-        } else {
+        if (entity.world.getDimension().getType().equals(coord.dimension)) {
             entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
             Mekanism.packetHandler.sendToAllTracking(new PacketEntityMove(entity), new Coord4D(entity));
+        } else {
+            entity.changeDimension(coord.dimension, (world, entity2, yaw) -> entity2.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5));
         }
     }
 
@@ -339,11 +339,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     public int calculateEnergyCost(Entity entity, Coord4D coords) {
         int energyCost = MekanismConfig.current().usage.teleporterBase.val();
-        if (entity.world.provider.getDimension() != coords.dimensionId) {
-            energyCost += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
-        } else {
+        if (entity.world.getDimension().getType().equals(coords.dimension)) {
             int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
             energyCost += distance * MekanismConfig.current().usage.teleporterDistance.val();
+        } else {
+            energyCost += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
         }
         return energyCost;
     }

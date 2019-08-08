@@ -217,7 +217,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
 
         if (!items.isEmpty()) {
             for (ItemEntity item : items) {
-                if (item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit || item.isDead) {
+                if (item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit || !item.isAlive()) {
                     continue;
                 }
                 for (int i = 0; i < 27; i++) {
@@ -247,11 +247,11 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
 
     public void goHome() {
         setFollowing(false);
-        if (world.provider.getDimension() != homeLocation.dimensionId) {
-            changeDimension(homeLocation.dimensionId, (world1, entity, yaw) ->
-                  entity.setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, yaw, rotationPitch));
-        } else {
+        if (world.getDimension().getType().equals(homeLocation.dimension)) {
             setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
+        } else {
+            changeDimension(homeLocation.dimension, (world1, entity, yaw) ->
+                  entity.setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, yaw, rotationPitch));
         }
         motionX = 0;
         motionY = 0;

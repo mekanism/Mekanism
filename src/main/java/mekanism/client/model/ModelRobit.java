@@ -3,14 +3,14 @@ package mekanism.client.model;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.common.entity.EntityRobit;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelRobit extends Model {
+public class ModelRobit extends EntityModel<EntityRobit> {
 
     public RendererModel Body;
     public RendererModel Bottom;
@@ -125,9 +125,9 @@ public class ModelRobit extends Model {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(EntityRobit entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        setRotationAngles(entity, f, f1, f2, f3, f4, f5);
 
         GlStateManager.pushMatrix();
         GlStateManager.rotatef(180, 0, 1, 0);

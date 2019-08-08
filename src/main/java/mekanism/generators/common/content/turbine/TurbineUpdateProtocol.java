@@ -101,7 +101,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                     if (!(tile instanceof TileEntityPressureDisperser)) {
                         return false;
                     }
-                    dispersers.remove(new Coord4D(x, complex.y, z, pointer.getWorld().provider.getDimension()));
+                    dispersers.remove(new Coord4D(x, complex.y, z, pointer.getWorld().getDimension().getType()));
                 }
             }
         }
@@ -130,7 +130,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                 turbineHeight++;
                 blades += rotor.getHousedBlades();
                 structure.internalLocations.add(Coord4D.get(tile));
-                turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().provider.getDimension()));
+                turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().getDimension().getType()));
             } else {
                 // Not a contiguous set of rotors
                 return false;

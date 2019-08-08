@@ -198,8 +198,8 @@ public class MultipartMekanism implements IMCMPAddon {
             AxisAlignedBB bb = state.getBlock().getSelectedBoundingBox(state, ev.getPartInfo().getPartWorld(), ev.getPartInfo().getPartPos());
             //NB rendering code copied from MCMultipart
             GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-            GlStateManager.glLineWidth(2.0F);
+            GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+            GlStateManager.lineWidth(2.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
             double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * ev.getPartialTicks();

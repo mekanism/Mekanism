@@ -29,7 +29,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,9 +55,9 @@ public class RenderTickHandler {
 
                 PlayerEntity player = mc.player;
                 World world = mc.player.world;
-                RayTraceResult pos = player.rayTrace(40.0D, 1.0F);
+                BlockRayTraceResult pos = player.rayTrace(40.0D, 1.0F);
                 if (pos != null) {
-                    Coord4D obj = new Coord4D(pos.getBlockPos(), world);
+                    Coord4D obj = new Coord4D(pos.getPos(), world);
                     Block block = obj.getBlock(world);
 
                     if (block != null && MekanismAPI.debug && mc.currentScreen == null
@@ -74,7 +74,7 @@ public class RenderTickHandler {
                         font.drawStringWithShadow("Metadata: " + obj.getBlockState(world), 1, 10, 0x404040);
                         font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
                         font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
-                        font.drawStringWithShadow("Side: " + pos.sideHit, 1, 37, 0x404040);
+                        font.drawStringWithShadow("Side: " + pos.getFace(), 1, 37, 0x404040);
                     }
                 }
 

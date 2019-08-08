@@ -168,7 +168,7 @@ public class FrequencyManager {
         for (Frequency iterFreq : frequencies) {
             for (Iterator<Coord4D> iter = iterFreq.activeCoords.iterator(); iter.hasNext(); ) {
                 Coord4D coord = iter.next();
-                if (coord.dimensionId == world.provider.getDimension()) {
+                if (coord.dimension.equals(world.getDimension().getType())) {
                     if (!coord.exists(world)) {
                         iter.remove();
                     } else {

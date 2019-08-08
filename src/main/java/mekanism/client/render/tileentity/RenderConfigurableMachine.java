@@ -1,5 +1,8 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
@@ -14,9 +17,6 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -25,10 +25,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
@@ -47,13 +47,13 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         ItemStack itemStack = mc.player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
-            RayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
+            BlockRayTraceResult pos = mc.player.rayTrace(8.0D, 1.0F);
             if (pos != null) {
-                BlockPos bp = pos.getBlockPos();
+                BlockPos bp = pos.getPos();
                 TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
                 if (configurable.getConfig().supports(type)) {
                     if (bp.equals(configurable.getPos())) {
-                        SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
+                        SideData data = configurable.getConfig().getOutput(type, pos.getFace(), configurable.getOrientation());
                         if (data != TileComponentConfig.EMPTY) {
                             GlStateManager.pushMatrix();
                             GlStateManager.enableCull();
@@ -67,7 +67,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                             MekanismRenderer.color(data.color, 0.6F);
                             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                             GlStateManager.translatef((float) x, (float) y, (float) z);
-                            int display = getOverlayDisplay(pos.sideHit, type).display;
+                            int display = getOverlayDisplay(pos.getFace(), type).display;
                             GlStateManager.callList(display);
                             MekanismRenderer.resetColor();
 

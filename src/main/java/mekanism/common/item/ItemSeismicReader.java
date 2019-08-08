@@ -53,7 +53,7 @@ public class ItemSeismicReader extends ItemEnergized {
         Chunk3D chunk = new Chunk3D(entityplayer);
         ItemStack itemstack = entityplayer.getHeldItem(hand);
 
-        if (getEnergy(itemstack) < ENERGY_USAGE && !entityplayer.capabilities.isCreativeMode) {
+        if (getEnergy(itemstack) < ENERGY_USAGE && !entityplayer.isCreative()) {
             if (!world.isRemote) {
                 entityplayer.sendMessage(new StringTextComponent(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED +
                                                                  LangUtils.localize("tooltip.seismicReader.needsEnergy")));
@@ -67,7 +67,7 @@ public class ItemSeismicReader extends ItemEnergized {
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
         }
-        if (!entityplayer.capabilities.isCreativeMode) {
+        if (!entityplayer.isCreative()) {
             setEnergy(itemstack, getEnergy(itemstack) - ENERGY_USAGE);
         }
         MekanismUtils.openItemGui(entityplayer, hand, 38);

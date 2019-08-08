@@ -47,7 +47,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     public void onPlayerStoppedUsing(ItemStack itemstack, World world, LivingEntity entityLiving, int itemUseCount) {
         if (entityLiving instanceof PlayerEntity && getEnergy(itemstack) > 0) {
             PlayerEntity player = (PlayerEntity) entityLiving;
-            boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
+            boolean flag = player.isCreative() || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
             ItemStack ammo = findAmmo(player);
 
             int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
@@ -76,7 +76,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                     if (f == 1.0F) {
                         entityarrow.setIsCritical(true);
                     }
-                    if (!player.capabilities.isCreativeMode) {
+                    if (!player.isCreative()) {
                         setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? 1200 : 120));
                     }
                     if (noConsume) {
@@ -139,7 +139,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
         if (ret != null) {
             return ret;
         }
-        if (!playerIn.capabilities.isCreativeMode && !flag) {
+        if (!playerIn.isCreative() && !flag) {
             return new ActionResult<>(ActionResultType.FAIL, itemStackIn);
         }
         playerIn.setActiveHand(hand);

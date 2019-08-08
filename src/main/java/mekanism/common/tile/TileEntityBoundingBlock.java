@@ -22,7 +22,7 @@ import net.minecraftforge.common.capabilities.Capability;
  */
 public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork {
 
-    private BlockPos mainPos = BlockPos.ORIGIN;
+    private BlockPos mainPos = BlockPos.ZERO;
 
     public boolean receivedCoords;
 
@@ -38,7 +38,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
 
     public BlockPos getMainPos() {
         if (mainPos == null) {
-            mainPos = BlockPos.ORIGIN;
+            mainPos = BlockPos.ZERO;
         }
         return mainPos;
     }

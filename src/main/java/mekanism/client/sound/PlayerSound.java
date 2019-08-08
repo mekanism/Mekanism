@@ -78,7 +78,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     @Override
     public void update() {
         PlayerEntity player = getPlayer();
-        if (player == null || player.isDead) {
+        if (player == null || !player.isAlive()) {
             this.donePlaying = true;
             this.volume = 0.0F;
             return;

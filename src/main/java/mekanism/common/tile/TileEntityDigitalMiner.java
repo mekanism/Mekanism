@@ -738,7 +738,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
     }
 
     public Coord4D getStartingCoord() {
-        return new Coord4D(getPos().getX() - radius, minY, getPos().getZ() - radius, world.provider.getDimension());
+        return new Coord4D(getPos().getX() - radius, minY, getPos().getZ() - radius, world.getDimension().getType());
     }
 
     public Coord4D getCoordFromIndex(int index) {
@@ -747,7 +747,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IUpgra
         int x = start.x + index % diameter;
         int y = start.y + (index / diameter / diameter);
         int z = start.z + (index / diameter) % diameter;
-        return new Coord4D(x, y, z, world.provider.getDimension());
+        return new Coord4D(x, y, z, world.getDimension().getType());
     }
 
     @Override

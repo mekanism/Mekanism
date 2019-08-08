@@ -12,12 +12,12 @@ public class ContainerRobitCrafting extends WorkbenchContainer {
     public EntityRobit robit;
 
     public ContainerRobitCrafting(PlayerInventory inventory, EntityRobit entity) {
-        super(inventory, entity.world, BlockPos.ORIGIN);
+        super(inventory, entity.world, BlockPos.ZERO);
         robit = entity;
     }
 
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
-        return !robit.isDead;
+        return robit.isAlive();
     }
 }

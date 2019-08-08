@@ -7,13 +7,14 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelChest;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.model.ChestModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalChest> {
 
-    private ModelChest model = new ModelChest();
+    private ChestModel model = new ChestModel();
 
     @Override
     public void render(TileEntityPersonalChest tileEntity, double x, double y, double z, float partialTick, int destroyStage) {

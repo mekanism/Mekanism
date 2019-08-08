@@ -45,13 +45,13 @@ public class RobitAIPickup extends RobitAIBase {
             }
         }
         //No valid items
-        return closest != null && !closest.isDead;
+        return closest != null && closest.isAlive();
     }
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSq(closest) > 100 && theRobit.getDropPickup() && theRobit.getEnergy() > 0
-               && closest.world.provider.getDimension() == theRobit.world.provider.getDimension();
+        return closest.isAlive() && !thePathfinder.noPath() && theRobit.getDistanceSq(closest) > 100 && theRobit.getDropPickup() && theRobit.getEnergy() > 0
+               && closest.world.getDimension().equals(theRobit.world.getDimension());
     }
 
     @Override

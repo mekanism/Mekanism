@@ -6,6 +6,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -77,11 +78,11 @@ public final class MultipartUtils {
     }
 
     public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB bounds, int subHit, Object hitInfo) {
-        RayTraceResult result = bounds.offset(pos).calculateIntercept(start, end);
+        BlockRayTraceResult result = bounds.offset(pos).calculateIntercept(start, end);
         if (result == null) {
             return null;
         }
-        result = new RayTraceResult(Type.BLOCK, result.hitVec, result.sideHit, pos);
+        result = new BlockRayTraceResult(result.hitVec, result.getFace(), pos);
         result.subHit = subHit;
         result.hitInfo = hitInfo;
         return new AdvancedRayTraceResult(result, bounds);

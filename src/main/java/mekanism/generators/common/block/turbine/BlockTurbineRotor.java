@@ -88,7 +88,7 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
         if (!entityplayer.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() == GeneratorsItem.TURBINE_BLADE.getItem()) {
                 if (rod.addBlade()) {
-                    if (!entityplayer.capabilities.isCreativeMode) {
+                    if (!entityplayer.isCreative()) {
                         stack.shrink(1);
                         if (stack.getCount() == 0) {
                             entityplayer.setHeldItem(hand, ItemStack.EMPTY);
@@ -99,7 +99,7 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
             }
         } else if (stack.isEmpty()) {
             if (rod.removeBlade()) {
-                if (!entityplayer.capabilities.isCreativeMode) {
+                if (!entityplayer.isCreative()) {
                     entityplayer.setHeldItem(hand, GeneratorsItem.TURBINE_BLADE.getItemStack());
                     entityplayer.inventory.markDirty();
                 }
@@ -107,7 +107,7 @@ public class BlockTurbineRotor extends BlockMekanismContainer implements IHasTil
         } else if (stack.getItem() == GeneratorsItem.TURBINE_BLADE.getItem()) {
             if (stack.getCount() < stack.getMaxStackSize()) {
                 if (rod.removeBlade()) {
-                    if (!entityplayer.capabilities.isCreativeMode) {
+                    if (!entityplayer.isCreative()) {
                         stack.grow(1);
                         entityplayer.inventory.markDirty();
                     }

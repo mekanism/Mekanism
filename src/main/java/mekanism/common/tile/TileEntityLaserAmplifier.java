@@ -22,7 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -62,7 +62,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     public void onUpdate() {
         if (world.isRemote) {
             if (on) {
-                RayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
+                BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
                 Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
                 if (hitCoord == null || !hitCoord.equals(digging)) {
                     digging = hitCoord;
@@ -74,7 +74,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.getFace()) && !LaserManager.getReceptor(tileHit, mop.getFace()).canLasersDig()))) {
                         diggingProgress += lastFired;
                         if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
@@ -112,7 +112,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
                     BlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.getFace()) && !LaserManager.getReceptor(tileHit, info.movingPos.getFace()).canLasersDig()))) {
                         diggingProgress += firing;
                         if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             LaserManager.breakBlock(hitCoord, true, world, pos);

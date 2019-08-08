@@ -67,7 +67,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public void validate() {
         super.validate();
         // Cache the flag to know if rain matters where this block is placed
-        needsRainCheck = world.provider.getBiomeForCoords(getPos()).canRain();
+        needsRainCheck = world.getDimension().getBiome(getPos()).canRain();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
             // changing this would dramatically affect a lot of setups with Fusion reactors which can take
             // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
             // rain checks.
-            boolean seesSun = world.isDaytime() && world.canSeeSky(getPos().up()) && !world.provider.isNether();
+            boolean seesSun = world.isDaytime() && world.canBlockSeeSky(getPos().up()) && !world.getDimension().isNether();
             if (needsRainCheck) {
                 seesSun &= !(world.isRaining() || world.isThundering());
             }

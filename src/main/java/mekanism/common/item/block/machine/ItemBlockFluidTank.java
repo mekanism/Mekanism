@@ -40,6 +40,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
@@ -143,15 +144,16 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (getBucketMode(itemstack)) {
             if (SecurityUtils.canAccess(entityplayer, itemstack)) {
-                RayTraceResult pos = rayTrace(world, entityplayer, !entityplayer.isSneaking());
+                RayTraceResult rayTraceResult = rayTrace(world, entityplayer, !entityplayer.isSneaking());
                 //It can be null if there is nothing in range
-                if (pos != null && pos.typeOfHit == Type.BLOCK) {
-                    Coord4D coord = new Coord4D(pos.getBlockPos(), world);
-                    if (!world.provider.canMineBlock(entityplayer, coord.getPos())) {
+                if (rayTraceResult != null && rayTraceResult instanceof BlockRayTraceResult) {
+                    BlockRayTraceResult pos = (BlockRayTraceResult) rayTraceResult;
+                    Coord4D coord = new Coord4D(pos.getPos(), world);
+                    if (!world.getDimension().canMineBlock(entityplayer, coord.getPos())) {
                         return new ActionResult<>(ActionResultType.FAIL, itemstack);
                     }
                     if (!entityplayer.isSneaking()) {
-                        if (!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack)) {
+                        if (!entityplayer.canPlayerEdit(coord.getPos(), pos.getFace(), itemstack)) {
                             return new ActionResult<>(ActionResultType.FAIL, itemstack);
                         }
                         FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
@@ -174,12 +176,12 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
                         if (stored == null || stored.amount < Fluid.BUCKET_VOLUME) {
                             return new ActionResult<>(ActionResultType.FAIL, itemstack);
                         }
-                        Coord4D trans = coord.offset(pos.sideHit);
-                        if (!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack)) {
+                        Coord4D trans = coord.offset(pos.getFace());
+                        if (!entityplayer.canPlayerEdit(trans.getPos(), pos.getFace(), itemstack)) {
                             return new ActionResult<>(ActionResultType.FAIL, itemstack);
                         }
                         if (tryPlaceContainedLiquid(world, itemstack, trans.getPos())
-                            && !entityplayer.capabilities.isCreativeMode) {
+                            && !entityplayer.isCreative()) {
                             FluidStack newStack = stored.copy();
                             newStack.amount -= Fluid.BUCKET_VOLUME;
                             setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);

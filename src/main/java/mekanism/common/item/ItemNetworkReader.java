@@ -37,7 +37,7 @@ public class ItemNetworkReader extends ItemEnergized {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            boolean drain = !player.capabilities.isCreativeMode;
+            boolean drain = !player.isCreative();
             if (getEnergy(stack) >= ENERGY_PER_USE && tileEntity != null) {
                 if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
                     if (drain) {

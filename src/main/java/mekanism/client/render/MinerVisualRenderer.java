@@ -59,7 +59,7 @@ public final class MinerVisualRenderer {
                 for (int y = data.minY - data.yCoord; y <= data.maxY - data.yCoord; y++) {
                     for (int z = -data.radius; z <= data.radius; z++) {
                         if (x == -data.radius || x == data.radius || y == data.minY - data.yCoord || y == data.maxY - data.yCoord || z == -data.radius || z == data.radius) {
-                            models.add(createModel(new Coord4D(x, y, z, mc.world.provider.getDimension())));
+                            models.add(createModel(new Coord4D(x, y, z, mc.world.getDimension().getType())));
                         }
                     }
                 }

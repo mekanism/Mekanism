@@ -117,7 +117,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player) {
         super.onBlockStartBreak(itemstack, pos, player);
-        if (!player.world.isRemote && !player.capabilities.isCreativeMode) {
+        if (!player.world.isRemote && !player.isCreative()) {
             Mode mode = getMode(itemstack);
             boolean extended = mode == Mode.EXTENDED_VEIN;
             if (extended || mode == Mode.VEIN) {

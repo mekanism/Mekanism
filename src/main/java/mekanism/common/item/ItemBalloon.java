@@ -53,7 +53,7 @@ public class ItemBalloon extends ItemMekanism {
             world.spawnEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 0.25, pos.z - 0.5, color));
         }
         ItemStack itemstack = entityplayer.getHeldItem(hand);
-        if (!entityplayer.capabilities.isCreativeMode) {
+        if (!entityplayer.isCreative()) {
             itemstack.shrink(1);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
@@ -132,7 +132,7 @@ public class ItemBalloon extends ItemMekanism {
         @Nonnull
         @Override
         public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-            Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().provider.getDimension());
+            Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().getDimension().getType());
             Direction side = source.getBlockState().getValue(DispenserBlock.FACING);
 
             List<LivingEntity> entities = source.getWorld().getEntitiesWithinAABB(LivingEntity.class, coord.offset(side).getBoundingBox());

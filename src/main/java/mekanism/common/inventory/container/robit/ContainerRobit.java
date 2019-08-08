@@ -39,6 +39,6 @@ public abstract class ContainerRobit extends Container {
 
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity entityplayer) {
-        return !robit.isDead;
+        return robit.isAlive();
     }
 }

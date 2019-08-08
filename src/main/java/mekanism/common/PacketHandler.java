@@ -200,8 +200,8 @@ public class PacketHandler {
      * @param message     - the message to send
      * @param dimensionId - the dimension id to target
      */
-    public <MSG> void sendToDimension(MSG message, int dimensionId) {
-        netHandler.sendToDimension(message, dimensionId);
+    public <MSG> void sendToDimension(MSG message, DimensionType dimension) {
+        netHandler.sendToDimension(message, dimension);
     }
 
     /**

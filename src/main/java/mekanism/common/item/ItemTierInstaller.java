@@ -33,7 +33,7 @@ public class ItemTierInstaller extends ItemMekanismTiered {
                 return ActionResultType.FAIL;
             }
             if (((ITierUpgradeable) tile).upgrade(getTier())) {
-                if (!player.capabilities.isCreativeMode) {
+                if (!player.isCreative()) {
                     ItemStack stack = player.getHeldItem(hand);
                     stack.shrink(1);
                 }

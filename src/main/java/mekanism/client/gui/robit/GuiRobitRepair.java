@@ -66,7 +66,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
             boolean flag = true;
             String s = I18n.format("container.repair.cost", repairContainer.maximumCost);
 
-            if (repairContainer.maximumCost >= 40 && !mc.player.capabilities.isCreativeMode) {
+            if (repairContainer.maximumCost >= 40 && !mc.player.isCreative()) {
                 s = LangUtils.localize("container.repair.expensive");
                 k = 16736352;
             } else if (!repairContainer.getSlot(2).getHasStack()) {

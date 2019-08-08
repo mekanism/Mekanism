@@ -88,7 +88,7 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
         for (Entry<String, MultiblockCache<T>> entry : inventories.entrySet()) {
             String inventoryID = entry.getKey();
             for (Coord4D obj : entry.getValue().locations) {
-                if (obj.dimensionId == world.provider.getDimension() && obj.exists(world)) {
+                if (obj.dimension.equals(world.getDimension().getType()) && obj.exists(world)) {
                     TileEntity tileEntity = obj.getTileEntity(world);
                     if (!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock) tileEntity).getManager() != this ||
                         (getStructureId(((TileEntityMultiblock<?>) tileEntity)) != null && !Objects.equals(getStructureId(((TileEntityMultiblock) tileEntity)), inventoryID))) {

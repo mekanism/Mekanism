@@ -162,7 +162,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
                 lavaBoost++;
             }
         }
-        if (world.provider.getDimension() == -1) {
+        if (world.getDimension().isNether()) {
             netherBoost = MekanismConfig.current().generators.heatGenerationNether.val();
         }
         return (MekanismConfig.current().generators.heatGenerationLava.val() * lavaBoost) + netherBoost;

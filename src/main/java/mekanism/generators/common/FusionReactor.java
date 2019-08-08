@@ -248,7 +248,7 @@ public class FusionReactor {
         burning = burning && keepBurning;
 
         if (!controller.getWorld().isRemote) {
-            Mekanism.packetHandler.sendToDimension(new PacketTileEntity(controller), controller.getWorld().provider.getDimension());
+            Mekanism.packetHandler.sendToDimension(new PacketTileEntity(controller), controller.getWorld().getDimension().getType());
         }
     }
 
@@ -267,7 +267,7 @@ public class FusionReactor {
         formed = true;
 
         if (!controller.getWorld().isRemote) {
-            Mekanism.packetHandler.sendToDimension(new PacketTileEntity(controller), controller.getWorld().provider.getDimension());
+            Mekanism.packetHandler.sendToDimension(new PacketTileEntity(controller), controller.getWorld().getDimension().getType());
         }
     }
 

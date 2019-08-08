@@ -25,15 +25,14 @@ import mekanism.common.tile.bin.TileEntityEliteBin;
 import mekanism.common.tile.bin.TileEntityUltimateBin;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -41,7 +40,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorldReader;
@@ -121,9 +122,9 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
     public void onBlockClicked(World world, BlockPos pos, PlayerEntity player) {
         if (!world.isRemote) {
             TileEntityBin bin = (TileEntityBin) world.getTileEntity(pos);
-            RayTraceResult mop = MekanismUtils.rayTrace(world, player);
+            BlockRayTraceResult mop = MekanismUtils.rayTrace(world, player);
 
-            if (mop != null && mop.sideHit == bin.getDirection()) {
+            if (mop != null && mop.getFace() == bin.getDirection()) {
                 if (!bin.bottomStack.isEmpty()) {
                     ItemStack stack;
                     if (player.isSneaking()) {
