@@ -1,89 +1,89 @@
 package mekanism.client.model;
 
-import mekanism.client.render.MekanismRenderer;
-import mekanism.common.tier.FluidTankTier;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.tier.FluidTankTier;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelFluidTank extends ModelBase {
+public class ModelFluidTank extends Model {
 
-    ModelRenderer Base;
-    ModelRenderer PoleFL;
-    ModelRenderer PoleLB;
-    ModelRenderer PoleBR;
-    ModelRenderer PoleRF;
-    ModelRenderer Top;
-    ModelRenderer FrontGlass;
-    ModelRenderer BackGlass;
-    ModelRenderer RightGlass;
-    ModelRenderer LeftGlass;
+    RendererModel Base;
+    RendererModel PoleFL;
+    RendererModel PoleLB;
+    RendererModel PoleBR;
+    RendererModel PoleRF;
+    RendererModel Top;
+    RendererModel FrontGlass;
+    RendererModel BackGlass;
+    RendererModel RightGlass;
+    RendererModel LeftGlass;
 
     public ModelFluidTank() {
         textureWidth = 128;
         textureHeight = 128;
 
-        Base = new ModelRenderer(this, 0, 0);
+        Base = new RendererModel(this, 0, 0);
         Base.addBox(0F, 0F, 0F, 12, 1, 12);
         Base.setRotationPoint(-6F, 23F, -6F);
         Base.setTextureSize(128, 128);
         Base.mirror = true;
         setRotation(Base, 0F, 0F, 0F);
-        PoleFL = new ModelRenderer(this, 48, 0);
+        PoleFL = new RendererModel(this, 48, 0);
         PoleFL.addBox(0F, 0F, 0F, 1, 14, 1);
         PoleFL.setRotationPoint(5F, 9F, -6F);
         PoleFL.setTextureSize(128, 128);
         PoleFL.mirror = true;
         setRotation(PoleFL, 0F, 0F, 0F);
-        PoleLB = new ModelRenderer(this, 48, 0);
+        PoleLB = new RendererModel(this, 48, 0);
         PoleLB.addBox(0F, 0F, 0F, 1, 14, 1);
         PoleLB.setRotationPoint(5F, 9F, 5F);
         PoleLB.setTextureSize(128, 128);
         PoleLB.mirror = true;
         setRotation(PoleLB, 0F, 0F, 0F);
-        PoleBR = new ModelRenderer(this, 48, 0);
+        PoleBR = new RendererModel(this, 48, 0);
         PoleBR.addBox(0F, 0F, 0F, 1, 14, 1);
         PoleBR.setRotationPoint(-6F, 9F, 5F);
         PoleBR.setTextureSize(128, 128);
         PoleBR.mirror = true;
         setRotation(PoleBR, 0F, 0F, 0F);
-        PoleRF = new ModelRenderer(this, 48, 0);
+        PoleRF = new RendererModel(this, 48, 0);
         PoleRF.addBox(0F, 0F, 0F, 1, 14, 1);
         PoleRF.setRotationPoint(-6F, 9F, -6F);
         PoleRF.setTextureSize(128, 128);
         PoleRF.mirror = true;
         setRotation(PoleRF, 0F, 0F, 0F);
-        Top = new ModelRenderer(this, 0, 0);
+        Top = new RendererModel(this, 0, 0);
         Top.addBox(0F, 0F, 0F, 12, 1, 12);
         Top.setRotationPoint(-6F, 8F, -6F);
         Top.setTextureSize(128, 128);
         Top.mirror = true;
         setRotation(Top, 0F, 0F, 0F);
-        FrontGlass = new ModelRenderer(this, 0, 13);
+        FrontGlass = new RendererModel(this, 0, 13);
         FrontGlass.addBox(0F, 0F, 0F, 10, 14, 1);
         FrontGlass.setRotationPoint(-5F, 9F, -6F);
         FrontGlass.setTextureSize(128, 128);
         FrontGlass.mirror = true;
         setRotation(FrontGlass, 0F, 0F, 0F);
-        BackGlass = new ModelRenderer(this, 0, 28);
+        BackGlass = new RendererModel(this, 0, 28);
         BackGlass.addBox(0F, 0F, 3F, 10, 14, 1);
         BackGlass.setRotationPoint(-5F, 9F, 2F);
         BackGlass.setTextureSize(128, 128);
         BackGlass.mirror = true;
         setRotation(BackGlass, 0F, 0F, 0F);
-        RightGlass = new ModelRenderer(this, 22, 13);
+        RightGlass = new RendererModel(this, 22, 13);
         RightGlass.addBox(0F, 0F, 0F, 1, 14, 10);
         RightGlass.setRotationPoint(-6F, 9F, -5F);
         RightGlass.setTextureSize(128, 128);
         RightGlass.mirror = true;
         setRotation(RightGlass, 0F, 0F, 0F);
-        LeftGlass = new ModelRenderer(this, 22, 37);
+        LeftGlass = new RendererModel(this, 22, 37);
         LeftGlass.addBox(0F, 0F, 0F, 1, 14, 10);
         LeftGlass.setRotationPoint(5F, 9F, -5F);
         LeftGlass.setTextureSize(128, 128);
@@ -113,7 +113,7 @@ public class ModelFluidTank extends ModelBase {
         GlStateManager.enableAlphaTest();
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
+    private void setRotation(RendererModel model, float x, float y, float z) {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;

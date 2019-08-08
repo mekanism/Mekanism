@@ -1,20 +1,20 @@
 package mekanism.client.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelTransporterBox extends ModelBase {
+public class ModelTransporterBox extends Model {
 
-    ModelRenderer box;
+    RendererModel box;
 
     public ModelTransporterBox() {
         textureWidth = 64;
         textureHeight = 64;
 
-        box = new ModelRenderer(this, 0, 0);
+        box = new RendererModel(this, 0, 0);
         box.addBox(0F, 0F, 0F, 7, 7, 7);
         box.setRotationPoint(-3.5F, 0, -3.5F);
         box.setTextureSize(64, 64);
@@ -26,7 +26,7 @@ public class ModelTransporterBox extends ModelBase {
         box.render(size);
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
+    private void setRotation(RendererModel model, float x, float y, float z) {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;

@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelFreeRunners;
@@ -10,9 +11,8 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelRenderer;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -43,7 +43,7 @@ public class ModelCustomArmor extends BipedModel {
         bipedHeadwear.cubeList.clear();
     }
 
-    public static boolean useModel(ArmorModel type, ModelRenderer partRender, ModelCustomArmor biped) {
+    public static boolean useModel(ArmorModel type, RendererModel partRender, ModelCustomArmor biped) {
         if (type.armorSlot == 0) {
             return partRender == biped.bipedHead;
         } else if (type.armorSlot == 1) {
@@ -109,14 +109,14 @@ public class ModelCustomArmor extends BipedModel {
         bipedLeftLeg.showModel = false;
     }
 
-    public void resetPart(ModelRenderer renderer, float x, float y, float z) {
+    public void resetPart(RendererModel renderer, float x, float y, float z) {
         renderer.cubeList.clear();
         ModelCustom model = new ModelCustom(this, renderer);
         renderer.addChild(model);
         setOffset(renderer, x, y, z);
     }
 
-    public void setOffset(ModelRenderer renderer, float x, float y, float z) {
+    public void setOffset(RendererModel renderer, float x, float y, float z) {
         renderer.offsetX = x;
         renderer.offsetY = y;
         renderer.offsetZ = z;
@@ -170,12 +170,12 @@ public class ModelCustomArmor extends BipedModel {
         }
     }
 
-    public class ModelCustom extends ModelRenderer {
+    public class ModelCustom extends RendererModel {
 
         public ModelCustomArmor biped;
-        public ModelRenderer partRender;
+        public RendererModel partRender;
 
-        public ModelCustom(ModelCustomArmor base, ModelRenderer renderer) {
+        public ModelCustom(ModelCustomArmor base, RendererModel renderer) {
             super(base);
             biped = base;
             partRender = renderer;
