@@ -17,6 +17,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -75,7 +76,7 @@ public class CommonPlayerTickHandler {
         }
 
         if (isFlamethrowerOn(player)) {
-            player.world.spawnEntity(new EntityFlame(player));
+            player.world.addEntity(new EntityFlame(player));
             if (!player.isCreative() && !player.isSpectator()) {
                 ItemStack currentItem = player.inventory.getCurrentItem();
                 ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem);
@@ -86,23 +87,24 @@ public class CommonPlayerTickHandler {
             ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             JetpackMode mode = jetpack.getMode(stack);
+            Vec3d motion = player.getMotion();
             if (mode == JetpackMode.NORMAL) {
-                player.motionY = Math.min(player.motionY + 0.15D, 0.5D);
+                player.setMotion(0, Math.min(motion.getY() + 0.15D, 0.5D), 0);
             } else if (mode == JetpackMode.HOVER) {
                 boolean ascending = Mekanism.keyMap.has(player, KeySync.ASCEND);
                 boolean descending = Mekanism.keyMap.has(player, KeySync.DESCEND);
                 if ((!ascending && !descending) || (ascending && descending)) {
-                    if (player.motionY > 0) {
-                        player.motionY = Math.max(player.motionY - 0.15D, 0);
-                    } else if (player.motionY < 0) {
+                    if (motion.getY() > 0) {
+                        player.setMotion(0, Math.max(motion.getY() - 0.15D, 0), 0);
+                    } else if (motion.getY() < 0) {
                         if (!isOnGround(player)) {
-                            player.motionY = Math.min(player.motionY + 0.15D, 0);
+                            player.setMotion(0, Math.min(motion.getY() + 0.15D, 0), 0);
                         }
                     }
                 } else if (ascending) {
-                    player.motionY = Math.min(player.motionY + 0.15D, 0.2D);
+                    player.setMotion(0, Math.min(motion.getY() + 0.15D, 0.2D), 0);
                 } else if (!isOnGround(player)) {
-                    player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
+                    player.setMotion(0, Math.max(motion.getY() - 0.15D, -0.2D), 0);
                 }
             }
             player.fallDistance = 0.0F;

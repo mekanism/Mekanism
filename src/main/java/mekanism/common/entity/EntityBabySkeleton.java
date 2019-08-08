@@ -1,10 +1,13 @@
 package mekanism.common.entity;
 
 import java.util.UUID;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -60,6 +63,6 @@ public class EntityBabySkeleton extends SkeletonEntity {
     //copied from base entity, as abstractskeleton overrides it
     @Override
     public float getEyeHeight() {
-        return this.height * 0.85F;
+        return getSize(getPose()).height * 0.85F;
     }
 }

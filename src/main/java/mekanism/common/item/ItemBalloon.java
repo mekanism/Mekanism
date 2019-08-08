@@ -50,7 +50,7 @@ public class ItemBalloon extends ItemMekanism {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
         if (!world.isRemote) {
             Pos3D pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
-            world.spawnEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 0.25, pos.z - 0.5, color));
+            world.addEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 0.25, pos.z - 0.5, color));
         }
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         if (!entityplayer.isCreative()) {
@@ -93,7 +93,7 @@ public class ItemBalloon extends ItemMekanism {
                 world.removeBlock(pos.up(), false);
                 world.removeBlock(pos.up(2), false);
                 if (!world.isRemote) {
-                    world.spawnEntity(new EntityBalloon(world, new Coord4D(pos, world), color));
+                    world.addEntity(new EntityBalloon(world, new Coord4D(pos, world), color));
                     stack.shrink(1);
                 }
                 return ActionResultType.SUCCESS;
@@ -108,14 +108,14 @@ public class ItemBalloon extends ItemMekanism {
         if (player.isSneaking()) {
             if (!player.world.isRemote) {
                 AxisAlignedBB bound = new AxisAlignedBB(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2,
-                      entity.posY + entity.height + 4, entity.posZ + 0.2);
+                      entity.posY + entity.getSize(entity.getPose()).height + 4, entity.posZ + 0.2);
                 List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
                         return true;
                     }
                 }
-                player.world.spawnEntity(new EntityBalloon(entity, color));
+                player.world.addEntity(new EntityBalloon(entity, color));
                 stack.shrink(1);
             }
             return true;
@@ -133,14 +133,14 @@ public class ItemBalloon extends ItemMekanism {
         @Override
         public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
             Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().getDimension().getType());
-            Direction side = source.getBlockState().getValue(DispenserBlock.FACING);
+            Direction side = source.getBlockState().get(DispenserBlock.FACING);
 
             List<LivingEntity> entities = source.getWorld().getEntitiesWithinAABB(LivingEntity.class, coord.offset(side).getBoundingBox());
             boolean latched = false;
 
             for (LivingEntity entity : entities) {
                 AxisAlignedBB bound = new AxisAlignedBB(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2,
-                      entity.posY + entity.height + 4, entity.posZ + 0.2);
+                      entity.posY + entity.getSize(entity.getPose()).height + 4, entity.posZ + 0.2);
                 List<EntityBalloon> balloonsNear = source.getWorld().getEntitiesWithinAABB(EntityBalloon.class, bound);
                 boolean hasBalloon = false;
                 for (EntityBalloon balloon : balloonsNear) {
@@ -150,7 +150,7 @@ public class ItemBalloon extends ItemMekanism {
                     }
                 }
                 if (!hasBalloon) {
-                    source.getWorld().spawnEntity(new EntityBalloon(entity, color));
+                    source.getWorld().addEntity(new EntityBalloon(entity, color));
                     latched = true;
                 }
             }
@@ -179,7 +179,7 @@ public class ItemBalloon extends ItemMekanism {
                         break;
                 }
                 if (!source.getWorld().isRemote) {
-                    source.getWorld().spawnEntity(new EntityBalloon(source.getWorld(), pos.x, pos.y, pos.z, color));
+                    source.getWorld().addEntity(new EntityBalloon(source.getWorld(), pos.x, pos.y, pos.z, color));
                 }
             }
             stack.shrink(1);

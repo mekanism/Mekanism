@@ -50,14 +50,14 @@ public class BlockObsidianTNT extends Block {
         if (!world.isRemote) {
             EntityObsidianTNT entity = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
             entity.fuse = world.rand.nextInt(entity.fuse / 4) + entity.fuse / 8;
-            world.spawnEntity(entity);
+            world.addEntity(entity);
         }
     }
 
     public void explode(World world, BlockPos pos) {
         if (!world.isRemote) {
             EntityObsidianTNT entity = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
-            world.spawnEntity(entity);
+            world.addEntity(entity);
             entity.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
         }
     }

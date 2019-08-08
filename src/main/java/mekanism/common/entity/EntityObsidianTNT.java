@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityObsidianTNT extends Entity {
@@ -32,9 +33,7 @@ public class EntityObsidianTNT extends Entity {
         setPosition(x, y, z);
         float randPi = (float) (Math.random() * Math.PI * 2);
 
-        motionX = -Math.sin(randPi) * 0.02F;
-        motionY = 0.2;
-        motionZ = -Math.cos(randPi) * 0.02F;
+        setMotion(-Math.sin(randPi) * 0.02F, 0.2, -Math.cos(randPi) * 0.02F);
 
         fuse = MekanismConfig.current().general.obsidianTNTDelay.val();
 
@@ -68,19 +67,16 @@ public class EntityObsidianTNT extends Entity {
         prevPosY = posY;
         prevPosZ = posZ;
 
-        motionY -= 0.04;
+        setMotion(getMotion().subtract(0, 0.04, 0));
 
-        move(MoverType.SELF, motionX, motionY, motionZ);
+        move(MoverType.SELF, getMotion());
 
-        motionX *= 0.98;
-        motionY *= 0.98;
-        motionZ *= 0.98;
-
+        Vec3d motion = getMotion();
+        motion = motion.mul(0.98, 0.98, 0.98);
         if (onGround) {
-            motionX *= 0.7;
-            motionZ *= 0.7;
-            motionY *= -0.5;
+            motion = motion.mul(0.7, -0.5, 0.7);
         }
+        setMotion(motion);
 
         if (fuse-- <= 0) {
             if (!world.isRemote) {

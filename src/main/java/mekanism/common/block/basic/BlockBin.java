@@ -135,8 +135,9 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                     if (!player.inventory.addItemStackToInventory(stack)) {
                         BlockPos dropPos = pos.offset(bin.getDirection());
                         Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
-                        item.addVelocity(-item.motionX, -item.motionY, -item.motionZ);
-                        world.spawnEntity(item);
+                        Vec3d motion = item.getMotion();
+                        item.addVelocity(-motion.getX(), -motion.getY(), -motion.getZ());
+                        world.addEntity(item);
                     } else {
                         world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS,
                               0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);

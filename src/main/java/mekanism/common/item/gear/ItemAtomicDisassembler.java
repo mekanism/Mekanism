@@ -239,7 +239,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (block == Blocks.GRASS_BLOCK || block == Blocks.GRASS_PATH) {
                 newState = Blocks.FARMLAND.getDefaultState();
             } else if (block == Blocks.DIRT) {
-                DirtType type = state.getValue(BlockDirt.VARIANT);
+                DirtType type = state.get(BlockDirt.VARIANT);
                 if (type == DirtType.DIRT) {
                     newState = Blocks.FARMLAND.getDefaultState();
                 } else if (type == DirtType.COARSE_DIRT) {

@@ -59,9 +59,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
         setHeading(motion);
 
-        motionX = motion.x;
-        motionY = motion.y;
-        motionZ = motion.z;
+        setMotion(motion);
 
         owner = player;
         mode = ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
@@ -87,9 +85,10 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         prevRotationPitch = rotationPitch;
         prevRotationYaw = rotationYaw;
 
-        posX += motionX;
-        posY += motionY;
-        posZ += motionZ;
+        Vec3d motion = getMotion();
+        posX += motion.getX();
+        posY += motion.getY();
+        posZ += motion.getZ();
 
         setPosition(posX, posY, posZ);
 
@@ -101,16 +100,17 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     private void calculateVector() {
         Vec3d localVec = new Vec3d(posX, posY, posZ);
-        Vec3d motionVec = new Vec3d(posX + motionX * 2, posY + motionY * 2, posZ + motionZ * 2);
-        RayTraceResult mop = world.rayTraceBlocks(localVec, motionVec, true, false, false);
+        Vec3d motion = getMotion();
+        Vec3d motionVec = new Vec3d(posX + motion.getX() * 2, posY + motion.getY() * 2, posZ + motion.getZ() * 2);
+        BlockRayTraceResult mop = world.rayTraceBlocks(localVec, motionVec, true, false, false);
         localVec = new Vec3d(posX, posY, posZ);
-        motionVec = new Vec3d(posX + motionX, posY + motionY, posZ + motionZ);
+        motionVec = new Vec3d(posX + motion.getX(), posY + motion.getY(), posZ + motion.getZ());
         if (mop != null) {
             motionVec = new Vec3d(mop.hitVec.x, mop.hitVec.y, mop.hitVec.z);
         }
 
         Entity entity = null;
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(motionX, motionY, motionZ).grow(1.0D, 1.0D, 1.0D));
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(getMotion()).grow(1.0D, 1.0D, 1.0D));
         double entityDist = 0.0D;
 
         for (Entity entity1 : list) {
@@ -210,10 +210,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 } else {
                     world.removeBlock(block.getPos(), false);
                     ItemEntity item = new ItemEntity(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());
-                    item.motionX = 0;
-                    item.motionY = 0;
-                    item.motionZ = 0;
-                    world.spawnEntity(item);
+                    item.setMotion(0, 0, 0);
+                    world.addEntity(item);
                 }
 
                 world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, block.getPos(), Block.getStateId(state));

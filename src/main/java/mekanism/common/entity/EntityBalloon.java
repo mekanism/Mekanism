@@ -20,6 +20,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,7 +47,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         preventEntitySpawning = true;
         setPosition(posX + 0.5F, posY + 3F, posZ + 0.5F);
         setSize(0.25F, 0.25F);
-        motionY = 0.04;
+        setMotion(0, 0.04, 0);
 
         dataManager.register(IS_LATCHED, (byte) 0);
         dataManager.register(LATCHED_X, 0);
@@ -68,7 +69,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     public EntityBalloon(LivingEntity entity, EnumColor c) {
         this(entity.world);
         latchedEntity = entity;
-        setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
+        float height = latchedEntity.getSize(latchedEntity.getPose()).height;
+        setPosition(latchedEntity.posX, latchedEntity.posY + height + 1.7F, latchedEntity.posZ);
 
         prevPosX = posX;
         prevPosY = posY;
@@ -152,39 +154,39 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         }
 
         if (!isLatched()) {
-            motionY = Math.min(motionY * 1.02F, 0.2F);
+            Vec3d motion = getMotion();
+            setMotion(motion.getX(), Math.min(motion.getY() * 1.02F, 0.2F), motion.getZ());
 
-            move(MoverType.SELF, motionX, motionY, motionZ);
+            move(MoverType.SELF, getMotion());
 
-            motionX *= 0.98;
-            motionZ *= 0.98;
+            motion = getMotion();
+            motion = motion.mul(0.98, 0, 0.98);
 
             if (onGround) {
-                motionX *= 0.7;
-                motionZ *= 0.7;
+                motion = motion.mul(0.7, 0, 0.7);
             }
-            if (motionY == 0) {
-                motionY = 0.04;
+            if (motion.getY() == 0) {
+                motion = new Vec3d(motion.getX(), 0.04, motion.getZ());
             }
+            setMotion(motion);
         } else if (latched != null) {
-            motionX = 0;
-            motionY = 0;
-            motionZ = 0;
+            setMotion(0, 0, 0);
         } else if (latchedEntity != null && latchedEntity.getHealth() > 0) {
             int floor = getFloor(latchedEntity);
+            Vec3d motion = latchedEntity.getMotion();
             if (latchedEntity.posY - (floor + 1) < -0.1) {
-                latchedEntity.motionY = Math.max(0.04, latchedEntity.motionY * 1.015);
+                latchedEntity.setMotion(motion.getX(), Math.max(0.04, motion.getY() * 1.015), motion.getZ());
             } else if (latchedEntity.posY - (floor + 1) > 0.1) {
-                latchedEntity.motionY = Math.min(-0.04, latchedEntity.motionY * 1.015);
+                latchedEntity.setMotion(motion.getX(), Math.min(-0.04, motion.getY() * 1.015), motion.getZ());
             } else {
-                latchedEntity.motionY = 0;
+                latchedEntity.setMotion(motion.getX(), 0, motion.getZ());
             }
             setPosition(latchedEntity.posX, latchedEntity.posY + getAddedHeight(), latchedEntity.posZ);
         }
     }
 
     public double getAddedHeight() {
-        return latchedEntity.height + 0.8;
+        return latchedEntity.getSize(latchedEntity.getPose()).height + 0.8;
     }
 
     private int getFloor(LivingEntity entity) {

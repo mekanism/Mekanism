@@ -532,16 +532,16 @@ public final class MekanismUtils {
     public static FluidStack getFluid(World world, Coord4D pos, boolean filter) {
         BlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
-        if ((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && state.getValue(BlockLiquid.LEVEL) == 0) {
+        if ((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && state.get(BlockLiquid.LEVEL) == 0) {
             if (!filter) {
                 return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
             }
             return new FluidStack(MekanismFluids.HeavyWater, 10);
-        } else if ((block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) && state.getValue(BlockLiquid.LEVEL) == 0) {
+        } else if ((block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) && state.get(BlockLiquid.LEVEL) == 0) {
             return new FluidStack(FluidRegistry.LAVA, Fluid.BUCKET_VOLUME);
         } else if (block instanceof IFluidBlock) {
             IFluidBlock fluid = (IFluidBlock) block;
-            if (state.getProperties().containsKey(BlockFluidBase.LEVEL) && state.getValue(BlockFluidBase.LEVEL) == 0) {
+            if (state.getProperties().containsKey(BlockFluidBase.LEVEL) && state.get(BlockFluidBase.LEVEL) == 0) {
                 return fluid.drain(world, pos.getPos(), false);
             }
         }

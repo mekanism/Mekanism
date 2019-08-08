@@ -80,7 +80,7 @@ public class Pos3D extends Vec3d {
      * @return Pos3D representing the motion of the given entity
      */
     public static Pos3D fromMotion(Entity entity) {
-        return new Pos3D(entity.motionX, entity.motionY, entity.motionZ);
+        return new Pos3D(entity.getMotion());
     }
 
     public static Pos3D translateMatrix(double[] matrix, Pos3D translation) {

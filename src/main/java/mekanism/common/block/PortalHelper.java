@@ -153,7 +153,7 @@ public class PortalHelper {
 
         @Override
         public void neighborChanged(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, Block blockIn, BlockPos fromPos) {
-            Axis axis = state.getValue(AXIS);
+            Axis axis = state.get(AXIS);
             if (axis == Axis.X || axis == Axis.Z) {
                 PortalHelper.Size size = new PortalHelper.Size(world, pos, axis);
                 if (!size.isValid() || size.portalBlockCount < size.width * size.height) {

@@ -83,7 +83,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                         entityarrow.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
                     entityarrow.setFire(getFireState(itemstack) ? 100 : 0);
-                    world.spawnEntity(entityarrow);
+                    world.addEntity(entityarrow);
                 }
 
                 world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL,

@@ -253,9 +253,7 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
             changeDimension(homeLocation.dimension, (world1, entity, yaw) ->
                   entity.setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, yaw, rotationPitch));
         }
-        motionX = 0;
-        motionY = 0;
-        motionZ = 0;
+        setMotion(0, 0, 0);
     }
 
     private boolean canSmelt() {
@@ -327,10 +325,8 @@ public class EntityRobit extends CreatureEntity implements IInventory, ISustaine
         item.setName(entityItem.getItem(), getName());
 
         float k = 0.05F;
-        entityItem.motionX = 0;
-        entityItem.motionY = rand.nextGaussian() * k + 0.2F;
-        entityItem.motionZ = 0;
-        world.spawnEntity(entityItem);
+        entityItem.setMotion(0, rand.nextGaussian() * k + 0.2F, 0);
+        world.addEntity(entityItem);
     }
 
     @Override

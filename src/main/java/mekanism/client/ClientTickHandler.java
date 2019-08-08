@@ -35,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.MouseEvent;
@@ -228,24 +229,25 @@ public class ClientTickHandler {
             if (isJetpackActive(minecraft.player)) {
                 ItemJetpack jetpack = (ItemJetpack) chestStack.getItem();
                 JetpackMode mode = jetpack.getMode(chestStack);
+                Vec3d motion = minecraft.player.getMotion();
                 if (mode == JetpackMode.NORMAL) {
-                    minecraft.player.motionY = Math.min(minecraft.player.motionY + 0.15D, 0.5D);
+                    minecraft.player.setMotion(0, Math.min(motion.getY() + 0.15D, 0.5D), 0);
                     minecraft.player.fallDistance = 0.0F;
                 } else if (mode == JetpackMode.HOVER) {
                     boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
                     boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
                     if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null) {
-                        if (minecraft.player.motionY > 0) {
-                            minecraft.player.motionY = Math.max(minecraft.player.motionY - 0.15D, 0);
-                        } else if (minecraft.player.motionY < 0) {
+                        if (motion.getY() > 0) {
+                            minecraft.player.setMotion(0, Math.max(motion.getY() - 0.15D, 0), 0);
+                        } else if (motion.getY() < 0) {
                             if (!CommonPlayerTickHandler.isOnGround(minecraft.player)) {
-                                minecraft.player.motionY = Math.min(minecraft.player.motionY + 0.15D, 0);
+                                minecraft.player.setMotion(0, Math.min(motion.getY() + 0.15D, 0), 0);
                             }
                         }
                     } else if (ascending) {
-                        minecraft.player.motionY = Math.min(minecraft.player.motionY + 0.15D, 0.2D);
+                        minecraft.player.setMotion(0, Math.min(motion.getY() + 0.15D, 0.2D), 0);
                     } else if (!CommonPlayerTickHandler.isOnGround(minecraft.player)) {
-                        minecraft.player.motionY = Math.max(minecraft.player.motionY - 0.15D, -0.2D);
+                        minecraft.player.setMotion(0, Math.max(motion.getY() - 0.15D, -0.2D), 0);
                     }
                     minecraft.player.fallDistance = 0.0F;
                 }

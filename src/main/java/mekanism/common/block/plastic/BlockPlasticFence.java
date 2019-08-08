@@ -52,10 +52,10 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, IBlo
         @Nonnull
         @Override
         protected ModelResourceLocation getModelResourceLocation(@Nonnull BlockState state) {
-            String properties = "east=" + state.getValue(EAST) + ",";
-            properties += "north=" + state.getValue(NORTH) + ",";
-            properties += "south=" + state.getValue(SOUTH) + ",";
-            properties += "west=" + state.getValue(WEST);
+            String properties = "east=" + state.get(EAST) + ",";
+            properties += "north=" + state.get(NORTH) + ",";
+            properties += "south=" + state.get(SOUTH) + ",";
+            properties += "west=" + state.get(WEST);
             ResourceLocation baseLocation = new ResourceLocation(Mekanism.MODID, "plastic_fence");
             return new ModelResourceLocation(baseLocation, properties);
         }

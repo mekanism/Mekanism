@@ -22,7 +22,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -30,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -81,11 +81,10 @@ public class RenderTickHandler {
                 //todo use vanilla status bar text?
                 if (modeSwitchTimer > 1 && minecraft.currentScreen == null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator) {
                     ItemStack stack = player.getHeldItemMainhand();
-                    ScaledResolution scaledresolution = new ScaledResolution(minecraft);
                     ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getState(stack);
 
-                    int x = scaledresolution.getScaledWidth();
-                    int y = scaledresolution.getScaledHeight();
+                    int x = minecraft.mainWindow.getScaledWidth();
+                    int y = minecraft.mainWindow.getScaledHeight();
                     int stringWidth = font.getStringWidth(mode.getName());
                     int color = new ColourRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
                     font.drawString(mode.getColor() + mode.getName(), x / 2 - stringWidth / 2, y - 60, color);
@@ -100,20 +99,18 @@ public class RenderTickHandler {
                 if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()) {
                     ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
-                    ScaledResolution scaledresolution = new ScaledResolution(minecraft);
-
-                    int y = scaledresolution.getScaledHeight();
+                    int y = minecraft.mainWindow.getScaledHeight();
                     boolean alignLeft = MekanismConfig.current().client.alignHUDLeft.val();
 
                     if (stack.getItem() instanceof ItemJetpack) {
                         ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-                        drawString(scaledresolution, "Mode: " + jetpack.getMode(stack).getName(), alignLeft, y - 20, 0xc8c8c8);
-                        drawString(scaledresolution, "Hydrogen: " + jetpack.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
+                        drawString("Mode: " + jetpack.getMode(stack).getName(), alignLeft, y - 20, 0xc8c8c8);
+                        drawString("Hydrogen: " + jetpack.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
                     } else if (stack.getItem() instanceof ItemScubaTank) {
                         ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
                         String state = scubaTank.getFlowing(stack) ? EnumColor.DARK_GREEN + "On" : EnumColor.DARK_RED + "Off";
-                        drawString(scaledresolution, "Mode: " + state, alignLeft, y - 20, 0xc8c8c8);
-                        drawString(scaledresolution, "Oxygen: " + scubaTank.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
+                        drawString("Mode: " + state, alignLeft, y - 20, 0xc8c8c8);
+                        drawString("Oxygen: " + scubaTank.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
                     }
                 }
 
@@ -136,22 +133,22 @@ public class RenderTickHandler {
                     Pos3D rLeft = vLeft.scale(random);
                     Pos3D rRight = vRight.scale(random);
 
-                    Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                    Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                    Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.getMotion()));
+                    Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.getMotion()));
+                    Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.getMotion()));
 
                     mLeft = mLeft.translate(rLeft);
                     mRight = mRight.translate(rRight);
 
-                    Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.getMotion()));
                     spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
                     spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 
-                    v = playerPos.translate(vRight).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    v = playerPos.translate(vRight).translate(new Pos3D(p.getMotion()));
                     spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
                     spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 
-                    v = playerPos.translate(vCenter).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    v = playerPos.translate(vCenter).translate(new Pos3D(p.getMotion()));
                     spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
                     spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
                 }
@@ -170,7 +167,7 @@ public class RenderTickHandler {
                         float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
 
                         Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1))).translate(0, -0.2, 0);
-                        Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                        Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.getMotion()));
 
                         Pos3D v = playerPos.translate(vec);
                         spawnAndSetParticle(ParticleTypes.BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
@@ -179,7 +176,7 @@ public class RenderTickHandler {
 
                 // Traverse a copy of flamethrower state and do animations
                 if (world.getWorldTime() % 4 == 0) {
-                    for (PlayerEntity p : world.playerEntities) {
+                    for (PlayerEntity p : world.getPlayers()) {
                         if (!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress) {
                             ItemStack currentItem = p.inventory.getCurrentItem();
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ((ItemFlamethrower) currentItem.getItem()).getGas(currentItem) != null) {
@@ -188,7 +185,8 @@ public class RenderTickHandler {
                                 double flameXCoord = 0;
                                 double flameYCoord = 1.5;
                                 double flameZCoord = 0;
-                                Pos3D flameMotion = new Pos3D(p.motionX, p.onGround ? 0 : p.motionY, p.motionZ);
+                                Vec3d motion = p.getMotion();
+                                Pos3D flameMotion = new Pos3D(motion.getX(), p.onGround ? 0 : motion.getY(), motion.getZ());
                                 if (player == p && minecraft.gameSettings.thirdPersonView == 0) {
                                     flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(flameXCoord, flameYCoord + 0.1, flameZCoord);
                                 } else {
@@ -229,14 +227,14 @@ public class RenderTickHandler {
         minecraft.effectRenderer.addEffect(fx);
     }
 
-    private void drawString(ScaledResolution res, String s, boolean leftSide, int y, int color) {
+    private void drawString(String s, boolean leftSide, int y, int color) {
         FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
         if (leftSide) {
             font.drawStringWithShadow(s, 2, y, color);
         } else {
             int width = font.getStringWidth(s) + 2;
-            font.drawStringWithShadow(s, res.getScaledWidth() - width, y, color);
+            font.drawStringWithShadow(s, minecraft.mainWindow.getScaledWidth() - width, y, color);
         }
     }
 }
