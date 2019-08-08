@@ -32,10 +32,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -121,11 +121,11 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip implements IIte
         if (!world.isAirBlock(pos) && !flag) {
             return false;
         }
-        if (world.provider.doesWaterVaporize() && getFluidStack(itemstack).getFluid() == FluidRegistry.WATER) {
+        if (world.getDimension().doesWaterVaporize() && getFluidStack(itemstack).getFluid() == FluidRegistry.WATER) {
             world.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
                   2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
             for (int l = 0; l < 8; l++) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + Math.random(),
+                world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(),
                       pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
             }
         } else {

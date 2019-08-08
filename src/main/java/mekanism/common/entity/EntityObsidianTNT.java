@@ -5,7 +5,7 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
 
 public class EntityObsidianTNT extends Entity {
@@ -90,11 +90,11 @@ public class EntityObsidianTNT extends Entity {
                 if (hasExploded) {
                     remove();
                 } else {
-                    world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
+                    world.addParticle(ParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
                 }
             }
         } else {
-            world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
+            world.addParticle(ParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
         }
     }
 

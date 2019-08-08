@@ -12,8 +12,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -69,7 +69,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
                 setActive(active);
             }
         } else if (getActive()) {
-            world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX() + random.nextDouble(), getPos().getY() + 0.15,
+            world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPos().getX() + random.nextDouble(), getPos().getY() + 0.15,
                   getPos().getZ() + random.nextDouble(), 0, 0, 0);
         }
     }

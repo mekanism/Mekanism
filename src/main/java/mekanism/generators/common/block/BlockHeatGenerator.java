@@ -21,15 +21,15 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -100,17 +100,17 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
             if (tileEntity.getDirection() == Direction.WEST) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
+                world.addParticle(ParticleTypes.SMOKE, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
+                world.addParticle(ParticleTypes.FLAME, xRandom + iRandom, yRandom, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
             } else if (tileEntity.getDirection() == Direction.EAST) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
+                world.addParticle(ParticleTypes.SMOKE, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
+                world.addParticle(ParticleTypes.FLAME, xRandom + iRandom, yRandom + 0.5F, zRandom - jRandom, 0.0D, 0.0D, 0.0D);
             } else if (tileEntity.getDirection() == Direction.NORTH) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
+                world.addParticle(ParticleTypes.SMOKE, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
+                world.addParticle(ParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom - iRandom, 0.0D, 0.0D, 0.0D);
             } else if (tileEntity.getDirection() == Direction.SOUTH) {
-                world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
-                world.spawnParticle(EnumParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
+                world.addParticle(ParticleTypes.SMOKE, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
+                world.addParticle(ParticleTypes.FLAME, xRandom - jRandom, yRandom + 0.5F, zRandom + iRandom, 0.0D, 0.0D, 0.0D);
             }
         }
     }

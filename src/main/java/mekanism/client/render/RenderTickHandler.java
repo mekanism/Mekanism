@@ -27,14 +27,15 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderTickHandler {
@@ -143,16 +144,16 @@ public class RenderTickHandler {
                     mRight = mRight.translate(rRight);
 
                     Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                    spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-                    spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 
                     v = playerPos.translate(vRight).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                    spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-                    spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 
                     v = playerPos.translate(vCenter).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                    spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
-                    spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
                 }
 
                 // Traverse a copy of gasmask state and do animations
@@ -172,7 +173,7 @@ public class RenderTickHandler {
                         Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
 
                         Pos3D v = playerPos.translate(vec);
-                        spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                        spawnAndSetParticle(ParticleTypes.BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                     }
                 }
 
@@ -207,7 +208,7 @@ public class RenderTickHandler {
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
                                 }
                                 Pos3D mergedVec = playerPos.translate(flameVec);
-                                spawnAndSetParticle(EnumParticleTypes.FLAME, world, mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
+                                spawnAndSetParticle(ParticleTypes.FLAME, world, mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
                             }
                         }
                     }
@@ -216,13 +217,13 @@ public class RenderTickHandler {
         }
     }
 
-    public void spawnAndSetParticle(EnumParticleTypes s, World world, double x, double y, double z, double velX, double velY, double velZ) {
+    public void spawnAndSetParticle(ParticleType s, World world, double x, double y, double z, double velX, double velY, double velZ) {
         Particle fx = null;
-        if (s.equals(EnumParticleTypes.FLAME)) {
+        if (s.equals(ParticleTypes.FLAME)) {
             fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
-        } else if (s.equals(EnumParticleTypes.SMOKE_NORMAL)) {
+        } else if (s.equals(ParticleTypes.SMOKE)) {
             fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
-        } else if (s.equals(EnumParticleTypes.WATER_BUBBLE)) {
+        } else if (s.equals(ParticleTypes.BUBBLE)) {
             fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
         }
         mc.effectRenderer.addEffect(fx);

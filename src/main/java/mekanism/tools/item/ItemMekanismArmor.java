@@ -22,8 +22,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-=
-
 public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
 
     public ItemMekanismArmor(Materials material, int renderIndex, EquipmentSlotType slot) {

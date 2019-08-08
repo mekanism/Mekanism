@@ -33,8 +33,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.Hand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -203,7 +203,7 @@ public class ClientTickHandler {
                     double x = player.posX + rand.nextDouble() - 0.5D;
                     double y = player.posY + rand.nextDouble() * 2 - 2D;
                     double z = player.posZ + rand.nextDouble() - 0.5D;
-                    mc.world.spawnParticle(EnumParticleTypes.PORTAL, x, y, z, 0, 1, 0);
+                    mc.world.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
                 }
 
                 if (mc.world.getWorldTime() == entry.getValue().teleportTime) {
