@@ -47,11 +47,11 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        buttonList.add(saveButton = new Button(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
-        buttonList.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
-        buttonList.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
-        buttonList.add(replaceButton = new GuiButtonDisableableImage(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
-        buttonList.add(fuzzyButton = new GuiButtonDisableableImage(4, guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation()));
+        buttons.add(saveButton = new Button(0, guiLeft + 27, guiTop + 62, 60, 20, LangUtils.localize("gui.save")));
+        buttons.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 60, 20, LangUtils.localize("gui.delete")));
+        buttons.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttons.add(replaceButton = new GuiButtonDisableableImage(3, guiLeft + 148, guiTop + 45, 14, 14, 199, 14, -14, getGuiLocation()));
+        buttons.add(fuzzyButton = new GuiButtonDisableableImage(4, guiLeft + 15, guiTop + 45, 14, 14, 213, 14, -14, getGuiLocation()));
     }
 
     @Override

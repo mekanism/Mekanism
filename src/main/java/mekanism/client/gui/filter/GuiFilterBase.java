@@ -47,8 +47,8 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         if (isNew) {
             deleteButton.active = false;
         }

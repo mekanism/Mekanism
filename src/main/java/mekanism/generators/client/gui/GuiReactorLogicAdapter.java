@@ -36,14 +36,14 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(coolingButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 23, guiTop + 19, 11, 11, 176, 11, -11, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(coolingButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 23, guiTop + 19, 11, 11, 176, 11, -11, getGuiLocation()));
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
             GuiReactorLogicButton button = new GuiReactorLogicButton(buttonID++, guiLeft + 24, guiTop + 32 + typeShift, type, tileEntity, getGuiLocation());
-            buttonList.add(button);
+            buttons.add(button);
             typeButtons.add(button);
         }
     }

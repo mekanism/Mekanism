@@ -35,17 +35,17 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         text = createTextField();
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
         text.setFocused(true);
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
-        text.updateCursorCounter();
+    public void tick() {
+        super.tick();
+        text.tick();
     }
 
     @Override

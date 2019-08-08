@@ -43,11 +43,11 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
-        buttonList.add(removeButton = new GuiButtonDisableableImage(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
+        buttons.add(removeButton = new GuiButtonDisableableImage(1, guiLeft + 136, guiTop + 57, 12, 12, 190, 12, -12, 12, getGuiLocation()));
         updateEnabledButtons();
     }
 
@@ -70,8 +70,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         if (delay < 40) {
             delay++;
         } else {

@@ -71,10 +71,10 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(new Button(0, guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter")));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(new Button(0, guiLeft + 10, guiTop + 86, 142, 20, LangUtils.localize("gui.newFilter")));
     }
 
     @Override

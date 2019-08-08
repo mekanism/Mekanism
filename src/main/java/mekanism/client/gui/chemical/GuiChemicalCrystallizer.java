@@ -107,8 +107,8 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
 
         if (prevGas != getInputGas()) {
             prevGas = getInputGas();

@@ -76,16 +76,16 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(this.startButton = new Button(START_BUTTON_ID, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start")));
-        buttonList.add(this.stopButton = new Button(STOP_BUTTON_ID, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop")));
-        buttonList.add(this.configButton = new Button(CONFIG_BUTTON_ID, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config")));
-        buttonList.add(this.resetButton = new GuiButtonDisableableImage(RESET_BUTTON_ID, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation()));
-        buttonList.add(this.silkTouchButton = new GuiButtonDisableableImage(SILK_TOUCH_BUTTON_ID, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation()));
-        buttonList.add(this.autoEjectButton = new GuiButtonDisableableImage(AUTOEJECT_BUTTON_ID, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation()));
-        buttonList.add(this.autoPullButton = new GuiButtonDisableableImage(AUTO_PULL_BUTTON_ID, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(this.startButton = new Button(START_BUTTON_ID, guiLeft + 69, guiTop + 17, 60, 20, LangUtils.localize("gui.start")));
+        buttons.add(this.stopButton = new Button(STOP_BUTTON_ID, guiLeft + 69, guiTop + 37, 60, 20, LangUtils.localize("gui.stop")));
+        buttons.add(this.configButton = new Button(CONFIG_BUTTON_ID, guiLeft + 69, guiTop + 57, 60, 20, LangUtils.localize("gui.config")));
+        buttons.add(this.resetButton = new GuiButtonDisableableImage(RESET_BUTTON_ID, guiLeft + 131, guiTop + 47, 14, 14, 208, 14, -14, getGuiLocation()));
+        buttons.add(this.silkTouchButton = new GuiButtonDisableableImage(SILK_TOUCH_BUTTON_ID, guiLeft + 131, guiTop + 63, 14, 14, 222, 14, -14, getGuiLocation()));
+        buttons.add(this.autoEjectButton = new GuiButtonDisableableImage(AUTOEJECT_BUTTON_ID, guiLeft + 147, guiTop + 47, 14, 14, 180, 14, -14, getGuiLocation()));
+        buttons.add(this.autoPullButton = new GuiButtonDisableableImage(AUTO_PULL_BUTTON_ID, guiLeft + 147, guiTop + 63, 14, 14, 194, 14, -14, getGuiLocation()));
         updateEnabledButtons();
     }
 
@@ -118,8 +118,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         updateEnabledButtons();
     }
 

@@ -78,10 +78,10 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(toggleButton = new GuiButtonDisableableImage(0, guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(toggleButton = new GuiButtonDisableableImage(0, guiLeft + 4, guiTop + 4, 18, 18, 176, 18, -18, getGuiLocation()));
     }
 
     @Override

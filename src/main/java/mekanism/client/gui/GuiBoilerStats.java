@@ -54,8 +54,8 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         boilGraph.addData(tileEntity.getLastBoilRate());
         maxGraph.addData(tileEntity.getLastMaxBoil());
     }

@@ -81,11 +81,11 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
-        minField.updateCursorCounter();
-        maxField.updateCursorCounter();
-        timerField.updateCursorCounter();
+    public void tick() {
+        super.tick();
+        minField.tick();
+        maxField.tick();
+        timerField.tick();
     }
 
     @Override
@@ -168,8 +168,8 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         String prevTime = timerField != null ? timerField.getText() : "";
         timerField = new TextFieldWidget(0, fontRenderer, guiLeft + 96, guiTop + 28, 36, 11);
         timerField.setMaxStringLength(4);

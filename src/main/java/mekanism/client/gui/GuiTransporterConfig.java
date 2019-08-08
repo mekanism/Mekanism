@@ -60,18 +60,18 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(backButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
-        buttonList.add(strictInputButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
-        buttonList.add(colorButton = new GuiColorButton(buttonID++, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(backButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 6, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+        buttons.add(strictInputButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttons.add(colorButton = new GuiColorButton(buttonID++, guiLeft + 122, guiTop + 49, 16, 16, () -> configurable.getEjector().getOutputColor()));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
             GuiSideDataButton button = new GuiSideDataButton(buttonID++, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
                   () -> configurable.getConfig().getOutput(TransmissionType.ITEM, facing), () -> configurable.getEjector().getInputColor(facing));
-            buttonList.add(button);
+            buttons.add(button);
             sideDataButtons.add(button);
         }
     }

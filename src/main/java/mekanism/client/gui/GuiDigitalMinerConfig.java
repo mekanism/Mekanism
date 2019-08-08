@@ -57,11 +57,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
-        radiusField.updateCursorCounter();
-        minField.updateCursorCounter();
-        maxField.updateCursorCounter();
+    public void tick() {
+        super.tick();
+        radiusField.tick();
+        minField.tick();
+        maxField.tick();
     }
 
     @Override
@@ -136,15 +136,15 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(newFilterButton = new Button(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
-        buttonList.add(backButton = new GuiButtonDisableableImage(1, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
-        buttonList.add(setRadiButton = new GuiButtonDisableableImage(2, guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation()));
-        buttonList.add(setMinButton = new GuiButtonDisableableImage(3, guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation()));
-        buttonList.add(setMaxButton = new GuiButtonDisableableImage(4, guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation()));
-        buttonList.add(inverseButton = new GuiButtonDisableableImage(5, guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(newFilterButton = new Button(BUTTON_NEW, guiLeft + filterX, guiTop + 136, filterW, 20, LangUtils.localize("gui.newFilter")));
+        buttons.add(backButton = new GuiButtonDisableableImage(1, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttons.add(setRadiButton = new GuiButtonDisableableImage(2, guiLeft + 39, guiTop + 67, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttons.add(setMinButton = new GuiButtonDisableableImage(3, guiLeft + 39, guiTop + 92, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttons.add(setMaxButton = new GuiButtonDisableableImage(4, guiLeft + 39, guiTop + 117, 11, 11, 187, 11, -11, getGuiLocation()));
+        buttons.add(inverseButton = new GuiButtonDisableableImage(5, guiLeft + 11, guiTop + 141, 14, 14, 198, 14, -14, getGuiLocation()));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
         String prevMin = minField != null ? minField.getText() : "";

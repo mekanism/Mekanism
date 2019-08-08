@@ -73,8 +73,8 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
 
         // Decrease timer for stack display rotation
         if (stackSwitch > 0) {
@@ -219,7 +219,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
         }
         oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.getOreDictName(), false);
         stackSwitch = 0;
-        updateScreen();
+        tick();
         oreDictStacks.get(filter).stackIndex = -1;
     }
 
@@ -229,7 +229,7 @@ public abstract class GuiFilterHolder<TILE extends TileEntityMekanism, FILTER ex
         }
         modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.getModID(), false);
         stackSwitch = 0;
-        updateScreen();
+        tick();
         modIDStacks.get(filter).stackIndex = -1;
     }
 

@@ -25,10 +25,10 @@ public abstract class GuiReactorInfo extends GuiMekanismTile<TileEntityReactorCo
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(backButton = new GuiButtonDisableableImage(0, guiLeft + 6, guiTop + 6, 14, 14, 176, 14, -14, getGuiLocation()));
     }
 
     @Override

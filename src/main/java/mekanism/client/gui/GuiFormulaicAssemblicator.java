@@ -61,15 +61,15 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(encodeFormulaButton = new GuiButtonDisableableImage(0, guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation()));
-        buttonList.add(stockControlButton = new GuiButtonDisableableImage(1, guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation()));
-        buttonList.add(fillEmptyButton = new GuiButtonDisableableImage(2, guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation()));
-        buttonList.add(craftSingleButton = new GuiButtonDisableableImage(3, guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation()));
-        buttonList.add(craftAvailableButton = new GuiButtonDisableableImage(4, guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation()));
-        buttonList.add(autoModeButton = new GuiButtonDisableableImage(5, guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(encodeFormulaButton = new GuiButtonDisableableImage(0, guiLeft + 7, guiTop + 45, 14, 14, 176, 14, -14, 14, getGuiLocation()));
+        buttons.add(stockControlButton = new GuiButtonDisableableImage(1, guiLeft + 26, guiTop + 75, 16, 16, 238, 48 + 16, -16, 16, getGuiLocation()));
+        buttons.add(fillEmptyButton = new GuiButtonDisableableImage(2, guiLeft + 44, guiTop + 75, 16, 16, 238, 16, -16, 16, getGuiLocation()));
+        buttons.add(craftSingleButton = new GuiButtonDisableableImage(3, guiLeft + 71, guiTop + 75, 16, 16, 190, 16, -16, 16, getGuiLocation()));
+        buttons.add(craftAvailableButton = new GuiButtonDisableableImage(4, guiLeft + 89, guiTop + 75, 16, 16, 206, 16, -16, 16, getGuiLocation()));
+        buttons.add(autoModeButton = new GuiButtonDisableableImage(5, guiLeft + 107, guiTop + 75, 16, 16, 222, 16, -16, 16, getGuiLocation()));
         updateEnabledButtons();
     }
 
@@ -92,8 +92,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         updateEnabledButtons();
     }
 

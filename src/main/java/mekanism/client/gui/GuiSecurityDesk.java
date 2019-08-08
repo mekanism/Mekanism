@@ -46,18 +46,18 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(removeButton = new Button(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove")));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(removeButton = new Button(0, guiLeft + 13, guiTop + 81, 122, 20, LangUtils.localize("gui.remove")));
         trustedField = new TextFieldWidget(1, fontRenderer, guiLeft + 35, guiTop + 69, 86, 11);
         trustedField.setMaxStringLength(MAX_LENGTH);
         trustedField.setEnableBackgroundDrawing(false);
-        buttonList.add(publicButton = new GuiButtonDisableableImage(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation()));
-        buttonList.add(privateButton = new GuiButtonDisableableImage(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation()));
-        buttonList.add(trustedButton = new GuiButtonDisableableImage(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation()));
-        buttonList.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation()));
-        buttonList.add(overrideButton = new GuiButtonDisableableImage(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation()));
+        buttons.add(publicButton = new GuiButtonDisableableImage(2, guiLeft + 13, guiTop + 113, 40, 16, xSize, 64, -16, 16, getGuiLocation()));
+        buttons.add(privateButton = new GuiButtonDisableableImage(3, guiLeft + 54, guiTop + 113, 40, 16, xSize + 40, 64, -16, 16, getGuiLocation()));
+        buttons.add(trustedButton = new GuiButtonDisableableImage(4, guiLeft + 95, guiTop + 113, 40, 16, xSize, 112, -16, 16, getGuiLocation()));
+        buttons.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 123, guiTop + 68, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttons.add(overrideButton = new GuiButtonDisableableImage(6, guiLeft + 146, guiTop + 59, 16, 16, xSize + 12, 16, -16, 16, getGuiLocation()));
         updateButtons();
     }
 
@@ -97,10 +97,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         updateButtons();
-        trustedField.updateCursorCounter();
+        trustedField.tick();
     }
 
     @Override

@@ -74,9 +74,9 @@ public class GuiReactorFuel extends GuiReactorInfo {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
-        injectionRateField.updateCursorCounter();
+    public void tick() {
+        super.tick();
+        injectionRateField.tick();
     }
 
     @Override
@@ -109,8 +109,8 @@ public class GuiReactorFuel extends GuiReactorInfo {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
         injectionRateField = new TextFieldWidget(0, fontRenderer, guiLeft + 98, guiTop + 115, 26, 11);
         injectionRateField.setMaxStringLength(2);

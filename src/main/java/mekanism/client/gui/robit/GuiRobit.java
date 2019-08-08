@@ -32,14 +32,14 @@ public abstract class GuiRobit extends GuiMekanism {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(mainButton = new GuiButtonDisableableImage(0, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
-        buttonList.add(craftingButton = new GuiButtonDisableableImage(1, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
-        buttonList.add(inventoryButton = new GuiButtonDisableableImage(2, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
-        buttonList.add(smeltingButton = new GuiButtonDisableableImage(3, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
-        buttonList.add(repairButton = new GuiButtonDisableableImage(4, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(mainButton = new GuiButtonDisableableImage(0, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
+        buttons.add(craftingButton = new GuiButtonDisableableImage(1, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
+        buttons.add(inventoryButton = new GuiButtonDisableableImage(2, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
+        buttons.add(smeltingButton = new GuiButtonDisableableImage(3, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
+        buttons.add(repairButton = new GuiButtonDisableableImage(4, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
     }
 
     @Override

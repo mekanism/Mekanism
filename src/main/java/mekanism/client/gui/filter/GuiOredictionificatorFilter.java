@@ -47,12 +47,12 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        buttonList.add(saveButton = new Button(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
-        buttonList.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
-        buttonList.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation()));
-        buttonList.add(prevButton = new GuiButtonDisableableImage(3, guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation()));
-        buttonList.add(nextButton = new GuiButtonDisableableImage(4, guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation()));
-        buttonList.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation()));
+        buttons.add(saveButton = new Button(0, guiLeft + 31, guiTop + 62, 54, 20, LangUtils.localize("gui.save")));
+        buttons.add(deleteButton = new Button(1, guiLeft + 89, guiTop + 62, 54, 20, LangUtils.localize("gui.delete")));
+        buttons.add(backButton = new GuiButtonDisableableImage(2, guiLeft + 5, guiTop + 5, 11, 11, 212, 11, -11, getGuiLocation()));
+        buttons.add(prevButton = new GuiButtonDisableableImage(3, guiLeft + 31, guiTop + 21, 12, 12, 200, 12, -12, getGuiLocation()));
+        buttons.add(nextButton = new GuiButtonDisableableImage(4, guiLeft + 63, guiTop + 21, 12, 12, 188, 12, -12, getGuiLocation()));
+        buttons.add(checkboxButton = new GuiButtonDisableableImage(5, guiLeft + 130, guiTop + 48, 12, 12, 176, 12, -12, getGuiLocation()));
     }
 
     @Override
@@ -83,8 +83,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         updateButtons();
     }
 

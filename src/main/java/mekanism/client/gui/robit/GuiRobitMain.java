@@ -85,25 +85,25 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(confirmName = new Button(0, guiLeft + 58, guiTop + 47, 60, 20, LangUtils.localize("gui.confirm")));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(confirmName = new Button(0, guiLeft + 58, guiTop + 47, 60, 20, LangUtils.localize("gui.confirm")));
         confirmName.visible = displayNameChange;
 
         nameChangeField = new TextFieldWidget(1, fontRenderer, guiLeft + 48, guiTop + 21, 80, 12);
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused(true);
 
-        buttonList.add(teleportHomeButton = new GuiButtonDisableableImage(2, guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation()));
-        buttonList.add(pickupButton = new GuiButtonDisableableImage(3, guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation()));
-        buttonList.add(renameButton = new GuiButtonDisableableImage(4, guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation()));
-        buttonList.add(followButton = new GuiButtonDisableableImage(5, guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation()));
-        buttonList.add(mainButton = new GuiButtonDisableableImage(6, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
-        buttonList.add(craftingButton = new GuiButtonDisableableImage(7, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
-        buttonList.add(inventoryButton = new GuiButtonDisableableImage(8, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
-        buttonList.add(smeltingButton = new GuiButtonDisableableImage(9, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
-        buttonList.add(repairButton = new GuiButtonDisableableImage(10, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
+        buttons.add(teleportHomeButton = new GuiButtonDisableableImage(2, guiLeft + 6, guiTop + 16, 18, 18, 219, 54, -18, getGuiLocation()));
+        buttons.add(pickupButton = new GuiButtonDisableableImage(3, guiLeft + 6, guiTop + 35, 18, 18, 219, 90, -18, getGuiLocation()));
+        buttons.add(renameButton = new GuiButtonDisableableImage(4, guiLeft + 6, guiTop + 54, 18, 18, 201, 234, -18, getGuiLocation()));
+        buttons.add(followButton = new GuiButtonDisableableImage(5, guiLeft + 152, guiTop + 54, 18, 18, 201, 198, -18, getGuiLocation()));
+        buttons.add(mainButton = new GuiButtonDisableableImage(6, guiLeft + 179, guiTop + 10, 18, 18, 201, 18, -18, getGuiLocation()));
+        buttons.add(craftingButton = new GuiButtonDisableableImage(7, guiLeft + 179, guiTop + 30, 18, 18, 201, 54, -18, getGuiLocation()));
+        buttons.add(inventoryButton = new GuiButtonDisableableImage(8, guiLeft + 179, guiTop + 50, 18, 18, 201, 90, -18, getGuiLocation()));
+        buttons.add(smeltingButton = new GuiButtonDisableableImage(9, guiLeft + 179, guiTop + 70, 18, 18, 201, 126, -18, getGuiLocation()));
+        buttons.add(repairButton = new GuiButtonDisableableImage(10, guiLeft + 179, guiTop + 90, 18, 18, 201, 162, -18, getGuiLocation()));
     }
 
     @Override
@@ -166,9 +166,9 @@ public class GuiRobitMain extends GuiMekanism {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
-        nameChangeField.updateCursorCounter();
+    public void tick() {
+        super.tick();
+        nameChangeField.tick();
     }
 
     @Override

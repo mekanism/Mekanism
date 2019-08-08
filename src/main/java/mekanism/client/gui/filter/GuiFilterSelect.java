@@ -25,11 +25,11 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism> extends G
 
     @Override
     protected void addButtons() {
-        buttonList.add(itemStackButton = new Button(0, guiLeft + 24, guiTop + 32, 128, 20, LangUtils.localize("gui.itemstack")));
-        buttonList.add(oredictButton = new Button(1, guiLeft + 24, guiTop + 52, 128, 20, LangUtils.localize("gui.oredict")));
-        buttonList.add(materialButton = new Button(2, guiLeft + 24, guiTop + 72, 128, 20, LangUtils.localize("gui.material")));
-        buttonList.add(modIDButton = new Button(3, guiLeft + 24, guiTop + 92, 128, 20, LangUtils.localize("gui.modID")));
-        buttonList.add(backButton = new GuiButtonDisableableImage(4, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
+        buttons.add(itemStackButton = new Button(0, guiLeft + 24, guiTop + 32, 128, 20, LangUtils.localize("gui.itemstack")));
+        buttons.add(oredictButton = new Button(1, guiLeft + 24, guiTop + 52, 128, 20, LangUtils.localize("gui.oredict")));
+        buttons.add(materialButton = new Button(2, guiLeft + 24, guiTop + 72, 128, 20, LangUtils.localize("gui.material")));
+        buttons.add(modIDButton = new Button(3, guiLeft + 24, guiTop + 92, 128, 20, LangUtils.localize("gui.modID")));
+        buttons.add(backButton = new GuiButtonDisableableImage(4, guiLeft + 5, guiTop + 5, 11, 11, 176, 11, -11, getGuiLocation()));
     }
 
     @Override

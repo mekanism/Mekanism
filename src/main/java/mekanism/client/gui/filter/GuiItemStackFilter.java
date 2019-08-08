@@ -21,8 +21,8 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter, TILE e
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         if (ticker > 0) {
             ticker--;
         } else {

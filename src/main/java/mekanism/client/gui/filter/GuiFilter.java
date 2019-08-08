@@ -24,9 +24,9 @@ public abstract class GuiFilter<TILE extends TileEntityMekanism> extends GuiMeka
     protected abstract void sendPacketToServer(int guiID);
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
+    public void init() {
+        super.init();
+        buttons.clear();
         addButtons();
     }
 }

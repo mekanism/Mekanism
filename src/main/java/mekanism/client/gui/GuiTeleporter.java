@@ -122,20 +122,20 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(publicButton = new Button(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public")));
-        buttonList.add(privateButton = new Button(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private")));
-        buttonList.add(setButton = new Button(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set")));
-        buttonList.add(deleteButton = new Button(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete")));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(publicButton = new Button(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public")));
+        buttons.add(privateButton = new Button(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private")));
+        buttons.add(setButton = new Button(2, guiLeft + 27, guiTop + 116, 60, 20, LangUtils.localize("gui.set")));
+        buttons.add(deleteButton = new Button(3, guiLeft + 89, guiTop + 116, 60, 20, LangUtils.localize("gui.delete")));
         if (!itemStack.isEmpty()) {
-            buttonList.add(teleportButton = new Button(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport")));
+            buttons.add(teleportButton = new Button(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport")));
         }
         frequencyField = new TextFieldWidget(5, fontRenderer, guiLeft + 50, guiTop + 104, 86, 11);
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setEnableBackgroundDrawing(false);
-        buttonList.add(checkboxButton = new GuiButtonDisableableImage(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
+        buttons.add(checkboxButton = new GuiButtonDisableableImage(6, guiLeft + 137, guiTop + 103, 11, 11, xSize, 11, -11, getGuiLocation()));
         updateButtons();
         if (!itemStack.isEmpty()) {
             if (!isInit) {
@@ -202,10 +202,10 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         updateButtons();
-        frequencyField.updateCursorCounter();
+        frequencyField.tick();
     }
 
     @Override

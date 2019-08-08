@@ -38,8 +38,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         Keyboard.enableRepeatEvents(true);
         itemNameField = new TextFieldWidget(0, fontRenderer, guiLeft + 62, guiTop + 24, 103, 12);
         itemNameField.setTextColor(-1);

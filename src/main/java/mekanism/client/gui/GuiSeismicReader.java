@@ -51,19 +51,19 @@ public class GuiSeismicReader extends Screen {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
+    public void init() {
+        super.init();
         int guiLeft = (width - xSize) / 2;
         int guiTop = (height - ySize) / 2;
-        buttonList.add(upButton = new GuiButtonSeismicReader(0, guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation()));
-        buttonList.add(downButton = new GuiButtonSeismicReader(1, guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation()));
+        buttons.add(upButton = new GuiButtonSeismicReader(0, guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation()));
+        buttons.add(downButton = new GuiButtonSeismicReader(1, guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation()));
         tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
         updateEnabledButtons();
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         updateEnabledButtons();
     }
 

@@ -67,17 +67,17 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        buttonList.clear();
-        buttonList.add(backButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
-        buttonList.add(autoEjectButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
+    public void init() {
+        super.init();
+        buttons.clear();
+        buttons.add(backButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 6, guiTop + 6, 14, 14, 204, 14, -14, getGuiLocation()));
+        buttons.add(autoEjectButton = new GuiButtonDisableableImage(buttonID++, guiLeft + 156, guiTop + 6, 14, 14, 190, 14, -14, getGuiLocation()));
         for (int i = 0; i < slotPosMap.size(); i++) {
             GuiPos guiPos = slotPosMap.get(i);
             Direction facing = Direction.byIndex(i);
             GuiSideDataButton button = new GuiSideDataButton(buttonID++, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, getGuiLocation(), i,
                   () -> configurable.getConfig().getOutput(currentType, facing), () -> configurable.getConfig().getOutput(currentType, facing).color);
-            buttonList.add(button);
+            buttons.add(button);
             sideDataButtons.add(button);
         }
     }
@@ -150,8 +150,8 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
+    public void tick() {
+        super.tick();
         TileEntity tile = (TileEntity) configurable;
         if (tile == null || minecraft.world.getTileEntity(tile.getPos()) == null) {
             minecraft.displayGuiScreen(null);
