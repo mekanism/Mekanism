@@ -42,13 +42,13 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String stored = "" + (tileEntity.gasTank.getStored() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tileEntity.gasTank.getStored());
         String capacityInfo = stored + " / " + (tileEntity.tier.getStorage() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tileEntity.tier.getStorage());
-        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
+        font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        font.drawString(capacityInfo, 45, 40, 0x404040);
         renderScaledText(LangUtils.localize("gui.gas") + ": " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName()
                                                                                                      : LangUtils.localize("gui.none")), 45, 49, 0x404040, 112);
-        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+        font.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         String name = LangUtils.localize(tileEntity.dumping.getLangKey());
-        fontRenderer.drawString(name, 156 - fontRenderer.getStringWidth(name), 73, 0x404040);
+        font.drawString(name, 156 - font.getStringWidth(name), 73, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

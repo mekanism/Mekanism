@@ -8,9 +8,9 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.fluid_tank.TileEntityFluidTank;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.block.Blocks;
@@ -46,7 +46,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             GlStateManager.pushMatrix();
             glChanged = enableGL();
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate((float) x, (float) y, (float) z);
+            GlStateManager.translatef((float) x, (float) y, (float) z);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
@@ -68,7 +68,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             GlStateManager.pushMatrix();
             glChanged = enableGL();
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate((float) x, (float) y, (float) z);
+            GlStateManager.translatef((float) x, (float) y, (float) z);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(valveFluid);
             MekanismRenderer.color(valveFluid);
             DisplayInteger[] valveList = getValveRender(valveFluid);
@@ -80,7 +80,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
 
         if (glChanged) {
             GlStateManager.disableBlend();
-            GlStateManager.enableAlpha();
+            GlStateManager.enableAlphaTest();
             GlStateManager.enableLighting();
             GlStateManager.disableCull();
         }
@@ -90,7 +90,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
         GlStateManager.enableCull();
         GlStateManager.disableLighting();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         return true;

@@ -7,7 +7,7 @@ import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,28 +26,28 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GlStateManager.scale(1.4F, 1.4F, 1.4F);
-        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.translatef(1.4F, 1.4F, 1.4F);
+        GlStateManager.rotatef(180, 0, 0, 1);
 
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                GlStateManager.rotate(-90, 0, 1, 0);
+                GlStateManager.rotatef(-90, 0, 1, 0);
             }
-            GlStateManager.rotate(45, 0, 1, 0);
-            GlStateManager.rotate(50, 1, 0, 0);
-            GlStateManager.scale(2.0F, 2.0F, 2.0F);
-            GlStateManager.translate(0, -0.4F, 0.4F);
+            GlStateManager.rotatef(45, 0, 1, 0);
+            GlStateManager.rotatef(50, 1, 0, 0);
+            GlStateManager.translatef(2.0F, 2.0F, 2.0F);
+            GlStateManager.translatef(0, -0.4F, 0.4F);
         } else if (transformType == TransformType.GUI) {
-            GlStateManager.rotate(225, 0, 1, 0);
-            GlStateManager.rotate(45, -1, 0, -1);
-            GlStateManager.scale(0.6F, 0.6F, 0.6F);
-            GlStateManager.translate(0, -0.2F, 0);
+            GlStateManager.rotatef(225, 0, 1, 0);
+            GlStateManager.rotatef(45, -1, 0, -1);
+            GlStateManager.translatef(0.6F, 0.6F, 0.6F);
+            GlStateManager.translatef(0, -0.2F, 0);
         } else {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                GlStateManager.rotate(90, 0, 1, 0);
+                GlStateManager.rotatef(90, 0, 1, 0);
             }
-            GlStateManager.rotate(45, 0, 1, 0);
-            GlStateManager.translate(0, -0.7F, 0);
+            GlStateManager.rotatef(45, 0, 1, 0);
+            GlStateManager.translatef(0, -0.7F, 0);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));

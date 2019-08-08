@@ -16,8 +16,8 @@ public class GuiRobitSmelting extends GuiRobit {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(LangUtils.localize("gui.robit.smelting"), 8, 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, ySize - 93, 0x404040);
+        font.drawString(LangUtils.localize("gui.robit.smelting"), 8, 6, 0x404040);
+        font.drawString(LangUtils.localize("container.inventory"), 8, ySize - 93, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

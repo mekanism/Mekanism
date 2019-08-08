@@ -33,8 +33,8 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator>
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(tileEntity.getName(), tileEntity.getBlockType() instanceof BlockAdvancedSolarGenerator ? 30 : 45, 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        font.drawString(tileEntity.getName(), tileEntity.getBlockType() instanceof BlockAdvancedSolarGenerator ? 30 : 45, 6, 0x404040);
+        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         renderCenteredText(48, 80, 28, 0x00CD00, LangUtils.localize("gui.producing"));
         renderCenteredText(48, 80, 42, 0x00CD00, MekanismUtils.getEnergyDisplay(tileEntity.getProduction()) + "/t");
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

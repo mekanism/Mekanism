@@ -7,7 +7,7 @@ import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,10 +26,10 @@ public class RenderScubaTank extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GlStateManager.rotate(180, 0, 0, 1);
-        GlStateManager.rotate(90, 0, -1, 0);
-        GlStateManager.scale(1.6F, 1.6F, 1.6F);
-        GlStateManager.translate(0.2F, -0.5F, 0);
+        GlStateManager.rotatef(180, 0, 0, 1);
+        GlStateManager.rotatef(90, 0, -1, 0);
+        GlStateManager.translatef(1.6F, 1.6F, 1.6F);
+        GlStateManager.translatef(0.2F, -0.5F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
         scubaTank.render(0.0625F);
         GlStateManager.popMatrix();

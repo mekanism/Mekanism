@@ -8,7 +8,7 @@ import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,16 +22,16 @@ public class RenderSecurityDeskItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotate(180, 1, 0, 0);
+        GlStateManager.rotatef(180, 1, 0, 0);
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            GlStateManager.rotate(90, 0, 1, 0);
+            GlStateManager.rotatef(90, 0, 1, 0);
         } else {
-            GlStateManager.rotate(-90, 0, 1, 0);
+            GlStateManager.rotatef(-90, 0, 1, 0);
         }
-        GlStateManager.scale(0.8F, 0.8F, 0.8F);
-        GlStateManager.translate(0, -0.8F, 0);
+        GlStateManager.translatef(0.8F, 0.8F, 0.8F);
+        GlStateManager.translatef(0, -0.8F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk.png"));
-        securityDesk.render(0.0625F, Minecraft.getInstance().renderEngine);
+        securityDesk.render(0.0625F, Minecraft.getInstance().textureManager);
     }
 
     @Override

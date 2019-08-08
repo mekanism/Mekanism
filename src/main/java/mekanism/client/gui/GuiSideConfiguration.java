@@ -124,13 +124,13 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = currentType.localize() + " " + LangUtils.localize("gui.config");
-        fontRenderer.drawString(title, (xSize / 2) - (fontRenderer.getStringWidth(title) / 2), 5, 0x404040);
+        font.drawString(title, (xSize / 2) - (font.getStringWidth(title) / 2), 5, 0x404040);
         if (configurable.getConfig().canEject(currentType)) {
-            fontRenderer.drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
+            font.drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
         } else {
-            fontRenderer.drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
+            font.drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
         }
-        fontRenderer.drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
+        font.drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         for (GuiSideDataButton button : sideDataButtons) {

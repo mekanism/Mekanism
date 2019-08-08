@@ -12,7 +12,7 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -86,15 +86,15 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     @Override
     public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
         GlStateManager.enableBlend();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         drawGas(minecraft, xPosition, yPosition, gasStack);
         if (overlay != null) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0, 0, 200);
+            GlStateManager.translatef(0, 0, 200);
             overlay.draw(minecraft, xPosition, yPosition);
             GlStateManager.popMatrix();
         }
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
         GlStateManager.disableBlend();
     }
 
@@ -115,7 +115,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
 
     private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, Gas gas, int scaledAmount,
           TextureAtlasSprite sprite) {
-        minecraft.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         MekanismRenderer.color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;

@@ -57,7 +57,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 32, 0, 0, 26, 26);
         SecurityMode mode = getSecurity();
         SecurityData data = MekanismClient.clientSecurityMap.get(getOwner());
@@ -70,12 +70,12 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
         } else {
             guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 36, 18, 18);
         }
-        mc.renderEngine.bindTexture(defaultLocation);
+        mc.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
             String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Dist.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Dist.CLIENT);
             String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
@@ -88,7 +88,7 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
                 displayTooltips(Arrays.asList(securityText, ownerText), xAxis, yAxis);
             }
         }
-        mc.renderEngine.bindTexture(defaultLocation);
+        mc.textureManager.bindTexture(defaultLocation);
     }
 
     private SecurityFrequency getFrequency() {

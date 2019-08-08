@@ -3,7 +3,7 @@ package mekanism.client.render.item;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
@@ -28,16 +28,16 @@ public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRende
     protected void renderWithTransform(@Nonnull ItemStack stack) {
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
-            GlStateManager.rotate(180, 0, 1, 0);
+            GlStateManager.rotatef(180, 0, 1, 0);
         }
 
         renderBlockSpecific(stack, transformType);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
-                GlStateManager.rotate(90, 0, 1, 0);
+                GlStateManager.rotatef(90, 0, 1, 0);
             } else {
-                GlStateManager.rotate(180, 0, 1, 0);
+                GlStateManager.rotatef(180, 0, 1, 0);
             }
             renderItemSpecific(stack, transformType);
         }
@@ -48,8 +48,8 @@ public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRende
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.5F, 0.5F, 0.5F);
-        GlStateManager.rotate(180, 0, 1, 0);
+        GlStateManager.translatef(0.5F, 0.5F, 0.5F);
+        GlStateManager.rotatef(180, 0, 1, 0);
 
         renderWithTransform(stack);
 

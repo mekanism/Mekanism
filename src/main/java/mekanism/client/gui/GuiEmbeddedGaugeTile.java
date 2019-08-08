@@ -31,7 +31,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism> exte
         int start = 0;
         MekanismRenderer.color(fluid);
         TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
-        mc.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         while (true) {
             int renderRemaining;
             if (scale > 16) {
@@ -48,7 +48,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism> exte
             }
         }
         MekanismRenderer.resetColor();
-        mc.renderEngine.bindTexture(getGaugeResource());
+        minecraft.textureManager.bindTexture(getGaugeResource());
         drawTexturedModalRect(guiLeft + xPos, guiTop + yPos, 176, side == 0 ? 0 : 54, 16, 54);
     }
 }

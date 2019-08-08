@@ -107,6 +107,6 @@ public class GuiReactorHeat extends GuiReactorInfo {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        fontRenderer.drawString(tileEntity.getName(), 46, 6, 0x404040);
+        font.drawString(tileEntity.getName(), 46, 6, 0x404040);
     }
 }

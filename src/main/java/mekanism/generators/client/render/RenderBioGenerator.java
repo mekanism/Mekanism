@@ -10,9 +10,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.block.Blocks;
@@ -36,7 +36,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
             GlStateManager.disableLighting();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-            GlStateManager.translate((float) x, (float) y, (float) z);
+            GlStateManager.translatef((float) x, (float) y, (float) z);
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             getDisplayList(tileEntity.getDirection())[tileEntity.getScaledFuelLevel(stages - 1)].render();
             MekanismRenderer.disableGlow(glowInfo);
@@ -47,12 +47,12 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+        GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 
         MekanismRenderer.rotate(tileEntity.getDirection(), 180, 0, 270, 90);
 
-        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotatef(180, 0, 0, 1);
         model.render(0.0625F);
         GlStateManager.popMatrix();
     }

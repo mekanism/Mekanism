@@ -9,7 +9,7 @@ import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.Materials;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItem;
-import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -21,6 +21,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+=
 
 public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
 
@@ -55,7 +57,7 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ModelBiped getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, ModelBiped _default) {
+    public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default) {
         if (itemStack.getItem() == ToolsItem.GLOWSTONE_HELMET.getItem() || itemStack.getItem() == ToolsItem.GLOWSTONE_CHESTPLATE.getItem()
             || itemStack.getItem() == ToolsItem.GLOWSTONE_LEGGINGS.getItem() || itemStack.getItem() == ToolsItem.GLOWSTONE_BOOTS.getItem()) {
             return ModelCustomArmor.getGlow(armorSlot);

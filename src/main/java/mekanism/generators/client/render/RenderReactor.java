@@ -8,9 +8,9 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,11 +25,11 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
     public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.isBurning()) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);
+            GlStateManager.translatef((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlpha();
+            GlStateManager.disableAlphaTest();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
@@ -47,7 +47,7 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
 
             MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.disableBlend();
-            GlStateManager.enableAlpha();
+            GlStateManager.enableAlphaTest();
             GlStateManager.popMatrix();
         }
     }
@@ -55,10 +55,10 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
     private void renderPart(EnumColor color, double scale, float ticks, long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
         float ticksScaledTemp = ticks * scaledTemp;
         GlStateManager.pushMatrix();
-        GlStateManager.scale((float) scale, (float) scale, (float) scale);
+        GlStateManager.translatef((float) scale, (float) scale, (float) scale);
         MekanismRenderer.color(color);
-        GlStateManager.rotate(ticksScaledTemp * mult1 + shift1, 0, 1, 0);
-        GlStateManager.rotate(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
+        GlStateManager.rotatef(ticksScaledTemp * mult1 + shift1, 0, 1, 0);
+        GlStateManager.rotatef(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
         core.render(0.0625F);
         MekanismRenderer.resetColor();
         GlStateManager.popMatrix();

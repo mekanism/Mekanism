@@ -4,9 +4,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import org.lwjgl.opengl.GL11;
 
 public class ModelArmoredJetpack extends ModelBase {
@@ -243,7 +243,7 @@ public class ModelArmoredJetpack extends ModelBase {
 
         GlStateManager.pushMatrix();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
@@ -256,7 +256,7 @@ public class ModelArmoredJetpack extends ModelBase {
         MekanismRenderer.resetColor();
         GlStateManager.disableCull();
         GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.popMatrix();
 
         light1.render(size);
@@ -265,7 +265,7 @@ public class ModelArmoredJetpack extends ModelBase {
         Packcore.render(size);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0, -0.0625F);
+        GlStateManager.translatef(0, 0, -0.0625F);
 
         Rightlight.render(size);
         Leftlight.render(size);

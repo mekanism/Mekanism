@@ -10,9 +10,9 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelCustomArmor extends ModelBiped {
+public class ModelCustomArmor extends BipedModel {
 
     public static ModelCustomArmor INSTANCE = new ModelCustomArmor();
 
@@ -54,8 +54,8 @@ public class ModelCustomArmor extends ModelBiped {
         return false;
     }
 
-    public static ModelBiped getGlow(EquipmentSlotType index) {
-        ModelBiped biped = index != EquipmentSlotType.LEGS ? GLOW_BIG : GLOW_SMALL;
+    public static BipedModel getGlow(EquipmentSlotType index) {
+        BipedModel biped = index != EquipmentSlotType.LEGS ? GLOW_BIG : GLOW_SMALL;
 
         biped.bipedHead.showModel = index == EquipmentSlotType.HEAD;
         biped.bipedHeadwear.showModel = index == EquipmentSlotType.HEAD;
@@ -149,7 +149,7 @@ public class ModelCustomArmor extends ModelBiped {
         }
     }
 
-    public static class GlowArmor extends ModelBiped {
+    public static class GlowArmor extends BipedModel {
 
         public GlowArmor(float size) {
             super(size);
@@ -185,8 +185,8 @@ public class ModelCustomArmor extends ModelBiped {
         public void render(float size) {
             if (ModelCustomArmor.this.modelType != null) {
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(0, 0, 0.06F);
-                mc.renderEngine.bindTexture(modelType.resource);
+                GlStateManager.translatef(0, 0, 0.06F);
+                mc.textureManager.bindTexture(modelType.resource);
                 if (useModel(biped.modelType, partRender, biped)) {
                     if (biped.modelType == ArmorModel.JETPACK) {
                         ArmorModel.jetpackModel.render(0.0625F);
@@ -195,15 +195,15 @@ public class ModelCustomArmor extends ModelBiped {
                     } else if (biped.modelType == ArmorModel.SCUBATANK) {
                         ArmorModel.scubaTankModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.GASMASK) {
-                        GlStateManager.translate(0, 0, -0.05F);
+                        GlStateManager.translatef(0, 0, -0.05F);
                         ArmorModel.gasMaskModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.FREERUNNERS) {
-                        GlStateManager.scale(1.02F, 1.02F, 1.02F);
+                        GlStateManager.translatef(1.02F, 1.02F, 1.02F);
                         if (partRender == biped.bipedLeftLeg) {
-                            GlStateManager.translate(-0.1375F, -0.75F, -0.0625F);
+                            GlStateManager.translatef(-0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderLeft(0.0625F);
                         } else if (partRender == biped.bipedRightLeg) {
-                            GlStateManager.translate(0.1375F, -0.75F, -0.0625F);
+                            GlStateManager.translatef(0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderRight(0.0625F);
                         }
                     }

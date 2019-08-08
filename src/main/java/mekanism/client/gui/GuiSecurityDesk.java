@@ -161,16 +161,16 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String ownerText = tileEntity.clientOwner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.clientOwner) : EnumColor.RED + LangUtils.localize("gui.noOwner");
-        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        fontRenderer.drawString(ownerText, xSize - 7 - fontRenderer.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
+        font.drawString(ownerText, xSize - 7 - font.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
+        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         String trusted = LangUtils.localize("gui.trustedPlayers");
-        fontRenderer.drawString(trusted, 74 - (fontRenderer.getStringWidth(trusted) / 2), 57, 0x787878);
+        font.drawString(trusted, 74 - (font.getStringWidth(trusted) / 2), 57, 0x787878);
         String security = EnumColor.RED + LangUtils.localize("gui.securityOffline");
         if (tileEntity.frequency != null) {
             security = LangUtils.localize("gui.security") + ": " + tileEntity.frequency.securityMode.getDisplay();
         }
-        fontRenderer.drawString(security, 13, 103, 0x404040);
+        font.drawString(security, 13, 103, 0x404040);
         renderScaledText(LangUtils.localize("gui.add") + ":", 13, 70, 0x404040, 20);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;

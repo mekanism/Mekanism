@@ -5,7 +5,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -44,16 +44,16 @@ public class ParticleLaser extends Particle {
         float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
         float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - interpPosZ);
 
-        GlStateManager.translate(newX, newY, newZ);
+        GlStateManager.translatef(newX, newY, newZ);
 
         switch (direction) {
             case WEST:
             case EAST:
-                GlStateManager.rotate(90, 0, 0, 1);
+                GlStateManager.rotatef(90, 0, 0, 1);
                 break;
             case NORTH:
             case SOUTH:
-                GlStateManager.rotate(90, 1, 0, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
             default:
                 break;
@@ -77,7 +77,7 @@ public class ParticleLaser extends Particle {
     }
 
     private void drawComponent(BufferBuilder buffer, Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, float angle) {
-        GlStateManager.rotate(angle, 0, 1, 0);
+        GlStateManager.rotatef(angle, 0, 1, 0);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
         buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
         buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();

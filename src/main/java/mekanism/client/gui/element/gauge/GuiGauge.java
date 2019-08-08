@@ -60,12 +60,12 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, texX, texY, width, height);
         if (!dummy) {
             renderScale(guiWidth, guiHeight);
         }
-        mc.renderEngine.bindTexture(defaultLocation);
+        mc.textureManager.bindTexture(defaultLocation);
     }
 
     public void renderScale(int guiWidth, int guiHeight) {
@@ -88,7 +88,7 @@ public abstract class GuiGauge<T> extends GuiElement {
                 scale = 0;
             }
 
-            mc.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            mc.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             for (int i = 0; i < number; i++) {
                 guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
             }
@@ -98,7 +98,7 @@ public abstract class GuiGauge<T> extends GuiElement {
             }
         }
         MekanismRenderer.resetColor();
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
     }
 

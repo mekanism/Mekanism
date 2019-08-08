@@ -32,8 +32,8 @@ public class GuiDictionary extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+        font.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
+        font.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         renderItem(itemType, 6, 6);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

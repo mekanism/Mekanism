@@ -6,9 +6,9 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -37,16 +37,16 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         GlStateManager.pushMatrix();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.color(1, 1, 1, 1 - alpha);
 
         bindTexture(getEntityTexture(entity));
 
-        GlStateManager.translate((float) x, (float) y, (float) z);
-        GlStateManager.rotate((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0, 1, 0);
-        GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0, 0, 1);
+        GlStateManager.translatef((float) x, (float) y, (float) z);
+        GlStateManager.rotatef((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0, 1, 0);
+        GlStateManager.rotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0, 0, 1);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldrenderer = tessellator.getBuffer();
@@ -59,12 +59,12 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float scale = 0.05625F * (0.8F + size);
 
         GlStateManager.enableRescaleNormal();
-        GlStateManager.rotate(45, 1, 0, 0);
-        GlStateManager.scale(scale, scale, scale);
-        GlStateManager.translate(-4F, 0, 0);
+        GlStateManager.rotatef(45, 1, 0, 0);
+        GlStateManager.translatef(scale, scale, scale);
+        GlStateManager.translatef(-4F, 0, 0);
 
         for (int j = 0; j < 4; j++) {
-            GlStateManager.rotate(90, 1, 0, 0);
+            GlStateManager.rotatef(90, 1, 0, 0);
             GlStateManager.glNormal3f(0.0F, 0.0F, scale);
 
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -77,7 +77,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         GlStateManager.disableRescaleNormal();
         MekanismRenderer.resetColor();
         GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.popMatrix();
     }

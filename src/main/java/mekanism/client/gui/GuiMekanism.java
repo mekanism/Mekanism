@@ -11,7 +11,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.Container;
@@ -42,7 +42,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     protected float getNeededScale(String text, int maxX) {
-        int length = fontRenderer.getStringWidth(text);
+        int length = font.getStringWidth(text);
         return length <= maxX ? 1 : (float) maxX / length;
     }
 
@@ -54,16 +54,16 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
      * returns scale
      */
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
-        int length = fontRenderer.getStringWidth(text);
+        int length = font.getStringWidth(text);
         if (length <= maxX) {
-            fontRenderer.drawString(text, x, y, color);
+            font.drawString(text, x, y, color);
         } else {
             float scale = (float) maxX / length;
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
             GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, scale);
-            fontRenderer.drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
+            GlStateManager.translatef(scale, scale, scale);
+            font.drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }
     }
@@ -93,7 +93,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
-        mc.renderEngine.bindTexture(getGuiLocation());
+        minecraft.textureManager.bindTexture(getGuiLocation());
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
@@ -178,9 +178,9 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     protected void renderCenteredText(int leftMargin, int areaWidth, int y, int color, String text) {
-        int textWidth = fontRenderer.getStringWidth(text);
+        int textWidth = font.getStringWidth(text);
         int centerX = leftMargin + (areaWidth / 2) - (textWidth / 2);
-        fontRenderer.drawString(text, centerX, y, color);
+        font.drawString(text, centerX, y, color);
     }
 
     protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {
@@ -201,7 +201,7 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
                 GlStateManager.enableDepth();
                 RenderHelper.enableGUIStandardItemLighting();
                 if (scale != 1) {
-                    GlStateManager.scale(scale, scale, scale);
+                    GlStateManager.translatef(scale, scale, scale);
                 }
                 itemRender.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();

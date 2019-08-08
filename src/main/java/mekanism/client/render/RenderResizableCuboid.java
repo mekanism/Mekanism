@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -10,7 +11,6 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -25,7 +25,6 @@ import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.IWorldReader;
 import org.lwjgl.opengl.GL11;
 
@@ -130,7 +129,7 @@ public class RenderResizableCuboid {
      */
     public void renderCubeFromCentre(Model3D cuboid) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float) -cuboid.sizeX() / 2F, (float) -cuboid.sizeY() / 2F, (float) -cuboid.sizeZ() / 2F);
+        GlStateManager.translatef((float) -cuboid.sizeX() / 2F, (float) -cuboid.sizeY() / 2F, (float) -cuboid.sizeZ() / 2F);
         renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
         GlStateManager.popMatrix();
     }
@@ -156,12 +155,12 @@ public class RenderResizableCuboid {
         Vec3d textureOffset = new Vec3d(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D, cube.textureOffsetZ / 16D);
         Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
 
-        manager.renderEngine.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        manager.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder wr = tess.getBuffer();
 
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.disableLighting();
 
@@ -176,7 +175,7 @@ public class RenderResizableCuboid {
         tess.draw();
 
         GlStateManager.enableLighting();
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
     }
 
     private void renderCuboidFace(BufferBuilder wr, Direction face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,

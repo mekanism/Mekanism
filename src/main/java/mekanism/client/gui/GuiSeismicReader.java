@@ -16,7 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -76,19 +76,19 @@ public class GuiSeismicReader extends Screen {
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
         int guiLeft = (width - xSize) / 2;
         int guiTop = (height - ySize) / 2;
-        mc.renderEngine.bindTexture(getGuiLocation());
+        minecraft.textureManager.bindTexture(getGuiLocation());
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Fix the overlapping if > 100
         GlStateManager.pushMatrix();
-        GlStateManager.translate(guiLeft + 48, guiTop + 87, 0);
+        GlStateManager.translatef(guiLeft + 48, guiTop + 87, 0);
 
         if (currentLayer >= 100) {
-            GlStateManager.translate(0, 1, 0);
-            GlStateManager.scale(0.7F, 0.7F, 0.7F);
+            GlStateManager.translatef(0, 1, 0);
+            GlStateManager.translatef(0.7F, 0.7F, 0.7F);
         }
 
-        fontRenderer.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
+        font.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
         GlStateManager.popMatrix();
 
         // Render the item stacks
@@ -99,13 +99,13 @@ public class GuiSeismicReader extends Screen {
                 Pair<Integer, Block> integerBlockPair = blockList.get(layer);
                 ItemStack stack = new ItemStack(integerBlockPair.getRight(), 1, integerBlockPair.getLeft());
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(centralX - 2, centralY - i * 16 + (22 * 2), 0);
+                GlStateManager.translatef(centralX - 2, centralY - i * 16 + (22 * 2), 0);
                 if (i < 4) {
-                    GlStateManager.translate(0.2F, 2.5F, 0);
+                    GlStateManager.translatef(0.2F, 2.5F, 0);
                 }
                 if (i != 4) {
-                    GlStateManager.translate(1.5F, 0, 0);
-                    GlStateManager.scale(0.8F, 0.8F, 0.8F);
+                    GlStateManager.translatef(1.5F, 0, 0);
+                    GlStateManager.translatef(0.8F, 0.8F, 0.8F);
                 }
                 renderItem(stack, 0, 0);
                 GlStateManager.popMatrix();
@@ -120,23 +120,23 @@ public class GuiSeismicReader extends Screen {
             String renderString = nameStack.getDisplayName();
 
             String capitalised = renderString.substring(0, 1).toUpperCase() + renderString.substring(1);
-            int lengthX = fontRenderer.getStringWidth(capitalised);
+            int lengthX = font.getStringWidth(capitalised);
             float renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
             GlStateManager.pushMatrix();
-            GlStateManager.translate(guiLeft + 72, guiTop + 16, 0);
-            GlStateManager.scale(renderScale, renderScale, renderScale);
-            fontRenderer.drawString(capitalised, 0, 0, 0x919191);
+            GlStateManager.translatef(guiLeft + 72, guiTop + 16, 0);
+            GlStateManager.translatef(renderScale, renderScale, renderScale);
+            font.drawString(capitalised, 0, 0, 0x919191);
             GlStateManager.popMatrix();
 
             if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
-                mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
-                int fontLengthX = fontRenderer.getStringWidth(capitalised) + 5;
+                minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
+                int fontLengthX = font.getStringWidth(capitalised) + 5;
                 int renderX = mouseX + 10, renderY = mouseY - 5;
                 GlStateManager.pushMatrix();
                 drawTexturedModalRect(renderX, renderY, 0, 0, fontLengthX, 16);
                 drawTexturedModalRect(renderX + fontLengthX, renderY, 0, 16, 2, 16);
-                fontRenderer.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);
+                font.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);
                 GlStateManager.popMatrix();
             }
 
@@ -149,9 +149,9 @@ public class GuiSeismicReader extends Screen {
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(guiLeft + 72, guiTop + 26, 0);
-        GlStateManager.scale(0.7F, 0.7F, 0.7F);
-        fontRenderer.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
+        GlStateManager.translatef(guiLeft + 72, guiTop + 26, 0);
+        GlStateManager.translatef(0.7F, 0.7F, 0.7F);
+        font.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
         GlStateManager.popMatrix();
         MekanismRenderer.resetColor();
         super.drawScreen(mouseX, mouseY, partialTick);

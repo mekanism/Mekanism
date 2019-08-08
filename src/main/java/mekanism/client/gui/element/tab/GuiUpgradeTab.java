@@ -34,19 +34,19 @@ public class GuiUpgradeTab extends GuiTileEntityElement<TileEntity> {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 26);
         guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
-        mc.renderEngine.bindTexture(defaultLocation);
+        mc.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
             displayTooltip(LangUtils.localize("gui.upgrades"), xAxis, yAxis);
         }
-        mc.renderEngine.bindTexture(defaultLocation);
+        mc.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

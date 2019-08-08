@@ -90,7 +90,7 @@ public abstract class BaseRecipeCategory<WRAPPER extends IRecipeWrapper> impleme
 
     @Override
     public void drawExtras(Minecraft minecraft) {
-        minecraft.renderEngine.bindTexture(guiLocation);
+        minecraft.textureManager.bindTexture(guiLocation);
         guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
     }
 

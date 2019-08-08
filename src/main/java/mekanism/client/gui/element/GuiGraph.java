@@ -6,9 +6,9 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -68,10 +68,10 @@ public class GuiGraph extends GuiElement {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         drawBlack(guiWidth, guiHeight);
         drawGraph(guiWidth, guiHeight);
-        mc.renderEngine.bindTexture(defaultLocation);
+        mc.textureManager.bindTexture(defaultLocation);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class GuiGraph extends GuiElement {
             int displays = (relativeHeight - 1) / 10 + ((relativeHeight - 1) % 10 > 0 ? 1 : 0);
 
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlpha();
+            GlStateManager.disableAlphaTest();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             for (int iter = 0; iter < displays; iter++) {
@@ -123,7 +123,7 @@ public class GuiGraph extends GuiElement {
             }
             MekanismRenderer.resetColor();
             GlStateManager.disableBlend();
-            GlStateManager.enableAlpha();
+            GlStateManager.enableAlphaTest();
         }
     }
 

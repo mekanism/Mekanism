@@ -6,9 +6,9 @@ import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityObsidianTNT;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -29,7 +29,7 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
     public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
         BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRendererDispatcher();
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float) x, (float) y + 0.5F, (float) z);
+        GlStateManager.translatef((float) x, (float) y + 0.5F, (float) z);
 
         if (entityobsidiantnt.fuse - partialTicks + 1.0F < 10.0F) {
             float f = 1.0F - (entityobsidiantnt.fuse - partialTicks + 1.0F) / 10.0F;
@@ -37,14 +37,14 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
             f = f * f;
             f = f * f;
             float scale = 1.0F + f * 0.3F;
-            GlStateManager.scale(scale, scale, scale);
+            GlStateManager.translatef(scale, scale, scale);
         }
 
         float f3 = (1.0F - ((entityobsidiantnt.fuse - partialTicks) + 1.0F) / 100F) * 0.8F;
         bindEntityTexture(entityobsidiantnt);
-        GlStateManager.translate(-0.5F, -0.5F, 0.5F);
+        GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
         renderer.renderBlockBrightness(MekanismBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), entityobsidiantnt.getBrightness());
-        GlStateManager.translate(0, 0, 1.0F);
+        GlStateManager.translatef(0, 0, 1.0F);
 
         if (entityobsidiantnt.fuse / 5 % 2 == 0) {
             GlStateManager.disableTexture2D();

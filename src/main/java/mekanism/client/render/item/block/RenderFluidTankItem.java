@@ -15,9 +15,9 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.ItemStack;
@@ -51,12 +51,12 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             GlStateManager.enableCull();
             GlStateManager.disableLighting();
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlpha();
+            GlStateManager.disableAlphaTest();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
             MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+            GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
@@ -73,14 +73,14 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.disableBlend();
-            GlStateManager.enableAlpha();
+            GlStateManager.enableAlphaTest();
             GlStateManager.enableLighting();
             GlStateManager.disableCull();
             GlStateManager.popMatrix();
         }
 
-        GlStateManager.translate(0, -0.9F, 0);
-        GlStateManager.scale(0.9F, 0.8F, 0.9F);
+        GlStateManager.translatef(0, -0.9F, 0);
+        GlStateManager.translatef(0.9F, 0.8F, 0.9F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidTank.png"));
         fluidTank.render(0.073F, tier);
         GlStateManager.popMatrix();

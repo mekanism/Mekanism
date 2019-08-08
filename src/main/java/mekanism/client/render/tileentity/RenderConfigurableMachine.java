@@ -14,9 +14,9 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -60,19 +60,19 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                             GlStateManager.disableLighting();
                             GlowInfo glowInfo = MekanismRenderer.enableGlow();
                             GlStateManager.shadeModel(GL11.GL_SMOOTH);
-                            GlStateManager.disableAlpha();
+                            GlStateManager.disableAlphaTest();
                             GlStateManager.enableBlend();
                             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
                             MekanismRenderer.color(data.color, 0.6F);
                             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                            GlStateManager.translate((float) x, (float) y, (float) z);
+                            GlStateManager.translatef((float) x, (float) y, (float) z);
                             int display = getOverlayDisplay(pos.sideHit, type).display;
                             GlStateManager.callList(display);
                             MekanismRenderer.resetColor();
 
                             GlStateManager.disableBlend();
-                            GlStateManager.enableAlpha();
+                            GlStateManager.enableAlphaTest();
                             MekanismRenderer.disableGlow(glowInfo);
                             GlStateManager.enableLighting();
                             GlStateManager.disableCull();

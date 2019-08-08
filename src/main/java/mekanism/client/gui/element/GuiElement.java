@@ -7,7 +7,7 @@ import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -70,7 +70,7 @@ public abstract class GuiElement {
             float yAdd = 4 - (scale * 8) / 2F;
 
             GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, scale);
+            GlStateManager.translatef(scale, scale, scale);
             getFontRenderer().drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             GlStateManager.popMatrix();
         }

@@ -5,7 +5,7 @@ import mekanism.common.tile.bin.TileEntityBin;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.item.ItemStack;
@@ -36,19 +36,19 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             GlStateManager.pushMatrix();
             switch (facing) {
                 case NORTH:
-                    GlStateManager.translate((float) x + 0.73F, (float) y + 0.83F, (float) z - 0.0001F);
+                    GlStateManager.translatef((float) x + 0.73F, (float) y + 0.83F, (float) z - 0.0001F);
                     break;
                 case SOUTH:
-                    GlStateManager.translate((float) x + 0.27F, (float) y + 0.83F, (float) z + 1.0001F);
-                    GlStateManager.rotate(180, 0, 1, 0);
+                    GlStateManager.translatef((float) x + 0.27F, (float) y + 0.83F, (float) z + 1.0001F);
+                    GlStateManager.rotatef(180, 0, 1, 0);
                     break;
                 case WEST:
-                    GlStateManager.translate((float) x - 0.0001F, (float) y + 0.83F, (float) z + 0.27F);
-                    GlStateManager.rotate(90, 0, 1, 0);
+                    GlStateManager.translatef((float) x - 0.0001F, (float) y + 0.83F, (float) z + 0.27F);
+                    GlStateManager.rotatef(90, 0, 1, 0);
                     break;
                 case EAST:
-                    GlStateManager.translate((float) x + 1.0001F, (float) y + 0.83F, (float) z + 0.73F);
-                    GlStateManager.rotate(-90, 0, 1, 0);
+                    GlStateManager.translatef((float) x + 1.0001F, (float) y + 0.83F, (float) z + 0.73F);
+                    GlStateManager.rotatef(-90, 0, 1, 0);
                     break;
                 default:
                     break;
@@ -56,8 +56,8 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
 
             float scale = 0.03125F;
             float scaler = 0.9F;
-            GlStateManager.scale(scale * scaler, scale * scaler, -0.0001F);
-            GlStateManager.rotate(180, 0, 0, 1);
+            GlStateManager.translatef(scale * scaler, scale * scaler, -0.0001F);
+            GlStateManager.rotatef(180, 0, 0, 1);
             renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
             GlStateManager.popMatrix();
         }
@@ -73,38 +73,38 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
         GlStateManager.enablePolygonOffset();
         float displayWidth = 1;
         float displayHeight = 1;
-        GlStateManager.translate((float) x, (float) y, (float) z);
+        GlStateManager.translatef((float) x, (float) y, (float) z);
 
         switch (side) {
             case SOUTH:
-                GlStateManager.translate(0, 1, 0);
-                GlStateManager.rotate(0, 0, 1, 0);
-                GlStateManager.rotate(90, 1, 0, 0);
+                GlStateManager.translatef(0, 1, 0);
+                GlStateManager.rotatef(0, 0, 1, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
             case NORTH:
-                GlStateManager.translate(1, 1, 1);
-                GlStateManager.rotate(180, 0, 1, 0);
-                GlStateManager.rotate(90, 1, 0, 0);
+                GlStateManager.translatef(1, 1, 1);
+                GlStateManager.rotatef(180, 0, 1, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
             case EAST:
-                GlStateManager.translate(0, 1, 1);
-                GlStateManager.rotate(90, 0, 1, 0);
-                GlStateManager.rotate(90, 1, 0, 0);
+                GlStateManager.translatef(0, 1, 1);
+                GlStateManager.rotatef(90, 0, 1, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
             case WEST:
-                GlStateManager.translate(1, 1, 0);
-                GlStateManager.rotate(-90, 0, 1, 0);
-                GlStateManager.rotate(90, 1, 0, 0);
+                GlStateManager.translatef(1, 1, 0);
+                GlStateManager.rotatef(-90, 0, 1, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
         }
 
-        GlStateManager.translate(displayWidth / 2, 1F, displayHeight / 2);
-        GlStateManager.rotate(-90, 1, 0, 0);
+        GlStateManager.translatef(displayWidth / 2, 1F, displayHeight / 2);
+        GlStateManager.rotatef(-90, 1, 0, 0);
 
-        FontRenderer fontRenderer = getFontRenderer();
+        FontRenderer font = getFontRenderer();
 
-        int requiredWidth = Math.max(fontRenderer.getStringWidth(text), 1);
-        int requiredHeight = fontRenderer.FONT_HEIGHT + 2;
+        int requiredWidth = Math.max(font.getStringWidth(text), 1);
+        int requiredHeight = font.FONT_HEIGHT + 2;
         float scaler = 0.4F;
         float scaleX = displayWidth / requiredWidth;
         float scale = scaleX * scaler;
@@ -112,14 +112,14 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             scale = Math.min(scale, maxScale);
         }
 
-        GlStateManager.scale(scale, -scale, scale);
+        GlStateManager.translatef(scale, -scale, scale);
         GlStateManager.depthMask(false);
         int realHeight = (int) Math.floor(displayHeight / scale);
         int realWidth = (int) Math.floor(displayWidth / scale);
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
         GlStateManager.disableLighting();
-        fontRenderer.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
+        font.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
         GlStateManager.enableLighting();
         GlStateManager.depthMask(true);
         GlStateManager.disablePolygonOffset();

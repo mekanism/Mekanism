@@ -42,12 +42,12 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(tileEntity.getName(), 45, 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui.power") + ": " + powerFormat.format(MekanismUtils.convertToDisplay(
+        font.drawString(tileEntity.getName(), 45, 6, 0x404040);
+        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        font.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26, 0x00CD00);
+        font.drawString(LangUtils.localize("gui.power") + ": " + powerFormat.format(MekanismUtils.convertToDisplay(
               MekanismConfig.current().generators.windGenerationMin.val() * tileEntity.getCurrentMultiplier())), 51, 35, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
+        font.drawString(LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
         int size = 44;
         if (!tileEntity.getActive()) {
             size += 9;
@@ -55,7 +55,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
             if (tileEntity.isBlacklistDimension()) {
                 reason = "gui.noWind";
             }
-            fontRenderer.drawString(EnumColor.DARK_RED + LangUtils.localize(reason), 51, size, 0x00CD00);
+            font.drawString(EnumColor.DARK_RED + LangUtils.localize(reason), 51, size, 0x00CD00);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

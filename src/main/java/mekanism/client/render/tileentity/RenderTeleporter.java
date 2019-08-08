@@ -13,9 +13,9 @@ import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;
@@ -33,13 +33,13 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
             GlStateManager.disableLighting();
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlpha();
+            GlStateManager.disableAlphaTest();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             MekanismRenderer.color(EnumColor.PURPLE, 0.75F);
 
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translate((float) x, (float) y, (float) z);
+            GlStateManager.translatef((float) x, (float) y, (float) z);
             Coord4D obj = Coord4D.get(tileEntity).offset(Direction.WEST);
             int type = 0;
             BlockState s = obj.getBlockState(tileEntity.getWorld());
@@ -52,7 +52,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
             MekanismRenderer.resetColor();
             GlStateManager.disableBlend();
-            GlStateManager.enableAlpha();
+            GlStateManager.enableAlphaTest();
             MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.enableLighting();
             GlStateManager.disableCull();

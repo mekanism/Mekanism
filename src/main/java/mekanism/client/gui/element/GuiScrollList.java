@@ -69,10 +69,10 @@ public class GuiScrollList extends GuiElement {
 
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         drawBlack(guiWidth, guiHeight);
         drawSelected(guiWidth, guiHeight, selected);
-        mc.renderEngine.bindTexture(defaultLocation);
+        mc.textureManager.bindTexture(defaultLocation);
     }
 
     public void drawBlack(int guiWidth, int guiHeight) {
@@ -139,9 +139,9 @@ public class GuiScrollList extends GuiElement {
             }
         }
 
-        mc.renderEngine.bindTexture(RESOURCE);
+        mc.textureManager.bindTexture(RESOURCE);
         drawScroll();
-        mc.renderEngine.bindTexture(defaultLocation);
+        mc.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

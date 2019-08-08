@@ -9,7 +9,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,15 +24,15 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GlStateManager.rotate(180, 0, 0, 1);
+        GlStateManager.rotatef(180, 0, 0, 1);
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            GlStateManager.rotate(-90, 0, 1, 0);
+            GlStateManager.rotatef(-90, 0, 1, 0);
         } else if (transformType != TransformType.GUI) {
-            GlStateManager.rotate(90, 0, 1, 0);
+            GlStateManager.rotatef(90, 0, 1, 0);
         }
-        GlStateManager.translate(0.35F, 0.1F, 0);
+        GlStateManager.translatef(0.35F, 0.1F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
-        digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().renderEngine, true);
+        digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().textureManager, true);
         GlStateManager.popMatrix();
     }
 

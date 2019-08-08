@@ -34,7 +34,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism> extends G
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(LangUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
+        font.drawString(LangUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

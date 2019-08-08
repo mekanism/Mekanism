@@ -7,7 +7,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -59,7 +59,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         GlStateManager.disableLighting();
-        fontRenderer.drawString(LangUtils.localize("container.repair"), 60, 6, 0x404040);
+        font.drawString(LangUtils.localize("container.repair"), 60, 6, 0x404040);
 
         if (repairContainer.maximumCost > 0) {
             int k = 8453920;
@@ -77,18 +77,18 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
 
             if (flag) {
                 int l = -16777216 | (k & 16579836) >> 2 | k & -16777216;
-                int i1 = xSize - 25 - 8 - fontRenderer.getStringWidth(s);
+                int i1 = xSize - 25 - 8 - font.getStringWidth(s);
                 byte b0 = 67;
 
-                if (fontRenderer.getUnicodeFlag()) {
+                if (font.getUnicodeFlag()) {
                     drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, 0xFF000000);
                     drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, 0xFF3B3B3B);
                 } else {
-                    fontRenderer.drawString(s, i1, b0 + 1, l);
-                    fontRenderer.drawString(s, i1 + 1, b0, l);
-                    fontRenderer.drawString(s, i1 + 1, b0 + 1, l);
+                    font.drawString(s, i1, b0 + 1, l);
+                    font.drawString(s, i1 + 1, b0, l);
+                    font.drawString(s, i1 + 1, b0 + 1, l);
                 }
-                fontRenderer.drawString(s, i1, b0, k);
+                font.drawString(s, i1, b0, k);
             }
         }
         GlStateManager.enableLighting();

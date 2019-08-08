@@ -87,8 +87,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        font.drawString(tileEntity.getName(), (xSize / 2) - (font.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex() + i);
@@ -97,7 +97,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 }
                 int yStart = i * 22 + 18;
                 renderItem(renderStacks.get(filter), 13, yStart + 3);
-                fontRenderer.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
+                font.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
                 renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
             }
         }

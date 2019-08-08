@@ -6,7 +6,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,16 +45,16 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
 
         if (tileEntity.getHousedBlades() > 0) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate((float) x + 0.5F, (float) y - 1F, (float) z + 0.5F);
-            GlStateManager.rotate(tileEntity.rotationLower, 0, 1, 0);
+            GlStateManager.translatef((float) x + 0.5F, (float) y - 1F, (float) z + 0.5F);
+            GlStateManager.rotatef(tileEntity.rotationLower, 0, 1, 0);
             model.render(0.0625F, baseIndex);
             GlStateManager.popMatrix();
         }
 
         if (tileEntity.getHousedBlades() == 2) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
-            GlStateManager.rotate(tileEntity.rotationUpper, 0, 1, 0);
+            GlStateManager.translatef((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
+            GlStateManager.rotatef(tileEntity.rotationUpper, 0, 1, 0);
             model.render(0.0625F, baseIndex + 1);
             GlStateManager.popMatrix();
         }

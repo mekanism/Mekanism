@@ -7,7 +7,7 @@ import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,10 +22,10 @@ public class RenderPersonalChestItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GlStateManager.rotate(180, 0, 1, 0);
-        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-        GlStateManager.translate(0, 1.0F, 1.0F);
-        GlStateManager.scale(1.0F, -1F, -1F);
+        GlStateManager.rotatef(180, 0, 1, 0);
+        GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
+        GlStateManager.translatef(0, 1.0F, 1.0F);
+        GlStateManager.translatef(1.0F, -1F, -1F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PersonalChest.png"));
         personalChest.renderAll();
         GlStateManager.popMatrix();

@@ -7,7 +7,7 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
@@ -22,7 +22,7 @@ public final class FluidRenderer {
     private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 
     public static void translateToOrigin(Coord4D origin) {
-        GlStateManager.translate((float) getX(origin.x), (float) getY(origin.y), (float) getZ(origin.z));
+        GlStateManager.translatef((float) getX(origin.x), (float) getY(origin.y), (float) getZ(origin.z));
     }
 
     public static int getStages(RenderData data) {

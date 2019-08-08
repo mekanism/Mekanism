@@ -8,7 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -372,8 +372,8 @@ public class ModelEnergyCube extends ModelBase {
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.scale(1.001F, 1.005F, 1.001F);
-        GlStateManager.translate(0, -0.0061F, 0);
+        GlStateManager.translatef(1.001F, 1.005F, 1.001F);
+        GlStateManager.translatef(0, -0.0061F, 0);
         manager.bindTexture(BASE_OVERLAY);
         MekanismRenderer.color(tier.getBaseTier().getColor());
         GlowInfo glowInfo = MekanismRenderer.enableGlow();

@@ -25,9 +25,9 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -84,8 +84,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 float zShifted = (float) z + pos[2];
 
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(xShifted, yShifted, zShifted);
-                GlStateManager.scale(0.75F, 0.75F, 0.75F);
+                GlStateManager.translatef(xShifted, yShifted, zShifted);
+                GlStateManager.translatef(0.75F, 0.75F, 0.75F);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
                 GlStateManager.popMatrix();
 
@@ -95,7 +95,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlowInfo glowInfo = MekanismRenderer.enableGlow();
                     GlStateManager.disableCull();
                     MekanismRenderer.color(stack.color);
-                    GlStateManager.translate(xShifted, yShifted, zShifted);
+                    GlStateManager.translatef(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
                     MekanismRenderer.resetColor();
                     GlStateManager.enableCull();
@@ -120,21 +120,21 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlStateManager.disableLighting();
                     GlowInfo glowInfo = MekanismRenderer.enableGlow();
                     GlStateManager.shadeModel(GL11.GL_SMOOTH);
-                    GlStateManager.disableAlpha();
+                    GlStateManager.disableAlphaTest();
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     GlStateManager.color(1, 1, 1, 0.8F);
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                    GlStateManager.translate((float) x, (float) y, (float) z);
-                    GlStateManager.scale(0.5F, 0.5F, 0.5F);
-                    GlStateManager.translate(0.5F, 0.5F, 0.5F);
+                    GlStateManager.translatef((float) x, (float) y, (float) z);
+                    GlStateManager.translatef(0.5F, 0.5F, 0.5F);
+                    GlStateManager.translatef(0.5F, 0.5F, 0.5F);
 
                     int display = getOverlayDisplay(pos.sideHit, mode).display;
                     GlStateManager.callList(display);
 
                     MekanismRenderer.resetColor();
                     GlStateManager.disableBlend();
-                    GlStateManager.enableAlpha();
+                    GlStateManager.enableAlphaTest();
                     MekanismRenderer.disableGlow(glowInfo);
                     GlStateManager.enableLighting();
                     GlStateManager.disableCull();

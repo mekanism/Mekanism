@@ -1,5 +1,8 @@
 package mekanism.client.render.item.block;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import javax.annotation.Nonnull;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -14,9 +17,6 @@ import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -38,20 +38,20 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             return;
         }
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, -1.0F, 0);
+        GlStateManager.translatef(0, -1.0F, 0);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-        energyCube.render(0.0625F, tier, Minecraft.getInstance().renderEngine, true);
+        energyCube.render(0.0625F, tier, Minecraft.getInstance().textureManager, true);
 
         for (Direction side : Direction.values()) {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-            energyCube.renderSide(0.0625F, side, side == Direction.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getInstance().renderEngine);
+            energyCube.renderSide(0.0625F, side, side == Direction.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getInstance().textureManager);
         }
         GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.popMatrix();
 
         double energy = ItemDataUtils.getDouble(stack, "energyStored");
@@ -60,18 +60,18 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             GlStateManager.pushMatrix();
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
             GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlpha();
+            GlStateManager.disableAlphaTest();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
             //Begin core color
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.4F, 0.4F, 0.4F);
+            GlStateManager.translatef(0.4F, 0.4F, 0.4F);
             MekanismRenderer.color(tier.getBaseTier());
-            GlStateManager.translate(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
-            GlStateManager.rotate(4 * MekanismClient.ticksPassed, 0, 1, 0);
-            GlStateManager.rotate(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
+            GlStateManager.translatef(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
+            GlStateManager.rotatef(4 * MekanismClient.ticksPassed, 0, 1, 0);
+            GlStateManager.rotatef(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
             GlStateManager.popMatrix();
@@ -79,7 +79,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
             MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.disableBlend();
-            GlStateManager.enableAlpha();
+            GlStateManager.enableAlphaTest();
             GlStateManager.popMatrix();
         }
     }

@@ -65,7 +65,7 @@ public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser> {
 
     @Override
     protected void drawForegroundText() {
-        fontRenderer.drawString(LangUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        font.drawString(LangUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
+        font.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
     }
 }

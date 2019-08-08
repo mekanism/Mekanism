@@ -4,9 +4,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -100,7 +100,7 @@ public class ModelFluidTank extends ModelBase {
         Top.render(size);
 
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         MekanismRenderer.color(tier.getBaseTier());
@@ -110,7 +110,7 @@ public class ModelFluidTank extends ModelBase {
         LeftGlass.render(size);
         MekanismRenderer.resetColor();
         GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

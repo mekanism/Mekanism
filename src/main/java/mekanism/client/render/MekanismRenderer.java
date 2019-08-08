@@ -25,7 +25,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -185,13 +185,13 @@ public class MekanismRenderer {
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float) object.minX, (float) object.minY, (float) object.minZ);
+        GlStateManager.translatef((float) object.minX, (float) object.minY, (float) object.minZ);
         RenderResizableCuboid.INSTANCE.renderCube(object);
         GlStateManager.popMatrix();
     }
 
     public static void bindTexture(ResourceLocation texture) {
-        Minecraft.getInstance().renderEngine.bindTexture(texture);
+        Minecraft.getInstance().textureManager.bindTexture(texture);
     }
 
     //Color
@@ -321,16 +321,16 @@ public class MekanismRenderer {
     public static void rotate(Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
-                GlStateManager.rotate(north, 0, 1, 0);
+                GlStateManager.rotatef(north, 0, 1, 0);
                 break;
             case SOUTH:
-                GlStateManager.rotate(south, 0, 1, 0);
+                GlStateManager.rotatef(south, 0, 1, 0);
                 break;
             case WEST:
-                GlStateManager.rotate(west, 0, 1, 0);
+                GlStateManager.rotatef(west, 0, 1, 0);
                 break;
             case EAST:
-                GlStateManager.rotate(east, 0, 1, 0);
+                GlStateManager.rotatef(east, 0, 1, 0);
                 break;
         }
     }
