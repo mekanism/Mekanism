@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
@@ -36,7 +37,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (!Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
         } else {
             list.addAll(MekanismUtils.splitTooltip(getUpgradeType(itemstack).getDescription(), itemstack));

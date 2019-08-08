@@ -24,7 +24,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiReactorFuel extends GuiReactorInfo {
@@ -87,10 +87,10 @@ public class GuiReactorFuel extends GuiReactorInfo {
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if (!injectionRateField.isFocused() || i == Keyboard.KEY_ESCAPE) {
+        if (!injectionRateField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (i == Keyboard.KEY_RETURN && injectionRateField.isFocused()) {
+        if (i == GLFW.GLFW_KEY_ENTER && injectionRateField.isFocused()) {
             setInjection();
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {

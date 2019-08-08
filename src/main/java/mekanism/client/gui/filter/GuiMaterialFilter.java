@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -78,14 +79,14 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
 
     protected void materialMouseClicked() {
         ItemStack stack = mc.player.inventory.getItemStack();
-        if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
             if (stack.getItem() instanceof BlockItem) {
                 if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                     filter.setMaterialItem(stack.copy());
                     filter.getMaterialItem().setCount(1);
                 }
             }
-        } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        } else if (stack.isEmpty() && Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
             filter.setMaterialItem(ItemStack.EMPTY);
         }
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

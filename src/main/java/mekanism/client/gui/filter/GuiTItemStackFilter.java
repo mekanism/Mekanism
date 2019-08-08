@@ -24,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -105,7 +106,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if ((!minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE) {
+        if ((!minField.isFocused() && !maxField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
         if (Character.isDigit(c) || isTextboxKey(c, i)) {
@@ -165,10 +166,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         maxField.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && overTypeInput(mouseX - guiLeft, mouseY - guiTop)) {
             ItemStack stack = mc.player.inventory.getItemStack();
-            if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 filter.setItemStack(stack.copy());
                 filter.getItemStack().setCount(1);
-            } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            } else if (stack.isEmpty() && Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 filter.setItemStack(ItemStack.EMPTY);
             }
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -298,7 +298,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
               .translation("tooltip.configurator.toggleColor").string(": ");
 
         if (getTransmitter().getColor() != null) {
-            msg.appendSibling(getTransmitter().getColor().getTranslatedColouredComponent());
+            msg.appendSibling(getTransmitter().getColor().getTranslatedColoredComponent());
         } else {
             msg.translation("gui.none");
         }
@@ -313,7 +313,7 @@ public abstract class TileEntityLogisticalTransporter extends TileEntityTransmit
               .translation("tooltip.configurator.viewColor").string(": ");
 
         if (getTransmitter().getColor() != null) {
-            msg.appendSibling(getTransmitter().getColor().getTranslatedColouredComponent());
+            msg.appendSibling(getTransmitter().getColor().getTranslatedColoredComponent());
         } else {
             msg.translation("gui.none");
         }

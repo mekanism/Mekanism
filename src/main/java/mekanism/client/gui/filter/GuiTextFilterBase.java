@@ -10,7 +10,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends TileEntityMekanism> extends GuiFilterBase<FILTER, TILE> {
@@ -50,10 +50,10 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter, TILE extends Til
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if (!text.isFocused() || i == Keyboard.KEY_ESCAPE) {
+        if (!text.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (text.isFocused() && i == Keyboard.KEY_RETURN) {
+        if (text.isFocused() && i == GLFW.GLFW_KEY_ENTER) {
             setText();
             return;
         }

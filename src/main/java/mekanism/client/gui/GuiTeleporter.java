@@ -28,7 +28,6 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
@@ -43,7 +42,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
@@ -223,10 +222,10 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if (!frequencyField.isFocused() || i == Keyboard.KEY_ESCAPE) {
+        if (!frequencyField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (i == Keyboard.KEY_RETURN) {
+        if (i == GLFW.GLFW_KEY_ENTER) {
             if (frequencyField.isFocused()) {
                 setFrequency(frequencyField.getText());
                 frequencyField.setText("");

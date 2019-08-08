@@ -17,7 +17,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -28,7 +27,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter> {
@@ -136,10 +135,10 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if (!frequencyField.isFocused() || i == Keyboard.KEY_ESCAPE) {
+        if (!frequencyField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (i == Keyboard.KEY_RETURN) {
+        if (i == GLFW.GLFW_KEY_ENTER) {
             if (frequencyField.isFocused()) {
                 setFrequency(frequencyField.getText());
                 frequencyField.setText("");

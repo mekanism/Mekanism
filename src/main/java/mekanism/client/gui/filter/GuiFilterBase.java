@@ -10,15 +10,16 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -106,7 +107,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
         } else if (guibutton.id == defaultButton.id) {
             filter.allowDefault = !filter.allowDefault;
         } else if (guibutton.id == colorButton.id) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 filter.color = null;
             } else {
                 filter.color = TransporterUtils.increment(filter.color);
@@ -123,14 +124,14 @@ public abstract class GuiFilterBase<FILTER extends IFilter, TILE extends TileEnt
             boolean doNull = false;
             ItemStack stack = mc.player.inventory.getItemStack();
             ItemStack toUse = ItemStack.EMPTY;
-            if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 if (stack.getItem() instanceof BlockItem) {
                     if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                         toUse = stack.copy();
                         toUse.setCount(1);
                     }
                 }
-            } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            } else if (stack.isEmpty() && Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 doNull = true;
             }
             if (!toUse.isEmpty() || doNull) {

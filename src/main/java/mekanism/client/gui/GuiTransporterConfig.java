@@ -33,6 +33,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -85,12 +86,12 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism> {
         } else if (guibutton.id == strictInputButton.id) {
             Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));
         } else if (guibutton.id == colorButton.id) {
-            Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0, 0, null));
+            Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null));
         } else {
             for (GuiSideDataButton button : sideDataButtons) {
                 if (guibutton.id == button.id) {
                     Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile),
-                          Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0, button.getSlotPosMapIndex(), null));
+                          Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, button.getSlotPosMapIndex(), null));
                     break;
                 }
             }

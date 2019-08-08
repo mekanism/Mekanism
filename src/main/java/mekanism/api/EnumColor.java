@@ -120,7 +120,7 @@ public enum EnumColor implements IStringSerializable, IColor<EnumColor> {
         return code + getLocalizedName();
     }
 
-    public ITextComponent getTranslatedColouredComponent() {
+    public ITextComponent getTranslatedColoredComponent() {
         ITextComponent t = new TranslationTextComponent(getTranslationKey());
         t.getStyle().setColor(textFormatting);
         return t;

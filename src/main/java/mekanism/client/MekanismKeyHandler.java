@@ -36,16 +36,16 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class MekanismKeyHandler extends MekKeyHandler {
 
     public static final String keybindCategory = Mekanism.MOD_NAME;
-    public static KeyBinding modeSwitchKey = new KeyBinding("mekanism.key.mode", Keyboard.KEY_M, keybindCategory);
-    public static KeyBinding armorModeSwitchKey = new KeyBinding("mekanism.key.armorMode", Keyboard.KEY_G, keybindCategory);
-    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("mekanism.key.feetMode", Keyboard.KEY_H, keybindCategory);
-    public static KeyBinding voiceKey = new KeyBinding("mekanism.key.voice", Keyboard.KEY_U, keybindCategory);
+    public static KeyBinding modeSwitchKey = new KeyBinding("mekanism.key.mode", GLFW.GLFW_KEY_N, keybindCategory);
+    public static KeyBinding armorModeSwitchKey = new KeyBinding("mekanism.key.armorMode", GLFW.GLFW_KEY_G, keybindCategory);
+    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("mekanism.key.feetMode", GLFW.GLFW_KEY_H, keybindCategory);
+    public static KeyBinding voiceKey = new KeyBinding("mekanism.key.voice", GLFW.GLFW_KEY_U, keybindCategory);
 
     public static KeyBinding sneakKey = Minecraft.getInstance().gameSettings.keyBindSneak;
     public static KeyBinding jumpKey = Minecraft.getInstance().gameSettings.keyBindJump;

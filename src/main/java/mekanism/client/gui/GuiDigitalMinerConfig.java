@@ -32,6 +32,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -235,10 +236,10 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<TileEntityDigitalMine
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if ((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE) {
+        if ((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (i == Keyboard.KEY_RETURN) {
+        if (i == GLFW.GLFW_KEY_ENTER) {
             if (radiusField.isFocused()) {
                 setRadius();
             } else if (minField.isFocused()) {

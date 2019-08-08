@@ -30,7 +30,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater> {
@@ -122,10 +122,10 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if (!energyUsageField.isFocused() || i == Keyboard.KEY_ESCAPE) {
+        if (!energyUsageField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (energyUsageField.isFocused() && i == Keyboard.KEY_RETURN) {
+        if (energyUsageField.isFocused() && i == GLFW.GLFW_KEY_ENTER) {
             setEnergyUsage();
             return;
         }

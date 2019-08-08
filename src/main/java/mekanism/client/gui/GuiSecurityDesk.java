@@ -12,7 +12,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.LangUtils;
@@ -24,7 +23,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
@@ -118,10 +117,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk> {
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if (!trustedField.isFocused() || i == Keyboard.KEY_ESCAPE) {
+        if (!trustedField.isFocused() || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
-        if (i == Keyboard.KEY_RETURN) {
+        if (i == GLFW.GLFW_KEY_ENTER) {
             if (trustedField.isFocused()) {
                 addTrusted(trustedField.getText());
                 trustedField.setText("");

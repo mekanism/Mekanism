@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -40,7 +41,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {
                     int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(infoHandler.getTank());
                     if (index != -1) {
-                        if (button == 0 && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                        if (button == 0 && Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                             button = 2;
                         }
                         Mekanism.packetHandler.sendToServer(new PacketDropperUse(Coord4D.get(tile), button, index));

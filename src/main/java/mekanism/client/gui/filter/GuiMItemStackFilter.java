@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -104,14 +105,14 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             int yAxis = mouseY - guiTop;
             if (overTypeInput(xAxis, yAxis)) {
                 ItemStack stack = mc.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                if (!stack.isEmpty() && !Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     if (stack.getItem() instanceof BlockItem) {
                         if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                             filter.setItemStack(stack.copy());
                             filter.getItemStack().setCount(1);
                         }
                     }
-                } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                } else if (stack.isEmpty() && Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     filter.setItemStack(ItemStack.EMPTY);
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

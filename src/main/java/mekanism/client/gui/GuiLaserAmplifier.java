@@ -12,7 +12,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +22,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier> {
@@ -104,11 +103,11 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
 
     @Override
     public void keyTyped(char c, int i) throws IOException {
-        if (!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == Keyboard.KEY_ESCAPE) {
+        if (!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == GLFW.GLFW_KEY_ESCAPE) {
             super.keyTyped(c, i);
         }
 
-        if (i == Keyboard.KEY_RETURN) {
+        if (i == GLFW.GLFW_KEY_ENTER) {
             if (minField.isFocused()) {
                 setMinThreshold();
             }

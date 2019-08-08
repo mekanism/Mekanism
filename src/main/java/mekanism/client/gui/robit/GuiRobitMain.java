@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.robit.ContainerRobitMain;
 import mekanism.common.network.PacketRobit;
-import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -19,7 +18,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiRobitMain extends GuiMekanism {
@@ -112,9 +111,9 @@ public class GuiRobitMain extends GuiMekanism {
         if (!displayNameChange) {
             super.keyTyped(c, i);
         } else {
-            if (i == Keyboard.KEY_RETURN) {
+            if (i == GLFW.GLFW_KEY_ENTER) {
                 changeName();
-            } else if (i == Keyboard.KEY_ESCAPE) {
+            } else if (i == GLFW.GLFW_KEY_ESCAPE) {
                 mc.player.closeScreen();
             }
             nameChangeField.textboxKeyTyped(c, i);

@@ -31,6 +31,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Keyboard;
 
 @OnlyIn(Dist.CLIENT)
@@ -94,7 +95,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism> {
             for (GuiSideDataButton button : sideDataButtons) {
                 if (guibutton.id == button.id) {
                     Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile),
-                          Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 2 : 0, button.getSlotPosMapIndex(), currentType));
+                          Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, button.getSlotPosMapIndex(), currentType));
                     break;
                 }
             }

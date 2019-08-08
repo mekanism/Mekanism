@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.Container;
@@ -20,7 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.input.Mouse;
 
 @OnlyIn(Dist.CLIENT)
@@ -33,8 +33,8 @@ public abstract class GuiMekanism extends ContainerScreen implements IGuiWrapper
     }
 
     public static boolean isTextboxKey(char c, int i) {
-        return i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT || i == Keyboard.KEY_END ||
-               i == Keyboard.KEY_HOME || isKeyComboCtrlA(i) || isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i);
+        return i == GLFW.GLFW_KEY_BACKSPACE || i == GLFW.GLFW_KEY_DELETE || i == GLFW.GLFW_KEY_LEFT || i == GLFW.GLFW_KEY_RIGHT || i == GLFW.GLFW_KEY_END ||
+               i == GLFW.GLFW_KEY_HOME || isKeyComboCtrlA(i) || isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i);
     }
 
     public Set<GuiElement> getGuiElements() {
